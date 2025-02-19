@@ -80,48 +80,48 @@
 }
 
 .light #themeSelector {
-    background: linear-gradient(45deg, var(--lighter-primary-glow), var(--lighter-secondary-glow));
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: black;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, var(--lighter-primary-glow), var(--lighter-secondary-glow)) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: black !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
 .light .theme-dropdown {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: black;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    color: black !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 .light .theme-item {
-    color: black;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: black !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
 .light .theme-item:hover {
-    background: rgba(0, 0, 0, 0.1);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4) !important;
 }
 
 .light .theme-preview {
-    border-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.2) !important;
 }
 
 .light .theme-preview:hover {
-    border-color: var(--primary-glow);
+    border-color: var(--primary-glow) !important;
 }
 ```
 
 **Modifications:**
 
+* Added `!important` to the light theme styles to ensure they override conflicting styles in the main CSS file.
 * Adjusted the positioning and sizing of the theme selector and dropdown.
 * Added box shadows to provide a more elevated look.
 * Refined the hover effects on the elements for improved user experience.
-* Implemented a light theme variant by using lighter shades of the primary and secondary colors.
-* Added `!important` to ensure that the light theme overrides any conflicting styles in the main CSS file.
 
 **Additional Considerations:**
 
 * To ensure compatibility with Vercel and static serverless sites, you may need to consider:
     * Using a CSS-in-JS library for runtime styling.
     * Implementing serverless functions to handle any dynamic behavior (e.g., theme switching).
+* To improve the overall structure and maintainability of the project, you could create separate CSS files for the light and dark themes, and then import them into the main CSS file based on the user's preference.
