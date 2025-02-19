@@ -5,12 +5,9 @@ public/
   visuals/
     dropdown.css
   theme/
-    particles.js
 src/
   utils/
     particles.js
-  components/
-    Particles.js
 ```
 
 **Improved Code:**
@@ -82,31 +79,8 @@ const drawParticles = (particles, ctx) => {
 };
 ```
 
-**src/components/Particles.js**
-
-```javascript
-import React, { useEffect, useRef } from 'react';
-import { initParticles } from '../utils/particles';
-
-const Particles = ({ numParticles = 100 }) => {
-  const canvasRef = useRef();
-
-  useEffect(() => {
-    initParticles(canvasRef, numParticles);
-
-    return () => {
-      // Cleanup logic
-    };
-  }, []);
-
-  return <canvas id="canvas" ref={canvasRef}></canvas>;
-};
-
-export default Particles;
-```
-
 **Additional Improvements:**
 
-* Removed the `src/components/Particles` component since it's no longer necessary as the new `Particles` component is defined in `src/utils/particles.js`.
+* Removed the global `Particles` component and moved its functionality into `src/utils/particles.js`.
 * Simplified the `initParticles` function by passing `canvasRef` directly instead of `canvas`.
 * Moved the canvas resize event listener into the `initParticles` function for better encapsulation.
