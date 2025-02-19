@@ -18,6 +18,7 @@ The following files may also be useful for a more complete project:
 - `CONTRIBUTING.md`: Provides guidelines for contributing to the project, including code standards, testing procedures, and best practices.
 - `ISSUE_TEMPLATE.md`: Guides users in creating detailed and informative issue reports, increasing the likelihood of prompt and effective resolution.
 - `PULL_REQUEST_TEMPLATE.md`: Enforces a consistent format for pull requests, making it easier for maintainers to review and merge changes.
+- `LICENSE` (new)
 
 ## File Structure
 
