@@ -1,16 +1,49 @@
-FILE PATH: api/index.js
-CONTENT: const express = require('express');
-const axios = require('axios');
+Based on the project goal, the following files should be created:
 
-const app = express();
+FILE PATH: proxy.html
+CONTENT: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/proxy">
+    <input type="text" name="url" placeholder="Enter a URL">
+    <input type="submit" value="Submit">
+  </form>
+  <div id="result"></div>
+</body>
+</html>
 
-app.get('/proxy', async (req, res) => {
-  const url = req.query.url;
-  const response = await axios.get(url);
+FILE PATH: proxy.css
+CONTENT: body {
+  font-family: Arial, sans-serif;
+}
 
-  res.send(response.data);
-});
+h1 {
+  text-align: center;
+}
 
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
+form {
+  margin: 0 auto;
+  width: 50%;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #008CBA;
+  color: #fff;
+}
+
+#result {
+  margin-top: 20px;
+}
