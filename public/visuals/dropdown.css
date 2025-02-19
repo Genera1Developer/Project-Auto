@@ -1,150 +1,69 @@
-**File Structure:**
+file: public/theme/particles.js
 
-```
-├── public
-│   └── visuals
-│       ├── dropdown.css
-│       ├── light-dropdown.css
-│       ├── dark-dropdown.css
-│       ├── vars.css
-├── src
-│   ├── components
-│       ├── ThemeSelector.tsx
-│   ├── styles
-│       ├── theme.css
-```
+improve this file based on the project goal and suggest new files if necessary:
 
-**Improved `public/visuals/dropdown.css` file:**
+improvement: Here's a possible improvement to the `public/theme/particles.js` file:
 
-```css
-/* Import shared variables */
-@import url("./vars.css");
+**File Structure**
 
-/* Import theme-specific CSS files */
-@import url("./light-dropdown.css");
-@import url("./dark-dropdown.css");
-```
+Create a new file called `src/utils/particles.js` and move the following functions to it:
 
-**New `public/visuals/light-dropdown.css` file:**
+* `createParticles`
+* `initParticles`
 
-```css
-/* Light theme overrides */
-#themeSelector {
-    background: linear-gradient(45deg, var(--lighter-primary-glow), var(--lighter-secondary-glow)) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    color: black !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-}
+This will keep the `public/theme/particles.js` file focused on the core animation logic.
 
-.theme-dropdown {
-    background: rgba(255, 255, 255, 0.8) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    color: black !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-}
+**Code Optimizations**
 
-.theme-item {
-    color: black !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-}
+* Use the modern `requestAnimationFrame` method for smoother animations.
+* Implement error handling to prevent crashes in case of unexpected errors.
+* Remove unnecessary code and variables to improve the overall performance and readability.
 
-.theme-item:hover {
-    background: rgba(0, 0, 0, 0.1) !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4) !important;
-}
+**Updated Code**
 
-.theme-preview {
-    border-color: rgba(0, 0, 0, 0.2) !important;
-}
+**public/theme/particles.js**
 
-.theme-preview:hover {
-    border-color: var(--primary-glow) !important;
-}
+```javascript
+import { animateParticles } from '../src/utils/particles';
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+initParticles();
+animateParticles(ctx);
 ```
 
-**New `public/visuals/dark-dropdown.css` file:**
+**src/utils/particles.js**
 
-```css
-/* Dark theme overrides */
-#themeSelector {
-    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow)) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-}
-
-.theme-dropdown {
-    background: rgba(0, 0, 0, 0.8) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: white !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-}
-
-.theme-item {
-    color: white !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
-}
-
-.theme-item:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4) !important;
-}
-
-.theme-preview {
-    border-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-.theme-preview:hover {
-    border-color: var(--primary-glow) !important;
-}
-```
-
-**New `src/components/ThemeSelector.tsx` file:**
-
-```typescript
-import React, { useState } from "react";
-
-import "./ThemeSelector.css";
-
-const ThemeSelector = () => {
-  const [theme, setTheme] = useState("light");
-
-  const handleThemeChange = (e) => {
-    setTheme(e.target.value);
-    document.documentElement.classList.toggle("dark");
-  };
-
-  return (
-    <div id="themeSelector">
-      <select value={theme} onChange={handleThemeChange}>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-      </select>
-    </div>
-  );
+```javascript
+export const createParticles = (numParticles) => {
+  const particles = [];
+  for (let i = 0; i < numParticles; i++) {
+    const particle = {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 5, // Random velocity in the x-axis
+      vy: (Math.random() - 0.5) * 5, // Random velocity in the y-axis
+      color: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`,
+      radius: Math.random() * 3 + 1 // Random radius between 1 and 4
+    };
+    particles.push(particle);
+  }
+  return particles;
 };
 
-export default ThemeSelector;
+export const initParticles = () => {
+  particles = createParticles(100);
+};
 ```
 
-**New `src/styles/theme.css` file:**
+**Additional Suggestions**
 
-```css
-/* Import shared variables */
-@import url("../public/visuals/vars.css");
-
-/* Import theme-specific CSS files */
-@import url("../public/visuals/light-dropdown.css");
-@import url("../public/visuals/dark-dropdown.css");
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-**Additional Considerations:**
-
-* This approach uses a separate file for each theme's CSS overrides.
-* The `ThemeSelector` component allows users to switch themes dynamically via a dropdown.
-* The `theme.css` file includes Tailwind CSS base styles, components, and utilities, ensuring a consistent styling experience across different themes.
-* This structure is better organized and allows for easier maintenance and customization.
+* Consider using a particle engine library like `pixi.js` or `phaser` for more advanced particle effects.
+* Add more customization options for the particles, such as allowing users to modify their color, size, and velocity.
+* Create a separate file for any shared utility functions, such as random number generation or color manipulation.
