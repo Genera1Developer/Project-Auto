@@ -1,1 +1,7 @@
-
+FILE PATH: api/vercel.json
+CONTENT: {
+  "version": 2,
+  "env": {
+    "PORT": 3000
+  }
+}
