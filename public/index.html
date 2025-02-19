@@ -1,21 +1,35 @@
-FILE PATH: public/index.html
-CONTENT: <!DOCTYPE html>
-<html lang="en">
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="./style.css" />
-</head>
+FILE PATH: server.js
+CONTENT: // Require the necessary modules.
+const express = require('express');
+const bodyParser = require('body-parser');
+const request = require('request');
 
-<body>
-  <h1>Web Proxy</h1>
-  <form action="/proxy" method="POST">
-    <label for="url">URL:</label>
-    <input type="text" id="url" name="url" required />
-    <button type="submit">Submit</button>
-  </form>
-</body>
+// Create an Express app.
+const app = express();
 
-</html>
+// Use the body-parser middleware to parse JSON requests.
+app.use(bodyParser.json());
+
+// Define the POST route for proxying requests.
+app.post('/proxy', async (req, res) => {
+  // Get the URL from the request body.
+  const url = req.body.url;
+
+  // Forward the request to the specified URL.
+  request(url, (error, response, body) => {
+    if (error) {
+      // If there is an error, send a 500 status code and error message.
+      res.status(500).send('Error: ' + error.message);
+    } else {
+      // If there is no error, send the response body.
+      res.send(body);
+    }
+  });
+});
+
+// Start the server.
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
