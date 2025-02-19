@@ -25,8 +25,17 @@ const youtubeProxy = createProxyMiddleware({
   },
 });
 
+const facebookProxy = createProxyMiddleware({
+  target: "https://facebook.com",
+  changeOrigin: true,
+  pathRewrite: {
+    "^/facebook": "",
+  },
+});
+
 app.use("/google", googleProxy);
 app.use("/youtube", youtubeProxy);
+app.use("/facebook", facebookProxy);
 
 app.listen(3000, () => {
   console.log("Proxy server listening on port 3000");
