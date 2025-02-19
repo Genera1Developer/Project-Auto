@@ -1,18 +1,35 @@
-### New File: `api/config.js` (CDN Host List and Configuration)
+### File Structure
+
+- `api/config.js` (CDN Host List and Configuration)
+- `api/proxy.js` (Web Proxy Handler)
+- `next.config.js` (Next.js Configuration)
+- `README.md` (Project Overview and Usage Instructions)
+- `package.json` (Project Dependencies and Configuration)
+- `.vercel/edge-functions/proxy.js` (Deployed Proxy Function)
+
+### Improved `api/proxy.js` File
 
 ```javascript
-// Hosts allowed to be proxied. Add your CDN hosts here.
-const allowedHosts = [
-  // Examples:
-  'https://unpkg.com',
-  'https://cdn.jsdelivr.net',
-  'https://fastly.jsdelivr.net',
-  'https://bundle.run',
-  'https://deno.land',
-];
+const { getAllowedHosts } = require('./config.js');
 
-// Export the allowed hosts configuration
-module.exports = {
-  allowedHosts,
+const proxy = async (req, res) => {
+  // Get the request URL and host
+  const { url, headers: { host } } = req;
+
+  // Check if the host is allowed to be proxied
+  if (!getAllowedHosts().includes(host)) {
+    return res.status(403).json({ error: 'Host not allowed' });
+  }
+
+  // Modify the request URL to remove the host
+  const newUrl = url.replace(`https://${host}`, '');
+
+  // Perform the fetch request
+  const fetchResponse = await fetch(newUrl, { headers: req.headers });
+
+  // Proxy the response back to the client
+  res.status(fetchResponse.status).json(await fetchResponse.json());
 };
+
+export default proxy;
 ```
