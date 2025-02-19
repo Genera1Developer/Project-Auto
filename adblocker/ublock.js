@@ -41,6 +41,7 @@
 
 - **Dependencies**:
   - **ublock-js**: Dependency for ad-blocking.
+  - **body-parser**: Dependency for parsing HTTP request bodies.
 - **Scripts**:
   - **start**: Starts the Vercel/serverless proxy locally.
 
