@@ -1,25 +1,21 @@
-FILE PATH: public/index.js
+FILE PATH: public/index.html
 CONTENT: 
-```js
-const form = document.querySelector('form');
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const url = document.querySelector('#url').value;
-
-  const request = new Request(url);
-
-  fetch(request)
-    .then((response) => {
-      const result = document.querySelector('#result');
-
-      result.innerHTML = response.status;
-    })
-    .catch((error) => {
-      const result = document.querySelector('#result');
-
-      result.innerHTML = error.message;
-    });
-});
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./index.css" />
+</head>
+<body>
+  <form>
+    <label for="url">URL:</label>
+    <input type="text" id="url" />
+    <input type="submit" value="Fetch" />
+  </form>
+  <div id="result"></div>
+  <script src="./index.js"></script>
+</body>
+</html>
 ```
