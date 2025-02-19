@@ -1,17 +1,17 @@
-FILE PATH: api/routes/dns.js
+FILE PATH: api/routes/http.js
 CONTENT: 
 
 ```javascript
 const express = require('express');
-const dns = require('dns');
+const fetch = require('node-fetch');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const hostname = req.query.hostname;
+  const url = req.query.url;
   try {
-    const addresses = await dns.resolve(hostname);
-    res.json({ addresses });
+    const response = await fetch(url);
+    res.json({ status: response.status, headers: response.headers.raw(), body: await response.text() });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
