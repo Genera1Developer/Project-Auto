@@ -1,56 +1,28 @@
-file: public/styles.css
+file: public/index.html
 content: 
-```css
-body {
-  font-family: Arial, sans-serif;
-  line-height: 1.5;
-  margin: 0 auto;
-  max-width: 800px;
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-h1 {
-  text-align: center;
-  margin-bottom: 16px;
-}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Web Proxy</title>
+</head>
 
-form {
-  display: flex;
-  justify-content: center;
-}
+<body>
+  <h1>Web Proxy</h1>
 
-input[type=text] {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-}
+  <form id="form">
+    <input type="text" placeholder="Enter URL" name="url" id="url" />
+    <button type="submit">Go</button>
+  </form>
 
-button[type=submit] {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  max-width: 150px;
-}
+  <div id="result"></div>
 
-button[type=submit]:hover {
-  background-color: #45a049;
-}
+  <script src="./script.js"></script>
+</body>
 
-#result {
-  padding: 12px 20px;
-  margin: 16px 0;
-  box-sizing: border-box;
-  background-color: #f1f1f1;
-  max-width: 100%;
-  overflow-y: scroll;
-  line-height: 1.5;
-}
-
-.error {
-  color: red;
-}
+</html>
 ```
