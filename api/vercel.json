@@ -1,14 +1,3 @@
-**README.md**
-
-**Project Structure**
-
-* `api/vercel.yml` - Vercel deployment configuration
-* `requirements.txt` - Python package dependencies
-* `.env` - Environment variables
-* `src/main.py` - FastAPI application code
-
-**Improved `api/vercel.yml`**
-
 ```yml
 version: 2
 builds:
@@ -23,39 +12,3 @@ builds:
   - src: ./static
     use: cloudflare-pages
 ```
-
-* Updated `use` to `@vercel/python-edge` for Vercel's Python edge function support
-* Set `target` to `vercel` for compatibility with Vercel's edge functions
-* Reduced indentation for clarity
-
-**New `requirements.txt`**
-
-```
-fastapi==0.86.0
-uvicorn==0.19.0
-```
-
-* Specifies the Python package dependencies for the FastAPI application
-
-**New `.env`**
-
-```
-PROJECT_ROOT=/opt/project
-```
-
-* Defines the environment variable `PROJECT_ROOT` to the project root for use in the FastAPI application
-
-**New `src/main.py`**
-
-```python
-from fastapi import FastAPI, Request
-from pydantic import BaseModel
-
-app = FastAPI()
-
-@app.get("/")
-async def root(request: Request):
-    return {"message": "Hello World"}
-```
-
-* Imports the FastAPI library and defines a simple GET endpoint that returns a "Hello World" message
