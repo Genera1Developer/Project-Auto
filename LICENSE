@@ -1,11 +1,3 @@
-**Project: Web Proxy for Vercel and Static Serverless Sites**
-
-**Goal:**
-
-* Modify and fix the given web proxy to work fully for Vercel and static serverless sites
-* Fix any bugs along the way
-* Ensure that multiple files are created to properly structure the project
-
 **File Structure:**
 
 * LICENSE
@@ -19,81 +11,6 @@
 * CONTRIBUTING.md
 * README.md
 * .gitignore
-
-**Improved File Content:**
-
-**LICENSE:**
-
-```
-MIT License
-
-Copyright (c) [Your Name]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-```
-
-**package.json:**
-
-```json
-{
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A web proxy for Vercel and static serverless sites",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "node src/index.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "memoize-one": "^5.2.1",
-    "request": "^2.88.2"
-  },
-  "license": "MIT"
-}
-```
-
-**README.md:**
-
-```
-**Project: Web Proxy for Vercel and Static Serverless Sites**
-
-**Goal:**
-
-* Modify and fix the given web proxy to work fully for Vercel and static serverless sites
-* Fix any bugs along the way
-* Ensure that multiple files are created to properly structure the project
-
-**File Structure:**
-
-* LICENSE
-* package.json
-* src/
-   * index.js
-   * utils/
-     * requestHandler.js
-     * responseHandler.js
-* CHANGELOG.md
-* CONTRIBUTING.md
-* README.md
-* .gitignore
-
-**Improved File Content:**
-
-* We have added a changelog to track changes and updates to the project.
-* We have added contribution guidelines to encourage community participation.
-* We have updated the README.md file to include more detailed documentation on the project's functionality and usage.
-* We have added a .gitignore file to ignore unnecessary files from being committed to the repository.
-```
-
-**New Files:**
-
-* **CHANGELOG.md:** Changelog for tracking changes and updates
-* **CONTRIBUTING.md:** Guidelines for contributing to the project
-* **.gitignore:** File to ignore unnecessary files from being committed to the repository
 
 **Improved File Content:**
 
