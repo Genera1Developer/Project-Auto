@@ -1,29 +1,37 @@
-FILE PATH: public/index.html
+FILE PATH: public/index.js
 CONTENT:
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Web Proxy</title>
-  </head>
-  <body>
-    <label for="path">Path:</label>
-    <input type="text" id="path"/>
+```javascript
+const form = document.querySelector("form");
+const responseBody = document.getElementById("response-body");
 
-    <label for="method">Method:</label>
-    <select id="method">
-      <option value="get">GET</option>
-      <option value="post">POST</option>
-      <option value="put">PUT</option>
-      <option value="delete">DELETE</option>
-    </select>
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    <label for="request-body">Request Body:</label>
-    <textarea id="request-body"></textarea>
+  const path = document.getElementById("path").value;
+  const method = document.getElementById("method").value;
+  const requestBody = document.getElementById("request-body").value;
 
-    <button type="button" id="submit">Submit</button>
+  const response = await fetch(path, {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: requestBody,
+  });
 
-    <div id="response-body"></div>
-  </body>
-</html>
+  const { status, statusText } = response;
+  const contentType = response.headers.get("Content-Type");
+  const rawResponse = await response.text();
+  let responseBodyContent;
+
+  if (contentType.includes("json")) {
+    responseBodyContent = JSON.stringify(JSON.parse(rawResponse), null, 2);
+  } else {
+    responseBodyContent = rawResponse;
+  }
+
+  responseBody.textContent = `${status} ${statusText}
+
+  ${responseBodyContent}`;
+});
 ```
