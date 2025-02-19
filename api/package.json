@@ -1,15 +1,26 @@
-FILE PATH: api/package.json
-CONTENT: {
-  "name": "web-proxy-api",
-  "version": "1.0.0",
-  "description": "The API for a fully structured web proxy project",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
-  "dependencies": {
-    "axios": "^0.27.2",
-    "express": "^4.18.2"
+Based on the project goal, the following file should be created:
+
+FILE PATH: api/index.js
+CONTENT: 
+
+```js
+const express = require('express');
+const axios = require('axios');
+
+const app = express();
+const port = 3000;
+
+app.get('/proxy', async (req, res) => {
+  try {
+    const url = req.query.url;
+    const response = await axios.get(url);
+    res.send(response.data);
+  } catch (err) {
+    res.status(500).send('Error fetching URL');
   }
-}
+});
+
+app.listen(port, () => {
+  console.log(`Web proxy API listening on port ${port}`);
+});
+```
