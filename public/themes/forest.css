@@ -44,3 +44,12 @@ iframe {
   border: none;
   background-color: #fff;
 }
+
+/* Custom additions */
+
+#loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
