@@ -1,14 +1,14 @@
-file path: api/Read Before Use
+file path: api/Read Before Use.md
 content: **Instructions for Using the Web Proxy**
 
-1. **Start the web proxy server:**
+1. Start the web proxy server:
 
 ```
 cd /path/to/web-proxy
 python server.py
 ```
 
-2. **Configure your browser to use the web proxy:**
+2. Configure your browser to use the web proxy:
 
 - **For Chrome:**
   - Click on the three dots in the top right corner of the browser.
@@ -27,12 +27,6 @@ python server.py
   - Enter the IP address and port of the web proxy server (e.g., 127.0.0.1:8080).
   - Click on "OK" to save your changes.
 
-3. **Use the web proxy:**
-
 **Note:** The web proxy will only work for HTTP traffic. HTTPS traffic will not be proxied.
 
 To use the web proxy, simply open your browser and navigate to any website. The web proxy will automatically handle the request and return the response.
-
-**Example:**
-
-To access the website "www.example.com" using the web proxy, you would enter "http://www.example.com" into your browser's address bar. The web proxy would then handle the request and return the response from "www.example.com".
