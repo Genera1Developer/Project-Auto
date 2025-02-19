@@ -1,37 +1,12 @@
-file: server/proxy.py
+file: server/urls.py
 content:
 ```python
-import socket
-import sys
+from django.urls import path
 
-# Create a TCP socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+from . import views
 
-# Bind the socket to the port
-server_address = ('localhost', 8080)
-sock.bind(server_address)
-
-# Listen for incoming connections
-sock.listen(1)
-
-while True:
-    # Wait for a connection
-    connection, client_address = sock.accept()
-
-    try:
-        # Receive the data in small chunks and read the length of the first chunk
-        amount_received = 0
-        amount_expected = int(connection.recv(1024).decode())
-    
-        # Receive the rest of the data
-        while amount_received < amount_expected:
-            data = connection.recv(1024).decode()
-            amount_received += len(data)
-            sys.stdout.write(data)
-    
-        # Send a message back to the client
-        connection.sendall(bytes("HTTP/1.1 200 OK\n\nHello, World!", 'utf-8'))
-    finally:
-        # Clean up the connection
-        connection.close()
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('proxy/', views.proxy, name='proxy'),
+]
 ```
