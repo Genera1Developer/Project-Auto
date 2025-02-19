@@ -1,25 +1,39 @@
-Based on the project goal, create the following file:
-
-FILE PATH: views/index.html
+FILE PATH: views/styles.css
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <form>
-        <input type="text" name="url" placeholder="Enter the URL to proxy">
-        <input type="submit" value="Proxy">
-    </form>
+```css
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
 
-    <div id="result"></div>
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    <script src="script.js"></script>
-</body>
-</html>
+input[type="text"] {
+    width: 300px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+input[type="submit"] {
+    width: 100px;
+    padding: 5px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#result {
+    width: 600px;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    overflow: scroll;
+}
 ```
