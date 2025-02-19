@@ -15,6 +15,7 @@ content:
   ],
   "env": {
     "PORT": "3000"
-  }
+  },
+  "postStart": "npm run seed"
 }
 ```
