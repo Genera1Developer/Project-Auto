@@ -1,6 +1,7 @@
 ```css
 /* Default CSS styles for the web proxy */
 
+/* Global styles */
 body {
   font-family: sans-serif;
   font-size: 14px;
@@ -25,19 +26,31 @@ a:hover {
   color: #0056b3;
 }
 
+/* Container styles */
 .container {
   max-width: 800px;
   padding: 1em;
 }
 
+/* Header styles */
 .header {
   background-color: #f8f9fa;
   padding: 1em;
 }
 
+/* Footer styles */
 .footer {
   background-color: #f8f9fa;
   padding: 1em;
   text-align: center;
+}
+
+/* Additional styles */
+.error {
+  color: #d9534f;
+}
+
+.success {
+  color: #4caf50;
 }
 ```
