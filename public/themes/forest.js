@@ -1,25 +1,26 @@
-FILE PATH: public/themes/dark.css
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: public/themes/light.css
 CONTENT: 
 ```css
-/* CSS for the dark mode. */
+/* CSS for the light mode. */
 
 body {
-  background-color: #000000;
+  background-color: #FFFFFF;
 }
 
 #header {
-  color: #FFFFFF;
+  color: #000000;
 }
 
 #footer {
-  color: #FFFFFF;
+  color: #000000;
 }
 
 a {
-  color: #FFFFFF;
+  color: #000000;
 }
 
 button {
-  color: #FFFFFF;
+  color: #000000;
 }
 ```
