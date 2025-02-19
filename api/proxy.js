@@ -1,4 +1,0 @@
-Based on the project goal, the following file should be created:
-
-FILE PATH: README.md
-CONTENT: This project aims to create a fully structured web proxy. It consists of multiple interconnected files, each serving a specific purpose. The project utilizes Node.js and Express.js for server-side functionality, leveraging the axios library for HTTP requests. It implements rate limiting using the express-rate-limit module to prevent excessive requests. The proxy modifies HTML content to ensure proper handling of relative URLs within the fetched resource. The project includes an HTML frontend for user interaction, allowing them to input a URL and fetch the proxied content.

@@ -1,2 +1,0 @@
-file path: api/index.js
-content: module.exports = require('./proxy');
