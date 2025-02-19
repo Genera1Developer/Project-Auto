@@ -133,22 +133,4 @@ input[type="submit"]:hover {
   visibility: visible;
   opacity: 1;
 }
-
-/* Additions to support the new tooltip */
-
-.tooltip-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.tooltip-link {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-}
-
-.tooltip-link:hover {
-  text-decoration: underline;
-}
 ```
