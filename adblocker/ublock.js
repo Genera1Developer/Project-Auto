@@ -48,6 +48,7 @@ self.addEventListener('fetch', (event) => {
           return response;
         }
 
+        // Block Google Analytics requests
         if (event.request.url.includes('google-analytics.com')) {
           return new Response('', {
             status: 200,
@@ -57,10 +58,13 @@ self.addEventListener('fetch', (event) => {
           });
         }
 
+        // Fix Cross-Origin-Opener-Policy header for iframes
         const clonedResponse = response.clone();
         if (clonedResponse.headers.get('Cross-Origin-Opener-Policy') === 'same-origin') {
           clonedResponse.headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
         }
+
+        // Cache the response
         caches.open(cacheName).then((cache) => {
           cache.put(event.request, clonedResponse);
         });
@@ -74,6 +78,7 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('message', (event) => {
   if (event.data.type === 'blockRequest') {
     fetch(event.data.url).then((response) => {
+      // Send the response status to the worker
       event.ports[0].postMessage({
         type: 'blockResponse',
         url: event.data.url,
