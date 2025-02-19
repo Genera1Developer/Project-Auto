@@ -1,20 +1,11 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: api/controllers/proxy.controller.js
+FILE PATH: api/routes/proxy.routes.js
 CONTENT:
 ```js
-const fetch = require('node-fetch');
-const config = require('../config/default');
+const express = require('express');
+const router = express.Router();
+const proxyController = require('../controllers/proxy.controller');
 
-const fetchProxy = async (req, res) => {
-  try {
-    const response = await fetch(`${config.protocol}://${config.hostname}:${config.port}/${req.url}`);
-    const data = await response.text();
-    res.header(config.headers);
-    res.send(data);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
+router.get('/*', proxyController.fetchProxy);
 
-module.exports = fetchProxy;
+module.exports = router;
 ```
