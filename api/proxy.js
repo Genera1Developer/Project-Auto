@@ -12,13 +12,15 @@ app.use(cors());
 
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.use(
-  "/api",
-  createProxyMiddleware({
-    target: "https://example.com",
-    changeOrigin: true,
-  })
-);
+const googleProxy = createProxyMiddleware({
+  target: "https://google.com",
+  changeOrigin: true,
+  pathRewrite: {
+    "^/google": "",
+  },
+});
+
+app.use("/google", googleProxy);
 
 app.get('*', function(req, res) {
   res.sendFile(path.resolve(__dirname, '../public/index.html'));
