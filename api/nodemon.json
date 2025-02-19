@@ -1,36 +1,28 @@
-improved file:
+file: README.md
 
-```json
-{
-  "watch": ["app.js", "utils/*.js"],
-  "exec": "node app.js",
-  "env": {
-    "NODE_ENV": "development"
-  },
-  "ignore": ["node_modules/**"]
-}
-```
+File Structure:
+- api/
+  - app.js
+  - nodemon.json
+- public/
+  - <your static files>
+- package.json
 
-new file:
+Project Goal: Modify and fix the given web proxy to work fully for Vercel and static serverless sites, and fix any bugs along the way.
 
-```sh
-# Run script
-npm run dev
-```
+Changes Made:
 
-file: api/app.js
+- Updated nodemon.json to watch for changes in `utils` directory and ignore `node_modules` directory.
+- Added a new script `dev` to run the application.
 
-improved file:
+Usage:
 
-```js
-const express = require('express');
-const open = require('open');
-const app = express();
+1. Clone the repository.
+2. Install dependencies: `npm install`
+3. Run the application: `npm run dev`
+4. Open the application in a browser: http://localhost:3000
 
-app.use(express.static('public'));
+Additional Notes:
 
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
-  open('http://localhost:3000');
-});
-```
+- You may need to adjust the port number in `app.js` if it conflicts with other applications.
+- You may need to add additional files to the `public` directory depending on your specific needs.
