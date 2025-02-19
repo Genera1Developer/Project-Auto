@@ -1,25 +1,18 @@
-FILE PATH: public/index.html
+FILE PATH: public/css/forest.css
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="/css/forest.css" />
-  </head>
+```css
+body {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+}
 
-  <body>
-    <h1>Web Proxy</h1>
+h1 {
+  font-size: 2em;
+  margin-bottom: 1em;
+}
 
-    <form action="/proxy">
-      <label for="url">URL:</label>
-      <input type="text" id="url" name="url" />
-
-      <input type="submit" value="Go" />
-    </form>
-
-    <div id="result"></div>
-  </body>
-</html>
+#result {
+  background-color: #eee;
+  padding: 1em;
+  margin-top: 1em;
+}
 ```
