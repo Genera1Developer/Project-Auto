@@ -28,3 +28,14 @@ h1, h2, h3, h4, h5, h6 {
   color: #2e7d32;
 }
 ```
+FILE PATH: public/themes/forest.js
+CONTENT: 
+```javascript
+/* Forest mode theme for the web proxy. */
+
+// Set the theme.
+theme.set({
+  name: "Forest",
+  stylesheet: "forest.css",
+});
+```
