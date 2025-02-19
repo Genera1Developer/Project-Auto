@@ -1,6 +1,4 @@
-Based on the project goal, the following file should be created:
-
-FILE PATH: index.html
+file: index.html
 CONTENT: <!DOCTYPE html>
 <html>
 <head>
@@ -17,3 +15,37 @@ CONTENT: <!DOCTYPE html>
     <script src="script.js"></script>
 </body>
 </html>
+
+FILE PATH: style.css
+CONTENT: body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+}
+
+input[type="text"] {
+    width: 250px;
+    height: 30px;
+    padding: 5px;
+    margin: 5px;
+}
+
+input[type="submit"] {
+    width: 100px;
+    height: 30px;
+    margin: 5px;
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+#result {
+    width: 100%;
+}
