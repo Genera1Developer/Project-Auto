@@ -1,5 +1,3 @@
-**LICENSE:**
-
 ```
 MIT License
 
@@ -11,48 +9,3 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
-
-**New Files:**
-
-* **CHANGELOG.md:** Changelog for tracking changes and updates
-* **CONTRIBUTING.md:** Guidelines for contributing to the project
-* **.gitignore:** File to ignore unnecessary files from being committed to the repository
-* **src/cache.js:** Module for caching responses
-* **src/constants.js:** Module for storing constant values
-* **src/index.js:** Main module for the web proxy
-* **src/request.js:** Module for handling requests
-* **src/response.js:** Module for handling responses
-* **test/cache.test.js:** Unit tests for the cache module
-* **test/constants.test.js:** Unit tests for the constants module
-* **test/index.test.js:** Unit tests for the main module
-* **test/request.test.js:** Unit tests for the request module
-* **test/response.test.js:** Unit tests for the response module
-* **vercel.json:** Vercel configuration file
-
-**File Structure:**
-
-```
-├── CHANGELOG.md
-├── CONTRIBUTING.md
-├── LICENSE
-├── .gitignore
-├── src
-│   ├── cache.js
-│   ├── constants.js
-│   ├── index.js
-│   ├── request.js
-│   ├── response.js
-├── test
-│   ├── cache.test.js
-│   ├── constants.test.js
-│   ├── index.test.js
-│   ├── request.test.js
-│   ├── response.test.js
-├── vercel.json
-```
-
-**Additional Notes:**
-
-* The `vercel.json` file is added to configure the deployment of the project to Vercel.
-* Unit tests are added to ensure the correctness of the code.
-* The file structure is organized into modules for better code organization and maintainability.
