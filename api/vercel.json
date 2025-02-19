@@ -1,31 +1,14 @@
-FILE PATH: api/proxy.ts
+FILE PATH: api/vercel.json
 CONTENT: 
 
-```typescript
-import { NextApiRequest, NextApiResponse } from 'next'
-import fetch from 'node-fetch'
-
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { url, method, headers } = req.query
-
-  if (!url) {
-    res.status(400).json({ error: 'Missing URL parameter' })
-    return
-  }
-
-  try {
-    const response = await fetch(url, {
-      method: method as string,
-      headers: headers as Record<string, string>,
-    })
-
-    const contentType = response.headers.get('content-type')
-    const text = await response.text()
-
-    res.setHeader('content-type', contentType)
-    res.send(text)
-  } catch (error) {
-    res.status(500).json({ error: error.message })
-  }
+```json
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/proxy",
+      "dest": "http://localhost:3000/api/proxy"
+    }
+  ]
 }
 ```
