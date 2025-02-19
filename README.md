@@ -1,20 +1,26 @@
-FILE PATH: index.html
+FILE PATH: server.js
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form action="/proxy" method="POST">
-    <label for="url">URL:</label>
-    <input type="text" name="url" id="url">
-    <input type="submit" value="Submit">
-  </form>
-</body>
-</html>
+```javascript
+const express = require('express');
+const request = require('request');
+
+const app = express();
+
+app.use(express.json());
+
+app.post('/proxy', (req, res) => {
+  const { url } = req.body;
+
+  request(url, (error, response, body) => {
+    if (error) {
+      res.status(500).send('Error fetching URL');
+    } else {
+      res.send(body);
+    }
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Proxy server listening on port 3000');
+});
 ```
