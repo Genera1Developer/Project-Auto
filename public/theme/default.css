@@ -146,3 +146,27 @@
 **vercel.json**
 
 - Added a vercel.json file to configure the project for deployment on Vercel.
+
+### Additional Notes
+
+- To use the cyberpunk theme, add the following line to your HTML document:
+```html
+<link rel="stylesheet" href="/theme/cyberpunk.css" />
+```
+
+- To toggle between dark and light themes, use the following script:
+```js
+const toggleTheme = () => {
+  document.body.classList.toggle('dark');
+};
+```
+
+- To use the SSG proxy, add the following line to your HTML document:
+```html
+<script src="/proxy.js"></script>
+```
+
+- To use the console logger, add the following line to your HTML document:
+```html
+<script src="/console.js"></script>
+```
