@@ -57,8 +57,15 @@ export default curseblock;
 
 ```javascript
 const withAdblocker = require('./adblocker');
+const withPWA = require('next-pwa');
 
-module.exports = withAdblocker({
+module.exports = withPWA({
+  pwa: {
+    dest: 'public',
+    register: true,
+    skipWaiting: true,
+    disable: process.env.NODE_ENV === 'development',
+  },
   // Specify additional configuration options or plugins for Next.js here
 });
 ```
@@ -75,7 +82,7 @@ This project provides a proxy middleware for Next.js to block ads and other unwa
 ## File Structure
 
 - `adblocker/curseblock.js`: The proxy middleware logic is defined here.
-- `next.config.js`: This file integrates the proxy middleware with your Next.js application.
+- `next.config.js`: This file integrates the proxy middleware with your Next.js application and adds PWA support.
 - `package.json`: The project's configuration and dependencies are specified here.
 
 ## Usage
@@ -88,8 +95,15 @@ In your `next.config.js` file, add the following code:
 
 ```javascript
 const withAdblocker = require('./adblocker');
+const withPWA = require('next-pwa');
 
-module.exports = withAdblocker({
+module.exports = withPWA({
+  pwa: {
+    dest: 'public',
+    register: true,
+    skipWaiting: true,
+    disable: process.env.NODE_ENV === 'development',
+  },
   // Specify additional configuration options or plugins for Next.js here
 });
 ```
@@ -112,4 +126,8 @@ In addition to the fixes and improvements listed in the updated files, the follo
 - **Production Deployment Considerations:** Provide guidance on how to configure a dedicated proxy server for production environments, such as Apache or Nginx.
 - **Error Handling:** Add error handling to gracefully handle any potential issues or failed requests.
 - **Performance Optimization:** Optimize the proxy middleware for improved performance and efficiency.
+
+## PWA Support
+
+The `withPWA` plugin has been added to `next.config.js` to enable Progressive Web App (PWA) support for your Next.js application. This allows users to install your website as an application on their devices, providing a native-like user experience.
 ```
