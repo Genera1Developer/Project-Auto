@@ -1,6 +1,8 @@
-FILE PATH: public/public/index.js
+FILE PATH: public/index.js
 CONTENT:
 ```javascript
+import { createElement } from "./dom";
+
 const form = document.querySelector('form');
 
 form.addEventListener('submit', async (event) => {
@@ -25,6 +27,7 @@ form.addEventListener('submit', async (event) => {
 
   const responseBody = await response.text();
 
-  document.querySelector('.result').textContent = responseBody;
+  const result = createElement('pre', responseBody);
+  document.querySelector('.result').appendChild(result);
 });
 ```
