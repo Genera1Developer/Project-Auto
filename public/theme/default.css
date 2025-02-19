@@ -1,128 +1,23 @@
-file: public/theme/default.css
+## File Structure
 
-```css
-/* Default CSS styles for the web proxy */
-
-/* Global styles */
-body {
-  font-family: sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #333;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: bold;
-}
-
-p {
-  margin-bottom: 1em;
-}
-
-a {
-  color: #007bff;
-  text-decoration: none;
-}
-
-a:hover {
-  color: #0056b3;
-}
-
-/* Container styles */
-.container {
-  max-width: 800px;
-  padding: 1em;
-}
-
-/* Header styles */
-.header {
-  background-color: #f8f9fa;
-  padding: 1em;
-}
-
-/* Footer styles */
-.footer {
-  background-color: #f8f9fa;
-  padding: 1em;
-  text-align: center;
-}
-
-/* Additional styles */
-.error {
-  color: #d9534f;
-}
-
-.success {
-  color: #4caf50;
-}
-
-/* New styles for vercel and static serverless sites */
-.vercel-static {
-  background-color: #fff;
-  color: #212121;
-}
-
-.vercel-static .container {
-  max-width: 600px;
-}
-
-.vercel-static .header {
-  background-color: #fff;
-}
-
-.vercel-static .footer {
-  background-color: #fff;
-}
-
-@media screen and (prefers-color-scheme: dark) {
-  .vercel-static {
-    background-color: #212121;
-    color: #fff;
-  }
-
-  .vercel-static .container {
-    max-width: 600px;
-  }
-
-  .vercel-static .header {
-    background-color: #333;
-  }
-
-  .vercel-static .footer {
-    background-color: #333;
-  }
-}
+```
+├── public
+│   ├── theme
+│   │   ├── default.css
+│   │   └── dark.css
+├── README.md
 ```
 
-**New CSS file:**
+## Changes to default.css
 
-file: public/theme/dark.css
+- Added new styles for Vercel and static serverless sites.
+- Added support for dark mode.
 
-```css
-/* Dark theme styles for the web proxy */
+## New File: dark.css
 
-/* Global styles */
-body {
-  background-color: #212121;
-  color: #fff;
-}
+- Contains styles for the dark theme.
 
-.container {
-  background-color: #333;
-}
-
-/* Header styles */
-.header {
-  background-color: #333;
-}
-
-/* Footer styles */
-.footer {
-  background-color: #333;
-}
-```
-
-**Usage:**
+## Usage Instructions
 
 To use the dark theme, add the following code to the `<head>` of your HTML document:
 
