@@ -7,11 +7,7 @@
 * `src/utils/events.js`
 * `README.md`
 
-**Explanation**
-
-The codebase is structured into separate files for each functional component. This improves organization and maintainability. The `README.md` file provides documentation on the project and explains the file structure.
-
-**Improvements to `public/theme/particles.js`**
+**Improved `public/theme/particles.js`**
 
 ```javascript
 import { animateParticles, initParticles } from '../src/utils/particles';
@@ -27,15 +23,6 @@ resizeCanvas();
 initParticles();
 animateParticles(ctx);
 ```
-
-**Explanation**
-
-The improved `particles.js` file follows the project goal to work with Vercel and static serverless sites. It:
-
-* Imports functions from the `particles.js`, `canvas.js`, and `events.js` files.
-* Initializes the canvas and sets up the window resize event listener.
-* Initializes the particles using the `initParticles()` function.
-* Calls the `animateParticles()` function to continuously render the particles.
 
 **Additional Files**
 
