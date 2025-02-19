@@ -6,6 +6,7 @@
     - particles.css
 - README.md
 - package.json
+- public/js/script.js
 ```
 
 ## Improved `particles.css` (public/theme/particles.css)
@@ -28,10 +29,10 @@
 body {
     margin: 0;
     background: var(--background-color);
-    overflow: hidden;
     position: relative;
     height: 100vh;
     transition: background-color 0.3s ease;
+    overflow: hidden;
 }
 
 #canvas {
@@ -106,14 +107,28 @@ body {
 }
 ```
 
+## New File: `public/js/script.js`
+
+```js
+window.addEventListener("DOMContentLoaded", () => {
+    const cyberBg = document.querySelector(".cyber-bg");
+
+    window.matchMedia("(max-width: 1024px)").addEventListener("change", (e) => {
+        if (e.matches) {
+            cyberBg.style.display = "none";
+        }
+    });
+});
+```
+
 ## Improvements
 
 - Updated the `--primary-glow` and `--secondary-glow` variables to use a more subtle blue color.
 - Removed the `backdrop-filter` property from the `body`, `cyber-card`, and `cyber-input` elements as it was causing issues with Vercel and static serverless sites.
 - Updated the `cyber-card` and `cyber-input` elements to use `rgba()` values for their backgrounds and borders to ensure they are fully customizable.
+- Fixed the cyber background issue on smaller screens by conditionally hiding it using a media query in the new `script.js` file.
 - Added the `display: none` property to the `cyber-bg` element to hide it by default.
-- Updated the README.md with corrections.
-- Added a JS file to handle display of elements like cyber-bg under a media query.
+- Updated the README.md with corrections and added information about the new `script.js` file.
 
 ## Additional Notes
 
