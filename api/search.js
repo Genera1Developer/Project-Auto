@@ -1,20 +1,15 @@
-FILE PATH: api/search.js
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: <file_path>
+CONTENT: <file_content>
+
+FILE PATH: api/proxy.js
 CONTENT: 
 ```javascript
-const fetch = require('node-fetch');
+const express = require('express');
+const router = express.Router();
+const search = require('./search');
 
-const search = async (req, res) => {
-  const { url } = req.body;
+router.post('/search', search);
 
-  try {
-    const response = await fetch(url);
-    const html = await response.text();
-
-    res.status(200).json({ html });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-module.exports = search;
+module.exports = router;
 ```
