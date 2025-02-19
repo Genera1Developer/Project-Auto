@@ -1,27 +1,24 @@
-file: server.js
+file: api/search.js
 content: 
 ```javascript
 const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const search = require('./api/search');
 
-const app = express();
+const router = express.Router();
 
-// Static
-app.use('/static', express.static(path.join(__dirname, 'static')));
-
-// API
-app.use('/api', search);
-
-// SPA
-app.get('/*', (req, res) => {
-  fs.readFile(path.join(__dirname, 'index.html'), (err, data) => {
-    if (err) throw err;
-    res.send(data);
+router.get('/search', (req, res) => {
+  const query = req.query.q;
+  
+  // Do something with the query...
+  
+  res.json({
+    results: [
+      {
+        title: 'Example result',
+        description: 'This is an example result'
+      }
+    ]
   });
 });
 
-// Server
-app.listen(3000);
+module.exports = router;
 ```
