@@ -1,16 +1,20 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: index.js
+FILE PATH: api/proxy.js
 CONTENT: 
 
 ```js
-const express = require('express');
-const proxy = require('./api/proxy.js');
+const fetch = require('node-fetch');
 
-const app = express();
+module.exports = async (req, res) => {
+  const { url, method, headers, body } = req.body;
 
-app.post('/proxy', proxy);
+  const response = await fetch(url, {
+    method,
+    headers,
+    body,
+  });
 
-app.listen(3000, () => {
-  console.log('Proxy server listening on port 3000');
-});
+  const data = await response.json();
+
+  res.json(data);
+};
 ```
