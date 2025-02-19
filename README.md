@@ -1,25 +1,19 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: server.js
+CONTENT: const express = require('express');
+const axios = require('axios');
 
-FILE PATH: client.js
-CONTENT: const form = document.getElementById('form');
+const app = express();
+app.use(express.json());
 
-form.addEventListener('submit', (event) => {
-    event.preventDefault();
+app.post('/', async (req, res) => {
+    const url = req.body.url;
 
-    const url = document.getElementById('url').value;
-
-    fetch('/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url })
-    })
-    .then(response => response.text())
-    .then(data => {
-        document.getElementById('result').innerHTML = data;
-    })
-    .catch(error => {
-        console.error('Error querying API: ', error);
-    });
+    try {
+        const response = await axios.get(url);
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).send('Error fetching URL');
+    }
 });
+
+app.listen(3000);
