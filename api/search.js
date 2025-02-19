@@ -1,14 +1,19 @@
-FILE PATH: server.js
-CONTENT: 
+file: api/search.js
+content: 
 ```js
-const express = require('express');
-const app = express();
+const axios = require('axios');
 
-app.use(express.json());
+const search = async (req, res) => {
+  const { query } = req.body;
+  try {
+    const response = await axios.get(`https://www.google.com/search?q=${query}`);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-const searchRoute = require('./routes/search');
-
-app.use('/api', searchRoute);
-
-app.listen(3000);
+module.exports = {
+  search,
+};
 ```
