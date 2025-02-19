@@ -1,36 +1,21 @@
-FILE PATH: routes/proxy.js
+FILE PATH: public/index.html
 CONTENT: 
-```javascript
-const express = require('express');
-const axios = require('axios');
-
-const router = express.Router();
-
-const allowedMethods = ['GET', 'POST', 'PUT', 'DELETE'];
-
-router.all('/:url', async (req, res) => {
-  const url = req.params.url;
-
-  const method = req.method.toUpperCase();
-
-  if (!allowedMethods.includes(method)) {
-    return res.status(405).send('Method not allowed');
-  }
-
-  try {
-    const response = await axios({
-      method,
-      url,
-      data: req.body,
-      headers: req.headers
-    });
-
-    res.send(response.data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Sorry, there was an issue with your request. Please try again.');
-  }
-});
-
-module.exports = router;
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/proxy/:url" method="GET">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url">
+    <input type="submit" value="Go">
+  </form>
+</body>
+</html>
 ```
