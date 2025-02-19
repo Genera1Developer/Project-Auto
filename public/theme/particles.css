@@ -2,13 +2,13 @@ file path: public/theme/particles.css
 content: 
 :root {
     --primary-glow: rgba(255, 0, 0, 0.8);
-    --secondary-glow: rgba(255, 0, 0, 0.6); 
-    --background-color: #000; 
+    --secondary-glow: rgba(255, 0, 0, 0.6);
+    --background-color: #000;
 }
 
 .light {
     --primary-glow: rgba(0, 123, 255, 0.8);
-    --secondary-glow: rgba(0, 123, 255, 0.6); 
+    --secondary-glow: rgba(0, 123, 255, 0.6);
     --background-color: #f0f0f0;
 }
 
@@ -27,11 +27,11 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; 
+    z-index: -1;
 }
 
 .cyber-bg {
-    display: none; 
+    display: none;
 }
 
 .cyber-card {
