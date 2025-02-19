@@ -1,24 +1,35 @@
-FILE PATH: api/proxy.js
+FILE PATH: templates/index.html
 CONTENT: 
 
-```js
-const fetch = require('node-fetch');
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy</title>
+</head>
+<body>
+    <form action="/proxy" method="POST">
+        <label for="url">URL:</label>
+        <input type="text" id="url" name="url">
 
-exports.handler = async (event) => {
-  const { url, method, headers, body } = event.queryStringParameters;
+        <label for="method">Method:</label>
+        <select name="method">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>
 
-  const response = await fetch(url, {
-    method,
-    headers: JSON.parse(headers),
-    body: body,
-  });
+        <label for="headers">Headers:</label>
+        <textarea name="headers" id="headers"></textarea>
 
-  return {
-    statusCode: response.status,
-    headers: {
-      'Content-Type': response.headers.get('Content-Type'),
-    },
-    body: await response.text(),
-  };
-};
+        <label for="body">Body:</label>
+        <textarea name="body" id="body"></textarea>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
 ```
