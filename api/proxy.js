@@ -1,19 +1,22 @@
-FILE PATH: api/proxy.js
+FILE PATH: client/index.js
 CONTENT: 
 ```javascript
-const express = require('express');
-const router = express.Router();
-const cors = require('cors');
+document.querySelector('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-const { getProxyData } = require('../model/proxy');
+  const url = document.querySelector('input[name="url"]').value;
+  const method = document.querySelector('input[name="method"]').value;
+  const headers = document.querySelector('input[name="headers"]').value;
+  const body = document.querySelector('textarea[name="body"]').value;
 
-router.post('/', cors(), async (req, res) => {
-  const { url, method, headers, body } = req.body;
+  const data = await fetch('/api/proxy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ url, method, headers, body }),
+  }).then((res) => res.json());
 
-  const data = await getProxyData(url, method, headers, body);
-
-  res.json(data);
+  document.querySelector('pre').textContent = JSON.stringify(data, null, 2);
 });
-
-module.exports = router;
 ```
