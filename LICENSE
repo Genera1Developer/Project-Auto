@@ -28,3 +28,25 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 * **test/request.test.js:** Unit tests for the request module
 * **test/response.test.js:** Unit tests for the response module
 * **vercel.json:** Vercel configuration file
+
+**File Structure:**
+
+```
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── .gitignore
+├── src
+│   ├── cache.js
+│   ├── constants.js
+│   ├── index.js
+│   ├── request.js
+│   ├── response.js
+├── test
+│   ├── cache.test.js
+│   ├── constants.test.js
+│   ├── index.test.js
+│   ├── request.test.js
+│   ├── response.test.js
+├── vercel.json
+```
