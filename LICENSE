@@ -1,21 +1,49 @@
-MIT License
+**File Structure:**
 
-Copyright (c) 2025, Genera1Developer
+* **README.md:** Project description, file structure, usage instructions, and contribution guidelines
+* **LICENSE:** License agreement
+* **package.json:** Project metadata, dependencies, and scripts
+* **src/index.js:** Web proxy implementation
+* **src/utils/requestHandler.js:** Request handling utilities
+* **src/utils/responseHandler.js:** Response handling utilities
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-provided to do so, subject to the following condition:
+**README.md:**
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+```markdown
+# Web Proxy for Vercel and Serverless Sites
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## Project Goal
+
+This project aims to modify and fix a given web proxy to make it fully functional for Vercel and static serverless sites. The modified proxy should support multiple files for proper project structuring and address any existing bugs.
+
+## File Structure
+
+* **README.md:** Project description, file structure, usage instructions, and contribution guidelines
+* **LICENSE:** License agreement
+* **package.json:** Project metadata, dependencies, and scripts
+* **src/index.js:** Web proxy implementation
+* **src/utils/requestHandler.js:** Request handling utilities
+* **src/utils/responseHandler.js:** Response handling utilities
+
+## Usage Instructions
+
+To use the modified web proxy, follow these steps:
+
+1. Clone this repository or download the source code.
+2. Install the project dependencies by running `npm install`.
+3. Start the proxy by running `npm start`.
+4. Configure your Vercel or serverless site to use the proxy as a reverse proxy.
+
+## Contribution Guidelines
+
+Contributions are welcome! Please follow these guidelines when contributing to this project:
+
+* Fork this repository and create a new branch for your changes.
+* Make sure your changes are well-documented and tested.
+* Submit a pull request once your changes are complete.
+* We will review your pull request and merge it if it meets our standards.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+```
