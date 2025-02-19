@@ -27,7 +27,7 @@ CONTENT: body {
   }
 
   50% {
-    transform: translate(100vw, 100vh);
+    transform: translate(calc(100vw - 3px), calc(100vh - 3px));
   }
 
   100% {
