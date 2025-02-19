@@ -57,33 +57,22 @@ a:hover {
 }
 
 /* New styles for vercel and static serverless sites */
-.vercel-static {
-  background-color: #f5f5f5;
-  padding: 1em;
-}
+@media screen and (prefers-color-scheme: dark) {
+  .vercel-static {
+    background-color: #212121;
+    color: #fff;
+  }
 
-.vercel-static .container {
-  max-width: 600px;
-}
+  .vercel-static .container {
+    max-width: 600px;
+  }
 
-.vercel-static .header {
-  background-color: #f1f1f1;
-}
+  .vercel-static .header {
+    background-color: #333;
+  }
 
-.vercel-static .footer {
-  background-color: #eef1f3;
-}
-
-/* Custom styles for your website */
-.custom-styles {
-  /* Add your custom styles here */
+  .vercel-static .footer {
+    background-color: #333;
+  }
 }
 ```
-
-Additional Files:
-
-* **public/index.html**: The HTML page for your website.
-* **styles.css**: A separate CSS file for your custom styles.
-* **package.json**: The package.json file for your project.
-* **/public/theme/custom.css** : Custom styles for specific pages or components.
-* **/public/theme/vercel-static-dark.css** : Dark mode for vercel and static serverless sites.
