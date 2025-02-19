@@ -10,7 +10,7 @@ const curseblock = () => {
     changeOrigin: true,
     ws: true,
     pathRewrite: {
-      '^/(api|static|serverless)/.*': '$1', // rewrite requests to /api, /static, or /serverless on the target server
+      '^/(api|static|serverless|dist)/.*': '$1', // rewrite requests to /api, /static, or /serverless on the target server
     },
     onProxyRes: responseInterceptor((proxyRes, req, res) => {
       const ignoredPaths = [
@@ -20,6 +20,8 @@ const curseblock = () => {
         '/static/js/main.js',
         '/static/css/main.css',
         '/api/swr/getCurrentUserData',
+        '/dist/static/js/main.js',
+        '/dist/static/css/main.css',
       ];
 
       // Block ADS routes
@@ -60,137 +62,4 @@ const curseblock = () => {
 };
 
 export default curseblock;
-```
-
-**File: logger.js**
-
-```javascript
-import winston from 'winston';
-
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.Console({ format: winston.format.simple() }),
-  ],
-});
-
-export default logger;
-```
-
-**File: next.config.js**
-
-```javascript
-const withAdblocker = require('./adblocker');
-const withPWA = require('next-pwa');
-
-module.exports = withPWA({
-  pwa: {
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development',
-  },
-  // Specify additional configuration options or plugins for Next.js here
-  webpack: (config) => {
-    config.resolve.modules.push(__dirname);
-    return config;
-  },
-  webpackDevMiddleware: (config) => {
-    config.watchOptions = {
-      ...config.watchOptions,
-      poll: 1000,
-      aggregateTimeout: 300,
-    };
-    return config;
-  },
-});
-```
-
-**File: README.md**
-
-```markdown
-# Web Proxy
-
-## Overview
-
-This project provides a proxy middleware for Next.js to block ads and other unwanted content. It allows you to enhance the user experience by removing distractions and improving website performance.
-
-## File Structure
-
-- `adblocker/curseblock.js`: The proxy middleware logic is defined here.
-- `logger.js`: A simple Winston logger for logging errors and other information.
-- `next.config.js`: This file integrates the proxy middleware with your Next.js application and adds PWA support.
-- `package.json`: The project's configuration and dependencies are specified here.
-
-## Usage
-
-To use the proxy middleware, follow these steps:
-
-### 1. Integrate with Next.js
-
-In your `next.config.js` file, add the following code:
-
-```javascript
-const withAdblocker = require('./adblocker');
-const withPWA = require('next-pwa');
-
-module.exports = withPWA({
-  pwa: {
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development',
-  },
-  // Specify additional configuration options or plugins for Next.js here
-  webpack: (config) => {
-    config.resolve.modules.push(__dirname);
-    return config;
-  },
-  webpackDevMiddleware: (config) => {
-    config.watchOptions = {
-      ...config.watchOptions,
-      poll: 1000,
-      aggregateTimeout: 300,
-    };
-    return config;
-  },
-});
-```
-
-### 2. Customization (Optional)
-
-By default, the middleware blocks requests to `/ads`. To block additional paths or content, modify the `ignoredPaths` array in `adblocker/curseblock.js`.
-
-## Error Logging
-
-The `logger.js` file provides a simple Winston logger for logging errors and other information. You can use it to log any potential issues or failed requests by adding the following code to `adblocker/curseblock.js`:
-
-```javascript
-proxy.onError = (err, req, res) => {
-  logger.error(err);
-  res.statusCode = 500;
-  res.end();
-};
-```
-
-## Notes
-
-- The middleware currently only intercepts requests during development mode.
-- It does not support server-side rendering (SSR).
-- For production deployments, consider using a dedicated proxy server such as Nginx or Apache with appropriate configuration.
-
-## Additional Improvements
-
-In addition to the fixes and improvements listed in the updated files, the following suggestions could further enhance the proxy middleware:
-
-- **Support for SSR:** Implement support for server-side rendering to handle requests made during server-side page generation.
-- **Production Deployment Considerations:** Provide guidance on how to configure a dedicated proxy server for production environments, such as Apache or Nginx.
-- **Error Handling:** Add error handling to gracefully handle any potential issues or failed requests.
-- **Performance Optimization:** Optimize the proxy middleware for improved performance and efficiency.
-
-## PWA Support
-
-The `withPWA` plugin has been added to `next.config.js` to enable Progressive Web App (PWA) support for your Next.js application. This allows users to install your website as an application on their devices, providing a native-like user experience.
 ```
