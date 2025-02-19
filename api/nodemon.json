@@ -1,18 +1,14 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: <file_path>
-CONTENT: <file_content>
-
-FILE PATH: api/server.js
-CONTENT: const express = require('express');
-const app = express();
-const port = 3000;
-app.use(express.json());
-app.post('/proxy', async (req, res) => {
-  const {url} = req.body;
-  const response = await fetch(url);
-  const data = await response.text();
-  res.send(data);
-});
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+FILE PATH: api/package.json
+CONTENT: {
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy server",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.8"
+  }
+}
