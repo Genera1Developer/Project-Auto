@@ -1,24 +1,35 @@
-Based on the project goal, a new file must be created:
-
-FILE PATH: public/index.js
+FILE PATH: public/index.html
 CONTENT:
-```javascript
-const form = document.querySelector('form');
-const responseBody = document.getElementById('response-body');
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/public/style.css" />
+  </head>
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+  <body>
+    <h1>Web Proxy</h1>
+    <form>
+      <label for="path">Path:</label>
+      <input type="text" id="path" />
 
-  const path = document.getElementById('path').value;
-  const method = document.getElementById('method').value;
-  const requestBody = document.getElementById('request-body').value;
+      <label for="method">Method:</label>
+      <select id="method">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+        <option value="PUT">PUT</option>
+        <option value="DELETE">DELETE</option>
+      </select>
 
-  const response = await fetch(path, {
-    method,
-    body: requestBody,
-  });
+      <label for="request-body">Request Body:</label>
+      <textarea id="request-body"></textarea>
 
-  const responseText = await response.text();
-  responseBody.innerText = responseText;
-});
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="response-body"></div>
+  </body>
+</html>
 ```
