@@ -71,4 +71,17 @@ a:hover {
 .vercel-static .footer {
   background-color: #eef1f3;
 }
+
+/* Custom styles for your website */
+.custom-styles {
+  /* Add your custom styles here */
+}
 ```
+
+Additional Files:
+
+* **public/index.html**: The HTML page for your website.
+* **styles.css**: A separate CSS file for your custom styles.
+* **package.json**: The package.json file for your project.
+* **/public/theme/custom.css** : Custom styles for specific pages or components.
+* **/public/theme/vercel-static-dark.css** : Dark mode for vercel and static serverless sites.
