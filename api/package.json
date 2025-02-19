@@ -27,3 +27,58 @@ content: {
     "node": ">=18.0.0"
   }
 }
+file path: api/proxy.js
+content: 
+file path: api/README.md
+content: # Curse Static Proxy
+
+This project provides a simple and easy-to-use static web proxy.
+
+## Usage
+
+To use the proxy, simply send a GET request to the following endpoint:
+
+```
+https://<your-proxy-address>/<target-url>
+```
+
+For example, to proxy a request to the Google homepage, you would send a GET request to the following endpoint:
+
+```
+https://<your-proxy-address>/https://www.google.com
+```
+
+The proxy will then fetch the content from the target URL and return it to you.
+
+## Features
+
+* **Simple and easy to use:** Just send a GET request to the proxy endpoint and it will fetch the content from the target URL.
+* **Supports all HTTP methods:** The proxy supports all HTTP methods, including GET, POST, PUT, and DELETE.
+* **Rate limiting:** The proxy can be configured to rate limit requests to prevent abuse.
+* **Customizable:** The proxy can be customized to your specific needs.
+
+## Installation
+
+To install the proxy, simply clone the GitHub repository and run the following command:
+
+```
+npm install
+```
+
+Once the proxy is installed, you can start it by running the following command:
+
+```
+node proxy.js
+```
+
+## Configuration
+
+The proxy can be configured by editing the `config.js` file. The following options are available:
+
+* **port:** The port that the proxy will listen on.
+* **rateLimit:** The maximum number of requests that the proxy will allow per minute.
+* **blacklist:** A list of URLs that the proxy will not proxy.
+
+## Contributing
+
+Contributions are welcome! Please read the [contributing guidelines](https://github.com/CurseStatic/web-proxy/blob/main/CONTRIBUTING.md) before submitting a pull request.
