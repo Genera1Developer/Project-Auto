@@ -1,11 +1,3 @@
-**File Structure:**
-
-- api/proxy.js
-- package.json
-- README.md
-- api/static/index.html
-- utils/error.js
-
 **api/proxy.js:**
 
 ```js
@@ -142,3 +134,25 @@ module.exports = errorHandler;
 
 - Added CORS handling using `cors` package.
 - Changed the `res.header` calls to `res.send` to send the response data directly.
+
+## New File: `api/static/error.html`
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Error</title>
+  </head>
+  <body>
+    <h1>Error</h1>
+    <p>
+      An error occurred while fetching the URL. Please try again.
+    </p>
+  </body>
+</html>
+```
+
+## Changes:
+
+- Added a custom error page (`api/static/error.html`) to handle internal server errors.
+- Modified `errorHandler.internalServerError` to send the custom error page instead of a plain text error message.
