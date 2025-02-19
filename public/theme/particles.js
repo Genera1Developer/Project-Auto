@@ -1,9 +1,9 @@
 **File Structure:**
 
-* public/theme/particles.js: Contains the code for the particle animation.
-* README.md: Project documentation and file structure.
+* `public/theme/particles.js`: Contains the code for the particle animation.
+* `README.md`: Project documentation and file structure.
 
-**Improvements to particles.js:**
+**Improvements to `particles.js`:**
 
 * Fixed the missing semi-colon after the `initParticles(200)` function call.
 * Added a resize listener to the window to update the canvas size when the window is resized.
@@ -24,47 +24,70 @@
 * Added a `requestAnimationFrame()` call to the `animate()` function to ensure that the animation runs smoothly.
 * Added a `random()` function to generate random numbers.
 * Moved the `initParticles()` function to the bottom of the file to ensure that it is called after all the other functions have been defined.
+* Added a `const` before the `canvas` and `ctx` variables to prevent them from being reassigned.
 
 **Updated Code:**
 
 ```javascript
 // public/theme/particles.js
 
-var canvas, ctx, particles;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
 
-function initParticles(numParticles) {
-  canvas = document.getElementById('canvas');
-  ctx = canvas.getContext('2d');
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
-
-  particles = createParticles(numParticles);
-  animate();
-}
+const particles = createParticles(200);
+animate();
 
 function createParticles(numParticles) {
-  var particles = [];
-  for (var i = 0; i < numParticles; i++) {
-    var particle = new Particle();
+  const particles = [];
+  for (let i = 0; i < numParticles; i++) {
+    const particle = new Particle();
     particles.push(particle);
   }
   return particles;
 }
 
-function Particle() {
-  this.x = Math.random() * canvas.width;
-  this.y = Math.random() * canvas.height;
-  this.vx = (Math.random() - 0.5) * 5;
-  this.vy = (Math.random() - 0.5) * 5;
-  this.color = 'rgb(' + Math.random() * 255 + ',' + Math.random() * 255 + ',' + Math.random() * 255 + ')';
-  this.radius = Math.random() * 2 + 1;
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = (Math.random() - 0.5) * 5;
+    this.vy = (Math.random() - 0.5) * 5;
+    this.color = 'rgb(' + Math.random() * 255 + ',' + Math.random() * 255 + ',' + Math.random() * 255 + ')';
+    this.radius = Math.random() * 2 + 1;
+  }
+
+  move() {
+    this.x += this.vx;
+    this.y += this.vy;
+
+    if (this.x < 0) {
+      this.vx = -this.vx;
+    } else if (this.x > canvas.width) {
+      this.vx = -this.vx;
+    }
+
+    if (this.y < 0) {
+      this.vy = -this.vy;
+    } else if (this.y > canvas.height) {
+      this.vy = -this.vy;
+    }
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }
 }
 
 function drawParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (var i = 0; i < particles.length; i++) {
-    var particle = particles[i];
+  for (let i = 0; i < particles.length; i++) {
+    const particle = particles[i];
     particle.move();
     particle.draw();
   }
@@ -84,6 +107,4 @@ function resizeCanvas() {
 function random(min, max) {
   return Math.random() * (max - min) + min;
 }
-
-; // Fixed the missing semi-colon
 ```
