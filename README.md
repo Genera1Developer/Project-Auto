@@ -1,51 +1,44 @@
-file: index.html
-CONTENT: <!DOCTYPE html>
-<html>
-<head>
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Web Proxy</h1>
-    <form action="/" method="POST">
-        <input type="text" name="url" placeholder="Enter URL">
-        <input type="submit" value="Fetch">
-    </form>
-    <div id="result"></div>
-    <script src="script.js"></script>
-</body>
-</html>
+Based on the project goal, the following files should be created:
 
-FILE PATH: style.css
-CONTENT: body {
-    font-family: Arial, Helvetica, sans-serif;
-}
+FILE PATH: script.js
+CONTENT: window.onload = () => {
+    const form = document.querySelector('form');
 
-h1 {
-    text-align: center;
-}
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-form {
-    display: flex;
-    justify-content: center;
-}
+        const url = e.target.querySelector('input[name="url"]');
 
-input[type="text"] {
-    width: 250px;
-    height: 30px;
-    padding: 5px;
-    margin: 5px;
-}
+        fetch(`http://localhost:3000/proxy?url=${url.value}`)
+            .then(res => res.text())
+            .then(data => {
+                document.querySelector('#result').innerHTML = data;
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+};
 
-input[type="submit"] {
-    width: 100px;
-    height: 30px;
-    margin: 5px;
-    background-color: #000;
-    color: #fff;
-    cursor: pointer;
-}
+FILE PATH: server.js
+CONTENT: const express = require('express');
 
-#result {
-    width: 100%;
-}
+const app = express();
+const port = 3000;
+
+app.get('/proxy', (req, res) => {
+    const url = req.query.url;
+
+    if (!url) {
+        res.status(400).send('URL parameter is required');
+        return;
+    }
+
+    res.header('Access-Control-Allow-Origin', '*');
+
+    req.pipe(request(url)).pipe(res);
+});
+
+app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+});
