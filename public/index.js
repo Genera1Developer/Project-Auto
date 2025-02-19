@@ -1,42 +1,33 @@
-FILE PATH: public/index.html
+FILE PATH: public/index.js
 CONTENT:
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Web Proxy</h1>
-      <p>
-        Enter the URL of the website you want to access, select the request
-        method, and optionally provide a request body.
-      </p>
-      <form>
-        <label for="url">URL:</label>
-        <input type="text" id="url" name="url" required />
-        <br />
-        <label for="method">Method:</label>
-        <select name="method" id="method">
-          <option value="GET">GET</option>
-          <option value="POST">POST</option>
-          <option value="PUT">PUT</option>
-          <option value="DELETE">DELETE</option>
-        </select>
-        <br />
-        <label for="body">Request Body (optional):</label>
-        <br />
-        <textarea name="body" id="body" rows="4" cols="50"></textarea>
-        <br />
-        <input type="submit" value="Send" />
-      </form>
+```javascript
+const form = document.querySelector('form');
 
-      <div class="result"></div>
-    </div>
-  </body>
-</html>
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const url = document.querySelector('#url').value;
+  const method = document.querySelector('#method').value;
+  const body = document.querySelector('#body').value;
+
+  const requestBody = {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: body,
+  };
+
+  fetch(url, requestBody)
+    .then((res) => res.text())
+    .then((data) => {
+      const result = document.querySelector('.result');
+      result.textContent = data;
+    })
+    .catch((err) => {
+      console.error(err);
+      const result = document.querySelector('.result');
+      result.textContent = `Error: ${err.message}`;
+    });
+});
 ```
