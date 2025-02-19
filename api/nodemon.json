@@ -1,28 +1,9 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: <file_path>
-CONTENT: <file_content>
-FILE PATH: api/package.json
+FILE PATH: api/nodemon.json
 CONTENT: {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A web proxy that allows users to access blocked websites.",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  },
-  "keywords": [
-    "web proxy",
-    "blocked websites",
-    "internet access"
-  ],
-  "author": "Your Name",
-  "license": "ISC",
-  "dependencies": {
-    "axios": "^0.21.1",
-    "express": "^4.17.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.15"
+  "ignore": [],
+  "watch": ["api/**/*.js"],
+  "exec": "nodemon server.js",
+  "env": {
+    "NODE_ENV": "development"
   }
 }
