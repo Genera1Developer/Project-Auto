@@ -1,20 +1,12 @@
-FILE PATH: .github/workflows/proxy.yml
-CONTENT: name: Proxy
+FILE PATH: api/server.js
+CONTENT: const express = require("express");
+const app = express();
+const port = 3000;
 
-on: [push]
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - run: npm ci
-      - run: npm run build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: proxy-build
-          path: build
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
