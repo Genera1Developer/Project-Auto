@@ -1,33 +1,30 @@
 Based on the project goal, the following file should be created:
 
-FILE PATH: public/proxy.js
+FILE PATH: public/index.js
 CONTENT:
 ```javascript
-const express = require('express');
-const request = require('request');
+const proxy = require('./proxy');
 
-const app = express();
-app.use(express.json());
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('form');
+  const response = document.getElementById('response');
 
-app.post('/proxy', (req, res) => {
-  const { url, method, body } = req.body;
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-  const requestBody = {
-    method,
-    url,
-    body,
-  };
+    const url = document.getElementById('url').value;
+    const method = document.getElementById('method').value;
+    const body = document.getElementById('body').value;
 
-  request(requestBody, (error, response, body) => {
-    if (error) {
-      res.status(500).send(error);
-    } else {
-      res.send({ content: body });
-    }
+    const requestBody = {
+      url,
+      method,
+      body,
+    };
+
+    proxy.post('/proxy', requestBody, (data) => {
+      response.innerHTML = data.content;
+    });
   });
-});
-
-app.listen(3000, () => {
-  console.log('Proxy server listening on port 3000');
 });
 ```
