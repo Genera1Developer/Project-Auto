@@ -19,6 +19,12 @@
 **src/components/ConsoleContent.js**
 **src/components/ConsoleLog.js**
 **src/components/Detached.js**
+**src/store/index.js**
+**src/utils/url.js**
+**src/hooks/use-request.js**
+**src/lib/proxy.js**
+**src/lib/console.js**
+**src/lib/ssg.js**
 
 **CHANGELOG.md**
 **CONTRIBUTING.md**
@@ -92,6 +98,30 @@
 **src/components/Detached.js**
 
 - Created a reusable Detached component.
+
+**src/store/index.js**
+
+- Created a central store to manage the state of the application.
+
+**src/utils/url.js**
+
+- Created a utility function to parse URLs.
+
+**src/hooks/use-request.js**
+
+- Created a reusable hook to make HTTP requests.
+
+**src/lib/proxy.js**
+
+- Extracted the proxy logic into a separate module.
+
+**src/lib/console.js**
+
+- Extracted the console logic into a separate module.
+
+**src/lib/ssg.js**
+
+- Extracted the SSG logic into a separate module.
 
 **CHANGELOG.md**
 
