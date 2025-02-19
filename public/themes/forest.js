@@ -1,15 +1,86 @@
-FILE PATH: public/themes/forest.js
+FILE PATH: public/themes/forest.css
 CONTENT: 
-```js
-// JavaScript to provide forest mode functionality.
+```css
+/* CSS for forest mode. */
 
-// Changes the theme to forest mode.
-function setForestTheme() {
-  const body = document.querySelector('body');
-  body.classList.add('forest');
+body.forest {
+  background-color: #222;
+  color: #fff;
 }
 
-// Listens for the click event on the forest theme button.
-const forestButton = document.querySelector('#forest-theme-button');
-forestButton.addEventListener('click', setForestTheme);
+body.forest a {
+  color: #5cb85c;
+}
+
+body.forest h1 {
+  color: #fff;
+}
+
+body.forest h2 {
+  color: #fff;
+}
+
+body.forest h3 {
+  color: #fff;
+}
+
+body.forest h4 {
+  color: #fff;
+}
+
+body.forest h5 {
+  color: #fff;
+}
+
+body.forest h6 {
+  color: #fff;
+}
+
+body.forest p {
+  color: #fff;
+}
+
+body.forest ul {
+  color: #fff;
+}
+
+body.forest ol {
+  color: #fff;
+}
+
+body.forest li {
+  color: #fff;
+}
+
+body.forest blockquote {
+  color: #fff;
+}
+
+body.forest pre {
+  color: #fff;
+}
+
+body.forest code {
+  color: #fff;
+}
+
+body.forest hr {
+  color: #fff;
+}
+
+body.forest table {
+  color: #fff;
+}
+
+body.forest tr {
+  color: #fff;
+}
+
+body.forest td {
+  color: #fff;
+}
+
+body.forest th {
+  color: #fff;
+}
 ```
