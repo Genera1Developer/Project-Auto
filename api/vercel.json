@@ -4,8 +4,8 @@
 - `api/proxy.js`
 - **`api/vercel.yml`** (Updated from `.json` to `.yml` for Vercel compatibility)
 - `package.json`
-- **`src/.vercel/edge-functions/vercel-proxy/requirements.txt`** (New file for Python requirements)
-- **`src/.vercel/edge-functions/vercel-proxy/vercel-proxy.py`** (New Python script)
+- **`src/.vercel/edge-functions/proxy/requirements.txt`** (New file for Python requirements)
+- **`src/.vercel/edge-functions/proxy/proxy.py`** (New Python script)
 - **`test/proxy.test.js`** (Optional)
 
 **Improved `api/vercel.yml`**
@@ -26,7 +26,7 @@ builds:
 
 **Additional Files**
 
-**`src/.vercel/edge-functions/vercel-proxy/requirements.txt`**
+**`src/.vercel/edge-functions/proxy/requirements.txt`**
 
 This file contains the Python dependencies for the edge function. In this case, it only includes `cross-fetch`.
 
@@ -34,7 +34,7 @@ This file contains the Python dependencies for the edge function. In this case, 
 cross-fetch
 ```
 
-**`src/.vercel/edge-functions/vercel-proxy/vercel-proxy.py`**
+**`src/.vercel/edge-functions/proxy/proxy.py`**
 
 This is the Python script that implements the proxy functionality. It uses `cross-fetch` to make HTTP requests and forward the responses to the client.
 
