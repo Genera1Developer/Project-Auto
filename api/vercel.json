@@ -3,5 +3,12 @@ CONTENT: {
   "version": 2,
   "env": {
     "PORT": 3000
-  }
+  },
+
+  "redirects": [
+    {
+      "source": "/api/proxy",
+      "destination": "http://example.com/api/proxy"
+    }
+  ]
 }
