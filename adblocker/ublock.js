@@ -11,46 +11,59 @@
 
 ## ublock.js
 
-- **Parse the filter lists**: This code loads the filter lists from the specified URLs and parses them to extract the blocking rules.
-- **Observe the DOM for changes**: A MutationObserver is used to monitor changes to the DOM. When new elements are added to the page, the observer checks if they are ads and blocks them if necessary.
-- **Blocking rules**: Blocking rules are a list of domains that are known to serve ads. If a request is made to a domain on this list, the request is blocked.
-- **Blocking and unblocking ads**: The `blockAds()` function starts the ad-blocking process, and the `unblockAds()` function disables the ad-blocking.
+**Purpose**: This file contains the code for blocking ads on the client side.
+
+- **Functions**:
+  - **ParseFilterLists**: Loads the filter lists from the specified URLs and parses them to extract the blocking rules.
+  - **observeDomChanges**: Observes the DOM for changes and blocks ads when new elements are added to the page.
+  - **blockAds**: Starts the ad-blocking process.
+  - **unblockAds**: Disables the ad-blocking process.
 
 ## index.js
 
-- **Import the ublock.js file**: Import the `ublock.js` file to use its functionality for blocking ads.
-- **Import the config.js file**: Import the `config.js` file to access the configuration settings.
-- **Add middleware to the serverless function**: Add middleware to the serverless function to handle ad-blocking. This middleware will be called for every request that comes into the proxy.
-- **Block ads for the response**: In the middleware, use the `ublock.js` module to block ads for the response.
+**Purpose**: This file contains the main logic for the Vercel/serverless proxy.
+
+- **Functions**:
+  - **proxy**: Handles incoming HTTP requests and applies ad-blocking to the response.
+  - **importUblock**: Imports the `ublock.js` module and initializes the ad-blocking functionality.
+  - **importConfig**: Imports the `config.js` file and loads the configuration settings.
 
 ## serverless.yml
 
-- **Functions**: Defines the `proxy` function that will handle incoming requests.
-- **Events**: Configures the proxy function to be triggered by HTTP requests.
-- **Environment Variables**: Specifies the environment variables that will be available to the proxy function.
+**Purpose**: This file defines the serverless function and its configuration.
+
+- **Functions**:
+  - **proxy**: Defines the proxy function that handles incoming requests.
 
 ## package.json
 
-- **Dependencies**: The `ublock-js` dependency is used for blocking ads.
-- **Scripts**: The `start` script is used to run the web proxy locally.
+**Purpose**: This file specifies the dependencies and scripts for the project.
+
+- **Dependencies**:
+  - **ublock-js**: Dependency for ad-blocking.
+- **Scripts**:
+  - **start**: Starts the Vercel/serverless proxy locally.
 
 ## config.js
 
-- **filterLists**: Specifies the URLs of the filter lists to be used for ad-blocking.
-- **debug**: Enables or disables debug logging.
+**Purpose**: This file contains the configuration settings for the proxy.
+
+- **Settings**:
+  - **filterLists**: URLs of the filter lists to be used for ad-blocking.
+  - **debug**: Enables or disables debug logging.
 
 ## .env
 
-- Stores the configuration settings for the proxy, such as the environment variables and the filter list URLs.
+**Purpose**: This file stores the environment variables used by the proxy.
+
+- **Variables**:
+  - **FILTER_LISTS**: URLs of the filter lists.
+  - **DEBUG**: Enables or disables debug logging.
 
 ## README.md
 
-- **Purpose of the project**: This web proxy aims to modify and fix the given proxy to work seamlessly for Vercel and static serverless sites.
-- **File Structure**: Provides an overview of the project's file structure, including the purpose of each file.
-- **Usage Instructions**: Explains how to use the web proxy, including any necessary configurations or prerequisites.
-- **Troubleshooting Tips**: Offers guidance on resolving any potential issues that users may encounter.
-- **Additional Features**: If any additional features were implemented, they should be mentioned here.
+**Purpose**: Provides instructions and information about the proxy.
 
-## .gitignore
-
-- Specifies the files and directories that should be ignored by Git, such as temporary files, logs, and node modules.
+- **Instructions**: Explains how to deploy and use the proxy.
+- **Features**: Describes the features and capabilities of the proxy.
+- **Troubleshooting**: Offers tips for resolving common issues.
