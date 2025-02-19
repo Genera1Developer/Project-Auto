@@ -1,14 +1,14 @@
 file path: api/Read Before Use.md
 content: **Instructions for Using the Web Proxy**
 
-1. Start the web proxy server:
+1. **Start the web proxy server:**
 
 ```
 cd /path/to/web-proxy
 python server.py
 ```
 
-2. Configure your browser to use the web proxy:
+2. **Configure your browser to use the web proxy:**
 
 - **For Chrome:**
   - Click on the three dots in the top right corner of the browser.
@@ -30,3 +30,9 @@ python server.py
 **Note:** The web proxy will only work for HTTP traffic. HTTPS traffic will not be proxied.
 
 To use the web proxy, simply open your browser and navigate to any website. The web proxy will automatically handle the request and return the response.
+
+**Additional Information:**
+
+- The web proxy can be used to bypass website blocks and access restricted content.
+- The web proxy can also be used to improve your privacy and security by hiding your IP address from websites.
+- The web proxy is not a complete solution for online anonymity. It is important to use other privacy measures, such as a VPN, to protect your privacy.
