@@ -11,7 +11,7 @@ CONTENT:
 </head>
 <body>
   <h1>Web Proxy</h1>
-  <form>
+  <form action="/proxy" method="POST">
     <input type="text" id="url-input" placeholder="Enter URL">
     <button type="submit" id="submit-button">Submit</button>
   </form>
