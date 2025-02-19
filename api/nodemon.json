@@ -1,11 +1,28 @@
-FILE PATH: api/nodemon.json
-CONTENT: {
-  "ignore": [],
-  "delay": 1000,
-  "watch": ["api"],
-  "ext": "ts",
-  "script": "app.ts",
-  "env": {
-    "NODE_ENV": "development"
-  }
-}
+FILE PATH: .github/workflows/deploy.yaml
+CONTENT: name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
