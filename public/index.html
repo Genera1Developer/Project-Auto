@@ -1,58 +1,39 @@
-**README.md**
+**public/index.html**
 
-# Project Goal
-
-The goal of this project is to modify and fix the given web proxy to work fully for Vercel and static serverless sites, and fix any bugs along the way.
-
-## File Structure
-
-The following is the file structure for this project:
-
-- `dist/`:
-  - `index.html`: The main HTML file for the web proxy.
-  - `theme/`:
-    - `default.css`: The default CSS styles for the web proxy.
-    - `particles.css`: The CSS styles for the particle effect on the background.
-    - `dropdown.css`: The CSS styles for the dropdown menu.
-  - `visuals/`:
-    - `particles.js`: The JavaScript code for the particle effect on the background.
-- `functions/index.js`: The serverless function for the web proxy.
-- `src/adblocker/`:
-  - `curseblock.js`: The JavaScript code for the Curse Block ad blocker.
-  - `ublock.js`: The JavaScript code for the uBlock ad blocker.
-- `vercel.json`: The configuration settings for deploying the project to Vercel.
-- `package.json`: The configuration settings for the project, including dependencies and scripts.
-- `.gitignore`: The file to exclude unnecessary files from the Git repository.
-- `README.md`: The documentation for the project.
-
-## Changes and Additions
-
-The following changes and additions have been made to the project:
-
-- Updated the `script` tag in `index.html` to load the `particles.js` file from the correct path.
-- Added a `script` tag to `index.html` to load the Curse Block and uBlock ad blocker scripts from the correct paths.
-- Fixed the closing `</body>` tag in `index.html`.
-- Added a `particles.js` file to the `dist` directory.
-- Added `curseblock.js` and `ublock.js` files to the `src/adblocker` directory.
-- Added a `vercel.json` file to the project to configure the deployment settings for Vercel.
-- Added a `.gitignore` file to the project to exclude unnecessary files from the Git repository.
-
-## Bug Fixes
-
-The following bugs have been fixed in this project:
-
-- The particle effect was not working properly.
-- The ad blockers were not working properly.
-
-## Next Steps
-
-The next steps for this project are to:
-
-- Add support for more ad blockers.
-- Add support for more websites.
-- Improve the performance of the web proxy.
-
-## Additional Notes
-
-- This project uses the Vercel platform to deploy the web proxy.
-- The web proxy is configured to work with static serverless sites.
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./theme/default.css" />
+  <link rel="stylesheet" href="./theme/particles.css" />
+  <link rel="stylesheet" href="./theme/dropdown.css" />
+  <script src="./visuals/particles.js"></script>
+  <script src="./src/adblocker/curseblock.js"></script>
+  <script src="./src/adblocker/ublock.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div id="wrapper">
+    <div id="header">
+      <h1>Web Proxy</h1>
+      <div id="dropdown">
+        <button class="dropdown-toggle">Menu</button>
+        <div class="dropdown-content">
+          <a href="#">Settings</a>
+          <a href="#">Help</a>
+        </div>
+      </div>
+    </div>
+    <div id="content">
+      <form action="https://www.google.com" method="get">
+        <input type="text" name="q" placeholder="Search" />
+        <input type="submit" value="Go" />
+      </form>
+    </div>
+  </div>
+</body>
+</html>
+```
