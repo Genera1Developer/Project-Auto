@@ -1,26 +1,21 @@
-FILE PATH: server.js
+FILE PATH: client.js
 CONTENT: 
 ```javascript
-const express = require('express');
 const request = require('request');
 
-const app = express();
+const proxyUrl = 'http://localhost:3000/proxy';
 
-app.use(express.json());
-
-app.post('/proxy', (req, res) => {
-  const { url } = req.body;
-
-  request(url, (error, response, body) => {
+const getURL = (url, callback) => {
+  request.post(proxyUrl, { json: { url } }, (error, response, body) => {
     if (error) {
-      res.status(500).send('Error fetching URL');
+      callback(error);
     } else {
-      res.send(body);
+      callback(null, body);
     }
   });
-});
+};
 
-app.listen(3000, () => {
-  console.log('Proxy server listening on port 3000');
-});
+module.exports = {
+  getURL,
+};
 ```
