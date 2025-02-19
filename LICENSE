@@ -9,25 +9,3 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
-
-**New Files:**
-
-* **LICENSE.md:** Contains the MIT License in Markdown format.
-* **README.md:** Provides a high-level overview of the project, including its purpose, file structure, and installation instructions.
-* **package-lock.json:** Locks the project's dependencies to specific versions, ensuring reproducible builds.
-* **tsconfig.json:** Configures the TypeScript compiler for the project.
-
-**File Structure:**
-
-```
-├── LICENSE
-├── LICENSE.md
-├── README.md
-├── app
-│   ├── index.ts
-│   └── middleware.ts
-├── package-lock.json
-├── package.json
-├── tsconfig.json
-└── vercel.json
-```
