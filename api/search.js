@@ -117,9 +117,9 @@ export default async function handler(req, res) {
   </style>
 </head>
 <body>
-  <h1>U Broke it again</h1>
+  <h1>Oh no! Something went wrong.</h1>
   <p>An error occurred while processing your search: ${error.message}</p>
-  <p>bastard</p>
+  <p>Please try again.</p>
 </body>
 </html>
 `);
@@ -132,4 +132,47 @@ export const config = {
     responseLimit: false,
   },
 };
+```
+file: api/proxy.js
+content: 
+```js
+import crossFetch from 'cross-fetch';
+
+async function handleRequest(request) {
+  const { q } = request.url.searchParams;
+
+  const response = await crossFetch(q, {
+    method: 'GET',
+    headers: {
+      'Accept': 'text/html',
+      'User-Agent': 'serp-proxy-client'
+    }
+  });
+
+  if (response.ok) {
+    const contentType = response.headers.get('Content-Type');
+
+    if (contentType?.startsWith('text/html')) {
+      return new Response(await response.text(), {
+        status: response.status,
+        headers: {
+          'Content-Type': contentType
+        }
+      });
+    } else {
+      return new Response(await response.arrayBuffer(), {
+        status: response.status,
+        headers: {
+          'Content-Type': contentType
+        }
+      });
+    }
+  } else {
+    return new Response('Proxy error', {
+      status: response.status
+    });
+  }
+}
+
+export default handleRequest;
 ```
