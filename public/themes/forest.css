@@ -3,7 +3,7 @@ CONTENT: ```css
 /* Forest Theme */
 
 body {
-  background-color: #808080;
+  background-color: #006400;
   color: #fff;
   font-family: Lato, sans-serif;
 }
@@ -36,7 +36,7 @@ input[type="text"] {
 input[type="submit"] {
   cursor: pointer;
   padding: 5px 20px;
-  background-color: #404040;
+  background-color: #2E7D32;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -44,7 +44,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-  background-color: #505050;
+  background-color: #389641;
 }
 
 #results {
