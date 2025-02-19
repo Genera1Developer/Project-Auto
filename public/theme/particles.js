@@ -18,9 +18,8 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
+window.addEventListener('load', initParticles);
 
-initParticles();
 animateParticles(ctx);
 ```
 
