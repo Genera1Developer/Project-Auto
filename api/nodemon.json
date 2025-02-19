@@ -2,26 +2,10 @@ file path: api/nodemon.json
 content:
 ```json
 {
-  "watch": [
-    "api/controllers/**/*.js",
-    "api/models/**/*.js",
-    "api/routes/**/*.js",
-    "config/**/*.js",
-    "app.js"
-  ],
+  "watch": [],
   "script": "nodemon --exec npm start",
-  "ignore": [
-    "node_modules/",
-    ".git/",
-    "logs/"
-  ],
-  "env": {
-    "PORT": "3000",
-    "DB_HOST": "localhost",
-    "DB_USER": "root",
-    "DB_PASS": "",
-    "DB_NAME": "web_proxy"
-  },
+  "ignore": [],
+  "env": {},
   "postStart": "npm run seed",
   "execMap": {
     "js": "node --harmony"
