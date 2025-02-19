@@ -1,20 +1,26 @@
-FILE PATH: index.html
-CONTENT: <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Web Proxy</h1>
-    <form>
-        <label for="url">URL:</label>
-        <input type="text" name="url" id="url">
-        <button type="submit">Submit</button>
-    </form>
-    <div id="result"></div>
-    <script src="script.js"></script>
-</body>
-</html>
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: style.css
+CONTENT: body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+label {
+    margin-right: 5px;
+}
+
+#result {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
