@@ -1,68 +1,29 @@
-const filterLists = [
-    '/adblocker/filters/easylist.txt'
-];
+## File Structure
 
-let blockingRules = [];
+- `README.md`
+- `adblocker/ublock.js`
+- `index.js`
 
-async function loadFilterLists() {
-    for (const list of filterLists) {
-        const response = await fetch(list);
-        const text = await response.text();
-        const rules = parseFilterList(text);
-        blockingRules = blockingRules.concat(rules);
-    }
-    console.log('Filter lists loaded:', blockingRules.length, 'rules');
-}
+## ublock.js
 
-function parseFilterList(text) {
-    const rules = [];
-    const lines = text.split('\n');
-    for (const line of lines) {
-        if (line.startsWith('||') && line.endsWith('^')) {
-            const domain = line.slice(2, -1);
-            rules.push(domain);
-        }
-    }
-    return rules;
-}
+This file contains the logic for blocking ads on a web page.
 
-function blockAds() {
-  
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((node) => {
-                if (node.tagName === 'SCRIPT' || node.tagName === 'IFRAME' || node.tagName === 'IMG') {
-                    const src = node.src || node.href;
-                    if (src && blockingRules.some(rule => src.includes(rule))) {
-                        node.remove(); // Block the ad
-                        console.log(`Blocked ad from: ${src}`);
-                    }
-                }
-            });
-        });
-    });
+- **Parse the filter lists**: This code loads the filter lists from the specified URLs and parses them to extract the blocking rules.
+- **Observe the DOM for changes**: A MutationObserver is used to monitor changes to the DOM. When new elements are added to the page, the observer checks if they are ads and blocks them if necessary.
+- **Blocking rules**: Blocking rules are a list of domains that are known to serve ads. If a request is made to a domain on this list, the request is blocked.
+- **Blocking and unblocking ads**: The `blockAds()` function starts the ad-blocking process, and the `unblockAds()` function disables the ad-blocking.
 
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-}
+## index.js
 
-function unblockAds() {
-    observer.disconnect(); 
-    console.log('Ad Block disabled');
-}
+This file serves as the entry point for the web proxy.
 
-loadFilterLists();
+- **Import the ublock.js file**: Import the `ublock.js` file to use its functionality for blocking ads.
+- **Add middleware to the serverless function**: Add middleware to the serverless function to handle ad-blocking. This middleware will be called for every request that comes into the proxy.
+- **Block ads for the response**: In the middleware, use the `ublock.js` module to block ads for the response.
 
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { blockAds, unblockAds, loadFilterLists };
-}
+## README.md
 
-function blockAds() {
-    console.log('uBlock: Blocking ads...');
-}
-
-function unblockAds() {
-    console.log('uBlock: Disabling ad-blocking...');
-}
+- Explain the purpose of the project.
+- Describe the file structure.
+- Provide instructions on how to use the web proxy.
+- Include any troubleshooting tips.
