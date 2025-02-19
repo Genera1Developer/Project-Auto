@@ -2,9 +2,13 @@ file path: api/nodemon.json
 content:
 ```json
 {
-  "watch": [],
+  "watch": [
+    "api"
+  ],
   "script": "node index.js",
-  "ignore": [],
+  "ignore": [
+    "api/node_modules"
+  ],
   "env": {},
   "postStart": "npm run seed",
   "execMap": {
