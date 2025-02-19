@@ -1,15 +1,18 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: <file_path>
-CONTENT: <file_content>
-
-FILE PATH: api/proxy.js
+FILE PATH: views/search.ejs
 CONTENT: 
-```javascript
-const express = require('express');
-const router = express.Router();
-const search = require('./search');
-
-router.post('/search', search);
-
-module.exports = router;
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Proxy Search</title>
+</head>
+<body>
+  <form action="/api/search" method="POST">
+    <label for="query">Search Query:</label>
+    <input type="text" id="query" name="query">
+    <input type="submit" value="Search">
+  </form>
+  <div id="results"></div>
+</body>
+</html>
 ```
