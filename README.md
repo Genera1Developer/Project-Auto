@@ -1,63 +1,139 @@
-file path: index.html
-content: ```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="./style.css" />
-  </head>
+file path: style.css
+content: ```css
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
 
-  <body>
-    <header>
-      <div class="logo">
-        <h1>Web Proxy</h1>
-      </div>
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #eee;
+}
 
-      <nav>
-        <a href="#">Home</a>
-        <a href="#">Games</a>
-        <a href="#">About</a>
-      </nav>
+header .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
 
-      <div class="search-bar">
-        <input type="text" placeholder="Search" />
-        <button>Search</button>
-      </div>
-    </header>
+header nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+}
 
-    <main>
-      <div class="sidebar">
-        <ul>
-          <li><a href="#">All Games</a></li>
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Adventure</a></li>
-          <li><a href="#">RPG</a></li>
-          <li><a href="#">Strategy</a></li>
-        </ul>
-      </div>
+header nav a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: #000;
+}
 
-      <div class="game-cards"></div>
-    </main>
+header nav a:hover {
+  color: #333;
+}
 
-    <footer>
-      <div>
-        <label for="sort-by">Sort by:</label>
-        <select id="sort-by">
-          <option value="title">Title</option>
-          <option value="release-date">Release Date</option>
-          <option value="rating">Rating</option>
-        </select>
-      </div>
+header .search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+}
 
-      <div class="settings">
-        <label for="dark-mode">Dark Mode</label>
-        <input type="checkbox" id="dark-mode" />
-      </div>
-    </footer>
+header .search-bar input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-    <script src="./game-card.js"></script>
-    <script src="./main.js"></script>
-  </body>
-</html>
+header .search-bar button {
+  padding: 5px;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+}
+
+header .search-bar button:hover {
+  background-color: #333;
+}
+
+main {
+  display: flex;
+  justify-content: space-between;
+}
+
+main .sidebar {
+  padding: 10px;
+  background-color: #eee;
+  width: 200px;
+}
+
+main .sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+main .sidebar ul li {
+  margin-bottom: 10px;
+}
+
+main .sidebar ul li a {
+  text-decoration: none;
+  color: #000;
+}
+
+main .sidebar ul li a:hover {
+  color: #333;
+}
+
+main .game-cards {
+  padding: 10px;
+  width: calc(100% - 200px);
+}
+
+main .game-cards .game-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #eee;
+}
+
+main .game-cards .game-card img {
+  width: 100px;
+}
+
+main .game-cards .game-card .info {
+  margin-left: 10px;
+}
+
+main .game-cards .game-card .info h3 {
+  font-size: 18px;
+}
+
+main .game-cards .game-card .info p {
+  font-size: 14px;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #eee;
+}
+
+footer .settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20px;
+}
+
+footer .settings label {
+  margin-right: 5px;
+}
 ```
