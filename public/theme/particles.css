@@ -8,7 +8,7 @@
 - package.json
 ```
 
-## Improved `particles.css`
+## Improved `particles.css` (public/theme/particles.css)
 
 ```css
 :root {
@@ -112,6 +112,8 @@ body {
 - Removed the `backdrop-filter` property from the `body`, `cyber-card`, and `cyber-input` elements as it was causing issues with Vercel and static serverless sites.
 - Updated the `cyber-card` and `cyber-input` elements to use `rgba()` values for their backgrounds and borders to ensure they are fully customizable.
 - Added the `display: none` property to the `cyber-bg` element to hide it by default.
+- Updated the README.md with corrections.
+- Added a JS file to handle display of elements like cyber-bg under a media query.
 
 ## Additional Notes
 
