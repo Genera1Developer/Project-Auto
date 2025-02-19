@@ -32,10 +32,10 @@ The `package.json` file specifies the project dependencies and scripts.
     "axios": "^1.6.2",
     "express": "^4.18.2",
     "express-rate-limit": "^7.5.0",
-    "node-cache": "^4.2.4"
+    "node-cache": "^4.2.4",
+    "nodemon": "^2.0.15"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.9.2"
   }
@@ -195,4 +195,63 @@ The `vercel.json` file is the Vercel configuration file. It specifies the routes
     }
   ]
 }
+```
+
+**README.md**
+
+The `README.md` file provides instructions on how to deploy the proxy to Vercel.
+
+```markdown
+# Curse Static Web Proxy
+
+This proxy is designed to work fully for Vercel and static serverless sites.
+
+## Deployment
+
+To deploy the proxy to Vercel, follow these steps:
+
+1. Create a new Vercel project.
+2. Add the following code to your `vercel.json` file:
+
+```json
+{
+  "routes": [
+    {
+      "src": "/api/:path*",
+      "dest": "api/proxy.js"
+    }
+  ]
+}
+```
+
+3. Deploy your project to Vercel.
+
+## Configuration
+
+The following configuration options are available:
+
+- `port`: The port to listen on (default: 3000)
+- `rateLimit.windowMs`: The time window in milliseconds for rate limiting (default: 1000)
+- `rateLimit.max`: The maximum number of requests allowed per IP address within the time window (default: 10)
+- `cache.stdTTL`: The standard time-to-live for cached responses in seconds (default: 600)
+
+To change the configuration, edit the `config.js` file.
+
+## Usage
+
+To use the proxy, send a GET request to the following URL:
+
+```
+https://<your-vercel-project-url>/api/<path-to-resource>
+```
+
+For example, to proxy a request to the Vercel home page, you would send a GET request to the following URL:
+
+```
+https://<your-vercel-project-url>/api/https://vercel.com
+```
+
+## License
+
+This proxy is licensed under the MIT License.
 ```
