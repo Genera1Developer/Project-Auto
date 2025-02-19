@@ -7,6 +7,11 @@
 │       ├── light-dropdown.css
 │       ├── dark-dropdown.css
 │       ├── vars.css
+├── src
+│   ├── components
+│       ├── ThemeSelector.tsx
+│   ├── styles
+│       ├── theme.css
 ```
 
 **Improved `public/visuals/dropdown.css` file:**
@@ -94,7 +99,52 @@
 }
 ```
 
+**New `src/components/ThemeSelector.tsx` file:**
+
+```typescript
+import React, { useState } from "react";
+
+import "./ThemeSelector.css";
+
+const ThemeSelector = () => {
+  const [theme, setTheme] = useState("light");
+
+  const handleThemeChange = (e) => {
+    setTheme(e.target.value);
+    document.documentElement.classList.toggle("dark");
+  };
+
+  return (
+    <div id="themeSelector">
+      <select value={theme} onChange={handleThemeChange}>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
+  );
+};
+
+export default ThemeSelector;
+```
+
+**New `src/styles/theme.css` file:**
+
+```css
+/* Import shared variables */
+@import url("../public/visuals/vars.css");
+
+/* Import theme-specific CSS files */
+@import url("../public/visuals/light-dropdown.css");
+@import url("../public/visuals/dark-dropdown.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
 **Additional Considerations:**
 
-* This approach uses CSS-in-JS, which is compatible with Vercel and static serverless sites.
-* It allows you to easily switch between light and dark themes by importing the appropriate CSS file based on the user's preference.
+* This approach uses a separate file for each theme's CSS overrides.
+* The `ThemeSelector` component allows users to switch themes dynamically via a dropdown.
+* The `theme.css` file includes Tailwind CSS base styles, components, and utilities, ensuring a consistent styling experience across different themes.
+* This structure is better organized and allows for easier maintenance and customization.
