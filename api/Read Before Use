@@ -3,19 +3,24 @@
 - `README.md`
 - `api/proxy.js`
 - `api/config.js`
+- `api/middleware.js` (new file)
 
 ## Modified `api/proxy.js`
 
 ```javascript
+import getRedirectUrl from './getRedirectUrl';
+import config from './config';
+
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request));
 });
 
 async function handleRequest(request) {
   const { redirectUrl } = await getRedirectUrl(request);
+  const cdnHost = getCDNHost(request);
 
-  if (!redirectUrl) {
-    return new Response('Invalid URL', {
+  if (!redirectUrl || !cdnHost) {
+    return new Response('Invalid URL or CDN host is not in allowed list', {
       status: 400,
       headers: { 'Content-Type': 'text/plain' },
     });
@@ -28,31 +33,33 @@ async function handleRequest(request) {
     redirect: 'follow',
     headers: {
       'referer': 'https://cdn.discordapp.com',
-      'Host': request.headers.get('Host'),
+      'Host': cdnHost,
     },
   });
 }
 
-async function getRedirectUrl(request) {
-  let url = new URL(request.url);
-  const redirec = url.searchParams.get('url');
-
-  return { redirectUrl: redirec };
+function getCDNHost(request) {
+  const host = request.headers.get('Host');
+  return config.cdnUrls.includes(host) ? host : null;
 }
 ```
 
-## New File: `api/config.js`
+## New File: `api/middleware.js`
 
 ```javascript
-const config = {
-  // Add your CDN URLs here.
-  cdnUrls: [
-    'cdn.example.com',
-    'another-cdn.example.com',
-  ],
+const middleware = {
+  async onRequest(event) {
+    // Modify the request here
+    const request = event.request;
+
+    // Do something with the request
+
+    // Return the modified request
+    return request;
+  },
 };
 
-export default config;
+export default middleware;
 ```
 
 ## `api/Read Before Use`
