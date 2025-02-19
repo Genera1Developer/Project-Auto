@@ -1,3 +1,23 @@
+FILE PATH: api/package.json
+CONTENT: 
+
+```json
+{
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.1"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}
+```
 FILE PATH: api/routes/http.js
 CONTENT: 
 
@@ -18,4 +38,19 @@ router.get('/', async (req, res) => {
 });
 
 module.exports = router;
+```
+FILE PATH: index.js
+CONTENT: 
+
+```javascript
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+const router = require('./api/routes/http');
+
+app.use('/api', router);
+
+app.listen(port, () => {
+  console.log(`Web proxy listening on port ${port}`);
+});
 ```
