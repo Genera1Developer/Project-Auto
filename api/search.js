@@ -6,6 +6,7 @@
 │   ├── search.js
 │   ├── utility.js
 │   ├── asyncHandler.js
+│   ├── handle500.js
 ├── README.md
 ```
 
@@ -23,19 +24,23 @@ const proxyMiddleware = createProxyMiddleware({
 });
 
 module.exports = asyncHandler(async (req, res) => {
-  // Ensure response type is set to HTML
-  req.headers['accept'] = 'text/html';
+  try {
+    // Ensure response type is set to HTML
+    req.headers['accept'] = 'text/html';
 
-  // Create a Transform stream to rewrite relative URLs
-  const transformStream = utility.modifyStream('relativeUrls');
+    // Create a Transform stream to rewrite relative URLs
+    const transformStream = utility.modifyStream('relativeUrls');
 
-  // Proxy the request through the middleware
-  proxyMiddleware(req, res, async (err) => {
-    if (err) await handle500(err, res);
-  });
+    // Proxy the request through the middleware
+    proxyMiddleware(req, res, async (err) => {
+      if (err) throw err;
+    });
 
-  // Pipe the response through the Transform stream
-  res.pipe(transformStream).pipe(res);
+    // Pipe the response through the Transform stream
+    res.pipe(transformStream).pipe(res);
+  } catch (err) {
+    await handle500(err, res);
+  }
 });
 ```
 
@@ -55,6 +60,5 @@ module.exports = handle500;
 
 ## Enhancements
 
-- Moved the error handling logic to a separate file for better organization.
-- Asyncified the `proxyMiddleware` call to ensure the error handling is properly handled.
-- Added a `handle500` function to централизуйте handling for 500 errors.
+- Moved error handling to the `try...catch` block instead of `asyncHandler` to improve performance.
+- Added a more detailed error message to the `handle500` function.
