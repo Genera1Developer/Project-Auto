@@ -1,7 +1,30 @@
-FILE PATH: api/nodemon.json
-CONTENT: {
-  "verbose": true,
-  "exec": "nodemon server.js",
-  "watch": ["public/app.js", "public/index.html", "server.js"],
-  "ext": "js,html"
-}
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: <file_path>
+CONTENT: <file_content>
+
+FILE PATH: public/index.js
+CONTENT: // Import necessary modules
+import axios from 'axios';
+
+// Create a function to handle form submissions
+const handleSubmit = (e) => {
+    // Prevent the form from submitting
+    e.preventDefault();
+
+    // Get the URL from the form input
+    const url = e.target.querySelector('input[name="url"]').value;
+
+    // Make a request to the proxy server
+    axios.get(`/proxy/?url=${url}`)
+        .then((response) => {
+            // Display the response in the browser
+            document.getElementById('response').innerHTML = response.data;
+        })
+        .catch((error) => {
+            // Handle any errors that occur
+            console.error(error);
+        });
+};
+
+// Add an event listener for the form submission
+document.getElementById('form').addEventListener('submit', handleSubmit);
