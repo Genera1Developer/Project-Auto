@@ -2,21 +2,19 @@
 
 ### Supported Versions
 
-Currently, every version is *technically* supported.
+Currently, only the latest version of the software is officially supported.
 
 | Version | Supported |
 | ------- | ---------- |
-|   All   | :white_check_mark: |
+| Latest  | :white_check_mark: |
 
 ### Reporting a Vulnerability
 
-Any and all vulnerabilities found should be reported to [Issues](https://github.com/Genera1Developer/Curse/issues).
+Any and all vulnerabilities found should be reported responsibly via the [HackerOne bug bounty program](https://hackerone.com/curse).
 
 ### Bug Bounty
 
 We offer a bug bounty program for researchers who find and report vulnerabilities in our software. The amount of the bounty will be determined by the severity of the vulnerability.
-
-To submit a bug bounty report, please email us at security@example.com.
 
 ### Security Best Practices
 
@@ -40,3 +38,13 @@ In addition to the SECURITY.md file, the following files may be useful for impro
 * **SECURITY-FAQ.md:** Answer common questions about the project's security.
 * **SECURITY-TESTING.md:** Describe the security testing that has been performed on the project.
 * **SECURITY-UPDATES.md:** Track security updates and releases for the project.
+* **.github/workflows/security.yml:** Define a GitHub workflow that automates security checks and updates.
+
+### Additional Recommendations
+
+In addition to the above, we recommend the following additional security measures:
+
+* Implement role-based access control (RBAC) to restrict access to sensitive data and functionality.
+* Use encryption to protect sensitive data both at rest and in transit.
+* Regularly review and update your security policies and procedures.
+* Conduct regular security audits to identify and address potential vulnerabilities.
