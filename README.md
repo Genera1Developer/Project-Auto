@@ -1,19 +1,19 @@
-FILE PATH: server.js
-CONTENT: const express = require('express');
-const axios = require('axios');
+Based on the project goal, the following file should be created:
 
-const app = express();
-app.use(express.json());
-
-app.post('/', async (req, res) => {
-    const url = req.body.url;
-
-    try {
-        const response = await axios.get(url);
-        res.send(response.data);
-    } catch (error) {
-        res.status(500).send('Error fetching URL');
-    }
-});
-
-app.listen(3000);
+FILE PATH: index.html
+CONTENT: <!DOCTYPE html>
+<html>
+<head>
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Web Proxy</h1>
+    <form action="/" method="POST">
+        <input type="text" name="url" placeholder="Enter URL">
+        <input type="submit" value="Fetch">
+    </form>
+    <div id="result"></div>
+    <script src="script.js"></script>
+</body>
+</html>
