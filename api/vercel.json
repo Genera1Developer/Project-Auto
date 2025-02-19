@@ -1,4 +1,5 @@
-{
+file path: api/vercel.json
+content: {
   "version": 2,
   "builds": [
     {
