@@ -1,3 +1,5 @@
+Sure, here is the improved `particles.css` file based on the project goal and suggestions for new files:
+
 ## File Structure
 
 ```
@@ -48,7 +50,7 @@ body {
 
 .cyber-card {
     background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); */
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     color: var(--cyber-text-color);
@@ -67,7 +69,7 @@ body {
 
 .cyber-input {
     background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
+    /* backdrop-filter: blur(5px); */
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
     transition: all 0.3s ease;
@@ -110,5 +112,13 @@ body {
 ## Improvements
 
 - Updated the `--primary-glow` and `--secondary-glow` variables to use a more subtle blue color.
-- Removed the `backdrop-filter` property from the `body` element as it was causing issues with Vercel and static serverless sites.
+- Removed the `backdrop-filter` property from the `body`, `cyber-card`, and `cyber-input` elements as it was causing issues with Vercel and static serverless sites.
 - Updated the `cyber-card` and `cyber-input` elements to use `rgba()` values for their backgrounds and borders to ensure they are fully customizable.
+
+## New Files
+
+None are required for this fix.
+
+## Additional Notes
+
+Please note that you may need to adjust the `--background-color` variable in the `:root` block to match the background color of your site.
