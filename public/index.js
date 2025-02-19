@@ -1,80 +1,24 @@
-FILE PATH: public/index.html
+Based on the project goal, a new file must be created:
+
+FILE PATH: public/index.js
 CONTENT:
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
+```javascript
+const form = document.querySelector('form');
+const responseBody = document.getElementById('response-body');
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      padding: 1rem;
-    }
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    label {
-      margin-bottom: 0.5rem;
-    }
+  const path = document.getElementById('path').value;
+  const method = document.getElementById('method').value;
+  const requestBody = document.getElementById('request-body').value;
 
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
+  const response = await fetch(path, {
+    method,
+    body: requestBody,
+  });
 
-    textarea {
-      width: 100%;
-      height: 10rem;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    button {
-      padding: 0.5rem 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    #response-body {
-      width: 100%;
-      height: 10rem;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #f5f5f5;
-      overflow: auto;
-    }
-  </style>
-</head>
-<body>
-  <form>
-    <label for="path">Path:</label>
-    <input type="text" id="path">
-
-    <label for="method">Method:</label>
-    <input type="text" id="method">
-
-    <label for="request-body">Request Body:</label>
-    <textarea id="request-body"></textarea>
-
-    <button type="submit">Send</button>
-  </form>
-
-  <div id="response-body"></div>
-</body>
-</html>
+  const responseText = await response.text();
+  responseBody.innerText = responseText;
+});
 ```
