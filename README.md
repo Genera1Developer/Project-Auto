@@ -1,26 +1,31 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: style.css
-CONTENT: body {
-    font-family: Arial, sans-serif;
-}
+FILE PATH: server.js
+CONTENT: const http = require('http');
+const https = require('https');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-h1 {
-    text-align: center;
-}
+const app = express();
 
-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+app.use(bodyParser.urlencoded({ extended: true }));
 
-label {
-    margin-right: 5px;
-}
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
 
-#result {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-}
+app.post('/proxy', (req, res) => {
+  const url = req.body.url;
+
+  if (!url) {
+    return res.status(400).send('No URL provided');
+  }
+
+  const agent = url.startsWith('https') ? https : http;
+
+  agent.get(url, (response) => {
+    response.pipe(res);
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Server is listening on port 3000');
+});
