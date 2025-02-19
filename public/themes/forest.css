@@ -1,14 +1,14 @@
-FILE PATH: public/themes/forest.css
-CONTENT: /* CSS for the forest theme */
-@import url("https://fonts.googleapis.com/css?family=Archivo:400,700");
+FILE PATH: public/themes/ocean.css
+CONTENT: /* CSS for the ocean theme */
+@import url("https://fonts.googleapis.com/css?family=Pacifico:400,700");
 
 body {
-  background-color: #dfe6e9;
-  font-family: "Archivo", sans-serif;
+  background-color: #d3e6ef;
+  font-family: "Pacifico", sans-serif;
 }
 
 h1 {
-  color: #2e7d32;
+  color: #29738e;
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
@@ -33,11 +33,11 @@ input[type="text"] {
 input[type="submit"] {
   padding: 0.5rem;
   margin-bottom: 0.5rem;
-  background-color: #2e7d32;
+  background-color: #29738e;
   color: white;
   border: none;
   cursor: pointer;
-  font-family: "Archivo", sans-serif;
+  font-family: "Pacifico", sans-serif;
   font-weight: 400;
 }
 
@@ -45,11 +45,11 @@ iframe {
   border: none;
 }
 
-.tree-background {
+.ocean-background {
   position: absolute;
   width: 100%;
   height: 100%;
-  background-image: url("/img/forest.jpg");
+  background-image: url("/img/ocean.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   opacity: 0.3;
