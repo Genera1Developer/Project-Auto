@@ -1,24 +1,47 @@
-FILE PATH: public/index.html
+FILE PATH: public/index.css
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="index.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Web Proxy</h1>
-    <p>Enter a URL below to fetch its content.</p>
-    <form action="/proxy" method="POST">
-      <input type="text" name="url" placeholder="URL">
-      <button type="submit">Fetch</button>
-    </form>
-    <div class="results-container"></div>
-  </div>
-</body>
-</html>
+```css
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+}
+
+.container {
+  max-width: 600px;
+  padding: 30px;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+p {
+  margin-bottom: 15px;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+}
+
+.results-container {
+  margin-top: 30px;
+  border: 1px solid #ccc;
+  padding: 30px;
+}
 ```
