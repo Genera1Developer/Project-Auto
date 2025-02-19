@@ -1,23 +1,21 @@
-FILE PATH: public/style.css
-CONTENT: body {
-  font-family: Arial, sans-serif;
-}
+FILE PATH: public/index.html
+CONTENT: <!DOCTYPE html>
+<html lang="en">
 
-h1 {
-  text-align: center;
-}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
 
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/proxy" method="POST">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url" required />
+    <button type="submit">Submit</button>
+  </form>
+</body>
 
-label {
-  margin-right: 4px;
-}
-
-input {
-  margin-right: 4px;
-}
+</html>
