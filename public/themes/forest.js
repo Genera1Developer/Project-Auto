@@ -1,10 +1,10 @@
-FILE PATH: public/css/main.css
+FILE PATH: public/themes/dark.css
 CONTENT: 
 ```css
-/* CSS for the web proxy. */
+/* CSS for the dark mode. */
 
 body {
-  background-color: #00FF00;
+  background-color: #000000;
 }
 
 #header {
