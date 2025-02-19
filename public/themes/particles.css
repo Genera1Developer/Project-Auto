@@ -1,23 +1,2 @@
-FILE PATH: public/index.html
-CONTENT: <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="/themes/particles.css">
-</head>
-<body>
-  <div id="particles-container"></div>
-  <div id="proxy-container">
-    <h1>Web Proxy</h1>
-    <p>Enter a URL below to proxy through this server.</p>
-    <form action="/proxy" method="POST">
-      <label for="url">URL:</label>
-      <input type="text" name="url" id="url">
-      <input type="submit" value="Submit">
-    </form>
-  </div>
-  <script src="/javascripts/particles.js"></script>
-</body>
-</html>
+FILE PATH: public/javascripts/particles.js
+CONTENT: particlesJS.load('particles-container', 'particles.json', function() { console.log('callback - particles.js config loaded'); });
