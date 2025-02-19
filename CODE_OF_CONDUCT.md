@@ -10,6 +10,7 @@
 - package.json
 - example.env
 - .gitignore
+- test/
 
 ## Explanations
 
@@ -23,6 +24,7 @@
 - **package.json:** Manages project dependencies and provides metadata for the project, including version information and license details.
 - **example.env:** A sample environment variable file, providing a template for users to create their own .env file with their specific project settings.
 - **.gitignore:** Specifies files and directories that should be excluded from version control, preventing unnecessary or sensitive data from being tracked in the repository.
+- **test/**: Contains unit tests for the proxy.js module, ensuring its correctness and reliability.
 
 ## Updated CODE_OF_CONDUCT.md
 
@@ -77,3 +79,13 @@ For more information on the Contributor Covenant, please visit [contributor-cove
 
 This code of conduct was adapted from the [Contributor Covenant](https://contributor-covenant.org/).
 ```
+
+## New Files
+
+- **test/unit.test.js:** Contains unit tests for the proxy.js module, covering various scenarios and ensuring its correct behavior.
+
+## Benefits of the New File Structure
+
+- **Improved organization:** The new file structure creates dedicated folders for different types of files, making it easier to find and manage specific information or functionality.
+- **Enhanced testing:** The addition of a test folder allows for comprehensive unit testing of the proxy module, ensuring its reliability and correctness.
+- **Clearer documentation:** The expanded documentation provides thorough explanations of the project's structure, usage, and code of conduct, making it more accessible to users and contributors.
