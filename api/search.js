@@ -1,26 +1,16 @@
-FILE PATH: api/search.js
+Based on the project goal, here is the file:
+
+FILE PATH: server.js
 CONTENT: 
 ```javascript
 const express = require('express');
-const router = express.Router();
-const fetch = require('node-fetch');
-const cheerio = require('cheerio');
+const app = express();
+const port = process.env.PORT || 3000;
+const searchRouter = require('./api/search.js');
 
-router.get('/search', async (req, res) => {
-  const { query } = req.query;
-  const url = `https://duckduckgo.com/html/?q=${query}`;
-  const response = await fetch(url);
-  const body = await response.text();
-  const $ = cheerio.load(body);
-  const results = [];
-  $('.result__snippet').each((i, el) => {
-    const title = $(el).find('a').first().text();
-    const link = $(el).find('a').first().attr('href');
-    const snippet = $(el).text().trim();
-    results.push({ title, link, snippet });
-  });
-  res.json(results);
+app.use('/api', searchRouter);
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
-
-module.exports = router;
 ```
