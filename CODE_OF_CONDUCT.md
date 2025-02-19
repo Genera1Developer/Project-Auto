@@ -25,5 +25,7 @@ The following files may also be useful for a more complete project:
 - `CONTRIBUTING.md` (new)
 - `ISSUE_TEMPLATE.md` (new)
 - `PULL_REQUEST_TEMPLATE.md` (new)
+- `README.md`
+- `LICENSE` (new)
 
 By including these files, you can create a more welcoming and inclusive project environment, and make it easier for contributors to participate in a meaningful way.
