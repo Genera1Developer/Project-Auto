@@ -6,10 +6,10 @@
 - SECURITY-TESTING.md
 - SECURITY-UPDATES.md
 - SECURITY-TODO.md
-- SECURITY-LOGS.md (new file)
-- SSL-CERTIFICATES.md (new file)
+- SECURITY-LOGS.md
+- SSL-CERTIFICATES.md
 - .github/workflows/security.yml
-- .github/workflows/ssl.yml (new file)
+- .github/workflows/ssl.yml
 
 **README.md**
 
@@ -25,6 +25,7 @@ This project provides a secure and reliable web proxy service. We take security 
 - Provides a list of additional resources for further security information.
 - Logs all requests and errors for security analysis. (new feature)
 - Uses SSL certificates to encrypt all connections. (new feature)
+- Automated security checks and updates via GitHub workflows. (new feature)
 
 **New Files**
 
@@ -34,10 +35,10 @@ In addition to the README.md and SECURITY.md files, we have created the followin
 - SECURITY-TESTING.md: Describes the security testing that has been performed on the web proxy, including the types of tests performed and the results.
 - SECURITY-UPDATES.md: Tracks security updates and releases for the web proxy, including the version number, release date, and a summary of the changes.
 - SECURITY-TODO.md: Lists any outstanding security tasks or improvements that need to be addressed for the web proxy.
-- SECURITY-LOGS.md (new file): Provides a detailed explanation of the logging process and how it is used for security analysis.
-- SSL-CERTIFICATES.md (new file): Explains how SSL certificates are used to encrypt connections and provides instructions on how to obtain and install an SSL certificate.
+- SECURITY-LOGS.md: Provides a detailed explanation of the logging process and how it is used for security analysis.
+- SSL-CERTIFICATES.md: Explains how SSL certificates are used to encrypt connections and provides instructions on how to obtain and install an SSL certificate.
 - .github/workflows/security.yml: Defines a GitHub workflow that automates security checks and updates for the web proxy.
-- .github/workflows/ssl.yml (new file): Defines a GitHub workflow that automates SSL certificate renewal and installation.
+- .github/workflows/ssl.yml: Defines a GitHub workflow that automates SSL certificate renewal and installation.
 
 **Recommended Security Practices**
 
