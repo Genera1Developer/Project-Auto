@@ -1,20 +1,20 @@
-FILE PATH: public/index.html
+FILE PATH: api/search.js
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="/css/style.css" />
-</head>
-<body>
-  <form id="search-form">
-    <input type="text" id="search-input" placeholder="Enter a URL" />
-    <button type="submit">Go</button>
-  </form>
-  <div id="results"></div>
-  <script src="/js/script.js"></script>
-</body>
-</html>
+```javascript
+const fetch = require('node-fetch');
+
+const search = async (req, res) => {
+  const { url } = req.body;
+
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+
+    res.status(200).json({ html });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = search;
 ```
