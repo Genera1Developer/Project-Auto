@@ -1,14 +1,22 @@
-FILE PATH: server.js
+Based on the project goal, the following file should be created:
+
+FILE PATH: public/index.html
 CONTENT:
-```
-const express = require('express');
-const request = require('request');
-
-const app = express();
-
-app.get('*', (req, res) => {
-  request(req.url).pipe(res);
-});
-
-app.listen(3000);
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/">
+    <input type="text" name="url" placeholder="Enter a URL">
+    <input type="submit" value="Go">
+  </form>
+  <div id="result"></div>
+</body>
+</html>
 ```
