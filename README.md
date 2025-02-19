@@ -1,61 +1,154 @@
-file path: index.html
-content: ```html
-<!DOCTYPE html>
-<html lang="en">
+file path: style.css
+content: ```css
+/* Global styles */
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Curse</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-<body>
-  <div class="wrapper">
-    <header>
-      <nav>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Categories</a></li>
-          <li><a href="#">About</a></li>
-        </ul>
-      </nav>
-      <div class="search-bar">
-        <input type="text" placeholder="Search for games..." />
-        <button type="submit">Search</button>
-      </div>
-    </header>
-    <main>
-      <div class="sidebar">
-        <ul>
-          <li><a href="#">Action</a></li>
-          <li><a href="#">Adventure</a></li>
-          <li><a href="#">Indie</a></li>
-          <li><a href="#">Multiplayer</a></li>
-          <li><a href="#">RPG</a></li>
-          <li><a href="#">Simulation</a></li>
-          <li><a href="#">Strategy</a></li>
-        </ul>
-      </div>
-      <div class="game-cards">
-        <!-- Game cards will be injected here -->
-      </div>
-    </main>
-    <footer>
-      <div class="settings">
-        <label for="theme">Theme:</label>
-        <select id="theme">
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-        <label for="particles">Particles:</label>
-        <input type="checkbox" id="particles" />
-      </div>
-      <p>Made with ❤️ by <a href="#">Genera1Developer</a></p>
-    </footer>
-  </div>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
 
-  <script src="script.js"></script>
-</body>
+a {
+  text-decoration: none;
+  color: #000;
+}
 
-</html>
+ul {
+  list-style-type: none;
+}
+
+/* Header styles */
+
+header {
+  width: 100%;
+  height: 80px;
+  background-color: #222;
+}
+
+nav {
+  float: left;
+}
+
+nav ul {
+  display: flex;
+}
+
+nav li {
+  margin-right: 20px;
+}
+
+nav li a {
+  color: #fff;
+  font-size: 18px;
+}
+
+.search-bar {
+  float: right;
+  margin-right: 20px;
+}
+
+.search-bar input {
+  width: 200px;
+  height: 30px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+.search-bar button {
+  margin-left: 10px;
+  width: 70px;
+  height: 30px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+}
+
+/* Main content styles */
+
+main {
+  display: flex;
+  margin-top: 20px;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f5f5f5;
+}
+
+.sidebar ul {
+  list-style-position: inside;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar li a {
+  font-size: 16px;
+}
+
+.game-cards {
+  width: 100%;
+  padding: 20px;
+}
+
+.game-card {
+  display: flex;
+  width: 100%;
+  height: 150px;
+  background-color: #fff;
+  margin-bottom: 20px;
+}
+
+.game-card img {
+  width: 100px;
+  height: 100%;
+}
+
+.game-card-info {
+  padding: 10px;
+}
+
+.game-card-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.game-card-description {
+  font-size: 14px;
+}
+
+/* Footer styles */
+
+footer {
+  width: 100%;
+  height: 60px;
+  background-color: #222;
+  color: #fff;
+  padding: 10px;
+}
+
+.settings {
+  float: left;
+}
+
+.settings label {
+  margin-right: 5px;
+}
+
+.settings select {
+  width: 100px;
+  height: 30px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+.settings input[type="checkbox"] {
+  margin-right: 5px;
+}
 ```
