@@ -1,22 +1,40 @@
-FILE PATH: api/proxy.js
+FILE PATH: api/utils.js
 CONTENT: 
 ```javascript
 const axios = require('axios');
 
-module.exports = async (req, res) => {
-  try {
-    const { url, method, headers, body } = req.body;
+const getProxyUrl = (req) => {
+  let url = req.protocol + '://' + req.get('host') + req.originalUrl;
+  return url.replace('api/proxy', 'proxy');
+};
 
+const logRequest = (req) => {
+  const url = getProxyUrl(req);
+  const { method, headers, body } = req.body;
+  console.log(`[${method}] ${url}`);
+  console.log('headers:', headers);
+  console.log('body:', body);
+};
+
+const forwardRequest = async (req, res) => {
+  const url = getProxyUrl(req);
+  try {
     const response = await axios({
-      method,
+      method: req.body.method,
       url,
-      headers,
-      data: body,
+      headers: req.body.headers,
+      data: req.body.body,
     });
 
     res.status(response.status).send(response.data);
   } catch {
     res.status(500).send({ error: 'Something went wrong' });
   }
+};
+
+module.exports = {
+  getProxyUrl,
+  logRequest,
+  forwardRequest,
 };
 ```
