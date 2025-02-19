@@ -2,39 +2,30 @@
 
 - `README.md`
 - `api/proxy.js`
-- `api/vercel.json`
+- **`api/vercel.yml`** (Updated from `.json` to `.yml` for Vercel compatibility)
 - `package.json`
 - `test/proxy.test.js` (Optional)
 
-**Improved `api/vercel.json`**
+**Improved `api/vercel.yml`**
 
-```json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "/api/proxy.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/api/proxy.js"
-    }
-  ],
-  "functions": {
-    "proxy": {
-      "src": "/api/proxy.js",
-      "runtime": "nodejs14.x"
-    }
-  }
-}
+```yml
+version: 2
+builds:
+  - src: /api/proxy.js
+    use: "@vercel/node"
+routes:
+  - src: "/(.*)"
+    dest: "/api/proxy.js"
+functions:
+  proxy:
+    src: /api/proxy.js
+    runtime: "nodejs14.x"
 ```
 
 **Changes and Additions**
 
-- Updated the runtime to `nodejs14.x` to match the supported runtime for Vercel Functions.
+- Updated the file extension from `.json` to `.yml` to match the new Vercel build configuration format.
+- Added a `version` field to the configuration.
 
 **Additional Files**
 
@@ -47,7 +38,7 @@ This file should provide a clear and concise explanation of the project's purpos
 This file should include dependencies for the following:
 
 - `vercel` for deploying to Vercel
-- `node-fetch` for making HTTP requests in the proxy
+- `cross-fetch` for making HTTP requests in the proxy (replaces `node-fetch` for compatibility with both Node.js and browsers)
 
 Example `package.json`:
 
@@ -57,7 +48,7 @@ Example `package.json`:
   "version": "1.0.0",
   "description": "A web proxy for Vercel and static serverless sites",
   "dependencies": {
-    "node-fetch": "^3.2.0",
+    "cross-fetch": "^3.1.5",
     "vercel": "^25.0.0"
   }
 }
