@@ -14,6 +14,7 @@
 - package.json: Project dependencies and configuration
 - test.js: Unit tests for the web proxy
 - documentation.md: Detailed project documentation (optional)
+- .env: Environment variables (optional)
 
 **Modifications and Fixes:**
 
@@ -22,13 +23,16 @@
 - **Improved performance:** Optimized the proxy to reduce latency and improve overall performance.
 - **Enhanced error handling:** Added error handling and logging to improve debugging and user experience.
 - **Unit tests:** Added unit tests to verify the functionality of the web proxy.
+- **Environment variables:** Added an optional .env file for storing sensitive configuration data.
 
 **New Files:**
 
 - **documentation.md:** Optional file for detailed project documentation, including usage instructions and technical specifications.
+- **.env:** Optional file for environment variables.
 
 **Additional Notes:**
 
 * The file structure explicitly includes "file: file name" to comply with the project goal.
 * Unit tests are included as a separate file to keep the code organized and maintainable.
 * Enhanced error handling provides valuable feedback for debugging and enhances the user experience.
+* The addition of environment variables allows for secure storage of sensitive configuration data, such as API keys or database credentials.
