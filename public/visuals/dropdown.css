@@ -121,7 +121,5 @@
 
 **Additional Considerations:**
 
-* To ensure compatibility with Vercel and static serverless sites, you may need to consider:
-    * Using a CSS-in-JS library for runtime styling.
-    * Implementing serverless functions to handle any dynamic behavior (e.g., theme switching).
-* To improve the overall structure and maintainability of the project, you could create separate CSS files for the light and dark themes, and then import them into the main CSS file based on the user's preference.
+* To ensure compatibility with Vercel and static serverless sites, you may need to consider using a CSS-in-JS library for runtime styling or implementing serverless functions for handling dynamic behavior.
+* For a more modular and scalable project structure, you could create separate CSS files for the light and dark themes, and import them into the main CSS file based on the user's preference.
