@@ -1,39 +1,18 @@
-file: public/js/script.js
+file: server/models/proxy.js
 content:
 ```javascript
-const form = document.querySelector('form');
+const mongoose = require('mongoose');
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const url = document.querySelector('input[name="url"]').value;
-
-    if (!url) {
-        alert('Please enter a valid URL');
-        return;
-    }
-
-    const data = {
-        url: url,
-    };
-
-    fetch('/proxy/proxy_view/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.error) {
-                alert(data.error);
-            } else {
-                window.location.href = data.url;
-            }
-        })
-        .catch((err) => {
-            alert('An error occurred. Please try again.');
-        });
+const proxySchema = new mongoose.Schema({
+    url: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    },
 });
+
+module.exports = mongoose.model('Proxy', proxySchema);
 ```
