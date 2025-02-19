@@ -1,35 +1,34 @@
-**New File: api/static/index.html**
+**File Structure:**
 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Web Proxy</title>
-  </head>
-  <body>
-    <h1>Web Proxy</h1>
-    <p>
-      This web proxy allows you to access any website through this server.
-      Simply enter the URL you wish to visit in the field below and click "Go".
-    </p>
-    <form>
-      <input type="text" id="url" />
-      <input type="submit" value="Go" />
-    </form>
+- api/proxy.js
+- package.json
+- README.md
+- api/static/index.html
 
-    <script>
-      const form = document.querySelector("form");
-      const urlInput = document.querySelector("#url");
+**api/proxy.js:**
 
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
+```js
+const express = require("express");
+const axios = require("axios");
 
-        const targetUrl = urlInput.value;
+const app = express();
+const port = process.env.PORT || 3000;
 
-        const proxyUrl = window.location.origin + "/proxy?url=" + targetUrl;
-        window.location.href = proxyUrl;
-      });
-    </script>
-  </body>
-</html>
+app.get("/proxy", async (req, res) => {
+  const targetUrl = req.query.url;
+
+  try {
+    const response = await axios.get(targetUrl);
+    res.send(response.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching URL.");
+  }
+});
+
+app.use(express.static("api/static"));
+
+app.listen(port, () => {
+  console.log(`Web proxy listening on port ${port}`);
+});
 ```
