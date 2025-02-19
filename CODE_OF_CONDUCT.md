@@ -1,5 +1,5 @@
-file path: CODE_OF_CONDUCT.md
-content: # CODE OF CONDUCT
+FILE PATH: CODE_OF_CONDUCT.md
+CONTENT: # CODE OF CONDUCT
 
 **Our Pledge**
 
@@ -51,3 +51,36 @@ Possible consequences of unacceptable behavior include:
 **Attribution**
 
 This Code of Conduct is adapted from the Contributor Covenant, version 2.0, available at https://www.contributor-covenant.org/version/2/0/code_of_conduct.html
+
+**Additional Files**
+
+Based on the project goal, the following additional files are necessary:
+
+FILE PATH: README.md
+CONTENT: 
+```
+# Web Proxy Project
+
+This project provides a fully structured web proxy with multiple components and files.
+
+**Components**
+
+* HTML for front-end user interface
+* CSS for styling
+* JavaScript for interactivity
+* Server-side scripts for backend functionality
+
+**Structure**
+
+The project is organized into the following directories and files:
+
+* **css**
+    * main.css
+* **html**
+    * index.html
+* **js**
+    * main.js
+* **server**
+    * proxy.py
+* **README.md**
+```
