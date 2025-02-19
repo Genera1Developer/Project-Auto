@@ -1,17 +1,17 @@
-FILE PATH: client.js
-CONTENT: const socket = io();
+FILE PATH: index.html
+CONTENT: <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-socket.on('connect', () => {
-  console.log('Connected to the proxy server.');
-});
-
-socket.on('data', (data) => {
-  console.log(data);
-});
-
-document.getElementById('form').addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const url = document.getElementById('url').value;
-  socket.emit('url', url);
-});
+  <body>
+    <h1>Web Proxy</h1>
+    <form id="form">
+      <input type="text" id="url" placeholder="Enter a URL to proxy" />
+      <button type="submit">Proxy</button>
+    </form>
+  </body>
+</html>
