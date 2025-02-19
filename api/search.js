@@ -25,6 +25,10 @@ const search = asyncHandler(async (req, res) => {
     return res.status(400).json({ error: 'Missing search query' });
   }
 
+  if (!['web', 'image', 'video', 'news'].includes(type)) {
+    return res.status(400).json({ error: 'Invalid search type' });
+  }
+
   // Build the search URL
   const searchUrl = utility.buildSearchUrl(query, type);
 
@@ -43,13 +47,3 @@ const search = asyncHandler(async (req, res) => {
 
 module.exports = search;
 ```
-
-## Replacements
-
-- Refactored code to improve readability
-- Added error handling for invalid type parameter
-- Improved response handling for different search types
-
-## New Files
-
-- None
