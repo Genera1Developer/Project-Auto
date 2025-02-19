@@ -1,46 +1,37 @@
-file: public/style.css
+file: server/proxy.py
 content:
-```css
-body {
-  font-family: sans-serif;
-  background-color: #f2f2f2;
-}
+```python
+import socket
+import sys
 
-h1 {
-  text-align: center;
-}
+# Create a TCP socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-p {
-  text-align: center;
-}
+# Bind the socket to the port
+server_address = ('localhost', 8080)
+sock.bind(server_address)
 
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
+# Listen for incoming connections
+sock.listen(1)
 
-input {
-  width: 300px;
-  height: 30px;
-  padding: 5px;
-  margin: 10px;
-}
+while True:
+    # Wait for a connection
+    connection, client_address = sock.accept()
 
-button {
-  padding: 5px 10px;
-  margin: 10px;
-  cursor: pointer;
-  background-color: #333;
-  color: #fff;
-}
-
-#result {
-  width: 100%;
-  height: 500px;
-  border: 1px solid black;
-  padding: 10px;
-  margin: 10px;
-}
+    try:
+        # Receive the data in small chunks and read the length of the first chunk
+        amount_received = 0
+        amount_expected = int(connection.recv(1024).decode())
+    
+        # Receive the rest of the data
+        while amount_received < amount_expected:
+            data = connection.recv(1024).decode()
+            amount_received += len(data)
+            sys.stdout.write(data)
+    
+        # Send a message back to the client
+        connection.sendall(bytes("HTTP/1.1 200 OK\n\nHello, World!", 'utf-8'))
+    finally:
+        # Clean up the connection
+        connection.close()
 ```
