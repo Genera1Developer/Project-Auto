@@ -1,9 +1,38 @@
-file path: README.md
-content: To use this fully structured web proxy, follow the steps outlined in 'Read Before Use'. Additional files have been created to support the project's functionality:
+file path: api/Read Before Use
+content: **Instructions for Using the Web Proxy**
 
-- `api/Read Before Use`: Instructions on how to use the web proxy.
-- `server.py`: The main server script that handles incoming requests.
-- `client.py`: An example client script that can be used to access the web proxy.
-- `index.html`: The main HTML page for the web proxy.
-- `style.css`: The CSS stylesheet for the web proxy.
-- `script.js`: The JavaScript file for the web proxy.
+1. **Start the web proxy server:**
+
+```
+cd /path/to/web-proxy
+python server.py
+```
+
+2. **Configure your browser to use the web proxy:**
+
+- **For Chrome:**
+  - Click on the three dots in the top right corner of the browser.
+  - Select "Settings".
+  - Scroll down to the "Network" section and click on "Change proxy settings".
+  - Click on the "LAN Settings" tab.
+  - Check the "Use a proxy server for your LAN" checkbox.
+  - Enter the IP address and port of the web proxy server (e.g., 127.0.0.1:8080).
+  - Click on "OK" to save your changes.
+- **For Firefox:**
+  - Click on the three lines in the top right corner of the browser.
+  - Select "Options".
+  - Click on the "Network & Internet" tab.
+  - Scroll down to the "Connection Settings" section and click on "Settings...".
+  - Select the "Manual proxy configuration" radio button.
+  - Enter the IP address and port of the web proxy server (e.g., 127.0.0.1:8080).
+  - Click on "OK" to save your changes.
+
+3. **Use the web proxy:**
+
+**Note:** The web proxy will only work for HTTP traffic. HTTPS traffic will not be proxied.
+
+To use the web proxy, simply open your browser and navigate to any website. The web proxy will automatically handle the request and return the response.
+
+**Example:**
+
+To access the website "www.example.com" using the web proxy, you would enter "http://www.example.com" into your browser's address bar. The web proxy would then handle the request and return the response from "www.example.com".
