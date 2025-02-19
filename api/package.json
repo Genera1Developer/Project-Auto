@@ -1,20 +1,21 @@
-FILE PATH: api/package.json
+FILE PATH: api/routes/proxy.js
 CONTENT: 
 
-```json
-{
-  "name": "web-proxy-api",
-  "version": "1.0.0",
-  "description": "A simple web proxy API built with Node.js and Express.",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
-  "dependencies": {
-    "axios": "^0.24.0",
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+```javascript
+const express = require('express');
+const axios = require('axios');
+
+const router = express.Router();
+
+router.get('/', async (req, res) => {
+  const url = req.query.url;
+  try {
+    const response = await axios.get(url);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-}
+});
+
+module.exports = router;
 ```
