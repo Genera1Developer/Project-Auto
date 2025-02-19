@@ -4,6 +4,7 @@
 - `adblocker/ublock.js`
 - `index.js`
 - `serverless.yml`
+- `package.json`
 
 ## ublock.js
 
@@ -29,6 +30,13 @@ This file defines the serverless function that will run the web proxy.
 - **Functions**: Defines the `proxy` function that will handle incoming requests.
 - **Events**: Configures the proxy function to be triggered by HTTP requests.
 - **Environment Variables**: Specifies the environment variables that will be available to the proxy function.
+
+## package.json
+
+This file specifies the dependencies for the project.
+
+- **Dependencies**: The `ublock-js` dependency is used for blocking ads.
+- **Scripts**: The `start` script is used to run the web proxy locally.
 
 ## README.md
 
