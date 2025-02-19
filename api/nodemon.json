@@ -8,6 +8,7 @@
 - `utils/request.js`
 - `app.test.js`
 - `utils/constants.js`
+- `.env`
 
 ## Improved README.md
 
@@ -40,7 +41,7 @@ The following dependencies are required to run the proxy:
 
 **Known Bugs and Limitations**
 
-The proxy is currently unable to handle requests that require authentication.
+The proxy is currently unable to handle POST requests.
 
 **Contributing**
 
@@ -130,3 +131,11 @@ module.exports = {
 ```
 
 The `utils/constants.js` file contains the list of allowed HTTP methods.
+
+**.env**
+
+```
+PORT=3000
+```
+
+The `.env` file contains the environment variables that are used by the proxy.
