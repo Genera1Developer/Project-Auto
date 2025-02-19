@@ -123,7 +123,7 @@ content: ```js
         opacity: t.o.opacity,
       };
       o &&
-        (c.target.x = s.position.x - r.offsetLeft, c.target.y = s.position.y - r.offsetTop || r.scrollTop, e.tmp.target = c);
+        (c.target.x = s.position.x - r.offsetLeft, c.target.y = s.position.y - r.offsetTop || r.scrollTop, (e.tmp.target = c));
     }
     var h = -1;
     if (e.tmp.target) {
@@ -147,4 +147,4 @@ content: ```js
         n.y -= e.opt.particles.move.speed;
         break;
       case "bottom-left":
-        (n.x -= e.opt.particles.move.speed), (
+        (n.x -= e.opt.particles.move.speed),
