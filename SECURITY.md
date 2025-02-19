@@ -1,52 +1,37 @@
-**File Structure**
-
-- README.md
-- SECURITY.md
-- SECURITY-FAQ.md
-- SECURITY-TESTING.md
-- SECURITY-UPDATES.md
-- SECURITY-TODO.md
-- SECURITY-LOGS.md
-- SSL-CERTIFICATES.md
-- .github/workflows/security.yml
-- .github/workflows/ssl.yml
-
-**README.md**
+**SECURITY.md**
 
 **Web Proxy Security**
 
-This project provides a secure and reliable web proxy service. We take security seriously and have implemented a number of measures to protect our users and their data.
+This project provides a secure and reliable web proxy service. We prioritize security and have implemented the following measures to protect our users and their data:
 
-**Security Features**
+- Utilize the latest stable versions of web proxy software.
+- Provide a secure channel for vulnerability reporting.
+- Adhere to recommended security best practices (strong passwords, account non-sharing, phishing scam avoidance).
+- Offer additional resources for security information.
+- Log all requests and errors for security analysis.
+- Secure connections via SSL certificates.
+- Automate security checks and updates with GitHub workflows.
 
-- Only supports the latest stable versions of the web proxy software.
-- Provides a secure way to report vulnerabilities.
-- Follows recommended security best practices, including using strong passwords, not sharing accounts, and avoiding phishing scams.
-- Provides a list of additional resources for further security information.
-- Logs all requests and errors for security analysis. (new feature)
-- Uses SSL certificates to encrypt all connections. (new feature)
-- Automated security checks and updates via GitHub workflows. (new feature)
+**New and Updated Files**
 
-**New Files**
+To enhance the project's security, we have created and revised the following files:
 
-In addition to the README.md and SECURITY.md files, we have created the following files to further improve the security of our web proxy:
-
-- SECURITY-FAQ.md: Provides answers to frequently asked questions about the security of the web proxy.
-- SECURITY-TESTING.md: Describes the security testing that has been performed on the web proxy, including the types of tests performed and the results.
-- SECURITY-UPDATES.md: Tracks security updates and releases for the web proxy, including the version number, release date, and a summary of the changes.
-- SECURITY-TODO.md: Lists any outstanding security tasks or improvements that need to be addressed for the web proxy.
-- SECURITY-LOGS.md: Provides a detailed explanation of the logging process and how it is used for security analysis.
-- SSL-CERTIFICATES.md: Explains how SSL certificates are used to encrypt connections and provides instructions on how to obtain and install an SSL certificate.
-- .github/workflows/security.yml: Defines a GitHub workflow that automates security checks and updates for the web proxy.
-- .github/workflows/ssl.yml: Defines a GitHub workflow that automates SSL certificate renewal and installation.
+- **SECURITY-FAQ.md:** Addresses common security-related questions about the web proxy.
+- **SECURITY-TESTING.md:** Outlines the security testing procedures performed on the web proxy, including test types and results.
+- **SECURITY-UPDATES.md:** Documents security updates and releases for the web proxy, including version numbers, release dates, and change summaries.
+- **SECURITY-TODO.md:** Lists pending security improvements for the web proxy.
+- **SECURITY-LOGS.md:** Provides details on the logging process and its role in security analysis.
+- **SSL-CERTIFICATES.md:** Explains how SSL certificates encrypt connections, and offers instructions on obtaining and installing them.
+- **.github/workflows/security.yml:** Automates security checks and updates for the web proxy.
+- **.github/workflows/ssl.yml:** Automates SSL certificate renewal and installation.
 
 **Recommended Security Practices**
 
-In addition to using the latest version of the web proxy and reporting any vulnerabilities that you discover, we recommend that you follow these security best practices:
+Beyond using the latest web proxy version and reporting vulnerabilities, we encourage users to follow these security guidelines:
 
-- Use a strong password for your web proxy account.
-- Do not share your web proxy account with anyone.
-- Only access websites that you trust.
-- Be aware of the risks of phishing and other online scams.
-- Keep your web proxy software up to date.
-- Install an SSL certificate to encrypt all connections.
+- Use strong account passwords.
+- Avoid sharing web proxy accounts.
+- Access only trusted websites.
+- Stay vigilant against phishing and online scams.
+- Keep web proxy software up-to-date.
+- Implement SSL certificates to encrypt connections.
