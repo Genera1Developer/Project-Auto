@@ -1,3 +1,12 @@
+## File Structure
+
+- `api/search.js`
+- `api/asyncHandler.js`
+- `api/handle500.js`
+- `api/proxy.js`
+- `api/utility.js`
+- `api/rewriteUrls.js`
+
 ## Code for `api/search.js`
 
 ```javascript
@@ -8,7 +17,7 @@ const utility = require('./utility');
 const createTransformer = require('./rewriteUrls').createTransformer;
 
 const search = asyncHandler(async (req, res) => {
-  // Get the URL parameters
+  // Get the query parameters
   const query = req.query.q;
   const type = req.query.type;
 
@@ -25,7 +34,7 @@ const search = asyncHandler(async (req, res) => {
   // Create a response transformer
   const transformer = createTransformer(type);
 
-  // Pipe the proxy response through the transformer
+  // Pipe the proxy response through the response transformer
   proxyRequest
     .pipe(transformer)
     .pipe(res)
@@ -34,3 +43,13 @@ const search = asyncHandler(async (req, res) => {
 
 module.exports = search;
 ```
+
+## Improvements
+
+- Added error handling for missing search query
+- Added type parameter to specify the type of search (web, image, video, etc.)
+- Created a separate file for the response transformer to improve code organization
+
+## New Files
+
+- `api/rewriteUrls.js` contains the code for transforming the proxy response to rewrite URLs
