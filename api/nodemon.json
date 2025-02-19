@@ -20,6 +20,9 @@ content:
     "DB_PASS": "",
     "DB_NAME": "web_proxy"
   },
-  "postStart": "npm run seed"
+  "postStart": "npm run seed",
+  "execMap": {
+    "js": "node --harmony"
+  }
 }
 ```
