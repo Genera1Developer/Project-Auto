@@ -2,7 +2,7 @@
 
 - `README.md`
 - `api/proxy.js`
-- `api/Read Before Use`
+- `api/config.js`
 
 ## Modified `api/proxy.js`
 
@@ -12,10 +12,9 @@ addEventListener('fetch', event => {
 });
 
 async function handleRequest(request) {
-  let url = new URL(request.url);
-  const redirec = url.searchParams.get('url');
+  const { redirectUrl } = await getRedirectUrl(request);
 
-  if (!redirec || redirec.length === 0) {
+  if (!redirectUrl) {
     return new Response('Invalid URL', {
       status: 400,
       headers: { 'Content-Type': 'text/plain' },
@@ -23,16 +22,37 @@ async function handleRequest(request) {
   }
 
   // Replace spaces with encoded space character
-  const encodedUrl = redirec.replace(/ /g, '%20');
+  const encodedUrl = redirectUrl.replace(/ /g, '%20');
 
   return fetch(encodedUrl, {
     redirect: 'follow',
     headers: {
       'referer': 'https://cdn.discordapp.com',
-      'Host': url.host,
+      'Host': request.headers.get('Host'),
     },
   });
 }
+
+async function getRedirectUrl(request) {
+  let url = new URL(request.url);
+  const redirec = url.searchParams.get('url');
+
+  return { redirectUrl: redirec };
+}
+```
+
+## New File: `api/config.js`
+
+```javascript
+const config = {
+  // Add your CDN URLs here.
+  cdnUrls: [
+    'cdn.example.com',
+    'another-cdn.example.com',
+  ],
+};
+
+export default config;
 ```
 
 ## `api/Read Before Use`
