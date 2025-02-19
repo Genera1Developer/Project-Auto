@@ -7,6 +7,7 @@
 - `utils/logger.js`
 - `utils/request.js`
 - `app.test.js`
+- `utils/constants.js`
 
 ## Improved README.md
 
@@ -35,6 +36,7 @@ The following dependencies are required to run the proxy:
 - Node.js
 - Express
 - Axios
+- Logger
 
 **Known Bugs and Limitations**
 
@@ -68,7 +70,8 @@ The `nodemon.json` file is used to configure the following settings:
     "logger": "^0.0.1"
   },
   "devDependencies": {
-    "mocha": "^9.2.2"
+    "mocha": "^9.2.2",
+    "nodemon": "^2.0.15"
   }
 }
 ```
@@ -98,8 +101,6 @@ describe('web-proxy', () => {
 
 The `app.test.js` file contains the unit tests for the proxy.
 
-## New Files
-
 **utils/request.js**
 
 ```js
@@ -109,19 +110,3 @@ module.exports = async (url) => {
   try {
     const response = await axios.get(url);
     return response.data;
-  } catch (error) {
-    throw error;
-  }
-};
-```
-
-The `utils/request.js` file contains a simple utility function that is used to make HTTP requests.
-
-## Improvements to api/nodemon.json
-
-The following improvements have been made to the `api/nodemon.json` file:
-
-- The `watch` property has been expanded to include all JavaScript, HTML, CSS, and utility files.
-- The `ignore` property has been expanded to include all directories in the `node_modules` directory and the `.git` directory.
-
-These improvements will ensure that the proxy is able to watch for changes to all of the files that it needs to in order to function properly.
