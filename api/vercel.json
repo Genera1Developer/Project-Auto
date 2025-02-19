@@ -1,14 +1,21 @@
-FILE PATH: api/vercel.json
+FILE PATH: views/index.html
 CONTENT: 
 
-{
-  "version": 2,
-  "name": "web-proxy",
-  "description": "A simple web proxy",
-  "routes": [
-    {
-      "src": "/api/*",
-      "dest": "https://example.com/api/*"
-    }
-  ]
-}
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Proxy</title>
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/api/proxy" method="POST">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url">
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>
+```
