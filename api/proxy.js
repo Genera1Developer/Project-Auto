@@ -1,24 +1,28 @@
-FILE PATH: ui/index.html
+FILE PATH: api/proxy.js
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Web Proxy</title>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="/static/styles.css" />
-    <script src="/static/scripts.js"></script>
-  </head>
+```javascript
+const fetch = require("node-fetch");
+const express = require("express");
 
-  <body>
-    <h1>Web Proxy</h1>
-    <form id="form">
-      <label for="url">URL:</label>
-      <input type="text" id="url" />
-      <button type="submit">Submit</button>
-    </form>
+const app = express();
 
-    <div id="result"></div>
-  </body>
-</html>
+app.get("/proxy", async (req, res) => {
+  const url = req.query.url;
+
+  if (!url) {
+    return res.status(400).send("Missing URL parameter");
+  }
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    res.json(data);
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+});
+
+app.listen(3000, () => {
+  console.log("Proxy server listening on port 3000");
+});
 ```
