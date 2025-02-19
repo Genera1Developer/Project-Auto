@@ -11,3 +11,110 @@ content:
   }
 }
 ```
+
+file: index.html
+content: 
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+
+<body>
+  <h1>Web Proxy</h1>
+  <form>
+    <label for="url">URL:</label>
+    <input type="text" id="url" />
+    <input type="submit" value="Go" />
+  </form>
+  <div id="result"></div>
+  <script src="/script.js"></script>
+</body>
+
+</html>
+```
+
+file: style.css
+content: 
+
+```css
+body {
+  font-family: sans-serif;
+}
+
+h1 {
+  margin-bottom: 1em;
+}
+
+form {
+  margin-bottom: 1em;
+}
+
+#result {
+  max-width: 800px;
+}
+```
+
+file: script.js
+content: 
+
+```javascript
+const form = document.querySelector("form");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const url = document.querySelector("#url").value;
+
+  fetch("/api/proxy", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ url }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      const result = document.querySelector("#result");
+      result.innerHTML = data.html;
+    })
+    .catch((err) => {
+      console.error(err);
+      alert("An error occurred. Please try again.");
+    });
+});
+```
+
+file: server.js
+content: 
+
+```javascript
+const express = require("express");
+const puppeteer = require("puppeteer");
+
+const app = express();
+app.use(express.json());
+
+app.post("/api/proxy", async (req, res) => {
+  const { url } = req.body;
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(url);
+
+  const html = await page.content();
+
+  await browser.close();
+
+  res.json({ html });
+});
+
+app.listen(3000, () => {
+  console.log("Server listening on port 3000");
+});
+```
