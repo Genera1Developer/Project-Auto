@@ -1,13 +1,10 @@
-file: adblocker/adblocker.js
-
-improve this file based on the project goal and suggest new files if necessary:
-
 **Improved File Structure:**
 
 - `adblocker/curseblock.js` (entry point)
 - `adblocker/adblocker.js` (ad blocking logic)
 - `adblocker/observer.js` (DOM mutation observer)
 - `adblocker/config.js` (configuration options)
+- `adblocker/utils.js` (utility functions)
 - `README.md` (project documentation)
 
 **Improved adblocker/adblocker.js:**
@@ -15,7 +12,7 @@ improve this file based on the project goal and suggest new files if necessary:
 ```javascript
 // adblocker/adblocker.js
 
-import { removeElements } from './utils.js';
+import { removeElements, restoreElements } from './utils.js';
 import { adSelector } from './config.js';
 
 // Block ads by removing elements matching the selector
@@ -27,12 +24,32 @@ export function blockAds() {
 // Unblock ads by restoring removed elements
 export function unblockAds() {
   const hiddenAds = document.querySelectorAll('[data-vercel-web-proxy-hidden]');
-  hiddenAds.forEach((ad) => {
-    ad.removeAttribute('data-vercel-web-proxy-hidden');
-    ad.removeAttribute('style');
-  });
+  restoreElements(hiddenAds);
 }
+```
 
+**New File: adblocker/observer.js:**
+
+```javascript
+// adblocker/observer.js
+
+import { adSelector } from './config.js';
+
+// Create a DOM mutation observer to watch for new ad elements
+export const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      const newAds = mutation.addedNodes.querySelectorAll(adSelector);
+      removeElements(newAds);
+    }
+  });
+});
+
+// Start observing the DOM for changes
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
 ```
 
 **New File: adblocker/utils.js:**
@@ -47,11 +64,20 @@ export function removeElements(elements) {
     element.style.display = 'none';
   });
 }
+
+// Restore previously removed elements
+export function restoreElements(elements) {
+  elements.forEach((element) => {
+    element.removeAttribute('data-vercel-web-proxy-hidden');
+    element.removeAttribute('style');
+  });
+}
 ```
 
 **Explanation:**
 
-- Improved the ad blocking mechanism by using a dedicated utility function for element removal.
+- Introduced a MutationObserver to monitor the DOM for new ad elements and block them in real-time.
+- Improved the element removal and restoration mechanisms by separating them into dedicated utility functions.
 - Extracted the ad selector into a separate configuration file for easier management.
 
 **README.md Updates:**
