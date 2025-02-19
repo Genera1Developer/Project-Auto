@@ -13,38 +13,52 @@
 │   │   ├── curseblock.js
 │   │   └── ublock.js
 ├── vercel.json
+├── package-lock.json
 ├── package.json
 └── README.md
 ```
 
-**index.html**
-
-The following changes and additions have been made to the `index.html` file:
-
-- Updated the `script` tag to load the `particles.js` file from the correct path.
-- Added a `script` tag to load the Curse Block and uBlock ad blocker scripts from the correct paths.
-- Fixed the closing `</body>` tag.
-
-**particles.js**
-
-This file contains JavaScript code to create a particle effect on the background.
-
-**adblocker/curseblock.js**
-
-This file contains JavaScript code to implement the Curse Block ad blocker.
-
-**adblocker/ublock.js**
-
-This file contains JavaScript code to implement the uBlock ad blocker.
-
-**vercel.json**
-
-This file contains configuration settings for deploying the project to Vercel.
-
-**package.json**
-
-This file contains configuration settings for the project, including dependencies and scripts.
-
 **README.md**
 
-This file provides documentation on the project, including the file structure, project goal, and any additional notes or instructions.
+# Project Goal
+
+The goal of this project is to modify and fix the given web proxy to work fully for Vercel and static serverless sites, and fix any bugs along the way.
+
+## File Structure
+
+The following is the file structure for this project:
+
+- `public/index.html`: The main HTML file for the web proxy.
+- `public/theme/default.css`: The default CSS styles for the web proxy.
+- `public/theme/particles.css`: The CSS styles for the particle effect on the background.
+- `public/visuals/dropdown.css`: The CSS styles for the dropdown menu.
+- `src/adblocker/curseblock.js`: The JavaScript code for the Curse Block ad blocker.
+- `src/adblocker/ublock.js`: The JavaScript code for the uBlock ad blocker.
+- `vercel.json`: The configuration settings for deploying the project to Vercel.
+- `package.json`: The configuration settings for the project, including dependencies and scripts.
+- `README.md`: The documentation for the project.
+
+## Changes and Additions
+
+The following changes and additions have been made to the project:
+
+- Updated the `script` tag in `index.html` to load the `particles.js` file from the correct path.
+- Added a `script` tag to `index.html` to load the Curse Block and uBlock ad blocker scripts from the correct paths.
+- Fixed the closing `</body>` tag in `index.html`.
+- Added a `particles.js` file to the `public` directory.
+- Added `curseblock.js` and `ublock.js` files to the `src/adblocker` directory.
+
+## Bug Fixes
+
+The following bugs have been fixed in this project:
+
+- The particle effect was not working properly.
+- The ad blockers were not working properly.
+
+## Next Steps
+
+The next steps for this project are to:
+
+- Add support for more ad blockers.
+- Add support for more websites.
+- Improve the performance of the web proxy.
