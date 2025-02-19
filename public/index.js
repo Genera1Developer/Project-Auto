@@ -1,28 +1,84 @@
-FILE PATH: public/index.js
+FILE PATH: public/index.html
 CONTENT:
-```js
-const form = document.querySelector('form');
-const urlInput = document.querySelector('input[name="url"]');
-const methodInput = document.querySelector('input[name="method"]');
-const requestBodyInput = document.querySelector('textarea[name="request-body"]');
-const responseBodyElement = document.getElementById('response-body');
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
+  <body>
+    <h1>Web Proxy</h1>
+    <form>
+      <label for="url">URL:</label>
+      <input type="text" name="url" id="url" />
 
-  const url = urlInput.value;
-  const method = methodInput.value;
-  const requestBody = requestBodyInput.value;
+      <label for="method">Method:</label>
+      <select name="method" id="method">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+        <option value="PUT">PUT</option>
+        <option value="DELETE">DELETE</option>
+      </select>
 
-  const response = await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: requestBody,
-  });
+      <label for="request-body">Request Body:</label>
+      <textarea name="request-body" id="request-body"></textarea>
 
-  const responseBody = await response.text();
-  responseBodyElement.textContent = responseBody;
-});
+      <button type="submit">Send Request</button>
+    </form>
+
+    <div id="response-body"></div>
+  </body>
+</html>
+```
+FILE PATH: public/style.css
+CONTENT:
+```css
+body {
+  font-family: Arial, sans-serif;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+textarea {
+  height: 10rem;
+}
+
+button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+#response-body {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #efefef;
+}
 ```
