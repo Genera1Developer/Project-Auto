@@ -51,6 +51,20 @@ Contributions are welcome! Please read the [contributing guidelines](https://git
 
 **api/nodemon.json**
 
+```json
+{
+  "watch": [
+    "*.js",
+    "public/*",
+    "utils/*"
+  ],
+  "ignore": [
+    "node_modules/*"
+  ],
+  "ext": "js,html,css"
+}
+```
+
 The `nodemon.json` file is used to configure the following settings:
 
 - `watch`: This property specifies which files to watch for changes. The `*.js` pattern matches all JavaScript files, the `public/*` pattern matches all files in the `public` directory, and the `utils/*` pattern matches all files in the `utils` directory.
