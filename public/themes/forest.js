@@ -1,21 +1,23 @@
-FILE PATH: public/themes/forest.css
+FILE PATH: public/themes/forest.js
 CONTENT: 
-```css
-/* CSS for forest mode. */
+```js
+// JS for forest mode.
 
-/* General styles */
-body {
-  background-color: #417505;
-  color: #2e7d32;
-}
+/* Change the theme to forest mode. */
+function setForestMode() {
+  document.body.style.backgroundColor = "#417505";
+  document.body.style.color = "#2e7d32";
 
-/* Links */
-a {
-  color: #4caf50;
-}
+  // Change the color of links.
+  var links = document.querySelectorAll("a");
+  for (var i = 0; i < links.length; i++) {
+    links[i].style.color = "#4caf50";
+  }
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-  color: #2e7d32;
+  // Change the color of headings.
+  var headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+  for (var i = 0; i < headings.length; i++) {
+    headings[i].style.color = "#2e7d32";
+  }
 }
 ```
