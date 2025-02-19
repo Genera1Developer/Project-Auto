@@ -1,9 +1,8 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: public/themes/light.css
-CONTENT: /* CSS for the light theme */
+FILE PATH: public/themes/forest.css
+CONTENT: /* CSS for the forest theme */
 
 body {
-  background-color: #fff;
+  background-color: #00ff66;
   color: #000;
   font-family: "Helvetica", "Arial", sans-serif;
 }
