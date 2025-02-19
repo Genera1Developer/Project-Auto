@@ -8,35 +8,43 @@ content: ```html
     <title>Web Proxy</title>
 </head>
 <body>
-    <input type="text" id="url-input">
-    <button type="button" id="go-button">Go</button>
+    <h1>Web Proxy</h1>
+    <form id="form">
+        <label for="url">URL:</label>
+        <input type="text" id="url" name="url">
+        <input type="submit" value="Go">
+    </form>
     <div id="content"></div>
+    <script src="scripts/main.js"></script>
 </body>
-<script src="scripts/main.js"></script>
 </html>
 ```
 file path: public/scripts/main.js
 content: ```javascript
-const adBlocker = new AdBlocker();
-const cssInjector = new CSSInjector();
-
-const goButton = document.getElementById('go-button');
-const urlInput = document.getElementById('url-input');
+const form = document.getElementById('form');
 const contentDiv = document.getElementById('content');
 
-goButton.addEventListener('click', async () => {
-    const url = urlInput.value;
-    const response = await fetch(url);
-    const html = await response.text();
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const url = e.target.querySelector('input[name="url"]').value;
 
-    // Block ads
-    adBlocker.blockAds();
+    try {
+        const response = await fetch(url);
+        const html = await response.text();
+        contentDiv.innerHTML = html;
+    } catch (err) {
+        contentDiv.innerHTML = 'Error: ' + err.message;
+    }
+});
+```
+file path: server.js
+content: ```javascript
+const express = require('express');
+const app = express();
 
-    // Inject custom CSS
-    cssInjector.css = `body { background-color: #f0f0f0; }`;
-    cssInjector.injectCSS();
+app.use(express.static('public'));
 
-    // Display the content
-    contentDiv.innerHTML = html;
+app.listen(3000, () => {
+    console.log('Server listening on port 3000');
 });
 ```
