@@ -1,26 +1,25 @@
-FILE PATH: api/search.js
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: api/search.test.js
 CONTENT: 
 ```javascript
 const fetch = require('node-fetch');
+const search = require('./search');
 
-const BASE_URL = 'https://duckduckgo.com/';
-const SEARCH_URL = BASE_URL + '?q=';
+describe('search', () => {
+  it('should return an array of search results', async () => {
+    const results = await search('github');
+    expect(results).toBeInstanceOf(Array);
+    expect(results.length).toBeGreaterThan(0);
+  });
 
-const search = async (query) => {
-  const response = await fetch(SEARCH_URL + query);
-  const html = await response.text();
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-
-  const results = [...doc.querySelectorAll('.result__a')].map((result) => ({
-    title: result.querySelector('.result__title').textContent,
-    url: result.href,
-    description: result.querySelector('.result__snippet').textContent,
-  }));
-
-  return results;
-};
-
-module.exports = search;
+  it('should return an object for each search result', async () => {
+    const results = await search('github');
+    results.forEach((result) => {
+      expect(result).toBeInstanceOf(Object);
+      expect(result).toHaveProperty('title');
+      expect(result).toHaveProperty('url');
+      expect(result).toHaveProperty('description');
+    });
+  });
+});
 ```
