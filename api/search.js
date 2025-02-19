@@ -1,12 +1,3 @@
-## File Structure
-
-- `api/search.js`
-- `api/asyncHandler.js`
-- `api/handle500.js`
-- `api/proxy.js`
-- `api/utility.js`
-- `api/rewriteUrls.js`
-
 ## Code for `api/search.js`
 
 ```javascript
