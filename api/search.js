@@ -5,6 +5,7 @@
 │   ├── proxy.js
 │   ├── search.js
 │   ├── utility.js
+│   ├── asyncHandler.js
 ├── README.md
 ```
 
@@ -12,9 +13,9 @@
 
 ```js
 const { createProxyMiddleware } = require('http-proxy-middleware');
-const { Transform } = require('stream');
 const utility = require('./utility');
 const asyncHandler = require('./asyncHandler');
+const handle500 = require('./handle500');
 
 const proxyMiddleware = createProxyMiddleware({
   target: 'https://example.com',
@@ -26,19 +27,11 @@ module.exports = asyncHandler(async (req, res) => {
   req.headers['accept'] = 'text/html';
 
   // Create a Transform stream to rewrite relative URLs
-  const transformStream = new Transform({
-    transform: (chunk, encoding, next) => {
-      const modifiedChunk = utility.modifyChunk(chunk, 'relativeUrls');
-      next(null, modifiedChunk);
-    },
-    flush: (next) => {
-      next(null, '</body></html>');
-    },
-  });
+  const transformStream = utility.modifyStream('relativeUrls');
 
   // Proxy the request through the middleware
-  proxyMiddleware(req, res, (err) => {
-    if (err) console.error(err);
+  proxyMiddleware(req, res, async (err) => {
+    if (err) await handle500(err, res);
   });
 
   // Pipe the response through the Transform stream
@@ -46,25 +39,22 @@ module.exports = asyncHandler(async (req, res) => {
 });
 ```
 
-## New File: `api/asyncHandler.js`
+## New File: `api/handle500.js`
 
-This file wraps the search handler in an async handler to catch any errors.
+This file contains the logic for handling 500 errors.
 
 ```js
-const asyncHandler = (fn) => async (req, res) => {
-  try {
-    await fn(req, res);
-  } catch (err) {
-    console.error(err);
-    res.writeHead(500);
-    res.end('Internal Server Error');
-  }
+const handle500 = async (err, res) => {
+  console.error(err);
+  res.writeHead(500);
+  res.end('Internal Server Error');
 };
 
-module.exports = asyncHandler;
+module.exports = handle500;
 ```
 
 ## Enhancements
 
-- Wrapped the search handler in an async handler for error handling.
-- Moved the handling of 500 errors to the async handler to centralize error handling.
+- Moved the error handling logic to a separate file for better organization.
+- Asyncified the `proxyMiddleware` call to ensure the error handling is properly handled.
+- Added a `handle500` function to централизуйте handling for 500 errors.
