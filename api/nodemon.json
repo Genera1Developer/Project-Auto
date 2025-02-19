@@ -1,30 +1,33 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: <file_path>
-CONTENT: <file_content>
-
-FILE PATH: public/index.js
+FILE PATH: server.js
 CONTENT: // Import necessary modules
-import axios from 'axios';
+const express = require('express');
+const axios = require('axios');
+const nodemon = require('nodemon');
 
-// Create a function to handle form submissions
-const handleSubmit = (e) => {
-    // Prevent the form from submitting
-    e.preventDefault();
+// Create an Express app
+const app = express();
 
-    // Get the URL from the form input
-    const url = e.target.querySelector('input[name="url"]').value;
+// Serve static files from the public directory
+app.use(express.static('public'));
 
-    // Make a request to the proxy server
-    axios.get(`/proxy/?url=${url}`)
+// Create a proxy route
+app.get('/proxy/', (req, res) => {
+    // Get the URL from the query string
+    const url = req.query.url;
+
+    // Make a request to the specified URL
+    axios.get(url)
         .then((response) => {
-            // Display the response in the browser
-            document.getElementById('response').innerHTML = response.data;
+            // Send the response back to the client
+            res.send(response.data);
         })
         .catch((error) => {
             // Handle any errors that occur
-            console.error(error);
+            res.status(500).send('Error fetching URL');
         });
-};
+});
 
-// Add an event listener for the form submission
-document.getElementById('form').addEventListener('submit', handleSubmit);
+// Start the server
+app.listen(3000, () => {
+    console.log('Server listening on port 3000');
+});
