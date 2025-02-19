@@ -7,9 +7,26 @@
 - `package.json` (Project Dependencies and Configuration)
 - `.vercel/edge-functions/proxy.js` (Deployed Proxy Function)
 
+### New File: `next.config.js`
+
+```javascript
+module.exports = {
+  // Set the proxy for all API requests
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/proxy/:path*',
+      },
+    ];
+  },
+};
+```
+
 ### Improved `api/proxy.js` File
 
 ```javascript
+const { fetch } = require('cross-fetch');
 const { getAllowedHosts } = require('./config.js');
 
 const proxy = async (req, res) => {
@@ -21,29 +38,16 @@ const proxy = async (req, res) => {
     return res.status(403).json({ error: 'Host not allowed' });
   }
 
-  // Modify the request URL to remove the host
+  // Remove the host from the request URL
   const newUrl = url.replace(`https://${host}`, '');
 
   // Set the origin header to the proxy host
   req.headers['origin'] = `https://${getAllowedHosts()[0]}`;
 
-  // Perform the fetch request
+  // Perform the fetch request and proxy the response back to the client
   const fetchResponse = await fetch(newUrl, { headers: req.headers });
-
-  // Proxy the response back to the client
   res.status(fetchResponse.status).json(await fetchResponse.json());
 };
 
 export default proxy;
-```
-
-### New File: `api/config.js`
-
-```javascript
-const getAllowedHosts = () => {
-  // Replace with the allowed CDN hosts
-  return ['example-cdn.com'];
-};
-
-module.exports = { getAllowedHosts };
 ```
