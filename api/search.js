@@ -1,21 +1,27 @@
-FILE PATH: api/search.js
+FILE PATH: public/index.html
 CONTENT: 
-```js
-const axios = require('axios');
-const jsdom = require('jsdom');
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
 
-async function search(req, res) {
-  try {
-    const { url, query } = req.query;
-    const { data } = await axios.get(url);
-    const { JSDOM } = jsdom;
-    const dom = new JSDOM(data);
-    const results = dom.window.document.querySelectorAll(`a[href^="${query}"]`);
-    res.json({ results });
-  } catch (err) {
-    res.json({ error: 'Error retrieving results' });
-  }
-}
+  <body>
+    <h1>Web Proxy</h1>
+    <form action="/api/search" method="GET">
+      <label for="url">URL:</label>
+      <input type="text" id="url" name="url" />
+      <label for="query">Query:</label>
+      <input type="text" id="query" name="query" />
+      <button type="submit">Search</button>
+    </form>
 
-module.exports = search;
+    <div id="results"></div>
+
+    <script src="/script.js"></script>
+  </body>
+</html>
 ```
