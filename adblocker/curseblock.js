@@ -1,8 +1,36 @@
-The function provided for this project is a basic ad blocker. It achieves this by observing the DOM for any new elements added to the document body. If any of these new elements are scripts, iframes, or images, the function checks if the source of these elements is on a blacklist of known ad servers (defined by the `adServers` array). If the source is on the blacklist, the element is removed from the DOM.
+file path: adblocker/curseblock.js
+content: 
+```js
+const adServers = [
+  'doubleclick.net',
+  'adx.g.doubleclick.net',
+  'ads.google.com',
+  'yieldmanager.com',
+  'pubmatic.com',
+  'openx.net',
+  'rubiconproject.com',
+  'rhythmone.com',
+  'aol.com',
+  'criteo.com',
+];
 
-What this code does is to add a MutationObserver to the document body, which will observe changes to the DOM and call the observer's callback function whenever a change is detected. Inside the callback function:
-- It loops through each of the added nodes in the mutation.
-- For each added node, if it is a script, iframe, or image, it checks if the source of the node is on the `adServers` blacklist.
-- If the source is on the blacklist, the function removes the node from the DOM and logs a message to the console.
+const observer = new MutationObserver((mutations) => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (node.nodeName === 'SCRIPT' || node.nodeName === 'IFRAME' || node.nodeName === 'IMG') {
+        if (adServers.some((adServer) => node.src.includes(adServer))) {
+          node.remove();
+          console.log('Ad has been blocked:', node.src);
+        }
+      }
+    }
+  }
+});
 
-The function `unblockAds()` is also provided, which stops the MutationObserver and allows ads to be displayed again.
+observer.observe(document.body, { childList: true, subtree: true });
+
+const unblockAds = () => {
+  observer.disconnect();
+  console.log('Ads are now unblocked.');
+};
+```
