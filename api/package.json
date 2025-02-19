@@ -14,78 +14,179 @@
 - vercel.json
 ```
 
-**README.md**
+**package.json**
 
-**Curse Static Web Proxy**
+The `package.json` file specifies the project dependencies and scripts.
 
-This is a web proxy designed to work fully for Vercel and static serverless sites. It includes rate limiting, error handling, caching, configurable settings, and more to ensure a reliable, efficient, and blazingly fast service.
-
-**Usage:**
-
-To use the proxy, simply make a GET request to the following URL:
-
-```
-https://<your-vercel-domain>.vercel.app/api/[url-to-proxy]
-```
-
-For example, to proxy a request to the Google homepage, you would send a GET request to:
-
-```
-https://<your-vercel-domain>.vercel.app/api/https://google.com
-```
-
-**Features:**
-
-- Rate limiting
-- Error handling
-- Caching
-- Flexible configuration (rate limit, cache size, etc.)
-- Fast and reliable
-- Utility functions for common tasks (e.g., logging, JSON parsing)
-
-**Rate Limiting:**
-
-The proxy is rate limited to a configurable number of requests per second per IP address. This is to prevent abuse of the service.
-
-**Error Handling:**
-
-The proxy handles any errors that occur during the request and returns a JSON response with the error message.
-
-**Caching:**
-
-The proxy caches responses for frequently requested URLs. This can significantly improve performance for subsequent requests to the same URL.
-
-**Configuration:**
-
-The proxy can be configured to your liking through the `config.js` file. You can set the rate limit, cache size, and more.
-
-**Dependencies:**
-
-The proxy requires the following dependencies:
-
-- Express (v4.18.2 or later)
-- Axios (v1.6.2 or later)
-- Express-rate-limit (v7.5.0 or later)
-- Node-cache (v4.2.4 or later)
-
-**Development:**
-
-To run the proxy in development mode, run the following command:
-
-```
-npm run dev
+```json
+{
+  "name": "curse-static-web-proxy",
+  "version": "1.0.0",
+  "description": "A web proxy designed to work fully for Vercel and static serverless sites.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.0",
+    "node-cache": "^4.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.9.2"
+  }
+}
 ```
 
-This will start the proxy on port 3000.
+**index.js**
 
-**Deployment:**
+The `index.js` file is the entry point of the application. It sets up the Express application and configures the middleware.
 
-To deploy the proxy to Vercel, follow these steps:
+```javascript
+const express = require('express');
+const proxy = require('./proxy');
+const rateLimit = require('./rate-limit');
+const errorHandler = require('./error-handler');
+const cache = require('./cache');
+const config = require('./config');
 
-1. Create a new Vercel project.
-2. Add the following code to your Vercel configuration file (`vercel.json`):
+const app = express();
 
+// Apply middleware
+app.use(rateLimit());
+app.use(errorHandler());
+app.use(cache());
+app.use(proxy());
+
+// Start the server
+app.listen(config.port, () => {
+  console.log(`Proxy server listening on port ${config.port}`);
+});
 ```
+
+**proxy.js**
+
+The `proxy.js` file handles the proxying of requests. It uses Axios to make the requests and sets the appropriate headers.
+
+```javascript
+const axios = require('axios');
+
+module.exports = () => (req, res, next) => {
+  const url = req.params.path;
+
+  // Set request headers
+  const headers = {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+  };
+
+  // Make the request
+  axios.get(url, { headers })
+    .then(response => {
+      res.send(response.data);
+    })
+    .catch(error => {
+      next(error);
+    });
+};
+```
+
+**rate-limit.js**
+
+The `rate-limit.js` file sets up the rate limiter middleware. It uses the `express-rate-limit` package to limit the number of requests per IP address.
+
+```javascript
+const rateLimit = require('express-rate-limit');
+
+module.exports = () => rateLimit({
+  windowMs: 1000, // 1 second
+  max: 10, // Limit each IP to 10 requests per second
+  standardHeaders: true, // Return rate limit info in the headers
+  legacyHeaders: false // Disable the X-RateLimit-* headers
+});
+```
+
+**error-handler.js**
+
+The `error-handler.js` file handles errors that occur during the request. It sends a JSON response with the error message.
+
+```javascript
+module.exports = () => (err, req, res, next) => {
+  res.status(500).json({ error: err.message });
+};
+```
+
+**cache.js**
+
+The `cache.js` file sets up the cache middleware. It uses the `node-cache` package to cache responses for frequently requested URLs.
+
+```javascript
+const nodeCache = require('node-cache');
+
+module.exports = () => {
+  const cache = new nodeCache();
+
+  return (req, res, next) => {
+    const url = req.params.path;
+    const cachedResponse = cache.get(url);
+
+    if (cachedResponse) {
+      res.send(cachedResponse);
+    } else {
+      next();
+    }
+  };
+};
+```
+
+**config.js**
+
+The `config.js` file contains the configurable settings for the proxy.
+
+```javascript
+module.exports = {
+  port: 3000, // The port to listen on
+  rateLimit: {
+    windowMs: 1000, // The time window in milliseconds for rate limiting
+    max: 10 // The maximum number of requests allowed per IP address within the time window
+  },
+  cache: {
+    stdTTL: 600 // The standard time-to-live for cached responses in seconds
+  }
+};
+```
+
+**utils.js**
+
+The `utils.js` file contains utility functions that are used throughout the application.
+
+```javascript
+module.exports = {
+  // Log a message to the console
+  log: (message) => {
+    console.log(message);
+  },
+
+  // Parse a JSON string
+  parseJSON: (json) => {
+    try {
+      return JSON.parse(json);
+    } catch (error) {
+      return null;
+    }
+  }
+};
+```
+
+**vercel.json**
+
+The `vercel.json` file is the Vercel configuration file. It specifies the routes that the proxy will handle.
+
+```json
 {
   "routes": [
     {
@@ -95,11 +196,3 @@ To deploy the proxy to Vercel, follow these steps:
   ]
 }
 ```
-
-3. Deploy your project to Vercel.
-
-**Notes:**
-
-- The proxy is designed to work with static serverless sites that do not use server-side rendering.
-- The proxy does not support proxying requests to local files.
-- The proxy does not support proxying requests to sites that require authentication.
