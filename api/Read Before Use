@@ -1,67 +1,17 @@
-Below are the suggested improvements and additions to the provided web proxy project:
-
-**1. File Structure**
+file: package.json
 
 ```
-├── api
-│   ├── Read Before Use.md
-│   ├── proxy.js
-└── package.json
+{
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "Web proxy for Vercel and static serverless sites.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "http-proxy-middleware": "^2.0.0"
+  },
+  "license": "MIT"
+}
 ```
-
-**2. api/Read Before Use.md**
-
-```
-## Web Proxy for Vercel and Static Serverless Sites
-
-### Overview
-This web proxy is designed to enhance the functionality of Vercel and static serverless sites. It allows for request and response modification, adding custom functionality, and addressing limitations inherent to the target sites.
-
-### Usage
-To utilize the proxy:
-- Deploy the proxy to a Vercel or compatible serverless platform.
-- Configure your client application to use the proxy as its base URL.
-- Direct requests to the proxy as you would to the target site.
-
-### Features
-- Support for Vercel and static serverless sites
-- Modification of requests and responses
-- Implementation of additional functionality (e.g., authentication or rate-limiting)
-
-### Limitations
-- Supports a limited range of request and response types
-- Compatibility issues with certain client applications
-
-### Documentation
-Refer to the following resources for more information:
-- [Deployment Guide](LINK_TO_DEPLOYMENT_GUIDE)
-- [Configuration Instructions](LINK_TO_CONFIGURATION_INSTRUCTIONS)
-- [API Reference](LINK_TO_API_REFERENCE)
-
-### Contributing
-Contributions to the proxy are welcome. Before submitting a pull request, please review the [contributing guidelines](LINK_TO_CONTRIBUTING_GUIDELINES).
-
-### License
-Distributed under the MIT License.
-```
-
-**3. New File: api/proxy.js**
-
-```js
-const { createProxyMiddleware } = require('http-proxy-middleware');
-
-const target = 'https://example.com'; // Replace with the target site's URL
-
-const proxy = createProxyMiddleware({
-  target,
-  changeOrigin: true,
-});
-
-module.exports = proxy;
-```
-
-**4. Other Changes**
-
-- Updated the package.json file to add the http-proxy-middleware dependency.
-- Added a Read Before Use.md file to the api directory for detailed documentation.
-- Included an example target URL in the api/proxy.js file.
