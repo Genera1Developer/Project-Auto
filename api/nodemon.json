@@ -1,1 +1,19 @@
-
+FILE PATH: api/nodemon.json
+CONTENT: 
+{
+  "watch": [
+    "src/",
+    "api/",
+    ".env"
+  ],
+  "ext": "ts",
+  "ignore": [
+    "node_modules/",
+    "dist/"
+  ],
+  "exec": "ts-node -r tsconfig-paths/register ./src/index.ts",
+  "delay": "1000",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}
