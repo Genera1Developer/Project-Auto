@@ -5,6 +5,8 @@
   - package.json
   - index.js
   - proxy.js
+  - rate-limit.js
+  - error-handler.js
   - README.md
 ```
 
@@ -12,7 +14,7 @@
 
 **Curse Static Web Proxy**
 
-This is a web proxy designed to work fully for Vercel and static serverless sites. It includes rate limiting and error handling to ensure a reliable and efficient service.
+This is a web proxy designed to work fully for Vercel and static serverless sites. It includes rate limiting, error handling, and caching to ensure a reliable, efficient, and blazingly fast service.
 
 **Usage:**
 
@@ -36,6 +38,10 @@ The proxy is rate limited to 1 request per second per IP address. This is to pre
 
 The proxy will handle any errors that occur during the request and return a JSON response with the error message.
 
+**Caching:**
+
+The proxy caches responses for frequently requested URLs. This can significantly improve performance for subsequent requests to the same URL.
+
 **Dependencies:**
 
 The proxy requires the following dependencies:
@@ -43,6 +49,7 @@ The proxy requires the following dependencies:
 - Express (v4.18.2 or later)
 - Axios (v1.6.2 or later)
 - Express-rate-limit (v7.5.0 or later)
+- Node-cache (v4.2.4 or later)
 
 **Development:**
 
