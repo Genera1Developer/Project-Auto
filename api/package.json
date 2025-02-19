@@ -1,20 +1,63 @@
+File structure: 
+ - api
+ - README.md
+ - package.json
+
+**api/package.json:**
+
 ```javascript
-import { createRequestHandler } from '@remix-run/vercel/node';
-import type { Request, Response } from 'vercel';
-
-const handleRequest = createRequestHandler({
-  build: process.env.NODE_ENV === 'production',
-});
-
-addEventListener('fetch', async (event: {
-    request: Request;
-    respondWith: (response: Response) => Promise<void>;
-}) => {
-  try {
-    const response = await handleRequest(event.request);
-    event.respondWith(response);
-  } catch (error) {
-    console.error(error);
-  }
-});
+{
+  "scripts": {
+    "dev": "remix dev",
+    "build": "remix build"
+  },
+  "devDependencies": {
+    "@remix-run/node": "1.1.1",
+    "remix": "1.1.1",
+    "vercel": "^25.0.0"
+  },
+  "dependencies": {}
+}
 ```
+
+**README.md:**
+
+**Project Setup**
+
+1. Install the dependencies:
+
+```
+npm install
+```
+
+2. Run the development server:
+
+```
+npm run dev
+```
+
+3. Deploy to Vercel:
+
+```
+vercel deploy
+```
+
+**Usage**
+
+The proxy is configured to forward all requests to the Remix app running on localhost:3000.
+
+To use the proxy, simply make a request to the following URL:
+
+```
+https://<your-vercel-deployment-url>/api/proxy
+```
+
+The proxy will forward the request to the Remix app and return the response.
+
+**Troubleshooting**
+
+If you encounter any issues, please check the following:
+
+* Make sure that the Remix app is running on localhost:3000.
+* Make sure that the Vercel deployment is configured to use the correct URL.
+* Check the Vercel logs for any errors.
