@@ -1,16 +1,17 @@
-FILE PATH: views/search.ejs
+FILE PATH: views/proxy.ejs
 CONTENT: 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Proxy Search</title>
+  <title>Proxy Server</title>
 </head>
 <body>
-  <form action="/api/search" method="POST">
-    <label for="query">Search Query:</label>
-    <input type="text" id="query" name="query">
-    <input type="submit" value="Search">
+  <h1>Proxy Server</h1>
+  <form action="/api/proxy" method="POST">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url">
+    <input type="submit" value="Proxy">
   </form>
   <div id="results"></div>
 </body>
