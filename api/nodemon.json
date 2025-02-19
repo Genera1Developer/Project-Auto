@@ -1,19 +1,31 @@
-FILE PATH: api/nodemon.json
+FILE PATH: public/js/remoteserver.js
 CONTENT: 
-{
-  "watch": [
-    "src/",
-    "api/",
-    ".env"
-  ],
-  "ext": "ts",
-  "ignore": [
-    "node_modules/",
-    "dist/"
-  ],
-  "exec": "ts-node -r tsconfig-paths/register ./src/index.ts",
-  "delay": "1000",
-  "env": {
-    "NODE_ENV": "development"
-  }
-}
+(function () {
+  const targetUrl = 'http://localhost:8080';
+
+  const form = document.querySelector('form');
+  const responseText = document.querySelector('.responseText');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const requestBody = new FormData(form);
+    const requestOptions = {
+      method: 'POST',
+      body: requestBody,
+      redirect: 'follow',
+    };
+
+    fetch(targetUrl, requestOptions)
+      .then((response) => {
+        if (response.ok) {
+          responseText.textContent = 'Request succeeded!';
+        } else {
+          responseText.textContent = 'Request failed.';
+        }
+      })
+      .catch((error) => {
+        responseText.textContent = 'Request failed: ' + error.message;
+      });
+  });
+})();
