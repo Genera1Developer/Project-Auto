@@ -27,3 +27,36 @@ form.addEventListener('submit', async (e) => {
   }
 });
 ```
+file: server.js
+content: 
+```js
+const express = require('express');
+const puppeteer = require('puppeteer');
+
+const app = express();
+
+app.use(express.json());
+
+app.post('/proxy', async (req, res) => {
+  const { url } = req.body;
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  try {
+    await page.goto(url);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred. Please try again.' });
+    return;
+  }
+
+  const content = await page.content();
+
+  await browser.close();
+
+  res.json({ content });
+});
+
+app.listen(3000);
+```
