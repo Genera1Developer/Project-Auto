@@ -7,127 +7,69 @@
 - README.md
 - package.json
 - public/js/script.js
+- public/index.html
 ```
 
-## Improved `particles.css` (public/theme/particles.css)
+## Improved `public/theme/particles.css`
 
 ```css
 :root {
-    --primary-glow: rgba(140, 196, 247, 0.8);
-    --secondary-glow: rgba(140, 196, 247, 0.6);
-    --background-color: white;
-    --cyber-text-color: #333;
-}
-
-.light {
-    --primary-glow: rgba(0, 123, 255, 0.8);
-    --secondary-glow: rgba(0, 123, 255, 0.6);
-    --background-color: #f0f0f0;
-    --cyber-text-color: #333;
+  --primary-color: #000;
+  --secondary-color: #fff;
+  --tertiary-color: #333;
+  --background-color: #f5f5f5;
 }
 
 body {
-    margin: 0;
-    background: var(--background-color);
-    position: relative;
-    height: 100vh;
-    transition: background-color 0.3s ease;
-    overflow: hidden;
+  margin: 0;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  background-color: var(--background-color);
+  color: var(--tertiary-color);
 }
 
-#canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+#particles-js {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: -1;
 }
 
-.cyber-bg {
-    display: none;
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.cyber-card {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    color: var(--cyber-text-color);
+.content {
+  max-width: 600px;
+  text-align: center;
 }
 
-.light .cyber-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    color: var(--cyber-text-color);
+h1 {
+  font-size: 4rem;
+  margin-bottom: 1rem;
 }
 
-.cyber-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 20px var(--primary-glow);
-}
-
-.cyber-input {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    transition: all 0.3s ease;
-}
-
-.light .cyber-input {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    color: black;
-}
-
-.cyber-input:focus {
-    transform: scale(1.02);
-    box-shadow: 0 0 20px var(--primary-glow);
-}
-
-.cyber-button {
-    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-    transition: all 0.3s ease;
-}
-
-.cyber-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px var(--primary-glow);
-}
-
-.theme-icon-dark {
-    display: none;
-}
-
-.light .theme-icon-dark {
-    display: block;
-}
-
-.light .theme-icon-light {
-    display: none;
+p {
+  font-size: 1.5rem;
 }
 ```
 
 ## New File: `public/js/script.js`
 
 ```js
-window.addEventListener("DOMContentLoaded", () => {
-    const cyberBg = document.querySelector(".cyber-bg");
-
-    window.matchMedia("(max-width: 1024px)").addEventListener("change", (e) => {
-        if (e.matches) {
-            cyberBg.style.display = "none";
-        }
-    });
+particlesJS.load('particles-js', 'particles.json', function() {
+  console.log('particles.js loaded');
 });
 ```
 
 ## Improvements
 
-- Updated the `--primary-glow` and `--secondary-glow` variables to use a more subtle blue color.
-- Removed the `backdrop-filter` property from the `body`, `cyber-card`, and `cyber-input` elements as it was causing issues with Vercel and static serverless sites.
-- Updated the `cyber-card` and `cyber-input` elements to use `rgba()` values for their backgrounds and borders to ensure they are fully customizable.
-- Fixed the cyber background issue on smaller screens by conditionally hiding it using a media query in the new `script.js` file.
-- Added the `display: none` property to the `cyber-bg` element to hide it by default.
+- Updated the CSS to use custom CSS variables for colors and background.
+- Added a new `script.js` file to load the particles.js library.
 - Updated the README.md with corrections and added information about the new `script.js` file.
 
 ## Additional Notes
