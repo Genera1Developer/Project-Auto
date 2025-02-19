@@ -1,23 +1,17 @@
-FILE PATH: server.js
-CONTENT: const http = require('http');
-const https = require('https');
-const url = require('url');
+FILE PATH: client.js
+CONTENT: const socket = io();
 
-const server = http.createServer((req, res) => {
-  const parsedUrl = url.parse(req.url);
-  const options = {
-    hostname: parsedUrl.host,
-    path: parsedUrl.path,
-    method: req.method,
-    headers: req.headers
-  };
-
-  const proxyRequest = https.request(options, (proxyRes) => {
-    res.writeHead(proxyRes.statusCode, proxyRes.headers);
-    proxyRes.pipe(res);
-  });
-
-  req.pipe(proxyRequest);
+socket.on('connect', () => {
+  console.log('Connected to the proxy server.');
 });
 
-server.listen(8080);
+socket.on('data', (data) => {
+  console.log(data);
+});
+
+document.getElementById('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const url = document.getElementById('url').value;
+  socket.emit('url', url);
+});
