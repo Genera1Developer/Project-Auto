@@ -36,9 +36,9 @@ document.getElementById('toggle-adblocker').addEventListener('click', () => {
 ```javascript
 // adblocker/observer.js
 
-export function observerMutation() {
-  const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
+export function observerMutation() {
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'childList') {
@@ -58,7 +58,6 @@ export function observerMutation() {
 }
 
 export function observerMutationStop() {
-  if (typeof MutationObserver === 'undefined') return;
   const observer = new MutationObserver(() => {});
 
   const targetElement = document.querySelector('body');
