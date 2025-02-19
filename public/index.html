@@ -1,28 +1,21 @@
 Based on the project goal, the following file should be created:
 
-FILE PATH: server.js
+FILE PATH: public/index.html
 CONTENT:
-```javascript
-const express = require('express');
-const puppeteer = require('puppeteer');
-
-const app = express();
-
-app.use(express.json());
-
-app.post('/proxy', async (req, res) => {
-  const { url } = req.body;
-
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(url);
-
-  const result = await page.content();
-
-  await browser.close();
-
-  res.send(result);
-});
-
-app.listen(3000);
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+  </head>
+  <body>
+    <h1>Web Proxy</h1>
+    <form action="/proxy" method="POST">
+      <label for="url">URL:</label>
+      <input type="text" id="url" name="url" />
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>
 ```
