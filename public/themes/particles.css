@@ -1,2 +1,2 @@
-FILE PATH: public/javascripts/particles.js
+Based on the project goal, a javascript file is needed to create the particles effect.FILE PATH: public/javascripts/particles.js
 CONTENT: particlesJS.load('particles-container', 'particles.json', function() { console.log('callback - particles.js config loaded'); });
