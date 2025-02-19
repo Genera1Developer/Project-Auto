@@ -1,3 +1,6 @@
+file: api/search.js
+content: 
+```js
 import axios from 'axios';
 import { Transform } from 'stream';
 
@@ -16,7 +19,6 @@ export default async function handler(req, res) {
   const apiKey = '61e1c5f58bca02da965a1e5184cca19a9b36699a35b3b74e0970b24bb705e16a';
 
   try {
-    // Consider switching from 'search.json' to 'search' if HTML output is desired.
     const searchUrl = 'https://serpapi.com/search';
     const params = {
       engine: 'duckduckgo',
@@ -89,16 +91,13 @@ export default async function handler(req, res) {
         callback(null, chunkStr);
       },
       flush(callback) {
-        // Append closing HTML tags when the stream finishes.
         this.push(`</body></html>`);
         callback();
       }
     });
 
-    // Pipe the API stream through our transform and then to the response.
     response.data.pipe(transformStream).pipe(res);
 
-    // Optional: handle any errors on the streams.
     transformStream.on('error', (err) => {
       console.error('Transform stream error:', err);
       res.end();
@@ -133,3 +132,4 @@ export const config = {
     responseLimit: false,
   },
 };
+```
