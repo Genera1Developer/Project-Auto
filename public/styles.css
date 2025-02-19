@@ -1,29 +1,29 @@
-file: public/styles.css
+file: public/scripts/main.js
 content: 
-```css
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
+```js
+const form = document.querySelector('form');
+const results = document.querySelector('.results');
 
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-input {
-  margin: 10px;
-}
+  const url = document.querySelector('input[name="url"]').value;
 
-.results {
-  width: 100%;
-  max-width: 600px;
-  padding: 20px;
-  margin: 20px auto;
-  border: 1px solid #ccc;
-}
+  try {
+    const response = await fetch('/proxy', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url }),
+    });
 
-.error {
-  color: red;
-}
+    const data = await response.json();
+
+    results.textContent = data.content;
+  } catch (error) {
+    console.error(error);
+    results.textContent = 'An error occurred. Please try again.';
+  }
+});
 ```
