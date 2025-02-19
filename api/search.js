@@ -1,14 +1,27 @@
-file: api/search.js
+file: server.js
 content: 
 ```javascript
-const express = require("express");
-const fetch = require("node-fetch");
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const search = require('./api/search');
+
 const app = express();
-app.get("/search", async (req, res) => {
-  const query = req.query.query;
-  const url = `https://www.google.com/search?q=${query}`;
-  const response = await fetch(url);
-  res.send(await response.text());
+
+// Static
+app.use('/static', express.static(path.join(__dirname, 'static')));
+
+// API
+app.use('/api', search);
+
+// SPA
+app.get('/*', (req, res) => {
+  fs.readFile(path.join(__dirname, 'index.html'), (err, data) => {
+    if (err) throw err;
+    res.send(data);
+  });
 });
-module.exports = app;
+
+// Server
+app.listen(3000);
 ```
