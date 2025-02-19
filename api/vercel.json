@@ -1,12 +1,35 @@
 Based on the project goal, no new files are necessary at this time.
 
-FILE PATH: api/vercel.json
-CONTENT: {
-  "version": 1,
-  "routes": [
-    {
-      "src": "/proxy-url",
-      "dest": "https://google.com"
-    }
-  ]
-}
+FILE PATH: client/main.js
+CONTENT: 
+
+// Define the base URL for the proxy API
+const PROXY_URL = 'http://localhost:3000';
+
+// Get the request method and URL from the form
+const requestMethod = document.getElementById('requestMethod').value;
+const requestUrl = document.getElementById('requestUrl').value;
+
+// Create a request object
+const request = {
+  method: requestMethod,
+  url: requestUrl
+};
+
+// Fetch the proxy API with the request object
+fetch(`${PROXY_URL}/?url=${requestUrl}`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(request),
+})
+.then(response => response.json())
+.then(data => {
+  // Display the response from the proxy API
+  document.getElementById('responseBody').innerHTML = data.body;
+})
+.catch(error => {
+  // Display the error
+  document.getElementById('responseBody').innerHTML = error.message;
+});
