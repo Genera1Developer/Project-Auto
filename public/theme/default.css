@@ -1,40 +1,72 @@
 file path: public/css/theme.css
-content: body {
-            margin: 0;
-            font-family: 'Helvetica', 'Arial', sans-serif;
-        }
+content: /* CSS file for the web proxy project */
 
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #000;
-                color: #fff;
-            }
+body {
+    margin: 0;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
 
-            a {
-                color: #fff;
-            }
-        }
+a {
+    text-decoration: none;
+}
 
-        @media (prefers-color-scheme: light) {
-            body {
-                background-color: #fff;
-                color: #000;
-            }
+/* Dark theme */
 
-            a {
-                color: #000;
-            }
-        }
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #000;
+        color: #fff;
+    }
 
-file path: public/js/theme.js
-content: (function () {
-            const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+    a {
+        color: #fff;
+    }
+}
 
-            toggleSwitch.addEventListener('change', function () {
-                if (this.checked) {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                } else {
-                    document.documentElement.setAttribute('data-theme', 'light');
-                }
-            });
-        })();
+/* Light theme */
+
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #fff;
+        color: #000;
+    }
+
+    a {
+        color: #000;
+    }
+}
+
+/* Custom theme switch */
+
+.theme-switch {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.theme-switch input[type="checkbox"] {
+    display: none;
+}
+
+.theme-switch label {
+    display: block;
+    width: 40px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.theme-switch label::before {
+    content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+}
+
+.theme-switch input[type="checkbox"]:checked + label::before {
+    transform: translateX(20px);
+}
