@@ -47,3 +47,15 @@ In addition to our Code of Conduct, we also have the following policies in place
 * **Privacy Policy:** We respect your privacy and will not share your personal information with third parties without your consent.
 * **Terms of Service:** By using our website, you agree to be bound by our Terms of Service.
 * **Refund Policy:** We offer refunds on a case-by-case basis. For more information, please contact us at [email protected]
+
+## Game Site Specific Guidelines
+
+In addition to our general Code of Conduct, the following specific guidelines apply to our game site:
+
+* **No Spamming:** Do not post excessive or irrelevant content.
+* **No Advertising:** Do not advertise your own or other products or services without permission.
+* **Keep It Clean:** Do not post sexually explicit or violent content.
+* **Respect Copyrights:** Do not post copyrighted material without permission.
+* **Be Original:** Do not copy or plagiarize the work of others.
+
+We reserve the right to modify or update these guidelines at any time.
