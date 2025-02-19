@@ -1,5 +1,37 @@
+## File Structure
+
+- `api/nodemon.json`
+- `README.md`
+
+### api/nodemon.json
+
+```json
 {
   "watch": ["*.js", "public/*"],
-  "ignore": ["node_modules"], 
+  "ignore": ["node_modules"],
   "ext": "js,html,css"
 }
+```
+
+This file configures the `nodemon` tool, which is used to watch and restart the proxy server when changes are made to the code. The `watch` property specifies which files to watch for changes, and the `ignore` property specifies which directories to ignore. The `ext` property specifies which file extensions to watch for changes.
+
+### README.md
+
+This file should provide an overview of the project, including:
+
+- The purpose of the project
+- How to use the project
+- Any dependencies that are required
+- Any known bugs or limitations
+
+## Explanations
+
+The `nodemon.json` file is used to configure the following settings:
+
+- `watch`: This property specifies which files to watch for changes. The `*.js` pattern matches all JavaScript files, and the `public/*` pattern matches all files in the `public` directory.
+- `ignore`: This property specifies which directories to ignore. The `node_modules` directory is ignored because it contains dependencies that are not necessary to watch for changes.
+- `ext`: This property specifies which file extensions to watch for changes. The `js,html,css` pattern matches all JavaScript, HTML, and CSS files.
+
+## New Files
+
+No new files are necessary for this project.
