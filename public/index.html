@@ -1,20 +1,16 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: server.js
-CONTENT: const express = require("express");
-const got = require("got");
-
-const app = express();
-
-app.get("/proxy", async (req, res) => {
-  const url = req.query.url;
-  try {
-    const response = await got(url);
-    res.send(response.body);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-app.listen(3000, () => {
-  console.log("Proxy server is listening on port 3000");
-});
+FILE PATH: public/index.html
+CONTENT: <!DOCTYPE html>
+<html>
+<head>
+  <title>Web Proxy</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/proxy">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url" placeholder="Enter a URL">
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>
