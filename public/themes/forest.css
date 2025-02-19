@@ -6,6 +6,7 @@ body {
   background-color: #006400;
   color: #fff;
   font-family: Lato, sans-serif;
+  font-size: 14px;
 }
 
 #container {
@@ -16,6 +17,8 @@ body {
 
 h1 {
   text-align: center;
+  font-size: 32px;
+  margin-bottom: 30px;
 }
 
 form {
@@ -31,6 +34,7 @@ input[type="text"] {
   width: 100%;
   padding: 5px;
   margin-bottom: 10px;
+  border: 1px solid #ccc;
 }
 
 input[type="submit"] {
@@ -49,6 +53,11 @@ input[type="submit"]:hover {
 
 #results {
   margin-top: 30px;
+  max-height: 500px;
+  overflow: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
 }
 
 #error {
