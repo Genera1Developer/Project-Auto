@@ -1,31 +1,52 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: public/components/Menu.js
+FILE PATH: public/themes/forest.css
 CONTENT: 
-```js
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+```css
+body {
+  background-color: #388e3c;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+}
 
-const Menu = () => {
-  const [menuItems, setMenuItems] = useState([]);
+h1 {
+  color: #ffffff;
+  font-size: 2em;
+  margin-bottom: 10px;
+}
 
-  useEffect(() => {
-    fetch('api/menu-items')
-      .then(res => res.json())
-      .then(data => setMenuItems(data));
-  }, []);
+h2 {
+  color: #ffffff;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
 
-  return (
-    <nav>
-      <ul>
-        {menuItems.map(item => (
-          <li key={item.id}>
-            <Link to={item.url}>{item.name}</Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-};
+p {
+  color: #ffffff;
+  font-size: 1em;
+  margin-bottom: 10px;
+}
 
-export default Menu;
+a {
+  color: #ffffff;
+  text-decoration: none;
+  border-bottom: 1px solid #ffffff;
+}
+
+nav {
+  background-color: #2e7d32;
+  padding: 10px;
+}
+
+nav ul {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+}
+
+nav li {
+  padding: 10px;
+}
+
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+}
 ```
