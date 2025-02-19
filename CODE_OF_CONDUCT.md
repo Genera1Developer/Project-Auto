@@ -1,3 +1,11 @@
+## File Structure
+
+- README.md
+- CODE_OF_CONDUCT.md
+- CONTRIBUTING.md
+- ISSUE_TEMPLATE.md
+- PULL_REQUEST_TEMPLATE.md
+
 ## Improved CODE_OF_CONDUCT.md
 
 ```markdown
@@ -44,10 +52,16 @@ If you are being harassed, or if you witness someone else being harassed, please
 ### More Information
 
 For more information on the Contributor Covenant, please visit [website].
+
+---
+
+**Contributors**
+
+This code of conduct was adapted from the [Contributor Covenant](https://contributor-covenant.org/).
 ```
 
 ## New Files
 
-- **CONTRIBUTING.md:** A CONTRIBUTING.md file provides guidelines for contributing to the project. It should include information on how to submit bug reports, feature requests, and pull requests.
-- **ISSUE_TEMPLATE.md:** An ISSUE_TEMPLATE.md file provides a template for submitting issues. It should include information on what information to include in the issue report, such as the version of the software, the operating system, and the steps to reproduce the issue.
-- **PULL_REQUEST_TEMPLATE.md:** A PULL_REQUEST_TEMPLATE.md file provides a template for submitting pull requests. It should include information on what information to include in the pull request, such as a description of the changes, the motivation for the changes, and the testing that was performed.
+- **CONTRIBUTING.md:** This file provides guidelines for contributing to the project. It includes information on how to submit bug reports, feature requests, and pull requests.
+- **ISSUE_TEMPLATE.md:** This file provides a template for submitting issues. It includes information on what information to include in the issue report, such as the version of the software, the operating system, and the steps to reproduce the issue.
+- **PULL_REQUEST_TEMPLATE.md:** This file provides a template for submitting pull requests. It includes information on what information to include in the pull request, such as a description of the changes, the motivation for the changes, and the testing that was performed.
