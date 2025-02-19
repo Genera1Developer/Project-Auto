@@ -1,4 +1,3 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
 FILE PATH: api/search.test.js
 CONTENT: 
 ```javascript
@@ -20,6 +19,11 @@ describe('search', () => {
       expect(result).toHaveProperty('url');
       expect(result).toHaveProperty('description');
     });
+  });
+
+  it('should handle errors', async () => {
+    const results = await search('this is an error');
+    expect(results).toBeInstanceOf(Error);
   });
 });
 ```
