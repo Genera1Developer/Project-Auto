@@ -17,4 +17,19 @@ CONTENT: body {
   height: 3px;
   border-radius: 50%;
   background-color: #ffffff;
+  animation: particle-move 1s infinite;
+}
+
+@keyframes particle-move {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(100px, 100px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
 }
