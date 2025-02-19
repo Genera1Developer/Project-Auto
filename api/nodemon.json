@@ -1,7 +1,3 @@
-file: app.js
-
-improve this file based on the project goal and suggest new files if necessary:
-
 ## Improved File Structure
 
 - `api/nodemon.json`
