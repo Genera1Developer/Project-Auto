@@ -1,17 +1,17 @@
-FILE PATH: api/routes/proxy.js
+FILE PATH: api/routes/dns.js
 CONTENT: 
 
 ```javascript
 const express = require('express');
-const axios = require('axios');
+const dns = require('dns');
 
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const url = req.query.url;
+  const hostname = req.query.hostname;
   try {
-    const response = await axios.get(url);
-    res.json(response.data);
+    const addresses = await dns.resolve(hostname);
+    res.json({ addresses });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
