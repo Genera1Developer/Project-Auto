@@ -1,47 +1,24 @@
-FILE PATH: public/index.css
+FILE PATH: public/index.html
 CONTENT: 
-```css
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-form {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-form input {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  box-sizing: border-box;
-}
-
-form button {
-  padding: 10px 20px;
-  margin: 8px 0;
-  background-color: #008CBA;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-form button:hover {
-  background-color: #007bff;
-}
-
-.results-container {
-  margin-top: 20px;
-  padding: 16px;
-  line-height: 1.5;
-  background-color: #f1f1f1;
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Web Proxy</h1>
+    <p>Enter a URL below to fetch its content.</p>
+    <form action="/proxy" method="POST">
+      <input type="text" name="url" placeholder="URL">
+      <button type="submit">Fetch</button>
+    </form>
+    <div class="results-container"></div>
+  </div>
+</body>
+</html>
 ```
