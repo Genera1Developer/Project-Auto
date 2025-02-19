@@ -1,2 +1,2 @@
-FILE PATH: public/themes/particles.html
-CONTENT: <div id="particles-js"></div>
+FILE PATH: public/themes/particles.js
+CONTENT: particlesJS.load('particles-js', 'public/themes/particles.json');
