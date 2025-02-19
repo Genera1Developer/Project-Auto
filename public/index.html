@@ -12,14 +12,18 @@
 │   ├── adblocker
 │   │   ├── curseblock.js
 │   │   └── ublock.js
+├── vercel.json
+├── package.json
+└── README.md
 ```
 
 **index.html**
 
 The following changes and additions have been made to the `index.html` file:
 
-- Added a `script` tag to load the `particles.js` file, which enables a particle effect on the background.
-- Added a `script` tag to load the Curse Block and uBlock ad blocker scripts.
+- Updated the `script` tag to load the `particles.js` file from the correct path.
+- Added a `script` tag to load the Curse Block and uBlock ad blocker scripts from the correct paths.
+- Fixed the closing `</body>` tag.
 
 **particles.js**
 
@@ -32,3 +36,15 @@ This file contains JavaScript code to implement the Curse Block ad blocker.
 **adblocker/ublock.js**
 
 This file contains JavaScript code to implement the uBlock ad blocker.
+
+**vercel.json**
+
+This file contains configuration settings for deploying the project to Vercel.
+
+**package.json**
+
+This file contains configuration settings for the project, including dependencies and scripts.
+
+**README.md**
+
+This file provides documentation on the project, including the file structure, project goal, and any additional notes or instructions.
