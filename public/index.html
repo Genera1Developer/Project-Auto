@@ -1,11 +1,20 @@
-file: django_proxy/urls.py
+file: proxy/views.py
 content:
 ```python
-from django.contrib import admin
-from django.urls import path, include
+from django.shortcuts import render, redirect
+from django.http import HttpRequest, HttpResponse
+import requests
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('proxy/', include('proxy.urls')),
-]
+def proxy_view(request: HttpRequest) -> HttpResponse:
+    if request.method == 'GET':
+        return render(request, 'proxy.html')
+    elif request.method == 'POST':
+        url = request.POST.get('url')
+        if not url:
+            return render(request, 'proxy.html', {'error': 'URL is required'})
+        try:
+            response = requests.get(url)
+            return HttpResponse(response.content)
+        except:
+            return render(request, 'proxy.html', {'error': 'Invalid URL'})
 ```
