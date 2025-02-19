@@ -1,29 +1,28 @@
-FILE PATH: public/style.css
+FILE PATH: public/index.js
 CONTENT:
-```css
-body {
-  font-family: sans-serif;
-}
+```js
+const form = document.querySelector('form');
+const urlInput = document.querySelector('input[name="url"]');
+const methodInput = document.querySelector('input[name="method"]');
+const requestBodyInput = document.querySelector('textarea[name="request-body"]');
+const responseBodyElement = document.getElementById('response-body');
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
 
-label {
-  margin-right: 0.5rem;
-}
+  const url = urlInput.value;
+  const method = methodInput.value;
+  const requestBody = requestBodyInput.value;
 
-textarea {
-  width: 100%;
-  height: 100px;
-}
+  const response = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: requestBody,
+  });
 
-#response-body {
-  background-color: #eee;
-  padding: 1rem;
-  margin-top: 1rem;
-  line-height: 1.5rem;
-}
+  const responseBody = await response.text();
+  responseBodyElement.textContent = responseBody;
+});
 ```
