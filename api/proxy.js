@@ -17,17 +17,11 @@ const options = {
   },
 };
 
-const googleProxy = createProxyMiddleware(options);
-const youtubeProxy = createProxyMiddleware({...options, target: "https://youtube.com"});
-const facebookProxy = createProxyMiddleware({...options, target: "https://facebook.com"});
-const twitterProxy = createProxyMiddleware({...options, target: "https://twitter.com"});
-const redditProxy = createProxyMiddleware({...options, target: "https://reddit.com"});
-
-app.use("/google", googleProxy);
-app.use("/youtube", youtubeProxy);
-app.use("/facebook", facebookProxy);
-app.use("/twitter", twitterProxy);
-app.use("/reddit", redditProxy);
+app.use("/google", createProxyMiddleware(options));
+app.use("/youtube", createProxyMiddleware({...options, target: "https://youtube.com"}));
+app.use("/facebook", createProxyMiddleware({...options, target: "https://facebook.com"}));
+app.use("/twitter", createProxyMiddleware({...options, target: "https://twitter.com"}));
+app.use("/reddit", createProxyMiddleware({...options, target: "https://reddit.com"}));
 
 app.listen(3000, () => {
   console.log("Proxy server listening on port 3000");
