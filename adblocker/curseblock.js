@@ -37,8 +37,56 @@ module.exports = withAdblocker({
 });
 ```
 
-**Notes:**
+**File: package.json**
 
-* The original `curseblock.js` file only intercepted requests to `/ads`. This has been expanded to also intercept requests to all other paths except for a few specific ignored paths (favicon, robots.txt, and the main JavaScript and CSS files).
-* A new `next.config.js` file has been created to integrate the modified `curseblock.js` file with Next.js. This file wraps the Next.js configuration in a function that applies the `withAdblocker` middleware, which is exported from `adblocker/curseblock.js`.
-* This approach ensures that the ad blocker middleware is applied to all requests made by the Next.js application, making it work effectively for Vercel and static serverless sites.
+```json
+{
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A proxy middleware for Next.js to block ads and other unwanted content.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "webpack",
+    "dev": "webpack-dev-server"
+  },
+  "dependencies": {
+    "http-proxy-middleware": "^2.0.0",
+    "next": "^12.0.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.0.0"
+  }
+}
+```
+
+**File: README.md**
+
+```markdown
+# Web Proxy
+
+This project provides a proxy middleware for Next.js to block ads and other unwanted content.
+
+## File Structure
+
+- `adblocker/curseblock.js`: The proxy middleware code.
+- `next.config.js`: The Next.js configuration file that integrates the proxy middleware.
+- `package.json`: The project configuration file.
+
+## Usage
+
+To use the proxy middleware, add the following code to your `next.config.js` file:
+
+```javascript
+const withAdblocker = require('./adblocker');
+
+module.exports = withAdblocker({
+  // Your Next.js configuration goes here...
+});
+```
+
+## Notes
+
+* The middleware only intercepts requests to `/ads`. If you need to block other types of content, you can modify the `ignoredPaths` array in `adblocker/curseblock.js`.
+* The middleware is not currently compatible with server-side rendering (SSR).
+```
