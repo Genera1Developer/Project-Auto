@@ -11,6 +11,7 @@
 - example.env
 - .gitignore
 - test/
+  - unit.test.js
 
 ## Explanations
 
@@ -25,64 +26,7 @@
 - **example.env:** A sample environment variable file, providing a template for users to create their own .env file with their specific project settings.
 - **.gitignore:** Specifies files and directories that should be excluded from version control, preventing unnecessary or sensitive data from being tracked in the repository.
 - **test/**: Contains unit tests for the proxy.js module, ensuring its correctness and reliability.
-
-## Updated CODE_OF_CONDUCT.md
-
-```markdown
-## Code of Conduct
-
-We are committed to providing a welcoming and harassment-free experience for everyone, regardless of race, religion, color, national origin, gender, sexual orientation, age, marital status, veteran status, or disability status.
-
-We do not tolerate harassment in any form. Harassment includes, but is not limited to:
-
-* Verbal abuse
-* Physical abuse
-* Sexual harassment
-* Cyberbullying
-* Stalking
-
-If you are being harassed, or if you witness someone else being harassed, please contact a community leader immediately.
-
-### Community Leaders
-
-Community leaders are responsible for enforcing this code of conduct. They have the authority to take action against anyone who violates this code of conduct, including:
-
-* Issuing warnings
-* Suspending or banning users
-* Removing content
-
-### Enforcement Process
-
-If a community leader receives a report of harassment, they will investigate the report and take appropriate action. The enforcement process may include:
-
-* Contacting the alleged harasser
-* Reviewing evidence
-* Issuing a warning
-* Suspending or banning the alleged harasser
-* Removing content
-
-### Reporting Harassment
-
-If you are being harassed, or if you witness someone else being harassed, please contact a community leader immediately. You can contact a community leader by:
-
-* Emailing [email protected]
-* Sending a direct message on [Discord]
-* Posting a message in the #support channel
-
-### More Information
-
-For more information on the Contributor Covenant, please visit [contributor-covenant.org](https://contributor-covenant.org/).
-
----
-
-**Contributors**
-
-This code of conduct was adapted from the [Contributor Covenant](https://contributor-covenant.org/).
-```
-
-## New Files
-
-- **test/unit.test.js:** Contains unit tests for the proxy.js module, covering various scenarios and ensuring its correct behavior.
+  - **unit.test.js:** Contains unit tests for the proxy.js module, covering various scenarios and ensuring its correct behavior.
 
 ## Benefits of the New File Structure
 
