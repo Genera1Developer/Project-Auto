@@ -1,5 +1,3 @@
-Based on the project goal, create a file named api/utils.js:
-
 FILE PATH: api/utils.js
 CONTENT: 
 ```javascript
@@ -13,7 +11,7 @@ const logRequest = async (req) => {
 
 const forwardRequest = async (req, res) => {
   const targetUrl = req.body.url;
-  
+
   if (!targetUrl) {
     res.status(400).send('Missing URL');
     return;
@@ -39,7 +37,7 @@ const forwardRequest = async (req, res) => {
 
     res.set('Content-Type', contentType);
     res.send(await response.text());
-    
+
   } catch (err) {
     res.status(500).send('Error forwarding request');
   }
