@@ -1,22 +1,23 @@
-FILE PATH: public/index.html
-CONTENT: <!DOCTYPE html>
-<html lang="en">
+FILE PATH: public/style.css
+CONTENT: body {
+  font-family: Arial, sans-serif;
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="/public/style.css" />
-</head>
+h1 {
+  text-align: center;
+}
 
-<body>
-  <h1>Web Proxy</h1>
-  <form action="/proxy" method="POST">
-    <label for="url">URL:</label>
-    <input type="text" id="url" name="url" />
-    <input type="submit" value="Go" />
-  </form>
-</body>
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
-</html>
+label {
+  margin-right: 4px;
+}
+
+input {
+  margin-right: 4px;
+}
