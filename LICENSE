@@ -17,12 +17,14 @@
    * utils/
      * requestHandler.js
      * responseHandler.js
+* CHANGELOG.md (new)
 
 **New Files:**
 
 * **src/index.js:** Web proxy implementation
 * **src/utils/requestHandler.js:** Request handling utilities
 * **src/utils/responseHandler.js:** Response handling utilities
+* **CHANGELOG.md:** Changelog for tracking changes and updates
 
 **Improved File Content:**
 
@@ -112,9 +114,24 @@ module.exports = (req, res) => {
 };
 ```
 
+**CHANGELOG.md:**
+
+```
+## Changelog
+
+### Version 1.0.0
+
+- Initial release
+- Implemented request handling
+- Implemented response handling
+- Added middleware to support JSON requests
+- Updated package.json description
+- Added CHANGELOG.md
+```
+
 **Explanation:**
 
-* We have added Express middleware to the proxy to support JSON requests.
-* We have modified the requestHandler to pass the original request method, headers, and body to the target URL.
+* We have added a CHANGELOG.md file to track changes and updates to the project.
+* We have improved the requestHandler to pass the original request method, headers, and body to the target URL.
 * We have added a responseHandler to set the response headers and send the body to the client.
 * We have updated the description in package.json to reflect the proxy's functionality.
