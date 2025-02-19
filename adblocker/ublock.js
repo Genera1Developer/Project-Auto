@@ -1,59 +1,24 @@
-## Improved `adblocker/ublock.js`
+## File Structure
+
+- `adblocker/ublock.js`
+- `adblocker/ublock.worker.js`
+- `service-worker.js`
+- `package.json`
+
+## Raw Code for `ublock.js`
 
 ```javascript
 import { uBlockOrigin } from '@adblocked/ublockorigin';
 import { filterLists, debug, proxyPatterns } from '../config';
 
-const ublock = uBlockOrigin({
+export const ublock = uBlockOrigin({
   filterLists,
   debug,
   cacheSize: 1000000, // Increase the cache size for better performance.
 });
-
-addEventListener('fetch', (event) => {
-  const request = event.request;
-  const requestUrl = new URL(request.url);
-
-  // Check if the request should be proxied and processed for ad-blocking.
-  if (!proxyPatterns.some((pattern) => pattern.test(requestUrl.hostname))) {
-    event.respondWith(fetch(request));
-    return;
-  }
-
-  const proxiedRequest = new Request(requestUrl.href, {
-    headers: request.headers,
-    mode: 'same-origin',
-    credentials: 'same-origin',
-  });
-
-  ublock
-    .requestFilter(proxiedRequest)
-    .then((response) => {
-      if (response.status >= 400) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-      return response.arrayBuffer();
-    })
-    .then((arrayBuffer) => {
-      const responseHeaders = new Headers();
-      const contentType = response.headers.get('Content-Type');
-      if (contentType) {
-        responseHeaders.append('Content-Type', contentType);
-      }
-      event.respondWith(new Response(new Uint8Array(arrayBuffer), {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders,
-      }));
-    })
-    .catch((error) => {
-      console.error(error);
-      event.respondWith(fetch(request));
-    });
-});
 ```
 
-## New File: `ublock.worker.js`
+## Raw Code for `ublock.worker.js`
 
 ```javascript
 import { uBlockOrigin } from '@adblocked/ublockorigin';
@@ -64,51 +29,9 @@ const ublockWorker = uBlockOrigin({
   debug,
   cacheSize: 1000000, // Increase the cache size for better performance.
 });
-
-addEventListener('fetch', (event) => {
-  const request = event.request;
-  const requestUrl = new URL(request.url);
-
-  // Check if the request should be proxied and processed for ad-blocking.
-  if (!proxyPatterns.some((pattern) => pattern.test(requestUrl.hostname))) {
-    event.respondWith(fetch(request));
-    return;
-  }
-
-  const proxiedRequest = new Request(requestUrl.href, {
-    headers: request.headers,
-    mode: 'same-origin',
-    credentials: 'same-origin',
-  });
-
-  ublockWorker
-    .requestFilter(proxiedRequest)
-    .then((response) => {
-      if (response.status >= 400) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-      return response.arrayBuffer();
-    })
-    .then((arrayBuffer) => {
-      const responseHeaders = new Headers();
-      const contentType = response.headers.get('Content-Type');
-      if (contentType) {
-        responseHeaders.append('Content-Type', contentType);
-      }
-      event.respondWith(new Response(new Uint8Array(arrayBuffer), {
-        status: response.status,
-        statusText: response.statusText,
-        headers: responseHeaders,
-      }));
-    })
-    .catch((error) => {
-      console.error(error);
-      event.respondWith(fetch(request));
-    });
-});
 ```
 
-## New File: `service-worker.js`
+## Raw Code for `service-worker.js`
 
 ```javascript
 addEventListener('fetch', (event) => {
@@ -161,7 +84,7 @@ addEventListener('fetch', (event) => {
 });
 ```
 
-## Updated `package.json`
+## Raw Code for `package.json`
 
 ```json
 {
