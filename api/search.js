@@ -1,27 +1,43 @@
-FILE PATH: public/index.html
+FILE PATH: public/style.css
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="/style.css" />
-  </head>
+```css
+body {
+  font-family: Arial, sans-serif;
+}
 
-  <body>
-    <h1>Web Proxy</h1>
-    <form action="/api/search" method="GET">
-      <label for="url">URL:</label>
-      <input type="text" id="url" name="url" />
-      <label for="query">Query:</label>
-      <input type="text" id="query" name="query" />
-      <button type="submit">Search</button>
-    </form>
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
 
-    <div id="results"></div>
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    <script src="/script.js"></script>
-  </body>
-</html>
+label {
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  cursor: pointer;
+}
+
+#results {
+  background-color: #efefef;
+  padding: 10px;
+  margin-top: 10px;
+  line-height: 1.5em;
+}
 ```
