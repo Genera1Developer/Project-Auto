@@ -1,12 +1,21 @@
-file: server/urls.py
+file: views.py
 content:
 ```python
-from django.urls import path
+from django.shortcuts import render
 
-from . import views
+# Create your views here.
+def index(request):
+    return render(request, 'index.html')
 
-urlpatterns = [
-    path('', views.index, name='index'),
-    path('proxy/', views.proxy, name='proxy'),
-]
+def proxy(request):
+    url = request.GET.get('url')
+    if not url:
+        return render(request, 'index.html', {'error': 'No URL provided'})
+
+    try:
+        response = requests.get(url)
+    except requests.exceptions.RequestException as e:
+        return render(request, 'index.html', {'error': e})
+
+    return render(request, 'index.html', {'content': response.text})
 ```
