@@ -4,12 +4,14 @@
 - package.json
 - README.md
 - api/static/index.html
+- utils/error.js
 
 **api/proxy.js:**
 
 ```js
 const express = require("express");
 const axios = require("axios");
+const errorHandler = require("./utils/error");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,21 +19,17 @@ const port = process.env.PORT || 3000;
 app.use(express.static("api/static"));
 
 app.get("/proxy", async (req, res) => {
-  if (!req.query.url) {
-    return res.status(400).send("Missing URL parameter.");
-  }
-
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
-
-  const targetUrl = req.query.url;
-
   try {
-    const response = await axios.get(targetUrl);
+    const { url } = req.query;
+    if (!url) throw errorHandler.badRequest("Missing URL parameter.");
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+    const response = await axios.get(url);
     res.send(response.data);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error fetching URL.");
+    errorHandler.internalServerError(res, error);
   }
 });
 
@@ -45,7 +43,7 @@ app.listen(port, () => {
 ```json
 {
   "name": "web-proxy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Web proxy service for Vercel and static serverless sites",
   "main": "api/proxy.js",
   "scripts": {
@@ -53,7 +51,8 @@ app.listen(port, () => {
   },
   "dependencies": {
     "axios": "^0.27.2",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "errorhandler": "^1.5.0"
   }
 }
 ```
@@ -88,7 +87,7 @@ GET https://example.com/proxy?url=https://example.com/api/data
 To deploy the service, follow these steps:
 
 1. Create a new Vercel or static serverless site
-2. Add the `package.json` and `api/proxy.js` files to your site
+2. Add the `package.json`, `api/proxy.js`, and `utils/error.js` files to your site
 3. Deploy your site
 
 ## Contributing
@@ -123,11 +122,25 @@ Contributions are welcome! Please read the [contributing guidelines](https://git
 </html>
 ```
 
+**utils/error.js:**
+
+```js
+const createError = require("http-errors");
+
+const errorHandler = {
+  badRequest: (message) => createError(400, message),
+  internalServerError: (res, error) => {
+    console.error(error);
+    res.status(500).send("Error fetching URL.");
+  },
+};
+
+module.exports = errorHandler;
+```
+
 ## Changes:
 
-- Added CORS headers to the response to allow cross-origin requests.
-- Improved error handling for missing URL parameter.
-
-**New Files:**
-
-- `api/static/index.html`: A simple static HTML page that provides information about the web proxy service.
+- Fixed missing URL parameter handling.
+- Improved error handling using `http-errors`.
+- Created a separate `utils/error.js` file for error handling.
+- Added a simple static HTML page for information about the service.
