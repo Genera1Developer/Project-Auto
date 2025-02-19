@@ -1,18 +1,26 @@
 Based on the project goal, here is the file:
 
-FILE PATH: api/search.js
+FILE PATH: views/index.html
 CONTENT: 
-```javascript
-const express = require('express');
-const axios = require('axios');
-const router = express.Router();
-const API_KEY = 'YOUR_API_KEY';
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
 
-router.get('/', async (req, res) => {
-  const query = req.query.q;
-  const response = await axios.get(`https://www.googleapis.com/customsearch/v1?key=${API_KEY}&cx=01234567890123456789:abcdefghijk&q=${query}`);
-  res.json(response.data);
-});
+  <body>
+    <h1>Web Proxy</h1>
+    <form action="/api/search">
+      <input type="text" name="q" placeholder="Search" />
+      <input type="submit" value="Search" />
+    </form>
 
-module.exports = router;
+    <div id="results"></div>
+
+    <script src="/static/script.js"></script>
+  </body>
+</html>
 ```
