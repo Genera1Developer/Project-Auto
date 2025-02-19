@@ -1,23 +1,15 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: api/routes/http.js
+FILE PATH: middleware/validate-request.js
 CONTENT: 
 
 ```javascript
-const express = require('express');
-const router = express.Router();
-const fetch = require('node-fetch');
-
-router.post('/proxy', async (req, res) => {
+const validateRequest = (req, res, next) => {
   const { url } = req.body;
-  const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-  });
-  const data = await response.json();
-  res.json(data);
-});
+  if (!url) {
+    return res.status(400).json({ error: 'Missing URL parameter' });
+  }
 
-module.exports = router;
+  next();
+};
+
+module.exports = validateRequest;
 ```
