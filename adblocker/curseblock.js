@@ -1,3 +1,7 @@
+file: adblocker/adblocker.js
+
+improve this file based on the project goal and suggest new files if necessary:
+
 **Improved File Structure:**
 
 - `adblocker/curseblock.js` (entry point)
@@ -6,60 +10,53 @@
 - `adblocker/config.js` (configuration options)
 - `README.md` (project documentation)
 
-**Improved adblocker/curseblock.js:**
+**Improved adblocker/adblocker.js:**
 
 ```javascript
-// adblocker/curseblock.js
+// adblocker/adblocker.js
 
-import { blockAds, unblockAds } from './adblocker.js';
-import { observerMutation, observerMutationStop } from './observer.js';
-import { enabled } from './config.js';
+import { removeElements } from './utils.js';
+import { adSelector } from './config.js';
 
-// Initialize the ad blocker
-blockAds();
+// Block ads by removing elements matching the selector
+export function blockAds() {
+  const ads = document.querySelectorAll(adSelector);
+  removeElements(ads);
+}
 
-// Add observer to DOM to monitor for ad elements
-observerMutation();
+// Unblock ads by restoring removed elements
+export function unblockAds() {
+  const hiddenAds = document.querySelectorAll('[data-vercel-web-proxy-hidden]');
+  hiddenAds.forEach((ad) => {
+    ad.removeAttribute('data-vercel-web-proxy-hidden');
+    ad.removeAttribute('style');
+  });
+}
 
-// Toggle ad blocker state
-const toggleBtn = document.getElementById('toggle-adblocker');
-if (toggleBtn) {
-  toggleBtn.addEventListener('click', () => {
-    enabled.set(!enabled.get());
-    if (enabled.get()) {
-      console.log('Ad blocker is now enabled.');
-    } else {
-      unblockAds();
-      observerMutationStop();
-      console.log('Ad blocker is now disabled.');
-    }
+```
+
+**New File: adblocker/utils.js:**
+
+```javascript
+// adblocker/utils.js
+
+// Remove elements from the DOM
+export function removeElements(elements) {
+  elements.forEach((element) => {
+    element.setAttribute('data-vercel-web-proxy-hidden', true);
+    element.style.display = 'none';
   });
 }
 ```
 
-**New File: adblocker/config.js:**
-
-```javascript
-// adblocker/config.js
-
-import { reactive } from 'vue';
-
-// Ad blocker enabled state
-export const enabled = reactive({ value: true });
-```
-
 **Explanation:**
 
-- Introduced a configuration file to manage the ad blocker's enabled state.
-- Added a toggle button to the UI for easier ad blocker control.
-- Moved the `MutationObserver` logic to a dedicated `observer.js` file for better organization.
-- Improved the logging messages for clarity.
+- Improved the ad blocking mechanism by using a dedicated utility function for element removal.
+- Extracted the ad selector into a separate configuration file for easier management.
 
 **README.md Updates:**
 
-- Added a section on configuration options.
-- Clarified the usage instructions.
-- Updated the project goal to reflect the improved functionality.
+- Updated the README to reflect the improved file structure and ad blocking mechanisms.
 
 **README.md:**
 
@@ -76,6 +73,7 @@ This project provides a comprehensive web proxy solution that works seamlessly w
 - `adblocker/adblocker.js`: Contains functions for blocking and unblocking ads.
 - `adblocker/observer.js`: Monitors DOM mutations for ad elements.
 - `adblocker/config.js`: Configuration options for the ad blocker.
+- `adblocker/utils.js`: Utility functions for element manipulation.
 - `README.md`: Project documentation and usage instructions.
 
 ## Usage
@@ -98,7 +96,7 @@ curseblock();
 
 The ad blocker can be configured using the following options:
 
-- `enabled`: Enable or disable the ad blocker. Defaults to `true`.
+- `adSelector`: CSS selector used to identify ad elements. Defaults to `.ad`.
 
 ## Features
 
@@ -106,6 +104,7 @@ The ad blocker can be configured using the following options:
 - Uses a MutationObserver to monitor DOM changes for new ad elements.
 - Provides an easy-to-use toggle to enable/disable the ad blocker.
 - Configurable ad blocker state.
+- Reusable utility functions for element manipulation.
 
 ## Notes
 
