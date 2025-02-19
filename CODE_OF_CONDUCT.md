@@ -1,4 +1,5 @@
-# Game Site Code of Conduct
+file path: CODE_OF_CONDUCT.md
+content: # Game Site Code of Conduct
 
 ## Our Pledge
 
