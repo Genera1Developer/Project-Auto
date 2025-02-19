@@ -1,5 +1,5 @@
-file path: api/Read Before Use.md
-content: **Instructions for Using the Web Proxy**
+FILE PATH: api/Read Before Use.md
+CONTENT: **Instructions for Using the Web Proxy**
 
 1. **Start the web proxy server:**
 
