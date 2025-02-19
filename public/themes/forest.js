@@ -1,23 +1,30 @@
-FILE PATH: public/themes/forest.js
+FILE PATH: public/css/forest.css
 CONTENT: 
-```js
-// JS for forest mode.
+```css
+/* CSS for forest mode. */
 
-/* Change the theme to forest mode. */
-function setForestMode() {
-  document.body.style.backgroundColor = "#417505";
-  document.body.style.color = "#2e7d32";
+/* Change the font to a serif font. */
+body {
+  font-family: "serif";
+}
 
-  // Change the color of links.
-  var links = document.querySelectorAll("a");
-  for (var i = 0; i < links.length; i++) {
-    links[i].style.color = "#4caf50";
-  }
+/* Change the background color to green. */
+body {
+  background-color: #417505;
+}
 
-  // Change the color of headings.
-  var headings = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
-  for (var i = 0; i < headings.length; i++) {
-    headings[i].style.color = "#2e7d32";
-  }
+/* Change the text color to white. */
+body {
+  color: #2e7d32;
+}
+
+/* Change the color of links to green. */
+a {
+  color: #4caf50;
+}
+
+/* Change the color of headings to white. */
+h1, h2, h3, h4, h5, h6 {
+  color: #2e7d32;
 }
 ```
