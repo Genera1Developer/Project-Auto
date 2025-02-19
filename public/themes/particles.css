@@ -1,16 +1,35 @@
-FILE PATH: server/app.js
-CONTENT: const express = require('express');
-const app = express();
-const port = 3000;
+file path: public/themes/particles.css
+content: /*
+ * particles.css
+ * The CSS file for the Particles theme.
+ */
 
-app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: __dirname + '/../public' });
-});
+body {
+  background-color: #000;
+  color: #fff;
+}
 
-app.use('/js', express.static('public/js'));
-app.use('/css', express.static('public/css'));
-app.use('/themes', express.static('public/themes'));
+.particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #fff;
+  animation: move 1s infinite;
+}
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(100px, 100px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
