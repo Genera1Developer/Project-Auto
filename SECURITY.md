@@ -30,9 +30,9 @@ In addition to the above, we recommend that you follow these security best pract
 
 By following these best practices, you can help to keep your account and data secure.
 
-## New Files
+## File Structure
 
-In addition to the SECURITY.md file, the following files may be useful for improving the security of the project:
+The following files are recommended for improving the security of the project:
 
 * **README.md:** Provide general information about the project and its security features.
 * **SECURITY-FAQ.md:** Answer common questions about the project's security.
@@ -40,7 +40,7 @@ In addition to the SECURITY.md file, the following files may be useful for impro
 * **SECURITY-UPDATES.md:** Track security updates and releases for the project.
 * **.github/workflows/security.yml:** Define a GitHub workflow that automates security checks and updates.
 
-### Additional Recommendations
+## Additional Recommendations
 
 In addition to the above, we recommend the following additional security measures:
 
