@@ -1,14 +1,4 @@
-**README.md:**
-
-**Project: Web Proxy for Vercel and Static Serverless Sites**
-
-**Goal:**
-
-* Modify and fix the given web proxy to work fully for Vercel and static serverless sites
-* Fix any bugs along the way
-* Ensure that multiple files are created to properly structure the project
-
-**File Structure:**
+The file structure is as follows:
 
 * LICENSE
 * package.json
@@ -20,15 +10,17 @@
 * CHANGELOG.md
 * README.md
 
-**New Files:**
+The LICENSE file contains the MIT license for the project.
 
-* **src/index.js:** Web proxy implementation
-* **src/utils/requestHandler.js:** Request handling utilities
-* **src/utils/responseHandler.js:** Response handling utilities
-* **CHANGELOG.md:** Changelog for tracking changes and updates
-* **README.md:** Documentation for the project
+The package.json file contains the project's metadata, including its name, version, description, dependencies, and scripts.
 
-**Improved File Content:**
+The src/ directory contains the source code for the project. The index.js file is the main entry point for the project. The utils/ directory contains the requestHandler.js and responseHandler.js files, which contain the code for handling requests and responses, respectively.
+
+The CHANGELOG.md file contains the changelog for the project, which tracks changes and updates.
+
+The README.md file contains the documentation for the project, which explains its purpose, usage, and how to contribute.
+
+The improved file content is as follows:
 
 **LICENSE:**
 
@@ -50,7 +42,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 {
   "name": "web-proxy",
   "version": "1.0.0",
-  "description": "A web proxy for Vercel and serverless sites",
+  "description": "A web proxy for Vercel and static serverless sites",
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js"
@@ -175,11 +167,10 @@ module.exports = (req, res) => {
 * We have updated the description in package.json to reflect the proxy's functionality.
 ```
 
-**Explanation:**
+The improved file content includes the following changes:
 
 * We have added a memoization middleware to improve performance by caching the results of the request handling.
 * We have added a CHANGELOG.md file to track changes and updates to the project.
 * We have improved the requestHandler to pass the original request method, headers, and body to the target URL.
 * We have added a responseHandler to set the response headers and send the body to the client.
 * We have updated the description in package.json to reflect the proxy's functionality.
-* We have added a README.md file to provide documentation for the project.
