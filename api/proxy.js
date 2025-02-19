@@ -1,20 +1,24 @@
-FILE PATH: api/index.js
+FILE PATH: ui/index.html
 CONTENT: 
-```javascript
-const express = require('express');
-const proxy = require('./proxy');
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Proxy</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="/static/scripts.js"></script>
+  </head>
 
-const app = express();
+  <body>
+    <h1>Web Proxy</h1>
+    <form id="form">
+      <label for="url">URL:</label>
+      <input type="text" id="url" />
+      <button type="submit">Submit</button>
+    </form>
 
-app.get('/api/html', async (req, res) => {
-  const url = req.query.url;
-  const options = req.query.options || {};
-
-  const html = await proxy.getHtml(url, options);
-  res.send(html);
-});
-
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
+    <div id="result"></div>
+  </body>
+</html>
 ```
