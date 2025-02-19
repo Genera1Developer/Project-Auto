@@ -1,4 +1,4 @@
-FILE PATH: package-lock.json
+FILE PATH: api/package-lock.json
 CONTENT: {
   "name": "web-proxy",
   "version": "1.0.0",
@@ -128,4 +128,4 @@ CONTENT: {
     "inherits": {
       "version": "2.0.3",
       "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.3.tgz",
-      "integrity": "sha1-Yzwsg+PaQqUC9SRmAi
+      "integrity": "sha1-Yzwsg+PaQqUC9SR
