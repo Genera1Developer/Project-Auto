@@ -1,45 +1,28 @@
-FILE PATH: api/utils.js
+FILE PATH: api/proxy.js
 CONTENT: 
 ```javascript
-const fetch = require('node-fetch');
-const sharp = require('sharp');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const utils = require('./utils');
 
-const logRequest = async (req) => {
-  console.log(`${req.method} ${req.url} from ${req.headers['user-agent']}`);
-  console.log(req.body);
-};
+const app = express();
 
-const forwardRequest = async (req, res) => {
-  const targetUrl = req.body.url;
+app.use(cors());
+app.use(bodyParser.json());
 
-  if (!targetUrl) {
-    res.status(400).send('Missing URL');
-    return;
-  }
+app.use(async (req, res, next) => {
+  await utils.logRequest(req);
+  next();
+});
 
-  try {
-    const response = await fetch(targetUrl);
-    if (response.status >= 400) {
-      res.status(response.status).send(await response.text());
-      return;
-    }
-    const contentType = response.headers.get('content-type');
+app.post('/proxy', async (req, res) => {
+  utils.forwardRequest(req, res);
+});
 
-    if (contentType.includes('image')) {
-      const imageBuffer = await response.buffer();
-      const resizedImage = await sharp(imageBuffer)
-        .resize(500)
-        .toBuffer();
-      res.set('Content-Type', contentType);
-      res.send(resizedImage);
-      return;
-    }
+const PORT = process.env.PORT || 3000;
 
-    res.set('Content-Type', contentType);
-    res.send(await response.text());
-
-  } catch (err) {
-    res.status(500).send('Error forwarding request');
-  }
-};
+app.listen(PORT, () => {
+  console.log(`Web proxy listening on port ${PORT}`);
+});
 ```
