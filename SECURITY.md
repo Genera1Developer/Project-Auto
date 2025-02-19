@@ -35,3 +35,16 @@ Beyond using the latest web proxy version and reporting vulnerabilities, we enco
 - Stay vigilant against phishing and online scams.
 - Keep web proxy software up-to-date.
 - Implement SSL certificates to encrypt connections.
+
+**File Structure**
+
+- **README.md**: Main project documentation, including the file structure.
+- **SECURITY.md**: This file.
+- **SECURITY-FAQ.md**: Security-related questions and answers.
+- **SECURITY-TESTING.md**: Security testing procedures and results.
+- **SECURITY-UPDATES.md**: Security updates and releases.
+- **SECURITY-TODO.md**: Pending security improvements.
+- **SECURITY-LOGS.md**: Logging process details.
+- **SSL-CERTIFICATES.md**: SSL certificates and their installation.
+- **.github/workflows/security.yml**: GitHub workflow for security checks and updates.
+- **.github/workflows/ssl.yml**: GitHub workflow for SSL certificate renewal and installation.
