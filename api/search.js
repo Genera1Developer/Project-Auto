@@ -1,19 +1,25 @@
-FILE PATH: views/proxy.ejs
+FILE PATH: api/search.js
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Proxy Server</title>
-</head>
-<body>
-  <h1>Proxy Server</h1>
-  <form action="/api/proxy" method="POST">
-    <label for="url">URL:</label>
-    <input type="text" id="url" name="url">
-    <input type="submit" value="Proxy">
-  </form>
-  <div id="results"></div>
-</body>
-</html>
+```javascript
+const express = require('express');
+const fetch = require('node-fetch');
+
+const app = express();
+
+app.post('/api/proxy', async (req, res) => {
+  const { url } = req.body;
+
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+
+    res.send(html);
+  } catch (error) {
+    res.status(500).send('Error fetching URL');
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
 ```
