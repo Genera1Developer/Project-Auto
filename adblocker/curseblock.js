@@ -1,4 +1,4 @@
-**Improved File Structure:**
+**File Structure:**
 
 - `adblocker/curseblock.js` (entry point)
 - `adblocker/adblocker.js` (ad blocking logic)
@@ -14,6 +14,7 @@
 
 import { removeElements, restoreElements } from './utils.js';
 import { adSelector } from './config.js';
+import { observer } from './observer.js';
 
 // Block ads by removing elements matching the selector
 export function blockAds() {
@@ -26,7 +27,18 @@ export function unblockAds() {
   const hiddenAds = document.querySelectorAll('[data-vercel-web-proxy-hidden]');
   restoreElements(hiddenAds);
 }
+
+// Start observing the DOM for changes
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
 ```
+
+**Explanation:**
+
+- Moved the DOM mutation observer initialization into the `adblocker.js` file for better organization.
+- Imported the observer variable from `observer.js` to avoid circular dependencies.
 
 **New File: adblocker/observer.js:**
 
@@ -44,45 +56,15 @@ export const observer = new MutationObserver((mutations) => {
     }
   });
 });
-
-// Start observing the DOM for changes
-observer.observe(document.body, {
-  childList: true,
-  subtree: true
-});
-```
-
-**New File: adblocker/utils.js:**
-
-```javascript
-// adblocker/utils.js
-
-// Remove elements from the DOM
-export function removeElements(elements) {
-  elements.forEach((element) => {
-    element.setAttribute('data-vercel-web-proxy-hidden', true);
-    element.style.display = 'none';
-  });
-}
-
-// Restore previously removed elements
-export function restoreElements(elements) {
-  elements.forEach((element) => {
-    element.removeAttribute('data-vercel-web-proxy-hidden');
-    element.removeAttribute('style');
-  });
-}
 ```
 
 **Explanation:**
 
-- Introduced a MutationObserver to monitor the DOM for new ad elements and block them in real-time.
-- Improved the element removal and restoration mechanisms by separating them into dedicated utility functions.
-- Extracted the ad selector into a separate configuration file for easier management.
+- Moved the ad selector import from `adblocker.js` to `observer.js` for cleaner code structure.
 
 **README.md Updates:**
 
-- Updated the README to reflect the improved file structure and ad blocking mechanisms.
+- Added a section on the DOM mutation observer.
 
 **README.md:**
 
@@ -127,10 +109,14 @@ The ad blocker can be configured using the following options:
 ## Features
 
 - Blocks ads on Vercel and static serverless sites.
-- Uses a MutationObserver to monitor DOM changes for new ad elements.
+- Uses a DOM MutationObserver to monitor DOM changes for new ad elements.
 - Provides an easy-to-use toggle to enable/disable the ad blocker.
 - Configurable ad blocker state.
 - Reusable utility functions for element manipulation.
+
+## DOM Mutation Observer
+
+The ad blocker utilizes a DOM mutation observer to monitor the DOM for changes and block new ad elements as they appear. This ensures that ads are blocked even after the initial page load.
 
 ## Notes
 
