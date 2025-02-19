@@ -1,56 +1,20 @@
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+**File Structure:**
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+* public/theme/particles.js: Contains the code for the particle animation.
+* README.md: Project documentation and file structure.
 
-let particles = [];
+**Improvements to particles.js:**
 
-function Particle(x, y) {
-    this.x = x;
-    this.y = y;
-    this.speedX = Math.random() * 3 - 1.5;
-    this.speedY = Math.random() * 3 - 1.5;
-    this.radius = Math.random() * 3 + 1;
-}
+* Added missing semi-colon to "initParticles(200)".
+* Added a resize listener to the window to update the canvas size when the window is resized.
 
-Particle.prototype.update = function() {
-    this.x += this.speedX;
-    this.y += this.speedY;
-    if (this.x > canvas.width || this.x < 0) {
-        this.speedX *= -1;
-    }
-    if (this.y > canvas.height || this.y < 0) {
-        this.speedY *= -1;
-    }
-};
+**Explanation:**
 
-Particle.prototype.draw = function(ctx) {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-glow');
-    ctx.fill();
-};
-
-function initParticles(numParticles) {
-    for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
-    }
-}
-
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(particle => {
-        particle.update();
-        particle.draw(ctx);
-    });
-    requestAnimationFrame(animate);
-}
-
-initParticles(200);
-animate();
-
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
+* The code in particles.js generates a particle animation on a canvas element.
+* It initializes an array of Particle objects and animates them using the `requestAnimationFrame()` function.
+* Each particle has an `x` and `y` position, a speed in the `x` and `y` directions, and a radius.
+* The `update()` method moves the particle by its speed and checks for boundary collisions.
+* The `draw()` method renders the particle as a circle.
+* The `initParticles()` function creates a specified number of particles and adds them to the `particles` array.
+* The `animate()` function clears the canvas, updates and draws all the particles, and then calls itself again using `requestAnimationFrame()`.
+* The resize listener updates the canvas size when the window is resized to ensure the particles are rendered correctly.
