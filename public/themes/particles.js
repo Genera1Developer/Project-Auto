@@ -1,10 +1,6 @@
-FILE PATH: public/themes/particles.css
-CONTENT: ```css
-#particles-js {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
+FILE PATH: public/themes/particles.js
+CONTENT: ```javascript
+particlesJS.load('particles-js', 'particles.json', function() {
+  console.log('callback - particles.js config loaded');
+});
 ```
