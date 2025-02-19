@@ -1,52 +1,24 @@
-Sure, here is an improved file structure based on the project goal, along with explanations and suggestions for new files:
+Sure, here is an improved CODE_OF_CONDUCT.md file based on the project goal, along with suggestions for new files:
 
-## File Structure
+## Code of Conduct
 
-- README.md
-- CODE_OF_CONDUCT.md
-- CONTRIBUTING.md
-- ISSUE_TEMPLATE.md
-- PULL_REQUEST_TEMPLATE.md
-- proxy.js
-- index.js
-- package.json
-- example.env
-- .gitignore
-- test/
-  - unit.test.js
-- types/
-  - proxy.d.ts
+This project adheres to a code of conduct that outlines the expected behavior and standards of conduct for contributors and users. By participating in this project, you agree to abide by the following principles:
 
-## Explanations
+- **Be respectful:** Treat others with respect, even if you disagree with their opinions or ideas.
+- **Be constructive:** Provide constructive criticism and feedback, and be open to receiving the same.
+- **Be inclusive:** Welcome and value diversity of background, experience, and perspective.
+- **Be responsible:** Take ownership of your actions and contributions, and be mindful of their impact on the project and community.
 
-- **README.md:** The main documentation file for the project, containing the project overview, usage instructions, and other relevant information.
-- **CODE_OF_CONDUCT.md:** Outlines the expected behavior and standards of conduct for contributors and users of the project.
+## Reporting Unacceptable Behavior
+
+If you encounter any behavior that violates this code of conduct, please report it to the project maintainers. We will investigate all reports and take appropriate action.
+
+## New Files
+
+In addition to the CODE_OF_CONDUCT.md file, the following files may also be useful for a more complete project:
+
 - **CONTRIBUTING.md:** Provides guidelines for contributing to the project, including code standards, testing procedures, and best practices.
 - **ISSUE_TEMPLATE.md:** Guides users in creating detailed and informative issue reports, increasing the likelihood of prompt and effective resolution.
 - **PULL_REQUEST_TEMPLATE.md:** Enforces a consistent format for pull requests, making it easier for maintainers to review and merge changes.
-- **proxy.js:** Contains the core logic for the web proxy, handling incoming requests and routing them to the appropriate destination.
-- **index.js:** The entry point of the project, orchestrating the other components and providing a clean interface for user interaction.
-- **package.json:** Manages project dependencies and provides metadata for the project, including version information and license details.
-- **example.env:** A sample environment variable file, providing a template for users to create their own .env file with their specific project settings.
-- **.gitignore:** Specifies files and directories that should be excluded from version control, preventing unnecessary or sensitive data from being tracked in the repository.
-- **test/**: Contains unit tests for the proxy.js module, ensuring its correctness and reliability.
-  - **unit.test.js:** Contains unit tests for the proxy.js module, covering various scenarios and ensuring its correct behavior.
-- **types/**: Contains TypeScript declaration files for the project.
-  - **proxy.d.ts:** Contains TypeScript declarations for the proxy module, enabling type checking and improved development experience.
 
-## Benefits of the New File Structure
-
-- **Improved organization:** The new file structure creates dedicated folders for different types of files, making it easier to find and manage specific information or functionality.
-- **Enhanced testing:** The addition of a test folder allows for comprehensive unit testing of the proxy module, ensuring its reliability and correctness.
-- **Clearer documentation:** The expanded documentation provides thorough explanations of the project's structure, usage, and code of conduct, making it more accessible to users and contributors.
-- **Improved TypeScript support:** The addition of TypeScript declaration files enables type checking and improved development experience for TypeScript users.
-
-## Additional Suggestions
-
-In addition to the files listed above, the following files may also be useful for a more complete project:
-
-- **LICENSE:** Specifies the license under which the project is distributed.
-- **SECURITY.md:** Outlines the project's security considerations and best practices.
-- **CHANGELOG.md:** Tracks changes to the project over time, making it easy to see what has been added, fixed, or changed in each release.
-
-By following these suggestions, you can create a well-structured and documented project that is easy to use and maintain.
+By including these files, you can create a more welcoming and inclusive project environment, and make it easier for contributors to participate in a meaningful way.
