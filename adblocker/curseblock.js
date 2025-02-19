@@ -14,10 +14,36 @@ const curseblock = () => {
     onProxyRes: responseInterceptor((proxyRes, req, res) => {
       const ignoredPaths = ['/favicon.ico', '/robots.txt', '/static/js/main.js', '/static/css/main.css'];
 
-      if (req.path.includes('/ads') || !ignoredPaths.includes(req.path)) {
+      // Block ADS routes
+      if (req.path.includes('/ads')) {
         proxyRes.statusCode = 404;
         proxyRes.end();
+        return;
       }
+
+      // Block /api/swr/* routes
+      if (req.path.includes('/api/swr/')) {
+        proxyRes.statusCode = 404;
+        proxyRes.end();
+        return;
+      }
+
+      // Do not block ignored paths
+      if (ignoredPaths.includes(req.path)) {
+        return;
+      }
+
+      // Block paths that do not start with '/'
+      if (!req.path.startsWith('/')) {
+        proxyRes.statusCode = 404;
+        proxyRes.end();
+        return;
+      }
+
+      // Fix issues where Content-Security-Policy and X-Frame-Options response headers
+      // cause issues on the client side
+      delete proxyRes.headers['content-security-policy'];
+      delete proxyRes.headers['x-frame-options'];
     }),
   });
 
@@ -87,6 +113,6 @@ module.exports = withAdblocker({
 
 ## Notes
 
-* The middleware only intercepts requests to `/ads`. If you need to block other types of content, you can modify the `ignoredPaths` array in `adblocker/curseblock.js`.
+* The middleware only intercepts requests to `/ads` and `/api/swr/*`. If you need to block other types of content, you can modify the `ignoredPaths` array in `adblocker/curseblock.js`.
 * The middleware is not currently compatible with server-side rendering (SSR).
 ```
