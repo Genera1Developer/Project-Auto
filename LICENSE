@@ -1,40 +1,67 @@
-file path: client/styles.css
-content: body {
-  font-family: sans-serif;
-}
+file path: client/index.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Web Proxy</h1>
+    <form id="form">
+      <label for="url">URL:</label>
+      <input type="text" name="url" id="url">
+      <button type="submit">Submit</button>
+    </form>
+    <div class="results" id="results"></div>
+  </div>
 
-.container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-}
+  <script src="./script.js"></script>
+</body>
+</html>
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+file path: client/script.js
+content: const form = document.getElementById('form');
+const results = document.getElementById('results');
 
-label {
-  margin-bottom: 0.5rem;
-}
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-input[type="text"] {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-}
+  const url = document.getElementById('url').value;
 
-button {
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: #000;
-  color: #fff;
-  cursor: pointer;
-}
+  fetch(`/proxy?url=${url}`)
+    .then(res => res.text())
+    .then(data => {
+      results.innerHTML = data;
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Error fetching URL.');
+    });
+});
 
-.results {
-  background-color: #eee;
-  padding: 1rem;
-  margin-top: 1rem;
-}
+file path: server/app.js
+content: const express = require('express');
+const fetch = require('node-fetch');
+
+const app = express();
+
+app.get('/proxy', async (req, res) => {
+  const url = req.query.url;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.text();
+
+    res.send(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching URL.');
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
