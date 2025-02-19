@@ -1,19 +1,23 @@
-FILE PATH: src/proxy.js
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: src/server.js
 CONTENT: 
 ```js
-const axios = require('axios');
+const express = require('express');
+const app = express();
+const PORT = 3000;
+const { proxyRequest } = require('./proxy');
 
-async function proxyRequest(url) {
+app.get('/:url', async (req, res) => {
+    const url = decodeURIComponent(req.params.url);
     try {
-        const response = await axios.get(url);
-        return response.data;
+        const data = await proxyRequest(url);
+        res.send(data);
     } catch (error) {
-        console.error(error);
-        throw error;
+        res.status(500).send('Error fetching data. Please try again.');
     }
-}
+});
 
-module.exports = {
-    proxyRequest
-};
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+});
 ```
