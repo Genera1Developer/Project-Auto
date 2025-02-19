@@ -1,22 +1,14 @@
-FILE PATH: api/search.js
+FILE PATH: server.js
 CONTENT: 
 ```js
-const fetch = require('node-fetch');
-const FormData = require('form-data');
+const express = require('express');
+const app = express();
 
-module.exports = async function search(req, res) {
-  const { query } = req.query;
+app.use(express.json());
 
-  const form = new FormData();
-  form.append('query', query);
+const searchRoute = require('./routes/search');
 
-  const response = await fetch('https://google.com/search', {
-    method: 'POST',
-    body: form,
-  });
+app.use('/api', searchRoute);
 
-  const text = await response.text();
-
-  res.send(text);
-};
+app.listen(3000);
 ```
