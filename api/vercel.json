@@ -1,15 +1,10 @@
-FILE PATH: package.json
+FILE PATH: api/vercel.json
 CONTENT: {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A simple web proxy server",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "nodemon": "^2.0.15"
-  }
+  "version": 1,
+  "routes": [
+    {
+      "src": "/",
+      "dest": "https://google.com"
+    }
+  ]
 }
