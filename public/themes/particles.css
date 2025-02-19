@@ -1,3 +1,36 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: <file_path>
-CONTENT: <file_content>
+FILE PATH: public/themes/particles.css
+CONTENT: /* particles.css */
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.particle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  background: #fff;
+  border-radius: 50%;
+  animation: move 10s infinite linear;
+}
+
+@keyframes move {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(100vw, 100vh);
+  }
+}
