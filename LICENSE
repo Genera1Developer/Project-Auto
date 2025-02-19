@@ -1,77 +1,40 @@
-file path: LICENSE
-content: MIT License
-
-Copyright (c) [year] [copyright holder]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-file path: package.json
-content: {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A fully structured web proxy project",
-  "scripts": {
-    "start": "node server.js",
-    "build": "webpack"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "request": "^2.88.2",
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0"
-  }
+file path: client/styles.css
+content: body {
+  font-family: sans-serif;
 }
 
-file path: webpack.config.js
-content: const path = require('path');
+.container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
 
-module.exports = {
-  mode: 'development',
-  entry: './client/index.js',
-  output: {
-    path: path.resolve(__dirname, 'public'),
-    filename: 'bundle.js'
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      }
-    ]
-  },
-  devServer: {
-    contentBase: './public',
-    port: 3000
-  }
-};
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-file path: server.js
-content: const express = require('express');
-const request = require('request');
+label {
+  margin-bottom: 0.5rem;
+}
 
-const app = express();
+input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+}
 
-app.use(express.static('public'));
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+}
 
-app.get('*', (req, res) => {
-  request(req.url)
-    .pipe(res);
-});
-
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
-});
-
-file path: client/index.js
-content: console.log('Client running');
+.results {
+  background-color: #eee;
+  padding: 1rem;
+  margin-top: 1rem;
+}
