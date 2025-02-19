@@ -1,40 +1,68 @@
-file path: package.json
+file path: api/vercel.json
 content: {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A simple web proxy",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "got": "^11.8.3",
-    "node-fetch": "^2.6.7"
+  "env": {
+    "allowedHeaders": [
+      "Content-Type",
+      "Authorization"
+    ],
+    "allowedMethods": [
+      "GET",
+      "POST",
+      "PUT",
+      "PATCH",
+      "DELETE"
+    ],
+    "allowedOrigins": [
+      "https://example.com"
+    ]
   }
 }
-file path: index.js
-content: const express = require('express');
-const got = require('got');
-const fetch = require('node-fetch');
+file path: index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+  <title>Web Proxy</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/api/proxy" method="GET">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url">
+    <input type="submit" value="Go">
+  </form>
+</body>
+</html>
+file path: style.css
+content: body {
+  font-family: Arial, sans-serif;
+}
 
-const app = express();
+h1 {
+  margin-top: 0;
+}
 
-app.use(express.json());
+form {
+  margin-top: 20px;
+}
 
-app.get('*', async (req, res) => {
-  try {
-    const url = req.query.url;
-    const response = await got(url, {
-      method: req.method,
-      headers: req.headers
-    });
-    res.send(response.body);
-  } catch (error) {
-    res.status(error.response.statusCode).send(error.response.body);
-  }
-});
+label {
+  display: block;
+  margin-bottom: 5px;
+}
 
-app.listen(3000, () => {
-  console.log('Web proxy listening on port 3000');
-});
+input[type="text"] {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+input[type="submit"] {
+  width: 100%;
+  padding: 5px;
+  background-color: #000;
+  color: #fff;
+  border: none;
+}
