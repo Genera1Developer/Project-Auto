@@ -1,55 +1,58 @@
-file: public/index.html
-content:
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <p>Enter a URL below to fetch its content.</p>
-  <form>
-    <label for="url">URL:</label>
-    <input type="text" id="url" placeholder="https://example.com">
-    <button type="submit">Fetch</button>
-  </form>
-  <div id="result"></div>
-  <script src="js/main.js"></script>
-</body>
-</html>
-```
-
-file: public/js/main.js
+file: server.js
 content:
 ```javascript
-const form = document.querySelector('form');
+const http = require('http');
+const url = require('url');
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
+const port = 8080;
 
-  const url = document.querySelector('#url').value;
+http.createServer((req, res) => {
+  if (req.method !== 'GET') {
+    res.statusCode = 405;
+    res.end();
+    return;
+  }
 
-  const request = new Request(url);
+  const parsedUrl = url.parse(req.url);
+  const targetUrl = parsedUrl.query.url;
 
-  fetch(request)
-    .then((response) => {
-      if (response.ok) {
-        return response.text();
-      } else {
-        throw new Error('Error fetching URL.');
-      }
-    })
-    .then((data) => {
-      const result = document.querySelector('#result');
-      result.textContent = data;
-    })
-    .catch((error) => {
-      console.error(error);
-      alert('Error fetching URL.');
-    });
+  if (!targetUrl) {
+    res.statusCode = 400;
+    res.end();
+    return;
+  }
+
+  const request = http.request(targetUrl, (response) => {
+    res.writeHead(response.statusCode, response.headers);
+    response.pipe(res);
+  });
+
+  request.end();
+}).listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
+```
+
+file: README.md
+content:
+```
+## Web Proxy
+
+This project is a simple web proxy that allows you to fetch the content of any URL.
+
+### Usage
+
+1. Clone the repository.
+2. Run `npm install` to install the dependencies.
+3. Run `node server.js` to start the server.
+4. Open your browser and go to `http://localhost:8080`.
+5. Enter a URL in the form and click "Fetch".
+
+The result will be displayed in the "Result" div.
+
+### Notes
+
+* This proxy is only capable of fetching content from HTTP and HTTPS URLs.
+* The proxy does not cache any responses.
+* The proxy does not support any kind of authentication.
 ```
