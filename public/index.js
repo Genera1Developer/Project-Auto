@@ -1,4 +1,4 @@
-FILE PATH: public/index.js
+FILE PATH: public/public/index.js
 CONTENT:
 ```javascript
 const form = document.querySelector('form');
@@ -17,6 +17,11 @@ form.addEventListener('submit', async (event) => {
     },
     body: JSON.stringify({ url, method, body }),
   });
+
+  if (!response.ok) {
+    const error = new Error(response.statusText);
+    throw error;
+  }
 
   const responseBody = await response.text();
 
