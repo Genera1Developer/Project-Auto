@@ -1,16 +1,14 @@
 Based on the project goal, here is the file:
 
-FILE PATH: server.js
+FILE PATH: api/search.js
 CONTENT: 
 ```javascript
 const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
-const searchRouter = require('./api/search.js');
+const router = express.Router();
 
-app.use('/api', searchRouter);
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+router.get('/', (req, res) => {
+  res.send('Hello World!');
 });
+
+module.exports = router;
 ```
