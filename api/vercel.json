@@ -13,6 +13,7 @@
 * README.md
 * tests/
   * test_api_function.py
+* Dockerfile
 
 ## Configuration
 
@@ -29,6 +30,8 @@ The `index.html` file is the entry point for your frontend application.
 The `style.css` file contains the CSS styles for your frontend application.
 
 The `test_api_function.py` file contains tests for your API function.
+
+The `Dockerfile` contains the instructions for building the Docker image that will be used to deploy your application to Vercel.
 
 ## Deployment
 
