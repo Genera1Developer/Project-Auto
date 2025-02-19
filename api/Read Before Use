@@ -1,12 +1,91 @@
-file structure:
+file: api/Read Before Use
 
 ```
-├── api
-│   └── Read Before Use
-├── next.config.js
-├── pages
-│   └── _app.js
-└── package.json
+## Web Proxy for Vercel and Static Serverless Sites
+
+This proxy is designed to handle requests to Vercel and static serverless sites. It can be used to modify or transform requests and responses, and to add additional functionality.
+
+### Usage
+
+To use the proxy, you will need to:
+
+1. Deploy the proxy to a Vercel or other serverless platform.
+2. Configure your client-side application to use the proxy as its base URL.
+3. Make requests to the proxy as you would normally make requests to the target site.
+
+### Features
+
+The proxy includes the following features:
+
+* Support for Vercel and static serverless sites
+* Request and response modification
+* Additional functionality, such as authentication and rate limiting
+
+### Limitations
+
+The proxy has the following limitations:
+
+* It does not support all possible request and response types.
+* It may not be compatible with all client-side applications.
+
+### Documentation
+
+For more information on how to use the proxy, please refer to the following documentation:
+
+* [Deployment instructions](https://github.com/vercel/web-proxy-vercel/blob/main/docs/deployment.md)
+* [Configuration instructions](https://github.com/vercel/web-proxy-vercel/blob/main/docs/configuration.md)
+* [API reference](https://github.com/vercel/web-proxy-vercel/blob/main/docs/api.md)
+
+### Contributing
+
+Contributions to the proxy are welcome. Please read the [contributing guidelines](https://github.com/vercel/web-proxy-vercel/blob/main/CONTRIBUTING.md) before submitting a pull request.
+
+### License
+
+The proxy is licensed under the MIT License.
+```
+
+file: next.config.js
+
+```js
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true
+}
+
+module.exports = nextConfig
+```
+
+file: pages/_app.js
+
+```js
+import { useEffect } from 'react'
+
+function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    // Initialize any client-side functionality here
+  }, [])
+
+  return <Component {...pageProps} />
+}
+
+export default MyApp
+```
+
+file: api/proxy.js
+
+```js
+import { createProxyMiddleware } from 'http-proxy-middleware'
+
+const proxy = createProxyMiddleware({
+  target: 'https://example.com',
+  changeOrigin: true
+})
+
+export default proxy
 ```
 
 file: package.json
@@ -26,6 +105,7 @@ file: package.json
   },
   "dependencies": {
     "cross-fetch": "^3.1.5",
+    "http-proxy-middleware": "^2.0.6",
     "next": "^13.0.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
