@@ -26,3 +26,5 @@ We ask that researchers follow responsible disclosure practices. This includes:
 - `CONTRIBUTING.md`: This file should describe how to contribute to the project, including guidelines for submitting pull requests and reporting bugs.
 - `.github/ISSUE_TEMPLATE/security.md`: This file should provide a template for security issue reports, including information such as the affected version, steps to reproduce the issue, and any potential impact.
 - `CHANGELOG.md`: This file should list all changes made to the project, including security fixes.
+- `.github/CODEOWNERS`: This file should list the individuals or teams responsible for reviewing and approving security-related changes to the project.
+- `.github/workflows/security-audit.yml`: This workflow should automatically scan the project for security vulnerabilities and report any findings.
