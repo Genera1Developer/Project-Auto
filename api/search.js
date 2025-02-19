@@ -1,31 +1,83 @@
-Based on the project goal, following file should be created:
-
-FILE PATH: server/server.js
+FILE PATH: public/index.html
 CONTENT: 
-```javascript
-const express = require('express');
-const got = require('got');
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web Proxy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    input {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 5px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+    }
+    .results {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .result {
+      border: 1px solid #ccc;
+      padding: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form id="form">
+    <label for="query">Query:</label>
+    <input type="text" id="query">
+    <button type="submit">Search</button>
+  </form>
+  <div class="results" id="results"></div>
+  <script>
+    const form = document.getElementById('form');
+    const results = document.getElementById('results');
 
-const app = express();
-const port = 3000;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-app.get('/search', async (req, res) => {
-  const { query } = req.body;
+      const query = document.getElementById('query').value;
 
-  const response = await got('https://www.googleapis.com/customsearch/v1', {
-    searchParams: {
-      key: 'YOUR_API_KEY',
-      cx: 'YOUR_CX',
-      q: query,
-    },
-  });
+      const response = await fetch('/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
 
-  const data = JSON.parse(response.body);
+      const data = await response.json();
 
-  res.json(data);
-});
+      results.innerHTML = '';
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+      data.items.forEach((item) => {
+        const result = document.createElement('div');
+        result.classList.add('result');
+        result.innerHTML = `
+          <h3><a href="${item.link}">${item.title}</a></h3>
+          <p>${item.snippet}</p>
+        `;
+
+        results.appendChild(result);
+      });
+    });
+  </script>
+</body>
+</html>
 ```
