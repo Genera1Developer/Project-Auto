@@ -1,32 +1,30 @@
-FILE PATH: public/index.js
+FILE PATH: server/server.js
 CONTENT: 
 ```javascript
-const form = document.querySelector('form');
+const express = require('express');
+const fetch = require('node-fetch');
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
+const app = express();
 
-  const url = document.querySelector('input[name="url"]').value;
+const PORT = process.env.PORT || 3000;
 
-  if (!url) {
-    alert('Please enter a URL.');
-    return;
+app.use(express.json());
+
+app.post('/proxy', async (req, res) => {
+  const { url } = req.body;
+
+  try {
+    const response = await fetch(url);
+    const contentType = response.headers.get('content-type');
+    const content = await response.text();
+
+    res.json({ contentType, content });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
+});
 
-  fetch('/proxy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ url }),
-  })
-  .then((res) => res.json())
-  .then((data) => {
-    const response = document.querySelector('#response');
-    response.textContent = data.content;
-  })
-  .catch((err) => {
-    alert('Error: ' + err.message);
-  });
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });
 ```
