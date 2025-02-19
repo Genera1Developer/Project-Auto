@@ -1,14 +1,59 @@
-**src/utils/get-hostname.js**
+**public/index.html**
 
-**New File:**
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+  </head>
 
-This file contains a utility function to extract the hostname from a URL.
+  <body>
+    <h1>Web Proxy</h1>
 
-**Code:**
+    <form action="/proxy" method="GET">
+      <label for="url">URL:</label>
+      <input type="text" id="url" name="url" />
+
+      <input type="submit" value="Proxy" />
+    </form>
+
+    <div id="result"></div>
+  </body>
+</html>
+```
+
+**src/index.js**
 
 ```javascript
-export const getHostname = (url) => {
-  const parsedUrl = new URL(url);
-  return parsedUrl.hostname;
-};
+import { createServer } from 'http';
+import getOriginalUrl from './utils/get-original-url.js';
+import getHostname from './utils/get-hostname.js';
+
+const server = createServer(async (req, res) => {
+  try {
+    const originalUrl = getOriginalUrl(req);
+    const hostname = getHostname(originalUrl);
+
+    // Perform the proxy request
+    const proxyRes = await fetch(originalUrl, {
+      headers: {
+        'x-forwarded-host': hostname,
+      },
+    });
+
+    // Set the appropriate headers
+    res.writeHead(proxyRes.status, proxyRes.headers);
+
+    // Pipe the response to the client
+    proxyRes.body.pipe(res);
+  } catch (err) {
+    res.writeHead(500);
+    res.end('Error: ' + err.message);
+  }
+});
+
+server.listen(3000, () => {
+  console.log('Web proxy server listening on port 3000');
+});
 ```
