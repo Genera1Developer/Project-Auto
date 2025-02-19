@@ -1,11 +1,6 @@
 **New Files:**
 
-* **public/theme/default.css**
-* **public/theme/particles.css**
-* **public/theme/dropdown.css**
-* **public/visuals/particles.js**
-* **public/src/adblocker/curseblock.js**
-* **public/src/adblocker/ublock.js**
+* **utils/get-hostname.js**
 
 **Revised public/index.html:**
 
@@ -22,6 +17,7 @@
   <script src="./visuals/particles.js"></script>
   <script src="./src/adblocker/curseblock.js"></script>
   <script src="./src/adblocker/ublock.js"></script>
+  <script src="./utils/get-hostname.js"></script>
 </head>
 <body>
   <div id="particles-js"></div>
@@ -43,6 +39,20 @@
       </form>
     </div>
   </div>
+  <script>
+    const getHostname = require('./utils/get-hostname');
+
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const query = e.target.querySelector('input[name="q"]').value;
+      const hostname = getHostname(query);
+
+      window.location.href = `https://${hostname}`;  
+    });
+  </script>
 </body>
 </html>
 ```
@@ -61,3 +71,5 @@
         * adblocker
             * curseblock.js
             * ublock.js
+    * utils
+        * get-hostname.js
