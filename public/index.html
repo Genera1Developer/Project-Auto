@@ -1,39 +1,55 @@
-file: public/css/style.css
+file: public/index.html
 content:
-```css
-body {
-  font-family: Arial, sans-serif;
-}
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <p>Enter a URL below to fetch its content.</p>
+  <form>
+    <label for="url">URL:</label>
+    <input type="text" id="url" placeholder="https://example.com">
+    <button type="submit">Fetch</button>
+  </form>
+  <div id="result"></div>
+  <script src="js/main.js"></script>
+</body>
+</html>
+```
 
-h1 {
-  font-size: 2em;
-  margin-bottom: 10px;
-}
+file: public/js/main.js
+content:
+```javascript
+const form = document.querySelector('form');
 
-form {
-  margin-bottom: 20px;
-}
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-label {
-  margin-right: 10px;
-}
+  const url = document.querySelector('#url').value;
 
-input {
-  width: 300px;
-  padding: 5px;
-  border: 1px solid #ccc;
-}
+  const request = new Request(url);
 
-button {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  background-color: #eee;
-  cursor: pointer;
-}
-
-#result {
-  background-color: #f9f9f9;
-  padding: 20px;
-  margin-top: 20px;
-}
+  fetch(request)
+    .then((response) => {
+      if (response.ok) {
+        return response.text();
+      } else {
+        throw new Error('Error fetching URL.');
+      }
+    })
+    .then((data) => {
+      const result = document.querySelector('#result');
+      result.textContent = data;
+    })
+    .catch((error) => {
+      console.error(error);
+      alert('Error fetching URL.');
+    });
+});
 ```
