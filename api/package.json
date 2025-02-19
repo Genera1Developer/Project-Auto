@@ -1,19 +1,14 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: <file_path>
-CONTENT: <file_content>
-
-FILE PATH: package.json
+FILE PATH: api/package.json
 CONTENT: {
-  "name": "web-proxy",
+  "name": "web-proxy-api",
   "version": "1.0.0",
-  "description": "A simple web proxy.",
-  "main": "server.js",
+  "description": "A simple web proxy API.",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
-    "axios": "^0.27.2",
-    "express": "^4.18.1"
+    "axios": "^0.27.2"
   }
 }
