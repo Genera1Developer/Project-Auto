@@ -1,16 +1,25 @@
-FILE PATH: server.py
-CONTENT: from flask import Flask, request, Response
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
 
-app = Flask(__name__)
+FILE PATH: client.js
+CONTENT: const form = document.getElementById('form');
 
-@app.route('/', methods=['GET', 'POST'])
-def proxy():
-    if request.method == 'GET':
-        return Response(status=405)
+form.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-    url = request.form['url']
-    response = requests.get(url)
-    return Response(response.content, response.status_code)
+    const url = document.getElementById('url').value;
 
-if __name__ == '__main__':
-    app.run()
+    fetch('/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url })
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById('result').innerHTML = data;
+    })
+    .catch(error => {
+        console.error('Error querying API: ', error);
+    });
+});
