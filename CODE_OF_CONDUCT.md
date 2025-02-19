@@ -39,3 +39,11 @@ We believe that a diverse and inclusive gaming community is essential for a vibr
 ## Reporting Concerns
 
 If you experience or witness any violation of our Code of Conduct, please report it to us at [email protected] All reports will be investigated promptly and confidentially.
+
+### Additional Policies
+
+In addition to our Code of Conduct, we also have the following policies in place:
+
+* **Privacy Policy:** We respect your privacy and will not share your personal information with third parties without your consent.
+* **Terms of Service:** By using our website, you agree to be bound by our Terms of Service.
+* **Refund Policy:** We offer refunds on a case-by-case basis. For more information, please contact us at [email protected]
