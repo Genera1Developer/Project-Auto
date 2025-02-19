@@ -1,34 +1,40 @@
-file path: package-lock.json
+file path: package.json
 content: {
   "name": "web-proxy",
   "version": "1.0.0",
-  "lockfileVersion": 1,
-  "requires": true,
+  "description": "A simple web proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "follow-redirects": {
-      "version": "1.14.9",
-      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.9.tgz",
-      "integrity": "sha512-MQDfihBQz88dmETEzLjx77XA+pp83fRL31YElKQmoHR7zvNcEnpOv2g4SX65L18pdPJ5ubjoh87yw557eai/rw=="
-    },
-    "http": {
-      "version": "0.0.0",
-      "resolved": "https://registry.npmjs.org/http/-/http-0.0.0.tgz",
-      "integrity": "sha1-N/1c/hD5gjpC7TXbyu4rU35T3dw="
-    },
-    "https-proxy-agent": {
-      "version": "5.0.1",
-      "resolved": "https://registry.npmjs.org/https-proxy-agent/-/https-proxy-agent-5.0.1.tgz",
-      "integrity": "sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmx4qcBwYTgKe9O4aql8a+TJk78usAU8kKpVAhzayG8ETCLFxq+g3A=="
-    },
-    "url": {
-      "version": "0.0.0",
-      "resolved": "https://registry.npmjs.org/url/-/url-0.0.0.tgz",
-      "integrity": "sha1-8X459nOg8g5+S0+u3SAo0d54/lM="
-    },
-    "yorkie": {
-      "version": "2.0.0",
-      "resolved": "https://registry.npmjs.org/yorkie/-/yorkie-2.0.0.tgz",
-      "integrity": "sha512-jcKpk36Gt5/N163f90rsgZGvL02kjqcI8d67JVZ3Xzpv0z/wRC3fy82blHwiD/o/z2xlp96RRJUm5+ZV6o2rw=="
-    }
+    "express": "^4.17.1",
+    "got": "^11.8.3",
+    "node-fetch": "^2.6.7"
   }
 }
+file path: index.js
+content: const express = require('express');
+const got = require('got');
+const fetch = require('node-fetch');
+
+const app = express();
+
+app.use(express.json());
+
+app.get('*', async (req, res) => {
+  try {
+    const url = req.query.url;
+    const response = await got(url, {
+      method: req.method,
+      headers: req.headers
+    });
+    res.send(response.body);
+  } catch (error) {
+    res.status(error.response.statusCode).send(error.response.body);
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Web proxy listening on port 3000');
+});
