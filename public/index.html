@@ -1,32 +1,18 @@
-FILE PATH: public/style.css
-CONTENT: body {
-  font-family: Arial, sans-serif;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-input {
-  width: 300px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#result {
-  max-width: 600px;
-  line-height: 1.5rem;
-  text-align: justify;
-}
+FILE PATH: public/index.html
+CONTENT: <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form id="form">
+    <label for="url">Enter a URL:</label>
+    <input type="text" id="url" placeholder="https://example.com" />
+    <button type="submit">Fetch</button>
+  </form>
+  <div id="result"></div>
+</body>
+</html>
