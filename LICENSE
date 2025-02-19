@@ -27,3 +27,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 * **test/index.test.js:** Unit tests for the main module
 * **test/request.test.js:** Unit tests for the request module
 * **test/response.test.js:** Unit tests for the response module
+* **vercel.json:** Vercel configuration file
