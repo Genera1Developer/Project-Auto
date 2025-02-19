@@ -2,17 +2,26 @@ file: api/search.js
 content: 
 ```javascript
 const express = require('express');
+const fetch = require('node-fetch');
 
 const router = express.Router();
+
+async function fetchFromGoogle(query) {
+  const encodedQuery = encodeURIComponent(query);
+  const url = `https://google.com/search?q=${encodedQuery}`;
+  const result = await fetch(url);
+  return result;
+}
 
 router.get('/search', async (req, res) => {
   const query = req.query.q;
 
   try {
-    const results = await doSearch(query);
+    const result = await fetchFromGoogle(query);
+    const data = await result.json();
 
     res.json({
-      results: results
+      results: data
     });
   } catch (error) {
     res.status(500).json({
@@ -20,15 +29,6 @@ router.get('/search', async (req, res) => {
     });
   }
 });
-
-async function doSearch(query) {
-  // This function is a placeholder for your actual search logic
-
-  return [{
-    title: 'Example result',
-    description: 'This is an example result'
-  }];
-}
 
 module.exports = router;
 ```
