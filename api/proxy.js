@@ -20,7 +20,16 @@ const googleProxy = createProxyMiddleware({
   },
 });
 
+const youtubeProxy = createProxyMiddleware({
+  target: "https://youtube.com",
+  changeOrigin: true,
+  pathRewrite: {
+    "^/youtube": "",
+  },
+});
+
 app.use("/google", googleProxy);
+app.use("/youtube", youtubeProxy);
 
 app.get('*', function(req, res) {
   res.sendFile(path.resolve(__dirname, '../public/index.html'));
