@@ -1,14 +1,18 @@
-FILE PATH: api/vercel.json
-CONTENT: {
-  "version": 2,
-  "env": {
-    "PORT": 3000
-  },
+FILE PATH: api/proxy.js
+CONTENT: const express = require('express');
+const app = express();
 
-  "redirects": [
-    {
-      "source": "/api/proxy",
-      "destination": "http://example.com/api/proxy"
+app.get('/api/proxy', async (req, res) => {
+  const url = req.query.url;
+  const request = require('request');
+
+  request(url, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      res.send(body);
+    } else {
+      res.send('Error fetching URL');
     }
-  ]
-}
+  });
+});
+
+app.listen(process.env.PORT);
