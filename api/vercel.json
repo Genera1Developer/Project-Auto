@@ -1,36 +1,12 @@
-FILE PATH: server/proxy.js
-CONTENT: 
-
-// Import the required packages
-const express = require('express');
-const fetch = require('node-fetch');
-
-// Create an express app
-const app = express();
-
-// Create a proxy endpoint
-app.post('/proxy', async (req, res) => {
-  // Get the request body
-  const { body } = req;
-
-  // Fetch the remote URL
-  const response = await fetch(body.url);
-
-  // Send the response back to the client
-  res.json({
-    body: await response.text(),
-  });
-});
-
-// Start the server
-app.listen(3000, () => {
-  console.log('Proxy server running on port 3000');
-});
-
 FILE PATH: api/vercel.json
 CONTENT: 
 
 {
-  "routes": [],
+  "routes": [
+    {
+      "src": "/proxy",
+      "dest": "/api/proxy"
+    }
+  ],
   "functions": {}
 }
