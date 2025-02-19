@@ -19,6 +19,8 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: .env: Environment variables
 - file: nodemon.json: Development configuration
 - file: request-logger.js: Logs all incoming requests
+- file: Dockerfile: Docker image definition
+- file: Dockerignore: Docker build ignore list
 
 **Modifications and Fixes:**
 
@@ -27,6 +29,7 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 * **Performance Enhancements:** The proxy has been optimized to reduce latency and improve overall performance.
 * **Error Handling Improvements:** Enhanced error handling and logging have been added for better debugging and user experience.
 * **Middleware Enhancements:** Custom middleware has been introduced for authentication, rate limiting, and request logging, improving security, user experience, and observability.
+* **Docker Integration:** The application can now be deployed using Docker, simplifying deployment and portability.
 
 **New Files:**
 
@@ -34,6 +37,8 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: middleware.js: Contains custom middleware for handling authentication, rate limiting, and other common tasks.
 - file: routes.js: Defines the Express.js routes for the application, ensuring proper handling of requests.
 - file: request-logger.js: Provides a middleware for logging all incoming requests, facilitating debugging and analysis.
+- file: Dockerfile: Defines the instructions for building the Docker image.
+- file: Dockerignore: Lists files and directories to be excluded during Docker image build.
 
 **Additional Notes:**
 
@@ -44,3 +49,4 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 * Nodemon.json simplifies development by allowing quick server restarts when code changes are made.
 * The use of middleware allows for flexibility and modularity in handling different aspects of the application's functionality.
 * Request logging provides valuable insights into the application's behavior and can aid in troubleshooting.
+* Docker integration enables efficient and portable deployment of the application.
