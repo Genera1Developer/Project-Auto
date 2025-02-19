@@ -4,13 +4,12 @@ CONTENT: /* CSS for the dark theme */
 body {
   background-color: #000;
   color: #fff;
-  font-family: "Helvetica", "Arial", sans-serif; /* added font family */
+  font-family: "Helvetica", "Arial", sans-serif;
 }
 
 h1 {
   font-size: 2rem;
   margin-bottom: 1.5rem;
-  color: #fff; /* added font color */
 }
 
 form {
@@ -21,14 +20,13 @@ label {
   display: inline-block;
   width: 120px;
   text-align: right;
-  color: #fff; /* added font color */
 }
 
 input[type="text"] {
   width: 400px;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
-  border: 1px solid #fff; /* added border */
+  border: 1px solid #fff;
 }
 
 input[type="submit"] {
@@ -52,4 +50,14 @@ iframe {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+#results {
+  margin-top: 2rem;
+  border-top: 1px solid #fff;
+  padding-top: 1rem;
+}
+
+#error {
+  color: red;
 }
