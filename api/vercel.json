@@ -1,12 +1,16 @@
-FILE PATH: api/vercel.json
+FILE PATH: package.json
 CONTENT: 
 
 {
-  "routes": [
-    {
-      "src": "/proxy",
-      "dest": "/api/proxy"
-    }
-  ],
-  "functions": {}
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "request": "^2.88.2"
+  }
 }
