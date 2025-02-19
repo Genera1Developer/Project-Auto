@@ -1,65 +1,46 @@
-file path: public/scripts/main.js
+file path: public/index.html
+content: ```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy</title>
+</head>
+<body>
+    <input type="text" id="url-input">
+    <button type="button" id="go-button">Go</button>
+    <div id="content"></div>
+</body>
+<script src="scripts/main.js"></script>
+</html>
+```
+file path: public/scripts/ad-blocker.js
 content: ```javascript
-const connection = new WebSocket('ws://localhost:8080');
-let currentUrl = '';
-
-connection.onopen = function() {
-    console.log('Connected to the proxy server.');
-};
-
-connection.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    if (data.type === 'response') {
-        handleResponse(data.response);
+class AdBlocker {
+    constructor() {
+        this.adElements = [];
     }
-};
 
-function handleResponse(response) {
-    const url = new URL(currentUrl);
-    const hostname = url.hostname;
-    const data = response.data;
-    const contentType = response.headers.get('Content-Type');
-
-    if (contentType.includes('text/html')) {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(data, 'text/html');
-
-        doc.querySelectorAll('body *').forEach(element => {
-            if (element.tagName === 'SCRIPT') {
-                element.remove();
-            }
+    blockAds() {
+        this.adElements = document.querySelectorAll('iframe, div[id^="google_ads_"], div[id^="adsense_"], div[id^="ad_"], div[id^="banner_"], div[id^="sponsored_links_"], div[id^="sponsored_results_"]');
+        this.adElements.forEach(element => {
+            element.remove();
         });
-
-        const elements = doc.querySelectorAll('script[type="text/javascript"]');
-        Array.from(elements).forEach(element => {
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = element.src;
-            document.head.appendChild(script);
-        });
-
-        const html = doc.documentElement.outerHTML;
-
-        // Handle ad blocking.
-        const adBlocker = new AdBlocker();
-        adBlocker.blockAds();
-
-        // Handle CSS injection.
-        const cssInjector = new CSSInjector();
-        cssInjector.injectCSS();
-
-        // Replace the current page with the modified HTML.
-        document.documentElement.innerHTML = html;
     }
 }
+```
+file path: public/scripts/css-injector.js
+content: ```javascript
+class CSSInjector {
+    constructor() {
+        this.css = '';
+    }
 
-function sendRequest(url) {
-    currentUrl = url;
-    connection.send(JSON.stringify({ type: 'request', url: url }));
+    injectCSS() {
+        const styleElement = document.createElement('style');
+        styleElement.innerHTML = this.css;
+        document.head.appendChild(styleElement);
+    }
 }
-
-window.addEventListener('load', function() {
-    const url = window.location.href;
-    sendRequest(url);
-});
 ```
