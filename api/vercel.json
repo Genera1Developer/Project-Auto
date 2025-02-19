@@ -1,17 +1,12 @@
-- 1) Rewrite the following file to reflect the correct and complete file structure
-
-file: README.md
-
-```
 ## File Structure
 
 * api/
   * vercel.json
   * __init__.py
-  * your_api_function.py
+  * api_function.py
 * src/
   * __init__.py
-  * your_code.py
+  * frontend_code.py
 * static/
   * index.html
   * style.css
@@ -23,9 +18,9 @@ The `vercel.json` file contains the build configuration for the Vercel builder. 
 
 The `__init__.py` files in the `api` and `src` directories are required for Python to recognize these directories as packages.
 
-The `your_api_function.py` file contains the code for your API function.
+The `api_function.py` file contains the code for your API function.
 
-The `your_code.py` file contains the code for your frontend application.
+The `frontend_code.py` file contains the code for your frontend application.
 
 The `index.html` file is the entry point for your frontend application.
 
@@ -44,4 +39,3 @@ This will build your application and deploy it to Vercel.
 ## Usage
 
 Once your application is deployed, you can access it by visiting the URL that Vercel provides you.
-```
