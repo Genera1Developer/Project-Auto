@@ -1,53 +1,38 @@
-### File Structure
+file: package.json
 
-- `api/config.js` (CDN Host List and Configuration)
-- `api/proxy.js` (Web Proxy Handler)
-- `next.config.js` (Next.js Configuration)
-- `README.md` (Project Overview and Usage Instructions)
-- `package.json` (Project Dependencies and Configuration)
-- `.vercel/edge-functions/proxy.js` (Deployed Proxy Function)
-
-### New File: `next.config.js`
-
-```javascript
-module.exports = {
-  // Set the proxy for all API requests
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/proxy/:path*',
-      },
-    ];
+```json
+{
+  "name": "web-proxy-vercel",
+  "version": "1.0.0",
+  "description": "A web proxy for Vercel and static serverless sites",
+  "main": "index.js",
+  "scripts": {
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write .",
+    "test": "jest"
   },
-};
-```
-
-### Improved `api/proxy.js` File
-
-```javascript
-const { fetch } = require('cross-fetch');
-const { getAllowedHosts } = require('./config.js');
-
-const proxy = async (req, res) => {
-  // Get the request URL and host
-  const { url, headers: { host } } = req;
-
-  // Check if the host is allowed to be proxied
-  if (!getAllowedHosts().includes(host)) {
-    return res.status(403).json({ error: 'Host not allowed' });
+  "dependencies": {
+    "cross-fetch": "^3.1.5",
+    "next": "^13.0.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/cross-fetch": "^3.1.11",
+    "@types/node": "^18.11.10",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "eslint": "^8.21.0",
+    "eslint-config-next": "^13.0.7",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jest": "^29.2.3",
+    "prettier": "^2.7.1",
+    "typescript": "^4.9.4"
   }
-
-  // Remove the host from the request URL
-  const newUrl = url.replace(`https://${host}`, '');
-
-  // Set the origin header to the proxy host
-  req.headers['origin'] = `https://${getAllowedHosts()[0]}`;
-
-  // Perform the fetch request and proxy the response back to the client
-  const fetchResponse = await fetch(newUrl, { headers: req.headers });
-  res.status(fetchResponse.status).json(await fetchResponse.json());
-};
-
-export default proxy;
+}
 ```
