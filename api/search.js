@@ -30,17 +30,17 @@ module.exports = asyncHandler(async (req, res) => {
   try {
     // Ensure response type is set to HTML
     req.headers['accept'] = 'text/html';
-
+    
     // Create a Transform stream to rewrite relative URLs
     const transformStream = utility.modifyStream('relativeUrls');
-
+    
     // Proxy the request through the middleware
     await proxyMiddleware(req, res);
-
+    
     // Pipe the response through the Transform stream
     res.pipe(transformStream).pipe(res);
-  } catch (err) {
-    await handle500(err, res);
+  } catch (error) {
+    handle500(error, res);
   }
 });
 ```
@@ -92,7 +92,7 @@ module.exports = asyncHandler;
 This file contains the logic for handling 500 errors.
 
 ```js
-const handle500 = async (err, res) => {
+const handle500 = (err, res) => {
   console.error(err);
   res.writeHead(500);
   res.end('Internal Server Error');
