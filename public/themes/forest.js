@@ -81,6 +81,14 @@ export default {
             margin-top: 1.25rem;
             text-align: right;
         }
+
+        .success {
+            color: #00FF00;
+        }
+
+        .error {
+            color: #FF0000;
+        }
     `
 };
 ```
