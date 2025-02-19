@@ -8,16 +8,14 @@ form.addEventListener('submit', async (event) => {
 
   const url = document.querySelector('input[name="url"]').value;
   const method = document.querySelector('input[name="method"]').value;
-  const body = JSON.stringify({
-    name: 'John Doe',
-  });
+  const body = form.querySelector('textarea[name="body"]').value;
 
   const response = await fetch('/proxy', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body,
+    body: JSON.stringify({ url, method, body }),
   });
 
   const responseBody = await response.text();
