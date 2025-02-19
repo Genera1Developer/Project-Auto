@@ -91,3 +91,36 @@ body {
 .light .theme-icon-light {
     display: none;
 }
+
+.cyber-toggle-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 99;
+}
+
+.cyber-toggle-button-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cyber-toggle-button-label:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.cyber-toggle-button-input {
+    display: none;
+}
+
+.cyber-toggle-button-input:checked ~ .cyber-toggle-button-label {
+    background: rgba(0, 123, 255, 0.2);
+}
