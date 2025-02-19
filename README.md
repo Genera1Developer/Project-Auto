@@ -1,11 +1,3 @@
-**README.md**
-
-**Web Proxy for Vercel and Static Serverless Sites**
-
-**Goal:**
-
-To modify and fix the given web proxy to fully support Vercel and static serverless sites while addressing any bugs and improving its performance.
-
 **File Structure:**
 
 - file: README.md: Project documentation, file structure overview, and new file suggestions
@@ -25,6 +17,7 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: analytics.js: Application usage tracking and analysis
 - file: load-balancer.js: Simple load balancer for distributing requests
 - file: health-check.js: Application health check endpoint
+- file: cache.js: In-memory cache for storing frequently requested responses
 
 **Modifications and Fixes:**
 
@@ -47,6 +40,7 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: analytics.js: Contains logic for tracking and analyzing application usage, providing valuable insights for optimization and decision-making.
 - file: load-balancer.js: Implements a simple load balancer to distribute incoming requests across multiple backend servers, improving scalability and performance.
 - file: health-check.js: Defines a health check endpoint to monitor the status of the application and its underlying infrastructure.
+- file: cache.js: Implements an in-memory cache for storing frequently requested responses, further improving performance.
 
 **Additional Notes:**
 
@@ -58,7 +52,4 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 * The use of middleware allows for flexibility and modularity in handling different aspects of the application's functionality.
 * Request logging provides valuable insights into the application's behavior and can aid in troubleshooting.
 * Docker integration enables efficient and portable deployment of the application.
-
-**Suggested New Files:**
-
-The additional files suggested provide advanced functionality and enhance the application's capabilities for session management, analytics, scalability, and health monitoring. These files are optional but highly recommended for a more robust and feature-rich web proxy.
+* The additional files suggested provide advanced functionality and enhance the application's capabilities for session management, analytics, scalability, health monitoring, and performance optimization. These files are optional but highly recommended for a more robust and feature-rich web proxy.
