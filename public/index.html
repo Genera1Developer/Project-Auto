@@ -1,40 +1,24 @@
-Based on the project goal, the following file should be created:
-
-FILE PATH: public/style.css
+FILE PATH: public/index.html
 CONTENT:
-```css
-body {
-  font-family: sans-serif;
-}
-
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 1em;
-}
-
-input {
-  width: 50%;
-  padding: 0.5em;
-  margin: 0.5em;
-  border: 1px solid #ccc;
-}
-
-button {
-  padding: 0.5em;
-  margin: 0.5em;
-  border: 1px solid #ccc;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
-
-#result {
-  max-width: 800px;
-  padding: 1em;
-  margin: 1em;
-  border: 1px solid #ccc;
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <p>Enter the URL of the website you want to access:</p>
+  <form id="form">
+    <input type="text" id="url" placeholder="URL">
+    <button type="submit">Go</button>
+  </form>
+  <div id="result"></div>
+  <script src="/script.js"></script>
+</body>
+</html>
 ```
