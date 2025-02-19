@@ -1,11 +1,20 @@
-FILE PATH: api/config/default.js
-CONTENT: module.exports = {
-  port: 8080,
-  hostname: 'localhost',
-  proxyUrl: 'http://api.example.com',
-  protocol: 'http',
-  allowedOrigins: ['http://localhost:3000', 'http://example.com'],
-  headers: {
-    'X-Forwarded-Proto': 'https'
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: api/controllers/proxy.controller.js
+CONTENT:
+```js
+const fetch = require('node-fetch');
+const config = require('../config/default');
+
+const fetchProxy = async (req, res) => {
+  try {
+    const response = await fetch(`${config.protocol}://${config.hostname}:${config.port}/${req.url}`);
+    const data = await response.text();
+    res.header(config.headers);
+    res.send(data);
+  } catch (error) {
+    res.status(500).send(error);
   }
 };
+
+module.exports = fetchProxy;
+```
