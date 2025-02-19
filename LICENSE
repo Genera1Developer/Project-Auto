@@ -12,63 +12,18 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
-**package.json:**
-
-```json
-{
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A web proxy for Vercel and static serverless sites",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "node src/index.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "memoize-one": "^5.2.1",
-    "request": "^2.88.2"
-  },
-  "license": "MIT"
-}
-```
-
-**README.md:**
-
-```
-# Web Proxy for Vercel and Static Serverless Sites
-
-## Description
-
-This project provides a web proxy that enables Vercel and static serverless sites to access the functionality of server-side code.
-
-## Features
-
-* Proxies requests to server-side code
-* Caches responses to improve performance
-* Handles cross-origin requests
-
-## Usage
-
-To use the proxy, you will need to:
-
-1. Clone the repository
-2. Install the dependencies
-3. Start the proxy
-4. Configure your Vercel or static serverless site to use the proxy
-
-For more detailed instructions, please refer to the documentation on the project's website.
-
-## Contributing
-
-Contributions are welcome! Please read the contributing guidelines before submitting a pull request.
-
-## License
-
-This project is licensed under the MIT License.
-```
-
 **New Files:**
 
 * **CHANGELOG.md:** Changelog for tracking changes and updates
 * **CONTRIBUTING.md:** Guidelines for contributing to the project
 * **.gitignore:** File to ignore unnecessary files from being committed to the repository
+* **src/cache.js:** Module for caching responses
+* **src/constants.js:** Module for storing constant values
+* **src/index.js:** Main module for the web proxy
+* **src/request.js:** Module for handling requests
+* **src/response.js:** Module for handling responses
+* **test/cache.test.js:** Unit tests for the cache module
+* **test/constants.test.js:** Unit tests for the constants module
+* **test/index.test.js:** Unit tests for the main module
+* **test/request.test.js:** Unit tests for the request module
+* **test/response.test.js:** Unit tests for the response module
