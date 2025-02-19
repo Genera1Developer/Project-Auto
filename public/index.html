@@ -1,83 +1,14 @@
-**README.md**
+**src/utils/get-hostname.js**
 
-**Project Goal:**
+**New File:**
 
-* Modify and fix the given web proxy to work fully for Vercel and static serverless sites.
-* Fix any bugs along the way.
-* Ensure that multiple files are created to properly structure the project.
+This file contains a utility function to extract the hostname from a URL.
 
-**File Structure:**
-
-* public
-    * index.html
-    * theme
-        * default.css
-        * particles.css
-        * dropdown.css
-    * visuals
-        * particles.js
-    * src
-        * adblocker
-            * curseblock.js
-            * ublock.js
-    * utils
-        * get-hostname.js
-
-**src/adblocker/ublock.js**
-
-**Improvements:**
-
-* Fixed a typo in the `filter` object.
-* Added the `blocking` permission to the `chrome.webRequest.onBeforeRequest` listener to ensure that the ad blocking rules are applied.
-
-**Revised Code:**
+**Code:**
 
 ```javascript
-const filter = {
-  urls: [
-    "*://*.doubleclick.net/*",
-    "*://*.googlesyndication.com/*",
-    "*://*.googleadservices.com/*",
-    "*://*.google-analytics.com/*",
-    "*://*.gstatic.com/*",
-    "*://*.facebook.com/*",
-    "*://*.quantserve.com/*",
-    "*://*.adnxs.com/*",
-    "*://*.criteo.com/*",
-    "*://*.rubiconproject.com/*",
-    "*://*.yieldmo.com/*",
-    "*://*.adx.net/*",
-    "*://*.buysellads.com/*",
-    "*://*.openx.com/*",
-    "*://*.adroll.com/*",
-    "*://*.mediavine.com/*",
-    "*://*.revcontent.com/*",
-    "*://*.taboola.com/*",
-    "*://*.outbrain.com/*",
-    "*://*.addtoany.com/*",
-    "*://*.sharethis.com/*",
-    "*://*.addthis.com/*",
-    "*://*.linkedin.com/*",
-    "*://*.twitter.com/*"
-  ]
+export const getHostname = (url) => {
+  const parsedUrl = new URL(url);
+  return parsedUrl.hostname;
 };
-
-const blockingRules = [
-  {
-    condition: filter,
-    action: { type: "block" }
-  }
-];
-
-chrome.webRequest.onBeforeRequest.addListener(
-  (details) => {
-    for (const rule of blockingRules) {
-      if (rule.condition.urls.some((url) => details.url.includes(url))) {
-        return { cancel: true };
-      }
-    }
-  },
-  { urls: ["<all_urls>"] },
-  ["blocking"]
-);
 ```
