@@ -9,6 +9,7 @@
   - error-handler.js
   - cache.js
   - config.js
+  - utils.js
   - README.md
 ```
 
@@ -39,6 +40,7 @@ https://<your-vercel-domain>.vercel.app/api/https://google.com
 - Caching
 - Flexible configuration (rate limit, cache size, etc.)
 - Fast and reliable
+- Utility functions for common tasks (e.g., logging, JSON parsing)
 
 **Rate Limiting:**
 
