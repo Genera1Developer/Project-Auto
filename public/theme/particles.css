@@ -14,8 +14,8 @@
 :root {
     --primary-glow: rgba(140, 196, 247, 0.8);
     --secondary-glow: rgba(140, 196, 247, 0.6);
-    --background-color: black;
-    --cyber-text-color: white;
+    --background-color: white;
+    --cyber-text-color: #333;
 }
 
 .light {
@@ -112,12 +112,6 @@ body {
 - Removed the `backdrop-filter` property from the `body`, `cyber-card`, and `cyber-input` elements as it was causing issues with Vercel and static serverless sites.
 - Updated the `cyber-card` and `cyber-input` elements to use `rgba()` values for their backgrounds and borders to ensure they are fully customizable.
 - Added the `display: none` property to the `cyber-bg` element to hide it by default.
-
-## New Files
-
-- `package.json`
-
-The `package.json` file is used to manage the project's dependencies. In this case, we are using the `particles.js` library, which is a dependency that is required for the particles effect to work.
 
 ## Additional Notes
 
