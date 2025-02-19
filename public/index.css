@@ -1,26 +1,21 @@
-FILE PATH: public/index.css
+FILE PATH: public/index.html
 CONTENT: 
-```css
-body {
-  font-family: sans-serif;
-}
-
-h1 {
-  text-align: center;
-}
-
-#form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-}
-
-#result {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  overflow: auto;
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/proxy" id="form">
+    <input type="text" name="url" placeholder="Enter a URL">
+    <button type="submit">Submit</button>
+  </form>
+  <div id="result"></div>
+</body>
+</html>
 ```
