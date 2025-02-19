@@ -1,3 +1,16 @@
+**File Structure:**
+
+* README.md
+* public/
+    * index.html
+* src/
+    * index.js
+    * utils/
+        * get-original-url.js
+        * get-hostname.js
+
+**Updated Code:**
+
 **public/index.html**
 
 ```html
@@ -13,7 +26,7 @@
 
     <form
       action="/proxy"
-      method="GET"
+      method="POST"
       onsubmit="handleFormSubmit(event)"
     >
       <label for="url">URL:</label>
@@ -93,8 +106,31 @@ server.listen(3000, () => {
 });
 ```
 
-**New files:**
+**utils/get-original-url.js**
 
-* **public/index.html** - Updated the form to use a POST request and handle the response using JavaScript.
-* **utils/get-original-url.js** - Added a utility function to extract the original URL from the request.
-* **utils/get-hostname.js** - Added a utility function to extract the hostname from the original URL.
+```javascript
+export default function getOriginalUrl(url) {
+  if (url.startsWith('https://')) {
+    return url.slice(8);
+  } else if (url.startsWith('http://')) {
+    return url.slice(7);
+  } else {
+    return url;
+  }
+}
+```
+
+**utils/get-hostname.js**
+
+```javascript
+export default function getHostname(url) {
+  const parts = url.split('/');
+  return parts[0].replace(':', '');
+}
+```
+
+**Changes:**
+
+* Updated the front-end to use a POST request instead of a GET request.
+* Added utility functions to extract the original URL and hostname from the request.
+* Fixed the issue where the proxy headers were not being set correctly.
