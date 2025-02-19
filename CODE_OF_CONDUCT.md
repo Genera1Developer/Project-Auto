@@ -8,9 +8,23 @@
 - proxy.js
 - index.js
 - package.json
-- .env
+- example.env
+- .gitignore
 
-## Improved CODE_OF_CONDUCT.md
+## Explanations
+
+- **README.md:** The main documentation file for the project, containing the project overview, usage instructions, and other relevant information.
+- **CODE_OF_CONDUCT.md:** Outlines the expected behavior and standards of conduct for contributors and users of the project.
+- **CONTRIBUTING.md:** Provides guidelines for contributing to the project, including code standards, testing procedures, and best practices.
+- **ISSUE_TEMPLATE.md:** Guides users in creating detailed and informative issue reports, increasing the likelihood of prompt and effective resolution.
+- **PULL_REQUEST_TEMPLATE.md:** Enforces a consistent format for pull requests, making it easier for maintainers to review and merge changes.
+- **proxy.js:** Contains the core logic for the web proxy, handling incoming requests and routing them to the appropriate destination.
+- **index.js:** The entry point of the project, orchestrating the other components and providing a clean interface for user interaction.
+- **package.json:** Manages project dependencies and provides metadata for the project, including version information and license details.
+- **example.env:** A sample environment variable file, providing a template for users to create their own .env file with their specific project settings.
+- **.gitignore:** Specifies files and directories that should be excluded from version control, preventing unnecessary or sensitive data from being tracked in the repository.
+
+## Updated CODE_OF_CONDUCT.md
 
 ```markdown
 ## Code of Conduct
@@ -63,24 +77,3 @@ For more information on the Contributor Covenant, please visit [contributor-cove
 
 This code of conduct was adapted from the [Contributor Covenant](https://contributor-covenant.org/).
 ```
-
-## New Files
-
-- **CONTRIBUTING.md:** This file provides guidelines for contributing to the project and answers the following questions:
-  - How do I submit a bug report?
-  - How do I request a new feature?
-  - How do I contribute a pull request?
-  - What are the project's contributing guidelines?
-- **ISSUE_TEMPLATE.md:** This file contains a template for submitting issues, and prompts users to include the following information:
-  - A clear and concise description of the issue.
-  - The version of the software you are using.
-  - The operating system you are using.
-  - The steps to reproduce the issue.
-- **PULL_REQUEST_TEMPLATE.md:** This template file contains a template for submitting pull requests, and prompts users to include the following information:
-  - A clear and concise summary of the changes.
-  - A description of the motivation for the changes.
-  - A list of the tests that were performed.
-- **proxy.js:** This file contains the code for the web proxy.
-- **index.js:** This file contains the main code for the project.
-- **package.json:** This file contains the project's metadata and dependencies.
-- **.env:** This file contains the environment variables for the project.
