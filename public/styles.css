@@ -1,28 +1,39 @@
-file: public/index.html
+file: public/styles.css
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```css
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./styles.css" />
-  <title>Web Proxy</title>
-</head>
+h1 {
+  text-align: center;
+}
 
-<body>
-  <h1>Web Proxy</h1>
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
 
-  <form id="form">
-    <input type="text" placeholder="Enter URL" name="url" id="url" />
-    <button type="submit">Go</button>
-  </form>
+input {
+  padding: 0.5rem;
+  width: 25rem;
+}
 
-  <div id="result"></div>
+button {
+  padding: 0.5rem;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
 
-  <script src="./script.js"></script>
-</body>
-
-</html>
+#result {
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid #ccc;
+  overflow: scroll;
+}
 ```
