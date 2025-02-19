@@ -4,54 +4,68 @@
 - `api/proxy.js`
 - **`api/vercel.yml`** (Updated from `.json` to `.yml` for Vercel compatibility)
 - `package.json`
-- `test/proxy.test.js` (Optional)
+- **`src/.vercel/edge-functions/vercel-proxy/requirements.txt`** (New file for Python requirements)
+- **`src/.vercel/edge-functions/vercel-proxy/vercel-proxy.py`** (New Python script)
+- **`test/proxy.test.js`** (Optional)
 
 **Improved `api/vercel.yml`**
 
 ```yml
 version: 2
 builds:
-  - src: /api/proxy.js
-    use: "@vercel/node"
-routes:
-  - src: "/(.*)"
-    dest: "/api/proxy.js"
-functions:
-  proxy:
-    src: /api/proxy.js
-    runtime: "nodejs14.x"
+  - src: /src/
+    use: "@vercel/python-edge"
+    config:
+      experimental: edge-functions
 ```
 
 **Changes and Additions**
 
-- Updated the file extension from `.json` to `.yml` to match the new Vercel build configuration format.
-- Added a `version` field to the configuration.
+- Updated the build configuration to use Vercel's Python edge function support.
+- Removed the `functions` section, as edge functions are now configured in the `builds` section.
 
 **Additional Files**
 
-**`README.md`**
+**`src/.vercel/edge-functions/vercel-proxy/requirements.txt`**
 
-This file should provide a clear and concise explanation of the project's purpose, setup instructions, and usage.
+This file contains the Python dependencies for the edge function. In this case, it only includes `cross-fetch`.
 
-**`package.json`**
+```txt
+cross-fetch
+```
 
-This file should include dependencies for the following:
+**`src/.vercel/edge-functions/vercel-proxy/vercel-proxy.py`**
 
-- `vercel` for deploying to Vercel
-- `cross-fetch` for making HTTP requests in the proxy (replaces `node-fetch` for compatibility with both Node.js and browsers)
+This is the Python script that implements the proxy functionality. It uses `cross-fetch` to make HTTP requests and forward the responses to the client.
 
-Example `package.json`:
+```python
+import json
 
-```json
-{
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A web proxy for Vercel and static serverless sites",
-  "dependencies": {
-    "cross-fetch": "^3.1.5",
-    "vercel": "^25.0.0"
-  }
-}
+from cross_fetch import fetch
+
+async def handler(request):
+  """HTTP Cloud Function.
+  Args:
+      request (flask.Request): The request object.
+      <https://flask.palletsprojects.com/en/1.1.x/api/#incoming-request-data>
+  Returns:
+      The response text, or any set of values that can be turned into a
+      Response object using `make_response`
+      <https://flask.palletsprojects.com/en/1.1.x/api/#flask.make_response>.
+  """
+  url = request.args.get("url")
+  if not url:
+    return ("Missing 'url' parameter.", 400)
+
+  try:
+    response = await fetch(url)
+    headers = {}
+    for name, value in response.headers.items():
+      headers[name] = value
+  except Exception as e:
+    return (str(e), 500)
+
+  return (response.body, 200, headers)
 ```
 
 **`test/proxy.test.js` (Optional)**
