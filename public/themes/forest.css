@@ -39,3 +39,21 @@ input[type="submit"] {
 iframe {
   border: none;
 }
+
+.tree-logo {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: 0;
+  left: 0;
+}
+
+.tree-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url('/img/forest.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.3;
+}
