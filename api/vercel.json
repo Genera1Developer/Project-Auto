@@ -1,35 +1,10 @@
-FILE PATH: templates/index.html
+FILE PATH: api/vercel.json
 CONTENT: 
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
-</head>
-<body>
-    <form action="/proxy" method="POST">
-        <label for="url">URL:</label>
-        <input type="text" id="url" name="url">
-
-        <label for="method">Method:</label>
-        <select name="method">
-            <option value="GET">GET</option>
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-            <option value="DELETE">DELETE</option>
-        </select>
-
-        <label for="headers">Headers:</label>
-        <textarea name="headers" id="headers"></textarea>
-
-        <label for="body">Body:</label>
-        <textarea name="body" id="body"></textarea>
-
-        <button type="submit">Submit</button>
-    </form>
-</body>
-</html>
+```json
+{
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
 ```
