@@ -1,84 +1,37 @@
-file path: api/package.json
-content: {
-  "name": "Curse-Static",
-  "version": "2.5.9",
-  "description": "Curse Static Web Proxy",
-  "type": "module",
-  "main": "proxy.js",
-  "scripts": {
-    "start": "node proxy.js",
-    "dev": "nodemon proxy.js"
-  },
-  "dependencies": {
-    "axios": "^1.6.2",
-    "cheerio": "^1.0.0-rc.11",
-    "express": "^4.18.2",
-    "express-async-handler": "^1.4.6",
-    "express-rate-limit": "^7.5.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.12.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "nodemon": "^3.0.2",
-    "prettier": "^2.7.1"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
-}
 file path: api/proxy.js
-content: 
-file path: api/README.md
-content: # Curse Static Proxy
+content: const express = require("express");
+const axios = require("axios");
+const cheerio = require("cheerio");
+const rateLimit = require("express-rate-limit");
 
-This project provides a simple and easy-to-use static web proxy.
+const app = express();
 
-## Usage
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-To use the proxy, simply send a GET request to the following endpoint:
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // limit each IP to 100 requests per windowMs
+});
 
-```
-https://<your-proxy-address>/<target-url>
-```
+app.use(limiter);
 
-For example, to proxy a request to the Google homepage, you would send a GET request to the following endpoint:
+app.get("/:url", async (req, res) => {
+  try {
+    const targetUrl = req.params.url;
 
-```
-https://<your-proxy-address>/https://www.google.com
-```
+    const { data } = await axios.get(targetUrl);
 
-The proxy will then fetch the content from the target URL and return it to you.
+    const $ = cheerio.load(data);
 
-## Features
+    res.send($.html());
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
 
-* **Simple and easy to use:** Just send a GET request to the proxy endpoint and it will fetch the content from the target URL.
-* **Supports all HTTP methods:** The proxy supports all HTTP methods, including GET, POST, PUT, and DELETE.
-* **Rate limiting:** The proxy can be configured to rate limit requests to prevent abuse.
-* **Customizable:** The proxy can be customized to your specific needs.
+const port = process.env.PORT || 3000;
 
-## Installation
-
-To install the proxy, simply clone the GitHub repository and run the following command:
-
-```
-npm install
-```
-
-Once the proxy is installed, you can start it by running the following command:
-
-```
-node proxy.js
-```
-
-## Configuration
-
-The proxy can be configured by editing the `config.js` file. The following options are available:
-
-* **port:** The port that the proxy will listen on.
-* **rateLimit:** The maximum number of requests that the proxy will allow per minute.
-* **blacklist:** A list of URLs that the proxy will not proxy.
-
-## Contributing
-
-Contributions are welcome! Please read the [contributing guidelines](https://github.com/CurseStatic/web-proxy/blob/main/CONTRIBUTING.md) before submitting a pull request.
+app.listen(port, () => {
+  console.log(`Proxy listening on port ${port}`);
+});
