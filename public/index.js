@@ -1,34 +1,33 @@
-FILE PATH: public/index.js
+Based on the project goal, the following file should be created:
+
+FILE PATH: public/proxy.js
 CONTENT:
 ```javascript
-const form = document.querySelector('form');
+const express = require('express');
+const request = require('request');
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
+const app = express();
+app.use(express.json());
 
-  const url = document.querySelector('input[name="url"]').value;
-  const method = document.querySelector('select[name="method"]').value;
-  const body = document.querySelector('textarea[name="body"]').value;
+app.post('/proxy', (req, res) => {
+  const { url, method, body } = req.body;
 
   const requestBody = {
-    url,
     method,
+    url,
     body,
   };
 
-  fetch('/proxy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      document.querySelector('#result').innerHTML = data.content;
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  request(requestBody, (error, response, body) => {
+    if (error) {
+      res.status(500).send(error);
+    } else {
+      res.send({ content: body });
+    }
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Proxy server listening on port 3000');
 });
 ```
