@@ -29,6 +29,7 @@ const observer = new MutationObserver((mutations) => {
 
 observer.observe(document.body, { childList: true, subtree: true });
 
+// Adding a function to unblock ads
 const unblockAds = () => {
   observer.disconnect();
   console.log('Ads are now unblocked.');
