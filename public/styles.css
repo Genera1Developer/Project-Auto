@@ -1,62 +1,25 @@
-file: public/scripts/main.js
+file: public/styles.css
 content: 
-```js
-const form = document.querySelector('form');
-const results = document.querySelector('.results');
+```css
+body {
+  font-family: sans-serif;
+}
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+form {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
 
-  const url = document.querySelector('input[name="url"]').value;
+.results {
+  width: 100%;
+  max-width: 1024px;
+  padding: 1rem;
+  margin: 0 auto;
+  line-height: 1.5rem;
+}
 
-  try {
-    const response = await fetch('/proxy', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ url }),
-    });
-
-    const data = await response.json();
-
-    results.textContent = data.content;
-  } catch (error) {
-    console.error(error);
-    results.textContent = 'An error occurred. Please try again.';
-  }
-});
-```
-file: server.js
-content: 
-```js
-const express = require('express');
-const puppeteer = require('puppeteer');
-
-const app = express();
-
-app.use(express.json());
-
-app.post('/proxy', async (req, res) => {
-  const { url } = req.body;
-
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-
-  try {
-    await page.goto(url);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'An error occurred. Please try again.' });
-    return;
-  }
-
-  const content = await page.content();
-
-  await browser.close();
-
-  res.json({ content });
-});
-
-app.listen(3000);
+.error {
+  color: red;
+}
 ```
