@@ -1,18 +1,25 @@
-file: server/models/proxy.js
+file: client/views/proxy.handlebars
 content:
-```javascript
-const mongoose = require('mongoose');
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-const proxySchema = new mongoose.Schema({
-    url: {
-        type: String,
-        required: true,
-    },
-    date: {
-        type: Date,
-        default: Date.now,
-    },
-});
+<head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/public/css/style.css" />
+    <script src="/public/js/script.js"></script>
+</head>
 
-module.exports = mongoose.model('Proxy', proxySchema);
+<body>
+    <h1>Web Proxy</h1>
+    <form id="proxy-form">
+        <label for="url">Enter a URL:</label>
+        <input type="text" name="url" id="url" />
+        <button type="submit">Submit</button>
+    </form>
+    <div id="result"></div>
+</body>
+
+</html>
 ```
