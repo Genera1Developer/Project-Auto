@@ -1,25 +1,19 @@
-FILE PATH: model/proxy.js
+FILE PATH: api/proxy.js
 CONTENT: 
 ```javascript
-const fetch = require('node-fetch');
+const express = require('express');
+const router = express.Router();
+const cors = require('cors');
 
-const getProxyData = async (url, method, headers, body) => {
-  const formData = new FormData();
+const { getProxyData } = require('../model/proxy');
 
-  formData.append('url', url);
-  formData.append('method', method);
-  formData.append('headers', JSON.stringify(headers));
-  formData.append('body', body);
+router.post('/', cors(), async (req, res) => {
+  const { url, method, headers, body } = req.body;
 
-  const response = await fetch('http://localhost:8000/proxy', {
-    method: 'POST',
-    body: formData,
-  });
+  const data = await getProxyData(url, method, headers, body);
 
-  const data = await response.json();
+  res.json(data);
+});
 
-  return data;
-};
-
-module.exports = { getProxyData };
+module.exports = router;
 ```
