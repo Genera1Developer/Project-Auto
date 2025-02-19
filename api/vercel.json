@@ -1,144 +1,20 @@
-Based on the project goal, the following files should be created:
-
-FILE PATH: static/index.html
-CONTENT: 
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy</title>
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form action="/api/proxy" method="POST">
-    <label for="url">URL:</label>
-    <input type="text" id="url" name="url" />
-    <input type="submit" value="Submit" />
-  </form>
-</body>
-</html>
-```
-
-FILE PATH: static/style.css
-CONTENT: 
-
-```css
-body {
-  font-family: Arial, sans-serif;
-}
-
-h1 {
-  margin-bottom: 1rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-label {
-  margin-bottom: 0.5rem;
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-}
-
-input[type="submit"] {
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
-```
-
-FILE PATH: api/proxy.js
-CONTENT: 
-
-```javascript
-const fetch = require('node-fetch');
-
-module.exports = async (req, res) => {
-  const { url } = req.body;
-  const response = await fetch(url);
-  const data = await response.text();
-  res.send(data);
-};
-```
-
-FILE PATH: package.json
+FILE PATH: api/vercel.json
 CONTENT: 
 
 ```json
 {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A simple web proxy.",
-  "scripts": {
-    "dev": "nodemon api/proxy.js",
-    "start": "node api/proxy.js"
-  },
-  "dependencies": {
-    "node-fetch": "^3.2.0"
-  }
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/.",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/proxy",
+      "dest": "api/proxy.js"
+    }
+  ]
 }
-```
-
-FILE PATH: .github/workflows/ci.yml
-CONTENT: 
-
-```yaml
-name: CI
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: Run Tests
-        run: npm test
-      - name: Deploy
-        uses: vercel/vercel-action@v1.0.1
-        with:
-          token: ${{ secrets.VERCEL_TOKEN }}
-          args: --prod
-```
-
-FILE PATH: README.md
-CONTENT: 
-
-```markdown
-# Web Proxy
-
-This is a simple web proxy that allows you to access websites that may be blocked in your region.
-
-## Usage
-
-To use the proxy, simply enter the URL of the website you want to access into the form on the homepage and click "Submit". The proxy will then fetch the website and display it in your browser.
-
-## Deployment
-
-To deploy the proxy to Vercel, you will need to create a new project and add the following environment variables:
-
-- `VERCEL_VERCEL_TOKEN`: Your Vercel token
-- `NODE_PORT`: The port that the proxy will listen on (default: 3000)
-
-Once you have added these environment variables, you can deploy the proxy by clicking the "Deploy" button in the Vercel dashboard.
 ```
