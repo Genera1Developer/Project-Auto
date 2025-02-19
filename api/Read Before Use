@@ -1,0 +1,45 @@
+  sSSs   .S       S.    .S_sSSs      sSSs    sSSs         .S_SSSs     .S_sSSs     .S  
+ d%%SP  .SS       SS.  .SS~YS%%b    d%%SP   d%%SP        .SS~SSSSS   .SS~YS%%b   .SS  
+d%S'    S%S       S%S  S%S   `S%b  d%S'    d%S'          S%S   SSSS  S%S   `S%b  S%S  
+S%S     S%S       S%S  S%S    S%S  S%|     S%S           S%S    S%S  S%S    S%S  S%S  
+S&S     S&S       S&S  S%S    d*S  S&S     S&S           S%S SSSS%S  S%S    d*S  S&S  
+S&S     S&S       S&S  S&S   .S*S  Y&Ss    S&S_Ss        S&S  SSS%S  S&S   .S*S  S&S  
+S&S     S&S       S&S  S&S_sdSSS   `S&&S   S&S~SP        S&S    S&S  S&S_sdSSS   S&S  
+S&S     S&S       S&S  S&S~YSY%b     `S*S  S&S           S&S    S&S  S&S~YSSY    S&S  
+S*b     S*b       d*S  S*S   `S%b     l*S  S*b           S*S    S&S  S*S         S*S  
+S*S.    S*S.     .S*S  S*S    S%S    .S*P  S*S.          S*S    S*S  S*S         S*S  
+ SSSbs   SSSbs_sdSSS   S*S    S&S  sSS*S    SSSbs        S*S    S*S  S*S         S*S  
+  YSSP    YSSP~YSSY    S*S    SSS  YSS'      YSSP        SSS    S*S  S*S         S*S  
+                       SP                                       SP   SP          SP   
+                       Y                                        Y    Y           Y    
+
+
+>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?
+
+|\     /|(  ____ \(  ___  )(  ____ \(  ____ \      (  ____ \|\     /|\__   __/(  __  \ (  ____ \
+| )   ( || (    \/| (   ) || (    \/| (    \/      | (    \/| )   ( |   ) (   | (  \  )| (    \/
+| |   | || (_____ | (___) || |      | (__          | |      | |   | |   | |   | |   ) || (__    
+| |   | |(_____  )|  ___  || | ____ |  __)         | | ____ | |   | |   | |   | |   | ||  __)   
+| |   | |      ) || (   ) || | \_  )| (            | | \_  )| |   | |   | |   | |   ) || (      
+| (___) |/\____) || )   ( || (___) || (____/\      | (___) || (___) |___) (___| (__/  )| (____/\
+(_______)\_______)|/     \|(_______)(_______/      (_______)(_______)\_______/(______/ (_______/
+
+
+  To use this properly within your static, or dynamic site, you can follow these steps:
+
+    - Create a redirect function within your site
+    - Specify said redirect to /api/proxy.js?q={url}
+    - Create a simple textbox, with the contents set to {url}
+    - Create a way such as the enter button or a go button to utilize the redirect
+
+  By the end of all this, you should be good to go.  
+  When testing, check that the URL switches to {yoursite}//api/proxy.js?q={https}%3A%2F%2F{site}
+
+  Alternatively you can:
+
+    - Create a request to https://curse-api-server.vercel.app/api/proxy.js?q=https://{URL} 
+    - Or Put https://curse-api-server.vercel.app/api/proxy.js?q=https://{URL} in an iframe
+
+For the iframe to work https://curse-api-server.vercel.app/ MUST be unblocked.
+
+>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?
