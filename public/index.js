@@ -1,24 +1,32 @@
-FILE PATH: public/style.css
+FILE PATH: public/index.html
 CONTENT: 
-```css
-body {
-  font-family: Arial, sans-serif;
-}
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-form {
-  width: 50%;
-  margin: 0 auto;
-}
+  <body>
+    <h1>Web Proxy</h1>
 
-label {
-  display: block;
-  margin-bottom: 5px;
-}
+    <form action="/proxy" method="POST">
+      <label for="url">URL:</label>
+      <input type="text" id="url" name="url" />
 
-input,
-textarea {
-  width: 100%;
-  padding: 5px;
-  margin-bottom: 5px;
-}
+      <label for="method">Method:</label>
+      <select id="method" name="method">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+      </select>
+
+      <label for="body">Body:</label>
+      <textarea id="body" name="body"></textarea>
+
+      <button type="submit">Proxy</button>
+    </form>
+  </body>
+</html>
 ```
