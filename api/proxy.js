@@ -12,19 +12,18 @@
 const express = require("express");
 const axios = require("axios");
 const errorHandler = require("./utils/error");
+const cors = require("cors");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.static("api/static"));
 
 app.get("/proxy", async (req, res) => {
   try {
     const { url } = req.query;
     if (!url) throw errorHandler.badRequest("Missing URL parameter.");
-
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
     const response = await axios.get(url);
     res.send(response.data);
@@ -51,6 +50,7 @@ app.listen(port, () => {
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "cors": "^2.8.5",
     "express": "^4.18.1",
     "errorhandler": "^1.5.0"
   }
@@ -140,7 +140,5 @@ module.exports = errorHandler;
 
 ## Changes:
 
-- Fixed missing URL parameter handling.
-- Improved error handling using `http-errors`.
-- Created a separate `utils/error.js` file for error handling.
-- Added a simple static HTML page for information about the service.
+- Added CORS handling using `cors` package.
+- Changed the `res.header` calls to `res.send` to send the response data directly.
