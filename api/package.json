@@ -1,14 +1,16 @@
-FILE PATH: api/package.json
-CONTENT: {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A simple web proxy API",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "axios": "^0.21.1",
-    "express": "^4.17.1"
-  }
-}
+FILE PATH: api/index.js
+CONTENT: const express = require('express');
+const axios = require('axios');
+
+const app = express();
+
+app.get('/proxy', async (req, res) => {
+  const url = req.query.url;
+  const response = await axios.get(url);
+
+  res.send(response.data);
+});
+
+app.listen(3000, () => {
+  console.log('Server is listening on port 3000');
+});
