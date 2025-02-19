@@ -4,6 +4,7 @@
 - `adblocker/ublock.worker.js`
 - `service-worker.js`
 - `package.json`
+- `README.md`
 
 ## Raw Code for `ublock.js`
 
@@ -115,4 +116,65 @@ addEventListener('fetch', (event) => {
     "webpack-dev-server": "^4.10.0"
   }
 }
+```
+
+## New File: `README.md`
+
+```markdown
+# Adblocker Web Proxy
+
+This project provides a web proxy with ad-blocking capabilities for Vercel and static serverless sites.
+
+## Features
+
+- Blocks ads using uBlock Origin.
+- Supports multiple filter lists.
+- Works with static serverless sites.
+- Deploys easily to Vercel.
+
+## Installation
+
+1. Install the project dependencies:
+
+```
+npm install
+```
+
+2. Run the build script:
+
+```
+npm run build
+```
+
+3. Deploy the project to Vercel:
+
+```
+npm run deploy
+```
+
+## Usage
+
+Once the project is deployed, you can use the proxy by visiting the following URL:
+
+```
+https://<your-project-name>.vercel.app/proxy
+```
+
+You can then browse the web as usual, and ads will be blocked automatically.
+
+## Configuration
+
+You can configure the proxy by editing the `config.js` file. The following options are available:
+
+- `filterLists`: An array of filter lists to use.
+- `debug`: A boolean value that enables debug logging.
+- `proxyPatterns`: An array of patterns that should be proxied.
+
+## Contributing
+
+Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) before submitting a pull request.
+
+## License
+
+This project is licensed under the MIT License.
 ```
