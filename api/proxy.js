@@ -41,10 +41,19 @@ const twitterProxy = createProxyMiddleware({
   },
 });
 
+const redditProxy = createProxyMiddleware({
+  target: "https://reddit.com",
+  changeOrigin: true,
+  pathRewrite: {
+    "^/reddit": "",
+  },
+});
+
 app.use("/google", googleProxy);
 app.use("/youtube", youtubeProxy);
 app.use("/facebook", facebookProxy);
-app.use("/twitter", twitterProxy); // added twitter proxy
+app.use("/twitter", twitterProxy);
+app.use("/reddit", redditProxy);
 
 app.listen(3000, () => {
   console.log("Proxy server listening on port 3000");
