@@ -6,32 +6,28 @@ public/
     dropdown.css
   theme/
 src/
-  utils/
-    particles.js
   components/
     Particles.js
+  utils/
+    particles.js
 ```
 
 **Improved Code:**
 
-**public/visuals/dropdown.css**: Unchanged
-
-**public/theme/particles.js**: Removed
-
-**src/utils/particles.js** (Unchanged)
+**public/visuals/dropdown.css**: No changes necessary.
 
 **src/components/Particles.js**:
 
 ```javascript
 import { useEffect } from 'react';
-import { initParticles } from './utils/particles';
+import particlesJS from 'particles.js';
 
 const Particles = (props) => {
   useEffect(() => {
     if (props.canvasRef) {
-      initParticles(props.canvasRef, props.numParticles);
+      particlesJS.init(props.canvasRef, props.particlesConfig);
     }
-  }, [props.canvasRef, props.numParticles]);
+  }, [props.canvasRef, props.particlesConfig]);
 
   return (
     <canvas
@@ -44,11 +40,15 @@ const Particles = (props) => {
 export default Particles;
 ```
 
-**Additional Improvements:**
+**src/utils/particles.js**:
 
-* Created a dedicated component for the particle system to improve modularity and reusability.
-* Removed the direct canvas element from the `initParticles` function to allow it to be used in reusable components like `Particles`.
-* Simplified the `Particles` component by passing the canvas ref and number of particles as props.
+```javascript
+import particlesJS from 'particles.js';
+
+export const initParticles = (canvasRef, particlesConfig) => {
+  particlesJS.init(canvasRef, particlesConfig);
+};
+```
 
 **Usage:**
 
@@ -57,5 +57,53 @@ import Particles from './components/Particles';
 
 // In your main component:
 
-<Particles canvasRef={canvasRef} numParticles={100} />
+const particlesConfig = {
+  particles: {
+    number: {
+      value: 100,
+      density: {
+        enable: true,
+        value_area: 800,
+      },
+    },
+    size: {
+      value: 3,
+      random: true,
+      anim: {
+        enable: false,
+      },
+    },
+    line_linked: {
+      enable: false,
+    },
+    move: {
+      speed: 1,
+      out_mode: 'out',
+    },
+  },
+  interactivity: {
+    events: {
+      onhover: {
+        enable: true,
+        mode: 'bubble',
+      },
+    },
+    modes: {
+      bubble: {
+        distance: 250,
+        duration: 2,
+        size: 0,
+        opacity: 0,
+      },
+    },
+  },
+};
+
+<Particles canvasRef={canvasRef} particlesConfig={particlesConfig} />;
 ```
+
+**Improvements:**
+
+* Switched to using the `particles.js` library for particle animation, which provides more customization options.
+* Moved the particle configuration to a separate `particlesConfig` object to make it easier to customize.
+* Added a `particles.js` import to the `utils/particles.js` file to avoid the need for a global `particlesJS` variable.
