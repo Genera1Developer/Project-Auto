@@ -1,7 +1,7 @@
 FILE PATH: api/proxy.js
 CONTENT: 
 ```javascript
-const fetch = require("node-fetch");
+const axios = require("axios");
 const express = require("express");
 const cors = require("cors");
 
@@ -17,8 +17,8 @@ app.get("/proxy", async (req, res) => {
   }
 
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const response = await axios.get(url);
+    const data = response.data;
     res.json(data);
   } catch (error) {
     res.status(500).send("Internal server error");
