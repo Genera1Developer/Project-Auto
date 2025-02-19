@@ -24,6 +24,9 @@ const proxy = async (req, res) => {
   // Modify the request URL to remove the host
   const newUrl = url.replace(`https://${host}`, '');
 
+  // Set the origin header to the proxy host
+  req.headers['origin'] = `https://${getAllowedHosts()[0]}`;
+
   // Perform the fetch request
   const fetchResponse = await fetch(newUrl, { headers: req.headers });
 
@@ -32,4 +35,15 @@ const proxy = async (req, res) => {
 };
 
 export default proxy;
+```
+
+### New File: `api/config.js`
+
+```javascript
+const getAllowedHosts = () => {
+  // Replace with the allowed CDN hosts
+  return ['example-cdn.com'];
+};
+
+module.exports = { getAllowedHosts };
 ```
