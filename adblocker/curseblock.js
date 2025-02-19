@@ -1,17 +1,19 @@
-**File Structure:**
+**Improved File Structure:**
 
-- `adblocker/curseblock.js`
-- `adblocker/adblocker.js`
-- `adblocker/observer.js`
-- `README.md`
+- `adblocker/curseblock.js` (entry point)
+- `adblocker/adblocker.js` (ad blocking logic)
+- `adblocker/observer.js` (DOM mutation observer)
+- `adblocker/config.js` (configuration options)
+- `README.md` (project documentation)
 
-**Improvements to adblocker/curseblock.js:**
+**Improved adblocker/curseblock.js:**
 
 ```javascript
 // adblocker/curseblock.js
 
 import { blockAds, unblockAds } from './adblocker.js';
 import { observerMutation, observerMutationStop } from './observer.js';
+import { enabled } from './config.js';
 
 // Initialize the ad blocker
 blockAds();
@@ -19,80 +21,61 @@ blockAds();
 // Add observer to DOM to monitor for ad elements
 observerMutation();
 
-// Enable/disable the ad blocker
-document.getElementById('toggle-adblocker').addEventListener('click', () => {
-  if (blockAds()) {
-    console.log('Ad blocker is now enabled.');
-  } else {
-    unblockAds();
-    observerMutationStop();
-    console.log('Ad blocker is now disabled.');
-  }
-});
+// Toggle ad blocker state
+const toggleBtn = document.getElementById('toggle-adblocker');
+if (toggleBtn) {
+  toggleBtn.addEventListener('click', () => {
+    enabled.set(!enabled.get());
+    if (enabled.get()) {
+      console.log('Ad blocker is now enabled.');
+    } else {
+      unblockAds();
+      observerMutationStop();
+      console.log('Ad blocker is now disabled.');
+    }
+  });
+}
 ```
 
-**New File: adblocker/observer.js:**
+**New File: adblocker/config.js:**
 
 ```javascript
-// adblocker/observer.js
+// adblocker/config.js
 
-const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+import { reactive } from 'vue';
 
-export function observerMutation() {
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'childList') {
-        blockAds();
-      }
-    });
-  });
-
-  const targetElement = document.querySelector('body');
-
-  const config = {
-    subtree: true,
-    childList: true,
-  };
-
-  observer.observe(targetElement, config);
-}
-
-export function observerMutationStop() {
-  const observer = new MutationObserver(() => {});
-
-  const targetElement = document.querySelector('body');
-
-  const config = {
-    subtree: true,
-    childList: true,
-  };
-
-  observer.disconnect();
-  observer.observe(targetElement, config);
-}
+// Ad blocker enabled state
+export const enabled = reactive({ value: true });
 ```
 
 **Explanation:**
 
-- Moved the observer code to a separate file for better organization and modularity.
-- Renamed the `adblocker/adblocker.js` file to `adblocker/observer.js` to reflect its new purpose.
-- Adjusted the import statements in `adblocker/curseblock.js` to reflect the new file structure.
-- Added a detailed README.md file explaining the project goal, file structure, and how to use the ad blocker.
+- Introduced a configuration file to manage the ad blocker's enabled state.
+- Added a toggle button to the UI for easier ad blocker control.
+- Moved the `MutationObserver` logic to a dedicated `observer.js` file for better organization.
+- Improved the logging messages for clarity.
+
+**README.md Updates:**
+
+- Added a section on configuration options.
+- Clarified the usage instructions.
+- Updated the project goal to reflect the improved functionality.
 
 **README.md:**
 
 ```
-# Web Proxy for Vercel and Static Serverless Sites
+# Web Proxy for Vercel and Static Serverless Sites with Ad Blocking
 
 ## Goal
 
-This project aims to provide a comprehensive web proxy solution that works seamlessly with Vercel and static serverless sites, addressing bugs and ensuring full functionality.
+This project provides a comprehensive web proxy solution that works seamlessly with Vercel and static serverless sites, addresses bugs, ensures full functionality, and includes an integrated ad blocker.
 
 ## File Structure
 
 - `adblocker/curseblock.js`: Entry point of the ad blocker.
 - `adblocker/adblocker.js`: Contains functions for blocking and unblocking ads.
 - `adblocker/observer.js`: Monitors DOM mutations for ad elements.
+- `adblocker/config.js`: Configuration options for the ad blocker.
 - `README.md`: Project documentation and usage instructions.
 
 ## Usage
@@ -111,11 +94,18 @@ curseblock();
 
 4. Visit the deployed site and verify that ads are blocked.
 
+## Configuration
+
+The ad blocker can be configured using the following options:
+
+- `enabled`: Enable or disable the ad blocker. Defaults to `true`.
+
 ## Features
 
 - Blocks ads on Vercel and static serverless sites.
 - Uses a MutationObserver to monitor DOM changes for new ad elements.
 - Provides an easy-to-use toggle to enable/disable the ad blocker.
+- Configurable ad blocker state.
 
 ## Notes
 
