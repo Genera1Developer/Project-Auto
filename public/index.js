@@ -1,35 +1,28 @@
-FILE PATH: public/index.html
+FILE PATH: public/style.css
 CONTENT:
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="/public/style.css" />
-  </head>
+```css
+body {
+  font-family: sans-serif;
+}
 
-  <body>
-    <h1>Web Proxy</h1>
-    <form>
-      <label for="path">Path:</label>
-      <input type="text" id="path" />
+h1 {
+  margin-top: 0;
+}
 
-      <label for="method">Method:</label>
-      <select id="method">
-        <option value="GET">GET</option>
-        <option value="POST">POST</option>
-        <option value="PUT">PUT</option>
-        <option value="DELETE">DELETE</option>
-      </select>
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-      <label for="request-body">Request Body:</label>
-      <textarea id="request-body"></textarea>
+label {
+  margin-right: 0.5rem;
+}
 
-      <button type="submit">Submit</button>
-    </form>
-
-    <div id="response-body"></div>
-  </body>
-</html>
+#response-body {
+  background-color: #efefef;
+  padding: 1rem;
+  margin-top: 1rem;
+  line-height: 1.5rem;
+}
 ```
