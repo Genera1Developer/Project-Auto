@@ -1,36 +1,24 @@
-FILE PATH: public/main.js
+FILE PATH: public/style.css
 CONTENT: 
-```javascript
-const form = document.querySelector('form');
+```css
+body {
+  font-family: Arial, sans-serif;
+}
 
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
+form {
+  width: 50%;
+  margin: 0 auto;
+}
 
-  const url = document.querySelector('#url').value;
-  const method = document.querySelector('#method').value;
-  const headers = document.querySelector('#headers').value;
-  const body = document.querySelector('#body').value;
+label {
+  display: block;
+  margin-bottom: 5px;
+}
 
-  const request = {
-    url,
-    method,
-    headers,
-    body,
-  };
-
-  fetch('/proxy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-});
+input,
+textarea {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+}
 ```
