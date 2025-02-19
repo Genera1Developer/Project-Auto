@@ -46,12 +46,12 @@ If a community leader receives a report of harassment, they will investigate the
 If you are being harassed, or if you witness someone else being harassed, please contact a community leader immediately. You can contact a community leader by:
 
 * Emailing [email protected]
-* Sending a direct message on [platform]
-* Posting a message in the [channel]
+* Sending a direct message on [Discord]
+* Posting a message in the #support channel
 
 ### More Information
 
-For more information on the Contributor Covenant, please visit [website].
+For more information on the Contributor Covenant, please visit [contributor-covenant.org](https://contributor-covenant.org/).
 
 ---
 
@@ -62,6 +62,17 @@ This code of conduct was adapted from the [Contributor Covenant](https://contrib
 
 ## New Files
 
-- **CONTRIBUTING.md:** This file provides guidelines for contributing to the project. It includes information on how to submit bug reports, feature requests, and pull requests.
-- **ISSUE_TEMPLATE.md:** This file provides a template for submitting issues. It includes information on what information to include in the issue report, such as the version of the software, the operating system, and the steps to reproduce the issue.
-- **PULL_REQUEST_TEMPLATE.md:** This file provides a template for submitting pull requests. It includes information on what information to include in the pull request, such as a description of the changes, the motivation for the changes, and the testing that was performed.
+- **CONTRIBUTING.md:** This file provides guidelines for contributing to the project and answers the following questions:
+  - How do I submit a bug report?
+  - How do I request a new feature?
+  - How do I contribute a pull request?
+  - What are the project's coding standards?
+- **ISSUE_TEMPLATE.md:** This file provides a template for submitting issues by prompting users to include the following information:
+  - A clear and concise description of the issue.
+  - The version of the software you are using.
+  - The operating system you are using.
+  - The steps to reproduce the issue.
+- **PULL_REQUEST_TEMPLATE.md:** This file provides a template for submitting pull requests by prompting users to include the following information:
+  - A clear and concise summary of the changes.
+  - A description of the motivation for the changes.
+  - A list of the tests that were performed.
