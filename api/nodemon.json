@@ -7,6 +7,9 @@ content:
     "api/models/*.js",
     "api/routes/*.js"
   ],
-  "script": "nodemon --exec npm start"
+  "script": "nodemon --exec npm start",
+  "ignore": [
+    "node_modules/"
+  ]
 }
 ```
