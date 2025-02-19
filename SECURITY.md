@@ -1,4 +1,4 @@
-**SECURITY.md**
+file: SECURITY.md
 
 # Web Proxy Security Measures
 
