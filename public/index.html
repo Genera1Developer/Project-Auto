@@ -1,10 +1,36 @@
-file: src/adblocker/ublock.js
+**README.md**
 
-improve this file based on the project goal and suggest new files if necessary:
+**Project Goal:**
 
-The provided solution is adequate for the project goal. However, the following improvements can be made to the `src/adblocker/ublock.js` file:
+* Modify and fix the given web proxy to work fully for Vercel and static serverless sites.
+* Fix any bugs along the way.
+* Ensure that multiple files are created to properly structure the project.
 
-**Revised src/adblocker/ublock.js:**
+**File Structure:**
+
+* public
+    * index.html
+    * theme
+        * default.css
+        * particles.css
+        * dropdown.css
+    * visuals
+        * particles.js
+    * src
+        * adblocker
+            * curseblock.js
+            * ublock.js
+    * utils
+        * get-hostname.js
+
+**src/adblocker/ublock.js**
+
+**Improvements:**
+
+* Fixed a typo in the `filter` object.
+* Added the `blocking` permission to the `chrome.webRequest.onBeforeRequest` listener to ensure that the ad blocking rules are applied.
+
+**Revised Code:**
 
 ```javascript
 const filter = {
@@ -55,25 +81,3 @@ chrome.webRequest.onBeforeRequest.addListener(
   ["blocking"]
 );
 ```
-
-**Improvements:**
-
-* Fixed a typo in the `filter` object.
-* Added the `blocking` permission to the `chrome.webRequest.onBeforeRequest` listener to ensure that the ad blocking rules are applied.
-
-The file structure remains the same as in the original solution:
-
-* **public**
-    * index.html
-    * theme
-        * default.css
-        * particles.css
-        * dropdown.css
-    * visuals
-        * particles.js
-    * src
-        * adblocker
-            * curseblock.js
-            * ublock.js
-    * utils
-        * get-hostname.js
