@@ -1,43 +1,26 @@
-FILE PATH: public/style.css
+FILE PATH: api/search.js
 CONTENT: 
-```css
-body {
-  font-family: Arial, sans-serif;
-}
+```javascript
+const fetch = require('node-fetch');
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
+const BASE_URL = 'https://duckduckgo.com/';
+const SEARCH_URL = BASE_URL + '?q=';
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+const search = async (query) => {
+  const response = await fetch(SEARCH_URL + query);
+  const html = await response.text();
 
-label {
-  font-weight: bold;
-}
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
 
-input {
-  width: 100%;
-  padding: 5px;
-  border: 1px solid #ccc;
-}
+  const results = [...doc.querySelectorAll('.result__a')].map((result) => ({
+    title: result.querySelector('.result__title').textContent,
+    url: result.href,
+    description: result.querySelector('.result__snippet').textContent,
+  }));
 
-button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 5px 10px;
-  border: 1px solid #007bff;
-  cursor: pointer;
-}
+  return results;
+};
 
-#results {
-  background-color: #efefef;
-  padding: 10px;
-  margin-top: 10px;
-  line-height: 1.5em;
-}
+module.exports = search;
 ```
