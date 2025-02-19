@@ -1,24 +1,14 @@
-FILE PATH: server.js
-CONTENT: const http = require('http');
-const fs = require('fs');
-
-const port = 3000;
-
-const server = http.createServer((req, res) => {
-  if (req.method === 'GET') {
-    if (req.url === '/') {
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/html');
-      res.end(fs.readFileSync('proxy.html'));
-    } else if (req.url === '/proxy') {
-      const url = req.url.substring(7);
-      res.statusCode = 200;
-      res.setHeader('Content-Type', 'text/html');
-      res.end(fs.readFileSync(url));
-    }
+FILE PATH: api/package.json
+CONTENT: {
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A fully structured web proxy project",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "http": "^1.1.2",
+    "fs": "^0.0.1-security"
   }
-});
-
-server.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
-});
+}
