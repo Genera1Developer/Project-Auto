@@ -1,7 +1,9 @@
-file: css/cyberpunk.css
+file path: public/css/cyberpunk.css
 content:        :root {
-            --primary-glow: var(--primary-color);
-            --secondary-glow: var(--secondary-color);
+            --primary-color: #FF0000;
+            --primary-glow: #FF3333;
+            --secondary-color: #0000FF;
+            --secondary-glow: #3333FF;
         }
 
         .cyber-bg {
