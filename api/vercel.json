@@ -1,18 +1,10 @@
-FILE PATH: api/proxy.js
-CONTENT: const express = require('express');
-const app = express();
-
-app.get('/api/proxy', async (req, res) => {
-  const url = req.query.url;
-  const request = require('request');
-
-  request(url, (error, response, body) => {
-    if (!error && response.statusCode === 200) {
-      res.send(body);
-    } else {
-      res.send('Error fetching URL');
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: api/vercel.json
+CONTENT: {
+  "routes": [
+    {
+      "src": "/api/proxy",
+      "dest": "https://example.com"
     }
-  });
-});
-
-app.listen(process.env.PORT);
+  ]
+}
