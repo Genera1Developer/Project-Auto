@@ -3,6 +3,7 @@
 - `api/nodemon.json`
 - `README.md`
 - `package.json`
+- `app.js`
 
 ### api/nodemon.json
 
@@ -80,6 +81,32 @@ The `package.json` file contains the following information:
 - `description`: A description of the project.
 - `main`: The main entry point of the project.
 - `dependencies`: The dependencies of the project.
+
+### app.js
+
+```js
+const express = require('express');
+const axios = require('axios');
+
+const app = express();
+
+app.get('/:url', async (req, res) => {
+  const url = req.params.url;
+
+  try {
+    const response = await axios.get(url);
+    res.send(response.data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Proxy server listening on port 3000');
+});
+```
+
+The `app.js` file contains the code for the web proxy. The proxy listens on port 3000 and handles GET requests. When a GET request is received, the proxy forwards the request to the specified URL and returns the response to the client.
 
 ## New Files
 
