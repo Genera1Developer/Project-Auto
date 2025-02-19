@@ -1,26 +1,75 @@
-## File Structure
+```css
+/* Reset styles */
 
-```
-├── public
-│   ├── theme
-│   │   ├── default.css
-│   │   └── dark.css
-├── README.md
-```
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-## Changes to default.css
+/* Body styles */
 
-- Added new styles for Vercel and static serverless sites.
-- Added support for dark mode.
+body {
+  font-family: sans-serif;
+  background-color: #fff;
+}
 
-## New File: dark.css
+/* Header styles */
 
-- Contains styles for the dark theme.
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 24px;
+  line-height: 60px;
+}
 
-## Usage Instructions
+/* Main styles */
 
-To use the dark theme, add the following code to the `<head>` of your HTML document:
+main {
+  padding: 20px;
+  background-color: #f2f2f2;
+}
 
-```html
-<link rel="stylesheet" href="/theme/dark.css">
+/* Footer styles */
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  line-height: 60px;
+}
+
+/* Dark mode styles */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #000;
+    color: #fff;
+  }
+
+  header {
+    background-color: #fff;
+    color: #000;
+  }
+
+  main {
+    background-color: #222;
+  }
+
+  footer {
+    background-color: #111;
+  }
+}
 ```
