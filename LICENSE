@@ -50,3 +50,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 │   ├── response.test.js
 ├── vercel.json
 ```
+
+**Additional Notes:**
+
+* The `vercel.json` file is added to configure the deployment of the project to Vercel.
+* Unit tests are added to ensure the correctness of the code.
+* The file structure is organized into modules for better code organization and maintainability.
