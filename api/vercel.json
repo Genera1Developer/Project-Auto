@@ -1,13 +1,24 @@
-FILE PATH: api/vercel.json
+FILE PATH: api/proxy.js
 CONTENT: 
 
-```json
-{
-  "rewrites": [
-    {
-      "source": "/api/proxy",
-      "destination": "/api/proxy.js"
-    }
-  ]
-}
+```js
+const fetch = require('node-fetch');
+
+exports.handler = async (event) => {
+  const { url, method, headers, body } = event.queryStringParameters;
+
+  const response = await fetch(url, {
+    method,
+    headers: JSON.parse(headers),
+    body: body,
+  });
+
+  return {
+    statusCode: response.status,
+    headers: {
+      'Content-Type': response.headers.get('Content-Type'),
+    },
+    body: await response.text(),
+  };
+};
 ```
