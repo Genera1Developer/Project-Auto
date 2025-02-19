@@ -1,16 +1,14 @@
-Based on the project goal, the following file should be created:
-
-FILE PATH: index.js
+FILE PATH: api/search.js
 CONTENT: 
 ```javascript
 const express = require('express');
-const path = require('path');
+const router = express.Router();
 
-const app = express();
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+router.get('/search', (req, res) => {
+  const query = req.query.q;
+  const results = search(query);
+  res.json(results);
 });
+
+module.exports = router;
 ```
