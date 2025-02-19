@@ -1,14 +1,11 @@
-FILE PATH: api/package.json
-CONTENT: {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A fully structured web proxy project",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "http": "^1.1.2",
-    "fs": "^0.0.1-security"
-  }
-}
+FILE PATH: views/error.html
+CONTENT: <!DOCTYPE html>
+<html>
+<head>
+  <title>Error</title>
+</head>
+<body>
+  <h1>Error</h1>
+  <p>Sorry, there was an error.</p>
+</body>
+</html>
