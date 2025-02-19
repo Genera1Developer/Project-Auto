@@ -1,59 +1,21 @@
-FILE PATH: public/themes/particles.js
-CONTENT: ```javascript
-import Particles from "particles.js";
-
-const particlesOptions = {
-  particles: {
-    number: {
-      value: 50,
-      density: {
-        enable: true,
-        value_area: 3000
-      }
-    },
-    color: {
-      value: "#fff"
-    },
-    shape: {
-      type: "circle"
-    },
-    opacity: {
-      value: 1,
-      random: false
-    },
-    size: {
-      value: 2,
-      random: false
-    },
-    line_linked: {
-      enable: false
-    },
-    move: {
-      enable: true,
-      speed: 2,
-      direction: "none",
-      random: true,
-      straight: false
-    }
-  },
-  interactivity: {
-    events: {
-      onhover: {
-        enable: true,
-        mode: "bubble"
-      }
-    },
-    modes: {
-      bubble: {
-        distance: 200,
-        size: 5,
-        duration: 0.4,
-        opacity: 1,
-        speed: 8
-      }
-    }
-  }
-};
-
-export default Particles;
+FILE PATH: public/index.html
+CONTENT: ```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/themes/particles.css">
+  <script src="/themes/particles.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <script>
+    particlesJS.load('particles-js', 'themes/particles.json', function() {
+      console.log('callback - particles.js config loaded');
+    });
+  </script>
+</body>
+</html>
 ```
