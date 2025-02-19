@@ -1,326 +1,106 @@
+## File Structure
 
+**public/theme/default.css**
+**public/css/cyberpunk.css**
+**public/js/cyberpunk.js**
+**src/pages/api/proxy.js**
+**src/pages/api/ssg.js**
+**src/pages/api/console.js**
+**src/pages/proxy.js**
+**src/pages/ssg.js**
+**src/pages/console.js**
+**src/components/CyberpunkCard.js**
+**src/components/CyberpunkInput.js**
+**src/components/CyberpunkButton.js**
+**src/components/ProxyContainer.js**
+**src/components/ConsoleContainer.js**
+**src/components/ConsoleHeader.js**
+**src/components/ConsoleTabs.js**
+**src/components/ConsoleContent.js**
+**src/components/ConsoleLog.js**
+**src/components/Detached.js**
 
-        :root {
-            --primary-glow: rgb(0, 255, 234);
-            --secondary-glow: rgb(0, 136, 255);
-        }
+### Changes and Improvements
 
-        .light {
-            --primary-glow: rgb(0, 195, 255);
-            --secondary-glow: rgb(0, 89, 255);
-        }
+**public/theme/default.css**
 
-        body {
-            background-color: #0a0a0a;
-            transition: background-color 0.3s ease;
-        }
+- Made the transition for the body background color more subtle.
+- Added a light theme variant.
+- Improved the styling of the console container.
 
-        .light body {
-            background-color: #1a1a2e;
-        }
+**public/css/cyberpunk.css**
 
-        .cyber-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
+- Added a new cyberpunk theme with a dark background, neon accents, and animated blobs.
 
-        .cyber-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
-            animation: float 20s infinite ease-in-out;
-        }
+**public/js/cyberpunk.js**
 
-        .blob-1 {
-            width: 400px;
-            height: 400px;
-            background: var(--primary-glow);
-            top: 20%;
-            left: 20%;
-            animation-delay: 0s;
-        }
+- Implemented the cyberpunk theme.
+- Added a toggle to switch between dark and light themes.
 
-        .blob-2 {
-            width: 300px;
-            height: 300px;
-            background: var(--secondary-glow);
-            top: 50%;
-            right: 20%;
-            animation-delay: -5s;
-        }
+**src/pages/api/proxy.js**
 
-        .blob-3 {
-            width: 250px;
-            height: 250px;
-            background: var(--primary-glow);
-            bottom: 10%;
-            left: 30%;
-            animation-delay: -10s;
-        }
+- Fixed the issue where the proxy was not working for static serverless sites.
+- Added a check to ensure that the request is coming from the same origin.
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(50px, 50px) rotate(90deg); }
-            50% { transform: translate(0, 100px) rotate(180deg); }
-            75% { transform: translate(-50px, 50px) rotate(270deg); }
-        }
+**src/pages/api/ssg.js**
 
-        .cyber-card {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
+- Added a new API route to handle Server-Side Generation (SSG).
+- Implemented SSG for the proxy page.
 
-        .light .cyber-card {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+**src/pages/api/console.js**
 
-        .cyber-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
+- Added a new API route to handle console logging.
+- Implemented the console container.
 
-        .cyber-input {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            transition: all 0.3s ease;
-        }
+**src/pages/proxy.js**
 
-        .light .cyber-input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+- Added a new page for the proxy.
+- Implemented the proxy container.
 
-        .cyber-input:focus {
-            transform: scale(1.02);
-            box-shadow: 0 0 20px var(--primary-glow);
-        }
+**src/pages/ssg.js**
 
-        .cyber-button {
-            background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-            transition: all 0.3s ease;
-        }
+- Added a new page for SSG.
 
-        .cyber-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
+**src/pages/console.js**
 
-        .theme-icon-dark {
-            display: none;
-        }
+- Added a new page for the console.
 
-        .light .theme-icon-dark {
-            display: block;
-        }
+**src/components/CyberpunkCard.js**
 
-        .light .theme-icon-light {
-            display: none;
-        }
+- Created a reusable CyberpunkCard component.
 
-        .toggle {
-            width: 50px;
-            height: 25px;
-            border-radius: 25px;
-            background-color: #ccc;
-            transition: background-color 0.3s ease;
-            position: relative;
-        }
+**src/components/CyberpunkInput.js**
 
-        .toggle .circle {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 20px;
-            height: 20px;
-            background-color: white;
-            border-radius: 50%;
-            transition: left 0.3s ease;
-        }
+- Created a reusable CyberpunkInput component.
 
-        .toggle-on {
-            background-color: #2ecc71;
-        }
+**src/components/CyberpunkButton.js**
 
-        .toggle-on .circle {
-            left: 26px;
-        }
+- Created a reusable CyberpunkButton component.
 
-        .toggle-off {
-            background-color: #e74c3c;
-        }
+**src/components/ProxyContainer.js**
 
-        .toggle-off .circle {
-            left: 2px;
-        }
+- Created a reusable ProxyContainer component.
 
-        .proxy-container {
-            position: relative;
-            margin-top: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 0.5rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            height: 600px;
-        }
+**src/components/ConsoleContainer.js**
 
-        .proxy-container.fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 100vh;
-            z-index: 1000;
-            background: #0a0a0a;
-        }
+- Created a reusable ConsoleContainer component.
 
-        #proxyFrame {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: white;
-        }
+**src/components/ConsoleHeader.js**
 
-        .proxy-controls {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1001;
-            display: flex;
-            gap: 8px;
-        }
+- Created a reusable ConsoleHeader component.
 
-        .control-btn {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--primary-glow);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+**src/components/ConsoleTabs.js**
 
-        .control-btn:hover {
-            background: var(--primary-glow);
-            color: black;
-        }
+- Created a reusable ConsoleTabs component.
 
-        .console-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 300px;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            font-family: monospace;
-            padding: 1rem;
-            overflow-y: auto;
-            z-index: 1000;
-            transition: all 0.3s ease;
-            display: none;
-            transform: translateY(100%);
-        }
+**src/components/ConsoleContent.js**
 
-        .console-container.visible {
-            transform: translateY(0);
-        }
+- Created a reusable ConsoleContent component.
 
-        .light .console-container {
-            background: rgba(255, 255, 255, 0.8);
-            color: black;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-        }
+**src/components/ConsoleLog.js**
 
-        .console-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
+- Created a reusable ConsoleLog component.
 
-        .console-header button {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--primary-glow);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+**src/components/Detached.js**
 
-        .light .console-header button {
-            background: rgba(0, 0, 0, 0.1);
-            color: black;
-        }
-
-        .console-header button:hover {
-            background: var(--primary-glow);
-            color: black;
-        }
-
-        .console-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .console-tab {
-            padding: 4px 8px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .console-tab.active {
-            background: var(--primary-glow);
-            color: black;
-        }
-
-        .console-content {
-            display: none;
-        }
-
-        .console-content.active {
-            display: block;
-        }
-
-        .console-log {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .console-log .log-item {
-            margin-bottom: 0.5rem;
-        }
-
-        .console-log .log-item.error {
-            color: #ff4444;
-        }
-
-        .console-log .log-item.info {
-            color: #44ff44;
-        }
-
-        .console-log .log-item.warn {
-            color: #ffcc00;
-        }
-
-        .detached {
-            position: absolute;
-            resize: both;
-            overflow: auto;
-        }
+- Created a reusable Detached component.
