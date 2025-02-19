@@ -1,10 +1,10 @@
 FILE PATH: public/index.js
 CONTENT:
 ```javascript
-import fetch from "node-fetch";
-import { createElement } from "./dom";
+import createElement from "./dom";
 
 const form = document.querySelector("form");
+const result = document.querySelector(".result");
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -13,21 +13,18 @@ form.addEventListener("submit", async (event) => {
   const method = document.querySelector('input[name="method"]').value;
   const body = form.querySelector('textarea[name="body"]').value;
 
-  let requestBody = {};
-
-  if (method === "POST" || method === "PUT") {
-    requestBody = {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    };
-  } else {
-    requestBody = {
-      method,
-    };
-  }
+  const requestBody =
+    method === "POST" || method === "PUT"
+      ? {
+          method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        }
+      : {
+          method,
+        };
 
   try {
     const response = await fetch(url, requestBody);
@@ -39,12 +36,12 @@ form.addEventListener("submit", async (event) => {
 
     const responseBody = await response.text();
 
-    const result = createElement("pre", responseBody);
-    document.querySelector(".result").appendChild(result);
+    const resultElement = createElement("pre", responseBody);
+    result.appendChild(resultElement);
   } catch (error) {
     const errorMessage = "Error: " + error.message;
-    const result = createElement("pre", errorMessage);
-    document.querySelector(".result").appendChild(result);
+    const resultElement = createElement("pre", errorMessage);
+    result.appendChild(resultElement);
   }
 });
 ```
