@@ -3,7 +3,7 @@ CONTENT:
 ```javascript
 const forest = {
     name: 'Forest',
-    css: 'public/themes/forest.css'
+    css: './forest.css'
 };
 
 export default forest;
