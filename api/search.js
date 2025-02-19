@@ -1,29 +1,15 @@
-FILE PATH: api/search.js
-CONTENT: 
-```javascript
-const fetch = require('node-fetch');
-const jsdom = require('jsdom');
+Based on the project goal, following file should be created:
 
-module.exports = async (query) => {
-  try {
-    const response = await fetch(`https://www.google.com/search?q=${query}`);
-    if (!response.ok) throw new Error(`Error fetching search results: ${response.status}`);
-    const html = await response.text();
-    const { JSDOM } = jsdom;
-    const dom = new JSDOM(html);
-    const results = dom.window.document.querySelectorAll('div.g');
-    return results.map((result) => {
-      const title = result.querySelector('h3.LC20lb');
-      const url = result.querySelector('a.yuRUbf');
-      const description = result.querySelector('div.IsZvec');
-      return {
-        title: title ? title.textContent : '',
-        url: url ? url.href : '',
-        description: description ? description.textContent : '',
-      };
-    });
-  } catch (error) {
-    throw new Error(`Error parsing search results: ${error.message}`);
-  }
-};
+FILE PATH: views/index.pug
+CONTENT: 
+```html
+extends layout
+
+block content
+  h1 Google Search Proxy
+  form(action="/search" method="GET")
+    input(type="text" name="query")
+    button(type="submit") Search
+  //- Display search results
+  ul#results
 ```
