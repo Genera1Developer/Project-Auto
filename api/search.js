@@ -13,3 +13,12 @@ app.get("/search", async (req, res) => {
 });
 module.exports = app;
 ```
+file: api/index.js
+content: 
+```javascript
+const express = require("express");
+const search = require("./search");
+const app = express();
+app.use("/api", search);
+module.exports = app;
+```
