@@ -5,6 +5,8 @@
 - `index.js`
 - `serverless.yml`
 - `package.json`
+- `config.js`
+- `.gitignore`
 
 ## ublock.js
 
@@ -20,6 +22,7 @@ This file contains the logic for blocking ads on a web page.
 This file serves as the entry point for the web proxy.
 
 - **Import the ublock.js file**: Import the `ublock.js` file to use its functionality for blocking ads.
+- **Import the config.js file**: Import the `config.js` file to access the configuration settings.
 - **Add middleware to the serverless function**: Add middleware to the serverless function to handle ad-blocking. This middleware will be called for every request that comes into the proxy.
 - **Block ads for the response**: In the middleware, use the `ublock.js` module to block ads for the response.
 
@@ -38,9 +41,20 @@ This file specifies the dependencies for the project.
 - **Dependencies**: The `ublock-js` dependency is used for blocking ads.
 - **Scripts**: The `start` script is used to run the web proxy locally.
 
+## config.js
+
+This file contains the configuration settings for the web proxy.
+
+- **filterLists**: Specifies the URLs of the filter lists to be used for ad-blocking.
+- **debug**: Enables or disables debug logging.
+
 ## README.md
 
-- Explain the purpose of the project.
-- Describe the file structure.
-- Provide instructions on how to use the web proxy.
-- Include any troubleshooting tips.
+- Explains the purpose of the project.
+- Describes the file structure.
+- Provides instructions on how to use the web proxy.
+- Includes any troubleshooting tips.
+
+## .gitignore
+
+- Specifies the files and directories that should be ignored by Git.
