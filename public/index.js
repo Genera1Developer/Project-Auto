@@ -1,34 +1,30 @@
-FILE PATH: public/script.js
+FILE PATH: server/routes/proxy.js
 CONTENT: 
 ```javascript
-const form = document.querySelector('form');
+const express = require('express');
+const fetch = require('node-fetch');
+const router = express.Router();
 
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
+router.post('/proxy', async (req, res) => {
+  try {
+    const { url, method, body } = req.body;
 
-  const url = document.querySelector('input[name="url"]').value;
-  const method = document.querySelector('select[name="method"]').value;
-  const body = document.querySelector('textarea[name="body"]').value;
+    const requestOptions = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
+    };
 
-  const requestBody = {
-    url,
-    method,
-    body,
-  };
+    const response = await fetch(url, requestOptions);
+    const data = await response.json();
 
-  fetch('/proxy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(requestBody),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      alert(data.response);
-    })
-    .catch((error) => {
-      alert('Error: ' + error.message);
-    });
+    res.json({ response: data });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+
+module.exports = router;
 ```
