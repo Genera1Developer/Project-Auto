@@ -1,14 +1,10 @@
-FILE PATH: api/search.js
+FILE PATH: routes/api.js
 CONTENT: 
 ```javascript
 const express = require('express');
 const router = express.Router();
 
-router.get('/search', (req, res) => {
-  const query = req.query.q;
-  const results = search(query);
-  res.json(results);
-});
+router.use('/search', require('../api/search'));
 
 module.exports = router;
 ```
