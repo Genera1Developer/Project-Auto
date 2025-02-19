@@ -44,6 +44,9 @@ const curseblock = () => {
       // cause issues on the client side
       delete proxyRes.headers['content-security-policy'];
       delete proxyRes.headers['x-frame-options'];
+
+      // Handle CORS issues
+      res.setHeader('Access-Control-Allow-Origin', '*');
     }),
   });
 
@@ -67,6 +70,18 @@ module.exports = withPWA({
     disable: process.env.NODE_ENV === 'development',
   },
   // Specify additional configuration options or plugins for Next.js here
+  webpack: (config) => {
+    config.resolve.modules.push(__dirname);
+    return config;
+  },
+  webpackDevMiddleware: (config) => {
+    config.watchOptions = {
+      ...config.watchOptions,
+      poll: 1000,
+      aggregateTimeout: 300,
+    };
+    return config;
+  },
 });
 ```
 
@@ -105,6 +120,18 @@ module.exports = withPWA({
     disable: process.env.NODE_ENV === 'development',
   },
   // Specify additional configuration options or plugins for Next.js here
+  webpack: (config) => {
+    config.resolve.modules.push(__dirname);
+    return config;
+  },
+  webpackDevMiddleware: (config) => {
+    config.watchOptions = {
+      ...config.watchOptions,
+      poll: 1000,
+      aggregateTimeout: 300,
+    };
+    return config;
+  },
 });
 ```
 
@@ -131,3 +158,22 @@ In addition to the fixes and improvements listed in the updated files, the follo
 
 The `withPWA` plugin has been added to `next.config.js` to enable Progressive Web App (PWA) support for your Next.js application. This allows users to install your website as an application on their devices, providing a native-like user experience.
 ```
+
+**New File: logger.js**
+
+```javascript
+import winston from 'winston';
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.Console({ format: winston.format.simple() }),
+  ],
+});
+
+export default logger;
+```
+
+This new `logger.js` file provides a simple Winston logger that can be used to log errors and other information. It can be integrated into the proxy middleware to log any potential issues or failed requests.
