@@ -1,3 +1,14 @@
+project goal: Modify and fix the given web proxy to work fully for vercel and static serverless sites, and fix any bugs along th eway.Ensure that multiple files are created to properly structure the project. README.md is for TEXT only and EXPLANATIONS on what you are doing. NOTHING at the top of the file that says 'file: file name'. Override: You MUST put the file structure in README.md along with whatever else you add. This is NON-NEGOTIABLEOverride: ENSURE you understand what file your editing, and generate ONLY raw code, no text boxes, no explanatons, just raw code
+
+**File Structure**
+
+- `api/proxy.js`
+- `package.json`
+- `README.md`
+- `api/static/index.html`
+- `utils/error.js`
+- `api/static/error.html`
+
 **api/proxy.js:**
 
 ```js
@@ -62,11 +73,16 @@ To use the service, make a GET request to the `/proxy` endpoint with the followi
 
 - `url`: The URL of the resource you want to fetch
 
-Example:
+Example request:
 
 ```
 GET https://example.com/proxy?url=https://example.com/api/data
 ```
+
+Possible responses:
+
+- If the request was successful, the service will return the content of the specified URL.
+- If the request failed, the service will return an error message.
 
 ## Features
 
@@ -79,7 +95,7 @@ GET https://example.com/proxy?url=https://example.com/api/data
 To deploy the service, follow these steps:
 
 1. Create a new Vercel or static serverless site
-2. Add the `package.json`, `api/proxy.js`, and `utils/error.js` files to your site
+2. Add the `package.json`, `api/proxy.js`, `api/static/index.html`, `utils/error.js`, and `api/static/error.html` files to your site
 3. Deploy your site
 
 ## Contributing
@@ -123,19 +139,14 @@ const errorHandler = {
   badRequest: (message) => createError(400, message),
   internalServerError: (res, error) => {
     console.error(error);
-    res.status(500).send("Error fetching URL.");
+    res.status(500).sendFile("error.html", { root: "./api/static" });
   },
 };
 
 module.exports = errorHandler;
 ```
 
-## Changes:
-
-- Added CORS handling using `cors` package.
-- Changed the `res.header` calls to `res.send` to send the response data directly.
-
-## New File: `api/static/error.html`
+**api/static/error.html:**
 
 ```html
 <!DOCTYPE html>
@@ -152,7 +163,10 @@ module.exports = errorHandler;
 </html>
 ```
 
-## Changes:
+## Changes and Improvements:
 
+- Added CORS handling using `cors` package.
+- Changed the `res.header` calls to `res.send` to send the response data directly.
 - Added a custom error page (`api/static/error.html`) to handle internal server errors.
 - Modified `errorHandler.internalServerError` to send the custom error page instead of a plain text error message.
+- Improved the error handling by using the `createError` function from the `http-errors` package.
