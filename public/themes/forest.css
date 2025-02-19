@@ -97,6 +97,12 @@ input[type="submit"]:hover {
   }
 }
 
+.tooltip-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
 .custom-tooltip {
   position: absolute;
   z-index: 9;
