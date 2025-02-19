@@ -1,66 +1,23 @@
-FILE PATH: public/themes/particles.css
-CONTENT: body {
-  background-color: #000;
-}
-
-.particles-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100vw;
-  height: 100vh;
-}
-
-.particle {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #fff;
-  animation: move 10s infinite;
-  opacity: 0.75;
-}
-
-@keyframes move {
-  0% {
-    top: 0;
-    left: 0;
-  }
-  25% {
-    top: 50%;
-    left: 50%;
-  }
-  50% {
-    top: 100%;
-    left: 100%;
-  }
-  75% {
-    top: 50%;
-    left: 50%;
-  }
-  100% {
-    top: 0;
-    left: 0;
-  }
-}
-
-FILE PATH: public/javascripts/particles.js
-CONTENT: const particlesContainer = document.querySelector('.particles-container');
-const particleCount = 50;
-
-for (let i = 0; i < particleCount; i++) {
-  const particle = document.createElement('div');
-  particle.classList.add('particle');
-  particle.style.left = `${Math.random() * 100}vw`;
-  particle.style.top = `${Math.random() * 100}vh`;
-  particlesContainer.appendChild(particle);
-}
-
-particlesContainer.addEventListener('click', (e) => {
-  const particle = e.target;
-  particle.style.opacity = 1;
-  setTimeout(() => {
-    particle.style.opacity = 0.75;
-  }, 200);
-});
+FILE PATH: public/index.html
+CONTENT: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/themes/particles.css">
+</head>
+<body>
+  <div id="particles-container"></div>
+  <div id="proxy-container">
+    <h1>Web Proxy</h1>
+    <p>Enter a URL below to proxy through this server.</p>
+    <form action="/proxy" method="POST">
+      <label for="url">URL:</label>
+      <input type="text" name="url" id="url">
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+  <script src="/javascripts/particles.js"></script>
+</body>
+</html>
