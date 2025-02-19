@@ -18,6 +18,7 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: routes.js: Express.js route definitions
 - file: .env: Environment variables
 - file: nodemon.json: Development configuration
+- file: request-logger.js: Logs all incoming requests
 
 **Modifications and Fixes:**
 
@@ -25,13 +26,14 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 * **Bug Fixes:** All known bugs and errors in the original web proxy implementation have been addressed.
 * **Performance Enhancements:** The proxy has been optimized to reduce latency and improve overall performance.
 * **Error Handling Improvements:** Enhanced error handling and logging have been added for better debugging and user experience.
-* **Middleware Enhancements:** Custom middleware has been introduced for authentication and rate limiting, improving security and user experience.
+* **Middleware Enhancements:** Custom middleware has been introduced for authentication, rate limiting, and request logging, improving security, user experience, and observability.
 
 **New Files:**
 
 - file: error-handling.js: Provides a centralized and standardized error handling mechanism for the entire application.
 - file: middleware.js: Contains custom middleware for handling authentication, rate limiting, and other common tasks.
 - file: routes.js: Defines the Express.js routes for the application, ensuring proper handling of requests.
+- file: request-logger.js: Provides a middleware for logging all incoming requests, facilitating debugging and analysis.
 
 **Additional Notes:**
 
@@ -41,3 +43,4 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 * Environment variables offer a secure way to store sensitive configuration data.
 * Nodemon.json simplifies development by allowing quick server restarts when code changes are made.
 * The use of middleware allows for flexibility and modularity in handling different aspects of the application's functionality.
+* Request logging provides valuable insights into the application's behavior and can aid in troubleshooting.
