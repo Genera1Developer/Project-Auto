@@ -21,10 +21,10 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: request-logger.js: Logs all incoming requests
 - file: Dockerfile: Docker image definition
 - file: Dockerignore: Docker build ignore list
-- file: session-store.js: Centralized and scalable session store (suggested new file)
-- file: analytics.js: Application usage tracking and analysis (suggested new file)
-- file: load-balancer.js: Simple load balancer for distributing requests (suggested new file)
-- file: health-check.js: Application health check endpoint (suggested new file)
+- file: session-store.js: Centralized and scalable session store
+- file: analytics.js: Application usage tracking and analysis
+- file: load-balancer.js: Simple load balancer for distributing requests
+- file: health-check.js: Application health check endpoint
 
 **Modifications and Fixes:**
 
@@ -43,10 +43,10 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: request-logger.js: Provides a middleware for logging all incoming requests, facilitating debugging and analysis.
 - file: config.js: Stores environment variables needed by the application.
 - file: Dockerignore: Lists files and directories to be excluded during Docker image build.
-- file: session-store.js: Provides a centralized and scalable session store for the application, enabling session management across multiple requests (suggested new file).
-- file: analytics.js: Contains logic for tracking and analyzing application usage, providing valuable insights for optimization and decision-making (suggested new file).
-- file: load-balancer.js: Implements a simple load balancer to distribute incoming requests across multiple backend servers, improving scalability and performance (suggested new file).
-- file: health-check.js: Defines a health check endpoint to monitor the status of the application and its underlying infrastructure (suggested new file).
+- file: session-store.js: Provides a centralized and scalable session store for the application, enabling session management across multiple requests.
+- file: analytics.js: Contains logic for tracking and analyzing application usage, providing valuable insights for optimization and decision-making.
+- file: load-balancer.js: Implements a simple load balancer to distribute incoming requests across multiple backend servers, improving scalability and performance.
+- file: health-check.js: Defines a health check endpoint to monitor the status of the application and its underlying infrastructure.
 
 **Additional Notes:**
 
