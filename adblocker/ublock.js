@@ -6,6 +6,7 @@
 - `serverless.yml`
 - `package.json`
 - `config.js`
+- `.env`
 - `.gitignore`
 
 ## ublock.js
@@ -37,6 +38,10 @@
 
 - **filterLists**: Specifies the URLs of the filter lists to be used for ad-blocking.
 - **debug**: Enables or disables debug logging.
+
+## .env
+
+- Stores the configuration settings for the proxy, such as the environment variables and the filter list URLs.
 
 ## README.md
 
