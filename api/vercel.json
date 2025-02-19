@@ -1,13 +1,41 @@
-FILE PATH: api/proxy.js
+FILE PATH: api/vercel.json
+CONTENT: 
+
+```json
+{
+  "routes": [
+    {
+      "src": "/proxy",
+      "dest": "http://localhost:3000/api/proxy"
+    }
+  ]
+}
+```
+
+FILE PATH: pages/index.js
 CONTENT: 
 
 ```js
-const fetch = require('node-fetch');
+import { useState } from 'react';
 
-module.exports = async (req, res) => {
-  const { url } = req.query;
-  const response = await fetch(url);
-  const data = await response.json();
-  res.json(data);
-};
+export default function Home() {
+  const [url, setUrl] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await fetch('/api/proxy?url=' + url);
+    const data = await response.json();
+    console.log(data);
+  };
+
+  return (
+    <div>
+      <h1>Web Proxy</h1>
+      <form onSubmit={handleSubmit}>
+        <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
+}
 ```
