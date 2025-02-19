@@ -1,3 +1,14 @@
+file structure:
+
+```
+├── api
+│   └── Read Before Use
+├── next.config.js
+├── pages
+│   └── _app.js
+└── package.json
+```
+
 file: package.json
 
 ```json
