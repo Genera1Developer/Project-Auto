@@ -61,3 +61,12 @@ If you encounter any issues, please check the following:
 **New Files**
 
 * **api/proxy.js:** The proxy script that forwards requests to the Remix app.
+
+**File Structure**
+
+```
+├── README.md
+├── api
+│   ├── package.json
+│   └── proxy.js
+```
