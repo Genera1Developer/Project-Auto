@@ -4,8 +4,8 @@ content:
 const axios = require('axios');
 
 const search = async (req, res) => {
-  const { query } = req.body;
   try {
+    const { query } = req.body;
     const response = await axios.get(`https://www.google.com/search?q=${query}`);
     res.json(response.data);
   } catch (error) {
