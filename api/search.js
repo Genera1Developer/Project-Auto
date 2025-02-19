@@ -44,12 +44,12 @@ const search = asyncHandler(async (req, res) => {
 module.exports = search;
 ```
 
-## Improvements
+## Replacements
 
-- Added error handling for missing search query
-- Added type parameter to specify the type of search (web, image, video, etc.)
-- Created a separate file for the response transformer to improve code organization
+- Refactored code to improve readability
+- Added error handling for invalid type parameter
+- Improved response handling for different search types
 
 ## New Files
 
-- `api/rewriteUrls.js` contains the code for transforming the proxy response to rewrite URLs
+- None
