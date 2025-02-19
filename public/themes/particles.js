@@ -1,27 +1,50 @@
-Based on the project goal, the following file should be created:
-
-FILE PATH: public/index.html
-CONTENT: ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="css/style.css">
-  <script src="js/script.js"></script>
-</head>
-<body>
-  <div id="particles-js"></div>
-  <div id="container">
-    <h1>Web Proxy</h1>
-    <form action="/proxy" method="POST">
-      <label for="url">URL:</label>
-      <input type="text" id="url" name="url">
-      <input type="submit" value="Submit">
-    </form>
-    <div id="result"></div>
-  </div>
-</body>
-</html>
+FILE PATH: public/themes/particles.js
+CONTENT: ```js
+/* particles.js config */
+particlesJS("particles-js", {
+  particles: {
+    color: "#000000",
+    shape: "circle",
+    opacity: 0.5,
+    size: 2,
+    size_random: true,
+    nb: 200,
+    line_linked: {
+      enable: true,
+      distance: 100,
+      color: "#000000",
+      opacity: 0.5,
+      width: 1,
+    },
+    move: {
+      enable: true,
+      speed: 2,
+      direction: "none",
+      random: true,
+      straight: false,
+      out_mode: "out",
+      bounce: false,
+      attract: {
+        enable: false,
+        rotateX: 600,
+        rotateY: 1200,
+      },
+    },
+  },
+  interactivity: {
+    detect_on: "canvas",
+    events: {
+      onhover: {
+        enable: true,
+        mode: "grab",
+      },
+      onclick: {
+        enable: true,
+        mode: "push",
+      },
+      resize: true,
+    },
+  },
+  retina_detect: true,
+});
 ```
