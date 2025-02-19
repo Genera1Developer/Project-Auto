@@ -3,9 +3,9 @@ content:
 ```json
 {
   "watch": [
-    "api/controllers/*.js",
-    "api/models/*.js",
-    "api/routes/*.js"
+    "api/controllers/**/*.js",
+    "api/models/**/*.js",
+    "api/routes/**/*.js"
   ],
   "script": "nodemon --exec npm start",
   "ignore": [
