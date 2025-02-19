@@ -1,31 +1,60 @@
-FILE PATH: public/index.html
+FILE PATH: public/index.js
 CONTENT:
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <h1>Web Proxy</h1>
+```javascript
+const form = document.querySelector('form');
 
-    <form>
-      <label for="path">Path</label>
-      <input id="path" type="text" />
+const pathInput = document.querySelector('#path');
+const methodInput = document.querySelector('#method');
+const requestBodyInput = document.querySelector('#request-body');
 
-      <label for="method">Method</label>
-      <input id="method" type="text" />
+const responseBodyElement = document.querySelector('#response-body');
 
-      <label for="request-body">Request Body</label>
-      <textarea id="request-body"></textarea>
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
 
-      <input type="submit" value="Send" />
-    </form>
+  const path = pathInput.value;
+  const method = methodInput.value;
+  const requestBody = requestBodyInput.value;
 
-    <div id="response-body"></div>
-  </body>
-</html>
+  const response = await fetch(`http://localhost:3000${path}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: requestBody,
+  });
+
+  const data = await response.json();
+  responseBodyElement.textContent = JSON.stringify(data, null, 2);
+});
+```
+FILE PATH: server/index.js
+CONTENT:
+```javascript
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+
+app.use(express.json());
+
+app.all('*', async (req, res) => {
+  const { method, url, body } = req;
+
+  const response = await fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  const data = await response.json();
+  res.json(data);
+});
+
+app.listen(3000, () => {
+  console.log('Server is listening on port 3000');
+});
 ```
