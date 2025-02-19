@@ -1,11 +1,22 @@
-FILE PATH: api/routes/proxy.routes.js
+FILE PATH: api/controllers/proxy.controller.js
 CONTENT:
 ```js
-const express = require('express');
-const router = express.Router();
-const proxyController = require('../controllers/proxy.controller');
+const axios = require('axios');
+const cheerio = require('cheerio');
+const iconv = require('iconv-lite');
+const jsdom = require('jsdom');
 
-router.get('/*', proxyController.fetchProxy);
+exports.fetchProxy = async (req, res) => {
+  try {
+    const { url } = req.params;
+    const { data } = await axios.get(url, { responseType: 'arraybuffer' });
+    const buff = iconv.decode(data, 'GBK');
+    const dom = new jsdom.JSDOM(buff);
+    const $ = cheerio.load(dom.window.document);
 
-module.exports = router;
+    res.status(200).json({ message: 'success', data: $('body').html() });
+  } catch (error) {
+    res.status(500).json({ message: 'error', error: error.message });
+  }
+};
 ```
