@@ -1,25 +1,18 @@
-FILE PATH: public/themes/forest.css
+FILE PATH: public/themes/forest.js
 CONTENT: 
-```css
-/* Forest theme for the web proxy. */
+```js
+// Forest theme for the web proxy.
 
-body {
-  background-color: #00FF00;
-}
+document.body.style.backgroundColor = "#00FF00";
 
-#header {
-  color: #FFFFFF;
-}
+document.getElementById("header").style.color = "#FFFFFF";
+document.getElementById("footer").style.color = "#FFFFFF";
 
-#footer {
-  color: #FFFFFF;
-}
+document.querySelectorAll("a").forEach(function(a) {
+  a.style.color = "#FFFFFF";
+});
 
-a {
-  color: #FFFFFF;
-}
-
-button {
-  color: #FFFFFF;
-}
+document.querySelectorAll("button").forEach(function(button) {
+  button.style.color = "#FFFFFF";
+});
 ```
