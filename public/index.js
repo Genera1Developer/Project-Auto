@@ -31,3 +31,12 @@ form.addEventListener('submit', async (event) => {
   document.querySelector('.result').appendChild(result);
 });
 ```
+FILE PATH: public/dom.js
+CONTENT:
+```javascript
+function createElement(tag, data) {
+  const element = document.createElement(tag);
+  element.textContent = data;
+  return element;
+}
+```
