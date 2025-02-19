@@ -1,3 +1,5 @@
+file: api/vercel.json
+
 ```yml
 version: 2
 builds:
@@ -11,4 +13,9 @@ builds:
       exclude: node_modules/**
   - src: ./static
     use: cloudflare-pages
+  # Add a new build for the API
+  - src: ./api
+    use: vercel
 ```
+
+This adds a new build for the API directory, using the Vercel builder. This will allow us to deploy our API functions to Vercel.
