@@ -1,11 +1,20 @@
 ```javascript
 import { createRequestHandler } from '@remix-run/vercel/node';
+import type { Request, Response } from 'vercel';
 
 const handleRequest = createRequestHandler({
   build: process.env.NODE_ENV === 'production',
 });
 
-addEventListener('fetch', (event) => {
-  event.respondWith(handleRequest(event.request));
+addEventListener('fetch', async (event: {
+    request: Request;
+    respondWith: (response: Response) => Promise<void>;
+}) => {
+  try {
+    const response = await handleRequest(event.request);
+    event.respondWith(response);
+  } catch (error) {
+    console.error(error);
+  }
 });
 ```
