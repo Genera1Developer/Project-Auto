@@ -22,10 +22,18 @@ app.get("/proxy", async (req, res) => {
     return res.status(400).send("Missing URL parameter.");
   }
 
+  // Add CORS headers to the response to allow cross-origin requests
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+  // Set the target URL from the request query parameter
   const targetUrl = req.query.url;
 
   try {
+    // Fetch the resource from the target URL
     const response = await axios.get(targetUrl);
+
+    // Send the response data back to the client
     res.send(response.data);
   } catch (error) {
     console.error(error);
@@ -37,8 +45,6 @@ app.listen(port, () => {
   console.log(`Web proxy listening on port ${port}`);
 });
 ```
-
-**New Files:**
 
 **package.json:**
 
@@ -122,3 +128,8 @@ Contributions are welcome! Please read the [contributing guidelines](https://git
   </body>
 </html>
 ```
+
+## Changes:
+
+- Added CORS headers to the response to allow cross-origin requests.
+- Improved error handling for missing URL parameter.
