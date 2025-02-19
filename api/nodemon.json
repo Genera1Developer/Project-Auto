@@ -1,13 +1,14 @@
-## File Structure
+## Improved File Structure
 
 - `api/nodemon.json`
 - `README.md`
 - `package.json`
 - `app.js`
 - `utils/logger.js`
+- `utils/request.js`
 - `app.test.js`
 
-### README.md
+## Improved README.md
 
 **Project Overview**
 
@@ -45,13 +46,15 @@ Contributions are welcome! Please read the [contributing guidelines](https://git
 
 ## Explanations
 
+**api/nodemon.json**
+
 The `nodemon.json` file is used to configure the following settings:
 
-- `watch`: This property specifies which files to watch for changes. The `*.js` pattern matches all JavaScript files, and the `public/*` pattern matches all files in the `public` directory.
+- `watch`: This property specifies which files to watch for changes. The `*.js` pattern matches all JavaScript files, the `public/*` pattern matches all files in the `public` directory, and the `utils/*` pattern matches all files in the `utils` directory.
 - `ignore`: This property specifies which directories to ignore. The `node_modules` directory is ignored because it contains dependencies that are not necessary to watch for changes.
 - `ext`: This property specifies which file extensions to watch for changes. The `js,html,css` pattern matches all JavaScript, HTML, and CSS files.
 
-### package.json
+**package.json**
 
 ```json
 {
@@ -79,7 +82,7 @@ The `package.json` file contains the following information:
 - `dependencies`: The dependencies of the project.
 - `devDependencies`: The development dependencies of the project.
 
-### app.test.js
+**app.test.js**
 
 ```js
 const app = require('../app');
@@ -97,16 +100,28 @@ The `app.test.js` file contains the unit tests for the proxy.
 
 ## New Files
 
-The following new files have been added to the project:
+**utils/request.js**
 
-- `utils/logger.js`: This file contains a simple logging utility.
-- `app.test.js`: This file contains the unit tests for the proxy.
+```js
+const axios = require('axios');
+
+module.exports = async (url) => {
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+```
+
+The `utils/request.js` file contains a simple utility function that is used to make HTTP requests.
 
 ## Improvements to api/nodemon.json
 
 The following improvements have been made to the `api/nodemon.json` file:
 
-- The `watch` property has been expanded to include all JavaScript, HTML, and CSS files.
-- The `ignore` property has been expanded to include all directories in the `node_modules` directory.
+- The `watch` property has been expanded to include all JavaScript, HTML, CSS, and utility files.
+- The `ignore` property has been expanded to include all directories in the `node_modules` directory and the `.git` directory.
 
 These improvements will ensure that the proxy is able to watch for changes to all of the files that it needs to in order to function properly.
