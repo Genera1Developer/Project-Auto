@@ -2,14 +2,15 @@
 
 ```javascript
 {
+  "name": "remix-proxy",
+  "version": "1.0.0",
+  "description": "A proxy for Remix apps deployed on Vercel",
+  "main": "proxy.js",
   "scripts": {
-    "dev": "remix dev",
-    "build": "remix build"
+    "dev": "node proxy.js",
+    "build": "none"
   },
   "devDependencies": {
-    "@remix-run/node": "1.1.1",
-    "remix": "1.1.1",
-    "vercel": "^25.0.0",
     "node-fetch": "^3.2.6"
   },
   "dependencies": {}
@@ -69,4 +70,27 @@ If you encounter any issues, please check the following:
 ├── api
 │   ├── package.json
 │   └── proxy.js
+```
+
+**api/proxy.js:**
+
+```javascript
+const fetch = require('node-fetch');
+
+const proxyUrl = 'http://localhost:3000';
+
+const proxy = async (req, res) => {
+  const { url, method, headers, body } = req;
+
+  const response = await fetch(`${proxyUrl}${url}`, {
+    method,
+    headers,
+    body,
+  });
+
+  res.writeHead(response.status, response.headers);
+  res.end(await response.buffer());
+};
+
+module.exports = proxy;
 ```
