@@ -1,5 +1,5 @@
-FILE PATH: api/proxy.js
-CONTENT: 
+file path: api/proxy.js
+content: 
 ```javascript
 const axios = require("axios");
 const express = require("express");
