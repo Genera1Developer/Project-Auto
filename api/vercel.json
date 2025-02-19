@@ -26,3 +26,11 @@ app.post('/proxy', async (req, res) => {
 app.listen(3000, () => {
   console.log('Proxy server running on port 3000');
 });
+
+FILE PATH: api/vercel.json
+CONTENT: 
+
+{
+  "routes": [],
+  "functions": {}
+}
