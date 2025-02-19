@@ -1,24 +1,23 @@
-file: public/form.html
+file: server.js
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form id="form">
-    <label for="url">Enter a URL:</label>
-    <input type="text" id="url" placeholder="https://example.com">
-    <button type="submit">Go</button>
-  </form>
-  <div id="result" class="visually-hidden"></div>
-  <div id="loading" class="visually-hidden">Loading...</div>
-  <script src="./script.js"></script>
-</body>
-</html>
+```js
+const express = require('express');
+const puppeteer = require('puppeteer');
+
+const app = express();
+app.use(express.urlencoded({ extended: true }));
+
+app.post('/proxy', async (req, res) => {
+  const { url } = req.body;
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(url);
+  const html = await page.content();
+  await browser.close();
+  res.send(html);
+});
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
 ```
