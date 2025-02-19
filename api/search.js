@@ -1,4 +1,4 @@
-FILE PATH: api/search.js
+file: api/search.js
 CONTENT: 
 ```js
 const fetch = require('node-fetch');
@@ -13,9 +13,23 @@ const searchGoogle = async (query) => {
 
   const response = await fetch(`${url}?${new URLSearchParams(params)}`);
   const data = await response.json();
-
-  return data;
+  return data.items;
 };
 
 module.exports = { searchGoogle };
+```
+file: api/proxy.js
+```js
+const express = require('express');
+const bodyParser = require('body-parser');
+const { searchGoogle } = require('./search');
+
+const app = express();
+app.use(bodyParser.json());
+app.post('/search', async (req, res) => {
+  const { query } = req.body;
+  const results = await searchGoogle(query);
+  res.json(results);
+});
+app.listen(3000);
 ```
