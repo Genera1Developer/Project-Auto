@@ -3,7 +3,7 @@ content:
 ```json
 {
   "watch": [],
-  "script": "nodemon --exec npm start",
+  "script": "node index.js",
   "ignore": [],
   "env": {},
   "postStart": "npm run seed",
