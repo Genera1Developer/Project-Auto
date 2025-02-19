@@ -1,9 +1,24 @@
-FILE PATH: api/nodemon.json
-CONTENT: {
-  "watch": ["server.js", "routes/*.js"],
-  "ext": "js json",
-  "env": {
-    "NODE_ENV": "development"
-  },
-  "script": "server.js"
-}
+FILE PATH: server.js
+CONTENT: const express = require('express')
+const bodyParser = require('body-parser')
+const request = require('request')
+
+const port = process.env.PORT || 3000
+
+const app = express()
+
+app.use(bodyParser.json())
+
+app.post('/proxy', (req, res) => {
+  const { url } = req.body
+
+  request(url, (error, response, body) => {
+    if (error) {
+      res.status(500).json({ error: error.message })
+    } else {
+      res.status(200).json({ body })
+    }
+  })
+})
+
+app.listen(port)
