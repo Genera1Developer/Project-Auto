@@ -1,6 +1,5 @@
 FILE PATH: public/themes/forest.js
 CONTENT: 
-
 ```
 // Forest theme for the web proxy.
 
