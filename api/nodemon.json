@@ -1,5 +1,7 @@
+file path: api/nodemon.json
+content: 
 {
-  "watch": ["*.js", "public/*"],
+  "watch": ["*.js", "public/**/*", "views/*"],
   "ignore": ["node_modules"], 
-  "ext": "js,html,css"
+  "ext": "js,html,css,json"
 }
