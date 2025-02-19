@@ -1,28 +1,20 @@
-FILE PATH: api/proxy.js
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: utils/logRequest.js
 CONTENT: 
 ```javascript
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const utils = require('./utils');
+const fs = require('fs');
 
-const app = express();
+async function logRequest(req) {
+  const date = new Date();
+  const log = `${date.toISOString()} - ${req.method} - ${req.url} - ${req.headers['user-agent']}\n`;
+  try {
+    await fs.appendFile('requests.log', log);
+  } catch (err) {
+    console.error('Error writing to log file:', err);
+  }
+}
 
-app.use(cors());
-app.use(bodyParser.json());
-
-app.use(async (req, res, next) => {
-  await utils.logRequest(req);
-  next();
-});
-
-app.post('/proxy', async (req, res) => {
-  utils.forwardRequest(req, res);
-});
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Web proxy listening on port ${PORT}`);
-});
+module.exports = {
+  logRequest,
+};
 ```
