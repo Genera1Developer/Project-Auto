@@ -1,33 +1,27 @@
-Based on the project goal, a new file should be created forstylesheet:
-
-FILE PATH: public/css/proxy.css
+FILE PATH: public/js/proxy.js
 CONTENT: 
-```css
-body {
-  font-family: 'Helvetica', 'Arial', sans-serif;
-}
+```javascript
+const form = document.querySelector('form');
 
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-}
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+  const url = document.querySelector('input[name="url"]').value;
 
-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-
-input[type="submit"] {
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
+  fetch('/proxy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ url }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const pre = document.querySelector('pre');
+      pre.textContent = data.html;
+    })
+    .catch((error) => {
+      console.error('Error fetching proxy: ', error);
+    });
+});
 ```
