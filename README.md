@@ -23,34 +23,32 @@ Surf The Cursed Web Anonymous
 Read SECURITY.md for security details.  It's not much but its the truth
 ```
 
-## Google...
+## Goal
 
-Static proxy do not like google.
+The goal of this project is to modify and fix the given web proxy to work fully for Vercel and static serverless sites, and fix any bugs along the way.
 
-<img src="/assets/google.gif" alt="Google gif is supposed to be here..">
+## File Structure
 
+The following is the file structure of the project:
 
-## Honesty
+- README.md: This file contains the project goal, suggested new files, and other explanations.
+- SECURITY.md: This file contains security details for the project.
+- app.js: This file contains the main code for the web proxy.
+- public/index.html: This file contains the HTML code for the web proxy.
+- public/themes/default.css: This file contains the CSS code for the web proxy.
 
-```text
-Honestly the default CSS and all that was made by some arabic guy on sourceforge.
-Sourceforge is a fucking gold mine of old arabic dudes that code what you can't I tell ya.
-Regardless, all that was coded for me was the /public/themes/default.css and the edits for that needed in /public/index.html
-```
+## New Files
 
-This was coded in [Replit](https://replit.com) btw
+The following new files have been added to the project:
 
-## Don't Be A Skid.
+- SECURITY.md: This file contains security details for the project.
+- app.js: This file contains the main code for the web proxy.
 
-<img src="/assets/dont-skid.webp" alt="How did you manage to fuck up a readme??">
+## Suggested Improvements
 
+The following are some suggested improvements for the project:
 
-
-## This Is Open Source Though
-
-This is open source so you all *can* use my code.  Your a skid tho
-
-That being said all this code was made myself through painful hours of work, so still give credits where due!
-
-## To everyone saying my proxy is ass...
-<img src="/assets/skiddy.gif" alt="Thanks Oreo For Gif!">
+- Add more features to the web proxy, such as the ability to block certain websites or to cache web pages.
+- Improve the performance of the web proxy.
+- Make the web proxy more user-friendly.
+- Add more documentation for the web proxy.
