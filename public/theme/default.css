@@ -1,7 +1,7 @@
 ## File Structure
 
 **public/theme/default.css**
-**public/css/cyberpunk.css**
+**public/theme/cyberpunk.css**
 **public/js/cyberpunk.js**
 **src/pages/api/proxy.js**
 **src/pages/api/ssg.js**
@@ -29,13 +29,7 @@
 
 ### Changes and Improvements
 
-**public/theme/default.css**
-
-- Made the transition for the body background color more subtle.
-- Added a light theme variant.
-- Improved the styling of the console container.
-
-**public/css/cyberpunk.css**
+**public/theme/cyberpunk.css**
 
 - Added a new cyberpunk theme with a dark background, neon accents, and animated blobs.
 
@@ -58,19 +52,6 @@
 
 - Added a new API route to handle console logging.
 - Implemented the console container.
-
-**src/pages/proxy.js**
-
-- Added a new page for the proxy.
-- Implemented the proxy container.
-
-**src/pages/ssg.js**
-
-- Added a new page for SSG.
-
-**src/pages/console.js**
-
-- Added a new page for the console.
 
 **src/components/CyberpunkCard.js**
 
