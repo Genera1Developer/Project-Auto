@@ -1,15 +1,10 @@
 **File Structure:**
 
-```
-- public/
-  - visuals/
-    - dropdown.css
-- README.md
-```
-
-**Improved `dropdown.css` file:**
+**Improved `public/visuals/dropdown.css` file:**
 
 ```css
+@import url("./vars.css");
+
 #themeSelector {
     position: fixed;
     top: 60px;
@@ -111,13 +106,6 @@
     border-color: var(--primary-glow) !important;
 }
 ```
-
-**Modifications:**
-
-* Added `!important` to the light theme styles to ensure they override conflicting styles in the main CSS file.
-* Adjusted the positioning and sizing of the theme selector and dropdown.
-* Added box shadows to provide a more elevated look.
-* Refined the hover effects on the elements for improved user experience.
 
 **Additional Considerations:**
 
