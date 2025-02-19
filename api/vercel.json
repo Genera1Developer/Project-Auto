@@ -34,3 +34,63 @@ const proxy = http.createServer((req, res) => {
 proxy.listen(3000, () => {
   console.log('Proxy server listening on port 3000');
 });
+
+file path: index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+  <title>Web Proxy</title>
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url">
+    <input type="submit" value="Submit">
+  </form>
+  <div id="result"></div>
+</body>
+</html>
+
+file path: index.js
+content: const http = require('http');
+const url = require('url');
+const fs = require('fs');
+
+const proxy = http.createServer((req, res) => {
+  const options = url.parse(req.url);
+  options.headers = req.headers;
+
+  const proxyReq = http.request(options, (proxyRes) => {
+    proxyRes.pipe(res);
+  });
+
+  req.pipe(proxyReq);
+});
+
+proxy.listen(3000, () => {
+  console.log('Proxy server listening on port 3000');
+});
+
+file path: package.json
+content: {
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "http": "^0.0.0",
+    "url": "^0.0.0",
+    "fs": "^0.0.0"
+  }
+}
+
+file path: README.md
+content: This is a simple web proxy that can be used to access websites anonymously.
+
+To use the proxy, simply enter the URL of the website you want to visit into the form on the homepage and click "Submit". The proxy will then fetch the website and display it in the results div.
+
+The proxy is currently running on port 3000. You can change the port by modifying the `port` variable in the `index.js` file.
