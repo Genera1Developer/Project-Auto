@@ -18,3 +18,8 @@ Then, open a web browser and go to the following URL:
 http://localhost:3000/
 ```
 You can now enter the URL of the website you want to access anonymously in the input field and click the "Go" button. The web proxy will fetch the content of the website and display it in the browser.
+
+**New Files**
+
+- `package.json`: This file contains the project dependencies.
+- `.gitignore`: This file contains the files that should be ignored by Git.
