@@ -1,113 +1,12 @@
-## File Structure
+improved file:
 
-- `api/nodemon.json`
-- `README.md`
-- `package.json`
-- `app.js`
-- `utils/logger.js`
-- `utils/request.js`
-- `app.test.js`
-- `utils/constants.js`
-- `.env`
-
-## Improved app.js
-
-```js
-const express = require('express');
-const request = require('./utils/request');
-const logger = require('./utils/logger');
-const constants = require('./utils/constants');
-
-const app = express();
-
-app.use(express.json());
-
-app.all('/:url', async (req, res) => {
-  const { url } = req.params;
-
-  if (!constants.ALLOWED_METHODS.includes(req.method)) {
-    return res.status(405).send('Method not allowed');
-  }
-
-  try {
-    const data = await request(url, {
-      method: req.method,
-      data: req.body,
-      headers: req.headers,
-    });
-    return res.send(data);
-  } catch (error) {
-    logger.error(error);
-    return res.status(500).send('Internal server error');
-  }
-});
-
-app.listen(process.env.PORT || 3000, () => {
-  logger.info(`Proxy listening on port ${process.env.PORT || 3000}`);
-});
-```
-
-## Explanations
-
-**app.js**
-
-The `app.js` file is the main entry point of the proxy. It uses the `express` framework to create an Express application. The application has a single route, which is a wildcard route that proxies requests to the target URL.
-
-The `request` module is used to make HTTP requests to the target URL. The `logger` module is used to log errors and other information. The `constants` module contains the list of allowed HTTP methods.
-
-The `app.listen()` method is used to start the Express application. The application listens on the port specified by the `PORT` environment variable, or on port 3000 if the `PORT` environment variable is not set.
-
-**utils/request.js**
-
-The `utils/request.js` file contains the function that is used to make HTTP requests to the target URL. The function uses the `axios` library to make the requests.
-
-**utils/constants.js**
-
-The `utils/constants.js` file contains the list of allowed HTTP methods. The list of allowed methods is currently empty, but it can be updated to include additional methods in the future.
-
-**.env**
-
-The `.env` file contains the environment variables that are used by the proxy. The `PORT` environment variable specifies the port on which the proxy should listen.
-
-## New Files
-
-**utils/logger.js**
-
-The `utils/logger.js` file contains the functions that are used to log errors and other information.
-
-```js
-const pino = require('pino');
-
-const logger = pino({
-  level: 'info',
-  prettyPrint: true,
-});
-
-module.exports = logger;
-```
-
-**app.test.js**
-
-The `app.test.js` file contains the unit tests for the proxy.
-
-```js
-const request = require('supertest');
-const app = require('../app');
-
-describe('GET /', () => {
-  it('should proxy the request to the target URL', async () => {
-    const res = await request(app).get('/');
-    expect(res.status).toBe(200);
-    expect(res.text).toBe('Hello, world!');
-  });
-
-  it('should log the request', async () => {
-    const logger = require('../utils/logger');
-    const spy = jest.spyOn(logger, 'info');
-
-    await request(app).get('/');
-
-    expect(spy).toHaveBeenCalled();
-  });
-});
+```json
+{
+  "watch": ["app.js", "utils/*.js"],
+  "exec": "node app.js",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ignore": ["node_modules/**"]
+}
 ```
