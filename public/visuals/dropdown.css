@@ -95,3 +95,25 @@ content: ```css
     border-color: var(--primary-glow);
 }
 ```
+file path: public/scripts/toggleTheme.js
+content: ```js
+const themeSelector = document.getElementById('themeSelector');
+const themeDropdown = document.querySelector('.theme-dropdown');
+
+themeSelector.addEventListener('click', () => {
+  themeDropdown.classList.toggle('active');
+});
+
+const themeItems = document.querySelectorAll('.theme-item');
+
+themeItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const themeName = item.dataset.theme;
+
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(themeName);
+
+    themeDropdown.classList.remove('active');
+  });
+});
+```
