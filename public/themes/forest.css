@@ -80,4 +80,20 @@ input[type="submit"]:hover {
 ::-webkit-scrollbar-track {
   background-color: #808080;
 }
+
+/* Additional overrides for dark mode */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #003200;
+  }
+
+  input[type="submit"] {
+    background-color: #389641;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #2E7D32;
+  }
+}
 ```
