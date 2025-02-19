@@ -1,7 +1,6 @@
 file: public/theme/particles.css
 
 ```css
-
 /* particles.css */
 body {
   background-color: transparent;
@@ -26,7 +25,7 @@ body {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-   left: calc(50vw - 50px);
+  left: calc(50vw - 50px);
   top: calc(50vh - 50px);
   animation: move 10s infinite;
 }
@@ -40,6 +39,27 @@ body {
   }
   100% {
     transform: translate(0px, 0px);
+  }
+}
+```
+
+file: public/theme/background.css
+
+```css
+/* background.css */
+body {
+  background-color: transparent;
+  animation: moveloop 500s linear infinite;
+  background-color: #000;
+  overflow: hidden;
+}
+
+@keyframes moveloop {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
   }
 }
 ```
