@@ -58,4 +58,4 @@ In addition to our general Code of Conduct, the following specific guidelines ap
 * **Respect Copyright Laws:** Do not access or distribute copyrighted material without permission.
 * **Be Original:** Do not copy or plagiarize the work of others.
 
-We reserve the right to modify or update these guidelines at
+We reserve the right to modify or update these guidelines at any time.
