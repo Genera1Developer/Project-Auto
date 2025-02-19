@@ -1,8 +1,8 @@
-FILE PATH: server/package.json
+FILE PATH: api/package.json
 CONTENT: {
-  "name": "web-proxy",
+  "name": "web-proxy-api",
   "version": "1.0.0",
-  "description": "A fully structured web proxy project",
+  "description": "The API for a fully structured web proxy project",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
