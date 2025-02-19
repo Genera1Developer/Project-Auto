@@ -1,65 +1,18 @@
-## File Structure
-
-- `README.md` (Explanation and File Structure)
-- `api/proxy.js` (Web Proxy Handler)
-- `api/config.js` (CDN Host List and Configuration)
-- `api/middleware.js` (Request Modification Middleware)
-- `api/getRedirectUrl.js` (Redirect URL Retrieval Function)
-- `api/before-use.js` (Documentation and Explanation)
-
-## Modified `api/proxy.js`
+### New File: `api/config.js` (CDN Host List and Configuration)
 
 ```javascript
-// ... Same as before ...
-```
+// Hosts allowed to be proxied. Add your CDN hosts here.
+const allowedHosts = [
+  // Examples:
+  'https://unpkg.com',
+  'https://cdn.jsdelivr.net',
+  'https://fastly.jsdelivr.net',
+  'https://bundle.run',
+  'https://deno.land',
+];
 
-## Modified `api/getRedirectUrl.js`
-
-```javascript
-// ... Same as before ...
-```
-
-## Modified `api/middleware.js`
-
-```javascript
-// ... Same as before ...
-```
-
-## New Files
-
-### `api/before-use.js` (Documentation and Explanation)
-
-```javascript
-// This file is intended for documentation and explanation purposes and is not imported or used by the other scripts.
-
-## Overview
-
-This project provides a web proxy specifically designed to work with Vercel and static serverless sites. It includes multiple files for better code organization and maintainability.
-
-## How to Use
-
-To use this web proxy, follow these steps:
-
-1. Deploy the project to a platform like Vercel or Netlify.
-2. Configure the proxy settings in `api/config.js` to include the allowed CDN hosts.
-3. Reference the deployed URL of the proxy in your client-side code or configuration.
-
-## File Structure
-
-- **README.md**: This file provides an overview of the project, its goal, and the file structure.
-- **api/proxy.js**: The main handler for the web proxy. It processes incoming requests, retrieves the redirect URL, and fetches the content from the original host.
-- **api/config.js**: Contains the configuration settings, including the list of allowed CDN hosts.
-- **api/middleware.js**: Handles any necessary modifications to the incoming request before it is forwarded to the original host.
-- **api/getRedirectUrl.js**: Retrieves the redirect URL from the incoming request.
-- **api/before-use.js**: This documentation file is not used in the codebase but provides detailed explanations and guidance for users.
-
-## Considerations
-
-- Ensure that your original hosts allow proxying.
-- Test the proxy thoroughly before deploying it in production.
-- Monitor the proxy's performance and usage to identify any potential issues.
-
-## Troubleshooting
-
-If you encounter any issues, please refer to the documentation or contact the project maintainer for support.
+// Export the allowed hosts configuration
+module.exports = {
+  allowedHosts,
+};
 ```
