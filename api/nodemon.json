@@ -9,7 +9,8 @@ content:
   ],
   "script": "nodemon --exec npm start",
   "ignore": [
-    "node_modules/"
+    "node_modules/",
+    ".git/"
   ]
 }
 ```
