@@ -9,45 +9,19 @@ const app = express();
 
 app.use(cors());
 
-const googleProxy = createProxyMiddleware({
+const options = {
   target: "https://google.com",
   changeOrigin: true,
   pathRewrite: {
     "^/google": "",
   },
-});
+};
 
-const youtubeProxy = createProxyMiddleware({
-  target: "https://youtube.com",
-  changeOrigin: true,
-  pathRewrite: {
-    "^/youtube": "",
-  },
-});
-
-const facebookProxy = createProxyMiddleware({
-  target: "https://facebook.com",
-  changeOrigin: true,
-  pathRewrite: {
-    "^/facebook": "",
-  },
-});
-
-const twitterProxy = createProxyMiddleware({
-  target: "https://twitter.com",
-  changeOrigin: true,
-  pathRewrite: {
-    "^/twitter": "",
-  },
-});
-
-const redditProxy = createProxyMiddleware({
-  target: "https://reddit.com",
-  changeOrigin: true,
-  pathRewrite: {
-    "^/reddit": "",
-  },
-});
+const googleProxy = createProxyMiddleware(options);
+const youtubeProxy = createProxyMiddleware({...options, target: "https://youtube.com"});
+const facebookProxy = createProxyMiddleware({...options, target: "https://facebook.com"});
+const twitterProxy = createProxyMiddleware({...options, target: "https://twitter.com"});
+const redditProxy = createProxyMiddleware({...options, target: "https://reddit.com"});
 
 app.use("/google", googleProxy);
 app.use("/youtube", youtubeProxy);
