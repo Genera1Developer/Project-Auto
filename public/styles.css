@@ -36,4 +36,8 @@ button {
   border: 1px solid #ccc;
   overflow: scroll;
 }
+
+.visually-hidden {
+  display: none;
+}
 ```
