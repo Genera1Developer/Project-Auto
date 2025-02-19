@@ -45,3 +45,14 @@ form.addEventListener("submit", async (event) => {
   }
 });
 ```
+FILE PATH: public/dom.js
+CONTENT:
+```javascript
+const createElement = (element, item) => {
+  const newElement = document.createElement(element);
+  newElement.textContent = item;
+  return newElement;
+};
+
+export default createElement;
+```
