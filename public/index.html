@@ -1,9 +1,32 @@
-FILE PATH: public/index.js
-CONTENT: const form = document.querySelector('form');const result = document.querySelector('#result');form.addEventListener('submit', e => {
-  e.preventDefault();
-  const url = e.target.querySelector('input[name="url"]').value;
-  fetch(url)
-    .then(res => res.text())
-    .then(data => result.innerHTML = data)
-    .catch(err => result.innerHTML = err.message);
-});
+FILE PATH: public/style.css
+CONTENT: body {
+  font-family: Arial, sans-serif;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#result {
+  max-width: 600px;
+  line-height: 1.5rem;
+  text-align: justify;
+}
