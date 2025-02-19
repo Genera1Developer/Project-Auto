@@ -1,47 +1,36 @@
-## File Structure
+## Code for `api/search.js`
 
-```
-├── api
-│   ├── proxy.js
-│   ├── search.js
-│   ├── utility.js
-│   ├── asyncHandler.js
-│   ├── handle500.js
-│   ├── rewriteUrls.js
-├── README.md
-├── package.json
-```
+```javascript
+const asyncHandler = require('./asyncHandler');
+const handle500 = require('./handle500');
+const proxy = require('./proxy');
+const utility = require('./utility');
+const createTransformer = require('./rewriteUrls').createTransformer;
 
-## Code for `api/rewriteUrls.js`
+const search = asyncHandler(async (req, res) => {
+  // Get the URL parameters
+  const query = req.query.q;
+  const type = req.query.type;
 
-```js
-const createTransformer = (type) => {
-  switch (type) {
-    case 'relativeUrls':
-      return relativeUrlsTransformer();
-    default:
-      throw new Error('Invalid stream type');
+  if (!query) {
+    return res.status(400).json({ error: 'Missing search query' });
   }
-};
 
-const relativeUrlsTransformer = () => {
-  return new Transform({
-    transform(chunk, encoding, next) {
-      // Replace relative URLs with absolute URLs
-      const modifiedChunk = chunk.toString().replace(/href="\//g, 'href="https://example.com/');
-      this.push(modifiedChunk);
-      next();
-    },
-  });
-};
+  // Build the search URL
+  const searchUrl = utility.buildSearchUrl(query, type);
 
-module.exports = {
-  createTransformer,
-};
+  // Create a proxy request
+  const proxyRequest = proxy.createRequest(searchUrl);
+
+  // Create a response transformer
+  const transformer = createTransformer(type);
+
+  // Pipe the proxy response through the transformer
+  proxyRequest
+    .pipe(transformer)
+    .pipe(res)
+    .on('error', handle500(res));
+});
+
+module.exports = search;
 ```
-
-## Enhancements
-
-- Moved the URL rewriting logic to a separate `rewriteUrls` module.
-- Refactored the `search.js` file to make it more modular and easier to read.
-- Added a `README.md` file to provide a high-level overview of the project.
