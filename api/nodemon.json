@@ -5,6 +5,7 @@
 - `package.json`
 - `app.js`
 - `utils/logger.js`
+- `app.test.js`
 
 ### api/nodemon.json
 
@@ -72,6 +73,9 @@ The `nodemon.json` file is used to configure the following settings:
     "axios": "^0.21.1",
     "express": "^4.17.1",
     "logger": "^0.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^9.2.2"
   }
 }
 ```
@@ -80,3 +84,30 @@ The `package.json` file contains the following information:
 
 - `name`: The name of the project.
 - `version`: The version of the project.
+- `description`: The description of the project.
+- `main`: The main entry point of the project.
+- `dependencies`: The dependencies of the project.
+- `devDependencies`: The development dependencies of the project.
+
+### app.test.js
+
+```js
+const app = require('../app');
+const request = require('supertest');
+
+describe('web-proxy', () => {
+  it('should proxy GET requests', async () => {
+    const response = await request(app).get('/https://example.com');
+    expect(response.status).toBe(200);
+  });
+});
+```
+
+The `app.test.js` file contains the unit tests for the proxy.
+
+## New Files
+
+The following new files have been added to the project:
+
+- `utils/logger.js`: This file contains a simple logging utility.
+- `app.test.js`: This file contains the unit tests for the proxy.
