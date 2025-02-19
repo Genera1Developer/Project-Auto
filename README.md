@@ -1,23 +1,20 @@
-FILE PATH: server.js
+FILE PATH: index.html
 CONTENT: 
-```javascript
-const http = require('http');
-const request = require('request');
-
-const PORT = 8080;
-
-const server = http.createServer((req, res) => {
-  if (req.method === 'POST') {
-    const url = req.body.url;
-
-    request(url).pipe(res);
-  } else {
-    res.writeHead(405, { 'Content-Type': 'text/plain' });
-    res.end('Only POST requests are allowed.');
-  }
-});
-
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/proxy" method="POST">
+    <label for="url">URL:</label>
+    <input type="text" name="url" id="url">
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>
 ```
