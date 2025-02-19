@@ -9,7 +9,7 @@
         * get-original-url.js
         * get-hostname.js
 
-**Updated Code:**
+**Code Changes:**
 
 **public/index.html**
 
@@ -72,8 +72,8 @@ import getOriginalUrl from './utils/get-original-url.js';
 import getHostname from './utils/get-hostname.js';
 
 const server = createServer(async (req, res) => {
-  try {
-    if (req.method === 'POST') {
+  if (req.method === 'POST') {
+    try {
       const { url } = await req.json();
 
       const originalUrl = getOriginalUrl(url);
@@ -91,13 +91,13 @@ const server = createServer(async (req, res) => {
 
       // Pipe the response to the client
       proxyRes.body.pipe(res);
-    } else {
-      res.writeHead(405);
-      res.end('Method Not Allowed');
+    } catch (err) {
+      res.writeHead(500);
+      res.end('Error: ' + err.message);
     }
-  } catch (err) {
-    res.writeHead(500);
-    res.end('Error: ' + err.message);
+  } else {
+    res.writeHead(405);
+    res.end('Method Not Allowed');
   }
 });
 
