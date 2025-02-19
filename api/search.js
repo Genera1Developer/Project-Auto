@@ -1,5 +1,3 @@
-Sure, here are the suggested files along with the revised `api/search.js` file:
-
 ## File Structure
 
 ```
@@ -37,9 +35,7 @@ module.exports = asyncHandler(async (req, res) => {
     const transformStream = utility.modifyStream('relativeUrls');
 
     // Proxy the request through the middleware
-    proxyMiddleware(req, res, async (err) => {
-      if (err) throw err;
-    });
+    await proxyMiddleware(req, res);
 
     // Pipe the response through the Transform stream
     res.pipe(transformStream).pipe(res);
@@ -111,3 +107,4 @@ module.exports = handle500;
 - Added a more detailed error message to the `handle500` function.
 - Added a `utility` file to contain utility functions used by the search handler.
 - Added an `asyncHandler` file to contain a helper function for handling asynchronous requests.
+- Updated the `proxyMiddleware` to use the `await` keyword to make it easier to handle errors.
