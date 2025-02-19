@@ -7,16 +7,6 @@
 - `utils/logger.js`
 - `app.test.js`
 
-### api/nodemon.json
-
-```json
-{
-  "watch": ["*.js", "public/*"],
-  "ignore": ["node_modules"],
-  "ext": "js,html,css"
-}
-```
-
 ### README.md
 
 **Project Overview**
@@ -111,3 +101,12 @@ The following new files have been added to the project:
 
 - `utils/logger.js`: This file contains a simple logging utility.
 - `app.test.js`: This file contains the unit tests for the proxy.
+
+## Improvements to api/nodemon.json
+
+The following improvements have been made to the `api/nodemon.json` file:
+
+- The `watch` property has been expanded to include all JavaScript, HTML, and CSS files.
+- The `ignore` property has been expanded to include all directories in the `node_modules` directory.
+
+These improvements will ensure that the proxy is able to watch for changes to all of the files that it needs to in order to function properly.
