@@ -1,4 +1,4 @@
-## Improved File Structure
+## File Structure
 
 - `api/nodemon.json`
 - `README.md`
@@ -20,6 +20,8 @@ const constants = require('./utils/constants');
 
 const app = express();
 
+app.use(express.json());
+
 app.get('/:url', async (req, res) => {
   const { url } = req.params;
 
@@ -29,6 +31,84 @@ app.get('/:url', async (req, res) => {
 
   try {
     const data = await request(url);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+app.post('/:url', async (req, res) => {
+  const { url } = req.params;
+  const { body } = req.body;
+
+  if (!constants.ALLOWED_METHODS.includes(req.method)) {
+    return res.status(405).send('Method not allowed');
+  }
+
+  try {
+    const data = await request(url, {
+      method: 'POST',
+      data: body,
+    });
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+app.put('/:url', async (req, res) => {
+  const { url } = req.params;
+  const { body } = req.body;
+
+  if (!constants.ALLOWED_METHODS.includes(req.method)) {
+    return res.status(405).send('Method not allowed');
+  }
+
+  try {
+    const data = await request(url, {
+      method: 'PUT',
+      data: body,
+    });
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+app.patch('/:url', async (req, res) => {
+  const { url } = req.params;
+  const { body } = req.body;
+
+  if (!constants.ALLOWED_METHODS.includes(req.method)) {
+    return res.status(405).send('Method not allowed');
+  }
+
+  try {
+    const data = await request(url, {
+      method: 'PATCH',
+      data: body,
+    });
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+app.delete('/:url', async (req, res) => {
+  const { url } = req.params;
+
+  if (!constants.ALLOWED_METHODS.includes(req.method)) {
+    return res.status(405).send('Method not allowed');
+  }
+
+  try {
+    const data = await request(url, {
+      method: 'DELETE',
+    });
     return res.send(data);
   } catch (error) {
     logger.error(error);
