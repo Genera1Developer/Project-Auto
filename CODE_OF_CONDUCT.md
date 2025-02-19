@@ -1,28 +1,53 @@
-## File Structure
-
-```
-|- README.md
-|- CODE_OF_CONDUCT.md
-|- LICENSE
-|- index.js
-|- package.json
-|- .env
-|- node_modules
-```
-
 ## Improved CODE_OF_CONDUCT.md
 
-The improved CODE_OF_CONDUCT.md includes:
+```markdown
+## Code of Conduct
 
-- A clearer and more concise statement of our pledge to make participation in our community a harassment-free experience for everyone.
-- A more comprehensive list of unacceptable behavior.
-- A more detailed explanation of the enforcement process, including the roles and responsibilities of community leaders.
-- A link to the Contributor Covenant website for more information and resources.
+We are committed to providing a welcoming and harassment-free experience for everyone, regardless of race, religion, color, national origin, gender, sexual orientation, age, marital status, veteran status, or disability status.
+
+We do not tolerate harassment in any form. Harassment includes, but is not limited to:
+
+* Verbal abuse
+* Physical abuse
+* Sexual harassment
+* Cyberbullying
+* Stalking
+
+If you are being harassed, or if you witness someone else being harassed, please contact a community leader immediately.
+
+### Community Leaders
+
+Community leaders are responsible for enforcing this code of conduct. They have the authority to take action against anyone who violates this code of conduct, including:
+
+* Issuing warnings
+* Suspending or banning users
+* Removing content
+
+### Enforcement Process
+
+If a community leader receives a report of harassment, they will investigate the report and take appropriate action. The enforcement process may include:
+
+* Contacting the alleged harasser
+* Reviewing evidence
+* Issuing a warning
+* Suspending or banning the alleged harasser
+* Removing content
+
+### Reporting Harassment
+
+If you are being harassed, or if you witness someone else being harassed, please contact a community leader immediately. You can contact a community leader by:
+
+* Emailing [email protected]
+* Sending a direct message on [platform]
+* Posting a message in the [channel]
+
+### More Information
+
+For more information on the Contributor Covenant, please visit [website].
+```
 
 ## New Files
 
-- **LICENSE:** A license file is essential for any open source project. It specifies the terms under which the code can be used and distributed.
-- **index.js:** The main script file for the web proxy.
-- **package.json:** The package.json file contains important information about the project, such as its name, version, and dependencies.
-- **.env:** The .env file contains environment variables that are used by the web proxy.
-- **node_modules:** The node_modules directory contains the dependencies that are installed when the project is built.
+- **CONTRIBUTING.md:** A CONTRIBUTING.md file provides guidelines for contributing to the project. It should include information on how to submit bug reports, feature requests, and pull requests.
+- **ISSUE_TEMPLATE.md:** An ISSUE_TEMPLATE.md file provides a template for submitting issues. It should include information on what information to include in the issue report, such as the version of the software, the operating system, and the steps to reproduce the issue.
+- **PULL_REQUEST_TEMPLATE.md:** A PULL_REQUEST_TEMPLATE.md file provides a template for submitting pull requests. It should include information on what information to include in the pull request, such as a description of the changes, the motivation for the changes, and the testing that was performed.
