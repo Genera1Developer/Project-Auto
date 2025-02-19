@@ -25,6 +25,6 @@ form.addEventListener('submit', async (event) => {
 
   const responseBody = await response.text();
 
-  console.log(responseBody);
+  document.querySelector('.result').textContent = responseBody;
 });
 ```
