@@ -1,15 +1,41 @@
-file: api/vercel.json
-
 **Improved `api/vercel.yml` with Vercel's Python edge function support**
 
 ```yml
 version: 2
 builds:
   - src: ./src
+    env:
+      - PROJECT_ROOT=/opt/project
     use: "@vercel/python-edge"
     config:
       experimental: edge-functions
       exclude: node_modules/**
   - src: ./static
     use: cloudflare-pages
+```
+
+**New File: `requirements.txt`**
+
+```
+fastapi==0.86.0
+uvicorn==0.19.0
+```
+
+**New File: `.env`**
+
+```
+PROJECT_ROOT=/opt/project
+```
+
+**New File: `src/main.py`**
+
+```python
+from fastapi import FastAPI, Request
+from pydantic import BaseModel
+
+app = FastAPI()
+
+@app.get("/")
+async def root(request: Request):
+    return {"message": "Hello World"}
 ```
