@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     const searchUrl = 'https://serpapi.com/search';
     const params = {
       engine: 'duckduckgo',
-      q: Array.isArray(q) ? q[0] : q,
+      q,
       kl: 'us-en',
       api_key: apiKey,
       output: 'html'
@@ -135,5 +135,13 @@ export const config = {
     bodyParser: false,
     responseLimit: false,
   },
+};
+```
+file: pages/api/_middleware.js
+content: 
+```js
+export const config = {
+  matcher: '/api/proxy.js',
+  handler: 'functions/proxy',
 };
 ```
