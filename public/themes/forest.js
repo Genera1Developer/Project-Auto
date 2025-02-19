@@ -4,83 +4,83 @@ CONTENT:
 /* CSS for forest mode. */
 
 body.forest {
-  background-color: #222;
-  color: #fff;
+  background-color: #417505;
+  color: #2e7d32;
 }
 
 body.forest a {
-  color: #5cb85c;
+  color: #4caf50;
 }
 
 body.forest h1 {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest h2 {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest h3 {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest h4 {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest h5 {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest h6 {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest p {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest ul {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest ol {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest li {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest blockquote {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest pre {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest code {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest hr {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest table {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest tr {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest td {
-  color: #fff;
+  color: #2e7d32;
 }
 
 body.forest th {
-  color: #fff;
+  color: #2e7d32;
 }
 ```
