@@ -1,2 +1,9 @@
 file path: README.md
-content: To use this fully structured web proxy, follow the steps outlined in 'Read Before Use'. Additional files have been created to support the project's functionality.
+content: To use this fully structured web proxy, follow the steps outlined in 'Read Before Use'. Additional files have been created to support the project's functionality:
+
+- `api/Read Before Use`: Instructions on how to use the web proxy.
+- `server.py`: The main server script that handles incoming requests.
+- `client.py`: An example client script that can be used to access the web proxy.
+- `index.html`: The main HTML page for the web proxy.
+- `style.css`: The CSS stylesheet for the web proxy.
+- `script.js`: The JavaScript file for the web proxy.
