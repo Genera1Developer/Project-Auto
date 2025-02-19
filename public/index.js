@@ -1,67 +1,36 @@
-FILE PATH: public/index.js
+FILE PATH: public/index.html
 CONTENT:
-```javascript
-const form = document.querySelector('form');
-const responseBody = document.getElementById('response-body');
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+  <body>
+    <h1>Web Proxy</h1>
 
-  const url = document.getElementById('url').value;
-  const method = document.getElementById('method').value;
-  const requestBody = document.getElementById('request-body').value;
+    <form>
+      <label for="url">URL:</label>
+      <input type="text" id="url" />
 
-  const response = await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: requestBody,
-  });
+      <label for="method">Method:</label>
+      <select id="method">
+        <option value="GET">GET</option>
+        <option value="POST">POST</option>
+        <option value="PUT">PUT</option>
+        <option value="DELETE">DELETE</option>
+      </select>
 
-  const data = await response.json();
+      <label for="request-body">Request Body:</label>
+      <textarea id="request-body"></textarea>
 
-  responseBody.innerHTML = JSON.stringify(data, null, 2);
-});
-```
-FILE PATH: public/style.css
-CONTENT:
-```css
-body {
-  font-family: Arial, sans-serif;
-}
+      <button type="submit">Send Request</button>
+    </form>
 
-h1 {
-  margin-top: 0;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-label {
-  font-weight: bold;
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-textarea {
-  height: 10rem;
-  resize: vertical;
-}
-
-#response-body {
-  background-color: #f5f5f5;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+    <div id="response-body"></div>
+  </body>
+</html>
 ```
