@@ -57,6 +57,23 @@ a:hover {
 }
 
 /* New styles for vercel and static serverless sites */
+.vercel-static {
+  background-color: #fff;
+  color: #212121;
+}
+
+.vercel-static .container {
+  max-width: 600px;
+}
+
+.vercel-static .header {
+  background-color: #fff;
+}
+
+.vercel-static .footer {
+  background-color: #fff;
+}
+
 @media screen and (prefers-color-scheme: dark) {
   .vercel-static {
     background-color: #212121;
@@ -75,4 +92,40 @@ a:hover {
     background-color: #333;
   }
 }
+```
+
+**New CSS file:**
+
+file: public/theme/dark.css
+
+```css
+/* Dark theme styles for the web proxy */
+
+/* Global styles */
+body {
+  background-color: #212121;
+  color: #fff;
+}
+
+.container {
+  background-color: #333;
+}
+
+/* Header styles */
+.header {
+  background-color: #333;
+}
+
+/* Footer styles */
+.footer {
+  background-color: #333;
+}
+```
+
+**Usage:**
+
+To use the dark theme, add the following code to the `<head>` of your HTML document:
+
+```html
+<link rel="stylesheet" href="/theme/dark.css">
 ```
