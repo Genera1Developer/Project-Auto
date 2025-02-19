@@ -1,4 +1,19 @@
-Improved Code and File Structure:
+**File Structure:**
+
+```
+public/
+  visuals/
+    dropdown.css
+  theme/
+    particles.js
+src/
+  utils/
+    particles.js
+  components/
+    Particles.js
+```
+
+**Improved Code:**
 
 **public/visuals/dropdown.css**
 
@@ -44,22 +59,21 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
 });
 
-const particles = [];
+let particles = [];
 
 function createParticles(numParticles) {
   if (particles.length > 0) {
     particles.splice(0, particles.length);
   }
   for (let i = 0; i < numParticles; i++) {
-    const particle = {
+    particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       vx: (Math.random() - 0.5) * 5,
       vy: (Math.random() - 0.5) * 5,
       color: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`,
       radius: Math.random() * 3 + 1,
-    };
-    particles.push(particle);
+    });
   }
 }
 
@@ -96,29 +110,25 @@ animateParticles();
 ```javascript
 import { useEffect, useState } from 'react';
 
-export const createParticles = (canvas) => {
-  if (canvas) {
-    const particles = [];
-    for (let i = 0; i < 100; i++) {
-      const particle = {
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 5,
-        vy: (Math.random() - 0.5) * 5,
-        color: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`,
-        radius: Math.random() * 3 + 1,
-      };
-      particles.push(particle);
-    }
-    return particles;
+export const createParticles = (canvas, numParticles = 100) => {
+  const particles = [];
+  for (let i = 0; i < numParticles; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 5,
+      vy: (Math.random() - 0.5) * 5,
+      color: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`,
+      radius: Math.random() * 3 + 1,
+    });
   }
-  return [];
+  return particles;
 };
 
-export const initParticles = (canvasRef) => {
+export const initParticles = (canvasRef, numParticles = 100) => {
   if (canvasRef) {
     const canvas = canvasRef.current;
-    const particles = createParticles(canvas);
+    const particles = createParticles(canvas, numParticles);
     const ctx = canvas.getContext('2d');
 
     window.addEventListener('resize', () => {
@@ -164,14 +174,14 @@ const drawParticles = (particles, ctx) => {
 import React, { useEffect, useRef } from 'react';
 import { initParticles } from '../utils/particles';
 
-const Particles = () => {
+const Particles = ({ numParticles = 100 }) => {
   const canvasRef = useRef();
 
   useEffect(() => {
-    initParticles(canvasRef);
+    initParticles(canvasRef, numParticles);
 
     return () => {
-      // cleanup logic
+      // Cleanup logic
     };
   }, []);
 
@@ -181,9 +191,8 @@ const Particles = () => {
 export default Particles;
 ```
 
-**Additional Improvements**
+**Additional Improvements:**
 
-* Implemented error handling for `canvasRef` in `Particles.js`.
-* Optimized particle creation by using a `useEffect` hook in `Particles.js`.
-* Separated particle initialization from animation.
-* Made particle properties customizable by passing them as props to the `Particles` component.
+* Extracted particle initialization logic into a separate function `createParticles` in `src/utils/particles.js`.
+* Moved particle initialization into the `useEffect` hook in `src/components/Particles.js` for better encapsulation.
+* Made particle properties customizable by passing `numParticles` as a prop to the `Particles` component.
