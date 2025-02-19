@@ -107,6 +107,9 @@ input[type="submit"]:hover {
   padding: 5px;
   max-width: 200px;
   line-break: anywhere;
+  transition: 0.3s ease-in-out;
+  visibility: hidden;
+  opacity: 0;
 }
 
 .custom-tooltip::after {
@@ -120,9 +123,8 @@ input[type="submit"]:hover {
   border-color: #f5f5f5 transparent transparent transparent;
 }
 
-.tooltip-link {
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
+.tooltip-link:hover .custom-tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 ```
