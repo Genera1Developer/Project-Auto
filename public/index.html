@@ -1,18 +1,31 @@
-FILE PATH: public/index.html
-CONTENT: <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="./style.css" />
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form id="form">
-    <label for="url">Enter a URL:</label>
-    <input type="text" id="url" placeholder="https://example.com" />
-    <button type="submit">Fetch</button>
-  </form>
-  <div id="result"></div>
-</body>
-</html>
+FILE PATH: public/style.css
+CONTENT: body {
+  font-family: sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+#form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+#url {
+  width: 300px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#result {
+  width: 100%;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
