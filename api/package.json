@@ -1,49 +1,24 @@
-Based on the project goal, the following files should be created:
+FILE PATH: server.js
+CONTENT: const http = require('http');
+const fs = require('fs');
 
-FILE PATH: proxy.html
-CONTENT: <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form action="/proxy">
-    <input type="text" name="url" placeholder="Enter a URL">
-    <input type="submit" value="Submit">
-  </form>
-  <div id="result"></div>
-</body>
-</html>
+const port = 3000;
 
-FILE PATH: proxy.css
-CONTENT: body {
-  font-family: Arial, sans-serif;
-}
+const server = http.createServer((req, res) => {
+  if (req.method === 'GET') {
+    if (req.url === '/') {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/html');
+      res.end(fs.readFileSync('proxy.html'));
+    } else if (req.url === '/proxy') {
+      const url = req.url.substring(7);
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/html');
+      res.end(fs.readFileSync(url));
+    }
+  }
+});
 
-h1 {
-  text-align: center;
-}
-
-form {
-  margin: 0 auto;
-  width: 50%;
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
-}
-
-input[type="submit"] {
-  width: 100%;
-  padding: 10px;
-  background-color: #008CBA;
-  color: #fff;
-}
-
-#result {
-  margin-top: 20px;
-}
+server.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
+});
