@@ -1,36 +1,30 @@
-FILE PATH: public/index.html
+FILE PATH: server/index.js
 CONTENT:
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
+```javascript
+const express = require('express');
+const fetch = require('node-fetch');
 
-  <body>
-    <h1>Web Proxy</h1>
+const app = express();
 
-    <form>
-      <label for="url">URL:</label>
-      <input type="text" id="url" />
+app.use(express.json());
 
-      <label for="method">Method:</label>
-      <select id="method">
-        <option value="GET">GET</option>
-        <option value="POST">POST</option>
-        <option value="PUT">PUT</option>
-        <option value="DELETE">DELETE</option>
-      </select>
+app.post('/proxy', async (req, res) => {
+  const { url, method, body } = req.body;
 
-      <label for="request-body">Request Body:</label>
-      <textarea id="request-body"></textarea>
+  const response = await fetch(url, {
+    method,
+    body,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-      <button type="submit">Send Request</button>
-    </form>
+  const responseBody = await response.text();
 
-    <div id="response-body"></div>
-  </body>
-</html>
+  res.send(responseBody);
+});
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
 ```
