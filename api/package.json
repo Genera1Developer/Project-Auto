@@ -1,14 +1,12 @@
-FILE PATH: api/package.json
-CONTENT: {
-  "name": "web-proxy-api",
-  "version": "1.0.0",
-  "description": "Web proxy API",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "axios": "^0.24.0"
+Based on the project goal, the following file should be created:
+
+FILE PATH: utils/helpers.js
+CONTENT: // Helper functions for the web proxy
+const fetchUrl = async (url) => {
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (err) {
+    throw new Error(`Error fetching URL: ${url}`, err);
   }
-}
+};
