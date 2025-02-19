@@ -1,32 +1,34 @@
-FILE PATH: public/index.html
+FILE PATH: public/script.js
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="./style.css" />
-  </head>
+```javascript
+const form = document.querySelector('form');
 
-  <body>
-    <h1>Web Proxy</h1>
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
 
-    <form action="/proxy" method="POST">
-      <label for="url">URL:</label>
-      <input type="text" id="url" name="url" />
+  const url = document.querySelector('input[name="url"]').value;
+  const method = document.querySelector('select[name="method"]').value;
+  const body = document.querySelector('textarea[name="body"]').value;
 
-      <label for="method">Method:</label>
-      <select id="method" name="method">
-        <option value="GET">GET</option>
-        <option value="POST">POST</option>
-      </select>
+  const requestBody = {
+    url,
+    method,
+    body,
+  };
 
-      <label for="body">Body:</label>
-      <textarea id="body" name="body"></textarea>
-
-      <button type="submit">Proxy</button>
-    </form>
-  </body>
-</html>
+  fetch('/proxy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      alert(data.response);
+    })
+    .catch((error) => {
+      alert('Error: ' + error.message);
+    });
+});
 ```
