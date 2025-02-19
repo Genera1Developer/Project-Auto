@@ -1,4 +1,18 @@
-**Code for `api/search.js`:**
+**File Structure**
+
+```
+📁 project
+  ┣━━ 📂 api
+    ┣━━ 📄 asyncHandler.js
+    ┣━━ 📄 handle500.js
+    ┣━━ 📄 proxy.js
+    ┣━━ 📄 rewriteUrls.js
+    ┣━━ 📄 search.js
+    ┣━━ 📄 utility.js
+  ┣━━ 📄 README.md
+```
+
+**Code for `api/search.js`**
 
 ```javascript
 const asyncHandler = require('./asyncHandler');
@@ -30,9 +44,7 @@ const search = asyncHandler(async (req, res) => {
 module.exports = search;
 ```
 
-## New Files
-
-**`api/utility.js`**
+**Code for `api/utility.js`**
 
 ```javascript
 const createTransformer = (type) => {
@@ -74,7 +86,7 @@ module.exports = {
 };
 ```
 
-**`api/transformers/web.js`**
+**Code for `api/transformers/web.js`**
 
 ```javascript
 const replaceUrls = require('./helpers/replaceUrls');
@@ -92,7 +104,7 @@ module.exports = replaceUrls(
 );
 ```
 
-**`api/transformers/image.js`**
+**Code for `api/transformers/image.js`**
 
 ```javascript
 const replaceUrls = require('./helpers/replaceUrls');
@@ -103,7 +115,7 @@ module.exports = replaceUrls(
 );
 ```
 
-**`api/transformers/video.js`**
+**Code for `api/transformers/video.js`**
 
 ```javascript
 const replaceUrls = require('./helpers/replaceUrls');
@@ -114,7 +126,7 @@ module.exports = replaceUrls(
 );
 ```
 
-**`api/transformers/news.js`**
+**Code for `api/transformers/news.js`**
 
 ```javascript
 const replaceUrls = require('./helpers/replaceUrls');
@@ -132,7 +144,7 @@ module.exports = replaceUrls(
 );
 ```
 
-**`api/helpers/replaceUrls.js`**
+**Code for `api/helpers/replaceUrls.js`**
 
 ```javascript
 const stream = require('stream');
@@ -156,28 +168,4 @@ const replaceUrls = (selectors, replaceFn) => {
 };
 
 module.exports = replaceUrls;
-```
-
-## File Structure
-
-```
-📁 project
-  ┣━━ 📂 api
-    ┣━━ 📄 asyncHandler.js
-    ┣━━ 📄 handle500.js
-    ┣━━ 📄 proxy.js
-    ┣━━ 📄 rewriteUrls.js
-      ┣━━ 📄 createTransformer.js
-      ┣━━ 📄 transformers
-        ┣━━ 📄 image.js
-        ┣━━ 📄 news.js
-        ┣━━ 📄 video.js
-        ┣━━ 📄 web.js
-    ┣━━ 📄 search.js
-    ┣━━ 📄 utility.js
-      ┣━━ 📄 buildSearchUrl.js
-      ┣━━ 📄 createTransformer.js
-      ┣━━ 📄 helpers
-        ┣━━ 📄 replaceUrls.js
-  ┣━━ 📄 README.md
 ```
