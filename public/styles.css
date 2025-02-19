@@ -13,11 +13,12 @@ h1 {
 }
 
 form {
+  max-width: 500px;
+  margin: 2rem auto;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  margin: 2rem 0;
 }
 
 input {
@@ -47,9 +48,15 @@ button {
 }
 
 #loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.5;
 }
 ```
