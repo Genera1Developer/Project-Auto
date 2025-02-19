@@ -1,19 +1,20 @@
-FILE PATH: routes/index.js
+FILE PATH: views/index.ejs
 CONTENT: 
-```javascript
-const express = require("express");
-const router = express.Router();
-
-router.get("/", (req, res) => {
-  res.render("index");
-});
-
-router.post("/proxy", async (req, res) => {
-  const { url } = req.body;
-  const response = await fetch(url);
-  const data = await response.text();
-  res.send(data);
-});
-
-module.exports = router;
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
+  <body>
+    <h1>Web Proxy</h1>
+    <form action="/proxy" method="POST">
+      <input type="text" name="url" placeholder="Enter a URL" />
+      <button type="submit">Fetch</button>
+    </form>
+    <div id="result"></div>
+  </body>
+</html>
 ```
