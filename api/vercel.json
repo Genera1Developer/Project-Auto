@@ -1,3 +1,13 @@
+**File Structure**
+
+- `README.md`
+- `api/proxy.js`
+- `api/vercel.json`
+- `package.json`
+
+**Improved `api/vercel.json`**
+
+```json
 {
   "version": 2,
   "builds": [
@@ -11,5 +21,44 @@
       "src": "/(.*)",
       "dest": "/api/proxy.js"
     }
-  ]
+  ],
+  "functions": {
+    "proxy": {
+      "src": "/api/proxy.js",
+      "runtime": "nodejs14.x"
+    }
+  }
 }
+```
+
+**Changes and Additions**
+
+- Added a `functions` object to define the `proxy` function.
+- Updated the `runtime` to `nodejs14.x` to support newer Node.js features.
+
+**Additional Files**
+
+**`README.md`**
+
+This file should provide a clear and concise explanation of the project's purpose, setup instructions, and usage.
+
+**`package.json`**
+
+This file should include dependencies for the following:
+
+- `vercel` for deploying to Vercel
+- `node-fetch` for making HTTP requests in the proxy
+
+Example `package.json`:
+
+```json
+{
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A web proxy for Vercel and static serverless sites",
+  "dependencies": {
+    "vercel": "^23.0.0",
+    "node-fetch": "^3.2.0"
+  }
+}
+```
