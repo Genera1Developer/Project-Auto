@@ -1,6 +1,18 @@
-FILE PATH: api/nodemon.json
-CONTENT: {
-  "ignore": ["node_modules/*", "api/routes/*"],
-  "watch": ["api/*", "package.json"],
-  "ext": "js,json"
-}
+FILE PATH: api/routes/webproxy.js
+CONTENT: const express = require('express');
+const router = express.Router();
+const fetch = require('node-fetch');
+
+const origin = 'https://my-remote-server.com';
+
+router.get('/:path', async (req, res) => {
+  const { path } = req.params;
+  const url = `${origin}/${path}`;
+
+  const response = await fetch(url);
+  const data = await response.text();
+
+  res.send(data);
+});
+
+module.exports = router;
