@@ -1,41 +1,25 @@
-FILE PATH: public/css/forest.css
+FILE PATH: public/index.html
 CONTENT: 
-```css
-/* CSS for forest mode. */
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/css/forest.css" />
+  </head>
 
-/* Change the font to a serif font. */
-body {
-  font-family: "serif";
-}
+  <body>
+    <h1>Web Proxy</h1>
 
-/* Change the background color to green. */
-body {
-  background-color: #417505;
-}
+    <form action="/proxy">
+      <label for="url">URL:</label>
+      <input type="text" id="url" name="url" />
 
-/* Change the text color to white. */
-body {
-  color: #2e7d32;
-}
+      <input type="submit" value="Go" />
+    </form>
 
-/* Change the color of links to green. */
-a {
-  color: #4caf50;
-}
-
-/* Change the color of headings to white. */
-h1, h2, h3, h4, h5, h6 {
-  color: #2e7d32;
-}
-```
-FILE PATH: public/themes/forest.js
-CONTENT: 
-```javascript
-/* Forest mode theme for the web proxy. */
-
-// Set the theme.
-theme.set({
-  name: "Forest",
-  stylesheet: "forest.css",
-});
+    <div id="result"></div>
+  </body>
+</html>
 ```
