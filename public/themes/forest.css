@@ -54,3 +54,30 @@ iframe {
   background-size: cover;
   opacity: 0.3;
 }
+FILE PATH: public/images/meadow.jpg
+CONTENT: image file
+FILE PATH: public/index.html
+CONTENT: <!-- HTML for the meadow proxy -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/themes/meadow.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Web Proxy</h1>
+    <form action="/proxy" method="GET">
+      <label for="url">URL:</label>
+      <input type="text" name="url" id="url">
+      <input type="submit" value="Go">
+    </form>
+    <div class="proxy-content">
+      <iframe src="/proxy" frameBorder="0"></iframe>
+    </div>
+  </div>
+</body>
+</html>
