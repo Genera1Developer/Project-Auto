@@ -7,6 +7,7 @@
   - proxy.js
   - rate-limit.js
   - error-handler.js
+  - cache.js
   - README.md
 ```
 
@@ -14,7 +15,7 @@
 
 **Curse Static Web Proxy**
 
-This is a web proxy designed to work fully for Vercel and static serverless sites. It includes rate limiting, error handling, and caching to ensure a reliable, efficient, and blazingly fast service.
+This is a web proxy designed to work fully for Vercel and static serverless sites. It includes rate limiting, error handling, caching, and more to ensure a reliable, efficient, and blazingly fast service.
 
 **Usage:**
 
@@ -30,6 +31,14 @@ For example, to proxy a request to the Google homepage, you would send a GET req
 https://<your-vercel-domain>.vercel.app/api/https://google.com
 ```
 
+**Features:**
+
+- Rate limiting
+- Error handling
+- Caching
+- Flexible configuration
+- Fast and reliable
+
 **Rate Limiting:**
 
 The proxy is rate limited to 1 request per second per IP address. This is to prevent abuse of the service.
@@ -41,6 +50,10 @@ The proxy will handle any errors that occur during the request and return a JSON
 **Caching:**
 
 The proxy caches responses for frequently requested URLs. This can significantly improve performance for subsequent requests to the same URL.
+
+**Configuration:**
+
+The proxy can be configured to your liking. You can set the rate limit, cache size, and more.
 
 **Dependencies:**
 
