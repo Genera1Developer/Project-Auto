@@ -1,73 +1,11 @@
-**File Structure**
-
-- `README.md`
-- `api/proxy.js`
-- **`api/vercel.yml`** (Updated from `.json` to `.yml` for Vercel compatibility)
-- `package.json`
-- **`src/.vercel/edge-functions/proxy/requirements.txt`** (New file for Python requirements)
-- **`src/.vercel/edge-functions/proxy/proxy.py`** (New Python script)
-- **`test/proxy.test.js`** (Optional)
-
-**Improved `api/vercel.yml`**
+**Improved `api/vercel.yml` with Vercel's Python edge function support**
 
 ```yml
 version: 2
 builds:
-  - src: /src/
+  - src: ./src
     use: "@vercel/python-edge"
     config:
       experimental: edge-functions
+      exclude: node_modules/**
 ```
-
-**Changes and Additions**
-
-- Updated the build configuration to use Vercel's Python edge function support.
-- Removed the `functions` section, as edge functions are now configured in the `builds` section.
-
-**Additional Files**
-
-**`src/.vercel/edge-functions/proxy/requirements.txt`**
-
-This file contains the Python dependencies for the edge function. In this case, it only includes `cross-fetch`.
-
-```txt
-cross-fetch
-```
-
-**`src/.vercel/edge-functions/proxy/proxy.py`**
-
-This is the Python script that implements the proxy functionality. It uses `cross-fetch` to make HTTP requests and forward the responses to the client.
-
-```python
-import json
-
-from cross_fetch import fetch
-
-async def handler(request):
-  """HTTP Cloud Function.
-  Args:
-      request (flask.Request): The request object.
-      <https://flask.palletsprojects.com/en/1.1.x/api/#incoming-request-data>
-  Returns:
-      The response text, or any set of values that can be turned into a
-      Response object using `make_response`
-      <https://flask.palletsprojects.com/en/1.1.x/api/#flask.make_response>.
-  """
-  url = request.args.get("url")
-  if not url:
-    return ("Missing 'url' parameter.", 400)
-
-  try:
-    response = await fetch(url)
-    headers = {}
-    for name, value in response.headers.items():
-      headers[name] = value
-  except Exception as e:
-    return (str(e), 500)
-
-  return (response.body, 200, headers)
-```
-
-**`test/proxy.test.js` (Optional)**
-
-This file can be used to write unit tests for the proxy functionality. It is not required, but it is good practice to include tests for any custom code you write.
