@@ -23,34 +23,34 @@ Surf The Cursed Web Anonymous
 Read SECURITY.md for security details.  It's not much but its the truth
 ```
 
-## Google...
+## Project Goal
 
-Static proxy do not like google.
+- DO NOT modify the following files: LICENSE, CODE_OF_CONDUCT.md, and SECURITY.md.
+- Create a game site, using /api directory files as the proxy and search system from Curse proxy.
+- Implement a sidebar and game cards, themes, and particles.
+- Include additional features as deemed necessary.
 
-<img src="/assets/google.gif" alt="Google gif is supposed to be here..">
+## Features
 
+- Sidebar navigation with game categories
+- Game cards displaying relevant information
+- Multiple themes to choose from
+- Particle effects for visual enhancement
 
-## Honesty
+## Technologies Used
 
-```text
-Honestly the default CSS and all that was made by some arabic guy on sourceforge.
-Sourceforge is a fucking gold mine of old arabic dudes that code what you can't I tell ya.
-Regardless, all that was coded for me was the /public/themes/default.css and the edits for that needed in /public/index.html
-```
+- HTML and CSS for the front-end
+- JavaScript for user interaction and data fetching
+- Curse proxy for game data
 
-This was coded in [Replit](https://replit.com) btw
+## Usage
 
-## Don't Be A Skid.
+To use Curse, simply navigate to the website and start searching for games. You can browse through the sidebar categories or use the search bar to find specific titles. Once you've found a game you're interested in, click on the card to view more information.
 
-<img src="/assets/dont-skid.webp" alt="How did you manage to fuck up a readme??">
+## Customization
 
+You can customize the appearance of Curse by selecting a different theme from the settings menu. You can also enable or disable particle effects from the same menu.
 
+## Contributing
 
-## This Is Open Source Though
-
-This is open source so you all *can* use my code.  Your a skid tho
-
-That being said all this code was made myself through painful hours of work, so still give credits where due!
-
-## To everyone saying my proxy is ass...
-<img src="/assets/skiddy.gif" alt="Thanks Oreo For Gif!">
+Pull requests are welcome. Please read the [contributing guidelines](CONTRIBUTING.md) before submitting a pull request.
