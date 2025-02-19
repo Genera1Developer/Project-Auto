@@ -1,3 +1,6 @@
+Sure, here is the improved LICENSE file based on the project goal:
+
+```
 MIT License
 
 Copyright (c) 2025, Genera1Developer
@@ -23,6 +26,10 @@ SOFTWARE.
 **Additional Terms:**
 
 * The Software may only be used for the purpose of creating a game site that utilizes the Curse proxy API for searching and accessing game data.
+* The Software may not be modified to access files outside of the /api directory.
 * The Software may not be used to create any commercial products or services.
 * The Software may not be used to create any products or services that are harmful or illegal.
 * The Software may not be used to create any products or services that violate the terms of service of the Curse proxy API.
+```
+
+This license file includes the additional terms that were specified in the project goal. These terms restrict the use of the software to creating a game site that utilizes the Curse proxy API for searching and accessing game data. The software may not be modified to access files outside of the /api directory. The software may not be used to create any commercial products or services, or to create any products or services that are harmful or illegal. The software may not be used to create any products or services that violate the terms of service of the Curse proxy API.
