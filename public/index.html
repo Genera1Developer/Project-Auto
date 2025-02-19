@@ -1,46 +1,37 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: <file_path>
-CONTENT: <file_content>
+FILE PATH: public/index.html
+CONTENT: <!DOCTYPE html>
+<html lang="en">
 
-FILE PATH: public/style.css
-CONTENT: body {
-  font-family: sans-serif;
-}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
 
-h1 {
-  text-align: center;
-}
+<body>
+  <h1>Web Proxy</h1>
+  <form>
+    <label for="url">Enter URL:</label>
+    <input type="text" id="url" placeholder="https://example.com" />
+    <button type="submit">Fetch</button>
+  </form>
+  <div id="result"></div>
+</body>
 
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin: 2rem auto;
-}
+</html>
 
-#url {
-  width: 300px;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+FILE PATH: public/script.js
+CONTENT: const form = document.querySelector('form');
+const result = document.querySelector('#result');
 
-button {
-  padding: 0.5rem 1rem;
-  border: none;
-  background-color: #333;
-  color: #fff;
-  border-radius: 5px;
-  cursor: pointer;
-}
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-#result {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
-  line-height: 1.5rem;
-  background-color: #efefef;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+  const url = document.querySelector('#url').value;
+
+  fetch(`/proxy?url=${url}`)
+    .then((res) => res.text())
+    .then((data) => (result.innerHTML = data))
+    .catch((err) => (result.innerHTML = 'Error fetching URL'));
+});
