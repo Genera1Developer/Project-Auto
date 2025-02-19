@@ -1,26 +1,22 @@
-FILE PATH: public/index.js
+FILE PATH: routes/proxy.js
 CONTENT: 
 ```javascript
-const form = document.querySelector('form');
-const resultsContainer = document.querySelector('.results-container');
-const loading = document.querySelector('.loading');
+const express = require('express');
+const axios = require('axios');
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
+const router = express.Router();
 
-  const url = e.target.querySelector('input').value;
+router.get('/', async (req, res) => {
+  const url = req.query.url;
 
-  loading.classList.remove('hidden');
-
-  fetch(`/proxy?url=${url}`)
-    .then(res => res.text())
-    .then(data => {
-      loading.classList.add('hidden');
-      resultsContainer.innerHTML = data;
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Sorry, there was an issue with your request. Please try again.');
-    });
+  try {
+    const response = await axios.get(url);
+    res.send(response.data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Sorry, there was an issue with your request. Please try again.');
+  }
 });
+
+module.exports = router;
 ```
