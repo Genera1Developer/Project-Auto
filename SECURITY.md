@@ -22,6 +22,7 @@ We ask that researchers follow responsible disclosure practices. This includes:
 
 ## Additional Files
 
+- `README.md`: This file should provide a brief overview of the project, including its purpose, features, and how to use it.
 - `CONTRIBUTING.md`: This file should describe how to contribute to the project, including guidelines for submitting pull requests and reporting bugs.
 - `.github/ISSUE_TEMPLATE/security.md`: This file should provide a template for security issue reports, including information such as the affected version, steps to reproduce the issue, and any potential impact.
 - `CHANGELOG.md`: This file should list all changes made to the project, including security fixes.
