@@ -1,30 +1,25 @@
-Based on the project goal, the following file should be created:
-
-FILE PATH: public/index.js
+FILE PATH: public/proxy.js
 CONTENT:
 ```javascript
-const proxy = require('./proxy');
+const fetch = require('node-fetch');
 
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('form');
-  const response = document.getElementById('response');
+const proxy = (method, path, requestBody, callback) => {
+  const url = `http://localhost:3000${path}`;
 
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
+  fetch(url, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(requestBody),
+  })
+    .then((res) => res.json())
+    .then((data) => callback(data))
+    .catch((error) => callback(error));
+};
 
-    const url = document.getElementById('url').value;
-    const method = document.getElementById('method').value;
-    const body = document.getElementById('body').value;
-
-    const requestBody = {
-      url,
-      method,
-      body,
-    };
-
-    proxy.post('/proxy', requestBody, (data) => {
-      response.innerHTML = data.content;
-    });
-  });
-});
+module.exports = {
+  get: (path, callback) => proxy('GET', path, null, callback),
+  post: (path, requestBody, callback) => proxy('POST', path, requestBody, callback),
+};
 ```
