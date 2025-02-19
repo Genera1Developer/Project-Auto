@@ -1,34 +1,20 @@
-FILE PATH: public/themes/particles.html
-CONTENT: <!DOCTYPE html>
-<html>
-<head>
-  <title>Particles.js</title>
-  <link rel="stylesheet" href="/themes/particles.css">
-</head>
-<body>
-  <h1>Particles.js</h1>
-  <h2>A lightweight JavaScript library for creating interactive particles.</h2>
-  <p>Particles.js is a lightweight JavaScript library for creating interactive particles. It's perfect for adding a touch of magic to your web pages.</p>
-  <p>To get started, simply include the Particles.js library in your HTML file:</p>
-  <code>
-    &lt;script src="/particles.js"&gt;&lt;/script&gt;
-  </code>
-  <p>Then, create a &lt;div&gt; element with the id "particles-js":</p>
-  <code>
-    &lt;div id="particles-js"&gt;&lt;/div&gt;
-  </code>
-  <p>Finally, initialize the Particles.js library:</p>
-  <code>
-    particlesJS.init({
-      selector: '#particles-js',
-      maxParticles: 100,
-      color: '#ffffff',
-      size: 3,
-      speed: 1,
-      line_linked: false
-    });
-  </code>
-  <p>That's it! You can now enjoy the beautiful particles effects on your web page.</p>
-  <p><a href="https://github.com/Vinc3m/particles.js" class="btn">Learn more</a></p>
-</body>
-</html>
+FILE PATH: public/themes/particles.css
+CONTENT: body {
+  background-color: #000000;
+}
+
+#particles-js {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
