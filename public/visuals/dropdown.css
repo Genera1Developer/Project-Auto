@@ -86,11 +86,7 @@ createParticles(100);
 animateParticles();
 ```
 
-**New Files**
-
-* **src/utils/particles.js**
-
-  This file contains utility functions for creating and managing particles.
+**src/utils/particles.js**
 
 ```javascript
 export const createParticles = (numParticles) => {
@@ -114,9 +110,7 @@ export const initParticles = () => {
 };
 ```
 
-* **src/components/Particles.js**
-
-  This file wraps the `public/theme/particles.js` code into a React component for easy integration.
+**src/components/Particles.js**
 
 ```javascript
 import React, { useEffect } from 'react';
@@ -145,7 +139,7 @@ const Particles = () => {
 export default Particles;
 ```
 
-## Additional Improvements
+**Other Improvements**
 
 * **Performance Optimization:** Use `requestAnimationFrame` for smoother animations.
 * **Error Handling:** Handle potential errors during particle creation or animation.
