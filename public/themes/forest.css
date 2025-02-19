@@ -1,9 +1,10 @@
-FILE PATH: public/themes/forest.css
-CONTENT: /* CSS for the dark theme */
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: public/themes/light.css
+CONTENT: /* CSS for the light theme */
 
 body {
-  background-color: #000;
-  color: #fff;
+  background-color: #fff;
+  color: #000;
   font-family: "Helvetica", "Arial", sans-serif;
 }
 
@@ -26,21 +27,21 @@ input[type="text"] {
   width: 400px;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
-  border: 1px solid #fff;
+  border: 1px solid #000;
 }
 
 input[type="submit"] {
   padding: 0.5rem;
   margin-bottom: 0.5rem;
-  background-color: #fff;
-  color: #000;
+  background-color: #000;
+  color: #fff;
   border: none;
   cursor: pointer;
 }
 
 iframe {
   border: none;
-  background-color: #fff;
+  background-color: #000;
 }
 
 /* Custom additions */
@@ -54,7 +55,7 @@ iframe {
 
 #results {
   margin-top: 2rem;
-  border-top: 1px solid #fff;
+  border-top: 1px solid #000;
   padding-top: 1rem;
 }
 
