@@ -1,31 +1,21 @@
-FILE PATH: public/js/remoteserver.js
-CONTENT: 
-(function () {
-  const targetUrl = 'http://localhost:8080';
-
-  const form = document.querySelector('form');
-  const responseText = document.querySelector('.responseText');
-
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const requestBody = new FormData(form);
-    const requestOptions = {
-      method: 'POST',
-      body: requestBody,
-      redirect: 'follow',
-    };
-
-    fetch(targetUrl, requestOptions)
-      .then((response) => {
-        if (response.ok) {
-          responseText.textContent = 'Request succeeded!';
-        } else {
-          responseText.textContent = 'Request failed.';
-        }
-      })
-      .catch((error) => {
-        responseText.textContent = 'Request failed: ' + error.message;
-      });
-  });
-})();
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: public/index.html
+CONTENT:
+ <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/api/proxy" method="POST">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url" />
+    <button type="submit">Submit</button>
+  </form>
+  <div class="responseText"></div>
+  <script src="js/remoteserver.js"></script>
+</body>
+</html>
