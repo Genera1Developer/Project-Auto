@@ -110,3 +110,23 @@ module.exports = async (url) => {
   try {
     const response = await axios.get(url);
     return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+```
+
+The `utils/request.js` file contains the function that is used to make HTTP requests to the target URL.
+
+**utils/constants.js**
+
+```js
+const ALLOWED_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'];
+
+module.exports = {
+  ALLOWED_METHODS,
+};
+```
+
+The `utils/constants.js` file contains the list of allowed HTTP methods.
