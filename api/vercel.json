@@ -1,24 +1,13 @@
-FILE PATH: api/vercel.json
+FILE PATH: api/proxy.js
 CONTENT: 
 
-```json
-{
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/.",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/proxy",
-      "dest": "api/proxy.js"
-    },
-    {
-      "src": "/api/headers",
-      "dest": "api/headers.js"
-    }
-  ]
-}
+```js
+const fetch = require('node-fetch');
+
+module.exports = async (req, res) => {
+  const { url } = req.query;
+  const response = await fetch(url);
+  const data = await response.json();
+  res.json(data);
+};
 ```
