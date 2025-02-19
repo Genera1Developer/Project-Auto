@@ -1,142 +1,65 @@
-file path: public/adblocker/curseblock.js
+file path: public/scripts/main.js
 content: ```javascript
-function blockAds() {
-    const elements = document.querySelectorAll('body *');
+const connection = new WebSocket('ws://localhost:8080');
+let currentUrl = '';
 
-    Array.from(elements).forEach(element => {
-        if (
-            element.style.cssText.includes('display: flex') 
-            && element.style.cssText.includes('justify-content: center')
-        ) {
-            element.style.display = 'none';
-        }
+connection.onopen = function() {
+    console.log('Connected to the proxy server.');
+};
 
-        if (
-            element.style.cssText.includes('display: inline-flex') 
-            && element.style.cssText.includes('justify-content: center')
-        ) {
-            element.style.display = 'none';
-        }
+connection.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    if (data.type === 'response') {
+        handleResponse(data.response);
+    }
+};
 
-        if (element.classList.contains('adsbox')) {
-            element.style.display = 'none';
-        }
+function handleResponse(response) {
+    const url = new URL(currentUrl);
+    const hostname = url.hostname;
+    const data = response.data;
+    const contentType = response.headers.get('Content-Type');
 
-        if (element.classList.contains('pub_300x250')) {
-            element.style.display = 'none';
-        }
+    if (contentType.includes('text/html')) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
 
-        if (element.classList.contains('pub_728_90')) {
-            element.style.display = 'none';
-        }
+        doc.querySelectorAll('body *').forEach(element => {
+            if (element.tagName === 'SCRIPT') {
+                element.remove();
+            }
+        });
 
-        if (element.classList.contains('td_uid')) {
-            element.style.display = 'none';
-        }
+        const elements = doc.querySelectorAll('script[type="text/javascript"]');
+        Array.from(elements).forEach(element => {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = element.src;
+            document.head.appendChild(script);
+        });
 
-        if (element.classList.contains('google-auto-placed')) {
-            element.style.display = 'none';
-        }
+        const html = doc.documentElement.outerHTML;
 
-        if (element.classList.contains('google-responsive-ad')) {
-            element.style.display = 'none';
-        }
+        // Handle ad blocking.
+        const adBlocker = new AdBlocker();
+        adBlocker.blockAds();
 
-        if (element.classList.contains('google-container')) {
-            element.style.display = 'none';
-        }
+        // Handle CSS injection.
+        const cssInjector = new CSSInjector();
+        cssInjector.injectCSS();
 
-        if (element.classList.contains('google-adsense-for-wordpress')) {
-            element.style.display = 'none';
-        }
-
-        if (element.classList.contains('wp_ad_camp')) {
-            element.style.display = 'none';
-        }
-
-        if (element.classList.contains('ad-container')) {
-            element.style.display = 'none';
-        }
-
-        if (element.classList.contains('banner')) {
-            element.style.display = 'none';
-        }
-
-        if (element.tagName === 'IFRAME') {
-            element.style.display = 'none';
-        }
-    });
-
-    logToConsole('Blocked Ads (Curse Block)', 'info');
+        // Replace the current page with the modified HTML.
+        document.documentElement.innerHTML = html;
+    }
 }
 
-function unblockAds() {
-    const elements = document.querySelectorAll('body *');
-
-    Array.from(elements).forEach(element => {
-        if (
-            element.style.cssText.includes('display: flex') 
-            && element.style.cssText.includes('justify-content: center')
-        ) {
-            element.style.display = 'initial';
-        }
-
-        if (
-            element.style.cssText.includes('display: inline-flex') 
-            && element.style.cssText.includes('justify-content: center')
-        ) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('adsbox')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('pub_300x250')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('pub_728_90')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('td_uid')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('google-auto-placed')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('google-responsive-ad')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('google-container')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('google-adsense-for-wordpress')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('wp_ad_camp')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('ad-container')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.classList.contains('banner')) {
-            element.style.display = 'initial';
-        }
-
-        if (element.tagName === 'IFRAME') {
-            element.style.display = 'initial';
-        }
-    });
-
-    logToConsole('Unblocked Ads (Curse Block)', 'info');
+function sendRequest(url) {
+    currentUrl = url;
+    connection.send(JSON.stringify({ type: 'request', url: url }));
 }
+
+window.addEventListener('load', function() {
+    const url = window.location.href;
+    sendRequest(url);
+});
 ```
