@@ -1,20 +1,47 @@
-FILE PATH: views/index.ejs
+FILE PATH: css/index.css
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="/css/index.css" />
-  </head>
-  <body>
-    <h1>Web Proxy</h1>
-    <form action="/proxy" method="POST">
-      <input type="text" name="url" placeholder="Enter a URL" />
-      <button type="submit">Fetch</button>
-    </form>
-    <div id="result"></div>
-  </body>
-</html>
+```css
+body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+}
+
+input[type=text] {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+button[type=submit] {
+  width: 20%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+
+button[type=submit]:hover {
+  background-color: #45a049;
+}
+
+#result {
+  padding: 12px 20px;
+  margin-top: 12px;
+  box-sizing: border-box;
+  background-color: #f1f1f1;
+  width: 50%;
+  max-height: 500px;
+  overflow-y: scroll;
+}
 ```
