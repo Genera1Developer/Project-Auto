@@ -5,12 +5,12 @@ particlesJS("particles-js", {
   particles: {
     color: "#000000",
     shape: "circle",
-    opacity: 0.5,
+    opacity: 1,
     size: 2,
     size_random: true,
-    nb: 200,
+    nb: 150,
     line_linked: {
-      enable: true,
+      enable: false,
       distance: 100,
       color: "#000000",
       opacity: 0.5,
@@ -18,7 +18,7 @@ particlesJS("particles-js", {
     },
     move: {
       enable: true,
-      speed: 2,
+      speed: 1,
       direction: "none",
       random: true,
       straight: false,
@@ -36,7 +36,7 @@ particlesJS("particles-js", {
     events: {
       onhover: {
         enable: true,
-        mode: "grab",
+        mode: "bubble",
       },
       onclick: {
         enable: true,
