@@ -1,41 +1,31 @@
 Based on the project goal, following file should be created:
 
-FILE PATH: public/js/script.js
+FILE PATH: server/server.js
 CONTENT: 
 ```javascript
-const form = document.querySelector('form');
+const express = require('express');
+const got = require('got');
 
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
+const app = express();
+const port = 3000;
 
-  const query = event.target.querySelector('input[name="query"]').value;
+app.get('/search', async (req, res) => {
+  const { query } = req.body;
 
-  // Send the query to the server
-  fetch('/search', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
+  const response = await got('https://www.googleapis.com/customsearch/v1', {
+    searchParams: {
+      key: 'YOUR_API_KEY',
+      cx: 'YOUR_CX',
+      q: query,
     },
-    body: JSON.stringify({ query }),
-  })
-  .then(res => res.json())
-  .then(data => {
-    // Display the search results
-    const results = document.querySelector('ul#results');
-    results.innerHTML = '';
-
-    data.items.forEach(item => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <a href="${item.link}">${item.title}</a>
-        <p>${item.snippet}</p>
-      `;
-
-      results.appendChild(li);
-    });
-  })
-  .catch(err => {
-    console.error(err);
   });
+
+  const data = JSON.parse(response.body);
+
+  res.json(data);
+});
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
 ```
