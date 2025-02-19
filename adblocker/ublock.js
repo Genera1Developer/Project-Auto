@@ -6,7 +6,7 @@
 - `package.json`
 - `README.md`
 
-## Raw Code for `adblocker/ublock.js`
+## Improved Raw Code for `adblocker/ublock.js`
 
 ```javascript
 importScripts('ublock.worker.js');
@@ -48,8 +48,19 @@ self.addEventListener('fetch', (event) => {
           return response;
         }
 
+        if (event.request.url.includes('google-analytics.com')) {
+          return new Response('', {
+            status: 200,
+            headers: {
+              'Content-Type': 'text/plain',
+            },
+          });
+        }
+
         const clonedResponse = response.clone();
-        clonedResponse.headers.append('Cross-Origin-Opener-Policy', 'same-origin');
+        if (clonedResponse.headers.get('Cross-Origin-Opener-Policy') === 'same-origin') {
+          clonedResponse.headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+        }
         caches.open(cacheName).then((cache) => {
           cache.put(event.request, clonedResponse);
         });
