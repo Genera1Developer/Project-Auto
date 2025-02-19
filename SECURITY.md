@@ -1,4 +1,4 @@
-file: SECURITY.md
+file path: SECURITY.md
 content: # Security Policy
 
 ## Supported Versions
@@ -19,3 +19,8 @@ We ask that researchers follow responsible disclosure practices. This includes:
 - Giving us reasonable time to address the issue before publicly disclosing it.
 - Providing us with a detailed report of the vulnerability, including steps to reproduce it.
 - Refraining from exploiting the vulnerability for personal gain.
+
+## Additional Files
+
+- `CONTRIBUTING.md`: This file should describe how to contribute to the project, including guidelines for submitting pull requests and reporting bugs.
+- `.github/ISSUE_TEMPLATE/security.md`: This file should provide a template for security issue reports, including information such as the affected version, steps to reproduce the issue, and any potential impact.
