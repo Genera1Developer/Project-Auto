@@ -18,17 +18,11 @@ const curseblock = () => {
         '/robots.txt',
         '/static/js/main.js',
         '/static/css/main.css',
+        '/api/swr/getCurrentUserData',
       ];
 
       // Block ADS routes
       if (req.path.includes('/ads')) {
-        proxyRes.statusCode = 404;
-        proxyRes.end();
-        return;
-      }
-
-      // Block /api/swr/* routes
-      if (req.path.includes('/api/swr/')) {
         proxyRes.statusCode = 404;
         proxyRes.end();
         return;
@@ -102,11 +96,20 @@ module.exports = withAdblocker({
 
 ### 2. Customization (Optional)
 
-By default, the middleware blocks requests to `/ads` and `/api/swr/*`. To block additional paths or content, modify the `ignoredPaths` array in `adblocker/curseblock.js`.
+By default, the middleware blocks requests to `/ads`. To block additional paths or content, modify the `ignoredPaths` array in `adblocker/curseblock.js`.
 
 ## Notes
 
 - The middleware currently only intercepts requests during development mode.
 - It does not support server-side rendering (SSR).
 - For production deployments, consider using a dedicated proxy server such as Nginx or Apache with appropriate configuration.
+
+## Additional Improvements
+
+In addition to the fixes and improvements listed in the updated files, the following suggestions could further enhance the proxy middleware:
+
+- **Support for SSR:** Implement support for server-side rendering to handle requests made during server-side page generation.
+- **Production Deployment Considerations:** Provide guidance on how to configure a dedicated proxy server for production environments, such as Apache or Nginx.
+- **Error Handling:** Add error handling to gracefully handle any potential issues or failed requests.
+- **Performance Optimization:** Optimize the proxy middleware for improved performance and efficiency.
 ```
