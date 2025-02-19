@@ -36,3 +36,8 @@ To use the web proxy, simply open your browser and navigate to any website. The 
 - The web proxy can be used to bypass website blocks and access restricted content.
 - The web proxy can also be used to improve your privacy and security by hiding your IP address from websites.
 - The web proxy is not a complete solution for online anonymity. It is important to use other privacy measures, such as a VPN, to protect your privacy.
+
+**New Files:**
+
+- `CHANGELOG.md`: Track changes to the web proxy project.
+- `.gitignore`: Ignore unnecessary files from version control.
