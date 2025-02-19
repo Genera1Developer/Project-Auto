@@ -1,33 +1,20 @@
-FILE PATH: server.js
-CONTENT: // Import necessary modules
-const express = require('express');
-const axios = require('axios');
-const nodemon = require('nodemon');
+FILE PATH: .github/workflows/proxy.yml
+CONTENT: name: Proxy
 
-// Create an Express app
-const app = express();
+on: [push]
 
-// Serve static files from the public directory
-app.use(express.static('public'));
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-// Create a proxy route
-app.get('/proxy/', (req, res) => {
-    // Get the URL from the query string
-    const url = req.query.url;
-
-    // Make a request to the specified URL
-    axios.get(url)
-        .then((response) => {
-            // Send the response back to the client
-            res.send(response.data);
-        })
-        .catch((error) => {
-            // Handle any errors that occur
-            res.status(500).send('Error fetching URL');
-        });
-});
-
-// Start the server
-app.listen(3000, () => {
-    console.log('Server listening on port 3000');
-});
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: proxy-build
+          path: build
