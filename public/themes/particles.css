@@ -7,11 +7,6 @@ content: /*
 body {
   background-color: #000;
   color: #fff;
-  -webkit-animation: particles 1s infinite;
-  -moz-animation: particles 1s infinite;
-  -ms-animation: particles 1s infinite;
-  -o-animation: particles 1s infinite;
-  animation: particles 1s infinite;
 }
 
 .particle {
@@ -23,6 +18,7 @@ body {
   border-radius: 50%;
   background-color: #fff;
   opacity: 0.2;
+  animation: particles 1s infinite;
 }
 
 @keyframes particles {
