@@ -1,1 +1,14 @@
-
+FILE PATH: api/package.json
+CONTENT: {
+  "name": "web-proxy-api",
+  "version": "1.0.0",
+  "description": "Web proxy API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "axios": "^0.24.0"
+  }
+}
