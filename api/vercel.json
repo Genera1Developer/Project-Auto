@@ -1,9 +1,11 @@
+Based on the project goal, no new files are necessary at this time.
+
 FILE PATH: api/vercel.json
 CONTENT: {
   "version": 1,
   "routes": [
     {
-      "src": "/",
+      "src": "/proxy-url",
       "dest": "https://google.com"
     }
   ]
