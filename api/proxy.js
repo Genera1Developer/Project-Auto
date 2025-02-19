@@ -1,36 +1,32 @@
-FILE PATH: server.js
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: api/proxy.js
 CONTENT: 
 ```javascript
-const express = require('express');
 const http = require('http');
-const proxy = require('http-proxy');
-const utils = require('./utils');
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 
-const app = express();
-const proxyServer = proxy.createProxyServer();
+const targetUrl = 'https://example.com'; // Change this to the target URL you want to proxy requests to
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const proxyServer = http.createServer((req, res) => {
+  const options = {
+    hostname: targetUrl,
+    port: 443,
+    path: req.url,
+    method: req.method,
+    headers: req.headers,
+  };
 
-app.get('*', async (req, res) => {
-  const targetUrl = req.get('x-proxy-url');
-  if (!targetUrl) {
-    res.status(400).json({ error: 'Missing x-proxy-url header' });
-    return;
-  }
-
-  proxyServer.web(req, res, { target: targetUrl }, async (err) => {
-    if (err) {
-      res.status(500).json({ error: 'Error proxying request' });
-      return;
-    }
-
-    await utils.logRequest(req);
+  const proxyReq = https.request(options, (proxyRes) => {
+    res.writeHead(proxyRes.statusCode, proxyRes.headers);
+    proxyRes.pipe(res);
   });
+
+  req.pipe(proxyReq);
 });
 
-const server = http.createServer(app);
-server.listen(3000, () => {
+proxyServer.listen(3000, () => {
   console.log('Proxy server listening on port 3000');
 });
 ```
