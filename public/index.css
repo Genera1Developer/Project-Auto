@@ -1,54 +1,30 @@
-FILE PATH: public/index.css
+FILE PATH: public/index.html
 CONTENT: 
-```CSS
-body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+  <div class="container">
+    <div>
+      <h1>Web Proxy</h1>
+      <p>Enter a URL to fetch the content of the page through this proxy.</p>
+      <form id="form">
+        <input type="text" name="url" placeholder="URL">
+        <button type="submit">Fetch</button>
+      </form>
+    </div>
+    <div class="results-container" id="results">
+      <h2>Results:</h2>
+    </div>
+  </div>
 
-.container {
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-input {
-  margin: 10px;
-  padding: 10px;
-  width: 300px;
-}
-
-button {
-  margin: 10px;
-  padding: 10px;
-  width: 100px;
-  background-color: #000;
-  color: #fff;
-  cursor: pointer;
-}
-
-.results-container {
-  width: 100%;
-  max-width: 600px;
-  padding: 20px;
-  margin: 20px;
-  border: 1px solid #000;
-  overflow: auto;
-}
-
-.results-container h2 {
-  margin-bottom: 10px;
-}
-
-.results-container p {
-  margin-bottom: 10px;
-}
+  <script src="/index.js"></script>
+</body>
+</html>
 ```
