@@ -8,7 +8,8 @@ CONTENT:
   "description": "A simple web proxy",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "axios": "^0.21.1",
