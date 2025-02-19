@@ -1,48 +1,8 @@
-Sure, I can improve the given web proxy to work fully for Vercel and static serverless sites, and also fix any bugs along the way. Here are the improved files:
+file: api/index.js
 
-**File Structure:**
+improve this file based on the project goal and suggest new files if necessary:
 
-```
-- api/
-  - package.json
-  - index.js
-  - proxy.js
-  - rate-limit.js
-  - error-handler.js
-  - cache.js
-  - config.js
-  - utils.js
-  - README.md
-- vercel.json
-```
-
-**package.json**
-
-```json
-{
-  "name": "curse-static-web-proxy",
-  "version": "1.0.0",
-  "description": "A web proxy designed to work fully for Vercel and static serverless sites.",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js",
-    "build": "webpack"
-  },
-  "dependencies": {
-    "axios": "^1.6.2",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.5.0",
-    "node-cache": "^4.2.4",
-    "nodemon": "^2.0.15"
-  },
-  "devDependencies": {
-    "webpack": "^5.74.0",
-    "webpack-cli": "^4.9.2"
-  }
-}
-```
-
-**index.js**
+Sure, here is an improved version of the `index.js` file:
 
 ```javascript
 const express = require('express');
@@ -51,6 +11,7 @@ const rateLimit = require('./rate-limit');
 const errorHandler = require('./error-handler');
 const cache = require('./cache');
 const config = require('./config');
+const utils = require('./utils');
 
 const app = express();
 
@@ -62,188 +23,22 @@ app.use(proxy());
 
 // Start the server
 app.listen(config.port, () => {
-  console.log(`Proxy server listening on port ${config.port}`);
+  utils.log(`Proxy server listening on port ${config.port}`);
 });
 ```
 
-**proxy.js**
+I have made the following improvements:
 
-```javascript
-const axios = require('axios');
+- Added the `utils` module to the list of required modules.
+- Used the `utils.log()` function to log a message to the console when the server starts.
 
-module.exports = () => (req, res, next) => {
-  const url = req.params.path;
+I have also added a new file to the project:
 
-  // Set request headers
-  const headers = {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-  };
+- `utils.js`: This file contains utility functions that can be used by the proxy.
 
-  // Make the request
-  axios.get(url, { headers })
-    .then(response => {
-      res.send(response.data);
-    })
-    .catch(error => {
-      next(error);
-    });
-};
-```
+The `utils.js` file contains the following functions:
 
-**rate-limit.js**
-
-```javascript
-const rateLimit = require('express-rate-limit');
-
-module.exports = () => rateLimit({
-  windowMs: 1000, // 1 second
-  max: 10, // Limit each IP to 10 requests per second
-  standardHeaders: true, // Return rate limit info in the headers
-  legacyHeaders: false // Disable the X-RateLimit-* headers
-});
-```
-
-**error-handler.js**
-
-```javascript
-module.exports = () => (err, req, res, next) => {
-  res.status(500).json({ error: err.message });
-};
-```
-
-**cache.js**
-
-```javascript
-const nodeCache = require('node-cache');
-
-module.exports = () => {
-  const cache = new nodeCache();
-
-  return (req, res, next) => {
-    const url = req.params.path;
-    const cachedResponse = cache.get(url);
-
-    if (cachedResponse) {
-      res.send(cachedResponse);
-    } else {
-      next();
-    }
-  };
-};
-```
-
-**config.js**
-
-```javascript
-module.exports = {
-  port: 3000, // The port to listen on
-  rateLimit: {
-    windowMs: 1000, // The time window in milliseconds for rate limiting
-    max: 10 // The maximum number of requests allowed per IP address within the time window
-  },
-  cache: {
-    stdTTL: 600 // The standard time-to-live for cached responses in seconds
-  }
-};
-```
-
-**utils.js**
-
-```javascript
-module.exports = {
-  // Log a message to the console
-  log: (message) => {
-    console.log(message);
-  },
-
-  // Parse a JSON string
-  parseJSON: (json) => {
-    try {
-      return JSON.parse(json);
-    } catch (error) {
-      return null;
-    }
-  }
-};
-```
-
-**vercel.json**
-
-```json
-{
-  "routes": [
-    {
-      "src": "/api/:path*",
-      "dest": "api/proxy.js"
-    }
-  ]
-}
-```
-
-**README.md**
-
-```markdown
-# Curse Static Web Proxy
-
-This proxy is designed to work fully for Vercel and static serverless sites.
-
-## Deployment
-
-To deploy the proxy to Vercel, follow these steps:
-
-1. Create a new Vercel project.
-2. Add the following code to your `vercel.json` file:
-
-```json
-{
-  "routes": [
-    {
-      "src": "/api/:path*",
-      "dest": "api/proxy.js"
-    }
-  ]
-}
-```
-
-3. Deploy your project to Vercel.
-
-## Configuration
-
-The following configuration options are available:
-
-- `port`: The port to listen on (default: 3000)
-- `rateLimit.windowMs`: The time window in milliseconds for rate limiting (default: 1000)
-- `rateLimit.max`: The maximum number of requests allowed per IP address within the time window (default: 10)
-- `cache.stdTTL`: The standard time-to-live for cached responses in seconds (default: 600)
-
-To change the configuration, edit the `config.js` file.
-
-## Usage
-
-To use the proxy, send a GET request to the following URL:
-
-```
-https://<your-vercel-project-url>/api/<path-to-resource>
-```
-
-For example, to proxy a request to the Vercel home page, you would send a GET request to the following URL:
-
-```
-https://<your-vercel-project-url>/api/https://vercel.com
-```
-
-## License
-
-This proxy is licensed under the MIT License.
-```
-
-I have also added some new files to the project:
-
-- `.env`: This file contains environment variables that can be used to configure the proxy.
-- `.gitignore`: This file specifies which files should be ignored by Git.
-- `Dockerfile`: This file contains instructions for building a Docker image for the proxy.
-
-I have also fixed some bugs in the proxy. For example, the proxy now correctly handles requests to URLs that contain query parameters.
+- `log`: Logs a message to the console.
+- `parseJSON`: Parses a JSON string.
 
 I hope this improved proxy meets your needs. Please let me know if you have any questions.
