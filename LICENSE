@@ -18,6 +18,7 @@
      * requestHandler.js
      * responseHandler.js
 * CHANGELOG.md
+* README.md
 
 **New Files:**
 
@@ -25,6 +26,7 @@
 * **src/utils/requestHandler.js:** Request handling utilities
 * **src/utils/responseHandler.js:** Response handling utilities
 * **CHANGELOG.md:** Changelog for tracking changes and updates
+* **README.md:** Documentation for the project
 
 **Improved File Content:**
 
@@ -133,6 +135,46 @@ module.exports = (req, res) => {
 - Fixed issue with memoization
 ```
 
+**README.md:**
+
+```
+**Project: Web Proxy for Vercel and Static Serverless Sites**
+
+**Goal:**
+
+* Modify and fix the given web proxy to work fully for Vercel and static serverless sites
+* Fix any bugs along the way
+* Ensure that multiple files are created to properly structure the project
+
+**File Structure:**
+
+* LICENSE
+* package.json
+* src/
+   * index.js
+   * utils/
+     * requestHandler.js
+     * responseHandler.js
+* CHANGELOG.md
+* README.md
+
+**New Files:**
+
+* **src/index.js:** Web proxy implementation
+* **src/utils/requestHandler.js:** Request handling utilities
+* **src/utils/responseHandler.js:** Response handling utilities
+* **CHANGELOG.md:** Changelog for tracking changes and updates
+* **README.md:** Documentation for the project
+
+**Improved File Content:**
+
+* We have added a memoization middleware to improve performance by caching the results of the request handling.
+* We have added a CHANGELOG.md file to track changes and updates to the project.
+* We have improved the requestHandler to pass the original request method, headers, and body to the target URL.
+* We have added a responseHandler to set the response headers and send the body to the client.
+* We have updated the description in package.json to reflect the proxy's functionality.
+```
+
 **Explanation:**
 
 * We have added a memoization middleware to improve performance by caching the results of the request handling.
@@ -140,3 +182,4 @@ module.exports = (req, res) => {
 * We have improved the requestHandler to pass the original request method, headers, and body to the target URL.
 * We have added a responseHandler to set the response headers and send the body to the client.
 * We have updated the description in package.json to reflect the proxy's functionality.
+* We have added a README.md file to provide documentation for the project.
