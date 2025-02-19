@@ -1,15 +1,23 @@
-FILE PATH: api/index.js
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: api/routes/http.js
 CONTENT: 
 
 ```javascript
 const express = require('express');
-const app = express();
+const router = express.Router();
+const fetch = require('node-fetch');
 
-app.use(express.json());
-
-app.use('/http', require('./routes/http'));
-
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
+router.post('/proxy', async (req, res) => {
+  const { url } = req.body;
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+  });
+  const data = await response.json();
+  res.json(data);
 });
+
+module.exports = router;
 ```
