@@ -7,59 +7,24 @@
 │   ├── utility.js
 │   ├── asyncHandler.js
 │   ├── handle500.js
+│   ├── rewriteUrls.js
 ├── README.md
 ├── package.json
 ```
 
-## Code for `api/search.js`
+## Code for `api/rewriteUrls.js`
 
 ```js
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const utility = require('./utility');
-const asyncHandler = require('./asyncHandler');
-const handle500 = require('./handle500');
-
-// Create the proxy middleware
-const proxyMiddleware = createProxyMiddleware({
-  target: 'https://example.com',
-  changeOrigin: true,
-});
-
-// Export the search handler
-module.exports = asyncHandler(async (req, res) => {
-  try {
-    // Ensure response type is set to HTML
-    req.headers['accept'] = 'text/html';
-    
-    // Create a Transform stream to rewrite relative URLs
-    const transformStream = utility.modifyStream('relativeUrls');
-    
-    // Proxy the request through the middleware
-    await proxyMiddleware(req, res);
-    
-    // Pipe the response through the Transform stream
-    res.pipe(transformStream).pipe(res);
-  } catch (error) {
-    handle500(error, res);
-  }
-});
-```
-
-## Code for `api/utility.js`
-
-This file contains utility functions used by the search handler.
-
-```js
-const modifyStream = (type) => {
+const createTransformer = (type) => {
   switch (type) {
     case 'relativeUrls':
-      return modifyRelativeUrls();
+      return relativeUrlsTransformer();
     default:
       throw new Error('Invalid stream type');
   }
 };
 
-const modifyRelativeUrls = () => {
+const relativeUrlsTransformer = () => {
   return new Transform({
     transform(chunk, encoding, next) {
       // Replace relative URLs with absolute URLs
@@ -71,40 +36,12 @@ const modifyRelativeUrls = () => {
 };
 
 module.exports = {
-  modifyStream,
+  createTransformer,
 };
-```
-
-## Code for `api/asyncHandler.js`
-
-This file contains a helper function for handling asynchronous requests.
-
-```js
-const asyncHandler = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
-
-module.exports = asyncHandler;
-```
-
-## Code for `api/handle500.js`
-
-This file contains the logic for handling 500 errors.
-
-```js
-const handle500 = (err, res) => {
-  console.error(err);
-  res.writeHead(500);
-  res.end('Internal Server Error');
-};
-
-module.exports = handle500;
 ```
 
 ## Enhancements
 
-- Moved the error handling from the `asyncHandler` to the `try...catch` block to improve performance.
-- Added a more detailed error message to the `handle500` function.
-- Added a `utility` file to contain utility functions used by the search handler.
-- Added an `asyncHandler` file to contain a helper function for handling asynchronous requests.
-- Updated the `proxyMiddleware` to use the `await` keyword to make it easier to handle errors.
+- Moved the URL rewriting logic to a separate `rewriteUrls` module.
+- Refactored the `search.js` file to make it more modular and easier to read.
+- Added a `README.md` file to provide a high-level overview of the project.
