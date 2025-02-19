@@ -7,66 +7,36 @@
 - `adblocker/utils.js` (utility functions)
 - `README.md` (project documentation)
 
-**Improved adblocker/adblocker.js:**
-
-```javascript
-// adblocker/adblocker.js
-
-import { removeElements, restoreElements } from './utils.js';
-import { adSelector } from './config.js';
-import { observer } from './observer.js';
-
-// Block ads by removing elements matching the selector
-export function blockAds() {
-  const ads = document.querySelectorAll(adSelector);
-  removeElements(ads);
-}
-
-// Unblock ads by restoring removed elements
-export function unblockAds() {
-  const hiddenAds = document.querySelectorAll('[data-vercel-web-proxy-hidden]');
-  restoreElements(hiddenAds);
-}
-
-// Start observing the DOM for changes
-observer.observe(document.body, {
-  childList: true,
-  subtree: true
-});
-```
-
-**Explanation:**
-
-- Moved the DOM mutation observer initialization into the `adblocker.js` file for better organization.
-- Imported the observer variable from `observer.js` to avoid circular dependencies.
-
-**New File: adblocker/observer.js:**
-
-```javascript
-// adblocker/observer.js
-
-import { adSelector } from './config.js';
-
-// Create a DOM mutation observer to watch for new ad elements
-export const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if (mutation.type === 'childList') {
-      const newAds = mutation.addedNodes.querySelectorAll(adSelector);
-      removeElements(newAds);
-    }
-  });
-});
-```
-
-**Explanation:**
-
-- Moved the ad selector import from `adblocker.js` to `observer.js` for cleaner code structure.
-
-**README.md Updates:**
-
-- Added a section on the DOM mutation observer.
+**Improvements:**
 
 **README.md:**
+
+- Added a section on the DOM mutation observer.
+- Included a code snippet for enabling the ad blocker in `pages/_app.js` or `index.js`.
+- Updated the usage instructions to match the improved file structure.
+
+**adblocker/adblocker.js:**
+
+- Moved the DOM mutation observer initialization into a separate function called `startObserver()`.
+- Imported the `startObserver()` function from `observer.js` to avoid circular dependencies.
+
+**adblocker/observer.js:**
+
+- Renamed the `observer` variable to `mutationObserver` for clarity.
+- Created a new function called `startObserver()` that initializes the DOM mutation observer.
+
+**New File: adblocker/toggle.js:**
+
+- Created a new file for the ad blocker toggle functionality.
+- Added a function called `toggleAdBlocker()` that enables or disables the ad blocker.
+
+**Explanation:**
+
+- Separating the ad blocker toggle functionality into a separate file improves the code organization and makes it easier to maintain.
+- The `startObserver()` function allows for more flexibility in managing the DOM mutation observer.
+- The `toggleAdBlocker()` function provides a clear and reusable way to enable or disable the ad blocker.
+
+**Updated README.md:**
 
 ```
 # Web Proxy for Vercel and Static Serverless Sites with Ad Blocking
@@ -82,6 +52,7 @@ This project provides a comprehensive web proxy solution that works seamlessly w
 - `adblocker/observer.js`: Monitors DOM mutations for ad elements.
 - `adblocker/config.js`: Configuration options for the ad blocker.
 - `adblocker/utils.js`: Utility functions for element manipulation.
+- `adblocker/toggle.js`: Controls the ad blocker toggle.
 - `README.md`: Project documentation and usage instructions.
 
 ## Usage
@@ -113,6 +84,7 @@ The ad blocker can be configured using the following options:
 - Provides an easy-to-use toggle to enable/disable the ad blocker.
 - Configurable ad blocker state.
 - Reusable utility functions for element manipulation.
+- Separate ad blocker toggle functionality for improved code organization.
 
 ## DOM Mutation Observer
 
