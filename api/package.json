@@ -1,11 +1,15 @@
-FILE PATH: views/error.html
+FILE PATH: views/main.html
 CONTENT: <!DOCTYPE html>
 <html>
 <head>
-  <title>Error</title>
+  <title>Web Proxy</title>
 </head>
 <body>
-  <h1>Error</h1>
-  <p>Sorry, there was an error.</p>
+  <h1>Web Proxy</h1>
+  <form action="/proxy" method="POST">
+    <label for="url">URL:</label>
+    <input type="text" name="url" id="url">
+    <input type="submit" value="Submit">
+  </form>
 </body>
 </html>
