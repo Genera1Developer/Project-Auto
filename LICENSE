@@ -1,34 +1,30 @@
 file: CODE_OF_CONDUCT.md
-
-improve this file based on the project goal:
-
-Sure, here is the improved CODE_OF_CONDUCT.md file based on the project goal:
-
-**Code of Conduct**
+content: 
+# Code of Conduct
 
 This code of conduct outlines the expected behavior for all contributors to this project. By participating in this project, you agree to abide by this code of conduct.
 
-**Be respectful**
+## Be respectful
 
 Treat other contributors with respect, even if you disagree with them. Avoid personal attacks, insults, and other forms of harassment.
 
-**Be constructive**
+## Be constructive
 
 When providing feedback, focus on the issue at hand and avoid personal attacks. Be specific and provide examples to support your claims.
 
-**Be open to feedback**
+## Be open to feedback
 
 Be willing to accept feedback from others, even if it is critical. Use feedback to improve your contributions and the project as a whole.
 
-**Be collaborative**
+## Be collaborative
 
 Work together to achieve the project goals. Be willing to share your ideas and collaborate with others.
 
-**Be mindful of your language**
+## Be mindful of your language
 
 Be mindful of the language you use in your contributions. Avoid using offensive or discriminatory language.
 
-**Consequences of Unacceptable Behavior**
+## Consequences of Unacceptable Behavior
 
 Unacceptable behavior will not be tolerated. If you are found to be violating this code of conduct, you may be:
 
@@ -36,11 +32,11 @@ Unacceptable behavior will not be tolerated. If you are found to be violating th
 * Suspended from the project
 * Banned from the project
 
-**Reporting Unacceptable Behavior**
+## Reporting Unacceptable Behavior
 
 If you witness or experience unacceptable behavior, please report it to the project maintainers.
 
-**Additional Terms**
+## Additional Terms
 
 In addition to the general code of conduct, the following terms apply to contributors to this project:
 
@@ -52,9 +48,3 @@ In addition to the general code of conduct, the following terms apply to contrib
 By contributing to this project, you agree to abide by these terms.
 
 This code of conduct is based on the Contributor Covenant Code of Conduct.
-
----
-
-I have added the additional terms that were specified in the project goal. These terms restrict the use of the software to creating a game site that utilizes the Curse proxy API for searching and accessing game data. The software may not be modified to access files outside of the /api directory. The software may not be used to create any commercial products or services, or to create any products or services that are harmful or illegal. The software may not be used to create any products or services that violate the terms of service of the Curse proxy API.
-
-I have also added a section on reporting unacceptable behavior. This section provides instructions on how to report unacceptable behavior to the project maintainers.
