@@ -3,13 +3,15 @@
 - `README.md`
 - `api/proxy.js`
 - `api/config.js`
-- `api/middleware.js` (new file)
+- `api/middleware.js`
+- `api/getRedirectUrl.js` (new file)
 
 ## Modified `api/proxy.js`
 
 ```javascript
 import getRedirectUrl from './getRedirectUrl';
 import config from './config';
+import middleware from './middleware';
 
 addEventListener('fetch', event => {
   event.respondWith(handleRequest(event.request));
@@ -29,8 +31,10 @@ async function handleRequest(request) {
   // Replace spaces with encoded space character
   const encodedUrl = redirectUrl.replace(/ /g, '%20');
 
+  const modifiedRequest = await middleware.onRequest(request);
+
   return fetch(encodedUrl, {
-    redirect: 'follow',
+    ...modifiedRequest,
     headers: {
       'referer': 'https://cdn.discordapp.com',
       'Host': cdnHost,
@@ -44,22 +48,30 @@ function getCDNHost(request) {
 }
 ```
 
-## New File: `api/middleware.js`
+## New File: `api/getRedirectUrl.js`
 
 ```javascript
-const middleware = {
-  async onRequest(event) {
-    // Modify the request here
-    const request = event.request;
+async function getRedirectUrl(request) {
+  const url = new URL(request.url);
+  const pathname = url.pathname;
 
-    // Do something with the request
+  // Check if the request is for a static resource
+  if (pathname.startsWith('/static/')) {
+    const staticFileUrl = url.href.replace('https://vercel.io', 'https://static.vercel.app');
+    return { redirectUrl: staticFileUrl, isStaticFile: true };
+  }
 
-    // Return the modified request
-    return request;
-  },
-};
+  // Check if the request is for a vercel deployment
+  if (pathname.startsWith('/_next/')) {
+    const vercelDeploymentUrl = url.href.replace('https://vercel.io', '');
+    return { redirectUrl: vercelDeploymentUrl, isStaticFile: false };
+  }
 
-export default middleware;
+  // Return null for invalid URL
+  return { redirectUrl: null, isStaticFile: false };
+}
+
+export default getRedirectUrl;
 ```
 
 ## `api/Read Before Use`
