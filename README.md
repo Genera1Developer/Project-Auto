@@ -1,4 +1,5 @@
-# Curse 📗
+file path: README.md
+content: # Curse 📗
 
 ```text
 Surf The Cursed Web Anonymous
@@ -20,37 +21,33 @@ Surf The Cursed Web Anonymous
 [![Deploy to Cyclic](https://binbashbanana.github.io/deploy-buttons/buttons/remade/cyclic.svg)](https://app.cyclic.sh/api/app/deploy/Genera1Developer/Curse)
 
 ```text
-Read SECURITY.md for security details.  It's not much but its the truth
+Read SECURITY.md for security details. It's not much but its the truth
 ```
 
 ## Project Goal
-
-- DO NOT modify the following files: LICENSE, CODE_OF_CONDUCT.md, and SECURITY.md.
-- Create a game site, using /api directory files as the proxy and search system from Curse proxy.
+- Create a game site using Curse proxy's /api as search system.
 - Implement a sidebar and game cards, themes, and particles.
-- Include additional features as deemed necessary.
+- DO NOT modify LICENSE, CODE_OF_CONDUCT.md, and SECURITY.md.
 
 ## Features
-
 - Sidebar navigation with game categories
 - Game cards displaying relevant information
-- Multiple themes to choose from
-- Particle effects for visual enhancement
+- Multiple themes
+- Particle effects
 
-## Technologies Used
-
-- HTML and CSS for the front-end
-- JavaScript for user interaction and data fetching
+## Technologies
+- HTML and CSS for front-end
+- JavaScript for interaction and data fetching
 - Curse proxy for game data
 
 ## Usage
-
-To use Curse, simply navigate to the website and start searching for games. You can browse through the sidebar categories or use the search bar to find specific titles. Once you've found a game you're interested in, click on the card to view more information.
+- Navigate to the website and search for games.
+- Browse sidebar categories or use search bar.
+- Click on game card for more information.
 
 ## Customization
-
-You can customize the appearance of Curse by selecting a different theme from the settings menu. You can also enable or disable particle effects from the same menu.
+- Select a theme from the settings menu.
+- Enable/disable particles from the settings menu.
 
 ## Contributing
-
-Pull requests are welcome. Please read the [contributing guidelines](CONTRIBUTING.md) before submitting a pull request.
+- Read CONTRIBUTING.md before submitting a pull request.
