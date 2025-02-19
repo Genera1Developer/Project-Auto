@@ -1,22 +1,81 @@
+**File Structure:**
+
+```
+- api/
+  - package.json
+  - index.js
+  - proxy.js
+  - README.md
+```
+
+**README.md**
+
+**Curse Static Web Proxy**
+
+This is a web proxy designed to work fully for Vercel and static serverless sites. It includes rate limiting and error handling to ensure a reliable and efficient service.
+
+**Usage:**
+
+To use the proxy, simply make a GET request to the following URL:
+
+```
+https://<your-vercel-domain>.vercel.app/api/[url-to-proxy]
+```
+
+For example, to proxy a request to the Google homepage, you would send a GET request to:
+
+```
+https://<your-vercel-domain>.vercel.app/api/https://google.com
+```
+
+**Rate Limiting:**
+
+The proxy is rate limited to 1 request per second per IP address. This is to prevent abuse of the service.
+
+**Error Handling:**
+
+The proxy will handle any errors that occur during the request and return a JSON response with the error message.
+
+**Dependencies:**
+
+The proxy requires the following dependencies:
+
+- Express (v4.18.2 or later)
+- Axios (v1.6.2 or later)
+- Express-rate-limit (v7.5.0 or later)
+
+**Development:**
+
+To run the proxy in development mode, run the following command:
+
+```
+npm run dev
+```
+
+This will start the proxy on port 3000.
+
+**Deployment:**
+
+To deploy the proxy to Vercel, follow these steps:
+
+1. Create a new Vercel project.
+2. Add the following code to your Vercel configuration file (vercel.json):
+
+```
 {
-  "name": "Curse-Static",
-  "version": "2.5.9",
-  "description": "Curse Static Web Proxy",
-  "type": "module",
-  "main": "proxy.js",
-  "scripts": {
-    "start": "node proxy.js",
-    "dev": "nodemon proxy.js"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "axios": "^1.6.2",
-    "express-rate-limit": "^7.5.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "routes": [
+    {
+      "src": "/api/:path*",
+      "dest": "api/proxy.js"
+    }
+  ]
 }
+```
+
+3. Deploy your project to Vercel.
+
+**Notes:**
+
+- The proxy is designed to work with static serverless sites that do not use server-side rendering.
+- The proxy does not support proxying requests to local files.
+- The proxy does not support proxying requests to sites that require authentication.
