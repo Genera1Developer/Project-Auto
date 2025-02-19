@@ -1,7 +1,3 @@
-This file is part of the public/theme directory and contains the default CSS styles for the web proxy. It is used to customize the appearance of the proxy, such as the colors, fonts, and layout.
-
-Here is an example of how you might improve this file:
-
 ```css
 /* Default CSS styles for the web proxy */
 
@@ -45,9 +41,3 @@ a:hover {
   text-align: center;
 }
 ```
-
-In addition to the default.css file, you may also want to create additional CSS files for different themes or variations of your web proxy. For example, you could create a dark-theme.css file for a dark-themed version of your proxy.
-
-You can also create custom CSS files for specific pages or sections of your proxy. For example, you could create a home-page.css file for custom styles on the home page of your proxy.
-
-By organizing your CSS files in this way, you can keep your code clean and organized, and you can easily make changes to the appearance of your proxy without having to edit a single file.
