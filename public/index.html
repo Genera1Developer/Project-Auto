@@ -1,25 +1,39 @@
-file: public/index.html
+file: public/css/style.css
 content:
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form>
-    <label for="url">URL:</label>
-    <input type="text" id="url" placeholder="Enter URL">
-    <button type="submit">Go</button>
-  </form>
+```css
+body {
+  font-family: Arial, sans-serif;
+}
 
-  <div id="result"></div>
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
 
-  <script src="js/script.js"></script>
-</body>
-</html>
+form {
+  margin-bottom: 20px;
+}
+
+label {
+  margin-right: 10px;
+}
+
+input {
+  width: 300px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+  cursor: pointer;
+}
+
+#result {
+  background-color: #f9f9f9;
+  padding: 20px;
+  margin-top: 20px;
+}
 ```
