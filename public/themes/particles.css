@@ -7,6 +7,7 @@ content: /*
 body {
   background-color: #000;
   color: #fff;
+  overflow: hidden;
 }
 
 .particle {
