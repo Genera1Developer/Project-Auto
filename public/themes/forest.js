@@ -1,35 +1,33 @@
-FILE PATH: public/script.js
+Based on the project goal, a new file should be created forstylesheet:
+
+FILE PATH: public/css/proxy.css
 CONTENT: 
-```javascript
-const urlInput = document.querySelector('input[name="url"]');
-const submitButton = document.querySelector('input[type="submit"]');
+```css
+body {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+}
 
-submitButton.addEventListener('click', e => {
-  e.preventDefault();
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
 
-  const url = urlInput.value;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-  if (!url) {
-    alert('Please enter a URL.');
-    return;
-  }
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
 
-  // Send the URL to the server to be proxied.
-  fetch('/proxy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ url }),
-  })
-    .then(res => res.json())
-    .then(data => {
-      // Display the proxied content in the browser.
-      document.body.innerHTML = data.content;
-    })
-    .catch(err => {
-      alert('An error occurred while proxying the URL.');
-      console.error(err);
-    });
-});
+input[type="submit"] {
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
 ```
