@@ -2,71 +2,92 @@ file path: public/css/theme.css
 content: /* CSS file for the web proxy project */
 
 body {
-    margin: 0;
-    font-family: 'Helvetica', 'Arial', sans-serif;
+  margin: 0;
+  font-family: "Helvetica", "Arial", sans-serif;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 /* Dark theme */
 
 @media (prefers-color-scheme: dark) {
-    body {
-        background-color: #000;
-        color: #fff;
-    }
+  body {
+    background-color: #000;
+    color: #fff;
+  }
 
-    a {
-        color: #fff;
-    }
+  a {
+    color: #fff;
+  }
 }
 
 /* Light theme */
 
 @media (prefers-color-scheme: light) {
-    body {
-        background-color: #fff;
-        color: #000;
-    }
+  body {
+    background-color: #fff;
+    color: #000;
+  }
 
-    a {
-        color: #000;
-    }
+  a {
+    color: #000;
+  }
 }
 
 /* Custom theme switch */
 
 .theme-switch {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 .theme-switch input[type="checkbox"] {
-    display: none;
+  display: none;
 }
 
 .theme-switch label {
-    display: block;
-    width: 40px;
-    height: 20px;
-    background-color: #ccc;
-    border-radius: 20px;
-    cursor: pointer;
+  display: block;
+  width: 40px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 20px;
+  cursor: pointer;
 }
 
 .theme-switch label::before {
-    content: "";
-    display: block;
-    width: 18px;
-    height: 18px;
-    background-color: #fff;
-    border-radius: 50%;
-    transition: all 0.2s ease-in-out;
+  content: "";
+  display: block;
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
 }
 
 .theme-switch input[type="checkbox"]:checked + label::before {
-    transform: translateX(20px);
+  transform: translateX(20px);
 }
+
+file path: public/scripts/theme.js
+content: // JavaScript file for the web proxy project theme
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Get the theme switch element
+  const themeSwitch = document.querySelector(".theme-switch");
+
+  // Add an event listener to the theme switch
+  themeSwitch.addEventListener("change", () => {
+    // Get the current theme
+    const currentTheme = document.body.getAttribute("data-theme");
+
+    // Toggle the current theme
+    if (currentTheme === "dark") {
+      document.body.setAttribute("data-theme", "light");
+    } else {
+      document.body.setAttribute("data-theme", "dark");
+    }
+  });
+});
