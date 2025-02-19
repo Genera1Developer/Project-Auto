@@ -1,10 +1,18 @@
 **File Structure:**
 
+```
+├── public
+│   └── visuals
+│       ├── dropdown.css
+```
+
 **Improved `public/visuals/dropdown.css` file:**
 
 ```css
+/* Import shared variables */
 @import url("./vars.css");
 
+/* Dropdown button */
 #themeSelector {
     position: fixed;
     top: 60px;
@@ -25,6 +33,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
 }
 
+/* Dropdown menu */
 .theme-dropdown {
     position: fixed;
     top: 100px;
@@ -43,6 +52,7 @@
     display: block;
 }
 
+/* Dropdown item */
 .theme-item {
     display: flex;
     align-items: center;
@@ -60,6 +70,7 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
 }
 
+/* Theme preview */
 .theme-preview {
     width: 20px;
     height: 20px;
@@ -74,6 +85,7 @@
     border-color: var(--primary-glow);
 }
 
+/* Light theme overrides */
 .light #themeSelector {
     background: linear-gradient(45deg, var(--lighter-primary-glow), var(--lighter-secondary-glow)) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
@@ -109,5 +121,5 @@
 
 **Additional Considerations:**
 
-* To ensure compatibility with Vercel and static serverless sites, you may need to consider using a CSS-in-JS library for runtime styling or implementing serverless functions for handling dynamic behavior.
+* To make the proxy fully compatible with Vercel and static serverless sites, you may need to consider using a CSS-in-JS library like `styled-components` or `emotion` for runtime styling.
 * For a more modular and scalable project structure, you could create separate CSS files for the light and dark themes, and import them into the main CSS file based on the user's preference.
