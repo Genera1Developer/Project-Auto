@@ -1,18 +1,17 @@
-FILE PATH: api/routes/webproxy.js
+FILE PATH: api/server.js
 CONTENT: const express = require('express');
-const router = express.Router();
-const fetch = require('node-fetch');
+const app = express();
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
-const origin = 'https://my-remote-server.com';
+const webproxyRouter = require('./routes/webproxy');
 
-router.get('/:path', async (req, res) => {
-  const { path } = req.params;
-  const url = `${origin}/${path}`;
+app.use(cors());
+app.use(bodyParser.json());
 
-  const response = await fetch(url);
-  const data = await response.text();
+app.use('/api', webproxyRouter);
 
-  res.send(data);
+const port = process.env.PORT || 80;
+app.listen(port, () => {
+  console.log(`Server is listening on port ${port}`);
 });
-
-module.exports = router;
