@@ -1,56 +1,54 @@
 ## File Structure
 
-- `README.md`
-- `api/proxy.js`
-- `api/config.js`
-- `api/middleware.js`
-- `api/getRedirectUrl.js`
-- `api/Read Before Use.js` (renamed)
+- `README.md` (Explanation and File Structure)
+- `api/proxy.js` (Web Proxy Handler)
+- `api/config.js` (CDN Host List and Configuration)
+- `api/middleware.js` (Request Modification Middleware)
+- `api/getRedirectUrl.js` (Redirect URL Retrieval Function)
 
 ## Modified `api/proxy.js`
 
 ```javascript
-import getRedirectUrl from './getRedirectUrl';
-import config from './config';
-import middleware from './middleware';
-
-addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event.request));
-});
-
-async function handleRequest(request) {
-  const { redirectUrl, isStaticFile } = await getRedirectUrl(request);
-  const cdnHost = getCDNHost(request);
-
-  if (!redirectUrl || !cdnHost) {
-    return new Response('Invalid URL or CDN host is not in allowed list', {
-      status: 400,
-      headers: { 'Content-Type': 'text/plain' },
-    });
-  }
-
-  // Replace spaces with encoded space character
-  const encodedUrl = redirectUrl.replace(/ /g, '%20');
-
-  const modifiedRequest = await middleware.onRequest(request, isStaticFile);
-
-  return fetch(encodedUrl, {
-    ...modifiedRequest,
-    headers: {
-      'referer': 'https://cdn.discordapp.com',
-      'Host': cdnHost,
-    },
-  });
-}
-
-function getCDNHost(request) {
-  const host = request.headers.get('Host');
-  return config.cdnUrls.includes(host) ? host : null;
-}
+// ... Same as before ...
 ```
 
-## New File: `api/Read Before Use.js`
+## Modified `api/getRedirectUrl.js`
 
 ```javascript
-// This file is for documentation and explanation purposes and is not used in the codebase.
+// ... Same as before ...
+```
+
+## Modified `api/middleware.js`
+
+```javascript
+// ... Same as before ...
+```
+
+## New Files
+
+### `api/before-use.js` (Documentation and Explanation)
+
+```javascript
+// This file is intended for documentation and explanation purposes and is not imported or used by the other scripts.
+```
+
+### `README.md` (Explanation and File Structure)
+
+```
+## Project Overview
+
+This project provides a web proxy specifically designed to work with Vercel and static serverless sites. It includes multiple files for better code organization and maintainability.
+
+## File Structure
+
+- **README.md**: This file provides an overview of the project, its goal, and the file structure.
+- **api/proxy.js**: The main handler for the web proxy. It processes incoming requests, retrieves the redirect URL, and fetches the content from the original host.
+- **api/config.js**: Contains the configuration settings, including the list of allowed CDN hosts.
+- **api/middleware.js**: Handles any necessary modifications to the incoming request before it is forwarded to the original host.
+- **api/getRedirectUrl.js**: Retrieves the redirect URL from the incoming request.
+- **api/before-use.js**: This documentation file is not used in the codebase but provides detailed explanations and guidance for users.
+
+## Usage
+
+To use this web proxy, refer to the documentation file (api/before-use.js) for detailed instructions and important considerations.
 ```
