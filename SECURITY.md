@@ -1,4 +1,5 @@
-# Security Policy
+file path: SECURITY.md
+content: # Security Policy
 
 ## Supported Versions
 
@@ -18,3 +19,7 @@ We ask that researchers follow responsible disclosure practices. This includes:
 - Giving us reasonable time to address the issue before publicly disclosing it.
 - Providing us with a detailed report of the vulnerability, including steps to reproduce it.
 - Refraining from exploiting the vulnerability for personal gain.
+
+### New Files:
+- **SECURITY-FAQ.md**: Provides answers to frequently asked questions about security.
+- **BUG-BOUNTY.md**: Outlines a bug bounty program for reporting vulnerabilities.
