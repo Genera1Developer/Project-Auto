@@ -1,19 +1,14 @@
-Based on the project goal, here is a suggestion for a new file:
-
-FILE PATH: package.json
+FILE PATH: server.js
 CONTENT:
 ```
-{
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A simple web proxy",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "request": "^2.88.2"
-  }
-}
+const express = require('express');
+const request = require('request');
+
+const app = express();
+
+app.get('*', (req, res) => {
+  request(req.url).pipe(res);
+});
+
+app.listen(3000);
 ```
