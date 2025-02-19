@@ -8,6 +8,8 @@ public/
 src/
   utils/
     particles.js
+  components/
+    Particles.js
 ```
 
 **Improved Code:**
@@ -16,71 +18,44 @@ src/
 
 **public/theme/particles.js**: Removed
 
-**src/utils/particles.js**
+**src/utils/particles.js** (Unchanged)
+
+**src/components/Particles.js**:
 
 ```javascript
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { initParticles } from './utils/particles';
 
-export const createParticles = (canvas, numParticles = 100) => {
-  const particles = [];
-  for (let i = 0; i < numParticles; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 5,
-      vy: (Math.random() - 0.5) * 5,
-      color: `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`,
-      radius: Math.random() * 3 + 1,
-    });
-  }
-  return particles;
+const Particles = (props) => {
+  useEffect(() => {
+    if (props.canvasRef) {
+      initParticles(props.canvasRef, props.numParticles);
+    }
+  }, [props.canvasRef, props.numParticles]);
+
+  return (
+    <canvas
+      ref={props.canvasRef}
+      style={{ position: 'fixed', top: 0, left: 0, pointerEvents: 'none', width: '100vw', height: '100vh', zIndex: -1 }}
+    />
+  );
 };
 
-export const initParticles = (canvasRef, numParticles = 100) => {
-  if (canvasRef) {
-    const canvas = canvasRef.current;
-    const particles = createParticles(canvas, numParticles);
-    const ctx = canvas.getContext('2d');
-
-    window.addEventListener('resize', () => {
-      if (canvas) {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        createParticles(canvas, particles);
-      }
-    });
-
-    function animateParticles() {
-      requestAnimationFrame(animateParticles);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawParticles(particles, ctx);
-    }
-
-    animateParticles();
-  }
-};
-
-const drawParticles = (particles, ctx) => {
-  for (let i = 0; i < particles.length; i++) {
-    const particle = particles[i];
-    particle.x += particle.vx;
-    particle.y += particle.vy;
-    if (particle.x < 0 || particle.x > canvas.width) {
-      particle.vx = -particle.vx;
-    }
-    if (particle.y < 0 || particle.y > canvas.height) {
-      particle.vy = -particle.vy;
-    }
-    ctx.fillStyle = particle.color;
-    ctx.beginPath();
-    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-};
+export default Particles;
 ```
 
 **Additional Improvements:**
 
-* Removed the global `Particles` component and moved its functionality into `src/utils/particles.js`.
-* Simplified the `initParticles` function by passing `canvasRef` directly instead of `canvas`.
-* Moved the canvas resize event listener into the `initParticles` function for better encapsulation.
+* Created a dedicated component for the particle system to improve modularity and reusability.
+* Removed the direct canvas element from the `initParticles` function to allow it to be used in reusable components like `Particles`.
+* Simplified the `Particles` component by passing the canvas ref and number of particles as props.
+
+**Usage:**
+
+```javascript
+import Particles from './components/Particles';
+
+// In your main component:
+
+<Particles canvasRef={canvasRef} numParticles={100} />
+```
