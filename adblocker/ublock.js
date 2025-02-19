@@ -1,4 +1,4 @@
-file: adblocker/ublock.js
+file path: adblocker/ublock.js
 content:
 ```javascript
 (function() {
