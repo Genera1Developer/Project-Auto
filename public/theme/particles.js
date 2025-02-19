@@ -10,7 +10,7 @@
 **Improved `public/theme/particles.js`**
 
 ```javascript
-import { animateParticles, initParticles } from '../src/utils/particles';
+import { animateParticles } from '../src/utils/particles';
 import { resetCanvas } from '../src/utils/canvas';
 import { resizeCanvas } from '../src/utils/events';
 
@@ -20,9 +20,10 @@ const ctx = canvas.getContext('2d');
 if (!ctx) throw new Error('Canvas context not found');
 
 window.addEventListener('resize', resizeCanvas);
-window.addEventListener('load', initParticles);
-
-animateParticles(ctx);
+window.addEventListener('load', () => {
+  resetCanvas(canvas);
+  animateParticles(ctx);
+});
 ```
 
 **Additional Files**
@@ -34,4 +35,4 @@ animateParticles(ctx);
 
 **Conclusion**
 
-The revised codebase meets the project goal by structuring the code into separate files and improving the `particles.js` file to work with Vercel and static serverless sites. It also provides enhanced error handling and organization for a more robust and maintainable solution.
+The revised codebase meets the project goal by structuring the code into separate files and improving the `particles.js` file to work with Vercel and static serverless sites. It also provides enhanced error handling, organization, and a one-time `resetCanvas()` call to improve performance.
