@@ -1,4 +1,3 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
 FILE PATH: api/vercel.json
 CONTENT: {
   "routes": [
@@ -8,3 +7,31 @@ CONTENT: {
     }
   ]
 }
+
+FILE PATH: index.html
+CONTENT: <!DOCTYPE html>
+<html>
+<head>
+  <title>Web Proxy</title>
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form action="/api/proxy">
+    <input type="text" name="url" placeholder="Enter URL" />
+    <input type="submit" value="Go" />
+  </form>
+</body>
+</html>
+
+FILE PATH: server.js
+CONTENT: const express = require('express')
+const app = express()
+const port = 3000
+app.get('/api/proxy', async (req, res) => {
+  const url = req.query.url
+  const data = await fetch(url)
+  res.send(data)
+})
+app.listen(port, () => {
+  console.log(`Proxy server listening on port ${port}`)
+})
