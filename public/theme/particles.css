@@ -11,8 +11,8 @@
 
 ```css
 :root {
-    --primary-glow: rgba(255, 0, 0, 0.8);
-    --secondary-glow: rgba(255, 0, 0, 0.6);
+    --primary-glow: rgba(140, 196, 247, 0.8);
+    --secondary-glow: rgba(140, 196, 247, 0.6);
     --background-color: #000;
     --cyber-text-color: #777;
 }
@@ -109,7 +109,6 @@ body {
 
 ## Improvements
 
-- Added a new `--cyber-text-color` variable to control the text color on the light theme.
-- Corrected the color of the `cyber-card` and `cyber-input` elements on the light theme.
+- Updated the `--primary-glow` and `--secondary-glow` variables to use a more subtle blue color.
 - Removed the `backdrop-filter` property from the `body` element as it was causing issues with Vercel and static serverless sites.
 - Updated the `cyber-card` and `cyber-input` elements to use `rgba()` values for their backgrounds and borders to ensure they are fully customizable.
