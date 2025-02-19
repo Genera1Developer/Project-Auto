@@ -1,40 +1,22 @@
-FILE PATH: server.js
+FILE PATH: index.html
 CONTENT: 
-```javascript
-const express = require('express');
-const cheerio = require('cheerio');
-const request = require('request');
-
-const app = express();
-
-app.use(express.json());
-
-app.post('/proxy', async (req, res) => {
-  const { url } = req.body;
-
-  try {
-    const response = await request.get(url);
-    const $ = cheerio.load(response.data);
-
-    const title = $('title').text();
-    const links = [];
-
-    $('a').each((i, link) => {
-      links.push($(link).attr('href'));
-    });
-
-    res.json({
-      title,
-      links,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-const PORT = 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form id="form">
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url" required>
+    <input type="submit" value="Submit">
+  </form>
+  <div id="result"></div>
+  <script src="script.js"></script>
+</body>
+</html>
 ```
