@@ -17,7 +17,7 @@
    * utils/
      * requestHandler.js
      * responseHandler.js
-* CHANGELOG.md (new)
+* CHANGELOG.md
 
 **New Files:**
 
@@ -55,6 +55,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   },
   "dependencies": {
     "express": "^4.17.1",
+    "memoize-one": "^5.2.1",
     "request": "^2.88.2"
   },
   "license": "MIT"
@@ -68,8 +69,10 @@ const express = require('express');
 const app = express();
 const requestHandler = require('./utils/requestHandler');
 const responseHandler = require('./utils/responseHandler');
+const { MemoizeMiddleware } = require('memoize-one');
 
 app.use(express.json());
+app.use(MemoizeMiddleware());
 app.use(requestHandler);
 app.use(responseHandler);
 
@@ -127,10 +130,12 @@ module.exports = (req, res) => {
 - Added middleware to support JSON requests
 - Updated package.json description
 - Added CHANGELOG.md
+- Fixed issue with memoization
 ```
 
 **Explanation:**
 
+* We have added a memoization middleware to improve performance by caching the results of the request handling.
 * We have added a CHANGELOG.md file to track changes and updates to the project.
 * We have improved the requestHandler to pass the original request method, headers, and body to the target URL.
 * We have added a responseHandler to set the response headers and send the body to the client.
