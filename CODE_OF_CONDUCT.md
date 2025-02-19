@@ -2,10 +2,10 @@
 
 This project adheres to a code of conduct that outlines the expected behavior and standards of conduct for contributors and users. By participating in this project, you agree to abide by the following principles:
 
-- **Be respectful:** Treat others with respect, even if you disagree with their opinions or ideas.
-- **Be constructive:** Provide constructive criticism and feedback, and be open to receiving the same.
-- **Be inclusive:** Welcome and value diversity of background, experience, and perspective.
-- **Be responsible:** Take ownership of your actions and contributions, and be mindful of their impact on the project and community.
+- Be respectful: Treat others with respect, even if you disagree with their opinions or ideas.
+- Be constructive: Provide constructive criticism and feedback, and be open to receiving the same.
+- Be inclusive: Welcome and value diversity of background, experience, and perspective.
+- Be responsible: Take ownership of your actions and contributions, and be mindful of their impact on the project and community.
 
 ## Reporting Unacceptable Behavior
 
