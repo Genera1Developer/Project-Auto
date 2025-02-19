@@ -5,6 +5,10 @@
 - CONTRIBUTING.md
 - ISSUE_TEMPLATE.md
 - PULL_REQUEST_TEMPLATE.md
+- proxy.js
+- index.js
+- package.json
+- .env
 
 ## Improved CODE_OF_CONDUCT.md
 
@@ -66,13 +70,17 @@ This code of conduct was adapted from the [Contributor Covenant](https://contrib
   - How do I submit a bug report?
   - How do I request a new feature?
   - How do I contribute a pull request?
-  - What are the project's coding standards?
-- **ISSUE_TEMPLATE.md:** This file provides a template for submitting issues by prompting users to include the following information:
+  - What are the project's contributing guidelines?
+- **ISSUE_TEMPLATE.md:** This file contains a template for submitting issues, and prompts users to include the following information:
   - A clear and concise description of the issue.
   - The version of the software you are using.
   - The operating system you are using.
   - The steps to reproduce the issue.
-- **PULL_REQUEST_TEMPLATE.md:** This file provides a template for submitting pull requests by prompting users to include the following information:
+- **PULL_REQUEST_TEMPLATE.md:** This template file contains a template for submitting pull requests, and prompts users to include the following information:
   - A clear and concise summary of the changes.
   - A description of the motivation for the changes.
   - A list of the tests that were performed.
+- **proxy.js:** This file contains the code for the web proxy.
+- **index.js:** This file contains the main code for the project.
+- **package.json:** This file contains the project's metadata and dependencies.
+- **.env:** This file contains the environment variables for the project.
