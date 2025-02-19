@@ -1,23 +1,14 @@
-FILE PATH: api/search.js
+Based on the project goal, the following file should be created:
+
+FILE PATH: index.js
 CONTENT: 
 ```javascript
 const express = require('express');
-const fetch = require('node-fetch');
+const path = require('path');
 
 const app = express();
 
-app.post('/api/proxy', async (req, res) => {
-  const { url } = req.body;
-
-  try {
-    const response = await fetch(url);
-    const html = await response.text();
-
-    res.send(html);
-  } catch (error) {
-    res.status(500).send('Error fetching URL');
-  }
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(3000, () => {
   console.log('Server listening on port 3000');
