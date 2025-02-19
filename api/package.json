@@ -1,12 +1,14 @@
-FILE PATH: api/package.json
-CONTENT: {
-  "name": "web-proxy-api",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "axios": "^0.26.1"
+FILE PATH: api/routes/index.js
+CONTENT: const router = require('express').Router();
+const axios = require('axios');
+
+router.get('/:url', async (req, res) => {
+  try {
+    const response = await axios.get(req.params.url);
+    res.send(response.data);
+  } catch (error) {
+    res.status(error.response.status).send(error.response.data);
   }
-}
+});
+
+module.exports = router;
