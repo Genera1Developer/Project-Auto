@@ -1,18 +1,18 @@
-FILE PATH: public/css/forest.css
+FILE PATH: public/themes/forest.js
 CONTENT: 
-```css
-body {
-  font-family: 'Helvetica', 'Arial', sans-serif;
-}
+```js
+const theme = {
+  colors: {
+    primary: '#008000',
+    secondary: '#808000',
+    background: '#ffffff',
+    text: '#000000',
+    link: '#0000ff',
+  },
+   fonts: {
+    primary: 'Helvetica',
+  },
+};
 
-h1 {
-  font-size: 2em;
-  margin-bottom: 1em;
-}
-
-#result {
-  background-color: #eee;
-  padding: 1em;
-  margin-top: 1em;
-}
+export default theme;
 ```
