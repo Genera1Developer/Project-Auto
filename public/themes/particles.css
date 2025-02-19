@@ -10,3 +10,9 @@ CONTENT: /* particles.js stylesheet */
   left: 0;
   z-index: -1;
 }
+
+@media (max-width: 1024px) {
+  .particles-container div#particles-js {
+    opacity: 0.5;
+  }
+}
