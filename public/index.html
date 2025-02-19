@@ -15,32 +15,28 @@ content: ```html
 <script src="scripts/main.js"></script>
 </html>
 ```
-file path: public/scripts/ad-blocker.js
+file path: public/scripts/main.js
 content: ```javascript
-class AdBlocker {
-    constructor() {
-        this.adElements = [];
-    }
+const adBlocker = new AdBlocker();
+const cssInjector = new CSSInjector();
 
-    blockAds() {
-        this.adElements = document.querySelectorAll('iframe, div[id^="google_ads_"], div[id^="adsense_"], div[id^="ad_"], div[id^="banner_"], div[id^="sponsored_links_"], div[id^="sponsored_results_"]');
-        this.adElements.forEach(element => {
-            element.remove();
-        });
-    }
-}
-```
-file path: public/scripts/css-injector.js
-content: ```javascript
-class CSSInjector {
-    constructor() {
-        this.css = '';
-    }
+const goButton = document.getElementById('go-button');
+const urlInput = document.getElementById('url-input');
+const contentDiv = document.getElementById('content');
 
-    injectCSS() {
-        const styleElement = document.createElement('style');
-        styleElement.innerHTML = this.css;
-        document.head.appendChild(styleElement);
-    }
-}
+goButton.addEventListener('click', async () => {
+    const url = urlInput.value;
+    const response = await fetch(url);
+    const html = await response.text();
+
+    // Block ads
+    adBlocker.blockAds();
+
+    // Inject custom CSS
+    cssInjector.css = `body { background-color: #f0f0f0; }`;
+    cssInjector.injectCSS();
+
+    // Display the content
+    contentDiv.innerHTML = html;
+});
 ```
