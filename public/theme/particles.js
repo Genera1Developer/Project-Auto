@@ -1,7 +1,7 @@
 **File: public/theme/particles.js**
 
 ```javascript
-import { animateParticles } from '../src/utils/particles';
+import { createParticles, animateParticles } from '../src/utils/particles';
 import { resetCanvas } from '../src/utils/canvas';
 import { resizeCanvas } from '../src/utils/events';
 
@@ -13,8 +13,36 @@ if (!ctx) throw new Error('Canvas context not found');
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('load', () => {
   resetCanvas(canvas);
-  animateParticles(ctx);
+  const particles = createParticles(ctx, 100, canvas.width, canvas.height);
+  animateParticles(ctx, particles);
 });
+```
+
+**File: src/utils/particles.js**
+
+```javascript
+import { Particle } from './particle';
+
+export function createParticles(ctx, numParticles, width, height) {
+  const particles = [];
+  for (let i = 0; i < numParticles; i++) {
+    const x = Math.random() * width;
+    const y = Math.random() * height;
+    const radius = Math.random() * 2 + 1;
+    const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
+    particles.push(new Particle(x, y, radius, color));
+  }
+  return particles;
+}
+
+export function animateParticles(ctx, particles) {
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  particles.forEach((particle) => {
+    particle.draw(ctx);
+    particle.update(ctx.canvas.width, ctx.canvas.height);
+  });
+  requestAnimationFrame(() => animateParticles(ctx, particles));
+}
 ```
 
 **File: src/utils/particle.js**
@@ -44,33 +72,6 @@ export class Particle {
     if (this.x < 0 || this.x > width) this.speedX *= -1;
     if (this.y < 0 || this.y > height) this.speedY *= -1;
   }
-}
-```
-
-**File: src/utils/particles.js**
-
-```javascript
-import { Particle } from './particle';
-
-export function createParticles(ctx, numParticles, width, height) {
-  const particles = [];
-  for (let i = 0; i < numParticles; i++) {
-    const x = Math.random() * width;
-    const y = Math.random() * height;
-    const radius = Math.random() * 2 + 1;
-    const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
-    particles.push(new Particle(x, y, radius, color));
-  }
-  return particles;
-}
-
-export function animateParticles(ctx, particles) {
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  particles.forEach((particle) => {
-    particle.draw(ctx);
-    particle.update(ctx.canvas.width, ctx.canvas.height);
-  });
-  requestAnimationFrame(() => animateParticles(ctx, particles));
 }
 ```
 
@@ -115,11 +116,11 @@ export function resizeCanvas(event) {
 
 ### Code Explanation
 
-The `particles.js` script creates and animates particles on a canvas using the `animateParticles()` function. It also includes error handling and event listeners for window resizing.
+The `particles.js` script creates and animates particles on a canvas using the `createParticles()` and `animateParticles()` functions. It also includes error handling and event listeners for window resizing.
 
 The `particle.js` file defines the `Particle` class, which represents the behavior and properties of each particle.
 
-The `particles.js` file contains functions for creating and animating the particles.
+The `particles.js` file contains functions for creating and animating the particles. The `createParticles()` function generates an array of particle objects, while the `animateParticles()` function draws and updates the particles on the canvas.
 
 The `canvas.js` file provides the `resetCanvas()` function to clear the canvas before drawing the particles.
 
