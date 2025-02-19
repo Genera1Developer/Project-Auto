@@ -1,58 +1,42 @@
-FILE PATH: public/index.js
+FILE PATH: public/index.html
 CONTENT:
-```javascript
-import createElement from "./dom";
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Web Proxy</h1>
+      <p>
+        Enter the URL of the website you want to access, select the request
+        method, and optionally provide a request body.
+      </p>
+      <form>
+        <label for="url">URL:</label>
+        <input type="text" id="url" name="url" required />
+        <br />
+        <label for="method">Method:</label>
+        <select name="method" id="method">
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="DELETE">DELETE</option>
+        </select>
+        <br />
+        <label for="body">Request Body (optional):</label>
+        <br />
+        <textarea name="body" id="body" rows="4" cols="50"></textarea>
+        <br />
+        <input type="submit" value="Send" />
+      </form>
 
-const form = document.querySelector("form");
-const result = document.querySelector(".result");
-
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const url = document.querySelector('input[name="url"]').value;
-  const method = document.querySelector('input[name="method"]').value;
-  const body = form.querySelector('textarea[name="body"]').value;
-
-  const requestBody =
-    method === "POST" || method === "PUT"
-      ? {
-          method,
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-        }
-      : {
-          method,
-        };
-
-  try {
-    const response = await fetch(url, requestBody);
-
-    if (!response.ok) {
-      const error = new Error(response.statusText);
-      throw error;
-    }
-
-    const responseBody = await response.text();
-
-    const resultElement = createElement("pre", responseBody);
-    result.appendChild(resultElement);
-  } catch (error) {
-    const errorMessage = "Error: " + error.message;
-    const resultElement = createElement("pre", errorMessage);
-    result.appendChild(resultElement);
-  }
-});
-```
-FILE PATH: public/dom.js
-CONTENT:
-```javascript
-const createElement = (element, item) => {
-  const newElement = document.createElement(element);
-  newElement.textContent = item;
-  return newElement;
-};
-
-export default createElement;
+      <div class="result"></div>
+    </div>
+  </body>
+</html>
 ```
