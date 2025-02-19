@@ -1,31 +1,28 @@
 Based on the project goal, the following file should be created:
 
-FILE PATH: public/style.css
+FILE PATH: server.js
 CONTENT:
-```css
-body {
-  font-family: Arial, sans-serif;
-}
+```javascript
+const express = require('express');
+const puppeteer = require('puppeteer');
 
-h1 {
-  margin-bottom: 1em;
-}
+const app = express();
 
-form {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+app.use(express.json());
 
-input {
-  padding: 0.5em;
-  margin-right: 1em;
-}
+app.post('/proxy', async (req, res) => {
+  const { url } = req.body;
 
-#result {
-  border: 1px solid black;
-  padding: 1em;
-  margin-top: 1em;
-  max-width: 800px;
-}
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(url);
+
+  const result = await page.content();
+
+  await browser.close();
+
+  res.send(result);
+});
+
+app.listen(3000);
 ```
