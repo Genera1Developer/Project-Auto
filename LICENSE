@@ -8,3 +8,70 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+file path: package.json
+content: {
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A fully structured web proxy project",
+  "scripts": {
+    "start": "node server.js",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "request": "^2.88.2",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}
+
+file path: webpack.config.js
+content: const path = require('path');
+
+module.exports = {
+  mode: 'development',
+  entry: './client/index.js',
+  output: {
+    path: path.resolve(__dirname, 'public'),
+    filename: 'bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      }
+    ]
+  },
+  devServer: {
+    contentBase: './public',
+    port: 3000
+  }
+};
+
+file path: server.js
+content: const express = require('express');
+const request = require('request');
+
+const app = express();
+
+app.use(express.static('public'));
+
+app.get('*', (req, res) => {
+  request(req.url)
+    .pipe(res);
+});
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
+});
+
+file path: client/index.js
+content: console.log('Client running');
