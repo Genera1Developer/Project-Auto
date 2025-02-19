@@ -1,20 +1,20 @@
-FILE PATH: api/proxy.js
+FILE PATH: api/index.js
 CONTENT: 
 ```javascript
-const puppeteer = require('puppeteer');
+const express = require('express');
+const proxy = require('./proxy');
 
-const getHtml = async (url, options = {}) => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+const app = express();
 
-  await page.goto(url, options);
-  const html = await page.content();
+app.get('/api/html', async (req, res) => {
+  const url = req.query.url;
+  const options = req.query.options || {};
 
-  await browser.close();
-  return html;
-};
+  const html = await proxy.getHtml(url, options);
+  res.send(html);
+});
 
-module.exports = {
-  getHtml,
-};
+app.listen(3000, () => {
+  console.log('Server is listening on port 3000');
+});
 ```
