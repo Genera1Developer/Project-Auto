@@ -1,3 +1,5 @@
+Based on the project goal, the following file should be created:
+
 FILE PATH: public/themes/particles.js
 CONTENT: ```js
 /* particles.js config */
@@ -12,7 +14,7 @@ particlesJS('particles-js', {
       },
     },
     color: {
-      value: '#000',
+      value: ['#ffffff', '#000000'],
     },
     shape: {
       type: 'circle',
