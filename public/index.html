@@ -1,34 +1,31 @@
 Based on the project goal, the following file should be created:
 
-FILE PATH: public/style.css
+FILE PATH: public/script.js
 CONTENT:
-```css
-body {
-  font-family: sans-serif;
-}
+```javascript
+const form = document.querySelector('form');
 
-h1 {
-  margin-bottom: 1em;
-}
+form.addEventListener('submit', e => {
+  e.preventDefault();
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-}
+  const url = document.querySelector('input[name="url"]').value;
 
-label {
-  margin-bottom: 0.5em;
-}
+  if (!url) {
+    alert('Please enter a URL');
+    return;
+  }
 
-input {
-  padding: 0.5em;
-  border: 1px solid #ccc;
-}
+  const request = new Request(url);
 
-input[type="submit"] {
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
+  fetch(request)
+    .then(response => response.text())
+    .then(html => {
+      const result = document.querySelector('#result');
+      result.innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Error fetching URL:', error);
+      alert('An error occurred while fetching the URL');
+    });
+});
 ```
