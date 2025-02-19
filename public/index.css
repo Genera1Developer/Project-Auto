@@ -1,14 +1,19 @@
-FILE PATH: public/index.js
+FILE PATH: routes/index.js
 CONTENT: 
 ```javascript
-const form = document.querySelector("form");
-const result = document.querySelector("#result");
+const express = require("express");
+const router = express.Router();
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const url = document.querySelector("#url").value;
+router.get("/", (req, res) => {
+  res.render("index");
+});
+
+router.post("/proxy", async (req, res) => {
+  const { url } = req.body;
   const response = await fetch(url);
   const data = await response.text();
-  result.innerHTML = data;
+  res.send(data);
 });
+
+module.exports = router;
 ```
