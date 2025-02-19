@@ -1,4 +1,4 @@
-file: public/themes/particles.js
+file path: public/themes/particles.js
 content: ```js
 /* particlesJS.js v2.0.0 - https://github.com/VincentGarreau/particles.js */
 (function (e, t, i, n, s, a, o) {
@@ -147,4 +147,4 @@ content: ```js
         n.y -= e.opt.particles.move.speed;
         break;
       case "bottom-left":
-        (n.x -= e.opt.particles.move.speed),
+        (n.x -= e.opt.particles.move.speed
