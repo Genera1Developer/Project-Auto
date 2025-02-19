@@ -80,4 +80,47 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
   console.log(`Proxy server running on http://localhost:${port}`);
 });
+
+```
+file path: package.json
+content: ```json
+{
+  "name": "proxy",
+  "version": "1.0.0",
+  "description": "Web Proxy Project",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "express": "^4.17.1",
+    "express-async-errors": "^4.1.1",
+    "express-rate-limit": "^5.4.1",
+    "path": "^0.12.7"
+  }
+}
+```
+file path: app.js
+content: ```javascript
+require('dotenv').config();
+const path = require('path');
+const express = require('express');
+const proxy = require('./api/proxy');
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use('/api', proxy);
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
 ```
