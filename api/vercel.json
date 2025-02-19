@@ -26,7 +26,7 @@
   "functions": {
     "proxy": {
       "src": "/api/proxy.js",
-      "runtime": "nodejs16.x"
+      "runtime": "nodejs14.x"
     }
   }
 }
@@ -34,7 +34,7 @@
 
 **Changes and Additions**
 
-- Updated the runtime to `nodejs16.x` to support newer Node.js features and improved performance.
+- Updated the runtime to `nodejs14.x` to match the supported runtime for Vercel Functions.
 
 **Additional Files**
 
