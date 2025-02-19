@@ -1,50 +1,21 @@
-file path: public/index.html
-content: ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
-</head>
-<body>
-    <h1>Web Proxy</h1>
-    <form id="form">
-        <label for="url">URL:</label>
-        <input type="text" id="url" name="url">
-        <input type="submit" value="Go">
-    </form>
-    <div id="content"></div>
-    <script src="scripts/main.js"></script>
-</body>
-</html>
-```
-file path: public/scripts/main.js
-content: ```javascript
-const form = document.getElementById('form');
-const contentDiv = document.getElementById('content');
+file path: public/styles/main.css
+content: ```css
+body {
+    font-family: Arial, sans-serif;
+}
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const url = e.target.querySelector('input[name="url"]').value;
+h1 {
+    margin-bottom: 1em;
+}
 
-    try {
-        const response = await fetch(url);
-        const html = await response.text();
-        contentDiv.innerHTML = html;
-    } catch (err) {
-        contentDiv.innerHTML = 'Error: ' + err.message;
-    }
-});
-```
-file path: server.js
-content: ```javascript
-const express = require('express');
-const app = express();
+form {
+    display: flex;
+    gap: 1em;
+    margin-bottom: 1em;
+}
 
-app.use(express.static('public'));
-
-app.listen(3000, () => {
-    console.log('Server listening on port 3000');
-});
+#content {
+    width: 100%;
+    max-width: 600px;
+}
 ```
