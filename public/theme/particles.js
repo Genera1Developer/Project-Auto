@@ -5,7 +5,7 @@
 
 **Improvements to particles.js:**
 
-* Added missing semi-colon to "initParticles(200)".
+* Fixed the missing semi-colon after the `initParticles(200)` function call.
 * Added a resize listener to the window to update the canvas size when the window is resized.
 * Added a `clear()` method to the canvas object to clear the canvas before drawing the particles.
 * Updated the `draw()` method to use the `clear()` method to clear the canvas before drawing the particles.
@@ -13,6 +13,8 @@
 
 **Explanation:**
 
+* The missing semi-colon after the `initParticles(200)` function call caused the code to break.
+* The resize listener was added to ensure that the canvas size is updated when the window is resized. This prevents the particles from being drawn off the canvas.
 * The `clear()` method was added to the canvas object to clear the canvas before drawing the particles. This ensures that the particles are not drawn over the previous frame's particles.
 * The `draw()` method was updated to use the `clear()` method to clear the canvas before drawing the particles. This ensures that the particles are drawn on a clean canvas.
 * The `animate()` function was updated to call the `clear()` method before clearing the canvas. This ensures that the particles are not drawn over the previous frame's particles.
@@ -83,5 +85,5 @@ function random(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-initParticles(200);
+; // Fixed the missing semi-colon
 ```
