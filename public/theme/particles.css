@@ -1,25 +1,13 @@
-## File Structure
+```css
+/* particles.css */
 
+/* Set the background color */
+body {
+  background-color: #000;
+}
+
+/* Set the color of the particles */
+.particle {
+  color: #00ff00;
+}
 ```
-- public/
-  - theme/
-    - particles.css
-  - js/
-    - script.js
-  - index.html
-- README.md
-- package.json
-```
-
-## Suggested Improvements
-
-In addition to the original prompt, the following improvements could be made:
-
-- Add a favicon to the project.
-- Use a CSS preprocessor like Sass or Less to organize and maintain the CSS.
-- Implement a service worker to improve the site's performance and offline capabilities.
-- Add unit tests to ensure the JavaScript code is working correctly.
-
-## Additional Notes
-
-These improvements are not required but could enhance the project's functionality and maintainability.
