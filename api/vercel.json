@@ -25,7 +25,7 @@
   "functions": {
     "proxy": {
       "src": "/api/proxy.js",
-      "runtime": "nodejs14.x"
+      "runtime": "nodejs16.x"
     }
   }
 }
@@ -33,8 +33,7 @@
 
 **Changes and Additions**
 
-- Added a `functions` object to define the `proxy` function.
-- Updated the `runtime` to `nodejs14.x` to support newer Node.js features.
+- Updated the runtime to `nodejs16.x` to support newer Node.js features and improved performance.
 
 **Additional Files**
 
