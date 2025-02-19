@@ -33,4 +33,8 @@ const unblockAds = () => {
   observer.disconnect();
   console.log('Ads are now unblocked.');
 };
+
+window.curseblock = {
+  unblockAds,
+};
 ```
