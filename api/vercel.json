@@ -14,3 +14,23 @@ content: {
     }
   ]
 }
+
+file path: api/proxy.js
+content: const http = require('http');
+const url = require('url');
+const fs = require('fs');
+
+const proxy = http.createServer((req, res) => {
+  const options = url.parse(req.url);
+  options.headers = req.headers;
+
+  const proxyReq = http.request(options, (proxyRes) => {
+    proxyRes.pipe(res);
+  });
+
+  req.pipe(proxyReq);
+});
+
+proxy.listen(3000, () => {
+  console.log('Proxy server listening on port 3000');
+});
