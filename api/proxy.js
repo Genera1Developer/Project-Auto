@@ -5,15 +5,13 @@
 1. **README.md**: Project documentation and explanations.
 2. **api/proxy.js**: Web proxy logic and request handling.
 3. **api/proxy-socket.js**: WebSocket proxy logic.
-4. **package.json**: Project dependencies and configuration.
-5. **public/index.html**: Static index page for Vercel/static serverless hosting.
+4. **api/static/index.html**: Static index page for Vercel/static serverless hosting.
+5. **package.json**: Project dependencies and configuration.
 
 **Project Goal:**
 - Modify the given web proxy to work fully for Vercel and static serverless sites.
 - Fix any bugs encountered along the way.
 - Ensure that multiple files are created to properly structure the project.
-
-**File: api/proxy.js**
 
 **Improvements:**
 
@@ -26,11 +24,7 @@
 - Ensured proper handling of `GET` requests:
   - Added a `GET *` route to serve the static index page for Vercel/static serverless hosting.
 
-**File: api/proxy-socket.js**
-
-**New File:**
-
-This file was added to provide WebSocket proxy functionality for the proxy.
+- Implemented WebSocket proxy functionality through a new `api/proxy-socket.js` file.
 
 **Code Snippets:**
 
@@ -49,7 +43,7 @@ try {
 
 // Handling of GET requests
 server.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.sendFile(path.join(__dirname, "api/static", "index.html"));
 });
 ```
 
