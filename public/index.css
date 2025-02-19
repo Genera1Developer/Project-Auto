@@ -1,44 +1,25 @@
-FILE PATH: public/index.html
-CONTENT: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="./index.css">
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form>
-    <label for="url">URL:</label>
-    <input type="text" id="url">
-    <button type="submit">Submit</button>
-  </form>
-  <div id="result"></div>
-</body>
-</html>
-```
-FILE PATH: server.js
+FILE PATH: public/index.js
 CONTENT: 
 ```js
-const express = require('express');
-const app = express();
-const port = 3000;
+const form = document.querySelector('form');
 
-app.use(express.urlencoded({ extended: true }));
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
-});
+  const url = document.querySelector('#url').value;
 
-app.post('/', (req, res) => {
-  const url = req.body.url;
-  res.send(`Your URL: ${url}`);
-});
+  const request = new Request(url);
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+  fetch(request)
+    .then((response) => {
+      const result = document.querySelector('#result');
+
+      result.innerHTML = response.status;
+    })
+    .catch((error) => {
+      const result = document.querySelector('#result');
+
+      result.innerHTML = error.message;
+    });
 });
 ```
