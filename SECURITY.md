@@ -7,6 +7,7 @@
 - SECURITY-UPDATES.md
 - SECURITY-TODO.md
 - .github/workflows/security.yml
+- SECURITY-LOGS.md (new file)
 
 ### README.md
 
@@ -20,6 +21,7 @@ This project provides a secure and reliable web proxy service. We take security 
 - Provides a secure way to report vulnerabilities.
 - Follows recommended security best practices, including using strong passwords, not sharing accounts, and avoiding phishing scams.
 - Provides a list of additional resources for further security information.
+- Logs all requests and errors for security analysis. (new feature)
 
 **New Files**
 
@@ -30,6 +32,7 @@ In addition to the README.md and SECURITY.md files, we have created the followin
 - SECURITY-UPDATES.md: Tracks security updates and releases for the web proxy, including the version number, release date, and a summary of the changes.
 - SECURITY-TODO.md: Lists any outstanding security tasks or improvements that need to be addressed for the web proxy.
 - .github/workflows/security.yml: Defines a GitHub workflow that automates security checks and updates for the web proxy.
+- SECURITY-LOGS.md (new file): Provides a detailed explanation of the logging process and how it is used for security analysis.
 
 **Recommended Security Practices**
 
