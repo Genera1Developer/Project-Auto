@@ -1,5 +1,3 @@
-file: README.md
-
 **File Structure:**
 
 - file: README.md: Project documentation, file structure overview, and new file suggestions
@@ -20,6 +18,7 @@ file: README.md
 - file: load-balancer.js: Simple load balancer for distributing requests
 - file: health-check.js: Application health check endpoint
 - file: cache.js: In-memory cache for storing frequently requested responses
+- file: proxy-routes.js: Defines custom proxy routes
 
 **Modifications and Fixes:**
 
@@ -43,6 +42,7 @@ file: README.md
 - file: load-balancer.js: Distributes incoming requests across servers.
 - file: health-check.js: Defines a health check endpoint.
 - file: cache.js: Implements an in-memory cache for performance optimization.
+- file: proxy-routes.js: Defines custom proxy routes for specific domains or paths
 
 **Additional Notes:**
 
@@ -54,4 +54,4 @@ file: README.md
 - Middleware allows for modularity and flexibility in handling application functionality.
 - Request logging provides valuable insights for troubleshooting.
 - Docker integration enables efficient and portable deployment.
-- Additional files provide advanced functionality for session management, analytics, scalability, health monitoring, and performance optimization. These files are optional but recommended for a more robust application.
+- Additional files provide advanced functionality for session management, analytics, scalability, health monitoring, performance optimization, and custom proxy routing. These files are optional but recommended for a more robust application.
