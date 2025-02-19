@@ -33,9 +33,18 @@ const facebookProxy = createProxyMiddleware({
   },
 });
 
+const twitterProxy = createProxyMiddleware({
+  target: "https://twitter.com",
+  changeOrigin: true,
+  pathRewrite: {
+    "^/twitter": "",
+  },
+});
+
 app.use("/google", googleProxy);
 app.use("/youtube", youtubeProxy);
 app.use("/facebook", facebookProxy);
+app.use("/twitter", twitterProxy); // added twitter proxy
 
 app.listen(3000, () => {
   console.log("Proxy server listening on port 3000");
