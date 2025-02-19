@@ -1,67 +1,38 @@
-file path: client/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="./styles.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Web Proxy</h1>
-    <form id="form">
-      <label for="url">URL:</label>
-      <input type="text" name="url" id="url">
-      <button type="submit">Submit</button>
-    </form>
-    <div class="results" id="results"></div>
-  </div>
+Based on the project goal, the following file should be created:
 
-  <script src="./script.js"></script>
-</body>
-</html>
+FILE PATH: client/styles.css
+CONTENT: body {
+  font-family: Arial, sans-serif;
+}
 
-file path: client/script.js
-content: const form = document.getElementById('form');
-const results = document.getElementById('results');
+.container {
+  width: 600px;
+  margin: 0 auto;
+}
 
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
 
-  const url = document.getElementById('url').value;
+label {
+  font-weight: bold;
+}
 
-  fetch(`/proxy?url=${url}`)
-    .then(res => res.text())
-    .then(data => {
-      results.innerHTML = data;
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Error fetching URL.');
-    });
-});
+button {
+  padding: 10px 15px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+}
 
-file path: server/app.js
-content: const express = require('express');
-const fetch = require('node-fetch');
-
-const app = express();
-
-app.get('/proxy', async (req, res) => {
-  const url = req.query.url;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.text();
-
-    res.send(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error fetching URL.');
-  }
-});
-
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
-});
+.results {
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-top: 10px;
+  line-height: 1.5em;
+}
