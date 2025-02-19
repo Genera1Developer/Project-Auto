@@ -14,13 +14,14 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { Transform } = require('stream');
 const utility = require('./utility');
+const asyncHandler = require('./asyncHandler');
 
 const proxyMiddleware = createProxyMiddleware({
   target: 'https://example.com',
   changeOrigin: true,
 });
 
-module.exports = function (req, res) {
+module.exports = asyncHandler(async (req, res) => {
   // Ensure response type is set to HTML
   req.headers['accept'] = 'text/html';
 
@@ -37,37 +38,33 @@ module.exports = function (req, res) {
 
   // Proxy the request through the middleware
   proxyMiddleware(req, res, (err) => {
-    if (err) {
-      console.error(err);
-      res.writeHead(500, { 'Content-Type': 'text/html' });
-      res.end('<h1>Internal Server Error</h1>');
-      return;
-    }
-
-    // Pipe the response through the Transform stream
-    res.pipe(transformStream).pipe(res);
+    if (err) console.error(err);
   });
-};
+
+  // Pipe the response through the Transform stream
+  res.pipe(transformStream).pipe(res);
+});
 ```
 
-## New File: `api/utility.js`
+## New File: `api/asyncHandler.js`
 
-This file contains utility functions.
+This file wraps the search handler in an async handler to catch any errors.
 
 ```js
-const utility = {
-  modifyChunk: (chunk, type) => {
-    if (type === 'relativeUrls') {
-      return chunk.toString().replace(/="(\/.*?)"/g, '="$1?proxy');
-    }
-  },
+const asyncHandler = (fn) => async (req, res) => {
+  try {
+    await fn(req, res);
+  } catch (err) {
+    console.error(err);
+    res.writeHead(500);
+    res.end('Internal Server Error');
+  }
 };
 
-module.exports = utility;
+module.exports = asyncHandler;
 ```
 
 ## Enhancements
 
-- Created a `utility.js` file to separate utility functions.
-- Refactored the code to make it more DRY and reusable.
-- Used a utility function to modify relative URLs, making it easier to extend the functionality in the future.
+- Wrapped the search handler in an async handler for error handling.
+- Moved the handling of 500 errors to the async handler to centralize error handling.
