@@ -42,10 +42,3 @@ content:
   });
 })();
 ```
-
-The following files are also necessary for a fully functional web proxy:
-
-- server.js: This file will contain the necessary code to run the web proxy server.
-- index.html: This file will contain the HTML code for the web proxy interface.
-- styles.css: This file will contain the CSS code for the web proxy interface.
-- README.md: This file will contain the documentation for the web proxy project.
