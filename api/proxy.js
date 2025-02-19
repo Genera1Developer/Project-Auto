@@ -18,11 +18,13 @@ const targetHosts = {
 };
 
 for (let host in targetHosts) {
-  app.use(`/${host}`, createProxyMiddleware({
+  // Change target to allow for any subdomain in targetHosts[host] to be proxied
+  app.use(`/${host}/*`, createProxyMiddleware({
     target: targetHosts[host],
     changeOrigin: true,
     pathRewrite: {
-      [`^/${host}`]: "",
+      // Remove the host and trailing slash from the path
+      [`^/${host}/`]: "/",
     },
   }));
 }
