@@ -1,60 +1,80 @@
-FILE PATH: public/index.js
+FILE PATH: public/index.html
 CONTENT:
-```javascript
-const form = document.querySelector('form');
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-const pathInput = document.querySelector('#path');
-const methodInput = document.querySelector('#method');
-const requestBodyInput = document.querySelector('#request-body');
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+    }
 
-const responseBodyElement = document.querySelector('#response-body');
+    label {
+      margin-bottom: 0.5rem;
+    }
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
 
-  const path = pathInput.value;
-  const method = methodInput.value;
-  const requestBody = requestBodyInput.value;
+    textarea {
+      width: 100%;
+      height: 10rem;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
 
-  const response = await fetch(`http://localhost:3000${path}`, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: requestBody,
-  });
+    button {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
 
-  const data = await response.json();
-  responseBodyElement.textContent = JSON.stringify(data, null, 2);
-});
-```
-FILE PATH: server/index.js
-CONTENT:
-```javascript
-const express = require('express');
-const cors = require('cors');
+    #response-body {
+      width: 100%;
+      height: 10rem;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #f5f5f5;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <label for="path">Path:</label>
+    <input type="text" id="path">
 
-const app = express();
-app.use(cors());
+    <label for="method">Method:</label>
+    <input type="text" id="method">
 
-app.use(express.json());
+    <label for="request-body">Request Body:</label>
+    <textarea id="request-body"></textarea>
 
-app.all('*', async (req, res) => {
-  const { method, url, body } = req;
+    <button type="submit">Send</button>
+  </form>
 
-  const response = await fetch(url, {
-    method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-
-  const data = await response.json();
-  res.json(data);
-});
-
-app.listen(3000, () => {
-  console.log('Server is listening on port 3000');
-});
+  <div id="response-body"></div>
+</body>
+</html>
 ```
