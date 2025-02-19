@@ -10,7 +10,8 @@ async function fetchFromGoogle(query) {
   const encodedQuery = encodeURIComponent(query);
   const url = `https://google.com/search?q=${encodedQuery}`;
   const result = await fetch(url);
-  return result;
+  const text = await result.text();
+  return text;
 }
 
 router.get('/search', async (req, res) => {
@@ -18,11 +19,8 @@ router.get('/search', async (req, res) => {
 
   try {
     const result = await fetchFromGoogle(query);
-    const data = await result.json();
 
-    res.json({
-      results: data
-    });
+    res.send(result);
   } catch (error) {
     res.status(500).json({
       error: error.message
