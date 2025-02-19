@@ -5,7 +5,7 @@ file: public/theme/particles.css
 body {
   background-color: transparent;
   animation: moveloop 500s linear infinite;
-  background-color: #000;
+  background: url("/background.png");
   overflow: hidden;
 }
 
@@ -43,23 +43,8 @@ body {
 }
 ```
 
-file: public/theme/background.css
+file: public/theme/background.png
 
-```css
-/* background.css */
-body {
-  background-color: transparent;
-  animation: moveloop 500s linear infinite;
-  background-color: #000;
-  overflow: hidden;
-}
-
-@keyframes moveloop {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 100% 100%;
-  }
-}
+```
+[Image of a starry night sky]
 ```
