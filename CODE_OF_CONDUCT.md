@@ -6,6 +6,7 @@
 - `ISSUE_TEMPLATE.md`
 - `PULL_REQUEST_TEMPLATE.md`
 - `LICENSE`
+- `CLA.md`
 
 ## Contributor License Agreement
 
