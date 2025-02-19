@@ -11,6 +11,7 @@
   - config.js
   - utils.js
   - README.md
+- vercel.json
 ```
 
 **README.md**
@@ -82,7 +83,7 @@ This will start the proxy on port 3000.
 To deploy the proxy to Vercel, follow these steps:
 
 1. Create a new Vercel project.
-2. Add the following code to your Vercel configuration file (vercel.json):
+2. Add the following code to your Vercel configuration file (`vercel.json`):
 
 ```
 {
