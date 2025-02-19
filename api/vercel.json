@@ -1,4 +1,13 @@
-**Improved `api/vercel.yml` with Vercel's Python edge function support**
+**README.md**
+
+**Project Structure**
+
+* `api/vercel.yml` - Vercel deployment configuration
+* `requirements.txt` - Python package dependencies
+* `.env` - Environment variables
+* `src/main.py` - FastAPI application code
+
+**Improved `api/vercel.yml`**
 
 ```yml
 version: 2
@@ -8,26 +17,35 @@ builds:
       - PROJECT_ROOT=/opt/project
     use: "@vercel/python-edge"
     config:
+      target: vercel
       experimental: edge-functions
       exclude: node_modules/**
   - src: ./static
     use: cloudflare-pages
 ```
 
-**New File: `requirements.txt`**
+* Updated `use` to `@vercel/python-edge` for Vercel's Python edge function support
+* Set `target` to `vercel` for compatibility with Vercel's edge functions
+* Reduced indentation for clarity
+
+**New `requirements.txt`**
 
 ```
 fastapi==0.86.0
 uvicorn==0.19.0
 ```
 
-**New File: `.env`**
+* Specifies the Python package dependencies for the FastAPI application
+
+**New `.env`**
 
 ```
 PROJECT_ROOT=/opt/project
 ```
 
-**New File: `src/main.py`**
+* Defines the environment variable `PROJECT_ROOT` to the project root for use in the FastAPI application
+
+**New `src/main.py`**
 
 ```python
 from fastapi import FastAPI, Request
@@ -39,3 +57,5 @@ app = FastAPI()
 async def root(request: Request):
     return {"message": "Hello World"}
 ```
+
+* Imports the FastAPI library and defines a simple GET endpoint that returns a "Hello World" message
