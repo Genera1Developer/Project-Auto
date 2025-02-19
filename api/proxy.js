@@ -9,19 +9,23 @@ const app = express();
 
 app.use(cors());
 
-const options = {
-  target: "https://google.com",
-  changeOrigin: true,
-  pathRewrite: {
-    "^/google": "",
-  },
+const targetHosts = {
+  "google.com": "https://www.google.com",
+  "youtube.com": "https://www.youtube.com",
+  "facebook.com": "https://www.facebook.com",
+  "twitter.com": "https://www.twitter.com",
+  "reddit.com": "https://www.reddit.com",
 };
 
-app.use("/google", createProxyMiddleware(options));
-app.use("/youtube", createProxyMiddleware({...options, target: "https://youtube.com"}));
-app.use("/facebook", createProxyMiddleware({...options, target: "https://facebook.com"}));
-app.use("/twitter", createProxyMiddleware({...options, target: "https://twitter.com"}));
-app.use("/reddit", createProxyMiddleware({...options, target: "https://reddit.com"}));
+for (let host in targetHosts) {
+  app.use(`/${host}`, createProxyMiddleware({
+    target: targetHosts[host],
+    changeOrigin: true,
+    pathRewrite: {
+      [`^/${host}`]: "",
+    },
+  }));
+}
 
 app.listen(3000, () => {
   console.log("Proxy server listening on port 3000");
