@@ -8,13 +8,13 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 
 **File Structure:**
 
-- README.md: Project documentation and file structure overview
-- app.js: Express.js web proxy implementation
-- package.json: Project dependencies and configuration
-- test.js: Unit tests for the web proxy
-- documentation.md: Detailed project documentation
-- .env: Environment variables
-- nodemon.json: Development configuration
+- file: README.md: Project documentation and file structure overview
+- file: app.js: Express.js web proxy implementation
+- file: package.json: Project dependencies and configuration
+- file: test.js: Unit tests for the web proxy
+- file: documentation.md: Detailed project documentation
+- file: .env: Environment variables
+- file: nodemon.json: Development configuration
 
 **Modifications and Fixes:**
 
@@ -27,9 +27,9 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 
 **New Files:**
 
-- **documentation.md:** Provides detailed project documentation, including usage instructions and technical specifications.
-- **.env:** Allows for secure storage of sensitive configuration data.
-- **nodemon.json:** Facilitates development by automatically restarting the server on file changes.
+- file: documentation.md: Provides detailed project documentation, including usage instructions and technical specifications.
+- file: .env: Allows for secure storage of sensitive configuration data.
+- file: nodemon.json: Facilitates development by automatically restarting the server on file changes.
 
 **Additional Notes:**
 
