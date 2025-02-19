@@ -4,6 +4,9 @@
 ├── public
 │   └── visuals
 │       ├── dropdown.css
+│       ├── light-dropdown.css
+│       ├── dark-dropdown.css
+│       ├── vars.css
 ```
 
 **Improved `public/visuals/dropdown.css` file:**
@@ -12,114 +15,86 @@
 /* Import shared variables */
 @import url("./vars.css");
 
-/* Dropdown button */
-#themeSelector {
-    position: fixed;
-    top: 60px;
-    right: 16px;
-    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 8px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
+/* Import theme-specific CSS files */
+@import url("./light-dropdown.css");
+@import url("./dark-dropdown.css");
+```
 
-#themeSelector:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
-}
+**New `public/visuals/light-dropdown.css` file:**
 
-/* Dropdown menu */
-.theme-dropdown {
-    position: fixed;
-    top: 100px;
-    right: 16px;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: none;
-    z-index: 1000;
-}
-
-.theme-dropdown.active {
-    display: block;
-}
-
-/* Dropdown item */
-.theme-item {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    border-radius: 4px;
-    cursor: pointer;
-    color: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.theme-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
-}
-
-/* Theme preview */
-.theme-preview {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-}
-
-.theme-preview:hover {
-    border-color: var(--primary-glow);
-}
-
+```css
 /* Light theme overrides */
-.light #themeSelector {
+#themeSelector {
     background: linear-gradient(45deg, var(--lighter-primary-glow), var(--lighter-secondary-glow)) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     color: black !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
-.light .theme-dropdown {
+.theme-dropdown {
     background: rgba(255, 255, 255, 0.8) !important;
     border: 1px solid rgba(0, 0, 0, 0.1) !important;
     color: black !important;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
-.light .theme-item {
+.theme-item {
     color: black !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
 }
 
-.light .theme-item:hover {
+.theme-item:hover {
     background: rgba(0, 0, 0, 0.1) !important;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4) !important;
 }
 
-.light .theme-preview {
+.theme-preview {
     border-color: rgba(0, 0, 0, 0.2) !important;
 }
 
-.light .theme-preview:hover {
+.theme-preview:hover {
+    border-color: var(--primary-glow) !important;
+}
+```
+
+**New `public/visuals/dark-dropdown.css` file:**
+
+```css
+/* Dark theme overrides */
+#themeSelector {
+    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.theme-dropdown {
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.theme-item {
+    color: white !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.theme-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+.theme-preview {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.theme-preview:hover {
     border-color: var(--primary-glow) !important;
 }
 ```
 
 **Additional Considerations:**
 
-* To make the proxy fully compatible with Vercel and static serverless sites, you may need to consider using a CSS-in-JS library like `styled-components` or `emotion` for runtime styling.
-* For a more modular and scalable project structure, you could create separate CSS files for the light and dark themes, and import them into the main CSS file based on the user's preference.
+* This approach uses CSS-in-JS, which is compatible with Vercel and static serverless sites.
+* It allows you to easily switch between light and dark themes by importing the appropriate CSS file based on the user's preference.
