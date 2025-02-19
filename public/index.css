@@ -1,41 +1,44 @@
-FILE PATH: public/index.css
+FILE PATH: public/index.html
 CONTENT: 
-```css
-body {
-  font-family: sans-serif;
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form>
+    <label for="url">URL:</label>
+    <input type="text" id="url">
+    <button type="submit">Submit</button>
+  </form>
+  <div id="result"></div>
+</body>
+</html>
+```
+FILE PATH: server.js
+CONTENT: 
+```js
+const express = require('express');
+const app = express();
+const port = 3000;
 
-h1 {
-  text-align: center;
-}
+app.use(express.urlencoded({ extended: true }));
 
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
 
-input[type="text"] {
-  width: 300px;
-  padding: 5px;
-  margin: 5px;
-  border: 1px solid #ccc;
-}
+app.post('/', (req, res) => {
+  const url = req.body.url;
+  res.send(`Your URL: ${url}`);
+});
 
-button[type="submit"] {
-  padding: 5px;
-  margin: 5px;
-  border: 1px solid #ccc;
-  background-color: #000;
-  color: #fff;
-  cursor: pointer;
-}
-
-#result {
-  width: 100%;
-  height: 500px;
-  border: 1px solid #ccc;
-  padding: 5px;
-  margin: 5px;
-}
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
 ```
