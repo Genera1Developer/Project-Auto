@@ -4,5 +4,11 @@ CONTENT:
 {
   "version": 2,
   "name": "web-proxy",
-  "description": "A simple web proxy"
+  "description": "A simple web proxy",
+  "routes": [
+    {
+      "src": "/api/*",
+      "dest": "https://example.com/api/*"
+    }
+  ]
 }
