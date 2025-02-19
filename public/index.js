@@ -1,23 +1,33 @@
-FILE PATH: public/index.js
+FILE PATH: public/index.html
 CONTENT:
-```javascript
-const form = document.querySelector('form');
-const responseBody = document.querySelector('#response-body');
-
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-
-  const url = event.target.querySelector('input[name="url"]').value;
-  const method = event.target.querySelector('select[name="method"]').value;
-  const requestBody = event.target.querySelector('textarea[name="request-body"]').value;
-
-  const response = await fetch(url, {
-    method,
-    body: requestBody
-  });
-
-  const text = await response.text();
-
-  responseBody.textContent = text;
-});
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/public/style.css" />
+</head>
+<body>
+  <h1>Web Proxy</h1>
+  <form>
+    <label for="url">URL:</label>
+    <input type="text" name="url" id="url" />
+    <br />
+    <label for="method">Method:</label>
+    <select name="method" id="method">
+      <option value="GET">GET</option>
+      <option value="POST">POST</option>
+      <option value="PUT">PUT</option>
+      <option value="DELETE">DELETE</option>
+    </select>
+    <br />
+    <label for="request-body">Request Body:</label>
+    <textarea name="request-body" id="request-body"></textarea>
+    <br />
+    <input type="submit" value="Submit" />
+  </form>
+  <div id="response-body"></div>
+</body>
+</html>
 ```
