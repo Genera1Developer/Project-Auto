@@ -1,15 +1,19 @@
-FILE PATH: middleware/validate-request.js
+FILE PATH: api/package.json
 CONTENT: 
 
-```javascript
-const validateRequest = (req, res, next) => {
-  const { url } = req.body;
-  if (!url) {
-    return res.status(400).json({ error: 'Missing URL parameter' });
+```json
+{
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "express": "^4.17.1",
+    "validate-request": "file:middleware/validate-request.js"
   }
-
-  next();
-};
-
-module.exports = validateRequest;
+}
 ```
