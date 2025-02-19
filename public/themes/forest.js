@@ -1,17 +1,21 @@
-FILE PATH: public/themes/forest.js
+FILE PATH: public/themes/forest.css
 CONTENT: 
-```javascript
-// JavaScript for forest mode.
+```css
+/* CSS for forest mode. */
 
-// Change the background color of the body to green.
-document.body.style.backgroundColor = "#417505";
+/* General styles */
+body {
+  background-color: #417505;
+  color: #2e7d32;
+}
 
-// Change the color of the text to white.
-document.body.style.color = "#2e7d32";
+/* Links */
+a {
+  color: #4caf50;
+}
 
-// Change the color of the links to green.
-var links = document.getElementsByTagName("a");
-for (var i = 0; i < links.length; i++) {
-  links[i].style.color = "#4caf50";
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #2e7d32;
 }
 ```
