@@ -1,26 +1,26 @@
-Based on the project goal, what file should be created? Provide the file path and content in the following format:
-FILE PATH: public/themes/light.css
+FILE PATH: public/themes/light.js
 CONTENT: 
-```css
-/* CSS for the light mode. */
+```javascript
+/* JavaScript to provide light mode functionality. */
 
-body {
-  background-color: #FFFFFF;
+// Set the document's body to have a white background color.
+document.body.style.backgroundColor = "#FFFFFF";
+
+// Set the text color of the header to black.
+document.getElementById("header").style.color = "#000000";
+
+// Set the text color of the footer to black.
+document.getElementById("footer").style.color = "#000000";
+
+// Set the text color of all links to black.
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].style.color = "#000000";
 }
 
-#header {
-  color: #000000;
-}
-
-#footer {
-  color: #000000;
-}
-
-a {
-  color: #000000;
-}
-
-button {
-  color: #000000;
+// Set the text color of all buttons to black.
+var buttons = document.getElementsByTagName("button");
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].style.color = "#000000";
 }
 ```
