@@ -61,3 +61,12 @@ iframe {
 #error {
   color: red;
 }
+
+/* New additions for the error message */
+
+.error-message {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
