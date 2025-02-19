@@ -1,14 +1,7 @@
-FILE PATH: api/package.json
+FILE PATH: api/nodemon.json
 CONTENT: {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A simple web proxy server",
-  "main": "server.js",
-  "scripts": {
-    "start": "nodemon server.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "nodemon": "^2.0.8"
-  }
+  "verbose": true,
+  "exec": "nodemon server.js",
+  "watch": ["public/app.js", "public/index.html", "server.js"],
+  "ext": "js,html"
 }
