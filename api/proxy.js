@@ -1,26 +1,25 @@
-FILE PATH: api/proxy.js
+Based on the project goal, create the following file:
+
+FILE PATH: views/index.html
 CONTENT: 
-```javascript
-const fetch = require('node-fetch');
-const express = require('express');
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <form>
+        <input type="text" name="url" placeholder="Enter the URL to proxy">
+        <input type="submit" value="Proxy">
+    </form>
 
-const app = express();
+    <div id="result"></div>
 
-app.get('/', async (req, res) => {
-  const url = req.query.url;
-  if (!url) res.sendStatus(400);
-
-  const response = await fetch(url);
-  if (!response.ok) res.sendStatus(response.status);
-
-  const contentType = response.headers.get('content-type');
-  res.header('content-type', contentType);
-
-  const body = await response.text();
-  res.send(body);
-});
-
-app.listen(3000, () => {
-  console.log('Proxy server is listening on port 3000');
-});
+    <script src="script.js"></script>
+</body>
+</html>
 ```
