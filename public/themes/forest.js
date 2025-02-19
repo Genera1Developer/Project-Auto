@@ -1,86 +1,17 @@
-FILE PATH: public/themes/forest.css
+FILE PATH: public/themes/forest.js
 CONTENT: 
-```css
-/* CSS for forest mode. */
+```javascript
+// JavaScript for forest mode.
 
-body.forest {
-  background-color: #417505;
-  color: #2e7d32;
-}
+// Change the background color of the body to green.
+document.body.style.backgroundColor = "#417505";
 
-body.forest a {
-  color: #4caf50;
-}
+// Change the color of the text to white.
+document.body.style.color = "#2e7d32";
 
-body.forest h1 {
-  color: #2e7d32;
-}
-
-body.forest h2 {
-  color: #2e7d32;
-}
-
-body.forest h3 {
-  color: #2e7d32;
-}
-
-body.forest h4 {
-  color: #2e7d32;
-}
-
-body.forest h5 {
-  color: #2e7d32;
-}
-
-body.forest h6 {
-  color: #2e7d32;
-}
-
-body.forest p {
-  color: #2e7d32;
-}
-
-body.forest ul {
-  color: #2e7d32;
-}
-
-body.forest ol {
-  color: #2e7d32;
-}
-
-body.forest li {
-  color: #2e7d32;
-}
-
-body.forest blockquote {
-  color: #2e7d32;
-}
-
-body.forest pre {
-  color: #2e7d32;
-}
-
-body.forest code {
-  color: #2e7d32;
-}
-
-body.forest hr {
-  color: #2e7d32;
-}
-
-body.forest table {
-  color: #2e7d32;
-}
-
-body.forest tr {
-  color: #2e7d32;
-}
-
-body.forest td {
-  color: #2e7d32;
-}
-
-body.forest th {
-  color: #2e7d32;
+// Change the color of the links to green.
+var links = document.getElementsByTagName("a");
+for (var i = 0; i < links.length; i++) {
+  links[i].style.color = "#4caf50";
 }
 ```
