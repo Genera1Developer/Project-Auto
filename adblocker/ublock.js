@@ -9,18 +9,53 @@
 - `.env`
 - `.gitignore`
 
-## config.js
+## Improved `adblocker/ublock.js`
 
 ```javascript
-// Filter lists to be used for ad-blocking.
-export const filterLists = [
-  'https://easylist.to/easylist/easylist.txt',
-  'https://easylist.to/easylist/easyprivacy.txt',
-];
+import { uBlockOrigin } from '@adblocked/ublockorigin';
+import { filterLists, debug, proxyPatterns } from '../config';
 
-// Enable or disable debug logging.
-export const debug = false;
+const ublock = uBlockOrigin({
+  filterLists,
+  debug,
+});
 
-// Proxy patterns specify which requests should be proxied and processed for ad-blocking.
-export const proxyPatterns = [/^https:\/\/www.example.com\/.*/];
+addEventListener('fetch', (event) => {
+  const request = event.request;
+  const requestUrl = new URL(request.url);
+
+  // Check if the request should be proxied and processed for ad-blocking.
+  if (!proxyPatterns.some((pattern) => pattern.test(requestUrl.hostname))) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  const proxiedRequest = new Request(requestUrl.href, {
+    headers: request.headers,
+    mode: 'same-origin',
+    credentials: 'same-origin',
+  });
+
+  ublock
+    .requestFilter(proxiedRequest)
+    .then((response) => {
+      if (response.status >= 400) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+      return response.arrayBuffer();
+    })
+    .then((arrayBuffer) => {
+      const responseHeaders = new Headers();
+      responseHeaders.append('Content-Type', response.headers.get('Content-Type'));
+      event.respondWith(new Response(new Uint8Array(arrayBuffer), {
+        status: response.status,
+        statusText: response.statusText,
+        headers: responseHeaders,
+      }));
+    })
+    .catch((error) => {
+      console.error(error);
+      event.respondWith(fetch(request));
+    });
+});
 ```
