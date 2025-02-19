@@ -1,9 +1,18 @@
-FILE PATH: api/nodemon.json
-CONTENT: {
-  "ignore": [],
-  "watch": ["api/**/*.js"],
-  "exec": "nodemon server.js",
-  "env": {
-    "NODE_ENV": "development"
-  }
-}
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: <file_path>
+CONTENT: <file_content>
+
+FILE PATH: api/server.js
+CONTENT: const express = require('express');
+const app = express();
+const port = 3000;
+app.use(express.json());
+app.post('/proxy', async (req, res) => {
+  const {url} = req.body;
+  const response = await fetch(url);
+  const data = await response.text();
+  res.send(data);
+});
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
