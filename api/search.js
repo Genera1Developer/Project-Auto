@@ -1,13 +1,15 @@
-file: public/script.js
+file: api/search.js
 content: 
 ```javascript
-document.getElementById("search-form").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const query = e.target.querySelector('input[name="query"]');
-  fetch(`/api/search?query=${query.value}`)
-    .then((res) => res.text())
-    .then((data) => {
-      document.getElementById("iframe").srcdoc = data;
-    });
+const express = require("express");
+const fetch = require("node-fetch");
+const app = express();
+app.use(express.urlencoded({ extended: true }));
+app.get("/search", async (req, res) => {
+  const query = req.query.query;
+  const url = `https://www.google.com/search?q=${query}`;
+  const response = await fetch(url);
+  res.send(await response.text());
 });
+module.exports = app;
 ```
