@@ -1,22 +1,22 @@
-FILE PATH: client/index.js
+FILE PATH: api/proxy.js
 CONTENT: 
 ```javascript
-document.querySelector('form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+const axios = require('axios');
 
-  const url = document.querySelector('input[name="url"]').value;
-  const method = document.querySelector('input[name="method"]').value;
-  const headers = document.querySelector('input[name="headers"]').value;
-  const body = document.querySelector('textarea[name="body"]').value;
+module.exports = async (req, res) => {
+  try {
+    const { url, method, headers, body } = req.body;
 
-  const data = await fetch('/api/proxy', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ url, method, headers, body }),
-  }).then((res) => res.json());
+    const response = await axios({
+      method,
+      url,
+      headers,
+      data: body,
+    });
 
-  document.querySelector('pre').textContent = JSON.stringify(data, null, 2);
-});
+    res.status(response.status).send(response.data);
+  } catch {
+    res.status(500).send({ error: 'Something went wrong' });
+  }
+};
 ```
