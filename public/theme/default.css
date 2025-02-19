@@ -25,3 +25,16 @@ content: body {
                 color: #000;
             }
         }
+
+file path: public/js/theme.js
+content: (function () {
+            const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+            toggleSwitch.addEventListener('change', function () {
+                if (this.checked) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            });
+        })();
