@@ -1,54 +1,19 @@
-FILE PATH: public/index.html
+Based on the project goal, here is a suggestion for a new file:
+
+FILE PATH: package.json
 CONTENT:
 ```
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form action="/proxy">
-    <label for="url">URL:</label>
-    <input type="text" name="url" id="url">
-    <input type="submit" value="Submit">
-  </form>
-</body>
-</html>
-```
-
-FILE PATH: routes/proxy.js
-CONTENT:
-```
-const express = require('express');
-const router = express.Router();
-
-router.get('/', (req, res) => {
-  const url = req.query.url;
-  if (!url) {
-    res.status(400).send('No URL provided');
-    return;
+{
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "request": "^2.88.2"
   }
-
-  req.pipe(request(url)).pipe(res);
-});
-
-module.exports = router;
-```
-
-FILE PATH: server.js
-CONTENT:
-```
-const express = require('express');
-const app = express();
-const port = 3000;
-
-app.use(express.static('public'));
-app.use('/proxy', require('./routes/proxy'));
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+}
 ```
