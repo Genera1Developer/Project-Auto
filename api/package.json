@@ -37,20 +37,23 @@ router.get('/', async (req, res) => {
   }
 });
 
-module.exports = router;
-```
-FILE PATH: index.js
-CONTENT: 
+router.post('/', async (req, res) => {
+  const url = req.body.url;
+  const method = req.body.method || 'GET';
+  const headers = req.body.headers || {};
+  const body = req.body.body || '';
 
-```javascript
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
-const router = require('./api/routes/http');
-
-app.use('/api', router);
-
-app.listen(port, () => {
-  console.log(`Web proxy listening on port ${port}`);
+  try {
+    const response = await fetch(url, {
+      method,
+      headers,
+      body
+    });
+    res.json({ status: response.status, headers: response.headers.raw(), body: await response.text() });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+
+module.exports = router;
 ```
