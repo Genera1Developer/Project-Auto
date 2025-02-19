@@ -7,7 +7,11 @@ content: /*
 body {
   background-color: #000;
   color: #fff;
-  overflow: hidden;
+  -webkit-animation: particles 1s infinite;
+  -moz-animation: particles 1s infinite;
+  -ms-animation: particles 1s infinite;
+  -o-animation: particles 1s infinite;
+  animation: particles 1s infinite;
 }
 
 .particle {
@@ -18,11 +22,10 @@ body {
   height: 10px;
   border-radius: 50%;
   background-color: #fff;
-  opacity: 0.5;
-  animation: move 1s infinite;
+  opacity: 0.2;
 }
 
-@keyframes move {
+@keyframes particles {
   0% {
     transform: translate(-100%, -100%);
   }
