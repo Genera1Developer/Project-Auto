@@ -1,18 +1,41 @@
-FILE PATH: public/views/main.html
-CONTENT: <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="/themes/forest.css" />
-  </head>
-  <body>
-    <h1>Web Proxy</h1>
-    <form>
-      <label for="url">URL:</label>
-      <input type="text" name="url" />
-      <input type="submit" value="Submit" />
-    </form>
-    <iframe src="" style="width: 100%; height: 500px;"></iframe>
-  </body>
-</html>
+Based on the project goal, what file should be created? Provide the file path and content in the following format:
+FILE PATH: public/themes/forest.css
+CONTENT: /* CSS for the forest theme */
+body {
+  background-color: #F0F8FF;
+  font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+h1 {
+  color: #006400;
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+form {
+  margin-bottom: 1em;
+}
+
+label {
+  display: inline-block;
+  width: 100px;
+}
+
+input[type="text"] {
+  width: 300px;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+input[type="submit"] {
+  padding: 0.5em;
+  margin-bottom: 0.5em;
+  background-color: #008000;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+iframe {
+  border: none;
+}
