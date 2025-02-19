@@ -89,6 +89,16 @@ export default {
         .error {
             color: #FF0000;
         }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #002800;
+            }
+
+            a {
+                color: #FFD700;
+            }
+        }
     `
 };
 ```
