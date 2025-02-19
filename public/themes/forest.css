@@ -1,16 +1,21 @@
-FILE PATH: public/html/error.html
-CONTENT: <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Error</title>
-  <link rel="stylesheet" href="/themes/forest.css">
-</head>
-<body>
-  <div class="container">
-    <h1>Error</h1>
-    <p>There was an error processing your request. Please try again.</p>
-  </div>
-</body>
-</html>
+FILE PATH: public/js/index.js
+CONTENT: document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const url = document.querySelector('input[name="url"]').value;
+
+    try {
+      const response = await fetch(url);
+      const html = await response.text();
+
+      document.querySelector('iframe').contentWindow.document.open();
+      document.querySelector('iframe').contentWindow.document.write(html);
+      document.querySelector('iframe').contentWindow.document.close();
+    } catch (e) {
+      window.location.href = '/error.html';
+    }
+  });
+});
