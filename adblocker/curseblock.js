@@ -2,6 +2,7 @@
 
 ```javascript
 import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middleware';
+import logger from '../logger';
 
 const curseblock = () => {
   const proxy = createProxyMiddleware({
@@ -48,12 +49,34 @@ const curseblock = () => {
       // Handle CORS issues
       res.setHeader('Access-Control-Allow-Origin', '*');
     }),
+    onError: (err, req, res) => {
+      logger.error(err);
+      res.statusCode = 500;
+      res.end();
+    },
   });
 
   return proxy;
 };
 
 export default curseblock;
+```
+
+**File: logger.js**
+
+```javascript
+import winston from 'winston';
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.Console({ format: winston.format.simple() }),
+  ],
+});
+
+export default logger;
 ```
 
 **File: next.config.js**
@@ -97,6 +120,7 @@ This project provides a proxy middleware for Next.js to block ads and other unwa
 ## File Structure
 
 - `adblocker/curseblock.js`: The proxy middleware logic is defined here.
+- `logger.js`: A simple Winston logger for logging errors and other information.
 - `next.config.js`: This file integrates the proxy middleware with your Next.js application and adds PWA support.
 - `package.json`: The project's configuration and dependencies are specified here.
 
@@ -139,6 +163,18 @@ module.exports = withPWA({
 
 By default, the middleware blocks requests to `/ads`. To block additional paths or content, modify the `ignoredPaths` array in `adblocker/curseblock.js`.
 
+## Error Logging
+
+The `logger.js` file provides a simple Winston logger for logging errors and other information. You can use it to log any potential issues or failed requests by adding the following code to `adblocker/curseblock.js`:
+
+```javascript
+proxy.onError = (err, req, res) => {
+  logger.error(err);
+  res.statusCode = 500;
+  res.end();
+};
+```
+
 ## Notes
 
 - The middleware currently only intercepts requests during development mode.
@@ -158,22 +194,3 @@ In addition to the fixes and improvements listed in the updated files, the follo
 
 The `withPWA` plugin has been added to `next.config.js` to enable Progressive Web App (PWA) support for your Next.js application. This allows users to install your website as an application on their devices, providing a native-like user experience.
 ```
-
-**New File: logger.js**
-
-```javascript
-import winston from 'winston';
-
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.Console({ format: winston.format.simple() }),
-  ],
-});
-
-export default logger;
-```
-
-This new `logger.js` file provides a simple Winston logger that can be used to log errors and other information. It can be integrated into the proxy middleware to log any potential issues or failed requests.
