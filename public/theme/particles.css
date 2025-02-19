@@ -5,6 +5,7 @@
   - theme/
     - particles.css
 - README.md
+- package.json
 ```
 
 ## Improved `particles.css`
@@ -114,7 +115,9 @@ body {
 
 ## New Files
 
-None are required for this fix.
+- `package.json`
+
+The `package.json` file is used to manage the project's dependencies. In this case, we are using the `particles.js` library, which is a dependency that is required for the particles effect to work.
 
 ## Additional Notes
 
