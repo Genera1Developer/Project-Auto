@@ -16,7 +16,7 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: error-handling.js: Centralized error handling module
 - file: middleware.js: Custom Express.js middleware for authentication and rate limiting
 - file: routes.js: Express.js route definitions
-- file: .env: Environment variables
+- file: config.js: Environment variables
 - file: nodemon.json: Development configuration
 - file: request-logger.js: Logs all incoming requests
 - file: Dockerfile: Docker image definition
@@ -37,7 +37,7 @@ To modify and fix the given web proxy to fully support Vercel and static serverl
 - file: middleware.js: Contains custom middleware for handling authentication, rate limiting, and other common tasks.
 - file: routes.js: Defines the Express.js routes for the application, ensuring proper handling of requests.
 - file: request-logger.js: Provides a middleware for logging all incoming requests, facilitating debugging and analysis.
-- file: Dockerfile: Defines the instructions for building the Docker image.
+- file: config.js: Stores environment variables needed by the application.
 - file: Dockerignore: Lists files and directories to be excluded during Docker image build.
 
 **Additional Notes:**
