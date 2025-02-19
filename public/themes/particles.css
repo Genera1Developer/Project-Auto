@@ -19,6 +19,7 @@ CONTENT: body {
   border-radius: 50%;
   background-color: #fff;
   animation: move 10s infinite;
+  opacity: 0.75;
 }
 
 @keyframes move {
