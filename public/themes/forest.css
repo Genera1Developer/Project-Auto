@@ -1,25 +1,66 @@
-FILE PATH: public/index.html
-CONTENT: <!-- HTML for the web proxy -->
+Based on the project goal, the following file should be created:
 
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="themes/forest.css">
-</head>
-<body>
-  <div id="container">
-    <h1>Web Proxy</h1>
-    <form id="form">
-      <label for="url">URL:</label>
-      <input type="text" id="url">
-      <input type="submit" value="Go">
-    </form>
-    <div id="results"></div>
-    <div id="loading">Loading...</div>
-    <div id="error" class="error-message">An error occurred. Please try again.</div>
-  </div>
-</body>
-</html>
+FILE PATH: public/themes/forest.css
+CONTENT: /* CSS for the forest theme */
+
+body {
+  font-family: 'Helvetica', 'Arial', sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+#container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+label {
+  font-size: 14px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="submit"] {
+  cursor: pointer;
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+#results {
+  padding: 30px;
+  background-color: #fff;
+  margin-top: 30px;
+  line-height: 1.5em;
+}
+
+#error {
+  color: #d9534f;
+  padding: 10px;
+  margin-top: 30px;
+  display: none;
+}
+
+#loading {
+  display: none;
+}
