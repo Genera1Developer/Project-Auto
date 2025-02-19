@@ -50,3 +50,12 @@ server.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 ```
+
+**Additional Explanation:**
+
+To ensure the proxy works fully for Vercel and static serverless sites, the following changes were made:
+
+- The `Accept-Language` header was set to `*` to allow the proxy to serve HTML content correctly.
+- Error handling was added for parsing the `content-type` header to prevent crashes in case of malformed headers.
+- Image loading issues were resolved by correctly handling image URLs in HTML and CSS.
+- A `GET *` route was added to serve the static index page when the proxy receives a `GET` request.
