@@ -1,3 +1,7 @@
+file: app.js
+
+improve this file based on the project goal and suggest new files if necessary:
+
 ## Improved File Structure
 
 - `api/nodemon.json`
@@ -10,146 +14,55 @@
 - `utils/constants.js`
 - `.env`
 
-## Improved README.md
-
-**Project Overview**
-
-This project provides a web proxy that can be used to bypass CORS restrictions and access resources from other domains. The proxy is designed to be compatible with Vercel and other static serverless sites.
-
-**Usage**
-
-To use the proxy, you can send a request to the following URL:
-
-```
-https://<your-proxy-url>/<target-url>
-```
-
-For example, to access the `https://example.com` website, you would send a request to the following URL:
-
-```
-https://<your-proxy-url>/https://example.com
-```
-
-**Dependencies**
-
-The following dependencies are required to run the proxy:
-
-- Node.js
-- Express
-- Axios
-- Logger
-
-**Known Bugs and Limitations**
-
-The proxy is currently unable to handle POST requests.
-
-**Contributing**
-
-Contributions are welcome! Please read the [contributing guidelines](https://github.com/vercel/vercel/blob/main/CONTRIBUTING.md) before submitting a pull request.
-
-## Explanations
-
-**api/nodemon.json**
-
-```json
-{
-  "watch": [
-    "*.js",
-    "public/*",
-    "utils/*"
-  ],
-  "ignore": [
-    "node_modules/*"
-  ],
-  "ext": "js,html,css"
-}
-```
-
-The `nodemon.json` file is used to configure the following settings:
-
-- `watch`: This property specifies which files to watch for changes. The `*.js` pattern matches all JavaScript files, the `public/*` pattern matches all files in the `public` directory, and the `utils/*` pattern matches all files in the `utils` directory.
-- `ignore`: This property specifies which directories to ignore. The `node_modules` directory is ignored because it contains dependencies that are not necessary to watch for changes.
-- `ext`: This property specifies which file extensions to watch for changes. The `js,html,css` pattern matches all JavaScript, HTML, and CSS files.
-
-**package.json**
-
-```json
-{
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A web proxy that can be used to bypass CORS restrictions and access resources from other domains.",
-  "main": "app.js",
-  "dependencies": {
-    "axios": "^0.21.1",
-    "express": "^4.17.1",
-    "logger": "^0.0.1"
-  },
-  "devDependencies": {
-    "mocha": "^9.2.2",
-    "nodemon": "^2.0.15"
-  }
-}
-```
-
-The `package.json` file contains the following information:
-
-- `name`: The name of the project.
-- `version`: The version of the project.
-- `description`: The description of the project.
-- `main`: The main entry point of the project.
-- `dependencies`: The dependencies of the project.
-- `devDependencies`: The development dependencies of the project.
-
-**app.test.js**
+## Improved app.js
 
 ```js
-const app = require('../app');
-const request = require('supertest');
+const express = require('express');
+const request = require('./utils/request');
+const logger = require('./utils/logger');
+const constants = require('./utils/constants');
 
-describe('web-proxy', () => {
-  it('should proxy GET requests', async () => {
-    const response = await request(app).get('/https://example.com');
-    expect(response.status).toBe(200);
-  });
+const app = express();
+
+app.get('/:url', async (req, res) => {
+  const { url } = req.params;
+
+  if (!constants.ALLOWED_METHODS.includes(req.method)) {
+    return res.status(405).send('Method not allowed');
+  }
+
+  try {
+    const data = await request(url);
+    return res.send(data);
+  } catch (error) {
+    logger.error(error);
+    return res.status(500).send('Internal server error');
+  }
+});
+
+app.listen(process.env.PORT || 3000, () => {
+  logger.info(`Proxy listening on port ${process.env.PORT || 3000}`);
 });
 ```
 
-The `app.test.js` file contains the unit tests for the proxy.
+## Explanations
+
+**app.js**
+
+The `app.js` file is the main entry point of the proxy. It uses the `express` framework to create an Express application. The application has a single route, which is a GET route that proxies requests to the target URL.
+
+The `request` module is used to make HTTP requests to the target URL. The `logger` module is used to log errors and other information. The `constants` module contains the list of allowed HTTP methods.
+
+The `app.listen()` method is used to start the Express application. The application listens on the port specified by the `PORT` environment variable, or on port 3000 if the `PORT` environment variable is not set.
 
 **utils/request.js**
 
-```js
-const axios = require('axios');
-
-module.exports = async (url) => {
-  try {
-    const response = await axios.get(url);
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-```
-
-The `utils/request.js` file contains the function that is used to make HTTP requests to the target URL.
+The `utils/request.js` file contains the function that is used to make HTTP requests to the target URL. The function uses the `axios` library to make the requests.
 
 **utils/constants.js**
 
-```js
-const ALLOWED_METHODS = ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'];
-
-module.exports = {
-  ALLOWED_METHODS,
-};
-```
-
-The `utils/constants.js` file contains the list of allowed HTTP methods.
+The `utils/constants.js` file contains the list of allowed HTTP methods. The list of allowed methods is currently empty, but it can be updated to include additional methods in the future.
 
 **.env**
 
-```
-PORT=3000
-```
-
-The `.env` file contains the environment variables that are used by the proxy.
+The `.env` file contains the environment variables that are used by the proxy. The `PORT` environment variable specifies the port on which the proxy should listen.
