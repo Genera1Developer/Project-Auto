@@ -1,29 +1,29 @@
-FILE PATH: api/search.test.js
+FILE PATH: api/search.js
 CONTENT: 
 ```javascript
 const fetch = require('node-fetch');
-const search = require('./search');
+const jsdom = require('jsdom');
 
-describe('search', () => {
-  it('should return an array of search results', async () => {
-    const results = await search('github');
-    expect(results).toBeInstanceOf(Array);
-    expect(results.length).toBeGreaterThan(0);
-  });
-
-  it('should return an object for each search result', async () => {
-    const results = await search('github');
-    results.forEach((result) => {
-      expect(result).toBeInstanceOf(Object);
-      expect(result).toHaveProperty('title');
-      expect(result).toHaveProperty('url');
-      expect(result).toHaveProperty('description');
+module.exports = async (query) => {
+  try {
+    const response = await fetch(`https://www.google.com/search?q=${query}`);
+    if (!response.ok) throw new Error(`Error fetching search results: ${response.status}`);
+    const html = await response.text();
+    const { JSDOM } = jsdom;
+    const dom = new JSDOM(html);
+    const results = dom.window.document.querySelectorAll('div.g');
+    return results.map((result) => {
+      const title = result.querySelector('h3.LC20lb');
+      const url = result.querySelector('a.yuRUbf');
+      const description = result.querySelector('div.IsZvec');
+      return {
+        title: title ? title.textContent : '',
+        url: url ? url.href : '',
+        description: description ? description.textContent : '',
+      };
     });
-  });
-
-  it('should handle errors', async () => {
-    const results = await search('this is an error');
-    expect(results).toBeInstanceOf(Error);
-  });
-});
+  } catch (error) {
+    throw new Error(`Error parsing search results: ${error.message}`);
+  }
+};
 ```
