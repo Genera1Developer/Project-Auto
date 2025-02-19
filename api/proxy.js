@@ -17,23 +17,17 @@ const port = process.env.PORT || 3000;
 app.use(express.static("api/static"));
 
 app.get("/proxy", async (req, res) => {
-  // Add error handling for missing URL parameter
   if (!req.query.url) {
     return res.status(400).send("Missing URL parameter.");
   }
 
-  // Add CORS headers to the response to allow cross-origin requests
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-  // Set the target URL from the request query parameter
   const targetUrl = req.query.url;
 
   try {
-    // Fetch the resource from the target URL
     const response = await axios.get(targetUrl);
-
-    // Send the response data back to the client
     res.send(response.data);
   } catch (error) {
     console.error(error);
@@ -133,3 +127,7 @@ Contributions are welcome! Please read the [contributing guidelines](https://git
 
 - Added CORS headers to the response to allow cross-origin requests.
 - Improved error handling for missing URL parameter.
+
+**New Files:**
+
+- `api/static/index.html`: A simple static HTML page that provides information about the web proxy service.
