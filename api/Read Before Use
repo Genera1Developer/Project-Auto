@@ -1,4 +1,10 @@
-file: api/proxy.js
+## File Structure
+
+- `README.md`
+- `api/proxy.js`
+- `api/Read Before Use`
+
+## Modified `api/proxy.js`
 
 ```javascript
 addEventListener('fetch', event => {
@@ -6,14 +12,31 @@ addEventListener('fetch', event => {
 });
 
 async function handleRequest(request) {
-  let redirec = request.url;
+  let url = new URL(request.url);
+  const redirec = url.searchParams.get('url');
 
-  if (request.method === 'POST') { query = await request.formData(); redirec = query.get('q'); } 
-  else if (request.method === "GET") { redirec = request.url.substring(request.url.indexOf('=')+1); }
+  if (!redirec || redirec.length === 0) {
+    return new Response('Invalid URL', {
+      status: 400,
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  }
 
-  if (typeof(redirec) != 'string' || redirec.length == 0) { return new Response('Invalid URL', { status: 400, headers: { 'Content-Type': 'text/plain'}})} 
-  else { redirec = redirec.replace(/ /g, "%20"); }
+  // Replace spaces with encoded space character
+  const encodedUrl = redirec.replace(/ /g, '%20');
 
-  return fetch(redirec, { redirect: 'follow', headers: { 'referer': 'https://cdn.discordapp.com'}});
+  return fetch(encodedUrl, {
+    redirect: 'follow',
+    headers: {
+      'referer': 'https://cdn.discordapp.com',
+      'Host': url.host,
+    },
+  });
 }
+```
+
+## `api/Read Before Use`
+
+```
+This file is not used in the modified codebase.
 ```
