@@ -1,34 +1,27 @@
-FILE PATH: style.css
+FILE PATH: index.html
 CONTENT: 
-```css
-body {
-  font-family: Arial, sans-serif;
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-h1 {
-  text-align: center;
-}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
 
-form {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+<body>
+  <h1>Web Proxy</h1>
 
-label {
-  margin-right: 5px;
-}
+  <form action="./proxy.php" method="POST">
+    <label for="url">URL:</label>
+    <input type="url" name="url" id="url" required>
+    <input type="submit" value="Go">
+  </form>
 
-#result {
-  width: 100%;
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 10px;
-  border: 1px solid #ccc;
-  background-color: #f5f5f5;
-}
+  <div id="result"></div>
+</body>
 
-.error {
-  color: red;
-}
+</html>
 ```
