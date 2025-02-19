@@ -1,20 +1,11 @@
 ```javascript
-import { RateLimit } from 'express-rate-limit';
+import { createRequestHandler } from '@remix-run/vercel/node';
 
-export class RateLimitMiddleware {
-  private readonly rateLimit: RateLimit;
+const handleRequest = createRequestHandler({
+  build: process.env.NODE_ENV === 'production',
+});
 
-  constructor(config) {
-    this.rateLimit = new RateLimit({
-      windowMs: config.windowMs || 60 * 1000, // 1 minute
-      max: config.max || 100, // Limit each IP to 100 requests per windowMs
-      standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-      legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    });
-  }
-
-  get middleware() {
-    return this.rateLimit;
-  }
-}
+addEventListener('fetch', (event) => {
+  event.respondWith(handleRequest(event.request));
+});
 ```
