@@ -14,7 +14,7 @@ content:
     },
     {
       "key": "Access-Control-Allow-Methods",
-      "value": "GET,OPTIONS,POST,PUT,DELETE"
+      "value": "GET,OPTIONS,POST,PUT"
     },
     {
       "key": "Access-Control-Allow-Origin",
