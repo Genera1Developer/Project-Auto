@@ -1,28 +1,11 @@
-FILE PATH: .github/workflows/deploy.yaml
-CONTENT: name: Deploy
-
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [16.x]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+FILE PATH: api/config/default.js
+CONTENT: module.exports = {
+  port: 8080,
+  hostname: 'localhost',
+  proxyUrl: 'http://api.example.com',
+  protocol: 'http',
+  allowedOrigins: ['http://localhost:3000', 'http://example.com'],
+  headers: {
+    'X-Forwarded-Proto': 'https'
+  }
+};
