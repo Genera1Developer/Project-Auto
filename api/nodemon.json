@@ -5,7 +5,9 @@ content:
   "watch": [
     "api/controllers/**/*.js",
     "api/models/**/*.js",
-    "api/routes/**/*.js"
+    "api/routes/**/*.js",
+    "config/**/*.js",
+    "app.js"
   ],
   "script": "nodemon --exec npm start",
   "ignore": [
