@@ -16,7 +16,11 @@ export default async function handler(req, res) {
     return;
   }
 
-  const apiKey = '61e1c5f58bca02da965a1e5184cca19a9b36699a35b3b74e0970b24bb705e16a';
+  const apiKey = process.env.SERPAPI_KEY;
+  if (!apiKey) {
+    res.status(500).json({ error: 'Missing API key' });
+    return;
+  }
 
   try {
     const searchUrl = 'https://serpapi.com/search';
@@ -132,47 +136,4 @@ export const config = {
     responseLimit: false,
   },
 };
-```
-file: api/proxy.js
-content: 
-```js
-import crossFetch from 'cross-fetch';
-
-async function handleRequest(request) {
-  const { q } = request.url.searchParams;
-
-  const response = await crossFetch(q, {
-    method: 'GET',
-    headers: {
-      'Accept': 'text/html',
-      'User-Agent': 'serp-proxy-client'
-    }
-  });
-
-  if (response.ok) {
-    const contentType = response.headers.get('Content-Type');
-
-    if (contentType?.startsWith('text/html')) {
-      return new Response(await response.text(), {
-        status: response.status,
-        headers: {
-          'Content-Type': contentType
-        }
-      });
-    } else {
-      return new Response(await response.arrayBuffer(), {
-        status: response.status,
-        headers: {
-          'Content-Type': contentType
-        }
-      });
-    }
-  } else {
-    return new Response('Proxy error', {
-      status: response.status
-    });
-  }
-}
-
-export default handleRequest;
 ```
