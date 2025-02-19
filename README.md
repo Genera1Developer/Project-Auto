@@ -1,3 +1,5 @@
+file: README.md
+
 **File Structure:**
 
 - file: README.md: Project documentation, file structure overview, and new file suggestions
@@ -199,3 +201,93 @@ module.exports = {
 - Request logging provides valuable insights for troubleshooting.
 - Docker integration enables efficient and portable deployment.
 - Additional files provide advanced functionality for session management, analytics, scalability, health monitoring, performance optimization, and custom proxy routing. These files are optional but recommended for a more robust application.
+
+**NEW**:
+
+- file: test-helpers.js
+```js
+// Utility functions for unit tests
+module.exports = {
+  // Your utility functions here
+};
+```
+
+- file: test-middleware.js
+```js
+// Unit tests for custom middleware
+const middleware = require('../middleware');
+
+// Your unit tests here
+```
+
+- file: test-routes.js
+```js
+// Unit tests for Express.js routes
+const routes = require('../routes');
+
+// Your unit tests here
+```
+
+- file: test-request-logger.js
+```js
+// Unit tests for request logger
+const requestLogger = require('../request-logger');
+
+// Your unit tests here
+```
+
+- file: test-config.js
+```js
+// Unit tests for environment variables
+const config = require('../config');
+
+// Your unit tests here
+```
+
+- file: test-session-store.js
+```js
+// Unit tests for session store
+const sessionStore = require('../session-store');
+
+// Your unit tests here
+```
+
+- file: test-analytics.js
+```js
+// Unit tests for usage tracking and analysis
+const analytics = require('../analytics');
+
+// Your unit tests here
+```
+
+- file: test-load-balancer.js
+```js
+// Unit tests for load balancer
+const loadBalancer = require('../load-balancer');
+
+// Your unit tests here
+```
+
+- file: test-health-check.js
+```js
+// Unit tests for health check endpoint
+const healthCheck = require('../health-check');
+
+// Your unit tests here
+```
+
+- file: test-cache.js
+```js
+// Unit tests for caching
+const cache = require('../cache');
+
+// Your unit tests here
+```
+
+- file: test-proxy-routes.js
+```js
+// Unit tests for custom proxy routes
+const proxyRoutes = require('../proxy-routes');
+
+// Your unit tests here
+```
