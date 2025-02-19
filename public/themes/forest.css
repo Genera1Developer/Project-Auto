@@ -4,11 +4,13 @@ CONTENT: /* CSS for the forest theme */
 body {
   background-color: #f5f5f5;
   color: #000;
+  font-family: "Helvetica", "Arial", sans-serif; /* added font family */
 }
 
 h1 {
   font-size: 2rem;
   margin-bottom: 1.5rem;
+  color: #000; /* added font color */
 }
 
 form {
@@ -19,12 +21,14 @@ label {
   display: inline-block;
   width: 120px;
   text-align: right;
+  color: #000; /* added font color */
 }
 
 input[type="text"] {
   width: 400px;
   padding: 0.5rem;
   margin-bottom: 0.5rem;
+  border: 1px solid #000; /* added border */
 }
 
 input[type="submit"] {
