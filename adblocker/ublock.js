@@ -11,69 +11,160 @@
 
 ## ublock.js
 
-**Purpose**: This file contains the code for blocking ads on the client side.
+```javascript
+// ParseFilterLists loads the filter lists from the specified URLs and parses them to extract the blocking rules.
+export function ParseFilterLists(filterLists) {
+  const rules = [];
+  for (const filterList of filterLists) {
+    const response = await fetch(filterList);
+    const text = await response.text();
+    const lines = text.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('||')) {
+        const rule = line.substring(2).split('^');
+        rules.push({
+          domain: rule[0],
+          path: rule[1],
+        });
+      }
+    }
+  }
+  return rules;
+}
 
-- **Functions**:
-  - **ParseFilterLists**: Loads the filter lists from the specified URLs and parses them to extract the blocking rules.
-  - **observeDomChanges**: Observes the DOM for changes and blocks ads when new elements are added to the page.
-  - **blockAds**: Starts the ad-blocking process.
-  - **unblockAds**: Disables the ad-blocking process.
+// observeDomChanges observes the DOM for changes and blocks ads when new elements are added to the page.
+export function observeDomChanges(rules) {
+  const observer = new MutationObserver(mutations => {
+    for (const mutation of mutations) {
+      for (const addedNode of mutation.addedNodes) {
+        if (addedNode.nodeType === Node.ELEMENT_NODE) {
+          const element = addedNode as HTMLElement;
+          for (const rule of rules) {
+            if (element.hostname === rule.domain && element.pathname.startsWith(rule.path)) {
+              element.remove();
+            }
+          }
+        }
+      }
+    }
+  });
+
+  observer.observe(document, {
+    childList: true,
+    subtree: true,
+  });
+}
+
+// blockAds starts the ad-blocking process.
+export function blockAds(rules) {
+  ParseFilterLists(rules).then(parsedRules => {
+    observeDomChanges(parsedRules);
+  });
+}
+
+// unblockAds disables the ad-blocking process.
+export function unblockAds() {
+  observer.disconnect();
+}
+```
 
 ## index.js
 
-**Purpose**: This file contains the main logic for the Vercel/serverless proxy.
+```javascript
+import express from 'express';
+import bodyParser from 'body-parser';
+import importUblock from './adblocker/ublock';
+import importConfig from './config';
 
-- **Functions**:
-  - **proxy**: Handles incoming HTTP requests, applies ad-blocking to the response if the request URL matches specific patterns, and supports other features like static site serving and API routing.
-  - **importUblock**: Imports the `ublock.js` module and initializes the ad-blocking functionality.
-  - **importConfig**: Imports the `config.js` file and loads the configuration settings.
+const app = express();
+
+// Import and initialize ad-blocking functionality.
+importUblock();
+
+// Import configuration settings.
+const config = importConfig();
+
+// Proxy requests handled by the proxy.
+app.use((req, res, next) => {
+  for (const pattern of config.proxyPatterns) {
+    if (req.url.match(pattern)) {
+      res.setHeader('Content-Type', 'text/html');
+      res.write(`<!DOCTYPE html><html><head><title>Proxy Server</title><body><h1>Request proxied</h1><pre>${JSON.stringify(req.headers, null, 2)}</pre><pre>${req.method} ${req.url}</pre><pre>${JSON.stringify(req.body, null, 2)}</pre></body></html>`);
+      res.end();
+      return;
+    }
+  }
+
+  // Static file serving or API routing can be added here based on the configuration.
+
+  next();
+});
+
+// Start the proxy.
+app.listen(3000, () => {
+  console.log(`Proxy server listening on port 3000`);
+});
+```
 
 ## serverless.yml
 
-**Purpose**: This file defines the serverless function and its configuration.
-
-- **Functions**:
-  - **proxy**: Defines the proxy function that handles incoming requests.
+```yaml
+functions:
+  proxy:
+    handler: index.handler
+```
 
 ## package.json
 
-**Purpose**: This file specifies the dependencies and scripts for the project.
-
-- **Dependencies**:
-  - **ublock-js**: Dependency for ad-blocking.
-  - **body-parser**: Dependency for parsing HTTP request bodies.
-  - **express**: Dependency for creating a web server and handling HTTP requests.
-  - **serverless-http**: Dependency for deploying the proxy as a serverless function on platforms like Vercel.
-- **Scripts**:
-  - **start**: Starts the Vercel/serverless proxy locally.
-  - **deploy**: Deploys the proxy to Vercel or other serverless platforms.
+```json
+{
+  "name": "proxy-server",
+  "version": "1.0.0",
+  "description": "A web proxy server with ad-blocking capabilities.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "vercel deploy --prebuilt"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "serverless-http": "^3.1.0",
+    "ublock-js": "^1.1.0"
+  }
+}
+```
 
 ## config.js
 
-**Purpose**: This file contains the configuration settings for the proxy.
+```javascript
+// Filter lists to be used for ad-blocking.
+export const filterLists = [
+  'https://easylist.to/easylist/easylist.txt',
+  'https://easylist.to/easylist/easyprivacy.txt',
+];
 
-- **Settings**:
-  - **filterLists**: URLs of the filter lists to be used for ad-blocking.
-  - **debug**: Enables or disables debug logging.
-  - **proxyPatterns**: An array of URL patterns that specify which requests should be proxied and processed for ad-blocking.
-  - **staticSiteDir**: The directory where static site files are located (if applicable).
-  - **apiRoutes**: An object that defines API routes and their associated handlers (if applicable).
+// Enable or disable debug logging.
+export const debug = false;
+
+// Proxy patterns specify which requests should be proxied and processed for ad-blocking.
+export const proxyPatterns = [/^https:\/\/www\.example\.com\/.*$/];
+
+// Directory where static site files are stored, if used.
+export const staticSiteDir = './static';
+
+// API routes and associated handlers, if used.
+export const apiRoutes = {
+  '/api/hello': (req, res) => {
+    res.json({ message: 'Hello world!' });
+  },
+};
+```
 
 ## .env
 
-**Purpose**: This file stores the environment variables used by the proxy.
-
-- **Variables**:
-  - **FILTER_LISTS**: URLs of the filter lists.
-  - **DEBUG**: Enables or disables debug logging.
-  - **PROXY_PATTERNS**: Array of URL patterns for proxying and ad-blocking.
-  - **STATIC_SITE_DIR**: Directory where static site files are located.
-  - **API_ROUTES**: JSON object defining API routes and handlers.
-
-## README.md
-
-**Purpose**: Provides instructions and information about the proxy.
-
-- **Instructions**: Explains how to deploy and use the proxy, including configuration and customization options.
-- **Features**: Describes the features and capabilities of the proxy, such as ad-blocking, static site serving, and API routing.
-- **Troubleshooting**: Offers tips for resolving common issues and provides guidance for debugging and customization.
+```env
+FILTER_LISTS=https://easylist.to/easylist/easylist.txt,https://easylist.to/easylist/easyprivacy.txt
+DEBUG=false
+PROXY_PATTERNS=/^https:\/\/www\.example\.com\/.*$/
+```
