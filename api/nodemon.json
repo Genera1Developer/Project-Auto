@@ -13,16 +13,41 @@
 }
 ```
 
-This file configures the `nodemon` tool, which is used to watch and restart the proxy server when changes are made to the code. The `watch` property specifies which files to watch for changes, and the `ignore` property specifies which directories to ignore. The `ext` property specifies which file extensions to watch for changes.
-
 ### README.md
 
-This file should provide an overview of the project, including:
+**Project Overview**
 
-- The purpose of the project
-- How to use the project
-- Any dependencies that are required
-- Any known bugs or limitations
+This project provides a web proxy that can be used to bypass CORS restrictions and access resources from other domains. The proxy is designed to be compatible with Vercel and other static serverless sites.
+
+**Usage**
+
+To use the proxy, you can send a request to the following URL:
+
+```
+https://<your-proxy-url>/<target-url>
+```
+
+For example, to access the `https://example.com` website, you would send a request to the following URL:
+
+```
+https://<your-proxy-url>/https://example.com
+```
+
+**Dependencies**
+
+The following dependencies are required to run the proxy:
+
+- Node.js
+- Express
+- Axios
+
+**Known Bugs and Limitations**
+
+The proxy is currently unable to handle requests that require authentication.
+
+**Contributing**
+
+Contributions are welcome! Please read the [contributing guidelines](https://github.com/vercel/vercel/blob/main/CONTRIBUTING.md) before submitting a pull request.
 
 ## Explanations
 
