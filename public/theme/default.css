@@ -20,6 +20,13 @@
 **src/components/ConsoleLog.js**
 **src/components/Detached.js**
 
+**CHANGELOG.md**
+**CONTRIBUTING.md**
+**LICENSE**
+**README.md**
+**package.json**
+**vercel.json**
+
 ### Changes and Improvements
 
 **public/theme/default.css**
@@ -104,3 +111,27 @@
 **src/components/Detached.js**
 
 - Created a reusable Detached component.
+
+**CHANGELOG.md**
+
+- Added a changelog to track changes to the project.
+
+**CONTRIBUTING.md**
+
+- Added a contributing guide to provide guidelines for contributing to the project.
+
+**LICENSE**
+
+- Added a license file to specify the terms of use for the project.
+
+**README.md**
+
+- Improved the documentation for the project, including a detailed explanation of the file structure and project goal.
+
+**package.json**
+
+- Updated the package.json file to include the new dependencies.
+
+**vercel.json**
+
+- Added a vercel.json file to configure the project for deployment on Vercel.
