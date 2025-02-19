@@ -1,59 +1,15 @@
-FILE PATH: api/package.json
-CONTENT: 
-
-```json
-{
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A simple web proxy",
-  "main": "index.js",
-  "dependencies": {
-    "express": "^4.17.1",
-    "node-fetch": "^2.6.1"
-  },
-  "scripts": {
-    "start": "node index.js"
-  },
-  "author": "Your Name",
-  "license": "MIT"
-}
-```
-FILE PATH: api/routes/http.js
+FILE PATH: api/index.js
 CONTENT: 
 
 ```javascript
 const express = require('express');
-const fetch = require('node-fetch');
+const app = express();
 
-const router = express.Router();
+app.use(express.json());
 
-router.get('/', async (req, res) => {
-  const url = req.query.url;
-  try {
-    const response = await fetch(url);
-    res.json({ status: response.status, headers: response.headers.raw(), body: await response.text() });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+app.use('/http', require('./routes/http'));
+
+app.listen(3000, () => {
+  console.log('Server listening on port 3000');
 });
-
-router.post('/', async (req, res) => {
-  const url = req.body.url;
-  const method = req.body.method || 'GET';
-  const headers = req.body.headers || {};
-  const body = req.body.body || '';
-
-  try {
-    const response = await fetch(url, {
-      method,
-      headers,
-      body
-    });
-    res.json({ status: response.status, headers: response.headers.raw(), body: await response.text() });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-module.exports = router;
 ```
