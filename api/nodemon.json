@@ -3,5 +3,5 @@ content:
 {
   "watch": ["*.js", "public/**/*", "views/*"],
   "ignore": ["node_modules"], 
-  "ext": "js,html,css,json"
+  "ext": "js,html,css"
 }
