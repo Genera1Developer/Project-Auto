@@ -34,7 +34,6 @@ const unblockAds = () => {
   console.log('Ads are now unblocked.');
 };
 
-window.curseblock = {
-  unblockAds,
-};
+// Exporting the unblockAds function to make it accessible from other scripts
+export { unblockAds };
 ```
