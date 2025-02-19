@@ -27,4 +27,8 @@ label {
   border: 1px solid #ccc;
   background-color: #f5f5f5;
 }
+
+.error {
+  color: red;
+}
 ```
