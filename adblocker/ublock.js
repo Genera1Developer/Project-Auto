@@ -3,6 +3,7 @@
 - `README.md`
 - `adblocker/ublock.js`
 - `index.js`
+- `serverless.yml`
 
 ## ublock.js
 
@@ -20,6 +21,14 @@ This file serves as the entry point for the web proxy.
 - **Import the ublock.js file**: Import the `ublock.js` file to use its functionality for blocking ads.
 - **Add middleware to the serverless function**: Add middleware to the serverless function to handle ad-blocking. This middleware will be called for every request that comes into the proxy.
 - **Block ads for the response**: In the middleware, use the `ublock.js` module to block ads for the response.
+
+## serverless.yml
+
+This file defines the serverless function that will run the web proxy.
+
+- **Functions**: Defines the `proxy` function that will handle incoming requests.
+- **Events**: Configures the proxy function to be triggered by HTTP requests.
+- **Environment Variables**: Specifies the environment variables that will be available to the proxy function.
 
 ## README.md
 
