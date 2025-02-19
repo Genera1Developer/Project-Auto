@@ -1,10 +1,10 @@
-FILE PATH: public/themes/ocean.js
+FILE PATH: public/themes/forest.js
 CONTENT: 
 ```javascript
-/* JavaScript to provide ocean mode functionality. */
+/* JavaScript to provide forest mode functionality. */
 
-// Set the document's body to have a blue background color.
-document.body.style.backgroundColor = "#0000FF";
+// Set the document's body to have a green background color.
+document.body.style.backgroundColor = "#00FF00";
 
 // Set the text color of the header to white.
 document.getElementById("header").style.color = "#FFFFFF";
