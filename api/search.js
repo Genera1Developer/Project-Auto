@@ -1,21 +1,24 @@
-file path: api/search.js
-content: 
-```js
-export async function search(query) {
-  const apiKey = process.env.SERPAPI_KEY;
-  if (!apiKey) {
-    throw new Error('Missing API key');
-  }
+Based on the project goal, one potential new file could be:
 
-  const { data } = await axios.get(`https://serpapi.com/search.json?q=${query}&api_key=${apiKey}`);
-  if (!data.organic_results) {
-    throw new Error('No organic results');
-  }
-
-  return data.organic_results.map(result => ({
-    title: result.title,
-    link: result.link,
-    snippet: result.snippet
-  }));
-}
+FILE PATH: public/index.html
+CONTENT: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <h1>Web Proxy</h1>
+    <form action="/api/search" method="GET">
+      <input type="text" name="query" placeholder="Search" />
+      <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+    <script src="/script.js"></script>
+  </body>
+</html>
 ```
