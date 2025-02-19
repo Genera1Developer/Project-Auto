@@ -1,22 +1,30 @@
-FILE PATH: index.html
+FILE PATH: style.css
 CONTENT: 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>Web Proxy</h1>
-  <form id="form">
-    <label for="url">URL:</label>
-    <input type="text" id="url" name="url" required>
-    <input type="submit" value="Submit">
-  </form>
-  <div id="result"></div>
-  <script src="script.js"></script>
-</body>
-</html>
+```css
+body {
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  text-align: center;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+label {
+  margin-right: 5px;
+}
+
+#result {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
+}
 ```
