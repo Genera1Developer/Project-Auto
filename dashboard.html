@@ -1,1 +1,41 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./styles.css" />
+  <title>Project Auto Proxy</title>
+</head>
+
+<body>
+  <div id="app">
+    <div id="sidebar">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/settings">Settings</a></li>
+      </ul>
+    </div>
+    <main>
+      <div id="content">
+        <h1>Project Auto Proxy</h1>
+        <form id="login-form">
+          <label for="username">Username</label>
+          <input type="text" id="username" />
+          <label for="password">Password</label>
+          <input type="password" id="password" />
+          <button type="submit">Login</button>
+        </form>
+        <div id="proxy-status"></div>
+        <div id="error-message"></div>
+        <div id="connection-status"></div>
+      </div>
+    </main>
+  </div>
+  <script src="./script.js"></script>
+</body>
+
+</html>
+```
