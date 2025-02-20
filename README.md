@@ -30,7 +30,7 @@
     <div class="main">
       <div class="header">
         <h1>Project Auto Proxy</h1>
-        <div class="search-bar">
+        <div class="search-bar rounded">
           <input type="text" placeholder="Search" />
           <button type="button"><i class="fas fa-search"></i></button>
         </div>
