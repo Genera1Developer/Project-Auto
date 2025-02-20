@@ -1,6 +1,6 @@
-file: dashboard.html
+file path: index.html
 
-improved file:
+content:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -9,55 +9,45 @@ improved file:
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./style.css" />
-  <title>Web Proxy Dashboard</title>
+  <title>Web Proxy</title>
 </head>
 
 <body>
   <div class="container">
     <div class="sidebar">
       <ul>
-        <li><a href="./index.html" class="sidebar-link">Home</a></li>
-        <li><a href="./dashboard.html" class="sidebar-link active">Dashboard</a></li>
+        <li><a href="./index.html" class="sidebar-link active">Home</a></li>
+        <li><a href="./dashboard.html" class="sidebar-link">Dashboard</a></li>
         <li><a href="./settings.html" class="sidebar-link">Settings</a></li>
       </ul>
     </div>
     <div class="main-content">
-      <div class="settings-block">
-        <div class="settings-title">Real-time Connection Status</div>
-        <div class="settings-content">
-          <p>Connected: <span id="connection-status">Loading...</span></p>
-          <p>Active Connections: <span id="active-connections">Loading...</span></p>
-        </div>
-      </div>
-      <div class="settings-block">
-        <div class="settings-title">Bandwidth Usage</div>
-        <div class="settings-content">
-          <div class="bandwidth-graph"></div>
-          <div class="bandwidth-usage">
-            <p>Total Bandwidth Used: <span id="total-bandwidth-used">Loading...</span></p>
-            <p>Current Bandwidth Usage: <span id="current-bandwidth-usage">Loading...</span></p>
+      <div class="login-form">
+        <h1>Web Proxy</h1>
+        <form>
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username" />
           </div>
-        </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" />
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Login</button>
+          </div>
+        </form>
       </div>
-      <div class="settings-block">
-        <div class="settings-title">Active Connections</div>
-        <div class="settings-content">
-          <p>No active connections</p>
-        </div>
+      <div class="proxy-status">
+        <h2>Proxy Status</h2>
+        <div class="status-indicator"></div>
+        <p id="proxy-status">Loading...</p>
       </div>
-      <div class="settings-block">
-        <div class="settings-title">Error Log</div>
-        <div class="settings-content">
-          <p>No errors</p>
-        </div>
+      <div class="connection-status">
+        <h2>Connection Status</h2>
+        <p id="connection-status">Loading...</p>
       </div>
-      <div class="settings-block">
-        <div class="settings-title">User Statistics</div>
-        <div class="settings-content">
-          <p>Total Users: <span id="total-users">Loading...</span></p>
-          <p>Active Users: <span id="active-users">Loading...</span></p>
-        </div>
-      </div>
+      <div class="error-message" id="error-message"></div>
     </div>
   </div>
   <script src="./script.js"></script>
