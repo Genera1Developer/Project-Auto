@@ -1,4 +1,4 @@
-file path: index.html
+file path: settings.html
 
 content:
 ```html
@@ -9,22 +9,41 @@ content:
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="./style.css" />
-  <title>Web Proxy</title>
+  <title>Web Proxy Settings</title>
 </head>
 
 <body>
   <div class="container">
     <div class="sidebar">
       <ul>
-        <li><a href="./index.html" class="sidebar-link active">Home</a></li>
+        <li><a href="./index.html" class="sidebar-link">Home</a></li>
         <li><a href="./dashboard.html" class="sidebar-link">Dashboard</a></li>
-        <li><a href="./settings.html" class="sidebar-link">Settings</a></li>
+        <li><a href="./settings.html" class="sidebar-link active">Settings</a></li>
       </ul>
     </div>
     <div class="main-content">
-      <div class="login-form">
-        <h1>Web Proxy</h1>
+      <div class="proxy-config-form">
+        <h1>Proxy Configuration</h1>
         <form>
+          <div class="form-group">
+            <label for="protocol">Protocol</label>
+            <select id="protocol">
+              <option value="http">HTTP</option>
+              <option value="https">HTTPS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="port">Port</label>
+            <input type="number" id="port" placeholder="Enter the port number" min="1" max="65535" />
+          </div>
+          <div class="form-group">
+            <label for="authentication">Authentication</label>
+            <select id="authentication">
+              <option value="none">None</option>
+              <option value="basic">Basic</option>
+              <option value="digest">Digest</option>
+            </select>
+          </div>
           <div class="form-group">
             <label for="username">Username</label>
             <input type="text" id="username" placeholder="Enter your username" />
@@ -34,20 +53,14 @@ content:
             <input type="password" id="password" placeholder="Enter your password" />
           </div>
           <div class="form-group">
-            <button type="submit" class="btn btn-primary">Login</button>
+            <label for="bandwidth-limit">Bandwidth Limit</label>
+            <input type="number" id="bandwidth-limit" placeholder="Enter bandwidth limit in bytes" min="0" />
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
           </div>
         </form>
       </div>
-      <div class="proxy-status">
-        <h2>Proxy Status</h2>
-        <div class="status-indicator"></div>
-        <p id="proxy-status">Loading...</p>
-      </div>
-      <div class="connection-status">
-        <h2>Connection Status</h2>
-        <p id="connection-status">Loading...</p>
-      </div>
-      <div class="error-message" id="error-message"></div>
     </div>
   </div>
   <script src="./script.js"></script>
