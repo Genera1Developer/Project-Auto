@@ -22,33 +22,47 @@ content:
       <h1>Dashboard</h1>
       <div class="status-indicator"></div>
       <div class="error-messages"></div>
+      <div class="connection-info">
+        <p>Status: <span id="connection-status"></span></p>
+        <p>Connections: <span id="connection-count"></span></p>
+      </div>
     </div>
   </header>
   <main>
-    <section class="connection-status">
-      <h2>Connection Status</h2>
-      <p>Real-time connection status will be displayed here.</p>
-    </section>
-    <section class="bandwidth-usage">
-      <h2>Bandwidth Usage</h2>
-      <p>Graphs showing bandwidth usage will be displayed here.</p>
-    </section>
-    <section class="active-connections">
-      <h2>Active Connections</h2>
-      <p>A list of active connections will be displayed here.</p>
-    </section>
-    <section class="error-log">
-      <h2>Error Log</h2>
-      <p>A display of recent errors will be shown here.</p>
-    </section>
-    <section class="user-statistics">
-      <h2>User Statistics</h2>
-      <p>User statistics will be shown here.</p>
+    <section class="section">
+      <div class="bandwidth-usage">
+        <h2>Bandwidth Usage</h2>
+        <canvas id="bandwidth-chart"></canvas>
+      </div>
+      <div class="active-connections">
+        <h2>Active Connections</h2>
+        <table id="active-connections-table">
+          <thead>
+            <tr>
+              <th>IP Address</th>
+              <th>Port</th>
+              <th>Protocol</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="error-log">
+        <h2>Error Log</h2>
+        <ul id="error-log-list"></ul>
+      </div>
+      <div class="user-statistics">
+        <h2>User Statistics</h2>
+        <ul id="user-statistics-list"></ul>
+      </div>
     </section>
   </main>
   <footer>
     <p>Copyright &copy; 2023 Web Proxy Project</p>
   </footer>
+
+  <script src="./script.js"></script>
 </body>
 
 </html>
