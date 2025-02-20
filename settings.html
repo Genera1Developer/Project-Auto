@@ -41,7 +41,15 @@ content:
         <label for="bandwidth-limit">Bandwidth Limit (KB/s):</label>
         <input type="number" name="bandwidth-limit" min="0">
       </div>
-      
+      <div class="form-group">
+        <label for="authentication">Authentication:</label>
+        <select name="authentication">
+          <option value="none">None</option>
+          <option value="basic">Basic</option>
+          <option value="digest">Digest</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
     </form>
   </div>
   <script src="script.js"></script>
