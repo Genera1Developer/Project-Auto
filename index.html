@@ -56,3 +56,92 @@ content:
 
 </html>
 ```
+
+file path: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Settings</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <div class="bg-babyblue-50 text-blue-700">
+    <div class="container mx-auto p-4">
+      <div class="flex">
+        <div class="sidebar bg-babyblue-100 rounded-l-lg p-4 w-1/4">
+          <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/dashboard.html">Dashboard</a></li>
+            <li><a href="/settings.html">Settings</a></li>
+          </ul>
+        </div>
+        <div class="content flex-1 p-4">
+          <h1 class="text-3xl font-bold mb-4">Web Proxy Settings</h1>
+          <form id="settings-form" class="bg-white rounded-lg p-4 shadow-md">
+            <h2 class="text-xl font-bold mb-4">Proxy Configuration</h2>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="protocol">Protocol:</label>
+              <select id="protocol" name="protocol" class="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <option value="http">HTTP</option>
+                <option value="https">HTTPS</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="port">Port:</label>
+              <input class="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="port" name="port" />
+            </div>
+            <h2 class="text-xl font-bold mb-4">Authentication</h2>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="username">Username:</label>
+              <input class="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" id="username" name="username" />
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="password">Password:</label>
+              <input class="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="password" id="password" name="password" />
+            </div>
+            <h2 class="text-xl font-bold mb-4">Bandwidth Limits</h2>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="download-limit">Download Limit:</label>
+              <input class="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="download-limit" name="download-limit" />
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="upload-limit">Upload Limit:</label>
+              <input class="shadow appearance-none border border-gray-400 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="number" id="upload-limit" name="upload-limit" />
+            </div>
+            <div class="flex items-center justify-between">
+              <input type="submit" value="Save" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+```
+
+file path: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <div class="bg-babyblue-50 text-blue-700">
+    <div class="container mx-auto p-4">
+      <div class="flex">
+        <div class="sidebar bg
