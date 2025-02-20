@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: settings.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,7 +6,7 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Settings</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
@@ -19,54 +19,35 @@ content:
         </ul>
     </div>
     <div class="main-content">
-        <div class="dashboard-block">
-            <div class="dashboard-title">Real-Time Connection Status</div>
-            <div class="dashboard-content">
-                <div class="connection-status online">
-                    <div class="connection-status-icon"></div>
-                    <div class="connection-status-text">Online</div>
-                </div>
-                <div class="connection-status offline hidden">
-                    <div class="connection-status-icon"></div>
-                    <div class="connection-status-text">Offline</div>
-                </div>
-            </div>
-        </div>
-        <div class="dashboard-block">
-            <div class="dashboard-title">Bandwidth Usage</div>
-            <div class="dashboard-content">
-                <div id="bandwidth-chart"></div>
-            </div>
-        </div>
-        <div class="dashboard-block">
-            <div class="dashboard-title">Active Connections</div>
-            <div class="dashboard-content">
-                <ul class="active-connections-list">
-                </ul>
-            </div>
-        </div>
-        <div class="dashboard-block">
-            <div class="dashboard-title">Error Log</div>
-            <div class="dashboard-content">
-                <ul class="error-log-list">
-                </ul>
-            </div>
-        </div>
-        <div class="dashboard-block">
-            <div class="dashboard-title">User Statistics</div>
-            <div class="dashboard-content">
-                <div class="user-statistics-item">
-                    <div class="user-statistics-label">Total Users:</div>
-                    <div class="user-statistics-value">0</div>
-                </div>
-                <div class="user-statistics-item">
-                    <div class="user-statistics-label">Active Users:</div>
-                    <div class="user-statistics-value">0</div>
-                </div>
-                <div class="user-statistics-item">
-                    <div class="user-statistics-label">Bandwidth Usage:</div>
-                    <div class="user-statistics-value">0 MB</div>
-                </div>
+        <div class="settings-block">
+            <div class="settings-title">Proxy Configuration</div>
+            <div class="settings-content">
+                <form id="proxy-form">
+                    <div class="form-group">
+                        <label for="proxy-protocol">Protocol:</label>
+                        <select name="proxy-protocol" id="proxy-protocol">
+                            <option value="http">HTTP</option>
+                            <option value="https">HTTPS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="proxy-port">Port:</label>
+                        <input type="text" name="proxy-port" id="proxy-port">
+                    </div>
+                    <div class="form-group">
+                        <label for="proxy-username">Username:</label>
+                        <input type="text" name="proxy-username" id="proxy-username">
+                    </div>
+                    <div class="form-group">
+                        <label for="proxy-password">Password:</label>
+                        <input type="password" name="proxy-password" id="proxy-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="proxy-bandwidth-limit">Bandwidth Limit (MB/s):</label>
+                        <input type="number" name="proxy-bandwidth-limit" id="proxy-bandwidth-limit">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
             </div>
         </div>
     </div>
