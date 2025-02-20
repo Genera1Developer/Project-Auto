@@ -22,16 +22,37 @@ content:
   </nav>
   <main class="main babyblue rounded">
     <h1>Dashboard</h1>
-    <!-- Real-time connection status -->
-    <div id="real-time-connection-status"></div>
-    <!-- Bandwidth usage graphs -->
-    <div id="bandwidth-usage-graphs"></div>
-    <!-- Active connections list -->
-    <div id="active-connections-list"></div>
-    <!-- Error log display -->
-    <div id="error-log"></div>
-    <!-- User statistics -->
-    <div id="user-statistics"></div>
+    <div class="section" id="connection-status">
+      <h2>Real-time Connection Status</h2>
+      <div class="status-indicator" id="connection-status-indicator"></div>
+      <div class="status-info" id="connection-status-info"></div>
+    </div>
+    <div class="section" id="bandwidth-usage">
+      <h2>Bandwidth Usage</h2>
+      <div class="graphs" id="bandwidth-usage-graphs"></div>
+    </div>
+    <div class="section" id="active-connections">
+      <h2>Active Connections</h2>
+      <table id="active-connections-table">
+        <thead>
+          <tr>
+            <th>IP Address</th>
+            <th>Port</th>
+            <th>Protocol</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="section" id="error-log">
+      <h2>Error Log</h2>
+      <ul id="error-log-list"></ul>
+    </div>
+    <div class="section" id="user-statistics">
+      <h2>User Statistics</h2>
+      <div class="stats" id="user-statistics-stats"></div>
+    </div>
   </main>
 </body>
 
