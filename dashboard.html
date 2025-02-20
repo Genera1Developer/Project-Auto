@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,7 +6,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy Settings</title>
+  <title>Web Proxy Dashboard</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     body {
@@ -48,46 +48,98 @@ content:
       padding: 20px;
     }
 
-    .form-container {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    form {
+    .dashboard-container {
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
 
-    label {
-      font-size: 1.2rem;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #DDDDDD;
+    .dashboard-card {
+      background-color: #FFFFFF;
+      padding: 20px;
       border-radius: 5px;
     }
 
-    .button-container {
+    .dashboard-card-header {
       display: flex;
-      justify-content: flex-end;
-      gap: 20px;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
+    .dashboard-card-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .dashboard-card-body {
+      margin-top: 20px;
+    }
+
+    .real-time-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background-color: #00ADB5;
+      padding: 10px;
+      border-radius: 5px;
       color: #FFFFFF;
-      font-size: 1.2rem;
-      cursor: pointer;
     }
 
-    .button-container button:hover {
+    .real-time-status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
       background-color: #0096A7;
+    }
+
+    .bandwidth-usage-graph {
+      width: 100%;
+      height: 200px;
+    }
+
+    .active-connections-list {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0;
+    }
+
+    .active-connections-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #F5F5F5;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .error-log {
+      background-color: #F5F5F5;
+      padding: 20px;
+      border-radius: 5px;
+    }
+
+    .error-log-entry {
+      background-color: #FFD2D2;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .user-statistics {
+      background-color: #00ADB5;
+      padding: 20px;
+      border-radius: 5px;
+      color: #FFFFFF;
+    }
+
+    .user-statistics-table {
+      width: 100%;
+    }
+
+    .user-statistics-table th, .user-statistics-table td {
+      padding: 10px;
     }
   </style>
 </head>
@@ -101,45 +153,15 @@ content:
       </nav>
     </div>
     <div class="main-content">
-      <h1>Web Proxy Settings</h1>
+      <h1>Web Proxy Dashboard</h1>
 
-      <div class="form-container">
-        <form id="settings-form">
-          <label for="protocol">Protocol:</label>
-          <select name="protocol" id="protocol">
-            <option value="HTTP">HTTP</option>
-            <option value="HTTPS">HTTPS</option>
-          </select>
-
-          <label for="port">Port:</label>
-          <input type="number" id="port" name="port" min="1" max="65535" required>
-
-          <label for="authentication">Authentication:</label>
-          <select name="authentication" id="authentication">
-            <option value="none">None</option>
-            <option value="basic">Basic</option>
-            <option value="digest">Digest</option>
-          </select>
-
-          <label for="username">Username:</label>
-          <input type="text" id="username" name="username">
-
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password">
-
-          <label for="bandwidth-limit">Bandwidth Limit:</label>
-          <input type="number" id="bandwidth-limit" name="bandwidth-limit" min="0" max="100" required>
-
-          <div class="button-container">
-            <button type="submit">Save</button>
-            <button type="reset">Reset</button>
+      <div class="dashboard-container">
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <div class="dashboard-card-title">Real-Time Status</div>
+            <div class="real-time-status">
+              <div class="real-time-status-indicator"></div>
+              <div>Connected</div>
+            </div>
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <script src="scripts.js"></script>
-</body>
-</html>
-```
+          <div class="dashboard-card-
