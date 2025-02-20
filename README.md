@@ -1,4 +1,4 @@
-file path: index.html
+file path: settings.html
 content: 
 
 ```html
@@ -6,7 +6,7 @@ content:
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Web Proxy</title>
+  <title>Proxy Settings</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,30 +17,33 @@ content:
       <a href="settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Web Proxy</h1>
-      <div class="login-form">
-        <h2>Login</h2>
-        <form id="login-form">
-          <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" placeholder="Username" required />
-          </div>
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" placeholder="Password" required />
-          </div>
-          <button type="submit">Login</button>
-        </form>
-      </div>
-      <div class="proxy-status">
-        <h2>Proxy Status</h2>
-        <div id="proxy-status"></div>
-      </div>
-      <div class="connection-status">
-        <h2>Connection Status</h2>
-        <div id="connection-status"></div>
-      </div>
-      <div class="error-message"></div>
+      <h1>Proxy Settings</h1>
+      <form id="proxy-settings-form">
+        <div class="form-group">
+          <label for="protocol">Protocol:</label>
+          <select name="protocol" id="protocol">
+            <option value="HTTP">HTTP</option>
+            <option value="HTTPS">HTTPS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="port">Port:</label>
+          <input type="number" name="port" id="port" placeholder="Port" required />
+        </div>
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" name="username" id="username" placeholder="Username" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" name="password" id="password" placeholder="Password" />
+        </div>
+        <div class="form-group">
+          <label for="bandwidth-limit">Bandwidth Limit (KB/s):</label>
+          <input type="number" name="bandwidth-limit" id="bandwidth-limit" placeholder="Bandwidth Limit" />
+        </div>
+        <button type="submit">Save</button>
+      </form>
     </div>
   </div>
   <script src="script.js"></script>
