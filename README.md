@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: index.html
 content: 
 
 ```html
@@ -6,7 +6,7 @@ content:
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,26 +17,24 @@ content:
       <a href="settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Dashboard</h1>
+      <h1>Web Proxy</h1>
+      <form id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" />
+        <br />
+        <label for="password">Password:</label>
+        <input type="password" id="password" />
+        <br />
+        <input type="submit" value="Login" />
+      </form>
+      <div id="proxy-status">
+        <h2>Proxy Status</h2>
+        <p id="proxy-status-text">Idle</p>
+      </div>
+      <div id="error-message"></div>
       <div id="connection-status">
         <h2>Connection Status</h2>
         <p id="connection-status-text">Disconnected</p>
-      </div>
-      <div id="bandwidth-usage">
-        <h2>Bandwidth Usage</h2>
-        <canvas id="bandwidth-usage-chart"></canvas>
-      </div>
-      <div id="active-connections">
-        <h2>Active Connections</h2>
-        <ul id="active-connections-list"></ul>
-      </div>
-      <div id="error-log">
-        <h2>Error Log</h2>
-        <ul id="error-log-list"></ul>
-      </div>
-      <div id="user-statistics">
-        <h2>User Statistics</h2>
-        <ul id="user-statistics-list"></ul>
       </div>
     </div>
   </div>
