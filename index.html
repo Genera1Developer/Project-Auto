@@ -1,4 +1,4 @@
-file path: settings.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,9 +6,9 @@ content:
 
 <head>
   <meta charset="UTF-8" />
-  <title>Settings</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="settings.js"></script>
+  <script src="index.js"></script>
 </head>
 
 <body>
@@ -21,33 +21,27 @@ content:
       </ul>
     </div>
     <div class="main">
-      <h1>Settings</h1>
-      <form id="settings-form" onsubmit="return saveSettings();">
-        <div class="form-group">
-          <label for="protocol">Protocol</label>
-          <select id="protocol">
-            <option value="http">HTTP</option>
-            <option value="https">HTTPS</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="port">Port</label>
-          <input id="port" type="number" required>
-        </div>
+      <h1>Web Proxy</h1>
+      <form id="login-form" onsubmit="return login();">
         <div class="form-group">
           <label for="username">Username</label>
-          <input id="username" type="text">
+          <input id="username" type="text" required>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input id="password" type="password">
+          <input id="password" type="password" required>
         </div>
-        <div class="form-group">
-          <label for="bandwidth-limit">Bandwidth Limit</label>
-          <input id="bandwidth-limit" type="number">
-        </div>
-        <button type="submit">Save</button>
+        <button type="submit">Login</button>
       </form>
+      <div id="proxy-status" class="status">
+        <span class="status-text">Proxy Status:</span>
+        <span class="status-indicator"></span>
+      </div>
+      <div id="connection-status" class="status">
+        <span class="status-text">Connection Status:</span>
+        <span class="status-indicator"></span>
+      </div>
+      <div id="error-message"></div>
     </div>
   </div>
 </body>
@@ -55,216 +49,84 @@ content:
 </html>
 ```
 
-file path: settings.js
+file path: index.js
 content: 
 ```javascript
-function saveSettings() {
-  // Get the settings from the form
-  const protocol = document.getElementById('protocol').value;
-  const port = document.getElementById('port').value;
+function login() {
+  // Get the username and password from the form
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
-  const bandwidthLimit = document.getElementById('bandwidth-limit').value;
 
-  // Send a request to the server to save the settings
-  fetch('save_settings.php', {
+  // Send a request to the server to log in
+  fetch('login.php', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      protocol: protocol,
-      port: port,
       username: username,
-      password: password,
-      bandwidthLimit: bandwidthLimit
+      password: password
     })
   })
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      // If the settings are saved successfully, display a success message
-      alert('Settings saved successfully');
+      // If the login is successful, redirect to the dashboard
+      window.location.href = '/dashboard.html';
     } else {
-      // If there is an error, display an error message
-      alert(data.error);
+      // If the login is unsuccessful, display an error message
+      document.getElementById('error-message').innerHTML = data.error;
     }
   })
   .catch(error => {
     // If there is an error, display it
-    alert(error.message);
+    document.getElementById('error-message').innerHTML = error.message;
   });
 
   return false;
 }
-```
 
-file path: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html>
+function updateProxyStatus() {
+  // Send a request to the server to get the proxy status
+  fetch('proxy_status.php')
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'connected') {
+      // If the proxy is connected, update the status indicator to green
+      document.getElementById('proxy-status').classList.add('connected');
+    } else {
+      // If the proxy is not connected, update the status indicator to red
+      document.getElementById('proxy-status').classList.remove('connected');
+    }
+  })
+  .catch(error => {
+    // If there is an error, display it
+    document.getElementById('error-message').innerHTML = error.message;
+  });
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="dashboard.js"></script>
-</head>
-
-<body>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-      </ul>
-    </div>
-    <div class="main">
-      <h1>Dashboard</h1>
-      <div class="section">
-        <h2>Real-Time Connection Status</h2>
-        <div id="connection-status"></div>
-      </div>
-      <div class="section">
-        <h2>Bandwidth Usage Graphs</h2>
-        <canvas id="bandwidth-usage-graph"></canvas>
-      </div>
-      <div class="section">
-        <h2>Active Connections</h2>
-        <ul id="active-connections"></ul>
-      </div>
-      <div class="section">
-        <h2>Error Log</h2>
-        <ul id="error-log"></ul>
-      </div>
-      <div class="section">
-        <h2>User Statistics</h2>
-        <ul id="user-statistics"></ul>
-      </div>
-    </div>
-  </div>
-</body>
-
-</html>
-```
-
-file path: dashboard.js
-content: 
-```javascript
-// Update the connection status every second
-setInterval(() => {
+function updateConnectionStatus() {
+  // Send a request to the server to get the connection status
   fetch('connection_status.php')
   .then(response => response.json())
   .then(data => {
     if (data.status === 'connected') {
-      document.getElementById('connection-status').innerHTML = 'Connected';
+      // If the connection is connected, update the status indicator to green
+      document.getElementById('connection-status').classList.add('connected');
     } else {
-      document.getElementById('connection-status').innerHTML = 'Disconnected';
+      // If the connection is not connected, update the status indicator to red
+      document.getElementById('connection-status').classList.remove('connected');
     }
   })
   .catch(error => {
     // If there is an error, display it
-    document.getElementById('error-log').innerHTML += '<li>' + error.message + '</li>';
+    document.getElementById('error-message').innerHTML = error.message;
   });
-}, 1000);
+}
 
-// Update the bandwidth usage graph every second
+// Update the proxy status and connection status every second
 setInterval(() => {
-  fetch('bandwidth_usage.php')
-  .then(response => response.json())
-  .then(data => {
-    // Create a new chart if it doesn't exist
-    if (!chart) {
-      chart = new Chart(document.getElementById('bandwidth-usage-graph'), {
-        type: 'line',
-        data: {
-          labels: [],
-          datasets: [{
-            label: 'Bandwidth Usage',
-            data: []
-          }]
-        },
-        options: {
-          scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          }
-        }
-      });
-    }
-
-    // Add the new data to the chart
-    chart.data.labels.push(data.timestamp);
-    chart.data.datasets[0].data.push(data.bandwidth);
-
-    // Update the chart
-    chart.update();
-  })
-  .catch(error => {
-    // If there is an error, display it
-    document.getElementById('error-log').innerHTML += '<li>' + error.message + '</li>';
-  });
+  updateProxyStatus();
+  updateConnectionStatus();
 }, 1000);
-
-// Update the active connections list every second
-setInterval(() => {
-  fetch('active_connections.php')
-  .then(response => response.json())
-  .then(data => {
-    // Empty the active connections list
-    document.getElementById('active-connections').innerHTML = '';
-
-    // Add each active connection to the list
-    for (let i = 0; i < data.connections.length; i++) {
-      const connection = data.connections[i];
-
-      const li = document.createElement('li');
-      li.innerHTML = connection.ip + ':' + connection.port;
-
-      document.getElementById('active-connections').appendChild(li);
-    }
-  })
-  .catch(error => {
-    // If there is an error, display it
-    document.getElementById('error-log').innerHTML += '<li>' + error.message + '</li>';
-  });
-}, 1000);
-
-// Update the error log every second
-setInterval(() => {
-  fetch('error_log.php')
-  .then(response => response.json())
-  .then(data => {
-    // Empty the error log
-    document.getElementById('error-log').innerHTML = '';
-
-    // Add each error to the log
-    for (let i = 0; i < data.errors.length; i++) {
-      const error = data.errors[i];
-
-      const li = document.createElement('li');
-      li.innerHTML = error.message;
-
-      document.getElementById('error-log').appendChild(li);
-    }
-  })
-  .catch(error => {
-    // If there is an error, display it
-    document.getElementById('error-log').innerHTML += '<li>' + error.message + '</li>';
-  });
-}, 1000);
-
-// Update the user statistics every second
-setInterval(() => {
-  fetch('user_statistics.php')
-  .then(response => response.json())
-  .then(data => {
-    // Empty the user statistics list
-    document.getElementById('user-statistics').innerHTML = '';
-
-    // Add each user
+```
