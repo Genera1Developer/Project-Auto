@@ -1,4 +1,4 @@
-file path: index.html
+file path: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,7 +6,7 @@ content:
 
 <head>
   <meta charset="UTF-8" />
-  <title>Web Proxy</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="scripts.js"></script>
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -15,27 +15,23 @@ content:
 <body>
   <nav class="sidebar babyblue">
     <ul>
-      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="index.html">Home</a></li>
       <li><a href="settings.html">Settings</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
     </ul>
   </nav>
   <main class="main babyblue rounded">
-    <h1>Web Proxy</h1>
-    <form id="login-form">
-      <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" />
-      </div>
-      <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" />
-      </div>
-      <button type="submit">Login</button>
-    </form>
-    <div id="proxy-status"></div>
-    <div id="connection-status"></div>
-    <div id="error-message"></div>
+    <h1>Dashboard</h1>
+    <!-- Real-time connection status -->
+    <div id="real-time-connection-status"></div>
+    <!-- Bandwidth usage graphs -->
+    <div id="bandwidth-usage-graphs"></div>
+    <!-- Active connections list -->
+    <div id="active-connections-list"></div>
+    <!-- Error log display -->
+    <div id="error-log"></div>
+    <!-- User statistics -->
+    <div id="user-statistics"></div>
   </main>
 </body>
 
