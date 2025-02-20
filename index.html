@@ -1,12 +1,13 @@
-file path: settings.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Proxy Settings</title>
+    <title>Web Proxy</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="index.js"></script>
   </head>
   <body>
     <div class="container">
@@ -18,141 +19,26 @@ content:
         </ul>
       </div>
       <div class="main">
-        <h1>Proxy Settings</h1>
-        <div class="form-container">
-          <form id="proxy-settings-form">
-            <div class="form-group">
-              <label for="proxy-protocol">Proxy Protocol</label>
-              <select id="proxy-protocol">
-                <option value="HTTP">HTTP</option>
-                <option value="HTTPS">HTTPS</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="proxy-host">Proxy Host</label>
-              <input id="proxy-host" type="text" />
-            </div>
-            <div class="form-group">
-              <label for="proxy-port">Proxy Port</label>
-              <input id="proxy-port" type="number" />
-            </div>
-            <div class="form-group">
-              <label for="proxy-username">Proxy Username</label>
-              <input id="proxy-username" type="text" />
-            </div>
-            <div class="form-group">
-              <label for="proxy-password">Proxy Password</label>
-              <input id="proxy-password" type="password" />
-            </div>
-            <div class="form-group">
-              <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
-              <input id="bandwidth-limit" type="number" />
-            </div>
-            <button type="submit">Save Settings</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </body>
-</html>
-```
-
-file path: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Proxy Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <div class="sidebar">
-        <ul>
-          <li><a href="/index.html">Home</a></li>
-          <li><a href="/dashboard.html">Dashboard</a></li>
-          <li><a href="/settings.html">Settings</a></li>
-        </ul>
-      </div>
-      <div class="main">
-        <h1>Proxy Dashboard</h1>
-        <div class="monitoring-controls">
-          <button id="refresh-data-button">Refresh Data</button>
-          <button id="start-proxy-button">Start Proxy</button>
-          <button id="stop-proxy-button">Stop Proxy</button>
-        </div>
-        <div class="connection-status">
-          <span>Connection Status:</span>
+        <h1>Web Proxy</h1>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" type="text" />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input id="password" type="password" />
+          </div>
+          <button type="submit">Login</button>
+        </form>
+        <div id="proxy-status">
+          <span>Proxy Status:</span>
           <strong>Stopped</strong>
         </div>
-        <div id="proxy-settings">
-          <h3>Proxy Settings</h3>
-          <ul>
-            <li>Protocol: HTTP</li>
-            <li>Host: localhost</li>
-            <li>Port: 8080</li>
-          </ul>
-        </div>
-        <div id="monitoring-data">
-          <h3>Monitoring Data</h3>
-          <div id="bandwidth-usage-chart"></div>
-          <ul id="active-connections-list">
-            <li>Active Connections: 0</li>
-          </ul>
-          <ul id="error-log-list">
-            <li>Error Log: No errors</li>
-          </ul>
-          <ul id="user-statistics-list">
-            <li>User Statistics: No users connected</li>
-          </ul>
-        </div>
+        <div id="error-message"></div>
+        <div id="connection-status"></div>
       </div>
     </div>
   </body>
 </html>
-```
-
-file path: README.md
-content: 
-```md
-# Proxy Project
-
-This project is a web proxy with a strict design and structured codebase.
-
-## Features
-
-- Login form with username and password fields
-- Navigation to settings and dashboard pages
-- Proxy status indicator
-- Error message display area
-- Connection status display
-- Proxy configuration form
-- Protocol selection (HTTP/HTTPS)
-- Port configuration
-- Authentication settings
-- Bandwidth limits
-- Real-time connection status
-- Bandwidth usage graphs
-- Active connections list
-- Error log display
-- User statistics
-- Side bar navigation to /index.html, /dashboard.html, and /settings.html
-- Baby blue beautiful and rounded theming
-
-## Usage
-
-1. Clone the repository: `git clone https://github.com/username/proxy-project.git`
-2. Open the `index.html` file in a web browser
-3. Enter your username and password
-4. Click the "Login" button
-5. Navigate to the "Settings" page to configure the proxy
-6. Navigate to the "Dashboard" page to monitor the proxy's status and usage
-
-## Development
-
-1. Make changes to the code
-2. Run `npm start` to start a development server
-3. Open `http://localhost:8080` in a web browser
 ```
