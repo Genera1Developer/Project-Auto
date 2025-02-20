@@ -1,6 +1,4 @@
-README.md
-content:
-```
+
 # Structured Web Proxy Project
 
 This project provides a structured web proxy implementation with a baby blue and rounded design theme.
@@ -36,4 +34,3 @@ This project provides a structured web proxy implementation with a baby blue and
 **Contributions:**
 
 Contributions are welcome! Please follow the coding standards and guidelines outlined in the project.
-```
