@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content: 
 
 ```html
@@ -6,7 +6,7 @@ content:
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Web Proxy Settings</title>
+  <title>Web Proxy Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,28 +17,29 @@ content:
       <a href="settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Web Proxy Settings</h1>
-      <form id="settings-form">
-        <label for="protocol">Protocol:</label>
-        <select id="protocol">
-          <option value="http">HTTP</option>
-          <option value="https">HTTPS</option>
-        </select>
-        <br />
-        <label for="port">Port:</label>
-        <input type="number" id="port" />
-        <br />
-        <label for="username">Username:</label>
-        <input type="text" id="username" />
-        <br />
-        <label for="password">Password:</label>
-        <input type="password" id="password" />
-        <br />
-        <label for="bandwidth-limit">Bandwidth Limit (MB):</label>
-        <input type="number" id="bandwidth-limit" />
-        <br />
-        <input type="submit" value="Save" />
-      </form>
+      <h1>Web Proxy Dashboard</h1>
+      <div class="status-container">
+        <div class="status-item">
+          <h2>Connection Status</h2>
+          <span id="connection-status"></span>
+        </div>
+        <div class="status-item">
+          <h2>Bandwidth Usage</h2>
+          <canvas id="bandwidth-chart"></canvas>
+        </div>
+        <div class="status-item">
+          <h2>Active Connections</h2>
+          <ul id="active-connections"></ul>
+        </div>
+        <div class="status-item">
+          <h2>Error Log</h2>
+          <ul id="error-log"></ul>
+        </div>
+        <div class="status-item">
+          <h2>User Statistics</h2>
+          <ul id="user-statistics"></ul>
+        </div>
+      </div>
     </div>
   </div>
   <script src="script.js"></script>
