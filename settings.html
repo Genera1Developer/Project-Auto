@@ -35,15 +35,15 @@ content:
                         </div>
                         <div class="form-group">
                             <label for="proxy-port" class="font-bold text-lg">Port:</label>
-                            <input type="text" name="proxy-port" id="proxy-port" class="rounded-lg px-2 py-1">
+                            <input type="text" name="proxy-port" id="proxy-port" class="rounded-lg px-2 py-1" required>
                         </div>
                         <div class="form-group">
                             <label for="proxy-username" class="font-bold text-lg">Username:</label>
-                            <input type="text" name="proxy-username" id="proxy-username" class="rounded-lg px-2 py-1">
+                            <input type="text" name="proxy-username" id="proxy-username" class="rounded-lg px-2 py-1" required>
                         </div>
                         <div class="form-group">
                             <label for="proxy-password" class="font-bold text-lg">Password:</label>
-                            <input type="password" name="proxy-password" id="proxy-password" class="rounded-lg px-2 py-1">
+                            <input type="password" name="proxy-password" id="proxy-password" class="rounded-lg px-2 py-1" required>
                         </div>
                         <div class="form-group">
                             <label for="proxy-bandwidth-limit" class="font-bold text-lg">Bandwidth Limit (MB/s):</label>
@@ -58,95 +58,4 @@ content:
 </body>
 
 </html>
-```
-
-**New File:**
-
-file path: style.css
-content: 
-```css
-body {
-    font-family: sans-serif;
-    background-color: #e6f2ff;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 24px;
-}
-
-.sidebar {
-    width: 200px;
-    min-width: 200px;
-    background-color: #3465a4;
-    border-radius: 12px;
-}
-
-.sidebar-link {
-    display: block;
-    padding: 12px 16px;
-    text-decoration: none;
-    color: #fff;
-}
-
-.sidebar-link:hover, .sidebar-link.active {
-    background-color: #4077c4;
-}
-
-.main-content {
-    flex: 1;
-    margin-left: 24px;
-    background-color: #fff;
-    border-radius: 12px;
-}
-
-.settings-block {
-    padding: 24px;
-}
-
-.settings-title {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.settings-content {
-    margin-top: 12px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.form-group label {
-    font-weight: bold;
-}
-
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.btn {
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background-color: #4077c4;
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background-color: #4e8ac4;
-}
-
-.btn-primary:active {
-    background-color: #4472b4;
-}
 ```
