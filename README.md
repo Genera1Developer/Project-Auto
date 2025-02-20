@@ -1,73 +1,47 @@
-file path: README.md
+file path: index.html
 content: 
 
-# Structured Web Proxy Project Architecture
+```html
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./script.js"></script>
+  </head>
 
-## Files and Components
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <nav>
+          <a href="/index.html">Home</a>
+          <a href="/settings.html">Settings</a>
+          <a href="/dashboard.html">Dashboard</a>
+        </nav>
+      </div>
+      <main>
+        <div class="login-form">
+          <h1>Login</h1>
+          <form>
+            <label for="username">Username</label>
+            <input type="text" id="username" />
+            <label for="password">Password</label>
+            <input type="password" id="password" />
+            <button type="submit">Login</button>
+          </form>
+        </div>
+        <div class="proxy-status">
+          <h2>Proxy Status</h2>
+          <p id="proxy-status"></p>
+        </div>
+        <div class="error-messages"></div>
+        <div class="connection-status">
+          <h2>Connection Status</h2>
+          <p id="connection-status"></p>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
 
-- **index.html** - Main landing page
-- **styles.css** - Single stylesheet for all pages
-- **script.js** - Single JavaScript file for all functionality
-- **settings.html** - Proxy configuration page
-- **dashboard.html** - User statistics and monitoring
-
-## File Requirements
-
-### index.html
-
-- Login form with username/password fields
-- Navigation to settings and dashboard
-- Proxy status indicator
-- Error message display area
-- Connection status display
-- External CSS and JS files
-- Sidebar with links to /index.html, /dashboard.html, and /settings.html
-
-### styles.css
-
-- CSS only (no preprocessors)
-- Mobile-first responsive design
-- Color scheme variables
-- Component class naming
-- Consistent styling across all pages
-
-### script.js
-
-- ES6+ JavaScript
-- Modular function organization
-- Error handling
-- Proxy connection management
-- User authentication logic
-- Settings management
-- No external libraries
-
-### settings.html
-
-- Proxy configuration form
-- Protocol selection (HTTP/HTTPS)
-- Port configuration
-- Authentication settings
-- Bandwidth limits
-- Shared styling with index.html
-- Sidebar with links to /index.html, /dashboard.html, and /settings.html
-
-### dashboard.html
-
-- Real-time connection status
-- Bandwidth usage graphs
-- Active connections list
-- Error log display
-- User statistics
-- Shared styling with index.html
-- Sidebar with links to /index.html, /dashboard.html, and /settings.html
-
-## Additional Requirements
-
-- Strict content security policy
-- Error handling for all operations
-- Cross-browser compatibility
-- Mobile responsiveness
-- Clean, consistent indentation
-- Proper commenting
-- No external dependencies
-- No framework usage
+```
