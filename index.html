@@ -1,269 +1,158 @@
-file path: style.css
+file path: settings.html
 content: 
-```css
-/* Global styles */
-
-body {
-  font-family: "Helvetica", "Arial", sans-serif;
-  font-size: 14px;
-  color: #333;
-  background-color: #f5f5f5;
-}
-
-.container {
-  display: flex;
-  height: 100vh;
-}
-
-.sidebar {
-  width: 200px;
-  background-color: #007bff;
-  color: #fff;
-  padding: 20px;
-}
-
-.sidebar ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin-bottom: 10px;
-}
-
-.sidebar a {
-  color: #fff;
-  text-decoration: none;
-}
-
-.sidebar a:hover {
-  color: #0069d9;
-}
-
-.main {
-  flex: 1;
-}
-
-.form-heading {
-  margin-bottom: 20px;
-}
-
-h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.form-group {
-  margin-bottom: 10px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="number"] {
-  width: 100%;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: #fff;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0069d9;
-}
-
-.error-message {
-  color: #d9534f;
-  margin-bottom: 20px;
-}
-
-.connection-status {
-  background-color: #f5f5f5;
-  padding: 5px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.connection-status span {
-  margin-right: 5px;
-}
-
-.monitoring-controls {
-  margin-bottom: 20px;
-}
-
-#proxy-settings {
-  background-color: #f5f5f5;
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-#monitoring-data {
-  background-color: #f5f5f5;
-  padding: 20px;
-  margin-top: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-#bandwidth-usage-chart {
-  margin-bottom: 20px;
-}
-
-#active-connections-list,
-#error-log-list,
-#user-statistics-list {
-  list-style-type: none;
-  padding: 0;
-}
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Proxy Settings</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <ul>
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/dashboard.html">Dashboard</a></li>
+          <li><a href="/settings.html">Settings</a></li>
+        </ul>
+      </div>
+      <div class="main">
+        <h1>Proxy Settings</h1>
+        <div class="form-container">
+          <form id="proxy-settings-form">
+            <div class="form-group">
+              <label for="proxy-protocol">Proxy Protocol</label>
+              <select id="proxy-protocol">
+                <option value="HTTP">HTTP</option>
+                <option value="HTTPS">HTTPS</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="proxy-host">Proxy Host</label>
+              <input id="proxy-host" type="text" />
+            </div>
+            <div class="form-group">
+              <label for="proxy-port">Proxy Port</label>
+              <input id="proxy-port" type="number" />
+            </div>
+            <div class="form-group">
+              <label for="proxy-username">Proxy Username</label>
+              <input id="proxy-username" type="text" />
+            </div>
+            <div class="form-group">
+              <label for="proxy-password">Proxy Password</label>
+              <input id="proxy-password" type="password" />
+            </div>
+            <div class="form-group">
+              <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
+              <input id="bandwidth-limit" type="number" />
+            </div>
+            <button type="submit">Save Settings</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
 ```
 
-file path: script.js
+file path: dashboard.html
 content: 
-```javascript
-// Global variables
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Proxy Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <ul>
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/dashboard.html">Dashboard</a></li>
+          <li><a href="/settings.html">Settings</a></li>
+        </ul>
+      </div>
+      <div class="main">
+        <h1>Proxy Dashboard</h1>
+        <div class="monitoring-controls">
+          <button id="refresh-data-button">Refresh Data</button>
+          <button id="start-proxy-button">Start Proxy</button>
+          <button id="stop-proxy-button">Stop Proxy</button>
+        </div>
+        <div class="connection-status">
+          <span>Connection Status:</span>
+          <strong>Stopped</strong>
+        </div>
+        <div id="proxy-settings">
+          <h3>Proxy Settings</h3>
+          <ul>
+            <li>Protocol: HTTP</li>
+            <li>Host: localhost</li>
+            <li>Port: 8080</li>
+          </ul>
+        </div>
+        <div id="monitoring-data">
+          <h3>Monitoring Data</h3>
+          <div id="bandwidth-usage-chart"></div>
+          <ul id="active-connections-list">
+            <li>Active Connections: 0</li>
+          </ul>
+          <ul id="error-log-list">
+            <li>Error Log: No errors</li>
+          </ul>
+          <ul id="user-statistics-list">
+            <li>User Statistics: No users connected</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+```
 
-const loginForm = document.getElementById("login-form");
-const settingsForm = document.getElementById("proxy-settings-form");
-const proxySettingsForm = document.getElementById("proxy-settings-form");
-const refreshDataButton = document.getElementById("refresh-data-button");
-const startProxyButton = document.getElementById("start-proxy-button");
-const stopProxyButton = document.getElementById("stop-proxy-button");
-const proxyStatusElement = document.getElementById("proxy-status");
-const errorMessageElement = document.getElementById("error-message");
+file path: README.md
+content: 
+```md
+# Proxy Project
 
-// Initialize the proxy
+This project is a web proxy with a strict design and structured codebase.
 
-let isProxyRunning = false;
+## Features
 
-// Event listeners
+- Login form with username and password fields
+- Navigation to settings and dashboard pages
+- Proxy status indicator
+- Error message display area
+- Connection status display
+- Proxy configuration form
+- Protocol selection (HTTP/HTTPS)
+- Port configuration
+- Authentication settings
+- Bandwidth limits
+- Real-time connection status
+- Bandwidth usage graphs
+- Active connections list
+- Error log display
+- User statistics
+- Side bar navigation to /index.html, /dashboard.html, and /settings.html
+- Baby blue beautiful and rounded theming
 
-loginForm.addEventListener("submit", onLoginSubmit);
-settingsForm.addEventListener("submit", onSettingsSubmit);
-proxySettingsForm.addEventListener("submit", onProxySettingsSubmit);
-refreshDataButton.addEventListener("click", onRefreshDataClick);
-startProxyButton.addEventListener("click", onStartProxyClick);
-stopProxyButton.addEventListener("click", onStopProxyClick);
+## Usage
 
-// Functions
+1. Clone the repository: `git clone https://github.com/username/proxy-project.git`
+2. Open the `index.html` file in a web browser
+3. Enter your username and password
+4. Click the "Login" button
+5. Navigate to the "Settings" page to configure the proxy
+6. Navigate to the "Dashboard" page to monitor the proxy's status and usage
 
-function onLoginSubmit(event) {
-  event.preventDefault();
+## Development
 
-  // Get the username and password from the form
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
-  // Validate the username and password
-  if (username === "" || password === "") {
-    errorMessageElement.textContent = "Please enter a username and password";
-    return;
-  }
-
-  // Log in to the proxy
-
-  // ...
-
-  // If the login is successful, redirect to the dashboard page
-  window.location.href = "/dashboard.html";
-}
-
-function onSettingsSubmit(event) {
-  event.preventDefault();
-
-  // Get the settings from the form
-  const protocol = document.getElementById("proxy-protocol").value;
-  const host = document.getElementById("proxy-host").value;
-  const port = document.getElementById("proxy-port").value;
-  const username = document.getElementById("proxy-username").value;
-  const password = document.getElementById("proxy-password").value;
-  const bandwidthLimit = document.getElementById("bandwidth-limit").value;
-
-  // Validate the settings
-  if (host === "" || port === "") {
-    errorMessageElement.textContent = "Please enter a proxy host and port";
-    return;
-  }
-
-  // Save the settings to the proxy
-
-  // ...
-
-  // Display a success message
-  errorMessageElement.textContent = "Settings saved successfully";
-}
-
-function onProxySettingsSubmit(event) {
-  event.preventDefault();
-
-  // Get the settings from the form
-  const protocol = document.getElementById("proxy-protocol").value;
-  const host = document.getElementById("proxy-host").value;
-  const port = document.getElementById("proxy-port").value;
-
-  // Validate the settings
-  if (host === "" || port === "") {
-    errorMessageElement.textContent = "Please enter a proxy host and port";
-    return;
-  }
-
-  // Update the proxy settings
-
-  // ...
-
-  // Display a success message
-  errorMessageElement.textContent = "Proxy settings updated successfully";
-}
-
-function onRefreshDataClick() {
-  // Refresh the data on the dashboard page
-
-  // ...
-
-  // Display a success message
-  errorMessageElement.textContent = "Data refreshed successfully";
-}
-
-function onStartProxyClick() {
-  // Start the proxy
-
-  // ...
-
-  // Set the proxy status to running
-  isProxyRunning = true;
-
-  // Update the UI
-  proxyStatusElement.textContent = "Running";
-  startProxyButton.disabled = true;
-  stopProxyButton.disabled = false;
-}
-
-function onStopProxyClick() {
-  // Stop the proxy
-
-  // ...
-
-  // Set the proxy status to stopped
-  isProxyRunning = false;
-
-  // Update the UI
-  proxyStatusElement.textContent = "Stopped";
-  startProxyButton.disabled = false;
-  stopProxyButton.disabled = true;
-}
+1. Make changes to the code
+2. Run `npm start` to start a development server
+3. Open `http://localhost:8080` in a web browser
 ```
