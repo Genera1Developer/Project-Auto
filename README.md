@@ -11,6 +11,7 @@ Create a structured web proxy project with strictly defined files and components
 - script.js (single JavaScript file for all functionality)
 - settings.html (proxy configuration page)
 - dashboard.html (user statistics and monitoring)
+- error.html (error handling page)
 
 **File Requirements:**
 
@@ -61,6 +62,11 @@ Create a structured web proxy project with strictly defined files and components
 - User statistics
 - Same styling as index.html
 - Side bar with links to /index.html, /dashboard.html, and /settings.html
+
+**error.html:**
+
+- Display error messages from other pages
+- Provide links back to index.html
 
 **Code Structure Rules:**
 
