@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: settings.html
 content: 
 
 ```html
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxy Dashboard</title>
+  <title>Proxy Settings</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -18,131 +18,79 @@ content:
       <a href="/settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Proxy Dashboard</h1>
-      <div class="stats">
-        <div class="stat">
-          <h2>Real-time Connections</h2>
-          <span id="connections">0</span>
+      <h1>Proxy Settings</h1>
+      <form id="settings-form">
+        <div class="field">
+          <label for="protocol">Protocol</label>
+          <select name="protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
         </div>
-        <div class="stat">
-          <h2>Bandwidth Usage</h2>
-          <canvas id="bandwidth-chart"></canvas>
+        <div class="field">
+          <label for="port">Port</label>
+          <input type="number" name="port" min="1" max="65535" required>
         </div>
-        <div class="stat">
-          <h2>Active Connections</h2>
-          <ul id="active-connections"></ul>
+        <div class="field">
+          <label for="authentication">Authentication</label>
+          <input type="checkbox" name="authentication" id="authentication">
         </div>
-        <div class="stat">
-          <h2>Error Log</h2>
-          <ul id="error-log"></ul>
+        <div class="field" id="credentials" style="display: none;">
+          <label for="username">Username</label>
+          <input type="text" name="username" required>
+          <label for="password">Password</label>
+          <input type="password" name="password" required>
         </div>
-        <div class="stat">
-          <h2>User Statistics</h2>
-          <ul id="user-stats"></ul>
+        <div class="field">
+          <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
+          <input type="number" name="bandwidth-limit" min="0" max="1000" required>
         </div>
-      </div>
+        <button type="submit">Save</button>
+      </form>
     </div>
   </div>
 
   <script>
-    const connections = document.querySelector('#connections');
-    const bandwidthChart = document.querySelector('#bandwidth-chart');
-    const activeConnections = document.querySelector('#active-connections');
-    const errorLog = document.querySelector('#error-log');
-    const userStats = document.querySelector('#user-stats');
+    const authentication = document.querySelector('#authentication');
+    const credentials = document.querySelector('#credentials');
 
-    // Get real-time connection status
-    const getConnections = () => {
-      fetch('/api/connections')
+    authentication.addEventListener('change', () => {
+      if (authentication.checked) {
+        credentials.style.display = 'block';
+      } else {
+        credentials.style.display = 'none';
+      }
+    });
+
+    const form = document.querySelector('#settings-form');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const data = new FormData(form);
+
+      const settings = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(Object.fromEntries(data)),
+      };
+
+      fetch('/api/settings', settings)
         .then(res => res.json())
         .then(data => {
-          connections.textContent = data.connections;
+          if (data.success) {
+            alert('Settings saved successfully');
+          } else {
+            alert('Failed to save settings');
+          }
         })
         .catch(err => {
           console.error(err);
-          errorLog.innerHTML += `<li>${err}</li>`;
+          alert('Failed to save settings');
         });
-    };
-
-    // Get bandwidth usage data
-    const getBandwidthUsage = () => {
-      fetch('/api/bandwidth')
-        .then(res => res.json())
-        .then(data => {
-          const ctx = bandwidthChart.getContext('2d');
-          const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: data.timestamps,
-              datasets: [{
-                label: 'Bandwidth Usage',
-                data: data.usage
-              }]
-            }
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          errorLog.innerHTML += `<li>${err}</li>`;
-        });
-    };
-
-    // Get active connections
-    const getActiveConnections = () => {
-      fetch('/api/connections/active')
-        .then(res => res.json())
-        .then(data => {
-          activeConnections.innerHTML = '';
-          data.connections.forEach(connection => {
-            activeConnections.innerHTML += `<li>${connection.ip} - ${connection.port}</li>`;
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          errorLog.innerHTML += `<li>${err}</li>`;
-        });
-    };
-
-    // Get error log
-    const getErrorLog = () => {
-      fetch('/api/errors')
-        .then(res => res.json())
-        .then(data => {
-          errorLog.innerHTML = '';
-          data.errors.forEach(error => {
-            errorLog.innerHTML += `<li>${error}</li>`;
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          errorLog.innerHTML += `<li>${err}</li>`;
-        });
-    };
-
-    // Get user statistics
-    const getUserStats = () => {
-      fetch('/api/users')
-        .then(res => res.json())
-        .then(data => {
-          userStats.innerHTML = '';
-          data.users.forEach(user => {
-            userStats.innerHTML += `<li>${user.username} - ${user.connections}</li>`;
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          errorLog.innerHTML += `<li>${err}</li>`;
-        });
-    };
-
-    // Update dashboard every 5 seconds
-    setInterval(() => {
-      getConnections();
-      getBandwidthUsage();
-      getActiveConnections();
-      getErrorLog();
-      getUserStats();
-    }, 5000);
+    });
   </script>
 </body>
 </html>
