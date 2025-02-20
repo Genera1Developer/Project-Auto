@@ -1,1 +1,44 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="sidebar">
+    <a href="./index.html">Home</a>
+    <a href="./settings.html">Settings</a>
+    <a href="./dashboard.html">Dashboard</a>
+  </div>
+
+  <main>
+    <div class="container">
+      <div class="login-form">
+        <h1>Login</h1>
+        <form id="login-form">
+          <label for="username">Username:</label>
+          <input type="text" id="username" />
+          <label for="password">Password:</label>
+          <input type="password" id="password" />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+
+      <div class="status-indicator" id="status-indicator">
+        <p>Proxy Status: <span id="proxy-status">Disconnected</span></p>
+        <p>Connection Status: <span id="connection-status">Disconnected</span></p>
+      </div>
+
+      <div class="error-message" id="error-message"></div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+
+</html>
+```
