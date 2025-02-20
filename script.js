@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,27 +20,25 @@
       </nav>
     </div>
     <div class="main">
-      <form id="login-form">
-        <div class="flex-container">
-          <h1 class="title">Project Auto Proxy</h1>
-          <button class="theme-toggle" id="theme-toggle">
-            <span>☀️</span>
-            <span>🌙</span>
-          </button>
-        </div>
-        <label for="username">Username</label>
-        <input type="text" id="username" />
-        <label for="password">Password</label>
-        <input type="password" id="password" />
-        <button type="submit">Login</button>
-      </form>
-      <div id="proxy-status"></div>
-      <div id="error-message"></div>
-      <div id="connection-status"></div>
+      <div class="topbar">
+        <h1>Project Auto Proxy</h1>
+        <button class="theme-toggle" id="theme-toggle">
+          <span>☀️</span>
+          <span>🌙</span>
+        </button>
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Enter a URL">
+        <button>Go</button>
+      </div>
+      <div class="proxy-status">
+        <p>Status: Idle</p>
+      </div>
+      <div class="error-message"></div>
+      <div class="connection-status"></div>
     </div>
   </div>
   <script src="script.js"></script>
 </body>
 
 </html>
-```
