@@ -1,4 +1,4 @@
-file path: settings.html
+file path: index.html
 content: 
 
 ```html
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxy Settings</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -18,56 +18,43 @@ content:
       <a href="/settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Proxy Settings</h1>
-      <form id="settings-form">
-        <div class="field">
-          <label for="protocol">Protocol</label>
-          <select name="protocol">
-            <option value="http">HTTP</option>
-            <option value="https">HTTPS</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="port">Port</label>
-          <input type="number" name="port" min="1" max="65535" required>
-        </div>
-        <div class="field">
-          <label for="authentication">Authentication</label>
-          <input type="checkbox" name="authentication" id="authentication">
-        </div>
-        <div class="field" id="credentials" style="display: none;">
-          <label for="username">Username</label>
-          <input type="text" name="username" required>
-          <label for="password">Password</label>
-          <input type="password" name="password" required>
-        </div>
-        <div class="field">
-          <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
-          <input type="number" name="bandwidth-limit" min="0" max="1000" required>
-        </div>
-        <button type="submit">Save</button>
-      </form>
+      <h1>Web Proxy</h1>
+      <div class="login-form">
+        <form id="login-form">
+          <div class="field">
+            <label for="username">Username</label>
+            <input type="text" name="username" required>
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input type="password" name="password" required>
+          </div>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+      <div class="status-indicator">
+        <p>Proxy Status: <span id="status">Disconnected</span></p>
+      </div>
+      <div class="error-message" style="display: none;">
+        <p id="error-message"></p>
+      </div>
+      <div class="connection-status" style="display: none;">
+        <p>Connected to: <span id="connected-to"></span></p>
+      </div>
     </div>
   </div>
 
   <script>
-    const authentication = document.querySelector('#authentication');
-    const credentials = document.querySelector('#credentials');
+    const loginForm = document.querySelector('#login-form');
+    const status = document.querySelector('#status');
+    const errorMessage = document.querySelector('#error-message');
+    const connectionStatus = document.querySelector('.connection-status');
+    const connectedTo = document.querySelector('#connected-to');
 
-    authentication.addEventListener('change', () => {
-      if (authentication.checked) {
-        credentials.style.display = 'block';
-      } else {
-        credentials.style.display = 'none';
-      }
-    });
-
-    const form = document.querySelector('#settings-form');
-
-    form.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const data = new FormData(form);
+      const data = new FormData(loginForm);
 
       const settings = {
         method: 'POST',
@@ -77,18 +64,27 @@ content:
         body: JSON.stringify(Object.fromEntries(data)),
       };
 
-      fetch('/api/settings', settings)
+      fetch('/api/login', settings)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            alert('Settings saved successfully');
+            status.textContent = 'Connected';
+            errorMessage.style.display = 'none';
+            connectionStatus.style.display = 'block';
+            connectedTo.textContent = data.host;
           } else {
-            alert('Failed to save settings');
+            status.textContent = 'Disconnected';
+            errorMessage.style.display = 'block';
+            errorMessage.textContent = data.error;
+            connectionStatus.style.display = 'none';
           }
         })
         .catch(err => {
           console.error(err);
-          alert('Failed to save settings');
+          status.textContent = 'Disconnected';
+          errorMessage.style.display = 'block';
+          errorMessage.textContent = 'Failed to connect';
+          connectionStatus.style.display = 'none';
         });
     });
   </script>
