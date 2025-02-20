@@ -15,9 +15,9 @@ content:
   <div class="container">
     <div class="sidebar">
       <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/settings">Settings</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="settings.html">Settings</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
       </ul>
     </div>
 
@@ -48,4 +48,142 @@ content:
 </body>
 
 </html>
+```
+
+file path: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Settings</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="settings.html">Settings</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+
+    <div class="main">
+      <h2 class="form-heading">Proxy Configuration</h2>
+      <div class="settings-form">
+        <form id="settings-form">
+          <label for="protocol">Protocol:</label>
+          <select id="protocol" name="protocol">
+            <option value="HTTP">HTTP</option>
+            <option value="HTTPS">HTTPS</option>
+          </select>
+          <label for="port">Port:</label>
+          <input type="number" id="port" name="port" required />
+          <label for="authentication">Authentication:</label>
+          <input type="checkbox" id="authentication" name="authentication" />
+          <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
+          <input type="number" id="bandwidth-limit" name="bandwidth-limit" />
+          <div class="button-container">
+            <input type="submit" value="Save" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+```
+
+file path: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="settings.html">Settings</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+
+    <div class="main">
+      <h2 class="form-heading">Dashboard</h2>
+      <div class="monitoring-controls">
+        <button id="refresh-data-button">Refresh Data</button>
+      </div>
+      <div class="connection-status" id="connection-status"></div>
+      <div class="bandwidth-usage" id="bandwidth-usage"></div>
+      <div class="active-connections" id="active-connections"></div>
+      <div class="error-log" id="error-log"></div>
+      <div class="user-statistics" id="user-statistics"></div>
+    </div>
+  </div>
+</body>
+
+</html>
+```
+
+file path: README.md
+content: 
+```
+# Web Proxy Project
+
+This project creates a structured web proxy with a baby blue, beautiful, and rounded theme.
+
+## Files
+
+- index.html: Main landing page
+- settings.html: Proxy configuration page
+- dashboard.html: User statistics and monitoring
+- README.md: Description of the site
+
+## Features
+
+- Login form
+- Navigation to settings and dashboard
+- Proxy status indicator
+- Error message display
+- Connection status display
+- External CSS and JS
+- Sidebar with navigation
+- Proxy configuration form
+- Protocol selection
+- Port configuration
+- Authentication settings
+- Bandwidth limits
+- Real-time connection status
+- Bandwidth usage graphs
+- Active connections list
+- Error log display
+- User statistics
+
+## Requirements
+
+- No inline scripts or styles
+- Semantic HTML elements
+- Strict content security policy
+- Error handling for all operations
+- Cross-browser compatibility
+- Mobile responsiveness
+- Clean, consistent indentation
+- Proper commenting
+- No external dependencies
+- No framework usage
 ```
