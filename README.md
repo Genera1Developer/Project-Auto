@@ -5,29 +5,31 @@ content:
 
 **Description:**
 
-This project presents a meticulously organized web proxy system featuring a captivating baby blue and rounded design. The file structure is clearly defined, and each component adheres to specific requirements.
+This meticulously organized web proxy project features an elegant baby blue and rounded design. Its well-defined file structure and distinct component roles allow for efficient development and maintenance.
 
 **Files:**
 
 - index.html: Main landing page with login, navigation, and proxy status information
 - settings.html: Proxy configuration settings interface
 - dashboard.html: User statistics and monitoring dashboard
-- error.html: Custom error page for handling proxy configuration or connection issues
+- error.html: Custom error page for proxy configuration or connection issues
 - loggedOut.html: Page displayed after user logs out or session expires
+- style.css: External stylesheet for consistent styling
+- script.js: External JavaScript file for functionality
 
 **Features:**
 
-- Proxy configuration management
+- Intuitive proxy configuration management
 - Real-time connection tracking and analytics
-- Error detection and reporting
+- Comprehensive error detection and reporting
 
-**Development Requirements:**
+**Technical Requirements:**
 
 - HTML5, CSS3, JavaScript
 - Strict content security policy
-- Comprehensive error handling
-- Compatibility across browsers
-- Mobile responsiveness
+- Error handling for robust operation
+- Cross-browser compatibility for accessibility
+- Mobile responsiveness for seamless user experience
 
 **Usage:**
 
@@ -39,4 +41,4 @@ This project presents a meticulously organized web proxy system featuring a capt
 
 **Contributions:**
 
-We welcome contributions! Adhere to the project's coding standards and guidelines.
+We encourage contributions that align with the project's coding standards and guidelines. Join us in enhancing this structured web proxy system!
