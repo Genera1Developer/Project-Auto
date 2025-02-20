@@ -3,76 +3,74 @@ content:
 ```html
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy Settings</title>
-  <link href="style.css" rel="stylesheet" />
-  <script src="script.js"></script>
+    <meta charset="UTF-8" />
+    <title>Web Proxy Settings</title>
+    <link href="style.css" rel="stylesheet" />
+    <script src="script.js"></script>
 </head>
 
 <body>
-  <div class="sidebar">
+<div class="sidebar">
     <ul>
-      <li><a href="/index.html">Home</a></li>
-      <li><a href="/dashboard.html">Dashboard</a></li>
-      <li class="active"><a href="#">Settings</a></li>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li class="active"><a href="#">Settings</a></li>
     </ul>
-  </div>
-  <div class="main">
+</div>
+<div class="main">
     <h1>Proxy Settings</h1>
     <form id="settings-form">
-      <label for="protocol">Protocol:</label>
-      <select name="protocol">
-        <option value="http">HTTP</option>
-        <option value="https">HTTPS</option>
-      </select>
-      <br />
-      <label for="host">Host:</label>
-      <input type="text" name="host" />
-      <br />
-      <label for="port">Port:</label>
-      <input type="number" name="port" />
-      <br />
-      <label for="username">Username:</label>
-      <input type="text" name="username" />
-      <br />
-      <label for="password">Password:</label>
-      <input type="password" name="password" />
-      <br />
-      <label for="bandwidth-limit">Bandwidth Limit (MB):</label>
-      <input type="number" name="bandwidth-limit" />
-      <br />
-      <button type="submit">Save</button>
+        <label for="protocol">Protocol:</label>
+        <select name="protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+        </select>
+        <br />
+        <label for="host">Host:</label>
+        <input type="text" name="host" />
+        <br />
+        <label for="port">Port:</label>
+        <input type="number" name="port" />
+        <br />
+        <label for="username">Username:</label>
+        <input type="text" name="username" />
+        <br />
+        <label for="password">Password:</label>
+        <input type="password" name="password" />
+        <br />
+        <label for="bandwidth-limit">Bandwidth Limit (MB):</label>
+        <input type="number" name="bandwidth-limit" />
+        <br />
+        <button type="submit">Save</button>
     </form>
-  </div>
-  <script>
+</div>
+<script>
     const form = document.getElementById("settings-form");
 
     form.addEventListener("submit", (e) => {
-      e.preventDefault();
+        e.preventDefault();
 
-      const data = new FormData(form);
+        const data = new FormData(form);
 
-      fetch("/api/settings", {
-        method: "POST",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            alert("Settings saved successfully!");
-          } else {
-            alert("Error saving settings!");
-          }
+        fetch("/api/settings", {
+            method: "POST",
+            body: data,
         })
-        .catch((err) => {
-          alert("Error saving settings!");
-          console.error(err);
-        });
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.success) {
+                    alert("Settings saved successfully!");
+                } else {
+                    alert("Error saving settings!");
+                }
+            })
+            .catch((err) => {
+                alert("Error saving settings!");
+                console.error(err);
+            });
     });
-  </script>
+</script>
 </body>
-
 </html>
 ```
