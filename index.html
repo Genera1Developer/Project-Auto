@@ -1,4 +1,4 @@
-file path: index.html
+file path: settings.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,9 +6,9 @@ content:
 
 <head>
   <meta charset="UTF-8" />
-  <title>Web Proxy</title>
+  <title>Settings</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="index.js"></script>
+  <script src="settings.js"></script>
 </head>
 
 <body>
@@ -21,24 +21,33 @@ content:
       </ul>
     </div>
     <div class="main">
-      <h1>Web Proxy</h1>
-      <form id="login-form" onsubmit="return login();">
+      <h1>Settings</h1>
+      <form id="settings-form" onsubmit="return saveSettings();">
+        <div class="form-group">
+          <label for="protocol">Protocol</label>
+          <select id="protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="port">Port</label>
+          <input id="port" type="number" required>
+        </div>
         <div class="form-group">
           <label for="username">Username</label>
-          <input id="username" type="text" required>
+          <input id="username" type="text">
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input id="password" type="password" required>
+          <input id="password" type="password">
         </div>
-        <button type="submit">Login</button>
+        <div class="form-group">
+          <label for="bandwidth-limit">Bandwidth Limit</label>
+          <input id="bandwidth-limit" type="number">
+        </div>
+        <button type="submit">Save</button>
       </form>
-      <div id="proxy-status">
-        <span>Proxy Status:</span>
-        <strong id="proxy-status-text">Stopped</strong>
-      </div>
-      <div id="error-message"></div>
-      <div id="connection-status"></div>
     </div>
   </div>
 </body>
@@ -46,166 +55,105 @@ content:
 </html>
 ```
 
-file path: style.css
-content: 
-```css
-/* Reset styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Body styles */
-body {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 14px;
-  color: #333;
-  background-color: #f5f5f5;
-}
-
-/* Container styles */
-.container {
-  display: flex;
-  height: 100vh;
-}
-
-/* Sidebar styles */
-.sidebar {
-  width: 250px;
-  background-color: #babyblue;
-  border-right: 1px solid #ccc;
-}
-
-.sidebar ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar li {
-  padding: 10px 15px;
-}
-
-.sidebar li a {
-  text-decoration: none;
-  color: #fff;
-}
-
-/* Main styles */
-.main {
-  flex: 1;
-  padding: 20px;
-}
-
-/* Form styles */
-form {
-  margin-top: 20px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input[type="text"],
-input[type="password"] {
-  width: 100%;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-button[type="submit"] {
-  background-color: #007bff;
-  color: #fff;
-  padding: 5px 10px;
-  border: 1px solid #007bff;
-  border-radius: 5px;
-}
-
-/* Proxy status styles */
-#proxy-status {
-  margin-top: 20px;
-}
-
-#proxy-status-text {
-  color: #007bff;
-}
-
-/* Error message styles */
-#error-message {
-  color: #d9534f;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-/* Connection status styles */
-#connection-status {
-  color: #007bff;
-  font-weight: bold;
-  margin-top: 10px;
-}
-```
-
-file path: index.js
+file path: settings.js
 content: 
 ```javascript
-function login() {
-  // Get the username and password from the form
+function saveSettings() {
+  // Get the settings from the form
+  const protocol = document.getElementById('protocol').value;
+  const port = document.getElementById('port').value;
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
+  const bandwidthLimit = document.getElementById('bandwidth-limit').value;
 
-  // Send a request to the server to authenticate the user
-  fetch('login.php', {
+  // Send a request to the server to save the settings
+  fetch('save_settings.php', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
+      protocol: protocol,
+      port: port,
       username: username,
-      password: password
+      password: password,
+      bandwidthLimit: bandwidthLimit
     })
   })
   .then(response => response.json())
   .then(data => {
     if (data.success) {
-      // If the user is authenticated, redirect them to the dashboard
-      window.location.href = '/dashboard.html';
+      // If the settings are saved successfully, display a success message
+      alert('Settings saved successfully');
     } else {
-      // If the user is not authenticated, display an error message
-      document.getElementById('error-message').innerHTML = data.error;
+      // If there is an error, display an error message
+      alert(data.error);
     }
   })
   .catch(error => {
     // If there is an error, display it
-    document.getElementById('error-message').innerHTML = error.message;
+    alert(error.message);
   });
 
   return false;
 }
+```
 
-// Check the proxy status every second
-setInterval(() => {
-  fetch('proxy_status.php')
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'running') {
-      document.getElementById('proxy-status-text').innerHTML = 'Running';
-    } else {
-      document.getElementById('proxy-status-text').innerHTML = 'Stopped';
-    }
-  })
-  .catch(error => {
-    // If there is an error, display it
-    document.getElementById('error-message').innerHTML = error.message;
-  });
-}, 1000);
+file path: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html>
 
-// Check the connection status every second
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="dashboard.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+      </ul>
+    </div>
+    <div class="main">
+      <h1>Dashboard</h1>
+      <div class="section">
+        <h2>Real-Time Connection Status</h2>
+        <div id="connection-status"></div>
+      </div>
+      <div class="section">
+        <h2>Bandwidth Usage Graphs</h2>
+        <canvas id="bandwidth-usage-graph"></canvas>
+      </div>
+      <div class="section">
+        <h2>Active Connections</h2>
+        <ul id="active-connections"></ul>
+      </div>
+      <div class="section">
+        <h2>Error Log</h2>
+        <ul id="error-log"></ul>
+      </div>
+      <div class="section">
+        <h2>User Statistics</h2>
+        <ul id="user-statistics"></ul>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+```
+
+file path: dashboard.js
+content: 
+```javascript
+// Update the connection status every second
 setInterval(() => {
   fetch('connection_status.php')
   .then(response => response.json())
@@ -218,7 +166,105 @@ setInterval(() => {
   })
   .catch(error => {
     // If there is an error, display it
-    document.getElementById('error-message').innerHTML = error.message;
+    document.getElementById('error-log').innerHTML += '<li>' + error.message + '</li>';
   });
 }, 1000);
-```
+
+// Update the bandwidth usage graph every second
+setInterval(() => {
+  fetch('bandwidth_usage.php')
+  .then(response => response.json())
+  .then(data => {
+    // Create a new chart if it doesn't exist
+    if (!chart) {
+      chart = new Chart(document.getElementById('bandwidth-usage-graph'), {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: 'Bandwidth Usage',
+            data: []
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    }
+
+    // Add the new data to the chart
+    chart.data.labels.push(data.timestamp);
+    chart.data.datasets[0].data.push(data.bandwidth);
+
+    // Update the chart
+    chart.update();
+  })
+  .catch(error => {
+    // If there is an error, display it
+    document.getElementById('error-log').innerHTML += '<li>' + error.message + '</li>';
+  });
+}, 1000);
+
+// Update the active connections list every second
+setInterval(() => {
+  fetch('active_connections.php')
+  .then(response => response.json())
+  .then(data => {
+    // Empty the active connections list
+    document.getElementById('active-connections').innerHTML = '';
+
+    // Add each active connection to the list
+    for (let i = 0; i < data.connections.length; i++) {
+      const connection = data.connections[i];
+
+      const li = document.createElement('li');
+      li.innerHTML = connection.ip + ':' + connection.port;
+
+      document.getElementById('active-connections').appendChild(li);
+    }
+  })
+  .catch(error => {
+    // If there is an error, display it
+    document.getElementById('error-log').innerHTML += '<li>' + error.message + '</li>';
+  });
+}, 1000);
+
+// Update the error log every second
+setInterval(() => {
+  fetch('error_log.php')
+  .then(response => response.json())
+  .then(data => {
+    // Empty the error log
+    document.getElementById('error-log').innerHTML = '';
+
+    // Add each error to the log
+    for (let i = 0; i < data.errors.length; i++) {
+      const error = data.errors[i];
+
+      const li = document.createElement('li');
+      li.innerHTML = error.message;
+
+      document.getElementById('error-log').appendChild(li);
+    }
+  })
+  .catch(error => {
+    // If there is an error, display it
+    document.getElementById('error-log').innerHTML += '<li>' + error.message + '</li>';
+  });
+}, 1000);
+
+// Update the user statistics every second
+setInterval(() => {
+  fetch('user_statistics.php')
+  .then(response => response.json())
+  .then(data => {
+    // Empty the user statistics list
+    document.getElementById('user-statistics').innerHTML = '';
+
+    // Add each user
