@@ -28,7 +28,7 @@ content:
         <a class="reset-password" href="#">Forgot Password?</a>
       </div>
       <div class="proxy-status">
-        <p>Proxy Status: <span>Idle</span></p>
+        <p>Proxy Status: <span id="proxy-status">Idle</span></p>
       </div>
       <div class="error-message"></div>
       <div class="connection-status"></div>
@@ -36,6 +36,7 @@ content:
   </div>
   <script>
     const loginForm = document.getElementById('login-form');
+    const proxyStatus = document.getElementById('proxy-status');
 
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -44,6 +45,8 @@ content:
       
       // Logic to handle login goes here
     });
+
+    // Logic to update proxy status goes here
   </script>
 </body>
 </html>
