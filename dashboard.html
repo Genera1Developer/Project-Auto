@@ -3,15 +3,13 @@ content:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web Proxy Dashboard</title>
-  <link rel="stylesheet" href="./styles.css" />
-  <script src="./scripts.js"></script>
+  <link rel="stylesheet" href="./css/dashboard.css" />
+  <script src="./js/dashboard.js"></script>
 </head>
-
 <body>
   <div class="sidebar babyblue rounded">
     <ul>
@@ -24,24 +22,20 @@ content:
   <div class="main">
     <h1>Dashboard</h1>
 
-    <!-- Real-time connection status -->
-    <div class="section">
+    <div class="section real-time-connection-status">
       <h2>Connection Status</h2>
-      <div id="connection-status" class="status-indicator connected"></div>
-      <span>Connected</span>
+      <div id="connection-status"></div>
     </div>
 
-    <!-- Bandwidth usage graphs -->
-    <div class="section">
+    <div class="section bandwidth-usage">
       <h2>Bandwidth Usage</h2>
-      <div id="bandwidth-graph-download" class="bandwidth-graph download"></div>
-      <div id="bandwidth-graph-upload" class="bandwidth-graph upload"></div>
+      <div id="bandwidth-graph-download"></div>
+      <div id="bandwidth-graph-upload"></div>
     </div>
 
-    <!-- Active connections list -->
-    <div class="section">
+    <div class="section active-connections">
       <h2>Active Connections</h2>
-      <table id="active-connections">
+      <table id="active-connections-table">
         <thead>
           <tr>
             <th>User</th>
@@ -51,33 +45,23 @@ content:
           </tr>
         </thead>
         <tbody>
-          <!-- Dynamically populate this table with active connections -->
         </tbody>
       </table>
     </div>
 
-    <!-- Add any other relevant sections here -->
-
-    <!-- Error log display -->
-    <div class="section">
+    <div class="section error-log">
       <h2>Error Log</h2>
-      <ul id="error-log-list" class="error-log-list">
-        <!-- Dynamically populate this list with errors -->
+      <ul id="error-log-list">
       </ul>
     </div>
 
-    <!-- User statistics -->
-    <div class="section">
+    <div class="section user-statistics">
       <h2>User Statistics</h2>
-      <div id="user-statistics-stats" class="user-statistics-stats">
-        <!-- Dynamically populate this section with user statistics -->
+      <div id="user-statistics-stats">
       </div>
     </div>
 
-    <!-- Add any other relevant sections here -->
-
   </div>
 </body>
-
 </html>
 ```
