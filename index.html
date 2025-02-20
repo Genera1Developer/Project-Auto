@@ -1,4 +1,4 @@
-file: index.html
+file: settings.html
 
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ file: index.html
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy</title>
+  <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -20,23 +20,42 @@ file: index.html
 
   <main>
     <div class="container">
-      <div class="login-form">
-        <h1>Login</h1>
-        <form id="login-form">
-          <label for="username">Username:</label>
-          <input type="text" id="username" />
-          <label for="password">Password:</label>
-          <input type="password" id="password" />
-          <button type="submit">Login</button>
-        </form>
-      </div>
+      <h1>Proxy Settings</h1>
 
-      <div class="status-indicator" id="status-indicator">
-        <p>Proxy Status: <span id="proxy-status">Disconnected</span></p>
-        <p>Connection Status: <span id="connection-status">Disconnected</span></p>
-      </div>
+      <form id="settings-form">
+        <div class="form-group">
+          <label for="protocol">Protocol:</label>
+          <select id="protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+        </div>
 
-      <div class="error-message" id="error-message"></div>
+        <div class="form-group">
+          <label for="port">Port:</label>
+          <input type="number" id="port" />
+        </div>
+
+        <div class="form-group">
+          <label for="authentication">Authentication:</label>
+          <input type="checkbox" id="authentication" />
+        </div>
+
+        <div class="form-group" id="auth-settings" style="display: none;">
+          <label for="auth-username">Username:</label>
+          <input type="text" id="auth-username" />
+
+          <label for="auth-password">Password:</label>
+          <input type="password" id="auth-password" />
+        </div>
+
+        <div class="form-group">
+          <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
+          <input type="number" id="bandwidth-limit" />
+        </div>
+
+        <button type="submit">Save</button>
+      </form>
     </div>
   </main>
   <script src="script.js"></script>
@@ -45,116 +64,63 @@ file: index.html
 </html>
 ```
 
-file: styles.css
+file: dashboard.html
 
-```css
-/* Mobile-first responsive design */
-@media (max-width: 768px) {
-  .sidebar {
-    display: none;
-  }
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-  main {
-    width: 100%;
-    margin: 0;
-  }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy - Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-  .login-form {
-    margin: 0 auto;
-  }
+<body>
+  <div class="sidebar">
+    <a href="./index.html">Home</a>
+    <a href="./settings.html">Settings</a>
+    <a href="./dashboard.html">Dashboard</a>
+  </div>
 
-  .error-message {
-    margin: 0 auto;
-    width: 100%;
-    text-align: center;
-  }
-}
+  <main>
+    <div class="container">
+      <h1>Proxy Dashboard</h1>
 
-@media (min-width: 769px) {
-  .sidebar {
-    width: 20%;
-    height: 100vh;
-    background-color: #f5f5f5;
-  }
+      <div class="status-indicator" id="dashboard-status-indicator">
+        <p>Proxy Status: <span id="dashboard-proxy-status"></span></p>
+        <p>Connection Status: <span id="dashboard-connection-status"></span></p>
+      </div>
 
-  main {
-    width: 80%;
-    margin-left: 20%;
-  }
+      <div class="graph-container">
+        <canvas id="bandwidth-chart"></canvas>
+      </div>
 
-  .login-form {
-    margin: 0;
-    width: 50%;
-    margin: auto;
-  }
+      <div class="active-connections" id="active-connections">
+        <h2>Active Connections</h2>
+        <ul>
+          <!-- Populate with active connections -->
+        </ul>
+      </div>
 
-  .error-message {
-    margin: 0 auto;
-    width: 50%;
-    text-align: center;
-  }
-}
+      <div class="error-log" id="error-log">
+        <h2>Error Log</h2>
+        <ul>
+          <!-- Populate with error messages -->
+        </ul>
+      </div>
 
-/* Color scheme variables */
-:root {
-  --primary-color: #007bff;
-  --secondary-color: #6c757d;
-  --success-color: #28a745;
-  --error-color: #dc3545;
-  --text-color: #212529;
-}
+      <div class="user-statistics" id="user-statistics">
+        <h2>User Statistics</h2>
+        <ul>
+          <!-- Populate with user statistics -->
+        </ul>
+      </div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
 
-/* Component class naming */
-.button {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-}
-
-.error {
-  color: var(--error-color);
-  font-weight: bold;
-}
-
-.success {
-  color: var(--success-color);
-  font-weight: bold;
-}
-```
-
-file: script.js
-
-```javascript
-const loginForm = document.getElementById("login-form");
-const usernameInput = document.getElementById("username");
-const passwordInput = document.getElementById("password");
-const statusIndicator = document.getElementById("status-indicator");
-const proxyStatus = document.getElementById("proxy-status");
-const connectionStatus = document.getElementById("connection-status");
-const errorMessage = document.getElementById("error-message");
-
-// Proxy connection management
-const connectProxy = () => {
-  // Implement proxy connection logic
-};
-
-const disconnectProxy = () => {
-  // Implement proxy disconnection logic
-};
-
-// User authentication logic
-const authenticateUser = (e) => {
-  e.preventDefault();
-
-  // Implement user authentication logic
-};
-
-// Event handling
-loginForm.addEventListener("submit", authenticateUser);
-
-// Initial state
-disconnectProxy();
+</html>
 ```
