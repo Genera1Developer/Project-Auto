@@ -38,3 +38,8 @@ This project presents a web proxy system featuring a visually pleasing baby blue
 **Contributions:**
 
 We welcome contributions! Adhere to the project's coding standards and guidelines.
+
+**Additional Files:**
+
+- error.html: Custom error page for handling proxy configuration or connection issues
+- loggedOut.html: Page displayed after user logs out or session expires
