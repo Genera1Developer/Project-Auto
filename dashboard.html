@@ -9,13 +9,14 @@ content:
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Web Proxy Dashboard</title>
     <link rel="stylesheet" href="./css/dashboard.css" />
+    <link rel="stylesheet" href="./css/style.css" />
     <script src="./js/dashboard.js"></script>
 </head>
 
 <body>
     <div class="sidebar babyblue rounded">
         <ul>
-            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a class="active" href="dashboard.html">Dashboard</a></li>
             <li><a href="settings.html">Settings</a></li>
             <li><a href="index.html">Home</a></li>
         </ul>
@@ -23,10 +24,15 @@ content:
 
     <div class="main">
         <h1>Dashboard</h1>
+        <div class="status-bar">
+            <div id="connection-status" class="status-indicator"></div>
+            <div id="proxy-status" class="status-indicator"></div>
+            <div id="error-count" class="status-indicator"></div>
+        </div>
 
         <div class="section real-time-connection-status">
             <h2>Connection Status</h2>
-            <div id="connection-status"></div>
+            <div id="connection-status-details"></div>
         </div>
 
         <div class="section bandwidth-usage">
@@ -59,6 +65,7 @@ content:
         <div class="section user-statistics">
             <h2>User Statistics</h2>
             <div id="user-statistics-stats"></div>
+            <div id="user-statistics-chart"></div>
         </div>
 
     </div>
