@@ -1,4 +1,4 @@
-file path: index.html
+file path: settings.html
 content: 
 
 ```html
@@ -18,45 +18,45 @@ content:
       <a href="/settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1 class="title">Web Proxy</h1>
-      <div class="login-form">
-        <form id="login-form">
+      <h1 class="title">Settings</h1>
+      <div class="settings-form">
+        <form id="settings-form">
+          <div class="field">
+            <label for="protocol">Protocol</label>
+            <select name="protocol">
+              <option value="http">HTTP</option>
+              <option value="https">HTTPS</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="port">Port</label>
+            <input type="number" name="port" min="0" max="65535" required>
+          </div>
           <div class="field">
             <label for="username">Username</label>
-            <input type="text" name="username" required>
+            <input type="text" name="username">
           </div>
           <div class="field">
             <label for="password">Password</label>
-            <input type="password" name="password" required>
+            <input type="password" name="password">
           </div>
-          <button type="submit">Login</button>
+          <div class="field">
+            <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
+            <input type="number" name="bandwidth-limit" min="0" required>
+          </div>
+          <button type="submit">Save</button>
         </form>
-      </div>
-      <div class="status">
-        <h2 id="status">Status: <span class="status-text">Loading...</span></h2>
-        <div class="error-message" id="error-message"></div>
-      </div>
-      <div class="connection-status" id="connection-status">
-        <span>Connection:</span>
-        <span id="connection-status-icon"></span>
-        <span id="connection-status-text"></span>
       </div>
     </div>
   </div>
 
   <script>
-    const loginForm = document.querySelector('#login-form');
-    const status = document.querySelector('#status');
-    const statusText = document.querySelector('.status-text');
-    const errorMessage = document.querySelector('#error-message');
-    const connectionStatus = document.querySelector('#connection-status');
-    const connectionStatusIcon = document.querySelector('#connection-status-icon');
-    const connectionStatusText = document.querySelector('#connection-status-text');
+    const settingsForm = document.querySelector('#settings-form');
 
-    loginForm.addEventListener('submit', (e) => {
+    settingsForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const data = new FormData(loginForm);
+      const data = new FormData(settingsForm);
 
       const settings = {
         method: 'POST',
@@ -66,34 +66,19 @@ content:
         body: JSON.stringify(Object.fromEntries(data)),
       };
 
-      fetch('/api/login', settings)
+      fetch('/api/settings', settings)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            statusText.textContent = 'Logged in';
-            connectionStatusIcon.classList.add('online');
-            connectionStatusText.textContent = 'Online';
+            alert('Settings saved');
           } else {
-            errorMessage.textContent = data.error;
+            alert('Failed to save settings');
           }
         })
         .catch(err => {
           console.error(err);
-          statusText.textContent = 'Error connecting to proxy';
-          connectionStatusIcon.classList.add('offline');
-          connectionStatusText.textContent = 'Offline';
-          errorMessage.textContent = 'Failed to connect to proxy';
+          alert('Failed to save settings');
         });
-    });
-
-    window.addEventListener('online', () => {
-      connectionStatusIcon.classList.add('online');
-      connectionStatusText.textContent = 'Online';
-    });
-
-    window.addEventListener('offline', () => {
-      connectionStatusIcon.classList.remove('online');
-      connectionStatusText.textContent = 'Offline';
     });
   </script>
 </body>
