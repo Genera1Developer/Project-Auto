@@ -1,4 +1,4 @@
-file path: settings.html
+file path: index.html
 content: 
 
 ```html
@@ -18,20 +18,9 @@ content:
       <a href="/settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1 class="title">Settings</h1>
-      <div class="form">
-        <form id="settings-form">
-          <div class="field">
-            <label for="protocol">Protocol</label>
-            <select name="protocol">
-              <option value="http">HTTP</option>
-              <option value="https">HTTPS</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="port">Port</label>
-            <input type="number" name="port" required min="1" max="65535">
-          </div>
+      <div class="login-form">
+        <form id="login-form">
+          <h1>Login</h1>
           <div class="field">
             <label for="username">Username</label>
             <input type="text" name="username" required>
@@ -40,23 +29,27 @@ content:
             <label for="password">Password</label>
             <input type="password" name="password" required>
           </div>
-          <div class="field">
-            <label for="bandwidth-limit">Bandwidth limit (MB)</label>
-            <input type="number" name="bandwidth-limit" required min="0">
-          </div>
-          <button type="submit">Save</button>
+          <button type="submit">Log in</button>
         </form>
+      </div>
+      <div class="status">
+        <p>Proxy status: <span id="proxy-status">Disconnected</span></p>
+        <p>Connection status: <span id="connection-status">Disconnected</span></p>
+        <p>Error message: <span id="error-message"></span></p>
       </div>
     </div>
   </div>
 
   <script>
-    const settingsForm = document.querySelector('#settings-form');
+    const loginForm = document.querySelector('#login-form');
+    const proxyStatus = document.querySelector('#proxy-status');
+    const connectionStatus = document.querySelector('#connection-status');
+    const errorMessage = document.querySelector('#error-message');
 
-    settingsForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const data = new FormData(settingsForm);
+      const data = new FormData(loginForm);
 
       const settings = {
         method: 'POST',
@@ -66,18 +59,24 @@ content:
         body: JSON.stringify(Object.fromEntries(data)),
       };
 
-      fetch('/api/settings', settings)
+      fetch('/api/login', settings)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            alert('Settings saved successfully');
+            proxyStatus.textContent = 'Connected';
+            connectionStatus.textContent = 'Connected';
+            errorMessage.textContent = '';
           } else {
-            alert('Failed to save settings');
+            proxyStatus.textContent = 'Disconnected';
+            connectionStatus.textContent = 'Disconnected';
+            errorMessage.textContent = data.error;
           }
         })
         .catch(err => {
           console.error(err);
-          alert('Failed to save settings');
+          proxyStatus.textContent = 'Disconnected';
+          connectionStatus.textContent = 'Disconnected';
+          errorMessage.textContent = 'Failed to connect';
         });
     });
   </script>
