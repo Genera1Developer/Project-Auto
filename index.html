@@ -1,3 +1,5 @@
+file: index.html
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -41,4 +43,118 @@
 </body>
 
 </html>
+```
+
+file: styles.css
+
+```css
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+
+  main {
+    width: 100%;
+    margin: 0;
+  }
+
+  .login-form {
+    margin: 0 auto;
+  }
+
+  .error-message {
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar {
+    width: 20%;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+
+  main {
+    width: 80%;
+    margin-left: 20%;
+  }
+
+  .login-form {
+    margin: 0;
+    width: 50%;
+    margin: auto;
+  }
+
+  .error-message {
+    margin: 0 auto;
+    width: 50%;
+    text-align: center;
+  }
+}
+
+/* Color scheme variables */
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --success-color: #28a745;
+  --error-color: #dc3545;
+  --text-color: #212529;
+}
+
+/* Component class naming */
+.button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.error {
+  color: var(--error-color);
+  font-weight: bold;
+}
+
+.success {
+  color: var(--success-color);
+  font-weight: bold;
+}
+```
+
+file: script.js
+
+```javascript
+const loginForm = document.getElementById("login-form");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const statusIndicator = document.getElementById("status-indicator");
+const proxyStatus = document.getElementById("proxy-status");
+const connectionStatus = document.getElementById("connection-status");
+const errorMessage = document.getElementById("error-message");
+
+// Proxy connection management
+const connectProxy = () => {
+  // Implement proxy connection logic
+};
+
+const disconnectProxy = () => {
+  // Implement proxy disconnection logic
+};
+
+// User authentication logic
+const authenticateUser = (e) => {
+  e.preventDefault();
+
+  // Implement user authentication logic
+};
+
+// Event handling
+loginForm.addEventListener("submit", authenticateUser);
+
+// Initial state
+disconnectProxy();
 ```
