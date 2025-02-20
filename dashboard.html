@@ -164,4 +164,75 @@ content:
               <div>Connected</div>
             </div>
           </div>
-          <div class="dashboard-card-
+          <div class="dashboard-card-body">
+            <p>Proxy is currently active and connected.</p>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <div class="dashboard-card-title">Bandwidth Usage</div>
+          </div>
+          <div class="dashboard-card-body">
+            <div class="bandwidth-usage-graph"></div>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <div class="dashboard-card-title">Active Connections</div>
+          </div>
+          <div class="dashboard-card-body">
+            <ul class="active-connections-list">
+              <li class="active-connections-list-item">
+                <div>127.0.0.1</div>
+                <div>8080</div>
+              </li>
+              <li class="active-connections-list-item">
+                <div>192.168.1.10</div>
+                <div>443</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <div class="dashboard-card-title">Error Log</div>
+          </div>
+          <div class="dashboard-card-body">
+            <div class="error-log">
+              <div class="error-log-entry">
+                <p>Error: Connection refused</p>
+                <p>Time: 2023-03-08 10:30:00</p>
+              </div>
+              <div class="error-log-entry">
+                <p>Error: Timeout</p>
+                <p>Time: 2023-03-08 10:35:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <div class="dashboard-card-header">
+            <div class="dashboard-card-title">User Statistics</div>
+          </div>
+          <div class="dashboard-card-body">
+            <table class="user-statistics-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Requests</th>
+                  <th>Bandwidth Used</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>user1</td>
+                  <td>100</td>
+                  <td>10 MB</td>
+                </tr>
+                <tr>
+                  <td>user2</td>
+                  <td>
