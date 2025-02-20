@@ -48,3 +48,184 @@ content:
 
 </html>
 ```
+
+file path: style.css
+content: 
+```css
+/* Basic reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Container */
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #E5F9FF;
+  width: 200px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #000;
+}
+
+.sidebar a:hover {
+  background-color: #F5F5F5;
+}
+
+/* Main content area */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Login form */
+.login-form {
+  margin-bottom: 20px;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-form button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Content area */
+#content-area {
+  background-color: #FAFAFA;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+#content-area h1 {
+  margin-bottom: 20px;
+}
+
+/* Status indicators */
+.status {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.status-text {
+  margin-right: 5px;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ddd;
+}
+
+.status-indicator.active {
+  background-color: #007bff;
+}
+
+/* Error message */
+#error-message {
+  color: #d32f2f;
+  font-weight: bold;
+}
+```
+
+file path: index.js
+content: 
+```javascript
+(function () {
+  // Get elements
+  const loginForm = document.getElementById('login-form');
+  const contentArea = document.getElementById('content-area');
+  const proxyStatus = document.getElementById('proxy-status');
+  const connectionStatus = document.getElementById('connection-status');
+  const errorMessage = document.getElementById('error-message');
+
+  // Set initial state
+  let isLoggedIn = false;
+  let proxyActive = false;
+  let connectionActive = false;
+
+  // Add event listeners
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Get username and password
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // Check if username and password are correct
+    if (username === 'admin' && password === 'password') {
+      // Set logged in state
+      isLoggedIn = true;
+
+      // Hide login form and show content area
+      loginForm.classList.add('hidden');
+      contentArea.classList.remove('hidden');
+
+      // Update proxy and connection status
+      proxyStatus.classList.add('active');
+      connectionStatus.classList.add('active');
+    } else {
+      // Display error message
+      errorMessage.textContent = 'Invalid username or password';
+    }
+  });
+
+  // Check proxy status every second
+  setInterval(() => {
+    if (isLoggedIn) {
+      // Update proxy status
+      if (Math.random() > 0.5) {
+        proxyStatus.classList.add('active');
+        proxyActive = true;
+      } else {
+        proxyStatus.classList.remove('active');
+        proxyActive = false;
+      }
+
+      // Update connection status
+      if (Math.random() > 0.5) {
+        connectionStatus.classList.add('active');
+        connectionActive = true;
+      } else {
+        connectionStatus.classList.remove('active');
+        connectionActive = false;
+      }
+    }
+  }, 1000);
+})();
+```
