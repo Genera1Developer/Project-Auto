@@ -45,3 +45,180 @@ content:
 
 </html>
 ```
+
+file path: style.css
+content: 
+```css
+/* Reset styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+/* Container styles */
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  background-color: #babyblue;
+  border-right: 1px solid #ccc;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 10px 15px;
+}
+
+.sidebar li a {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* Main styles */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Form styles */
+form {
+  margin-top: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button[type="submit"] {
+  background-color: #007bff;
+  color: #fff;
+  padding: 5px 10px;
+  border: 1px solid #007bff;
+  border-radius: 5px;
+}
+
+/* Proxy status styles */
+#proxy-status {
+  margin-top: 20px;
+}
+
+#proxy-status-text {
+  color: #007bff;
+}
+
+/* Error message styles */
+#error-message {
+  color: #d9534f;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Connection status styles */
+#connection-status {
+  color: #007bff;
+  font-weight: bold;
+  margin-top: 10px;
+}
+```
+
+file path: index.js
+content: 
+```javascript
+function login() {
+  // Get the username and password from the form
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  // Send a request to the server to authenticate the user
+  fetch('login.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      // If the user is authenticated, redirect them to the dashboard
+      window.location.href = '/dashboard.html';
+    } else {
+      // If the user is not authenticated, display an error message
+      document.getElementById('error-message').innerHTML = data.error;
+    }
+  })
+  .catch(error => {
+    // If there is an error, display it
+    document.getElementById('error-message').innerHTML = error.message;
+  });
+
+  return false;
+}
+
+// Check the proxy status every second
+setInterval(() => {
+  fetch('proxy_status.php')
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'running') {
+      document.getElementById('proxy-status-text').innerHTML = 'Running';
+    } else {
+      document.getElementById('proxy-status-text').innerHTML = 'Stopped';
+    }
+  })
+  .catch(error => {
+    // If there is an error, display it
+    document.getElementById('error-message').innerHTML = error.message;
+  });
+}, 1000);
+
+// Check the connection status every second
+setInterval(() => {
+  fetch('connection_status.php')
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'connected') {
+      document.getElementById('connection-status').innerHTML = 'Connected';
+    } else {
+      document.getElementById('connection-status').innerHTML = 'Disconnected';
+    }
+  })
+  .catch(error => {
+    // If there is an error, display it
+    document.getElementById('error-message').innerHTML = error.message;
+  });
+}, 1000);
+```
