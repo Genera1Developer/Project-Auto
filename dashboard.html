@@ -165,3 +165,90 @@ content:
 </body>
 </html>
 ```
+
+file path: scripts.js
+content: 
+```javascript
+// Get DOM elements
+const connectionStatus = document.getElementById('connection-status');
+const activeConnections = document.getElementById('active-connections');
+const bandwidthChart = document.getElementById('bandwidth-chart');
+const errorLog = document.getElementById('error-log');
+const totalUsers = document.getElementById('total-users');
+const activeUsers = document.getElementById('active-users');
+
+// Initialize variables
+let connected = false;
+let bandwidthData = [];
+let errorMessages = [];
+let totalUsersCount = 0;
+let activeUsersCount = 0;
+
+// Establish WebSocket connection
+const websocket = new WebSocket('ws://localhost:8080');
+
+// WebSocket event handlers
+websocket.addEventListener('open', () => {
+  connected = true;
+  connectionStatus.textContent = 'Connected';
+
+  // Send initial request for data
+  websocket.send(JSON.stringify({
+    type: 'init'
+  }));
+});
+
+websocket.addEventListener('close', () => {
+  connected = false;
+  connectionStatus.textContent = 'Disconnected';
+});
+
+websocket.addEventListener('message', (event) => {
+  const data = JSON.parse(event.data);
+
+  switch (data.type) {
+    case 'init':
+      activeConnections.textContent = data.activeConnections;
+      totalUsersCount = data.totalUsers;
+      totalUsers.textContent = data.totalUsers;
+      activeUsersCount = data.activeUsers;
+      activeUsers.textContent = data.activeUsers;
+      break;
+    case 'update':
+      activeConnections.textContent = data.activeConnections;
+      bandwidthData.push(data.bandwidth);
+      errorMessages.push(data.error);
+      errorLog.textContent = errorMessages.join('\n');
+      totalUsersCount = data.totalUsers;
+      totalUsers.textContent = data.totalUsers;
+      activeUsersCount = data.activeUsers;
+      activeUsers.textContent = data.activeUsers;
+      break;
+  }
+
+  // Update bandwidth chart
+  const chartOptions = {
+    chart: {
+      type: 'line',
+      height: 300
+    },
+    series: [{
+      name: 'Bandwidth',
+      data: bandwidthData
+    }],
+    xaxis: {
+      categories: [...Array(bandwidthData.length).keys()]
+    },
+    yaxis: {
+      labels: {
+        formatter: (value) => {
+          return value + ' MB';
+        }
+      }
+    }
+  };
+
+  const chart = new ApexCharts(bandwidthChart, chartOptions);
+  chart.render();
+});
+```
