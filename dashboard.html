@@ -1,1 +1,71 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="sidebar">
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="settings.html">Settings</a>
+      <a href="dashboard.html">Dashboard</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <h1>Dashboard</h1>
+    <div class="stats-container">
+      <div class="stat-card">
+        <h2>Real-time Connection Status</h2>
+        <div id="connection-status">
+          Loading...
+        </div>
+      </div>
+      <div class="stat-card">
+        <h2>Bandwidth Usage</h2>
+        <canvas id="bandwidth-graph"></canvas>
+      </div>
+      <div class="stat-card">
+        <h2>Active Connections</h2>
+        <ul id="active-connections">
+          <li>Loading...</li>
+        </ul>
+      </div>
+      <div class="stat-card">
+        <h2>Error Log</h2>
+        <ul id="error-log">
+          <li>Loading...</li>
+        </ul>
+      </div>
+      <div class="stat-card">
+        <h2>User Statistics</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Connections</th>
+              <th>Bandwidth Used</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Loading...</td>
+              <td>Loading...</td>
+              <td>Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
+```
