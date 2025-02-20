@@ -1,285 +1,55 @@
-file path: style.css
+file path: index.html
 content: 
-```css
-/* Reset styles */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Global styles */
-
-body {
-  font-family: sans-serif;
-  color: #333;
-}
-
-.container {
-  display: flex;
-  height: 100vh;
-}
-
-.sidebar {
-  width: 200px;
-  background-color: #f5f5f5;
-  padding: 20px;
-}
-
-.sidebar ul {
-  list-style-type: none;
-}
-
-.sidebar a {
-  color: #333;
-  text-decoration: none;
-}
-
-.main {
-  flex: 1;
-  padding: 20px;
-}
-
-.form-heading {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input,
-select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-
-.button-container {
-  display: flex;
-  justify-content: flex-end;
-}
-
-button {
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.error-message {
-  color: #d9534f;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.connection-status {
-  color: #333;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.monitoring-controls {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
-
-.bandwidth-usage {
-  width: 100%;
-  height: 200px;
-  background-color: #eee;
-  margin-bottom: 20px;
-}
-
-.active-connections {
-  width: 100%;
-  height: 200px;
-  background-color: #eee;
-  margin-bottom: 20px;
-}
-
-.error-log {
-  width: 100%;
-  height: 200px;
-  background-color: #eee;
-  margin-bottom: 20px;
-}
-
-.user-statistics {
-  width: 100%;
-  height: 200px;
-  background-color: #eee;
-}
-
-
-/* Baby blue, beautiful, and rounded theme */
-
-body {
-  background-color: #e0f2f1;
-}
-
-.sidebar {
-  border-radius: 10px;
-}
-
-.main {
-  border-radius: 10px;
-}
-
-.form-group {
-  border: 1px solid #b8dace;
-  border-radius: 10px;
-  padding: 20px;
-}
-
-label {
-  color: #49938a;
-}
-
-input,
-select {
-  border: 1px solid #b8dace;
-  border-radius: 10px;
-}
-
-button {
-  background-color: #49938a;
-  color: #fff;
-  border-radius: 10px;
-}
-
-.error-message {
-  background-color: #d9534f;
-  color: #fff;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.connection-status {
-  background-color: #b8dace;
-  color: #fff;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-.monitoring-controls {
-  margin-top: 20px;
-}
-
-.bandwidth-usage {
-  border-radius: 10px;
-}
-
-.active-connections {
-  border-radius: 10px;
-}
-
-.error-log {
-  border-radius: 10px;
-}
-
-.user-statistics {
-  border-radius: 10px;
-}
-```
-
-file path: script.js
-content: 
-```js
-// Login form submission
-
-const loginForm = document.getElementById("login-form");
-
-loginForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
-  // TODO: Validate username and password
-
-  // Start the proxy
-  startProxy();
-});
-
-// Proxy controls
-
-const startProxyButton = document.getElementById("start-proxy-button");
-const stopProxyButton = document.getElementById("stop-proxy-button");
-
-startProxyButton.addEventListener("click", () => {
-  // TODO: Start the proxy
-});
-
-stopProxyButton.addEventListener("click", () => {
-  // TODO: Stop the proxy
-});
-
-// Settings form submission
-
-const settingsForm = document.getElementById("settings-form");
-
-settingsForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  const protocol = document.getElementById("protocol").value;
-  const port = document.getElementById("port").value;
-  const authentication = document.getElementById("authentication").checked;
-  const bandwidthLimit = document.getElementById("bandwidth-limit").value;
-
-  // TODO: Save the settings
-
-  // Display a success message
-  alert("Settings saved successfully");
-});
-
-// Refresh data
-
-const refreshDataButton = document.getElementById("refresh-data-button");
-
-refreshDataButton.addEventListener("click", () => {
-  // TODO: Refresh the data on the dashboard
-});
-
-// Proxy status
-
-const proxyStatusElement = document.getElementById("proxy-status");
-const connectionStatusElement = document.getElementById("connection-status");
-
-function startProxy() {
-  // TODO: Start the proxy
-
-  // Update the proxy status
-  proxyStatusElement.textContent = "Connected";
-  connectionStatusElement.textContent = "Connected to the proxy server";
-}
-
-function stopProxy() {
-  // TODO: Stop the proxy
-
-  // Update the proxy status
-  proxyStatusElement.textContent = "Disconnected";
-  connectionStatusElement.textContent = "Disconnected from the proxy server";
-}
-
-// Error handling
-
-function displayError(message) {
-  const errorMessageElement = document.getElementById("error-message");
-
-  errorMessageElement.textContent = message;
-  errorMessageElement.classList.add("visible");
-
-  setTimeout(() => {
-    errorMessageElement.classList.remove("visible");
-  }, 5000);
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="settings.html">Settings</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+    <div class="main">
+      <div class="form-heading">
+        <h1>Login to Proxy</h1>
+      </div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter your username" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter your password" />
+        </div>
+        <div class="button-container">
+          <button type="submit">Login</button>
+        </div>
+      </form>
+
+      <div class="error-message" id="error-message"></div>
+      <div class="connection-status" id="connection-status"></div>
+      <div class="monitoring-controls">
+        <button id="start-proxy-button" type="button">Start Proxy</button>
+        <button id="stop-proxy-button" type="button">Stop Proxy</button>
+        <button id="refresh-data-button" type="button">Refresh Data</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
 ```
