@@ -1,1 +1,44 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Auto Proxy</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+      </ul>
+    </div>
+    <div class="main">
+      <h1>Project Auto Proxy</h1>
+      <p>A smooth, light ocean blue web proxy with light and dark mode settings and other settings, applications in the dashboard, and a web proxy in the home with a rounded search bar.</p>
+      <form>
+        <label for="username">Username:</label>
+        <input type="text" id="username" />
+        <label for="password">Password:</label>
+        <input type="password" id="password" />
+        <input type="submit" value="Login" />
+      </form>
+      <div class="proxy-status">
+        <p>Proxy Status: <span>Disconnected</span></p>
+      </div>
+      <div class="error-message"></div>
+      <div class="connection-status">
+        <p>Connection Status: <span>Idle</span></p>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
+```
