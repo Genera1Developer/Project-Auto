@@ -1,3 +1,6 @@
+file path: README.md
+content: 
+
 # Structured Web Proxy Project Architecture
 
 ## Files and Components
@@ -57,3 +60,14 @@
 - User statistics
 - Shared styling with index.html
 - Sidebar with links to /index.html, /dashboard.html, and /settings.html
+
+## Additional Requirements
+
+- Strict content security policy
+- Error handling for all operations
+- Cross-browser compatibility
+- Mobile responsiveness
+- Clean, consistent indentation
+- Proper commenting
+- No external dependencies
+- No framework usage
