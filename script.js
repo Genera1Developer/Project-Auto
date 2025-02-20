@@ -1,5 +1,4 @@
-```javascript
-// script.js
+
 
 const form = document.getElementById("form");
 const username = document.getElementById("username");
@@ -19,4 +18,3 @@ form.addEventListener("submit", (e) => {
   // If authentication is successful, redirect to the dashboard
   window.location.href = "/dashboard.html";
 });
-```
