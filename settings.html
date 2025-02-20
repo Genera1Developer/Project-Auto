@@ -8,6 +8,7 @@ content:
   <meta charset="UTF-8" />
   <title>Web Proxy Settings</title>
   <link href="style.css" rel="stylesheet" />
+  <script src="script.js"></script>
 </head>
 
 <body>
@@ -20,7 +21,7 @@ content:
   </div>
   <div class="main">
     <h1>Proxy Settings</h1>
-    <form>
+    <form id="settings-form">
       <label for="protocol">Protocol:</label>
       <select name="protocol">
         <option value="http">HTTP</option>
@@ -42,9 +43,35 @@ content:
       <label for="bandwidth-limit">Bandwidth Limit (MB):</label>
       <input type="number" name="bandwidth-limit" />
       <br />
-      <input type="submit" value="Save" />
+      <button type="submit">Save</button>
     </form>
   </div>
+  <script>
+    const form = document.getElementById("settings-form");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const data = new FormData(form);
+
+      fetch("/api/settings", {
+        method: "POST",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            alert("Settings saved successfully!");
+          } else {
+            alert("Error saving settings!");
+          }
+        })
+        .catch((err) => {
+          alert("Error saving settings!");
+          console.error(err);
+        });
+    });
+  </script>
 </body>
 
 </html>
