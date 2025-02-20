@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: index.html
 content: 
 
 ```html
@@ -6,7 +6,7 @@ content:
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Web Proxy Dashboard</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,29 +17,21 @@ content:
       <a href="settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Web Proxy Dashboard</h1>
-      <div class="status-container">
-        <div class="status-item">
-          <h2>Connection Status</h2>
-          <span id="connection-status"></span>
-        </div>
-        <div class="status-item">
-          <h2>Bandwidth Usage</h2>
-          <canvas id="bandwidth-chart"></canvas>
-        </div>
-        <div class="status-item">
-          <h2>Active Connections</h2>
-          <ul id="active-connections"></ul>
-        </div>
-        <div class="status-item">
-          <h2>Error Log</h2>
-          <ul id="error-log"></ul>
-        </div>
-        <div class="status-item">
-          <h2>User Statistics</h2>
-          <ul id="user-statistics"></ul>
-        </div>
+      <h1>Web Proxy</h1>
+      <div class="login-form">
+        <h2>Login</h2>
+        <form id="login-form">
+          <input type="text" name="username" id="username" placeholder="Username" required />
+          <input type="password" name="password" id="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
       </div>
+      <div class="proxy-status">
+        <h2>Proxy Status</h2>
+        <span id="proxy-status"></span>
+      </div>
+      <div class="error-message" style="display: none;"></div>
+      <div class="connection-status" style="display: none;"></div>
     </div>
   </div>
   <script src="script.js"></script>
