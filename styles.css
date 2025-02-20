@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,8 +20,8 @@
       <header>
         <h1>Project Auto Proxy</h1>
         <span id="theme-toggle">
-          <span id="light-mode"><i class="fas fa-sun"></i> Light Mode</span>
-          <span id="dark-mode"><i class="fas fa-moon"></i> Dark Mode</span>
+          <span id="light-mode">Light Mode</span>
+          <span id="dark-mode">Dark Mode</span>
         </span>
       </header>
       <section id="login-form">
@@ -32,13 +31,13 @@
           <input type="text" id="username" />
           <label for="password">Password</label>
           <input type="password" id="password" />
-          <input type="submit" value="Login" />
+          <input class="btn" type="submit" value="Login" />
         </form>
       </section>
       <div id="proxy-container">
         <div class="proxy-search">
-          <input type="search" placeholder="Search..." />
-          <button type="submit">
+          <input type="search" placeholder="Search..." id="proxy-search-input" />
+          <button class="btn" type="submit">
             <i class="fas fa-search"></i>
           </button>
         </div>
@@ -54,4 +53,3 @@
 </body>
 
 </html>
-```
