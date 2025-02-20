@@ -5,10 +5,10 @@ content:
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web Proxy Dashboard</title>
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css" />
   <script src="./scripts.js"></script>
 </head>
 
@@ -34,8 +34,8 @@ content:
     <!-- Bandwidth usage graphs -->
     <div class="section">
       <h2>Bandwidth Usage</h2>
-      <div id="bandwidth-graph-download" class="bandwidth-graph download" style="width: 50%;"></div>
-      <div id="bandwidth-graph-upload" class="bandwidth-graph upload" style="width: 50%;"></div>
+      <div id="bandwidth-graph-download" class="bandwidth-graph download"></div>
+      <div id="bandwidth-graph-upload" class="bandwidth-graph upload"></div>
     </div>
 
     <!-- Active connections list -->
@@ -51,18 +51,7 @@ content:
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>John Doe</td>
-            <td>192.168.1.1</td>
-            <td>12345</td>
-            <td>67890</td>
-          </tr>
-          <tr>
-            <td>Jane Smith</td>
-            <td>192.168.1.2</td>
-            <td>45678</td>
-            <td>90123</td>
-          </tr>
+          <!-- Dynamically populate this table with active connections -->
         </tbody>
       </table>
     </div>
@@ -71,9 +60,7 @@ content:
     <div class="section">
       <h2>Error Log</h2>
       <ul id="error-log-list" class="error-log-list">
-        <li>Error connecting to server</li>
-        <li>Error processing request</li>
-        <li>Error sending response</li>
+        <!-- Dynamically populate this list with errors -->
       </ul>
     </div>
 
@@ -81,15 +68,11 @@ content:
     <div class="section">
       <h2>User Statistics</h2>
       <div id="user-statistics-stats" class="user-statistics-stats">
-        <p>Total Users: 10</p>
-        <p>Total Requests: 1000</p>
-        <p>Total Bytes Sent: 10 GB</p>
-        <p>Total Bytes Received: 10 GB</p>
+        <!-- Dynamically populate this section with user statistics -->
       </div>
     </div>
 
     <!-- Add any other relevant sections here -->
-
   </div>
 </body>
 
