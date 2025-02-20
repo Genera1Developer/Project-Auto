@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,7 +6,7 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
 </head>
@@ -19,43 +19,56 @@ content:
         </ul>
     </div>
     <div class="main-content">
-        <form id="settings-form">
-            <div class="form-group">
-                <label for="protocol">Protocol:</label>
-                <select name="protocol" id="protocol">
-                    <option value="http">HTTP</option>
-                    <option value="https">HTTPS</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="port">Port:</label>
-                <input type="number" name="port" id="port" placeholder="8080">
-            </div>
-            <div class="form-group">
-                <label for="authentication">Authentication:</label>
-                <select name="authentication" id="authentication">
-                    <option value="none">None</option>
-                    <option value="username/password">Username/Password</option>
-                </select>
-            </div>
-            <div id="authentication-fields">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" id="username" disabled>
+        <div class="dashboard-block">
+            <div class="dashboard-title">Real-Time Connection Status</div>
+            <div class="dashboard-content">
+                <div class="connection-status online">
+                    <div class="connection-status-icon"></div>
+                    <div class="connection-status-text">Online</div>
                 </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" id="password" disabled>
+                <div class="connection-status offline hidden">
+                    <div class="connection-status-icon"></div>
+                    <div class="connection-status-text">Offline</div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="bandwidth">Bandwidth limit (MB/s):</label>
-                <input type="number" name="bandwidth" id="bandwidth">
+        </div>
+        <div class="dashboard-block">
+            <div class="dashboard-title">Bandwidth Usage</div>
+            <div class="dashboard-content">
+                <div id="bandwidth-chart"></div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save">
+        </div>
+        <div class="dashboard-block">
+            <div class="dashboard-title">Active Connections</div>
+            <div class="dashboard-content">
+                <ul class="active-connections-list">
+                </ul>
             </div>
-        </form>
+        </div>
+        <div class="dashboard-block">
+            <div class="dashboard-title">Error Log</div>
+            <div class="dashboard-content">
+                <ul class="error-log-list">
+                </ul>
+            </div>
+        </div>
+        <div class="dashboard-block">
+            <div class="dashboard-title">User Statistics</div>
+            <div class="dashboard-content">
+                <div class="user-statistics-item">
+                    <div class="user-statistics-label">Total Users:</div>
+                    <div class="user-statistics-value">0</div>
+                </div>
+                <div class="user-statistics-item">
+                    <div class="user-statistics-label">Active Users:</div>
+                    <div class="user-statistics-value">0</div>
+                </div>
+                <div class="user-statistics-item">
+                    <div class="user-statistics-label">Bandwidth Usage:</div>
+                    <div class="user-statistics-value">0 MB</div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
