@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content: 
 
 ```html
@@ -6,7 +6,7 @@ content:
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Settings</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,28 +17,27 @@ content:
       <a href="settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Settings</h1>
-      <form>
-        <label for="protocol">Protocol:</label>
-        <select id="protocol" name="protocol">
-          <option value="HTTP">HTTP</option>
-          <option value="HTTPS">HTTPS</option>
-        </select>
-        <br />
-        <label for="port">Port:</label>
-        <input type="number" id="port" name="port" placeholder="Enter the port number" />
-        <br />
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" placeholder="Enter your username" />
-        <br />
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" placeholder="Enter your password" />
-        <br />
-        <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
-        <input type="number" id="bandwidth-limit" name="bandwidth-limit" placeholder="Enter the bandwidth limit" />
-        <br />
-        <input type="submit" value="Save" />
-      </form>
+      <h1>Dashboard</h1>
+      <div id="connection-status">
+        <h2>Connection Status</h2>
+        <p id="connection-status-text">Disconnected</p>
+      </div>
+      <div id="bandwidth-usage">
+        <h2>Bandwidth Usage</h2>
+        <canvas id="bandwidth-usage-chart"></canvas>
+      </div>
+      <div id="active-connections">
+        <h2>Active Connections</h2>
+        <ul id="active-connections-list"></ul>
+      </div>
+      <div id="error-log">
+        <h2>Error Log</h2>
+        <ul id="error-log-list"></ul>
+      </div>
+      <div id="user-statistics">
+        <h2>User Statistics</h2>
+        <ul id="user-statistics-list"></ul>
+      </div>
     </div>
   </div>
   <script src="script.js"></script>
