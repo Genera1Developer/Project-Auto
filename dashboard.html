@@ -58,3 +58,118 @@ content:
 
 </html>
 ```
+file path: dashboard.js
+content: 
+```js
+// Real-time connection status
+const connectionStatusIndicator = document.getElementById('connection-status-indicator');
+const connectionStatusInfo = document.getElementById('connection-status-info');
+
+let connection = {
+  status: 'disconnected',
+  protocol: 'HTTP',
+  port: 8080,
+  address: '127.0.0.1',
+};
+
+const updateConnectionStatus = (newStatus) => {
+  connection.status = newStatus;
+  connectionStatusIndicator.className = `status-indicator ${newStatus}`;
+  connectionStatusInfo.textContent = `Connection Status: ${newStatus}`;
+};
+
+// Bandwidth usage
+const bandwidthUsageGraphs = document.getElementById('bandwidth-usage-graphs');
+
+const createBandwidthGraph = (type, data) => {
+  const graph = document.createElement('div');
+  graph.className = `bandwidth-graph ${type}`;
+  graph.style.width = `${data}%`;
+  bandwidthUsageGraphs.appendChild(graph);
+};
+
+const updateBandwidthUsage = (data) => {
+  bandwidthUsageGraphs.innerHTML = '';
+
+  if (data.download) createBandwidthGraph('download', data.download);
+  if (data.upload) createBandwidthGraph('upload', data.upload);
+};
+
+// Active connections
+const activeConnectionsTable = document.getElementById('active-connections-table');
+
+const addConnectionToTable = (connection) => {
+  const row = document.createElement('tr');
+  const ip = document.createElement('td');
+  ip.textContent = connection.ipAddress;
+  const port = document.createElement('td');
+  port.textContent = connection.port;
+  const protocol = document.createElement('td');
+  protocol.textContent = connection.protocol;
+  const status = document.createElement('td');
+  status.textContent = connection.status;
+  row.appendChild(ip);
+  row.appendChild(port);
+  row.appendChild(protocol);
+  row.appendChild(status);
+  activeConnectionsTable.appendChild(row);
+};
+
+const updateActiveConnections = (data) => {
+  activeConnectionsTable.innerHTML = '';
+  data.forEach((connection) => addConnectionToTable(connection));
+};
+
+// Error log
+const errorLogList = document.getElementById('error-log-list');
+
+const addErrorToLog = (error) => {
+  const item = document.createElement('li');
+  item.textContent = error;
+  errorLogList.appendChild(item);
+};
+
+const updateErrorLog = (data) => {
+  errorLogList.innerHTML = '';
+  data.forEach((error) => addErrorToLog(error));
+};
+
+// User statistics
+const userStatisticsStats = document.getElementById('user-statistics-stats');
+
+const updateUserStatistics = (data) => {
+  userStatisticsStats.innerHTML = '';
+
+  const totalUsers = document.createElement('p');
+  totalUsers.textContent = `Total users: ${data.totalUsers}`;
+  userStatisticsStats.appendChild(totalUsers);
+
+  const averageUsage = document.createElement('p');
+  averageUsage.textContent = `Average usage: ${data.averageUsage} MB`;
+  userStatisticsStats.appendChild(averageUsage);
+};
+
+// Main function
+const main = () => {
+  // Update connection status
+  updateConnectionStatus(connection.status);
+
+  // Update bandwidth usage
+  updateBandwidthUsage({ download: 50, upload: 25 });
+
+  // Update active connections
+  updateActiveConnections([
+    { ipAddress: '192.168.0.1', port: 8080, protocol: 'HTTP', status: 'connected' },
+    { ipAddress: '192.168.0.2', port: 8080, protocol: 'HTTP', status: 'connected' },
+    { ipAddress: '192.168.0.3', port: 8080, protocol: 'HTTP', status: 'disconnected' },
+  ]);
+
+  // Update error log
+  updateErrorLog(['Error 1', 'Error 2', 'Error 3']);
+
+  // Update user statistics
+  updateUserStatistics({ totalUsers: 10, averageUsage: 250 });
+};
+
+main();
+```
