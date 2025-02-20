@@ -1,259 +1,59 @@
-file path: settings.html
+file path: README.md
 content: 
-```html
-<!DOCTYPE html>
-<html>
+```markdown
+# Web Proxy Project
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Settings</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="settings.js"></script>
-</head>
+## Overview
 
-<body>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-      </ul>
-    </div>
-    <div class="main">
-      <h1>Web Proxy Settings</h1>
-      <form id="settings-form">
-        <div class="form-group">
-          <label for="protocol">Protocol:</label>
-          <select name="protocol">
-            <option value="http">HTTP</option>
-            <option value="https">HTTPS</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="port">Port:</label>
-          <input type="number" min="1" max="65535" name="port" required />
-        </div>
-        <div class="form-group">
-          <label for="username">Username:</label>
-          <input type="text" name="username" />
-        </div>
-        <div class="form-group">
-          <label for="password">Password:</label>
-          <input type="password" name="password" />
-        </div>
-        <div class="form-group">
-          <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
-          <input type="number" min="0" max="1000" name="bandwidth-limit" />
-        </div>
-        <button type="submit">Save</button>
-      </form>
-    </div>
-  </div>
-</body>
+This project is a structured web proxy with strictly defined files, components, and baby blue beautiful and rounded theming.
 
-</html>
+## Files
+
+### index.html
+
+- Main landing page
+- Contains login form with username/password fields
+- Provides navigation to settings and dashboard
+- Displays proxy status indicator
+- Displays error messages
+- Shows connection status
+
+### settings.html
+
+- Proxy configuration page
+- Allows users to configure protocol, port, authentication, and bandwidth limits
+
+### dashboard.html
+
+- User statistics and monitoring dashboard
+- Displays real-time connection status
+- Provides bandwidth usage graphs
+- Lists active connections
+- Shows error log
+
+### README.md
+
+- Description of the site
+
+## Requirements
+
+- Use external CSS and JS files
+- Apply beautiful and rounded baby blue theming
+- Use semantic HTML elements
+- Implement strict content security policy
+- Provide error handling for all operations
+- Ensure cross-browser compatibility
+- Design for mobile responsiveness
+- Use clean and consistent indentation
+- Add proper commenting
+- Avoid external dependencies and framework usage
+
+## Implementation Notes
+
+- No inline scripts or styles are used.
+- A side bar is included in each file for easy navigation.
+- The code follows a strict content security policy to enhance security.
+- Error handling is implemented for all operations to provide a user-friendly experience.
+- The design is cross-browser compatible and responsive for various screen sizes.
+- Proper indentation and commenting are used for readability and maintainability.
 ```
-
-file path: settings.js
-content: 
-```javascript
-(function () {
-  // Get elements
-  const settingsForm = document.getElementById('settings-form');
-
-  // Add event listeners
-  settingsForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    // Get form values
-    const protocol = document.querySelector('select[name="protocol"]').value;
-    const port = document.querySelector('input[name="port"]').value;
-    const username = document.querySelector('input[name="username"]').value;
-    const password = document.querySelector('input[name="password"]').value;
-    const bandwidthLimit = document.querySelector('input[name="bandwidth-limit"]').value;
-
-    // Validate form values
-    if (!port || port < 1 || port > 65535) {
-      alert('Invalid port');
-      return;
-    }
-
-    if (bandwidthLimit && (bandwidthLimit < 0 || bandwidthLimit > 1000)) {
-      alert('Invalid bandwidth limit');
-      return;
-    }
-
-    // Save settings to local storage
-    localStorage.setItem('protocol', protocol);
-    localStorage.setItem('port', port);
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-    localStorage.setItem('bandwidthLimit', bandwidthLimit);
-
-    // Display success message
-    alert('Settings saved successfully');
-  });
-
-  // Load settings from local storage
-  const protocol = localStorage.getItem('protocol');
-  const port = localStorage.getItem('port');
-  const username = localStorage.getItem('username');
-  const password = localStorage.getItem('password');
-  const bandwidthLimit = localStorage.getItem('bandwidthLimit');
-
-  // Set form values
-  document.querySelector('select[name="protocol"]').value = protocol;
-  document.querySelector('input[name="port"]').value = port;
-  document.querySelector('input[name="username"]').value = username;
-  document.querySelector('input[name="password"]').value = password;
-  document.querySelector('input[name="bandwidth-limit"]').value = bandwidthLimit;
-})();
-```
-
-file path: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta charset="UTF-8" />
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="dashboard.js"></script>
-</head>
-
-<body>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-      </ul>
-    </div>
-    <div class="main">
-      <h1>Web Proxy Dashboard</h1>
-      <div class="row">
-        <div class="col">
-          <h2>Connection Status</h2>
-          <ul id="connection-status-list"></ul>
-        </div>
-        <div class="col">
-          <h2>Bandwidth Usage</h2>
-          <canvas id="bandwidth-chart"></canvas>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <h2>Active Connections</h2>
-          <table id="active-connections-table">
-            <thead>
-              <tr>
-                <th>IP Address</th>
-                <th>Port</th>
-                <th>Protocol</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="col">
-          <h2>Error Log</h2>
-          <ul id="error-log-list"></ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</body>
-
-</html>
-```
-
-file path: dashboard.js
-content: 
-```javascript
-(function () {
-  // Get elements
-  const connectionStatusList = document.getElementById('connection-status-list');
-  const bandwidthChart = document.getElementById('bandwidth-chart');
-  const activeConnectionsTable = document.getElementById('active-connections-table');
-  const errorLogList = document.getElementById('error-log-list');
-
-  // Create bandwidth chart
-  const ctx = bandwidthChart.getContext('2d');
-  const bandwidthChartConfig = {
-    type: 'line',
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: 'Bandwidth Usage',
-          data: [],
-          borderColor: '#007bff',
-          borderWidth: 2,
-          fill: false,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        yAxes: [
-          {
-            ticks: {
-              callback: (value) => `${value} MB`,
-            },
-          },
-        ],
-      },
-    },
-  };
-  const bandwidthChartInstance = new Chart(ctx, bandwidthChartConfig);
-
-  // Generate random data for demo purposes
-  let bandwidthData = [];
-  let connectionStatusData = [];
-  let activeConnectionsData = [];
-  let errorLogData = [];
-
-  const generateRandomData = () => {
-    // Bandwidth data
-    bandwidthData.push(Math.random() * 100);
-    if (bandwidthData.length > 10) {
-      bandwidthData.shift();
-    }
-
-    // Connection status data
-    connectionStatusData.push(Math.random() > 0.5 ? 'Online' : 'Offline');
-    if (connectionStatusData.length > 10) {
-      connectionStatusData.shift();
-    }
-
-    // Active connections data
-    activeConnectionsData.push({
-      ipAddress: Math.random().toString(36).substring(7),
-      port: Math.floor(Math.random() * 65535),
-      protocol: Math.random() > 0.5 ? 'HTTP' : 'HTTPS',
-    });
-    if (activeConnectionsData.length > 10) {
-      activeConnectionsData.shift();
-    }
-
-    // Error log data
-    errorLogData.push(`[${new Date().toISOString()}] Error message ${Math.random().toString(36).substring(7)}`);
-    if (errorLogData.length > 10) {
-      errorLogData.shift();
-    }
-  };
-
-  const updateDashboard = () => {
-    // Update bandwidth chart
-    bandwidthChartInstance.data.labels.push(new Date().toLocaleTimeString());
-    bandwidthChartInstance.data.datasets[0].data.push(bandwidthData[bandwidthData.length - 1]);
-    bandwidthChartInstance.update();
-
-    // Update connection status list
-    connectionStatusList.innerHTML = '';
-    for (let i = 0; i < connectionStatusData.length; i++) {
-      const status = connectionStatusData[i];
