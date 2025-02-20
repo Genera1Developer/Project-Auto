@@ -1,97 +1,52 @@
-file path: script.js
+file path: settings.html
 content: 
-```javascript
-// Import required modules
-import { fetch, btoa } from 'whatwg-fetch';
-import { set, get } from 'idb-keyval';
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Proxy Settings</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <a href="/index.html">Home</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/settings.html">Settings</a>
+      </div>
+      <div class="content">
+        <h1>Proxy Settings</h1>
+        <form>
+          <label for="proxy-host">Host:</label>
+          <input type="text" id="proxy-host" />
+          <br />
+          <label for="proxy-port">Port:</label>
+          <input type="number" id="proxy-port" />
+          <br />
+          <label for="proxy-protocol">Protocol:</label>
+          <select id="proxy-protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+          <br />
+          <label for="proxy-auth">Authentication:</label>
+          <input type="checkbox" id="proxy-auth" />
+          <br />
+          <label for="proxy-username">Username:</label>
+          <input type="text" id="proxy-username" />
+          <br />
+          <label for="proxy-password">Password:</label>
+          <input type="password" id="proxy-password" />
+          <br />
+          <label for="proxy-bandwidth-limit">Bandwidth Limit (MB):</label>
+          <input type="number" id="proxy-bandwidth-limit" />
+          <br />
+          <button type="submit">Save</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
 
-// Proxy settings
-const proxy = {
-  host: 'localhost',
-  port: 8080,
-  protocol: 'http',
-  auth: false,
-  username: '',
-  password: '',
-  bandwidthLimit: 0,
-  bandwidthUsage: 0
-};
-
-// DOM elements
-const form = document.getElementById('form');
-const usernameInput = document.getElementById('username');
-const passwordInput = document.getElementById('password');
-const statusIndicator = document.getElementById('status-indicator');
-const connectionStatus = document.getElementById('connection-status');
-const errorMessage = document.getElementById('error-message');
-
-// Event listeners
-form.addEventListener('submit', login);
-
-// Functions
-async function login(e) {
-  e.preventDefault();
-
-  // Clear error message
-  errorMessage.textContent = '';
-
-  // Get form data
-  const username = usernameInput.value;
-  const password = passwordInput.value;
-
-  // Basic authentication
-  const authHeader = btoa(`${username}:${password}`);
-
-  // Set proxy settings
-  proxy.auth = authHeader;
-
-  // Connect to proxy
-  try {
-    const res = await fetch('https://whatismyipaddress.com/api/v1/ip-address');
-    const data = await res.json();
-    connectionStatus.textContent = `Connected: ${data.country}`;
-  } catch (err) {
-    errorMessage.textContent = err.message;
-  }
-}
-
-// Initialize proxy settings from IndexedDB
-async function loadSettings() {
-  const settings = await get('proxy-settings');
-  if (settings) {
-    Object.assign(proxy, settings);
-    updateProxySettings();
-  }
-}
-
-// Update proxy settings in UI
-function updateProxySettings() {
-  document.getElementById('proxy-host').value = proxy.host;
-  document.getElementById('proxy-port').value = proxy.port;
-  document.getElementById('proxy-protocol').value = proxy.protocol;
-  document.getElementById('proxy-auth').checked = proxy.auth;
-  document.getElementById('proxy-username').value = proxy.username;
-  document.getElementById('proxy-password').value = proxy.password;
-  document.getElementById('proxy-bandwidth-limit').value = proxy.bandwidthLimit;
-}
-
-// Save proxy settings to IndexedDB
-async function saveSettings() {
-  const settings = {
-    host: document.getElementById('proxy-host').value,
-    port: document.getElementById('proxy-port').value,
-    protocol: document.getElementById('proxy-protocol').value,
-    auth: document.getElementById('proxy-auth').checked,
-    username: document.getElementById('proxy-username').value,
-    password: document.getElementById('proxy-password').value,
-    bandwidthLimit: document.getElementById('proxy-bandwidth-limit').value
-  };
-
-  await set('proxy-settings', settings);
-  proxy = settings;
-  updateProxySettings();
-}
-
-// Load settings on page load
-loadSettings();
 ```
