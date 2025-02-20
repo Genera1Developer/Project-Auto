@@ -9,7 +9,7 @@
   <title>Project Auto Proxy</title>
 </head>
 
-<body>
+<body class="light-theme">
   <div id="app">
     <div id="sidebar">
       <ul>
@@ -17,20 +17,28 @@
         <li><a href="/dashboard">Dashboard</a></li>
         <li><a href="/settings">Settings</a></li>
       </ul>
+      <div class="theme-switch">
+        <label class="switch">
+          <input type="checkbox" id="dark-mode-toggle" />
+          <span class="slider round"></span>
+        </label>
+      </div>
     </div>
     <main>
       <div id="content">
-        <h1>Project Auto Proxy</h1>
-        <form id="login-form">
-          <label for="username">Username</label>
-          <input type="text" id="username" />
-          <label for="password">Password</label>
-          <input type="password" id="password" />
-          <button type="submit">Login</button>
-        </form>
-        <div id="proxy-status"></div>
-        <div id="error-message"></div>
-        <div id="connection-status"></div>
+        <div class="container">
+          <h1>Project Auto Proxy</h1>
+          <form id="login-form">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username" />
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" />
+            <button type="submit">Login</button>
+          </form>
+          <div id="proxy-status" class="status-indicator"></div>
+          <div id="error-message" class="error-message"></div>
+          <div id="connection-status" class="connection-status"></div>
+        </div>
       </div>
     </main>
   </div>
