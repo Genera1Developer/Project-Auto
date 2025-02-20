@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content: 
 
 ```html
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy - Settings</title>
+  <title>Web Proxy - Dashboard</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -18,90 +18,138 @@ content:
       <a href="/settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Proxy Settings</h1>
-      <form id="settings-form">
-        <div class="field">
-          <label for="protocol">Protocol</label>
-          <select name="protocol">
-            <option value="http">HTTP</option>
-            <option value="https">HTTPS</option>
-          </select>
+      <h1>Dashboard</h1>
+      <div class="dashboard-container">
+        <div class="status-card">
+          <div class="status-head">
+            <h2>Connection Status</h2>
+          </div>
+          <div class="status-body">
+            <p>Active connections: <span id="active-connections">0</span></p>
+            <p>Total requests: <span id="total-requests">0</span></p>
+            <p>Total bandwidth used: <span id="total-bandwidth">0 MB</span></p>
+          </div>
         </div>
-        <div class="field">
-          <label for="port">Port</label>
-          <input type="number" name="port" min="1" max="65535" required>
+        <div class="graph-card">
+          <div class="graph-head">
+            <h2>Bandwidth Usage</h2>
+          </div>
+          <div class="graph-body">
+            <canvas id="bandwidth-graph"></canvas>
+          </div>
         </div>
-        <div class="field">
-          <label for="authentication">Authentication</label>
-          <select name="authentication">
-            <option value="none">None</option>
-            <option value="basic">Basic</option>
-            <option value="digest">Digest</option>
-          </select>
+        <div class="active-connections-card">
+          <div class="active-connections-head">
+            <h2>Active Connections</h2>
+          </div>
+          <div class="active-connections-body">
+            <ul id="active-connections-list">
+            </ul>
+          </div>
         </div>
-        <div class="field username-field">
-          <label for="username">Username</label>
-          <input type="text" name="username">
+        <div class="error-log-card">
+          <div class="error-log-head">
+            <h2>Error Log</h2>
+          </div>
+          <div class="error-log-body">
+            <ul id="error-log-list">
+            </ul>
+          </div>
         </div>
-        <div class="field password-field">
-          <label for="password">Password</label>
-          <input type="password" name="password">
+        <div class="user-statistics-card">
+          <div class="user-statistics-head">
+            <h2>User Statistics</h2>
+          </div>
+          <div class="user-statistics-body">
+            <p>Total users: <span id="total-users">0</span></p>
+            <p>Total requests: <span id="total-user-requests">0</span></p>
+            <p>Total bandwidth used: <span id="total-user-bandwidth">0 MB</span></p>
+          </div>
         </div>
-        <div class="field">
-          <label for="bandwidth-limit">Bandwidth limit (MB/s)</label>
-          <input type="number" name="bandwidth-limit" min="0" required>
-        </div>
-        <button type="submit">Save</button>
-      </form>
+      </div>
     </div>
   </div>
 
   <script>
-    const settingsForm = document.querySelector('#settings-form');
-    const usernameField = document.querySelector('.username-field');
-    const passwordField = document.querySelector('.password-field');
+    const activeConnectionsSpan = document.getElementById('active-connections');
+    const totalRequestsSpan = document.getElementById('total-requests');
+    const totalBandwidthSpan = document.getElementById('total-bandwidth');
+    const activeConnectionsList = document.getElementById('active-connections-list');
+    const errorLogList = document.getElementById('error-log-list');
+    const totalUsersSpan = document.getElementById('total-users');
+    const totalUserRequestsSpan = document.getElementById('total-user-requests');
+    const totalUserBandwidthSpan = document.getElementById('total-user-bandwidth');
+    const bandwidthGraph = document.getElementById('bandwidth-graph');
 
-    settingsForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+    let activeConnections = 0;
+    let totalRequests = 0;
+    let totalBandwidth = 0;
+    let connectedClients = [];
+    let errorLog = [];
+    let totalUsers = 0;
+    let totalUserRequests = 0;
+    let totalUserBandwidth = 0;
 
-      const data = new FormData(settingsForm);
+    const ctx = bandwidthGraph.getContext('2d');
+    const bandwidthData = {
+      labels: [],
+      datasets: [{
+        label: 'Bandwidth',
+        data: [],
+        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+      }]
+    };
 
-      const settings = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(Object.fromEntries(data)),
-      };
-
-      fetch('/api/settings', settings)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert('Settings saved successfully');
-          } else {
-            alert('Failed to save settings');
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          alert('Failed to save settings');
-        });
-    });
-
-    const authenticationSelect = document.querySelector('select[name="authentication"]');
-
-    authenticationSelect.addEventListener('change', (e) => {
-      const value = e.target.value;
-
-      if (value === 'none') {
-        usernameField.classList.remove('active');
-        passwordField.classList.remove('active');
-      } else {
-        usernameField.classList.add('active');
-        passwordField.classList.add('active');
+    const bandwidthChart = new Chart(ctx, {
+      type: 'line',
+      data: bandwidthData,
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
       }
     });
+
+    function updateDashboard() {
+      activeConnectionsSpan.textContent = activeConnections;
+      totalRequestsSpan.textContent = totalRequests;
+      totalBandwidthSpan.textContent = `${totalBandwidth.toFixed(2)} MB`;
+
+      while (activeConnectionsList.firstChild) {
+        activeConnectionsList.removeChild(activeConnectionsList.firstChild);
+      }
+
+      for (const client of connectedClients) {
+        const li = document.createElement('li');
+        li.textContent = client.ip;
+        activeConnectionsList.appendChild(li);
+      }
+
+      while (errorLogList.firstChild) {
+        errorLogList.removeChild(errorLogList.firstChild);
+      }
+
+      for (const error of errorLog) {
+        const li = document.createElement('li');
+        li.textContent = error;
+        errorLogList.appendChild(li);
+      }
+
+      totalUsersSpan.textContent = totalUsers;
+      totalUserRequestsSpan.textContent = totalUserRequests;
+      totalUserBandwidthSpan.textContent = `${totalUserBandwidth.toFixed(2)} MB`;
+
+      bandwidthData.labels.push(new Date().toLocaleTimeString());
+      bandwidthData.datasets[0].data.push(totalBandwidth);
+      bandwidthChart.update();
+    }
+
+    setInterval(updateDashboard, 1000);
   </script>
 </body>
 </html>
