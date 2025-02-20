@@ -1,62 +1,25 @@
-file path: settings.html
+file path: script.js
 content: 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Proxy Settings</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="script.js"></script>
-</head>
-<body>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/settings">Settings</a></li>
-      </ul>
-    </div>
-    <div class="main">
-      <h1>Settings</h1>
-      <form id="settings-form">
-        <section>
-          <h2>Proxy Configuration</h2>
-          <div>
-            <label for="protocol">Protocol:</label>
-            <select name="protocol">
-              <option value="http">HTTP</option>
-              <option value="https">HTTPS</option>
-            </select>
-          </div>
-          <div>
-            <label for="port">Port:</label>
-            <input type="number" name="port" value="80" />
-          </div>
-        </section>
-        <section>
-          <h2>Authentication</h2>
-          <div>
-            <label for="username">Username:</label>
-            <input type="text" name="username" />
-          </div>
-          <div>
-            <label for="password">Password:</label>
-            <input type="password" name="password" />
-          </div>
-        </section>
-        <section>
-          <h2>Bandwidth Limits</h2>
-          <div>
-            <label for="bandwidth-limit">Bandwidth Limit (KB/s):</label>
-            <input type="number" name="bandwidth-limit" value="1000" />
-          </div>
-        </section>
-        <button type="submit">Save</button>
-      </form>
-    </div>
-  </div>
-</body>
-</html>
+```js
+const form = document.querySelector('#settings-form');
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const data = new FormData(form);
+
+  const settings = {
+    protocol: data.get('protocol'),
+    port: parseInt(data.get('port')),
+    username: data.get('username'),
+    password: data.get('password'),
+    bandwidthLimit: parseInt(data.get('bandwidth-limit')),
+  };
+
+  // Save settings to local storage
+  localStorage.setItem('proxySettings', JSON.stringify(settings));
+
+  // Display success message
+  alert('Settings saved successfully!');
+});
 ```
