@@ -1,5 +1,6 @@
-file path: settings.html
-content: 
+file: settings.html
+
+improved file:
 ```html
 <html lang="en">
 <head>
@@ -52,8 +53,38 @@ content:
                     </form>
                 </div>
             </div>
+            <div class="settings-block">
+                <div class="settings-title font-bold text-xl mb-4">Authentication Settings</div>
+                <div class="settings-content">
+                    <form id="auth-form">
+                        <div class="form-group">
+                            <label for="auth-type" class="font-bold text-lg">Authentication Type:</label>
+                            <select name="auth-type" id="auth-type" class="rounded-lg px-2 py-1" required>
+                                <option value="none">None</option>
+                                <option value="basic">Basic</option>
+                                <option value="ntlm">NTLM</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="auth-username" class="font-bold text-lg">Username:</label>
+                            <input type="text" name="auth-username" id="auth-username" class="rounded-lg px-2 py-1" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="auth-password" class="font-bold text-lg">Password:</label>
+                            <input type="password" name="auth-password" id="auth-password" class="rounded-lg px-2 py-1" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary rounded-lg px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700">
+                            Save
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </body>
 </html>
 ```
+
+new files:
+- style.css
+- script.js
