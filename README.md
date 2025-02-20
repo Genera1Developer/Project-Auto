@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +8,7 @@
 </head>
 
 <body>
-  <div class="container ocean-blue">
+  <div class="container ocean-blue" id="app">
     <div class="sidebar">
       <ul>
         <li><a href="./index.html">Home</a></li>
@@ -18,7 +17,7 @@
         <li>
           <div class="toggle-container">
             <span class="toggle-label">Mode:</span>
-            <label class="toggle-switch">
+            <label class="toggle-switch" mode-toggle>
               <input type="checkbox" />
               <span class="slider round"></span>
             </label>
@@ -36,7 +35,7 @@
         </div>
       </div>
 
-      <div class="status-bar">
+      <div class="status-bar rounded">
         <span class="proxy-status">Disconnected</span>
         <span class="connection-status">No connection</span>
       </div>
@@ -44,11 +43,11 @@
       <div class="error-container"></div>
 
       <div class="form-container">
-        <form>
+        <form @submit.prevent="submitForm">
           <label for="username">Username:</label>
-          <input type="text" id="username" />
+          <input type="text" id="username" v-model="form.username" />
           <label for="password">Password:</label>
-          <input type="password" id="password" />
+          <input type="password" id="password" v-model="form.password" />
           <button type="submit">Login</button>
         </form>
       </div>
@@ -59,4 +58,3 @@
 </body>
 
 </html>
-```
