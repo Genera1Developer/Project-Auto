@@ -29,12 +29,14 @@ content:
       <div class="connection-status" id="connection-status"></div>
       <h2 class="form-heading">Login</h2>
       <div class="login-form">
-        <form>
+        <form id="login-form">
           <label for="username">Username:</label>
-          <input type="text" id="username" name="username" />
+          <input type="text" id="username" name="username" required />
           <label for="password">Password:</label>
-          <input type="password" id="password" name="password" />
-          <input type="submit" value="Login" />
+          <input type="password" id="password" name="password" required />
+          <div class="button-container">
+            <input type="submit" value="Login" />
+          </div>
         </form>
       </div>
     </div>
