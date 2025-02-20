@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: settings.html
 content: 
 
 ```html
@@ -6,7 +6,7 @@ content:
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Proxy Dashboard</title>
+  <title>Proxy Settings</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,33 +17,26 @@ content:
       <a href="settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Proxy Dashboard</h1>
-      <div class="row">
-        <div class="col">
-          <h2>Real-time Connection Status</h2>
-          <div id="connection-status"></div>
-        </div>
-        <div class="col">
-          <h2>Bandwidth Usage Graphs</h2>
-          <div id="bandwidth-usage-graphs"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <h2>Active Connections</h2>
-          <div id="active-connections"></div>
-        </div>
-        <div class="col">
-          <h2>Error Log</h2>
-          <div id="error-log"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <h2>User Statistics</h2>
-          <div id="user-statistics"></div>
-        </div>
-      </div>
+      <h1>Proxy Settings</h1>
+      <form>
+        <label for="protocol">Protocol:</label>
+        <select id="protocol">
+          <option value="http">HTTP</option>
+          <option value="https">HTTPS</option>
+        </select>
+        <br>
+        <label for="port">Port:</label>
+        <input type="number" id="port" min="1" max="65535" />
+        <br>
+        <label for="username">Authentication:</label>
+        <input type="text" id="username" />
+        <input type="password" id="password" />
+        <br>
+        <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
+        <input type="number" id="bandwidth-limit" min="0" />
+        <br>
+        <input type="submit" value="Save" />
+      </form>
     </div>
   </div>
   <script src="script.js"></script>
