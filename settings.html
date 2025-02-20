@@ -1,9 +1,7 @@
 file path: settings.html
 content: 
 ```html
-<!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +9,6 @@ content:
     <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
 </head>
-
 <body class="bg-blue-400 rounded-lg">
     <div class="container flex flex-col h-screen">
         <div class="sidebar bg-blue-500 rounded-lg">
@@ -25,7 +22,7 @@ content:
             <div class="settings-block">
                 <div class="settings-title font-bold text-xl mb-4">Proxy Configuration</div>
                 <div class="settings-content">
-                    <form id="proxy-form" class="flex flex-col gap-4">
+                    <form id="proxy-form">
                         <div class="form-group">
                             <label for="proxy-protocol" class="font-bold text-lg">Protocol:</label>
                             <select name="proxy-protocol" id="proxy-protocol" class="rounded-lg px-2 py-1" required>
@@ -58,6 +55,5 @@ content:
         </div>
     </div>
 </body>
-
 </html>
 ```
