@@ -1,1 +1,47 @@
-
+file path: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <h1>Settings</h1>
+        <form>
+            <label for="protocol">Protocol:</label>
+            <select name="protocol">
+                <option value="http">HTTP</option>
+                <option value="https">HTTPS</option>
+            </select>
+            <br>
+            <label for="port">Port:</label>
+            <input type="number" name="port" placeholder="8080">
+            <br>
+            <label for="username">Username:</label>
+            <input type="text" name="username">
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" name="password">
+            <br>
+            <label for="bandwidth">Bandwidth limit (MB/s):</label>
+            <input type="number" name="bandwidth">
+            <br>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</body>
+</html>
+```
