@@ -1,76 +1,56 @@
-file path: style.css
+file path: index.html
 content: 
 
-```css
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f8ff;
-}
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="wrapper">
+    <div class="sidebar">
+      <a href="/index.html">Home</a>
+      <a href="/dashboard.html">Dashboard</a>
+      <a href="/settings.html">Settings</a>
+    </div>
+    <div class="main">
+      <h1>Proxy Login</h1>
+      <form class="login-form">
+        <label for="username">Username</label>
+        <input type="text" id="username">
+        <label for="password">Password</label>
+        <input type="password" id="password">
+        <button type="submit">Login</button>
+      </form>
+      <div class="status">Status: Offline</div>
+      <div class="errors">Errors:</div>
+      <div class="connection">Connection: Waiting...</div>
+    </div>
+  </div>
 
-.wrapper {
-  display: flex;
-  height: 100vh;
-}
+  <script>
+    const form = document.querySelector('.login-form');
 
-.sidebar {
-  width: 250px;
-  padding: 30px;
-  background-color: #3498db;
-  color: white;
-}
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-.sidebar a {
-  display: block;
-  padding: 10px;
-  text-decoration: none;
-  color: white;
-}
+      const username = document.querySelector('#username').value;
+      const password = document.querySelector('#password').value;
 
-.sidebar a:hover {
-  background-color: #2980b9;
-}
-
-.main {
-  flex: 1;
-  padding: 30px;
-}
-
-.main h1 {
-  margin-top: 0;
-}
-
-.login-form {
-  max-width: 300px;
-}
-
-.login-form label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.login-form input {
-  width: 100%;
-  padding: 5px;
-}
-
-.status {
-  background-color: #e74c3c;
-  color: white;
-  padding: 10px;
-  margin-top: 30px;
-}
-
-.errors {
-  background-color: #f1c40f;
-  color: white;
-  padding: 10px;
-  margin-top: 30px;
-}
-
-.connection {
-  background-color: #2ecc71;
-  color: white;
-  padding: 10px;
-  margin-top: 30px;
-}
+      // Check if username and password are valid
+      if (username === 'admin' && password === 'password') {
+        // Login successful
+        window.location.href = '/dashboard.html';
+      } else {
+        // Login failed
+        alert('Invalid username or password');
+      }
+    });
+  </script>
+</body>
+</html>
 ```
