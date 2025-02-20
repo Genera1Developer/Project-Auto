@@ -1,140 +1,94 @@
-file path: styles.css
+file path: dashboard.html
 content: 
-```css
-/* Basic styles */
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
-}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Proxy Dashboard</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
 
-.babyblue {
-  background-color: #add8e6;
-}
+<body>
+  <div class="sidebar babyblue rounded">
+    <ul>
+      <li><a href="index.html" class="active">Dashboard</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="index.html">Home</a></li>
+    </ul>
+  </div>
 
-.rounded {
-  border-radius: 10px;
-}
+  <div class="main">
+    <h1>Dashboard</h1>
 
-/* Sidebar */
+    <!-- Real-time connection status -->
+    <div class="section">
+      <h2>Connection Status</h2>
+      <div class="status-indicator connected"></div>
+      <span>Connected</span>
+    </div>
 
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 200px;
-  height: 100vh;
-  padding: 20px;
-  overflow: auto;
-}
+    <!-- Bandwidth usage graphs -->
+    <div class="section">
+      <h2>Bandwidth Usage</h2>
+      <div class="bandwidth-graph download" style="width: 50%;"></div>
+      <div class="bandwidth-graph upload" style="width: 50%;"></div>
+    </div>
 
-.sidebar ul {
-  list-style-type: none;
-  padding: 0;
-}
+    <!-- Active connections list -->
+    <div class="section">
+      <h2>Active Connections</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>IP Address</th>
+            <th>Bytes Sent</th>
+            <th>Bytes Received</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>John Doe</td>
+            <td>192.168.1.1</td>
+            <td>12345</td>
+            <td>67890</td>
+          </tr>
+          <tr>
+            <td>Jane Smith</td>
+            <td>192.168.1.2</td>
+            <td>45678</td>
+            <td>90123</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-.sidebar a {
-  display: block;
-  color: black;
-  text-decoration: none;
-  font-size: 18px;
-  padding: 5px 10px;
-}
+    <!-- Error log display -->
+    <div class="section">
+      <h2>Error Log</h2>
+      <ul class="error-log-list">
+        <li>Error connecting to server</li>
+        <li>Error processing request</li>
+        <li>Error sending response</li>
+      </ul>
+    </div>
 
-.sidebar a:hover {
-  background-color: #eaeaea;
-}
+    <!-- User statistics -->
+    <div class="section">
+      <h2>User Statistics</h2>
+      <div class="user-statistics-stats">
+        <p>Total Users: 10</p>
+        <p>Total Requests: 1000</p>
+        <p>Total Bytes Sent: 10 GB</p>
+        <p>Total Bytes Received: 10 GB</p>
+      </div>
+    </div>
 
-.sidebar a.active {
-  background-color: #add8e6;
-  color: white;
-}
+  </div>
+</body>
 
-/* Main content */
-
-.main {
-  margin-left: 200px;
-  padding: 20px;
-}
-
-.main h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.main h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.main .section {
-  margin-bottom: 20px;
-}
-
-/* Status indicator */
-
-.status-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.status-indicator.connected {
-  background-color: green;
-}
-
-.status-indicator.disconnected {
-  background-color: red;
-}
-
-/* Graphs */
-
-.bandwidth-graph {
-  display: inline-block;
-  height: 10px;
-  background-color: #ccc;
-}
-
-.bandwidth-graph.download {
-  background-color: #0088cc;
-}
-
-.bandwidth-graph.upload {
-  background-color: #ffa500;
-}
-
-/* Tables */
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th, td {
-  padding: 5px;
-}
-
-/* Error log */
-
-.error-log-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.error-log-list li {
-  color: red;
-  padding: 5px;
-}
-
-/* User statistics */
-
-.user-statistics-stats {
-  display: flex;
-  justify-content: space-between;
-}
-
-.user-statistics-stats p {
-  width: 50%;
-}
+</html>
 ```
