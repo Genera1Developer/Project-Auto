@@ -5,19 +5,21 @@ content:
 
 **Description:**
 
-This project presents a web proxy system featuring a visually pleasing baby blue and rounded design, structured file organization, and defined components.
-
-**Features:**
-
-- Proxy configuration management
-- Real-time connection tracking and analytics
-- Error detection and reporting
+This project presents a meticulously organized web proxy system featuring a captivating baby blue and rounded design. The file structure is clearly defined, and each component adheres to specific requirements.
 
 **Files:**
 
 - index.html: Main landing page with login, navigation, and proxy status information
 - settings.html: Proxy configuration settings interface
 - dashboard.html: User statistics and monitoring dashboard
+- error.html: Custom error page for handling proxy configuration or connection issues
+- loggedOut.html: Page displayed after user logs out or session expires
+
+**Features:**
+
+- Proxy configuration management
+- Real-time connection tracking and analytics
+- Error detection and reporting
 
 **Development Requirements:**
 
@@ -38,8 +40,3 @@ This project presents a web proxy system featuring a visually pleasing baby blue
 **Contributions:**
 
 We welcome contributions! Adhere to the project's coding standards and guidelines.
-
-**Additional Files:**
-
-- error.html: Custom error page for handling proxy configuration or connection issues
-- loggedOut.html: Page displayed after user logs out or session expires
