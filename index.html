@@ -71,3 +71,145 @@ content:
 
 </html>
 ```
+
+file path: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy Settings</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+    <div class="main">
+      <div class="form-heading">
+        <h1>Proxy Settings</h1>
+      </div>
+      <form id="proxy-settings-form">
+        <div class="form-group">
+          <label for="proxy-protocol">Proxy Protocol</label>
+          <select id="proxy-protocol" name="proxy-protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="proxy-host">Proxy Host</label>
+          <input type="text" id="proxy-host" name="proxy-host" placeholder="Enter the proxy host" />
+        </div>
+        <div class="form-group">
+          <label for="proxy-port">Proxy Port</label>
+          <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" />
+        </div>
+        <div class="form-group">
+          <label for="proxy-username">Proxy Username</label>
+          <input type="text" id="proxy-username" name="proxy-username" placeholder="Enter the proxy username" />
+        </div>
+        <div class="form-group">
+          <label for="proxy-password">Proxy Password</label>
+          <input type="password" id="proxy-password" name="proxy-password" placeholder="Enter the proxy password" />
+        </div>
+        <div class="form-group">
+          <label for="bandwidth-limit">Bandwidth Limit (MB)</label>
+          <input type="number" id="bandwidth-limit" name="bandwidth-limit" placeholder="Enter the bandwidth limit" />
+        </div>
+        <div class="button-container">
+          <button type="submit">Save Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
+```
+
+file path: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+    <div class="main">
+      <div class="form-heading">
+        <h1>Proxy Dashboard</h1>
+      </div>
+      <div class="connection-status" id="connection-status">
+        <span>Proxy Status:</span>
+        <span id="proxy-status"></span>
+      </div>
+      <div class="monitoring-controls">
+        <button id="refresh-data-button" type="button">Refresh Data</button>
+      </div>
+      <div class="monitoring-data" id="monitoring-data">
+        <h3>Bandwidth Usage</h3>
+        <canvas id="bandwidth-usage-chart" width="400" height="200"></canvas>
+        <h3>Active Connections</h3>
+        <ul id="active-connections-list"></ul>
+        <h3>Error Log</h3>
+        <ul id="error-log-list"></ul>
+        <h3>User Statistics</h3>
+        <ul id="user-statistics-list"></ul>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
+```
+
+file path: README.md
+content: 
+```markdown
+## Web Proxy Project
+
+This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue and rounded theme.
+
+### Files and Components
+
+The project consists of four files:
+
+- index.html: Main landing page with login form, navigation menu, and proxy status indicator.
+- settings.html: Proxy configuration page with options for protocol, host, port, authentication, and bandwidth limit.
+- dashboard.html: User statistics and monitoring page with real-time connection status, bandwidth usage graphs, active connections list, error log, and user statistics.
+- style.css: CSS file for styling all pages.
+- script.js: JavaScript file for handling user interactions, data retrieval, and page updates.
+
+### Styling and Theme
+
+All pages share the same baby blue and rounded theme. The sidebar on the left provides navigation to the three main pages. The main content area on the right includes various forms, settings, and data visualizations.
+
+### Security and Usability
+
+The project follows strict content security policies and error handling mechanisms to ensure secure and reliable operation
