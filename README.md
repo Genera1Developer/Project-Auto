@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content: 
 
 ```html
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Proxy Settings</title>
+  <title>Proxy Dashboard</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -18,52 +18,131 @@ content:
       <a href="/settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Proxy Settings</h1>
-      <form class="settings-form">
-        <label for="protocol">Protocol</label>
-        <select id="protocol">
-          <option value="http">HTTP</option>
-          <option value="https">HTTPS</option>
-        </select>
-        <label for="port">Port</label>
-        <input type="number" id="port">
-        <label for="authentication">Authentication</label>
-        <input type="checkbox" id="authentication">
-        <label for="username">Username</label>
-        <input type="text" id="username">
-        <label for="password">Password</label>
-        <input type="password" id="password">
-        <label for="bandwidth">Bandwidth Limit</label>
-        <input type="number" id="bandwidth">
-        <button type="submit">Save</button>
-      </form>
+      <h1>Proxy Dashboard</h1>
+      <div class="stats">
+        <div class="stat">
+          <h2>Real-time Connections</h2>
+          <span id="connections">0</span>
+        </div>
+        <div class="stat">
+          <h2>Bandwidth Usage</h2>
+          <canvas id="bandwidth-chart"></canvas>
+        </div>
+        <div class="stat">
+          <h2>Active Connections</h2>
+          <ul id="active-connections"></ul>
+        </div>
+        <div class="stat">
+          <h2>Error Log</h2>
+          <ul id="error-log"></ul>
+        </div>
+        <div class="stat">
+          <h2>User Statistics</h2>
+          <ul id="user-stats"></ul>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    const form = document.querySelector('.settings-form');
+    const connections = document.querySelector('#connections');
+    const bandwidthChart = document.querySelector('#bandwidth-chart');
+    const activeConnections = document.querySelector('#active-connections');
+    const errorLog = document.querySelector('#error-log');
+    const userStats = document.querySelector('#user-stats');
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+    // Get real-time connection status
+    const getConnections = () => {
+      fetch('/api/connections')
+        .then(res => res.json())
+        .then(data => {
+          connections.textContent = data.connections;
+        })
+        .catch(err => {
+          console.error(err);
+          errorLog.innerHTML += `<li>${err}</li>`;
+        });
+    };
 
-      const protocol = document.querySelector('#protocol').value;
-      const port = document.querySelector('#port').value;
-      const authentication = document.querySelector('#authentication').checked;
-      const username = document.querySelector('#username').value;
-      const password = document.querySelector('#password').value;
-      const bandwidth = document.querySelector('#bandwidth').value;
+    // Get bandwidth usage data
+    const getBandwidthUsage = () => {
+      fetch('/api/bandwidth')
+        .then(res => res.json())
+        .then(data => {
+          const ctx = bandwidthChart.getContext('2d');
+          const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: data.timestamps,
+              datasets: [{
+                label: 'Bandwidth Usage',
+                data: data.usage
+              }]
+            }
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          errorLog.innerHTML += `<li>${err}</li>`;
+        });
+    };
 
-      // Save settings to local storage
-      localStorage.setItem('protocol', protocol);
-      localStorage.setItem('port', port);
-      localStorage.setItem('authentication', authentication);
-      localStorage.setItem('username', username);
-      localStorage.setItem('password', password);
-      localStorage.setItem('bandwidth', bandwidth);
+    // Get active connections
+    const getActiveConnections = () => {
+      fetch('/api/connections/active')
+        .then(res => res.json())
+        .then(data => {
+          activeConnections.innerHTML = '';
+          data.connections.forEach(connection => {
+            activeConnections.innerHTML += `<li>${connection.ip} - ${connection.port}</li>`;
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          errorLog.innerHTML += `<li>${err}</li>`;
+        });
+    };
 
-      // Redirect to dashboard
-      window.location.href = '/dashboard.html';
-    });
+    // Get error log
+    const getErrorLog = () => {
+      fetch('/api/errors')
+        .then(res => res.json())
+        .then(data => {
+          errorLog.innerHTML = '';
+          data.errors.forEach(error => {
+            errorLog.innerHTML += `<li>${error}</li>`;
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          errorLog.innerHTML += `<li>${err}</li>`;
+        });
+    };
+
+    // Get user statistics
+    const getUserStats = () => {
+      fetch('/api/users')
+        .then(res => res.json())
+        .then(data => {
+          userStats.innerHTML = '';
+          data.users.forEach(user => {
+            userStats.innerHTML += `<li>${user.username} - ${user.connections}</li>`;
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          errorLog.innerHTML += `<li>${err}</li>`;
+        });
+    };
+
+    // Update dashboard every 5 seconds
+    setInterval(() => {
+      getConnections();
+      getBandwidthUsage();
+      getActiveConnections();
+      getErrorLog();
+      getUserStats();
+    }, 5000);
   </script>
 </body>
 </html>
