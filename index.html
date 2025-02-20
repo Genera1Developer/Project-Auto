@@ -1,215 +1,269 @@
-file path: index.html
+file path: style.css
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```css
+/* Global styles */
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+body {
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-size: 14px;
+  color: #333;
+  background-color: #f5f5f5;
+}
 
-<body>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
-    <div class="main">
-      <div class="form-heading">
-        <h1>Login to Proxy</h1>
-      </div>
-      <form id="login-form">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Enter your username" />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" />
-        </div>
-        <div class="button-container">
-          <button type="submit">Login</button>
-        </div>
-      </form>
+.container {
+  display: flex;
+  height: 100vh;
+}
 
-      <div class="error-message" id="error-message"></div>
-      <div class="connection-status" id="connection-status">
-        <span>Proxy Status:</span>
-        <span id="proxy-status"></span>
-      </div>
-      <div class="monitoring-controls">
-        <button id="start-proxy-button" type="button">Start Proxy</button>
-        <button id="stop-proxy-button" type="button">Stop Proxy</button>
-        <button id="refresh-data-button" type="button">Refresh Data</button>
-      </div>
-      <div class="proxy-settings" id="proxy-settings">
-        <h3>Proxy Settings</h3>
-        <form id="proxy-settings-form">
-          <div class="form-group">
-            <label for="proxy-host">Proxy Host</label>
-            <input type="text" id="proxy-host" name="proxy-host" placeholder="Enter the proxy host" />
-          </div>
-          <div class="form-group">
-            <label for="proxy-port">Proxy Port</label>
-            <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" />
-          </div>
-          <div class="button-container">
-            <button type="submit">Save Settings</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <script src="script.js"></script>
-</body>
+.sidebar {
+  width: 200px;
+  background-color: #007bff;
+  color: #fff;
+  padding: 20px;
+}
 
-</html>
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  color: #0069d9;
+}
+
+.main {
+  flex: 1;
+}
+
+.form-heading {
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0069d9;
+}
+
+.error-message {
+  color: #d9534f;
+  margin-bottom: 20px;
+}
+
+.connection-status {
+  background-color: #f5f5f5;
+  padding: 5px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.connection-status span {
+  margin-right: 5px;
+}
+
+.monitoring-controls {
+  margin-bottom: 20px;
+}
+
+#proxy-settings {
+  background-color: #f5f5f5;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#monitoring-data {
+  background-color: #f5f5f5;
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#bandwidth-usage-chart {
+  margin-bottom: 20px;
+}
+
+#active-connections-list,
+#error-log-list,
+#user-statistics-list {
+  list-style-type: none;
+  padding: 0;
+}
 ```
 
-file path: settings.html
+file path: script.js
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```javascript
+// Global variables
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy Settings</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+const loginForm = document.getElementById("login-form");
+const settingsForm = document.getElementById("proxy-settings-form");
+const proxySettingsForm = document.getElementById("proxy-settings-form");
+const refreshDataButton = document.getElementById("refresh-data-button");
+const startProxyButton = document.getElementById("start-proxy-button");
+const stopProxyButton = document.getElementById("stop-proxy-button");
+const proxyStatusElement = document.getElementById("proxy-status");
+const errorMessageElement = document.getElementById("error-message");
 
-<body>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
-    <div class="main">
-      <div class="form-heading">
-        <h1>Proxy Settings</h1>
-      </div>
-      <form id="proxy-settings-form">
-        <div class="form-group">
-          <label for="proxy-protocol">Proxy Protocol</label>
-          <select id="proxy-protocol" name="proxy-protocol">
-            <option value="http">HTTP</option>
-            <option value="https">HTTPS</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="proxy-host">Proxy Host</label>
-          <input type="text" id="proxy-host" name="proxy-host" placeholder="Enter the proxy host" />
-        </div>
-        <div class="form-group">
-          <label for="proxy-port">Proxy Port</label>
-          <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" />
-        </div>
-        <div class="form-group">
-          <label for="proxy-username">Proxy Username</label>
-          <input type="text" id="proxy-username" name="proxy-username" placeholder="Enter the proxy username" />
-        </div>
-        <div class="form-group">
-          <label for="proxy-password">Proxy Password</label>
-          <input type="password" id="proxy-password" name="proxy-password" placeholder="Enter the proxy password" />
-        </div>
-        <div class="form-group">
-          <label for="bandwidth-limit">Bandwidth Limit (MB)</label>
-          <input type="number" id="bandwidth-limit" name="bandwidth-limit" placeholder="Enter the bandwidth limit" />
-        </div>
-        <div class="button-container">
-          <button type="submit">Save Settings</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  <script src="script.js"></script>
-</body>
+// Initialize the proxy
 
-</html>
+let isProxyRunning = false;
+
+// Event listeners
+
+loginForm.addEventListener("submit", onLoginSubmit);
+settingsForm.addEventListener("submit", onSettingsSubmit);
+proxySettingsForm.addEventListener("submit", onProxySettingsSubmit);
+refreshDataButton.addEventListener("click", onRefreshDataClick);
+startProxyButton.addEventListener("click", onStartProxyClick);
+stopProxyButton.addEventListener("click", onStopProxyClick);
+
+// Functions
+
+function onLoginSubmit(event) {
+  event.preventDefault();
+
+  // Get the username and password from the form
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  // Validate the username and password
+  if (username === "" || password === "") {
+    errorMessageElement.textContent = "Please enter a username and password";
+    return;
+  }
+
+  // Log in to the proxy
+
+  // ...
+
+  // If the login is successful, redirect to the dashboard page
+  window.location.href = "/dashboard.html";
+}
+
+function onSettingsSubmit(event) {
+  event.preventDefault();
+
+  // Get the settings from the form
+  const protocol = document.getElementById("proxy-protocol").value;
+  const host = document.getElementById("proxy-host").value;
+  const port = document.getElementById("proxy-port").value;
+  const username = document.getElementById("proxy-username").value;
+  const password = document.getElementById("proxy-password").value;
+  const bandwidthLimit = document.getElementById("bandwidth-limit").value;
+
+  // Validate the settings
+  if (host === "" || port === "") {
+    errorMessageElement.textContent = "Please enter a proxy host and port";
+    return;
+  }
+
+  // Save the settings to the proxy
+
+  // ...
+
+  // Display a success message
+  errorMessageElement.textContent = "Settings saved successfully";
+}
+
+function onProxySettingsSubmit(event) {
+  event.preventDefault();
+
+  // Get the settings from the form
+  const protocol = document.getElementById("proxy-protocol").value;
+  const host = document.getElementById("proxy-host").value;
+  const port = document.getElementById("proxy-port").value;
+
+  // Validate the settings
+  if (host === "" || port === "") {
+    errorMessageElement.textContent = "Please enter a proxy host and port";
+    return;
+  }
+
+  // Update the proxy settings
+
+  // ...
+
+  // Display a success message
+  errorMessageElement.textContent = "Proxy settings updated successfully";
+}
+
+function onRefreshDataClick() {
+  // Refresh the data on the dashboard page
+
+  // ...
+
+  // Display a success message
+  errorMessageElement.textContent = "Data refreshed successfully";
+}
+
+function onStartProxyClick() {
+  // Start the proxy
+
+  // ...
+
+  // Set the proxy status to running
+  isProxyRunning = true;
+
+  // Update the UI
+  proxyStatusElement.textContent = "Running";
+  startProxyButton.disabled = true;
+  stopProxyButton.disabled = false;
+}
+
+function onStopProxyClick() {
+  // Stop the proxy
+
+  // ...
+
+  // Set the proxy status to stopped
+  isProxyRunning = false;
+
+  // Update the UI
+  proxyStatusElement.textContent = "Stopped";
+  startProxyButton.disabled = false;
+  stopProxyButton.disabled = true;
+}
 ```
-
-file path: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
-    <div class="main">
-      <div class="form-heading">
-        <h1>Proxy Dashboard</h1>
-      </div>
-      <div class="connection-status" id="connection-status">
-        <span>Proxy Status:</span>
-        <span id="proxy-status"></span>
-      </div>
-      <div class="monitoring-controls">
-        <button id="refresh-data-button" type="button">Refresh Data</button>
-      </div>
-      <div class="monitoring-data" id="monitoring-data">
-        <h3>Bandwidth Usage</h3>
-        <canvas id="bandwidth-usage-chart" width="400" height="200"></canvas>
-        <h3>Active Connections</h3>
-        <ul id="active-connections-list"></ul>
-        <h3>Error Log</h3>
-        <ul id="error-log-list"></ul>
-        <h3>User Statistics</h3>
-        <ul id="user-statistics-list"></ul>
-      </div>
-    </div>
-  </div>
-  <script src="script.js"></script>
-</body>
-
-</html>
-```
-
-file path: README.md
-content: 
-```markdown
-## Web Proxy Project
-
-This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue and rounded theme.
-
-### Files and Components
-
-The project consists of four files:
-
-- index.html: Main landing page with login form, navigation menu, and proxy status indicator.
-- settings.html: Proxy configuration page with options for protocol, host, port, authentication, and bandwidth limit.
-- dashboard.html: User statistics and monitoring page with real-time connection status, bandwidth usage graphs, active connections list, error log, and user statistics.
-- style.css: CSS file for styling all pages.
-- script.js: JavaScript file for handling user interactions, data retrieval, and page updates.
-
-### Styling and Theme
-
-All pages share the same baby blue and rounded theme. The sidebar on the left provides navigation to the three main pages. The main content area on the right includes various forms, settings, and data visualizations.
-
-### Security and Usability
-
-The project follows strict content security policies and error handling mechanisms to ensure secure and reliable operation
