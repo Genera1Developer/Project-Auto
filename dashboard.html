@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,7 +6,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy Dashboard</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     body {
@@ -48,46 +48,64 @@ content:
       padding: 20px;
     }
 
-    .row {
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    form {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
       gap: 20px;
-      margin-bottom: 20px;
     }
 
-    .card {
-      padding: 20px;
-      background-color: #FFFFFF;
-      border-radius: 10px;
-      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    label {
+      font-size: 1.2rem;
     }
 
-    .chart-container {
+    input {
       width: 100%;
-      height: 300px;
-    }
-
-    .table-container {
-      width: 100%;
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
       padding: 10px;
       border: 1px solid #DDDDDD;
+      border-radius: 5px;
     }
 
-    .error-log {
-      background-color: #FF0000;
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #00ADB5;
       color: #FFFFFF;
-      padding: 10px;
-      margin-bottom: 20px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .button-container button:hover {
+      background-color: #0096A7;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #FF0000;
+      margin-right: 10px;
+    }
+
+    .status-indicator--success {
+      background-color: #00FF00;
+    }
+
+    .error-message {
+      color: #FF0000;
+      font-size: 1.2rem;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -101,154 +119,31 @@ content:
       </nav>
     </div>
     <div class="main-content">
-      <h1>Dashboard</h1>
+      <h1>Web Proxy</h1>
 
-      <div class="row">
-        <div class="card">
-          <h2>Real-Time Connection Status</h2>
-          <p>Connected: <span id="connection-status">Loading...</span></p>
-          <p>Active Connections: <span id="active-connections">Loading...</span></p>
-        </div>
-        <div class="card">
-          <h2>Bandwidth Usage</h2>
-          <div class="chart-container" id="bandwidth-chart"></div>
-        </div>
-      </div>
+      <div class="form-container">
+        <form id="login-form">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
 
-      <div class="row">
-        <div class="card">
-          <h2>Active Connections</h2>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>IP Address</th>
-                  <th>Port</th>
-                  <th>Protocol</th>
-                  <th>Duration</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>192.168.1.1</td>
-                  <td>80</td>
-                  <td>HTTP</td>
-                  <td>00:01:00</td>
-                </tr>
-                <tr>
-                  <td>192.168.1.2</td>
-                  <td>443</td>
-                  <td>HTTPS</td>
-                  <td>00:05:00</td>
-                </tr>
-              </tbody>
-            </table>
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+
+          <div class="button-container">
+            <button type="submit">Login</button>
+            <button type="reset">Reset</button>
           </div>
-        </div>
-        <div class="card">
-          <h2>Error Log</h2>
-          <div class="error-log" id="error-log">Loading...</div>
-        </div>
+        </form>
       </div>
 
-      <div class="row">
-        <div class="card">
-          <h2>User Statistics</h2>
-          <p>Total Users: <span id="total-users">Loading...</span></p>
-          <p>Active Users: <span id="active-users">Loading...</span></p>
-        </div>
-      </div>
+      <div class="status-indicator"></div>
+      <span id="connection-status"></span>
+
+      <div class="error-message" id="error-message"></div>
     </div>
   </div>
 
   <script src="scripts.js"></script>
 </body>
 </html>
-```
-
-file path: scripts.js
-content: 
-```javascript
-// Get DOM elements
-const connectionStatus = document.getElementById('connection-status');
-const activeConnections = document.getElementById('active-connections');
-const bandwidthChart = document.getElementById('bandwidth-chart');
-const errorLog = document.getElementById('error-log');
-const totalUsers = document.getElementById('total-users');
-const activeUsers = document.getElementById('active-users');
-
-// Initialize variables
-let connected = false;
-let bandwidthData = [];
-let errorMessages = [];
-let totalUsersCount = 0;
-let activeUsersCount = 0;
-
-// Establish WebSocket connection
-const websocket = new WebSocket('ws://localhost:8080');
-
-// WebSocket event handlers
-websocket.addEventListener('open', () => {
-  connected = true;
-  connectionStatus.textContent = 'Connected';
-
-  // Send initial request for data
-  websocket.send(JSON.stringify({
-    type: 'init'
-  }));
-});
-
-websocket.addEventListener('close', () => {
-  connected = false;
-  connectionStatus.textContent = 'Disconnected';
-});
-
-websocket.addEventListener('message', (event) => {
-  const data = JSON.parse(event.data);
-
-  switch (data.type) {
-    case 'init':
-      activeConnections.textContent = data.activeConnections;
-      totalUsersCount = data.totalUsers;
-      totalUsers.textContent = data.totalUsers;
-      activeUsersCount = data.activeUsers;
-      activeUsers.textContent = data.activeUsers;
-      break;
-    case 'update':
-      activeConnections.textContent = data.activeConnections;
-      bandwidthData.push(data.bandwidth);
-      errorMessages.push(data.error);
-      errorLog.textContent = errorMessages.join('\n');
-      totalUsersCount = data.totalUsers;
-      totalUsers.textContent = data.totalUsers;
-      activeUsersCount = data.activeUsers;
-      activeUsers.textContent = data.activeUsers;
-      break;
-  }
-
-  // Update bandwidth chart
-  const chartOptions = {
-    chart: {
-      type: 'line',
-      height: 300
-    },
-    series: [{
-      name: 'Bandwidth',
-      data: bandwidthData
-    }],
-    xaxis: {
-      categories: [...Array(bandwidthData.length).keys()]
-    },
-    yaxis: {
-      labels: {
-        formatter: (value) => {
-          return value + ' MB';
-        }
-      }
-    }
-  };
-
-  const chart = new ApexCharts(bandwidthChart, chartOptions);
-  chart.render();
-});
 ```
