@@ -1,4 +1,4 @@
-file path: index.html
+file path: settings.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,7 +6,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
+  <title>Web Proxy Settings</title>
   <link rel="stylesheet" href="styles.css">
   <style>
     body {
@@ -89,24 +89,6 @@ content:
     .button-container button:hover {
       background-color: #0096A7;
     }
-
-    .status-indicator {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #FF0000;
-      margin-right: 10px;
-    }
-
-    .status-indicator--success {
-      background-color: #00FF00;
-    }
-
-    .error-message {
-      color: #FF0000;
-      font-size: 1.2rem;
-      margin-top: 10px;
-    }
   </style>
 </head>
 <body>
@@ -119,27 +101,41 @@ content:
       </nav>
     </div>
     <div class="main-content">
-      <h1>Web Proxy</h1>
+      <h1>Web Proxy Settings</h1>
 
       <div class="form-container">
-        <form id="login-form">
+        <form id="settings-form">
+          <label for="protocol">Protocol:</label>
+          <select name="protocol" id="protocol">
+            <option value="HTTP">HTTP</option>
+            <option value="HTTPS">HTTPS</option>
+          </select>
+
+          <label for="port">Port:</label>
+          <input type="number" id="port" name="port" min="1" max="65535" required>
+
+          <label for="authentication">Authentication:</label>
+          <select name="authentication" id="authentication">
+            <option value="none">None</option>
+            <option value="basic">Basic</option>
+            <option value="digest">Digest</option>
+          </select>
+
           <label for="username">Username:</label>
-          <input type="text" id="username" name="username" required>
+          <input type="text" id="username" name="username">
 
           <label for="password">Password:</label>
-          <input type="password" id="password" name="password" required>
+          <input type="password" id="password" name="password">
+
+          <label for="bandwidth-limit">Bandwidth Limit:</label>
+          <input type="number" id="bandwidth-limit" name="bandwidth-limit" min="0" max="100" required>
 
           <div class="button-container">
-            <button type="submit">Login</button>
+            <button type="submit">Save</button>
             <button type="reset">Reset</button>
           </div>
         </form>
       </div>
-
-      <div class="status-indicator"></div>
-      <span id="connection-status"></span>
-
-      <div class="error-message" id="error-message"></div>
     </div>
   </div>
 
