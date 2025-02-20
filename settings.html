@@ -24,7 +24,7 @@ content:
     <div class="main-content">
       <div class="proxy-config-form">
         <h1>Proxy Configuration</h1>
-        <form>
+        <form id="settings-form">
           <div class="form-group">
             <label for="protocol">Protocol</label>
             <select id="protocol">
@@ -44,11 +44,11 @@ content:
               <option value="digest">Digest</option>
             </select>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="username-field">
             <label for="username">Username</label>
             <input type="text" id="username" placeholder="Enter your username" />
           </div>
-          <div class="form-group">
+          <div class="form-group" id="password-field">
             <label for="password">Password</label>
             <input type="password" id="password" placeholder="Enter your password" />
           </div>
