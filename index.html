@@ -21,112 +21,30 @@ content:
       </ul>
     </div>
     <div class="main">
-      <h1>Web Proxy</h1>
-      <form id="login-form" onsubmit="return login();">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input id="username" type="text" required>
+      <div id="content-area">
+        <h1>Web Proxy</h1>
+        <div id="login-form-container">
+          <form id="login-form">
+            <label for="username">Username</label>
+            <input id="username" type="text" required>
+            <label for="password">Password</label>
+            <input id="password" type="password" required>
+            <button type="submit">Login</button>
+          </form>
         </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input id="password" type="password" required>
+        <div id="proxy-status" class="status">
+          <span class="status-text">Proxy Status:</span>
+          <span class="status-indicator"></span>
         </div>
-        <button type="submit">Login</button>
-      </form>
-      <div id="proxy-status" class="status">
-        <span class="status-text">Proxy Status:</span>
-        <span class="status-indicator"></span>
+        <div id="connection-status" class="status">
+          <span class="status-text">Connection Status:</span>
+          <span class="status-indicator"></span>
+        </div>
+        <div id="error-message"></div>
       </div>
-      <div id="connection-status" class="status">
-        <span class="status-text">Connection Status:</span>
-        <span class="status-indicator"></span>
-      </div>
-      <div id="error-message"></div>
     </div>
   </div>
 </body>
 
 </html>
-```
-
-file path: index.js
-content: 
-```javascript
-function login() {
-  // Get the username and password from the form
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-
-  // Send a request to the server to log in
-  fetch('login.php', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      // If the login is successful, redirect to the dashboard
-      window.location.href = '/dashboard.html';
-    } else {
-      // If the login is unsuccessful, display an error message
-      document.getElementById('error-message').innerHTML = data.error;
-    }
-  })
-  .catch(error => {
-    // If there is an error, display it
-    document.getElementById('error-message').innerHTML = error.message;
-  });
-
-  return false;
-}
-
-function updateProxyStatus() {
-  // Send a request to the server to get the proxy status
-  fetch('proxy_status.php')
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'connected') {
-      // If the proxy is connected, update the status indicator to green
-      document.getElementById('proxy-status').classList.add('connected');
-    } else {
-      // If the proxy is not connected, update the status indicator to red
-      document.getElementById('proxy-status').classList.remove('connected');
-    }
-  })
-  .catch(error => {
-    // If there is an error, display it
-    document.getElementById('error-message').innerHTML = error.message;
-  });
-}
-
-function updateConnectionStatus() {
-  // Send a request to the server to get the connection status
-  fetch('connection_status.php')
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'connected') {
-      // If the connection is connected, update the status indicator to green
-      document.getElementById('connection-status').classList.add('connected');
-    } else {
-      // If the connection is not connected, update the status indicator to red
-      document.getElementById('connection-status').classList.remove('connected');
-    }
-  })
-  .catch(error => {
-    // If there is an error, display it
-    document.getElementById('error-message').innerHTML = error.message;
-  });
-}
-
-// Update the proxy status and connection status every second
-setInterval(() => {
-  updateProxyStatus();
-  updateConnectionStatus();
-}, 1000);
 ```
