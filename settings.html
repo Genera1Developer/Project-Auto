@@ -1,76 +1,95 @@
-file path: settings.html
+file path: style.css
 content: 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy Settings</title>
-    <link href="style.css" rel="stylesheet" />
-    <script src="script.js"></script>
-</head>
+```css
+body {
+  font-family: Arial, sans-serif;
+  background-color: #F0F8FF;
+}
 
-<body>
-<div class="sidebar">
-    <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li class="active"><a href="/settings.html">Settings</a></li>
-    </ul>
-</div>
-<div class="main">
-    <h1>Proxy Settings</h1>
-    <form id="settings-form">
-        <label for="protocol">Protocol:</label>
-        <select name="protocol">
-            <option value="http" selected>HTTP</option>
-            <option value="https">HTTPS</option>
-        </select>
-        <br />
-        <label for="host">Host:</label>
-        <input type="text" name="host" value="localhost" />
-        <br />
-        <label for="port">Port:</label>
-        <input type="number" name="port" value="8080" />
-        <br />
-        <label for="username">Username:</label>
-        <input type="text" name="username" />
-        <br />
-        <label for="password">Password:</label>
-        <input type="password" name="password" />
-        <br />
-        <label for="bandwidth-limit">Bandwidth Limit (MB):</label>
-        <input type="number" name="bandwidth-limit" value="100" />
-        <br />
-        <button type="submit">Save</button>
-    </form>
-</div>
-<script>
-    const form = document.getElementById("settings-form");
+.container {
+  display: flex;
+  height: 100vh;
+}
 
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
+.sidebar {
+  width: 250px;
+  background-color: #E0E0E0;
+  padding: 20px;
+}
 
-        const data = new FormData(form);
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-        fetch("/api/settings", {
-            method: "POST",
-            body: data,
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.success) {
-                    alert("Settings saved successfully!");
-                } else {
-                    alert("Error saving settings!");
-                }
-            })
-            .catch((err) => {
-                alert("Error saving settings!");
-                console.error(err);
-            });
-    });
-</script>
-</body>
-</html>
+.sidebar li {
+  padding: 5px 10px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: black;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+}
+
+.section {
+  background-color: #F5F5F5;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.section h2 {
+  margin-bottom: 10px;
+}
+
+#error-log {
+  list-style-position: inside;
+  padding: 0;
+}
+
+#error-log li {
+  border: 1px solid red;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
 ```
