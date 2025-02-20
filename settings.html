@@ -1,25 +1,51 @@
-file path: README.md
+file path: settings.html
 content: 
-```markdown
-# Web Proxy Project
+```html
+<!DOCTYPE html>
+<html>
 
-This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue and rounded theme.
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Settings</title>
+  <link href="style.css" rel="stylesheet" />
+</head>
 
-### Files and Components
+<body>
+  <div class="sidebar">
+    <ul>
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li class="active"><a href="#">Settings</a></li>
+    </ul>
+  </div>
+  <div class="main">
+    <h1>Proxy Settings</h1>
+    <form>
+      <label for="protocol">Protocol:</label>
+      <select name="protocol">
+        <option value="http">HTTP</option>
+        <option value="https">HTTPS</option>
+      </select>
+      <br />
+      <label for="host">Host:</label>
+      <input type="text" name="host" />
+      <br />
+      <label for="port">Port:</label>
+      <input type="number" name="port" />
+      <br />
+      <label for="username">Username:</label>
+      <input type="text" name="username" />
+      <br />
+      <label for="password">Password:</label>
+      <input type="password" name="password" />
+      <br />
+      <label for="bandwidth-limit">Bandwidth Limit (MB):</label>
+      <input type="number" name="bandwidth-limit" />
+      <br />
+      <input type="submit" value="Save" />
+    </form>
+  </div>
+</body>
 
-The project consists of four files:
-
-- index.html: Main landing page with login form, navigation menu, and proxy status indicator.
-- settings.html: Proxy configuration page with options for protocol, host, port, authentication, and bandwidth limit.
-- dashboard.html: User statistics and monitoring page with real-time connection status, bandwidth usage graphs, active connections list, error log, and user statistics.
-- style.css: CSS file for styling all pages.
-- script.js: JavaScript file for handling user interactions, data retrieval, and page updates.
-
-### Styling and Theme
-
-All pages share the same baby blue and rounded theme. The sidebar on the left provides navigation to the three main pages. The main content area on the right includes various forms, settings, and data visualizations.
-
-### Security and Usability
-
-The project follows strict content security policies and error handling mechanisms to ensure secure and reliable operation.
+</html>
 ```
