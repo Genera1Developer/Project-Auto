@@ -1,4 +1,4 @@
-file path: settings.html
+file path: index.html
 content: 
 
 ```html
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy - Settings</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -18,54 +18,65 @@ content:
       <a href="/settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Settings</h1>
-      <form id="settings-form">
-        <div class="form-group">
-          <label for="protocol">Protocol</label>
-          <select name="protocol" id="protocol">
-            <option value="HTTP">HTTP</option>
-            <option value="HTTPS">HTTPS</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="port">Port</label>
-          <input type="number" name="port" id="port" placeholder="8080">
-        </div>
-        <div class="form-group">
-          <label for="auth-user">Authentication User</label>
-          <input type="text" name="auth-user" id="auth-user" placeholder="Username">
-        </div>
-        <div class="form-group">
-          <label for="auth-password">Authentication Password</label>
-          <input type="password" name="auth-password" id="auth-password" placeholder="Password">
-        </div>
-        <div class="form-group">
-          <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
-          <input type="number" name="bandwidth-limit" id="bandwidth-limit" placeholder="10">
-        </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-      </form>
+      <div class="login-form">
+        <h1>Login</h1>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" placeholder="Enter username">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Enter password">
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      </div>
+      <div class="proxy-status">
+        <span class="status">Status: </span>
+        <span class="status-indicator"></span>
+      </div>
+      <div class="error-messages"></div>
+      <div class="connection-status"></div>
     </div>
   </div>
 
   <script>
-    const settingsForm = document.getElementById('settings-form');
+    const loginForm = document.getElementById('login-form');
+    const statusIndicator = document.querySelector('.status-indicator');
+    const errorMessages = document.querySelector('.error-messages');
+    const connectionStatus = document.querySelector('.connection-status');
 
-    const saveSettings = (e) => {
-      e.preventDefault();
+    const checkProxyStatus = () => {
+      // TODO: Implement proxy status checking
 
-      const protocol = document.getElementById('protocol').value;
-      const port = document.getElementById('port').value;
-      const authUser = document.getElementById('auth-user').value;
-      const authPassword = document.getElementById('auth-password').value;
-      const bandwidthLimit = document.getElementById('bandwidth-limit').value;
+      const status = 'running'; // Placeholder value
 
-      // TODO: Implement saving settings to storage
-
-      alert('Settings saved successfully!');
+      if (status === 'running') {
+        statusIndicator.classList.add('status-running');
+      } else {
+        statusIndicator.classList.add('status-error');
+      }
     };
 
-    settingsForm.addEventListener('submit', saveSettings);
+    const displayError = (error) => {
+      errorMessages.innerHTML = `<p class="error-message">${error}</p>`;
+    };
+
+    const displayConnectionStatus = (status) => {
+      connectionStatus.innerHTML = `<p class="connection-status">${status}</p>`;
+    };
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // TODO: Implement login logic
+
+      checkProxyStatus();
+    });
+
+    // Call checkProxyStatus() on page load
+    window.addEventListener('load', checkProxyStatus);
   </script>
 </body>
 </html>
