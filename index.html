@@ -1,59 +1,44 @@
-file path: README.md
+file path: index.html
 content: 
-```markdown
-# Web Proxy Project
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-## Overview
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
 
-This project is a structured web proxy with strictly defined files, components, and baby blue beautiful and rounded theming.
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+      </ul>
+    </div>
+    <div class="content">
+      <h1>Web Proxy</h1>
+      <form id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" />
+        <br />
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" />
+        <br />
+        <input type="submit" value="Login" />
+      </form>
+      <div id="proxy-status">
+        <p>Proxy Status: <span id="status">Disconnected</span></p>
+        <p>Connection Status: <span id="connection-status">Not Connected</span></p>
+      </div>
+      <div id="error-messages"></div>
+    </div>
+  </div>
+</body>
 
-## Files
-
-### index.html
-
-- Main landing page
-- Contains login form with username/password fields
-- Provides navigation to settings and dashboard
-- Displays proxy status indicator
-- Displays error messages
-- Shows connection status
-
-### settings.html
-
-- Proxy configuration page
-- Allows users to configure protocol, port, authentication, and bandwidth limits
-
-### dashboard.html
-
-- User statistics and monitoring dashboard
-- Displays real-time connection status
-- Provides bandwidth usage graphs
-- Lists active connections
-- Shows error log
-
-### README.md
-
-- Description of the site
-
-## Requirements
-
-- Use external CSS and JS files
-- Apply beautiful and rounded baby blue theming
-- Use semantic HTML elements
-- Implement strict content security policy
-- Provide error handling for all operations
-- Ensure cross-browser compatibility
-- Design for mobile responsiveness
-- Use clean and consistent indentation
-- Add proper commenting
-- Avoid external dependencies and framework usage
-
-## Implementation Notes
-
-- No inline scripts or styles are used.
-- A side bar is included in each file for easy navigation.
-- The code follows a strict content security policy to enhance security.
-- Error handling is implemented for all operations to provide a user-friendly experience.
-- The design is cross-browser compatible and responsive for various screen sizes.
-- Proper indentation and commenting are used for readability and maintainability.
+</html>
 ```
