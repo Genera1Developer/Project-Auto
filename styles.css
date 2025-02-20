@@ -1,1 +1,42 @@
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+  <meta charset="UTF-8" />
+  <title>Project Auto Proxy</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+      </ul>
+    </div>
+    <main>
+      <h1>Project Auto Proxy</h1>
+      <p>Welcome! Please enter your credentials to access the proxy.</p>
+      <form>
+        <label for="username">Username</label>
+        <input type="text" id="username" />
+        <label for="password">Password</label>
+        <input type="password" id="password" />
+        <input type="submit" value="Login" />
+      </form>
+      <div class="status">
+        <p>Proxy status: <span id="status-indicator"></span></p>
+        <p>Connection status: <span id="connection-status"></span></p>
+      </div>
+      <div class="error" id="error-message"></div>
+    </main>
+  </div>
+  <script src="/script.js"></script>
+</body>
+
+</html>
+```
