@@ -1,66 +1,79 @@
-babyblue-100 rounded-l-lg p-4 w-1/4">
-          <ul>
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/dashboard.html">Dashboard</a></li>
-            <li><a href="/settings.html">Settings</a></li>
+file: index.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="wrapper flex">
+    <div class="sidebar bg-babyblue-100 rounded-r-lg p-4 w-1/4">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+      </ul>
+    </div>
+    <div class="content flex-1 p-4">
+      <h1 class="text-3xl font-bold mb-4">Web Proxy Dashboard</h1>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="bg-white rounded-lg p-4 shadow-md">
+          <h2 class="text-xl font-bold mb-4">Real-Time Connection Status</h2>
+          <div class="flex justify-between">
+            <p class="text-sm font-bold mb-2">Total Connections:</p>
+            <span id="total-connections" class="text-sm font-semibold text-blue-500">0</span>
+          </div>
+          <div class="flex justify-between">
+            <p class="text-sm font-bold mb-2">Active Connections:</p>
+            <span id="active-connections" class="text-sm font-semibold text-blue-500">0</span>
+          </div>
+          <div class="flex justify-between">
+            <p class="text-sm font-bold mb-2">Average Response Time:</p>
+            <span id="avg-response-time" class="text-sm font-semibold text-blue-500">0 ms</span>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg p-4 shadow-md">
+          <h2 class="text-xl font-bold mb-4">Bandwidth Usage</h2>
+          <canvas id="bandwidth-chart" width="400" height="200"></canvas>
+        </div>
+        <div class="bg-white rounded-lg p-4 shadow-md">
+          <h2 class="text-xl font-bold mb-4">Active Connections</h2>
+          <table id="active-connections-table">
+            <thead>
+              <tr>
+                <th>IP Address</th>
+                <th>Port</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div class="bg-white rounded-lg p-4 shadow-md">
+          <h2 class="text-xl font-bold mb-4">Error Log</h2>
+          <ul id="error-log">
           </ul>
         </div>
-        <div class="content flex-1 p-4">
-          <h1 class="text-3xl font-bold mb-4">Web Proxy Dashboard</h1>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white rounded-lg p-4 shadow-md">
-              <h2 class="text-xl font-bold mb-4">Real-Time Connection Status</h2>
-              <div class="flex justify-between">
-                <p class="text-sm font-bold mb-2">Total Connections:</p>
-                <span id="total-connections" class="text-sm font-semibold text-blue-500">0</span>
-              </div>
-              <div class="flex justify-between">
-                <p class="text-sm font-bold mb-2">Active Connections:</p>
-                <span id="active-connections" class="text-sm font-semibold text-blue-500">0</span>
-              </div>
-              <div class="flex justify-between">
-                <p class="text-sm font-bold mb-2">Average Response Time:</p>
-                <span id="avg-response-time" class="text-sm font-semibold text-blue-500">0 ms</span>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg p-4 shadow-md">
-              <h2 class="text-xl font-bold mb-4">Bandwidth Usage</h2>
-              <canvas id="bandwidth-chart" width="400" height="200"></canvas>
-            </div>
-            <div class="bg-white rounded-lg p-4 shadow-md">
-              <h2 class="text-xl font-bold mb-4">Active Connections</h2>
-              <table id="active-connections-table">
-                <thead>
-                  <tr>
-                    <th>IP Address</th>
-                    <th>Port</th>
-                    <th>Duration</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-            </div>
-            <div class="bg-white rounded-lg p-4 shadow-md">
-              <h2 class="text-xl font-bold mb-4">Error Log</h2>
-              <ul id="error-log">
-              </ul>
-            </div>
-            <div class="bg-white rounded-lg p-4 shadow-md">
-              <h2 class="text-xl font-bold mb-4">User Statistics</h2>
-              <div class="flex justify-between">
-                <p class="text-sm font-bold mb-2">Total Users:</p>
-                <span id="total-users" class="text-sm font-semibold text-blue-500">0</span>
-              </div>
-              <div class="flex justify-between">
-                <p class="text-sm font-bold mb-2">Average Bandwidth Usage:</p>
-                <span id="avg-bandwidth-usage" class="text-sm font-semibold text-blue-500">0 KB/s</span>
-              </div>
-              <div class="flex justify-between">
-                <p class="text-sm font-bold mb-2">Most Active User:</p>
-                <span id="most-active-user" class="text-sm font-semibold text-blue-500">N/A</span>
-              </div>
-            </div>
+        <div class="bg-white rounded-lg p-4 shadow-md">
+          <h2 class="text-xl font-bold mb-4">User Statistics</h2>
+          <div class="flex justify-between">
+            <p class="text-sm font-bold mb-2">Total Users:</p>
+            <span id="total-users" class="text-sm font-semibold text-blue-500">0</span>
+          </div>
+          <div class="flex justify-between">
+            <p class="text-sm font-bold mb-2">Average Bandwidth Usage:</p>
+            <span id="avg-bandwidth-usage" class="text-sm font-semibold text-blue-500">0 KB/s</span>
+          </div>
+          <div class="flex justify-between">
+            <p class="text-sm font-bold mb-2">Most Active User:</p>
+            <span id="most-active-user" class="text-sm font-semibold text-blue-500">N/A</span>
           </div>
         </div>
       </div>
