@@ -1,70 +1,25 @@
-file path: settings.html
+file path: README.md
+content: 
+```markdown
+# Web Proxy Project
 
-content:
-```html
-<!DOCTYPE html>
-<html lang="en">
+This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue and rounded theme.
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="./style.css" />
-  <title>Web Proxy Settings</title>
-</head>
+### Files and Components
 
-<body>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li><a href="./index.html" class="sidebar-link">Home</a></li>
-        <li><a href="./dashboard.html" class="sidebar-link">Dashboard</a></li>
-        <li><a href="./settings.html" class="sidebar-link active">Settings</a></li>
-      </ul>
-    </div>
-    <div class="main-content">
-      <div class="proxy-config-form">
-        <h1>Proxy Configuration</h1>
-        <form id="settings-form">
-          <div class="form-group">
-            <label for="protocol">Protocol</label>
-            <select id="protocol">
-              <option value="http">HTTP</option>
-              <option value="https">HTTPS</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="port">Port</label>
-            <input type="number" id="port" placeholder="Enter the port number" min="1" max="65535" />
-          </div>
-          <div class="form-group">
-            <label for="authentication">Authentication</label>
-            <select id="authentication">
-              <option value="none">None</option>
-              <option value="basic">Basic</option>
-              <option value="digest">Digest</option>
-            </select>
-          </div>
-          <div class="form-group" id="username-field">
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Enter your username" />
-          </div>
-          <div class="form-group" id="password-field">
-            <label for="password">Password</label>
-            <input type="password" id="password" placeholder="Enter your password" />
-          </div>
-          <div class="form-group">
-            <label for="bandwidth-limit">Bandwidth Limit</label>
-            <input type="number" id="bandwidth-limit" placeholder="Enter bandwidth limit in bytes" min="0" />
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary">Save</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <script src="./script.js"></script>
-</body>
+The project consists of four files:
 
-</html>
+- index.html: Main landing page with login form, navigation menu, and proxy status indicator.
+- settings.html: Proxy configuration page with options for protocol, host, port, authentication, and bandwidth limit.
+- dashboard.html: User statistics and monitoring page with real-time connection status, bandwidth usage graphs, active connections list, error log, and user statistics.
+- style.css: CSS file for styling all pages.
+- script.js: JavaScript file for handling user interactions, data retrieval, and page updates.
+
+### Styling and Theme
+
+All pages share the same baby blue and rounded theme. The sidebar on the left provides navigation to the three main pages. The main content area on the right includes various forms, settings, and data visualizations.
+
+### Security and Usability
+
+The project follows strict content security policies and error handling mechanisms to ensure secure and reliable operation.
 ```
