@@ -34,17 +34,6 @@ content:
   </div>
   <script>
     // Your script goes here
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-      e.preventDefault()
-      handleLogin()
-    })
-    
-    const handleLogin = () => {
-      const username = document.getElementById('username').value
-      const password = document.getElementById('password').value
-    
-      // Logic to handle login goes here
-    }
   </script>
 </body>
 </html>
@@ -79,7 +68,7 @@ content:
           <input type="number" id="port">
           <label for="auth">Authentication</label>
           <input type="checkbox" id="auth">
-          <label for="bandwidth-limit">Bandwidth Limit</label>
+          <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
           <input type="number" id="bandwidth-limit">
           <button type="submit">Save</button>
         </form>
@@ -88,19 +77,6 @@ content:
   </div>
   <script>
     // Your script goes here
-    document.getElementById('proxy-config-form').addEventListener('submit', (e) => {
-      e.preventDefault()
-      handleSave()
-    })
-  
-    const handleSave = () => {
-      const protocol = document.getElementById('protocol').value
-      const port = document.getElementById('port').value
-      const auth = document.getElementById('auth').checked
-      const bandwidthLimit = document.getElementById('bandwidth-limit').value
-    
-      // Logic to save proxy configuration goes here
-    }
   </script>
 </body>
 </html>
@@ -259,3 +235,63 @@ button {
   margin-top: 1rem;
 }
 ```
+
+file: scripts/index.js
+content: 
+```javascript
+const loginForm = document.getElementById('login-form');
+
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  
+  // Logic to handle login goes here
+});
+```
+
+file: scripts/settings.js
+content: 
+```javascript
+const proxyConfigForm = document.getElementById('proxy-config-form');
+
+proxyConfigForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const protocol = document.getElementById('protocol').value;
+  const port = document.getElementById('port').value;
+  const auth = document.getElementById('auth').checked;
+  const bandwidthLimit = document.getElementById('bandwidth-limit').value;
+  
+  // Logic to handle proxy configuration goes here
+});
+```
+
+file: README.md
+content: 
+```markdown
+# Proxy Web
+
+A simple and easy-to-use web proxy with a clean and intuitive interface.
+
+## Features
+
+* Login authentication
+* Proxy configuration
+* Real-time connection status monitoring
+* Bandwidth usage graphs
+* Error log display
+* User statistics
+
+## Installation
+
+To install Proxy Web, simply download the source code from GitHub and extract it to your desired location.
+
+## Usage
+
+To start using Proxy Web, open the `index.html` file in your preferred web browser. You will be prompted to log in. Once you have logged in, you can configure the proxy settings and start browsing the web through the proxy.
+
+## Configuration
+
+The proxy settings can be configured using the `Settings` page. The following options are available:
+
+* **Protocol:** The protocol to use for
