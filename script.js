@@ -22,7 +22,13 @@
     </div>
     <div class="main">
       <form id="login-form">
-        <h1>Project Auto Proxy</h1>
+        <div class="flex-container">
+          <h1 class="title">Project Auto Proxy</h1>
+          <button class="theme-toggle" id="theme-toggle">
+            <span>☀️</span>
+            <span>🌙</span>
+          </button>
+        </div>
         <label for="username">Username</label>
         <input type="text" id="username" />
         <label for="password">Password</label>
