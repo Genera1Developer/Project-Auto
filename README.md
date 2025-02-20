@@ -42,3 +42,9 @@ This meticulously organized web proxy project features an elegant baby blue and 
 **Contributions:**
 
 We encourage contributions that align with the project's coding standards and guidelines. Join us in enhancing this structured web proxy system!
+
+**Additional Files (Optional):**
+
+- api.js: A separate JavaScript file for handling API calls
+- logger.js: A dedicated JavaScript file for logging errors and events
+- stats.json: A sample JSON file for storing user statistics
