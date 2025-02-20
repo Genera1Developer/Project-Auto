@@ -1,150 +1,67 @@
-file: style.css
+file: dashboard.html
 
 improved file:
-```css
-/* CSS styles for the web proxy project */
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-:root {
-  --blue-400: #3b82f6;
-  --blue-500: #0d6efd;
-  --white: #ffffff;
-}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./style.css" />
+  <title>Web Proxy Dashboard</title>
+</head>
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: var(--blue-400);
-  color: var(--white);
-}
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="./index.html" class="sidebar-link">Home</a></li>
+        <li><a href="./dashboard.html" class="sidebar-link active">Dashboard</a></li>
+        <li><a href="./settings.html" class="sidebar-link">Settings</a></li>
+      </ul>
+    </div>
+    <div class="main-content">
+      <div class="settings-block">
+        <div class="settings-title">Real-time Connection Status</div>
+        <div class="settings-content">
+          <p>Connected: <span id="connection-status">Loading...</span></p>
+          <p>Active Connections: <span id="active-connections">Loading...</span></p>
+        </div>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Bandwidth Usage</div>
+        <div class="settings-content">
+          <div class="bandwidth-graph"></div>
+          <div class="bandwidth-usage">
+            <p>Total Bandwidth Used: <span id="total-bandwidth-used">Loading...</span></p>
+            <p>Current Bandwidth Usage: <span id="current-bandwidth-usage">Loading...</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Active Connections</div>
+        <div class="settings-content">
+          <p>No active connections</p>
+        </div>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">Error Log</div>
+        <div class="settings-content">
+          <p>No errors</p>
+        </div>
+      </div>
+      <div class="settings-block">
+        <div class="settings-title">User Statistics</div>
+        <div class="settings-content">
+          <p>Total Users: <span id="total-users">Loading...</span></p>
+          <p>Active Users: <span id="active-users">Loading...</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="./script.js"></script>
+</body>
 
-.container {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-}
-
-.sidebar {
-  width: 200px;
-  background-color: var(--blue-500);
-  padding: 1rem;
-  border-radius: 10px;
-  margin-right: 1rem;
-}
-
-.sidebar ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin-bottom: 1rem;
-}
-
-.sidebar-link {
-  display: block;
-  font-size: 1.2rem;
-  text-decoration: none;
-  color: var(--white);
-}
-
-.sidebar-link:hover {
-  color: var(--blue-400);
-}
-
-.sidebar-link.active {
-  color: var(--blue-400);
-  font-weight: bold;
-}
-
-.main-content {
-  flex: 1;
-  background-color: var(--white);
-  padding: 1rem;
-  border-radius: 10px;
-}
-
-.settings-block {
-  margin-bottom: 1rem;
-  border: 1px solid var(--blue-500);
-  border-radius: 10px;
-  padding: 1rem;
-}
-
-.settings-title {
-  font-size: 1.5rem;
-}
-
-.settings-content {
-  padding: 1rem;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.form-label {
-  font-weight: bold;
-}
-
-.form-control {
-  width: 100%;
-  height: 2.5rem;
-  padding: 0.5rem;
-  border-radius: 5px;
-  border: 1px solid var(--blue-500);
-}
-
-.btn {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  background-color: var(--blue-500);
-  color: var(--white);
-  text-decoration: none;
-}
-
-.btn:hover {
-  background-color: var(--blue-400);
-}
-
-.btn-primary {
-  background-color: var(--blue-500);
-}
-```
-
-file: script.js
-
-improved file:
-```javascript
-// JavaScript code for the web proxy project
-
-const proxyForm = document.getElementById("proxy-form");
-const authForm = document.getElementById("auth-form");
-const proxyProtocolInput = document.getElementById("proxy-protocol");
-const proxyPortInput = document.getElementById("proxy-port");
-const proxyUsernameInput = document.getElementById("proxy-username");
-const proxyPasswordInput = document.getElementById("proxy-password");
-const proxyBandwidthLimitInput = document.getElementById("proxy-bandwidth-limit");
-const authTypeInput = document.getElementById("auth-type");
-const authUsernameInput = document.getElementById("auth-username");
-const authPasswordInput = document.getElementById("auth-password");
-
-// Event listeners
-proxyForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  // Process proxy form data
-});
-
-authForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  // Process authentication form data
-});
-
-// Functions
-const setProxySettings = (data) => {
-  // Set the proxy settings based on the provided data
-};
-
-const setAuthSettings = (data) => {
-  // Set the authentication settings based on the provided data
-};
+</html>
 ```
