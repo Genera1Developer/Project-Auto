@@ -2,9 +2,9 @@
 <html>
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Project Auto Proxy</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
   <script src="script.js" defer></script>
 </head>
 
@@ -17,7 +17,7 @@
   <div class="main-content">
     <h1 class="main-title">Project Auto Proxy</h1>
     <div class="search-container">
-      <input type="text" class="search-input" placeholder="Search...">
+      <input type="text" class="search-input" placeholder="Search..." />
       <button class="search-button" type="submit">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24"
           viewBox="0 0 24 24" stroke-width="2" stroke="#000000" fill="none" stroke-linecap="round"
@@ -29,9 +29,9 @@
     </div>
     <form id="login-form">
       <label for="username">Username:</label>
-      <input type="text" id="username">
+      <input type="text" id="username" />
       <label for="password">Password:</label>
-      <input type="password" id="password">
+      <input type="password" id="password" />
       <button type="submit" class="submit-button">Login</button>
     </form>
     <div id="status-indicator"></div>
