@@ -1,4 +1,4 @@
-file path: index.html
+file path: settings.html
 content: 
 
 ```html
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
+  <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -18,38 +18,53 @@ content:
       <a href="/settings.html">Settings</a>
     </div>
     <div class="main">
-      <div class="login-form">
-        <form id="login-form">
-          <h1>Login</h1>
-          <div class="field">
-            <label for="username">Username</label>
-            <input type="text" name="username" required>
-          </div>
-          <div class="field">
-            <label for="password">Password</label>
-            <input type="password" name="password" required>
-          </div>
-          <button type="submit">Log in</button>
-        </form>
-      </div>
-      <div class="status">
-        <p>Proxy status: <span id="proxy-status">Disconnected</span></p>
-        <p>Connection status: <span id="connection-status">Disconnected</span></p>
-        <p>Error message: <span id="error-message"></span></p>
-      </div>
+      <h1>Proxy Settings</h1>
+      <form id="settings-form">
+        <div class="field">
+          <label for="protocol">Protocol</label>
+          <select name="protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="port">Port</label>
+          <input type="number" name="port" min="1" max="65535" required>
+        </div>
+        <div class="field">
+          <label for="authentication">Authentication</label>
+          <select name="authentication">
+            <option value="none">None</option>
+            <option value="basic">Basic</option>
+            <option value="digest">Digest</option>
+          </select>
+        </div>
+        <div class="field username-field">
+          <label for="username">Username</label>
+          <input type="text" name="username">
+        </div>
+        <div class="field password-field">
+          <label for="password">Password</label>
+          <input type="password" name="password">
+        </div>
+        <div class="field">
+          <label for="bandwidth-limit">Bandwidth limit (MB/s)</label>
+          <input type="number" name="bandwidth-limit" min="0" required>
+        </div>
+        <button type="submit">Save</button>
+      </form>
     </div>
   </div>
 
   <script>
-    const loginForm = document.querySelector('#login-form');
-    const proxyStatus = document.querySelector('#proxy-status');
-    const connectionStatus = document.querySelector('#connection-status');
-    const errorMessage = document.querySelector('#error-message');
+    const settingsForm = document.querySelector('#settings-form');
+    const usernameField = document.querySelector('.username-field');
+    const passwordField = document.querySelector('.password-field');
 
-    loginForm.addEventListener('submit', (e) => {
+    settingsForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const data = new FormData(loginForm);
+      const data = new FormData(settingsForm);
 
       const settings = {
         method: 'POST',
@@ -59,25 +74,33 @@ content:
         body: JSON.stringify(Object.fromEntries(data)),
       };
 
-      fetch('/api/login', settings)
+      fetch('/api/settings', settings)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            proxyStatus.textContent = 'Connected';
-            connectionStatus.textContent = 'Connected';
-            errorMessage.textContent = '';
+            alert('Settings saved successfully');
           } else {
-            proxyStatus.textContent = 'Disconnected';
-            connectionStatus.textContent = 'Disconnected';
-            errorMessage.textContent = data.error;
+            alert('Failed to save settings');
           }
         })
         .catch(err => {
           console.error(err);
-          proxyStatus.textContent = 'Disconnected';
-          connectionStatus.textContent = 'Disconnected';
-          errorMessage.textContent = 'Failed to connect';
+          alert('Failed to save settings');
         });
+    });
+
+    const authenticationSelect = document.querySelector('select[name="authentication"]');
+
+    authenticationSelect.addEventListener('change', (e) => {
+      const value = e.target.value;
+
+      if (value === 'none') {
+        usernameField.classList.remove('active');
+        passwordField.classList.remove('active');
+      } else {
+        usernameField.classList.add('active');
+        passwordField.classList.add('active');
+      }
     });
   </script>
 </body>
