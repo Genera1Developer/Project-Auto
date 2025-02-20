@@ -1,12 +1,14 @@
 file: index.html
 content: 
 ```html
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Proxy Web</title>
+  <title>Proxy App</title>
   <link rel="stylesheet" href="styles.css">
   <script src="scripts/index.js"></script>
 </head>
+
 <body>
   <div class="container">
     <div class="sidebar">
@@ -14,6 +16,7 @@ content:
       <a class="link" href="/settings.html">Settings</a>
       <a class="link" href="/dashboard.html">Dashboard</a>
     </div>
+
     <div class="main-area">
       <div class="login-form">
         <h1>Login</h1>
@@ -24,25 +27,29 @@ content:
           <input type="password" id="password">
           <button type="submit">Log in</button>
         </form>
-        <br>
         <a class="reset-password" href="#">Forgot Password?</a>
       </div>
+
       <div class="proxy-status">
         <p>Proxy Status: <span id="proxy-status">Idle</span></p>
       </div>
+
       <div class="error-message"></div>
+
       <div class="connection-status"></div>
     </div>
   </div>
+
   <script>
     const loginForm = document.getElementById('login-form');
     const proxyStatus = document.getElementById('proxy-status');
 
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
+
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-      
+
       // Logic to handle login goes here
     });
 
@@ -51,3 +58,249 @@ content:
 </body>
 </html>
 ```
+
+file: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Proxy Settings</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="scripts/settings.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <a class="link" href="/index.html">Home</a>
+      <a class="link" href="/settings.html">Settings</a>
+      <a class="link" href="/dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="main-area">
+      <div class="settings-form">
+        <h1>Proxy Settings</h1>
+        <form id="settings-form">
+          <label for="protocol">Protocol</label>
+          <select id="protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+
+          <label for="port">Port</label>
+          <input type="number" id="port" min="1" max="65535">
+
+          <label for="authentication">Authentication</label>
+          <input type="checkbox" id="authentication">
+
+          <label for="username">Username</label>
+          <input type="text" id="username">
+
+          <label for="password">Password</label>
+          <input type="password" id="password">
+
+          <label for="bandwidth-limit">Bandwidth Limit</label>
+          <input type="number" id="bandwidth-limit" min="0">
+
+          <button type="submit">Save Settings</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const settingsForm = document.getElementById('settings-form');
+
+    settingsForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const protocol = document.getElementById('protocol').value;
+      const port = document.getElementById('port').value;
+      const authentication = document.getElementById('authentication').checked;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const bandwidthLimit = document.getElementById('bandwidth-limit').value;
+
+      // Logic to handle settings submission goes here
+    });
+  </script>
+</body>
+</html>
+```
+
+file: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Proxy Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="scripts/dashboard.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <a class="link" href="/index.html">Home</a>
+      <a class="link" href="/settings.html">Settings</a>
+      <a class="link" href="/dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="main-area">
+      <h1>Proxy Statistics</h1>
+
+      <div class="connection-status">
+        <h2>Current Connections</h2>
+        <ul id="active-connections">
+        </ul>
+      </div>
+
+      <div class="bandwidth-usage">
+        <h2>Bandwidth Usage</h2>
+        <canvas id="bandwidth-chart"></canvas>
+      </div>
+
+      <div class="error-log">
+        <h2>Error Log</h2>
+        <ul id="error-log">
+        </ul>
+      </div>
+
+      <div class="user-statistics">
+        <h2>User Statistics</h2>
+        <ul id="user-statistics">
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Logic to handle dashboard functionality goes here
+  </script>
+</body>
+</html>
+```
+
+file: styles.css
+content: 
+```css
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  background-color: #333;
+  color: white;
+  width: 200px;
+  padding: 16px;
+}
+
+.sidebar a {
+  display: block;
+  margin: 12px 0;
+  text-decoration: none;
+  color: white;
+}
+
+.main-area {
+  flex: 1;
+  padding: 16px;
+}
+
+.login-form {
+  max-width: 400px;
+  margin: auto;
+}
+
+.login-form h1 {
+  margin-bottom: 16px;
+}
+
+.login-form input {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.login-form button {
+  width: 100%;
+  background-color: #333;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.proxy-status {
+  background-color: #eee;
+  padding: 8px 16px;
+  margin: 16px 0;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 16px;
+}
+
+.connection-status {
+  background-color: #eee;
+  padding: 8px 16px;
+  margin: 16px 0;
+}
+
+.bandwidth-usage {
+  background-color: #eee;
+  padding: 8px 16px;
+  margin: 16px 0;
+}
+
+.bandwidth-usage canvas {
+  width: 100%;
+}
+
+.error-log {
+  background-color: #eee;
+  padding: 8px 16px;
+  margin: 16px 0;
+}
+
+.user-statistics {
+  background-color: #eee;
+  padding: 8px 16px;
+  margin: 16px 0;
+}
+
+#active-connections {
+  list-style-type: none;
+  padding: 0;
+}
+
+#error-log {
+  list-style-type: none;
+  padding: 0;
+}
+
+#user-statistics {
+  list-style-type: none;
+  padding: 0;
+}
+```
+
+file: scripts/index.js
+content: 
+```javascript
+const loginForm = document.getElementById('login-form');
+const proxyStatus = document.getElementById('proxy-status');
+
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById('username').value;
+  const password =
