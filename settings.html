@@ -1,45 +1,64 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Project Auto Proxy</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="script.js" defer></script>
 </head>
-<body>
+
+<body class="light-mode">
   <div class="container">
     <header>
-      <h1>Project Auto Proxy</h1>
+      <div class="logo">
+        <h1>Project Auto Proxy</h1>
+      </div>
       <nav>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/settings">Settings</a></li>
+        <ul class="nav-links">
+          <li><a class="home" href="/">Home</a></li>
+          <li><a class="dashboard" href="/dashboard">Dashboard</a></li>
+          <li><a class="settings" href="/settings">Settings</a></li>
         </ul>
+        <div class="theme-toggle">
+          <span>Dark Mode</span>
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
       </nav>
     </header>
     <main>
       <div class="side-bar">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/settings">Settings</a></li>
+        <ul class="side-bar-links">
+          <li><a class="home" href="/">Home</a></li>
+          <li><a class="dashboard" href="/dashboard">Dashboard</a></li>
+          <li><a class="settings" href="/settings">Settings</a></li>
         </ul>
       </div>
       <div class="content">
         <div class="search-container">
-          <input type="text" placeholder="Search for a website..." />
-          <button type="submit"><i class="fas fa-search"></i></button>
+          <input type="text" placeholder="Search for a website..." class="search-bar" />
+          <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
         </div>
-        <form id="login-form">
-          <label for="username">Username:</label>
-          <input type="text" name="username" id="username" />
-          <label for="password">Password:</label>
-          <input type="password" name="password" id="password" />
-          <button type="submit">Login</button>
-        </form>
-        <div id="error-message"></div>
+        <div class="login-container">
+          <h2>Login</h2>
+          <form id="login-form">
+            <div class="input-container">
+              <label for="username">Username:</label>
+              <input type="text" name="username" id="username" />
+            </div>
+            <div class="input-container">
+              <label for="password">Password:</label>
+              <input type="password" name="password" id="password" />
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+          </form>
+          <div id="error-message"></div>
+        </div>
         <div id="connection-status"></div>
         <div class="proxy-status">
           <span>Proxy Status:</span>
@@ -52,5 +71,6 @@
     </footer>
   </div>
 </body>
+
 </html>
 ```
