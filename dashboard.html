@@ -1,1 +1,103 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Auto Proxy</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <a href="/index.html">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/settings.html">Settings</a>
+  </div>
+  <div class="main-content">
+    <h1>Project Auto Proxy</h1>
+    <form id="login-form">
+      <label for="username">Username:</label>
+      <input type="text" id="username" />
+      <label for="password">Password:</label>
+      <input type="password" id="password" />
+      <button type="submit">Login</button>
+    </form>
 
+    <div class="proxy-status">
+      <h2>Proxy Status:</h2>
+      <p id="proxy-status-indicator"></p>
+      <p id="connection-status"></p>
+    </div>
+
+    <div class="error-messages"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+
+<!-- dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Auto Proxy Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <a href="/index.html">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/settings.html">Settings</a>
+  </div>
+  <div class="main-content">
+    <h1>Dashboard</h1>
+    <div class="connection-status">
+      <h2>Connection Status:</h2>
+      <p id="dashboard-connection-status"></p>
+    </div>
+    <div class="bandwidth-graphs">
+      <h2>Bandwidth Usage Graphs:</h2>
+      <canvas id="bandwidth-graph"></canvas>
+    </div>
+    <div class="active-connections">
+      <h2>Active Connections:</h2>
+      <ul id="active-connections-list"></ul>
+    </div>
+    <div class="error-log">
+      <h2>Error Log:</h2>
+      <ul id="error-log-list"></ul>
+    </div>
+    <div class="user-statistics">
+      <h2>User Statistics:</h2>
+      <ul id="user-statistics-list"></ul>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
+
+<!-- settings.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project Auto Proxy Settings</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <a href="/index.html">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/settings.html">Settings</a>
+  </div>
+  <div class="main-content">
+    <h1>Settings</h1>
+    <form id="settings-form">
+      <label for="protocol">Protocol:</label>
+      <select id="protocol">
+        <option value="http">HTTP</option>
+        <option value="https">HTTPS</option>
+      </select>
+      <label for="port">Port:</label>
