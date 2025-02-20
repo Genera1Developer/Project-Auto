@@ -28,14 +28,14 @@ content:
                     <form id="proxy-form" class="flex flex-col gap-4">
                         <div class="form-group">
                             <label for="proxy-protocol" class="font-bold text-lg">Protocol:</label>
-                            <select name="proxy-protocol" id="proxy-protocol" class="rounded-lg px-2 py-1">
+                            <select name="proxy-protocol" id="proxy-protocol" class="rounded-lg px-2 py-1" required>
                                 <option value="http">HTTP</option>
                                 <option value="https">HTTPS</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="proxy-port" class="font-bold text-lg">Port:</label>
-                            <input type="text" name="proxy-port" id="proxy-port" class="rounded-lg px-2 py-1" required>
+                            <input type="number" name="proxy-port" id="proxy-port" class="rounded-lg px-2 py-1" min="1" max="65535" required>
                         </div>
                         <div class="form-group">
                             <label for="proxy-username" class="font-bold text-lg">Username:</label>
@@ -47,7 +47,7 @@ content:
                         </div>
                         <div class="form-group">
                             <label for="proxy-bandwidth-limit" class="font-bold text-lg">Bandwidth Limit (MB/s):</label>
-                            <input type="number" name="proxy-bandwidth-limit" id="proxy-bandwidth-limit" class="rounded-lg px-2 py-1">
+                            <input type="number" name="proxy-bandwidth-limit" id="proxy-bandwidth-limit" class="rounded-lg px-2 py-1" min="0" required>
                         </div>
                         <button type="submit" class="btn btn-primary rounded-lg px-4 py-2 text-white bg-blue-500 hover:bg-blue-600 active:bg-blue-700">Save</button>
                     </form>
