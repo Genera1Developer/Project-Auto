@@ -3,64 +3,66 @@ content:
 ```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy Dashboard</title>
-  <link rel="stylesheet" href="./css/dashboard.css" />
-  <script src="./js/dashboard.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Proxy Dashboard</title>
+    <link rel="stylesheet" href="./css/dashboard.css" />
+    <script src="./js/dashboard.js"></script>
 </head>
+
 <body>
-  <div class="sidebar babyblue rounded">
-    <ul>
-      <li><a href="dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="settings.html">Settings</a></li>
-      <li><a href="index.html">Home</a></li>
-    </ul>
-  </div>
-
-  <div class="main">
-    <h1>Dashboard</h1>
-
-    <div class="section real-time-connection-status">
-      <h2>Connection Status</h2>
-      <div id="connection-status"></div>
+    <div class="sidebar babyblue rounded">
+        <ul>
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="settings.html">Settings</a></li>
+            <li><a href="index.html">Home</a></li>
+        </ul>
     </div>
 
-    <div class="section bandwidth-usage">
-      <h2>Bandwidth Usage</h2>
-      <div id="bandwidth-graph-download"></div>
-      <div id="bandwidth-graph-upload"></div>
-    </div>
+    <div class="main">
+        <h1>Dashboard</h1>
 
-    <div class="section active-connections">
-      <h2>Active Connections</h2>
-      <table id="active-connections-table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>IP Address</th>
-            <th>Bytes Sent</th>
-            <th>Bytes Received</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
-    </div>
+        <div class="section real-time-connection-status">
+            <h2>Connection Status</h2>
+            <div id="connection-status"></div>
+        </div>
 
-    <div class="section error-log">
-      <h2>Error Log</h2>
-      <ul id="error-log-list">
-      </ul>
-    </div>
+        <div class="section bandwidth-usage">
+            <h2>Bandwidth Usage</h2>
+            <div id="bandwidth-graph-download"></div>
+            <div id="bandwidth-graph-upload"></div>
+        </div>
 
-    <div class="section user-statistics">
-      <h2>User Statistics</h2>
-      <div id="user-statistics-stats"></div>
-    </div>
+        <div class="section active-connections">
+            <h2>Active Connections</h2>
+            <table id="active-connections-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>IP Address</th>
+                        <th>Bytes Sent</th>
+                        <th>Bytes Received</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
 
-  </div>
+        <div class="section error-log">
+            <h2>Error Log</h2>
+            <ul id="error-log-list"></ul>
+        </div>
+
+        <div class="section user-statistics">
+            <h2>User Statistics</h2>
+            <div id="user-statistics-stats"></div>
+        </div>
+
+    </div>
 </body>
+
 </html>
 ```
