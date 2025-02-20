@@ -1,175 +1,140 @@
-file path: dashboard.html
+file path: styles.css
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```css
+/* Basic styles */
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="dashboard.js"></script>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-</head>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+}
 
-<body>
-  <nav class="sidebar babyblue rounded">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="settings.html">Settings</a></li>
-      <li><a href="dashboard.html" class="active">Dashboard</a></li>
-    </ul>
-  </nav>
-  <main class="main babyblue rounded">
-    <h1>Dashboard</h1>
-    <div class="section" id="connection-status">
-      <h2>Real-time Connection Status</h2>
-      <div class="status-indicator" id="connection-status-indicator"></div>
-      <div class="status-info" id="connection-status-info"></div>
-    </div>
-    <div class="section" id="bandwidth-usage">
-      <h2>Bandwidth Usage</h2>
-      <div class="graphs" id="bandwidth-usage-graphs"></div>
-    </div>
-    <div class="section" id="active-connections">
-      <h2>Active Connections</h2>
-      <table id="active-connections-table">
-        <thead>
-          <tr>
-            <th>IP Address</th>
-            <th>Port</th>
-            <th>Protocol</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="section" id="error-log">
-      <h2>Error Log</h2>
-      <ul id="error-log-list"></ul>
-    </div>
-    <div class="section" id="user-statistics">
-      <h2>User Statistics</h2>
-      <div class="stats" id="user-statistics-stats"></div>
-    </div>
-  </main>
-</body>
+.babyblue {
+  background-color: #add8e6;
+}
 
-</html>
-```
-file path: dashboard.js
-content: 
-```js
-// Real-time connection status
-const connectionStatusIndicator = document.getElementById('connection-status-indicator');
-const connectionStatusInfo = document.getElementById('connection-status-info');
+.rounded {
+  border-radius: 10px;
+}
 
-let connection = {
-  status: 'disconnected',
-  protocol: 'HTTP',
-  port: 8080,
-  address: '127.0.0.1',
-};
+/* Sidebar */
 
-const updateConnectionStatus = (newStatus) => {
-  connection.status = newStatus;
-  connectionStatusIndicator.className = `status-indicator ${newStatus}`;
-  connectionStatusInfo.textContent = `Connection Status: ${newStatus}`;
-};
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 100vh;
+  padding: 20px;
+  overflow: auto;
+}
 
-// Bandwidth usage
-const bandwidthUsageGraphs = document.getElementById('bandwidth-usage-graphs');
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-const createBandwidthGraph = (type, data) => {
-  const graph = document.createElement('div');
-  graph.className = `bandwidth-graph ${type}`;
-  graph.style.width = `${data}%`;
-  bandwidthUsageGraphs.appendChild(graph);
-};
+.sidebar a {
+  display: block;
+  color: black;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 5px 10px;
+}
 
-const updateBandwidthUsage = (data) => {
-  bandwidthUsageGraphs.innerHTML = '';
+.sidebar a:hover {
+  background-color: #eaeaea;
+}
 
-  if (data.download) createBandwidthGraph('download', data.download);
-  if (data.upload) createBandwidthGraph('upload', data.upload);
-};
+.sidebar a.active {
+  background-color: #add8e6;
+  color: white;
+}
 
-// Active connections
-const activeConnectionsTable = document.getElementById('active-connections-table');
+/* Main content */
 
-const addConnectionToTable = (connection) => {
-  const row = document.createElement('tr');
-  const ip = document.createElement('td');
-  ip.textContent = connection.ipAddress;
-  const port = document.createElement('td');
-  port.textContent = connection.port;
-  const protocol = document.createElement('td');
-  protocol.textContent = connection.protocol;
-  const status = document.createElement('td');
-  status.textContent = connection.status;
-  row.appendChild(ip);
-  row.appendChild(port);
-  row.appendChild(protocol);
-  row.appendChild(status);
-  activeConnectionsTable.appendChild(row);
-};
+.main {
+  margin-left: 200px;
+  padding: 20px;
+}
 
-const updateActiveConnections = (data) => {
-  activeConnectionsTable.innerHTML = '';
-  data.forEach((connection) => addConnectionToTable(connection));
-};
+.main h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
 
-// Error log
-const errorLogList = document.getElementById('error-log-list');
+.main h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
 
-const addErrorToLog = (error) => {
-  const item = document.createElement('li');
-  item.textContent = error;
-  errorLogList.appendChild(item);
-};
+.main .section {
+  margin-bottom: 20px;
+}
 
-const updateErrorLog = (data) => {
-  errorLogList.innerHTML = '';
-  data.forEach((error) => addErrorToLog(error));
-};
+/* Status indicator */
 
-// User statistics
-const userStatisticsStats = document.getElementById('user-statistics-stats');
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
 
-const updateUserStatistics = (data) => {
-  userStatisticsStats.innerHTML = '';
+.status-indicator.connected {
+  background-color: green;
+}
 
-  const totalUsers = document.createElement('p');
-  totalUsers.textContent = `Total users: ${data.totalUsers}`;
-  userStatisticsStats.appendChild(totalUsers);
+.status-indicator.disconnected {
+  background-color: red;
+}
 
-  const averageUsage = document.createElement('p');
-  averageUsage.textContent = `Average usage: ${data.averageUsage} MB`;
-  userStatisticsStats.appendChild(averageUsage);
-};
+/* Graphs */
 
-// Main function
-const main = () => {
-  // Update connection status
-  updateConnectionStatus(connection.status);
+.bandwidth-graph {
+  display: inline-block;
+  height: 10px;
+  background-color: #ccc;
+}
 
-  // Update bandwidth usage
-  updateBandwidthUsage({ download: 50, upload: 25 });
+.bandwidth-graph.download {
+  background-color: #0088cc;
+}
 
-  // Update active connections
-  updateActiveConnections([
-    { ipAddress: '192.168.0.1', port: 8080, protocol: 'HTTP', status: 'connected' },
-    { ipAddress: '192.168.0.2', port: 8080, protocol: 'HTTP', status: 'connected' },
-    { ipAddress: '192.168.0.3', port: 8080, protocol: 'HTTP', status: 'disconnected' },
-  ]);
+.bandwidth-graph.upload {
+  background-color: #ffa500;
+}
 
-  // Update error log
-  updateErrorLog(['Error 1', 'Error 2', 'Error 3']);
+/* Tables */
 
-  // Update user statistics
-  updateUserStatistics({ totalUsers: 10, averageUsage: 250 });
-};
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
 
-main();
+th, td {
+  padding: 5px;
+}
+
+/* Error log */
+
+.error-log-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.error-log-list li {
+  color: red;
+  padding: 5px;
+}
+
+/* User statistics */
+
+.user-statistics-stats {
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-statistics-stats p {
+  width: 50%;
+}
 ```
