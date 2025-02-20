@@ -9,6 +9,7 @@ content:
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Proxy Dashboard</title>
   <link rel="stylesheet" href="./styles.css">
+  <script src="./scripts.js"></script>
 </head>
 
 <body>
@@ -26,21 +27,21 @@ content:
     <!-- Real-time connection status -->
     <div class="section">
       <h2>Connection Status</h2>
-      <div class="status-indicator connected"></div>
+      <div id="connection-status" class="status-indicator connected"></div>
       <span>Connected</span>
     </div>
 
     <!-- Bandwidth usage graphs -->
     <div class="section">
       <h2>Bandwidth Usage</h2>
-      <div class="bandwidth-graph download" style="width: 50%;"></div>
-      <div class="bandwidth-graph upload" style="width: 50%;"></div>
+      <div id="bandwidth-graph-download" class="bandwidth-graph download" style="width: 50%;"></div>
+      <div id="bandwidth-graph-upload" class="bandwidth-graph upload" style="width: 50%;"></div>
     </div>
 
     <!-- Active connections list -->
     <div class="section">
       <h2>Active Connections</h2>
-      <table>
+      <table id="active-connections">
         <thead>
           <tr>
             <th>User</th>
@@ -69,7 +70,7 @@ content:
     <!-- Error log display -->
     <div class="section">
       <h2>Error Log</h2>
-      <ul class="error-log-list">
+      <ul id="error-log-list" class="error-log-list">
         <li>Error connecting to server</li>
         <li>Error processing request</li>
         <li>Error sending response</li>
@@ -79,7 +80,7 @@ content:
     <!-- User statistics -->
     <div class="section">
       <h2>User Statistics</h2>
-      <div class="user-statistics-stats">
+      <div id="user-statistics-stats" class="user-statistics-stats">
         <p>Total Users: 10</p>
         <p>Total Requests: 1000</p>
         <p>Total Bytes Sent: 10 GB</p>
