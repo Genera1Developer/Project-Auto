@@ -21,25 +21,32 @@ content:
     <div class="main-content">
         <h1>Settings</h1>
         <form>
-            <label for="protocol">Protocol:</label>
-            <select name="protocol">
-                <option value="http">HTTP</option>
-                <option value="https">HTTPS</option>
-            </select>
-            <br>
-            <label for="port">Port:</label>
-            <input type="number" name="port" placeholder="8080">
-            <br>
-            <label for="username">Username:</label>
-            <input type="text" name="username">
-            <br>
-            <label for="password">Password:</label>
-            <input type="password" name="password">
-            <br>
-            <label for="bandwidth">Bandwidth limit (MB/s):</label>
-            <input type="number" name="bandwidth">
-            <br>
-            <input type="submit" value="Save">
+            <div class="form-group">
+                <label for="protocol">Protocol:</label>
+                <select name="protocol">
+                    <option value="http">HTTP</option>
+                    <option value="https">HTTPS</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="port">Port:</label>
+                <input type="number" name="port" placeholder="8080">
+            </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" name="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" name="password">
+            </div>
+            <div class="form-group">
+                <label for="bandwidth">Bandwidth limit (MB/s):</label>
+                <input type="number" name="bandwidth">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save">
+            </div>
         </form>
     </div>
 </body>
