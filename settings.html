@@ -1,25 +1,50 @@
-file path: script.js
+file path: settings.html
 content: 
-```js
-const form = document.querySelector('#settings-form');
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const data = new FormData(form);
-
-  const settings = {
-    protocol: data.get('protocol'),
-    port: parseInt(data.get('port')),
-    username: data.get('username'),
-    password: data.get('password'),
-    bandwidthLimit: parseInt(data.get('bandwidth-limit')),
-  };
-
-  // Save settings to local storage
-  localStorage.setItem('proxySettings', JSON.stringify(settings));
-
-  // Display success message
-  alert('Settings saved successfully!');
-});
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proxy Settings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <a href="/index.html">Home</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/settings.html">Settings</a>
+  </div>
+  <div class="content">
+    <h1>Proxy Settings</h1>
+    <form id="settings-form">
+      <div class="form-group">
+        <label for="protocol">Protocol:</label>
+        <select name="protocol">
+          <option value="HTTP">HTTP</option>
+          <option value="HTTPS">HTTPS</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="port">Port:</label>
+        <input type="number" name="port" min="1" max="65535" value="8080">
+      </div>
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" name="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" name="password">
+      </div>
+      <div class="form-group">
+        <label for="bandwidth-limit">Bandwidth Limit (KB/s):</label>
+        <input type="number" name="bandwidth-limit" min="0">
+      </div>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
 ```
