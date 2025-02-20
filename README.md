@@ -1,4 +1,4 @@
-file path: index.html
+file path: settings.html
 content: 
 
 ```html
@@ -6,7 +6,7 @@ content:
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Web Proxy</title>
+  <title>Settings</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,21 +17,28 @@ content:
       <a href="settings.html">Settings</a>
     </div>
     <div class="main">
-      <h1>Web Proxy</h1>
+      <h1>Settings</h1>
       <form>
+        <label for="protocol">Protocol:</label>
+        <select id="protocol" name="protocol">
+          <option value="HTTP">HTTP</option>
+          <option value="HTTPS">HTTPS</option>
+        </select>
+        <br />
+        <label for="port">Port:</label>
+        <input type="number" id="port" name="port" placeholder="Enter the port number" />
+        <br />
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" placeholder="Enter your username" />
         <br />
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" placeholder="Enter your password" />
         <br />
-        <input type="submit" value="Login" />
+        <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
+        <input type="number" id="bandwidth-limit" name="bandwidth-limit" placeholder="Enter the bandwidth limit" />
+        <br />
+        <input type="submit" value="Save" />
       </form>
-      <div id="proxy-status">
-        <p>Proxy Status: <span id="status">Connecting...</span></p>
-      </div>
-      <div id="error-message" class="error"></div>
-      <div id="connection-status"></div>
     </div>
   </div>
   <script src="script.js"></script>
