@@ -1,5 +1,4 @@
 ```html
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,18 +18,34 @@
       </ul>
     </div>
     <main>
-      <h1>Project Auto Proxy</h1>
-      <p>Welcome! Please enter your credentials to access the proxy.</p>
-      <form>
-        <label for="username">Username</label>
-        <input type="text" id="username" />
-        <label for="password">Password</label>
-        <input type="password" id="password" />
-        <input type="submit" value="Login" />
-      </form>
-      <div class="status">
-        <p>Proxy status: <span id="status-indicator"></span></p>
-        <p>Connection status: <span id="connection-status"></span></p>
+      <header>
+        <h1>Project Auto Proxy</h1>
+        <span id="theme-toggle">
+          <span id="light-mode"><i class="fas fa-sun"></i> Light Mode</span>
+          <span id="dark-mode"><i class="fas fa-moon"></i> Dark Mode</span>
+        </span>
+      </header>
+      <section id="login-form">
+        <h2>Login</h2>
+        <form>
+          <label for="username">Username</label>
+          <input type="text" id="username" />
+          <label for="password">Password</label>
+          <input type="password" id="password" />
+          <input type="submit" value="Login" />
+        </form>
+      </section>
+      <div id="proxy-container">
+        <div class="proxy-search">
+          <input type="search" placeholder="Search..." />
+          <button type="submit">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+        <div id="proxy-status">
+          <span id="status-indicator"></span>
+          <span id="connection-status"></span>
+        </div>
       </div>
       <div class="error" id="error-message"></div>
     </main>
