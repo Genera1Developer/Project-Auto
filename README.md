@@ -1,7 +1,7 @@
 file path: README.md
 content:
 
-Web Proxy Project
+**Web Proxy Project**
 
 **Allowed Files:**
 
@@ -73,3 +73,9 @@ Web Proxy Project
 - Proper commenting
 - No external dependencies
 - No framework usage
+
+**Additional Notes:**
+
+- The sidebar should be present on all pages for easy navigation.
+- The proxy server should be implemented using the WebSockets API.
+- The user interface should be intuitive and user-friendly.
