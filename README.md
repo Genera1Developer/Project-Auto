@@ -1,4 +1,4 @@
-file: README.md
+file path: README.md
 content:
 
 # Web Proxy Project
@@ -9,8 +9,8 @@ content:
 - settings.html (proxy configuration page)
 - dashboard.html (user statistics and monitoring)
 - styles.css (CSS styling for all pages)
-- README.md (description of the site)
 - scripts.js (JavaScript for all pages)
+- README.md (description of the site)
 
 **Strict File Requirements:**
 
