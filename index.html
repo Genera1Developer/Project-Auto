@@ -1,4 +1,4 @@
-file: settings.html
+file: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Web Proxy Settings</title>
+  <title>Web Proxy Dashboard</title>
   <link rel="stylesheet" href="/public/styles.css" />
 </head>
 
@@ -22,7 +22,7 @@ content:
     </div>
     <div class="main-content col-span-5">
       <div class="header bg-blue-100 rounded-md py-2 px-3">
-        <h1 class="text-xl">Web Proxy Settings</h1>
+        <h1 class="text-xl">Web Proxy Dashboard</h1>
         <div class="header-nav">
           <ul>
             <li><a href="/">Home</a></li>
@@ -32,63 +32,56 @@ content:
         </div>
       </div>
       <div class="content py-2 px-3">
-        <form id="settings-form">
-          <div class="grid-container gap-6">
-            <div class="card bg-blue-50 rounded-md p-3">
-              <div class="card-header">
-                <h2 class="card-title">Proxy Configuration</h2>
-              </div>
-              <div class="card-body">
-                <div class="field-group">
-                  <label for="protocol">Protocol:</label>
-                  <select id="protocol">
-                    <option value="http">HTTP</option>
-                    <option value="https">HTTPS</option>
-                  </select>
-                </div>
-                <div class="field-group">
-                  <label for="port">Port:</label>
-                  <input type="number" id="port" min="1" max="65535" value="8080" />
-                </div>
-                <div class="field-group">
-                  <label for="authentication">Authentication:</label>
-                  <select id="authentication">
-                    <option value="none">None</option>
-                    <option value="basic">Basic</option>
-                    <option value="digest">Digest</option>
-                  </select>
-                </div>
-                <div class="field-group">
-                  <label for="username">Username:</label>
-                  <input type="text" id="username" />
-                </div>
-                <div class="field-group">
-                  <label for="password">Password:</label>
-                  <input type="password" id="password" />
-                </div>
-              </div>
+        <div class="dashboard-cards row gap-4">
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">Real-time Connection Status</h2>
             </div>
-            <div class="card bg-blue-50 rounded-md p-3">
-              <div class="card-header">
-                <h2 class="card-title">Bandwidth Limits</h2>
-              </div>
-              <div class="card-body">
-                <div class="field-group">
-                  <label for="upload-limit">Upload Limit:</label>
-                  <input type="number" id="upload-limit" min="0" value="0" />
-                </div>
-                <div class="field-group">
-                  <label for="download-limit">Download Limit:</label>
-                  <input type="number" id="download-limit" min="0" value="0" />
-                </div>
+            <div class="card-body">
+              <div class="connection-status-display">
+                <p>Current Connections: <span id="current-connections">0</span></p>
+                <p>Active Connections: <span id="active-connections">0</span></p>
+                <p>Total Data Transferred: <span id="total-data-transferred">0</span></p>
               </div>
             </div>
           </div>
-          <div class="button-group">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <button type="reset" class="btn btn-secondary">Reset</button>
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">Bandwidth Usage</h2>
+            </div>
+            <div class="card-body">
+              <div id="bandwidth-usage-chart"></div>
+            </div>
           </div>
-        </form>
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">Active Connections</h2>
+            </div>
+            <div class="card-body">
+              <ul id="active-connections-list"></ul>
+            </div>
+          </div>
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">Error Log</h2>
+            </div>
+            <div class="card-body">
+              <ul id="error-log"></ul>
+            </div>
+          </div>
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">User Statistics</h2>
+            </div>
+            <div class="card-body">
+              <ul>
+                <li>Total Users: <span id="total-users">0</span></li>
+                <li>Total Connections: <span id="total-connections">0</span></li>
+                <li>Average Connection Time: <span id="average-connection-time">0</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
