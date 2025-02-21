@@ -7,6 +7,7 @@ content:
     <meta charset="UTF-8">
     <title>Settings</title>
     <link rel="stylesheet" href="style.css">
+    <script src="settings.js"></script>
 </head>
 <body>
     <div class="sidebar">
@@ -16,7 +17,7 @@ content:
     </div>
     <div class="content">
         <h1>Proxy Configuration</h1>
-        <form>
+        <form id="settings-form">
             <label for="protocol">Protocol:</label>
             <select name="protocol">
                 <option value="http">HTTP</option>
@@ -24,7 +25,7 @@ content:
             </select>
             <br>
             <label for="port">Port:</label>
-            <input type="number" name="port">
+            <input type="number" name="port" min="1" max="65535">
             <br>
             <label for="username">Username:</label>
             <input type="text" name="username">
@@ -33,7 +34,7 @@ content:
             <input type="password" name="password">
             <br>
             <label for="bandwidth">Bandwidth Limit (MB/s):</label>
-            <input type="number" name="bandwidth">
+            <input type="number" name="bandwidth" min="0">
             <br>
             <input type="submit" value="Save">
         </form>
