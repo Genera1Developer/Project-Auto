@@ -1,11 +1,11 @@
-file path: dashboard.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Proxy Dashboard</title>
+    <title>Web Proxy</title>
     <link rel="stylesheet" href="/public/styles.css" />
   </head>
   <body>
@@ -13,18 +13,18 @@ content:
       <aside class="col-span-1 bg-blue-50 h-screen">
         <div class="sidebar-nav">
           <ul>
-            <li>
+            <li class="active">
               <a href="/index.html" class="block px-3 py-2 rounded-md bg-blue-100">
                 Home
               </a>
             </li>
             <li>
-              <a href="/settings.html" class="block px-3 py-2 rounded-md bg-blue-100">
+              <a href="/settings.html" class="block px-3 py-2 rounded-md">
                 Settings
               </a>
             </li>
             <li>
-              <a href="/dashboard.html" class="block px-3 py-2 rounded-md bg-blue-100">
+              <a href="/dashboard.html" class="block px-3 py-2 rounded-md">
                 Dashboard
               </a>
             </li>
@@ -33,130 +33,70 @@ content:
       </aside>
       <main class="col-span-5">
         <div class="py-6">
-          <h1 class="text-2xl font-bold">Proxy Dashboard</h1>
-          <p>Monitor your proxy's performance and usage.</p>
+          <div class="flex flex-col items-center">
+            <h1 class="text-2xl font-bold text-center">Web Proxy</h1>
+            <p class="text-gray-500">
+              Stay anonymous and protect your privacy while browsing the web.
+            </p>
+          </div>
           <div class="mt-6">
-            <div class="flex items-center justify-between">
-              <h2 class="text-xl font-bold">Real-Time Connection Status</h2>
-              <span id="connection-status" class="text-green-500 font-bold"
-                >Connected</span
-              >
-            </div>
-            <div class="mt-6">
-              <div class="card bg-blue-100 rounded-md p-4">
-                <div class="flex items-center justify-between">
-                  <span class="text-xl font-bold">Active Connections</span>
-                  <span id="active-connections" class="text-blue-500"
-                    >0</span
+            <form id="proxy-form">
+              <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                <div class="col-span-1">
+                  <label for="username" class="block text-sm font-bold"
+                    >Username:</label
                   >
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
+                    required
+                  />
                 </div>
-                <div class="mt-4">
-                  <table class="table-fixed w-full">
-                    <thead>
-                      <tr>
-                        <th class="px-3 py-2 text-left">IP Address</th>
-                        <th class="px-3 py-2 text-left">Hostname</th>
-                        <th class="px-3 py-2 text-left">Connected Since</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="hidden" id="active-connections-empty-state">
-                        <td colspan="3" class="text-center">
-                          No active connections
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="col-span-1">
+                  <label for="password" class="block text-sm font-bold"
+                    >Password:</label
+                  >
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
+                    required
+                  />
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="mt-6">
-            <div class="flex items-center justify-between">
-              <h2 class="text-xl font-bold">Bandwidth Usage</h2>
-              <div class="flex items-center">
-                <span id="total-bandwidth" class="text-gray-700"
-                  >Total: 0 MB</span
+              <div class="mt-6">
+                <button
+                  type="submit"
+                  class="px-4 py-2 bg-blue-500 rounded-md text-white font-bold"
                 >
-                <span class="mx-2">/</span>
-                <span id="bandwidth-limit" class="text-gray-700"
-                  >Limit: 0 MB/s</span
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="mt-6">
+            <div class="bg-blue-100 rounded-md p-4 text-sm">
+              <div class="flex items-center justify-between">
+                <span class="font-bold">Status:</span>
+                <span id="proxy-status" class="text-green-500 font-bold"
+                  >Not connected</span
+                >
+              </div>
+              <div class="mt-2">
+                <span class="font-bold">Connection:</span>
+                <span id="connection-status" class="text-gray-500"
+                  >No connection established</span
                 >
               </div>
             </div>
-            <div class="mt-6">
-              <canvas id="bandwidth-chart" width="600" height="300"></canvas>
-            </div>
           </div>
           <div class="mt-6">
-            <h2 class="text-xl font-bold">Error Log</h2>
-            <div class="mt-4">
-              <div class="card bg-blue-100 rounded-md p-4">
-                <ul id="error-log">
-                  <li class="hidden" id="error-log-empty-state">
-                    No errors logged
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="mt-6">
-            <h2 class="text-xl font-bold">User Statistics</h2>
-            <div class="mt-4">
-              <div class="card bg-blue-100 rounded-md p-4">
-                <div class="flex items-center justify-between">
-                  <span class="text-xl font-bold">Total Users</span>
-                  <span id="total-users" class="text-blue-500">0</span>
-                </div>
-                <div class="mt-4">
-                  <table class="table-fixed w-full">
-                    <thead>
-                      <tr>
-                        <th class="px-3 py-2 text-left">Username</th>
-                        <th class="px-3 py-2 text-left">Total Connections</th>
-                        <th class="px-3 py-2 text-left">Total Bandwidth</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="hidden" id="user-stats-empty-state">
-                        <td colspan="3" class="text-center">
-                          No user statistics available
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="mt-6">
-            <h2 class="text-xl font-bold">Banned IPs</h2>
-            <div class="mt-4">
-              <div class="card bg-blue-100 rounded-md p-4">
-                <div class="flex items-center justify-between">
-                  <span class="text-xl font-bold">Total Banned IPs</span>
-                  <span id="total-banned-ips" class="text-red-500">0</span>
-                </div>
-                <div class="mt-4">
-                  <table class="table-fixed w-full">
-                    <thead>
-                      <tr>
-                        <th class="px-3 py-2 text-left">IP Address</th>
-                        <th class="px-3 py-2 text-left">Hostname</th>
-                        <th class="px-3 py-2 text-left">Banned Since</th>
-                        <th class="px-3 py-2 text-left">Reason</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="hidden" id="banned-ips-empty-state">
-                        <td colspan="4" class="text-center">
-                          No banned IPs available
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+            <div class="bg-red-100 rounded-md p-4 text-sm">
+              <h2 class="font-bold">Error Message:</h2>
+              <p id="error-message" class="text-red-500"></p>
             </div>
           </div>
         </div>
