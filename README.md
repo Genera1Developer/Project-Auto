@@ -4,18 +4,20 @@ content:
 ```
 Web Proxy Project
 
-Structured web proxy with strictly defined files and components, baby blue beautiful and rounded theming.
+**Goal:**
 
-Allowed Files:
+Create a structured web proxy project with strictly defined files and components, featuring a baby blue beautiful and rounded theming.
+
+**Allowed Files:**
 
 - index.html (main landing page)
 - settings.html (proxy configuration page)
 - dashboard.html (user statistics and monitoring)
-- README.md (description of the site)
+- error.html (error page)
 
-File Requirements:
+**File Requirements:**
 
-1. index.html:
+**1. index.html:**
 
 - Login form with username/password fields
 - Navigation to settings and dashboard
@@ -27,7 +29,7 @@ File Requirements:
 - Custom CSS styling
 - Embedded JavaScript
 
-2. settings.html:
+**2. settings.html:**
 
 - Proxy configuration form
 - Protocol selection (HTTP/HTTPS)
@@ -39,7 +41,7 @@ File Requirements:
 - Custom CSS styling
 - Embedded JavaScript
 
-3. dashboard.html:
+**3. dashboard.html:**
 
 - Real-time connection status
 - Bandwidth usage graphs
@@ -51,11 +53,12 @@ File Requirements:
 - Custom CSS styling
 - Embedded JavaScript
 
-4. README.md:
+**4. error.html:**
 
-- Raw markdown text only
+- Custom error message and navigation back to /index.html
+- Same styling as other pages
 
-Code Structure Rules:
+**Code Structure Rules:**
 
 - No inline scripts or styles
 - Semantic HTML elements only
