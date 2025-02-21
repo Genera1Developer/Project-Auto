@@ -1,4 +1,4 @@
-file path: README.md
+file: README.md
 content: 
 
 # Web Proxy Project
@@ -14,6 +14,8 @@ This project aims to create a structured web proxy with strictly defined files a
 - css/main.css (centralized CSS styling)
 - js/main.js (centralized JavaScript)
 - config.json (configuration parameters)
+- errors.html (dedicated error page)
+- about.html (optional information page)
 
 **Strict File Requirements:**
 
@@ -54,6 +56,14 @@ This project aims to create a structured web proxy with strictly defined files a
 
 - Raw markdown text only
 
+**5. errors.html:**
+
+- Dedicated error page for handling errors
+
+**6. about.html:**
+
+- Optional page providing additional information about the project
+
 **Code Structure Rules:**
 
 - No inline scripts or styles (except for index.html, settings.html, and dashboard.html)
@@ -72,8 +82,3 @@ This project aims to create a structured web proxy with strictly defined files a
 - **css/main.css**: Centralized CSS styling for all pages
 - **js/main.js**: Centralized JavaScript for all pages
 - **config.json**: Configuration parameters for the proxy
-
-**Suggested New Files:**
-
-- **errors.html**: A dedicated error page for handling errors
-- **about.html**: An optional page providing additional information about the project
