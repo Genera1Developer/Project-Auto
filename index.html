@@ -1,13 +1,50 @@
-file: README.md
+file: index.html
 content: 
-```text
-## Web Proxy Project
+```html
+<!DOCTYPE html>
+<html>
 
-This project aims to create a structured web proxy with a baby blue, beautiful, and rounded theme. It consists of three main files:
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="index.js"></script>
+</head>
 
-* **index.html:** The landing page with login, navigation, proxy status, and error handling.
-* **settings.html:** Configuration page for proxy settings, including protocol, port, authentication, and bandwidth limits.
-* **dashboard.html:** Statistics and monitoring page displaying connection status, bandwidth usage, active connections, error logs, and user statistics.
+<body>
+  <div id="container">
+    <div id="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
 
-All files use semantic HTML elements, external CSS and JS, and consistent styling. They feature a sidebar for navigation and must be provided in raw code without additional files or markdown blocks.
+    <div id="content">
+      <div id="login">
+        <h1>Log In</h1>
+        <form>
+          <label for="username">Username:</label>
+          <input type="text" id="username">
+          <br>
+          <label for="password">Password:</label>
+          <input type="password" id="password">
+          <br>
+          <input type="submit" value="Log In">
+        </form>
+      </div>
+
+      <div id="proxy-status">
+        <h2>Proxy Status: Offline</h2>
+      </div>
+
+      <div id="error-message"></div>
+
+      <div id="connection-status"></div>
+    </div>
+  </div>
+</body>
+
+</html>
 ```
