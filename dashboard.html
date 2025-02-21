@@ -2,7 +2,6 @@ file path: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
-<html>
 <head>
   <meta charset="UTF-8" />
   <title>Web Proxy Dashboard</title>
@@ -95,3 +94,172 @@ content:
 </html>
 javascript
 ```
+
+file path: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Settings</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="settings.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+  </div>
+  <div class="main-content">
+    <h1>Settings</h1>
+    <form id="settings-form">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="proxy-protocol">Proxy Protocol</label>
+            <select id="proxy-protocol" name="proxy-protocol">
+              <option value="HTTP">HTTP</option>
+              <option value="HTTPS">HTTPS</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="proxy-port">Proxy Port</label>
+            <input type="number" id="proxy-port" name="proxy-port" min="1" max="65535" value="8080" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="proxy-username">Proxy Username</label>
+            <input type="text" id="proxy-username" name="proxy-username" />
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="proxy-password">Proxy Password</label>
+            <input type="password" id="proxy-password" name="proxy-password" />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
+            <input type="number" id="bandwidth-limit" name="bandwidth-limit" min="0" />
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+  </div>
+</body>
+</html>
+javascript
+```
+
+file path: index.html
+content: 
+```html
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="index.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+  </div>
+  <div class="main-content">
+    <h1>Web Proxy</h1>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter your username" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" />
+      </div>
+      <button type="submit" class="btn btn-primary" id="login-button">Login</button>
+    </form>
+    <div id="status-indicator"></div>
+    <div id="error-message"></div>
+    <div id="connection-status"></div>
+  </div>
+</body>
+</html>
+javascript
+```
+
+file path: styles.css
+content: 
+```css
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #333;
+  padding: 20px;
+  float: left;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin-bottom: 10px;
+}
+
+.sidebar a {
+  display: block;
+  color: white;
+  text-decoration: none;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 20px;
+}
+
+.card {
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-body {
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.col {
+  flex:
