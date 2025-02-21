@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy Settings</title>
+    <title>Web Proxy Dashboard</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -19,27 +19,31 @@ content:
             <a href="/dashboard.html" class="sidebar-link">Dashboard</a>
         </div>
         <div class="main">
-            <h1>Web Proxy Settings</h1>
-            <form id="settings-form">
-                <label for="protocol">Protocol:</label>
-                <select name="protocol">
-                    <option value="http">HTTP</option>
-                    <option value="https">HTTPS</option>
-                </select>
-                <label for="port">Port:</label>
-                <input type="number" id="port">
-                <label for="username">Auth Username:</label>
-                <input type="text" id="username">
-                <label for="password">Auth Password:</label>
-                <input type="password" id="password">
-                <label for="bandwidth-limit">Bandwidth Limit(MB/s):</label>
-                <input type="number" id="bandwidth-limit">
-                <button type="submit">Save</button>
-            </form>
+            <h1>Web Proxy Dashboard</h1>
+            <section id="connection-status">
+                <h2>Connection Status</h2>
+                <div id="connection-status-indicator"></div>
+                <p id="connection-status-message"></p>
+            </section>
+            <section id="bandwidth-usage">
+                <h2>Bandwidth Usage</h2>
+                <canvas id="bandwidth-usage-graph"></canvas>
+            </section>
+            <section id="active-connections">
+                <h2>Active Connections</h2>
+                <ul id="active-connections-list"></ul>
+            </section>
+            <section id="error-log">
+                <h2>Error Log</h2>
+                <ul id="error-log-list"></ul>
+            </section>
+            <section id="user-statistics">
+                <h2>User Statistics</h2>
+                <ul id="user-statistics-list"></ul>
+            </section>
         </div>
     </div>
-    
-    <script src="/js/settings.js"></script>
+    <script src="/js/dashboard.js"></script>
 </body>
 
 </html>
