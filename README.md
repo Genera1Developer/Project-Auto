@@ -35,11 +35,9 @@ content:
           <label for="authentication">Authentication</label>
           <input type="checkbox" name="authentication" id="authentication">
         </div>
-        <div class="form-group">
+        <div class="form-group" id="auth-fields">
           <label for="username">Username</label>
           <input type="text" name="username" id="username" placeholder="Enter username">
-        </div>
-        <div class="form-group">
           <label for="password">Password</label>
           <input type="password" name="password" id="password" placeholder="Enter password">
         </div>
@@ -53,6 +51,13 @@ content:
   </div>
 
   <script>
+    // Toggle authentication fields
+    const authCheckbox = document.getElementById('authentication');
+    const authFields = document.getElementById('auth-fields');
+    authCheckbox.addEventListener('change', () => {
+      authFields.classList.toggle('d-none');
+    });
+
     // TODO: Implement settings form functionality
   </script>
 </body>
