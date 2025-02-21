@@ -59,3 +59,6 @@ Requirements:
 
 6. background.js:
     - Proxy server initialization, connection handling, and data forwarding.
+
+7. New file: config.json:
+    - Proxy server configuration parameters, such as hostname, port, authentication settings, etc.
