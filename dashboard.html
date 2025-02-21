@@ -1,36 +1,65 @@
-50,
-                bandwidthUsage: [{
-                    label: 'Data Usage',
-                    data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-                }],
-                connections: [{
-                    ipAddress: '127.0.0.1',
-                    port: '8080',
-                    protocol: 'HTTP',
-                    status: 'Active'
-                }, {
-                    ipAddress: '192.168.1.1',
-                    port: '443',
-                    protocol: 'HTTPS',
-                    status: 'Inactive'
-                }],
-                errors: ['Error 1', 'Error 2'],
-                totalUsers: 1000,
-                activeUsers: 500,
-                inactiveUsers: 500
-            };
+file path: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-            // Update UI
-            updateConnectionStatus(data);
-            updateBandwidthUsageGraph(data.bandwidthUsage);
-            updateActiveConnectionsTable(data);
-            updateErrorLog(data);
-            updateUserStatistics(data);
-        };
+<head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
+</head>
 
-        // Call main function
-        main();
-    </script>
+<body>
+    <div class="sidebar">
+        <a href="/index.html">Home</a>
+        <a href="/settings.html">Settings</a>
+        <a href="/dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="container">
+        <h1>Dashboard</h1>
+
+        <div class="section">
+            <h2>Connection Status</h2>
+            <div id="connection-status"></div>
+        </div>
+
+        <div class="section">
+            <h2>Bandwidth Usage</h2>
+            <canvas id="bandwidth-usage-graph"></canvas>
+        </div>
+
+        <div class="section">
+            <h2>Active Connections</h2>
+            <table id="active-connections-table">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Port</th>
+                        <th>Protocol</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Error Log</h2>
+            <ul id="error-log"></ul>
+        </div>
+
+        <div class="section">
+            <h2>User Statistics</h2>
+            <ul>
+                <li>Total Users: <span id="total-users"></span></li>
+                <li>Active Users: <span id="active-users"></span></li>
+                <li>Inactive Users: <span id="inactive-users"></span></li>
+            </ul>
+        </div>
+    </div>
 </body>
 
 </html>
