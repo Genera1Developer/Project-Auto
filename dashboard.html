@@ -5,79 +5,91 @@ content:
 <html>
 
 <head>
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="script.js"></script>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
 </head>
 
 <body>
-  <div class="wrapper">
-    <div class="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a class="active" href="/dashboard.html">Dashboard</a></li>
-      </ul>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/settings.html">Settings</a></li>
+                <li><a class="active" href="/dashboard.html">Dashboard</a></li>
+            </ul>
+        </aside>
+        <main class="content">
+            <h1>Dashboard</h1>
+            <section class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="box">
+                            <h3>Real-time Connection Status</h3>
+                            <p>
+                                Total Connections: <span id="total-connections">0</span>
+                            </p>
+                            <p>
+                                Active Connections: <span id="active-connections">0</span>
+                            </p>
+                            <p>
+                                Inactive Connections: <span id="inactive-connections">0</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="box">
+                            <h3>Bandwidth Usage Graphs</h3>
+                            <canvas id="bandwidth-usage-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box">
+                            <h3>Active Connections List</h3>
+                            <table id="active-connections-table">
+                                <thead>
+                                    <tr>
+                                        <th>IP Address</th>
+                                        <th>Port</th>
+                                        <th>Protocol</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box">
+                            <h3>Error Log Display</h3>
+                            <ul id="error-log"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box">
+                            <h3>User Statistics</h3>
+                            <p>
+                                Total Users: <span id="total-users">0</span>
+                            </p>
+                            <p>
+                                Active Users: <span id="active-users">0</span>
+                            </p>
+                            <p>
+                                Inactive Users: <span id="inactive-users">0</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
-    <div class="content">
-      <h1>Dashboard</h1>
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6">
-            <div class="box">
-              <h3>Real-time Connection Status</h3>
-              <p>Total Connections: <span id="total-connections">0</span></p>
-              <p>Active Connections: <span id="active-connections">0</span></p>
-              <p>Inactive Connections: <span id="inactive-connections">0</span></p>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="box">
-              <h3>Bandwidth Usage Graphs</h3>
-              <canvas id="bandwidth-usage-chart"></canvas>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="box">
-              <h3>Active Connections List</h3>
-              <table id="active-connections-table">
-                <thead>
-                  <tr>
-                    <th>IP Address</th>
-                    <th>Port</th>
-                    <th>Protocol</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="box">
-              <h3>Error Log Display</h3>
-              <ul id="error-log"></ul>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <div class="box">
-              <h3>User Statistics</h3>
-              <p>Total Users: <span id="total-users">0</span></p>
-              <p>Active Users: <span id="active-users">0</span></p>
-              <p>Inactive Users: <span id="inactive-users">0</span></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </body>
 
 </html>
