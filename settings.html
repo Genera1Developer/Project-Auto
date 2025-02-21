@@ -6,7 +6,7 @@ content:
   <head>
     <meta charset="UTF-8" />
     <title>Web Proxy Settings</title>
-    <link rel="stylesheet" href="/public/styles.css" />
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <div class="container grid grid-cols-6 gap-4 max-w-screen-lg mx-auto">
@@ -127,6 +127,31 @@ content:
         </div>
       </main>
     </div>
+    <script>
+      const form = document.getElementById('proxy-settings-form');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch('/settings', {
+          method: 'POST',
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              alert('Settings saved successfully.');
+            } else {
+              alert('Error saving settings.');
+            }
+          })
+          .catch((error) => {
+            console.error('Error submitting form:', error);
+          });
+      });
+    </script>
   </body>
 </html>
 ```
