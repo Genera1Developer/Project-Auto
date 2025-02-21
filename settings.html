@@ -19,22 +19,22 @@ content:
         <h1>Proxy Configuration</h1>
         <form id="settings-form">
             <label for="protocol">Protocol:</label>
-            <select name="protocol">
+            <select id="protocol" name="protocol">
                 <option value="http">HTTP</option>
-                <option value="https">HTTPS</option>
+                <option value="https" selected>HTTPS</option>
             </select>
             <br>
             <label for="port">Port:</label>
-            <input type="number" name="port" min="1" max="65535">
+            <input type="number" id="port" name="port" min="1" max="65535" value="8080">
             <br>
             <label for="username">Username:</label>
-            <input type="text" name="username">
+            <input type="text" id="username" name="username">
             <br>
             <label for="password">Password:</label>
-            <input type="password" name="password">
+            <input type="password" id="password" name="password">
             <br>
             <label for="bandwidth">Bandwidth Limit (MB/s):</label>
-            <input type="number" name="bandwidth" min="0">
+            <input type="number" id="bandwidth" name="bandwidth" min="0" value="0">
             <br>
             <input type="submit" value="Save">
         </form>
