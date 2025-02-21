@@ -1,4 +1,4 @@
-file: dashboard.html
+file: index.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -6,7 +6,7 @@ content:
 
 <head>
   <meta charset="UTF-8" />
-  <title>Web Proxy Dashboard</title>
+  <title>Web Proxy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -18,146 +18,36 @@ content:
         <li><a href="/index.html">Home</a></li>
         <li><a href="/dashboard.html">Dashboard</a></li>
         <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/logs.html">Logs</a></li>
       </ul>
     </div>
     <div class="content flex-1 p-4">
-      <h1 class="text-3xl font-bold mb-4">Web Proxy Dashboard</h1>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="bg-white rounded-lg p-4 shadow-md">
-          <h2 class="text-xl font-bold mb-4">Real-Time Connection Status</h2>
-          <div class="flex justify-between">
-            <p class="text-sm font-bold mb-2">Total Connections:</p>
-            <span id="total-connections" class="text-sm font-semibold text-blue-500">0</span>
-          </div>
-          <div class="flex justify-between">
-            <p class="text-sm font-bold mb-2">Active Connections:</p>
-            <span id="active-connections" class="text-sm font-semibold text-blue-500">0</span>
-          </div>
-          <div class="flex justify-between">
-            <p class="text-sm font-bold mb-2">Average Response Time:</p>
-            <span id="avg-response-time" class="text-sm font-semibold text-blue-500">0 ms</span>
-          </div>
-        </div>
-        <div class="bg-white rounded-lg p-4 shadow-md">
-          <h2 class="text-xl font-bold mb-4">Bandwidth Usage</h2>
-          <canvas id="bandwidth-chart" width="400" height="200"></canvas>
-        </div>
-        <div class="bg-white rounded-lg p-4 shadow-md">
-          <h2 class="text-xl font-bold mb-4">Active Connections</h2>
-          <table id="active-connections-table">
-            <thead>
-              <tr>
-                <th>IP Address</th>
-                <th>Port</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
-        <div class="bg-white rounded-lg p-4 shadow-md">
-          <h2 class="text-xl font-bold mb-4">Error Log</h2>
-          <ul id="error-log">
-          </ul>
-        </div>
-        <div class="bg-white rounded-lg p-4 shadow-md">
-          <h2 class="text-xl font-bold mb-4">User Statistics</h2>
-          <div class="flex justify-between">
-            <p class="text-sm font-bold mb-2">Total Users:</p>
-            <span id="total-users" class="text-sm font-semibold text-blue-500">0</span>
-          </div>
-          <div class="flex justify-between">
-            <p class="text-sm font-bold mb-2">Average Bandwidth Usage:</p>
-            <span id="avg-bandwidth-usage" class="text-sm font-semibold text-blue-500">0 KB/s</span>
-          </div>
-          <div class="flex justify-between">
-            <p class="text-sm font-bold mb-2">Most Active User:</p>
-            <span id="most-active-user" class="text-sm font-semibold text-blue-500">N/A</span>
-          </div>
-        </div>
+      <h1 class="text-3xl font-bold mb-4">Web Proxy</h1>
+      <div class="card bg-white rounded-lg p-4 shadow-md">
+        <h2 class="text-xl font-bold mb-4">Login</h2>
+        <form id="login-form">
+          <label for="username" class="block mb-2 text-sm font-bold text-gray-700">Username</label>
+          <input type="text" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" />
+          <label for="password" class="block mb-2 text-sm font-bold text-gray-700">Password</label>
+          <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+          <button type="submit" class="bg-babyblue-500 hover:bg-babyblue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4">
+            Login
+          </button>
+        </form>
+      </div>
+
+      <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
+        <h2 class="text-xl font-bold mb-4">Status</h2>
+        <ul>
+          <li><span id="proxy-status" class="text-sm font-bold text-gray-700">Status: </span><span id="proxy-status-value" class="text-sm font-semibold"></span></li>
+          <li><span id="connection-status" class="text-sm font-bold text-gray-700">Connection: </span><span id="connection-status-value" class="text-sm font-semibold"></span></li>
+          <li><span id="error-message" class="text-sm font-bold text-red-500"></span></li>
+        </ul>
       </div>
     </div>
   </div>
+
   <script src="scripts.js"></script>
 </body>
 
 </html>
-```
-file: README.md
-content: 
-```markdown
-# Web Proxy Dashboard
-
-This project provides a structured web proxy with strictly defined files, components, and baby blue beautiful and rounded theming.
-
-## Allowed Files
-
-- index.html (main landing page)
-- settings.html (proxy configuration page)
-- dashboard.html (user statistics and monitoring)
-- README.md (description of the site)
-
-## Strict File Requirements
-
-**index.html**
-
-- Must contain:
-  - Login form with username/password fields
-  - Navigation to settings and dashboard
-  - Proxy status indicator
-  - Error message display area
-  - Connection status display
-  - Must use external CSS and JS files
-  - Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
-  - MUST have its own CSS styling within the HTML
-  - Must be provided in raw code and don't tell me what the file is for my purposes
-  - Must have its own javascript within the HTML
-
-**settings.html**
-
-- Must contain:
-  - Proxy configuration form
-  - Protocol selection (HTTP/HTTPS)
-  - Port configuration
-  - Authentication settings
-  - Bandwidth limits
-  - Must use same styling as index.html
-  - Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
-  - MUST have its own CSS styling within the HTML
-  - Must be provided in raw code and don't tell me what the file is for my purposes
-  - Must have its own javascript within the HTML
-
-**dashboard.html**
-
-- Must contain:
-  - Real-time connection status
-  - Bandwidth usage graphs
-  - Active connections list
-  - Error log display
-  - User statistics
-  - Must use same styling as index.html
-  - Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
-  - MUST have its own CSS styling within the HTML
-  - Must be provided in raw code and don't tell me what the file is for my purposes
-  - Must have its own javascript within the HTML
-
-**README.md**
-
-- Must contain:
-  - Raw markdown text only
-
-## Code Structure Rules
-
-- No inline scripts or styles
-- Semantic HTML elements only
-- Strict content security policy
-- Error handling for all operations
-- Cross-browser compatibility required
-- Mobile responsiveness required
-- Clean, consistent indentation
-- Proper commenting required
-- No external dependencies
-- No framework usage
 ```
