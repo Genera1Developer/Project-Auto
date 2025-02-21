@@ -21,24 +21,24 @@ content:
         <div class="main">
             <h1>Web Proxy Settings</h1>
             <form id="settings-form">
-                <label for="protocol">Protocol</label>
+                <label for="protocol">Protocol:</label>
                 <select name="protocol">
                     <option value="http">HTTP</option>
                     <option value="https">HTTPS</option>
                 </select>
-                <label for="port">Port</label>
+                <label for="port">Port:</label>
                 <input type="number" id="port">
-                <label for="username">Authentication Username</label>
+                <label for="username">Auth Username:</label>
                 <input type="text" id="username">
-                <label for="password">Authentication Password</label>
+                <label for="password">Auth Password:</label>
                 <input type="password" id="password">
-                <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
+                <label for="bandwidth-limit">Bandwidth Limit(MB/s):</label>
                 <input type="number" id="bandwidth-limit">
-                <button type="submit">Save Changes</button>
+                <button type="submit">Save</button>
             </form>
         </div>
     </div>
-
+    
     <script src="/js/settings.js"></script>
 </body>
 
