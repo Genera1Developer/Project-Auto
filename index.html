@@ -60,7 +60,7 @@ content:
           </div>
         </div>
       </div>
-      <div class="error-message mt-4">
+      <div class="error-message mt-4" hidden>
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
           <strong class="font-bold">Error!</strong>
           <span class="block sm:inline">The proxy server is currently experiencing issues.</span>
@@ -90,3 +90,150 @@ content:
 
 </html>
 ```
+file path: styles.css
+content: 
+```css
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: sans-serif;
+  color: #333;
+}
+
+.wrapper {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #333;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 12px;
+  border-bottom: 1px solid #444;
+}
+
+.sidebar a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  background-color: #444;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+}
+
+.login-form {
+  max-width: 400px;
+}
+
+.login-form h2 {
+  margin-bottom: 24px;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.login-form button {
+  width: 100%;
+  padding: 8px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+}
+
+.login-form button:hover {
+  background-color: #444;
+}
+
+.proxy-status {
+  background-color: #efefef;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.proxy-status .text-green-500 {
+  color: #008000;
+}
+
+.proxy-status .text-sm {
+  font-size: 14px;
+}
+
+.error-message {
+  background-color: #ffcdd2;
+  padding: 12px;
+  border-radius: 4px;
+  color: #d32f2f;
+}
+
+.error-message strong {
+  font-weight: bold;
+}
+
+.error-message .block {
+  margin-top: 4px;
+}
+
+.connection-status {
+  background-color: #efefef;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.connection-status .text-sm {
+  font-size: 14px;
+}
+```
+file path: scripts.js
+content: 
+```javascript
+const loginForm = document.getElementById('login-form');
+const errorMessage = document.querySelector('.error-message');
+const lastUpdated = document.getElementById('last-updated');
+const ipAddress = document.getElementById('ip-address');
+const hostname = document.getElementById('hostname');
+
+const displayError = (message) => {
+  errorMessage.hidden = false;
+  errorMessage.querySelector('.block').textContent = message;
+};
+
+const hideError = () => {
+  errorMessage.hidden = true;
+};
+
+const updateProxyStatus = (status) => {
+  const proxyStatus = document.querySelector('.proxy-status');
+  if (status === 'connected') {
+    proxyStatus.querySelector('.text-green-500').textContent = 'Connected';
+    proxyStatus.querySelector('.
