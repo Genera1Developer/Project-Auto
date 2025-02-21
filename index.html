@@ -1,250 +1,62 @@
-**suggestions for new files**
-- public/styles.css
-- public/scripts.js
-
-file: public/styles.css
+file: index.html
 content: 
-```css
-/* Global styles */
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-body {
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  color: #333;
-  margin: 0;
-  padding: 0;
-}
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="/public/styles.css" />
+</head>
 
-a {
-  color: #000;
-  text-decoration: none;
-}
+<body>
+  <div class="container grid">
+    <div class="sidebar-nav col-span-1 bg-blue-50 rounded-md">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/settings">Settings</a></li>
+      </ul>
+    </div>
+    <div class="main-content col-span-5">
+      <div class="header bg-blue-100 rounded-md py-2 px-3">
+        <h1 class="text-xl">Web Proxy</h1>
+        <div class="header-nav">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/settings">Settings</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="content py-2 px-3">
+        <form id="login-form">
+          <h2 class="text-xl mb-6">Login</h2>
+          <div class="form-group">
+            <label class="form-label block" for="username">Username</label>
+            <input class="form-input" type="text" name="username" id="username" />
+          </div>
+          <div class="form-group">
+            <label class="form-label block" for="password">Password</label>
+            <input class="form-input" type="password" name="password" id="password" />
+          </div>
+          <button type="submit" class="form-button mt-6">Login</button>
+        </form>
+        <div class="error-message hidden"></div>
+        <div class="proxy-status mt-6">
+          <strong>Proxy Status:</strong> <span id="proxy-status"></span>
+        </div>
+        <div class="connection-log mt-6">
+          <strong>Connection Log:</strong>
+          <ul id="connection-log"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/public/scripts.js"></script>
+</body>
 
-.container {
-  height: 100vh;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min-content, 1fr));
-}
-
-.col-span-1 {
-  grid-column: span 1;
-}
-
-.col-span-5 {
-  grid-column: span 5;
-}
-
-.bg-blue-50 {
-  background-color: #e0f2fe;
-}
-
-.bg-blue-100 {
-  background-color: #cfe2ff;
-}
-
-.rounded-md {
-  border-radius: 4px;
-}
-
-.py-2 {
-  padding: 10px 0;
-}
-
-.px-3 {
-  padding: 0 15px;
-}
-
-.mt-6 {
-  margin-top: 24px;
-}
-
-.block {
-  display: block;
-}
-
-.hidden {
-  display: none;
-}
-
-/* Header styles */
-
-.header {
-  padding: 15px 30px;
-  background-color: #000;
-}
-
-.header-nav {
-  float: right;
-}
-
-.header-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-}
-
-.header-nav li {
-  display: inline-block;
-}
-
-.header-nav a {
-  text-decoration: none;
-  color: #fff;
-}
-
-/* Sidebar styles */
-
-.sidebar-nav {
-  height: 100%;
-}
-
-.sidebar-nav ul {
-  list-style: none;
-}
-
-.sidebar-nav li {
-  padding: 10px 15px;
-  border-bottom: 1px solid #000;
-}
-
-.sidebar-nav li:last-child {
-  border-bottom: none;
-}
-
-.sidebar-nav a {
-  text-decoration: none;
-  color: #000;
-}
-
-/* Main content styles */
-
-.main-content {
-  padding: 30px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.form-input {
-  width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #000;
-  border-radius: 4px;
-}
-
-.form-button {
-  display: inline-block;
-  padding: 10px 15px;
-  background-color: #000;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* Error styles */
-
-.error-message {
-  color: red;
-}
-
-/* Success styles */
-
-.success-message {
-  color: green;
-}
-
-/* Responsive styles */
-
-@media (max-width: 768px) {
-  .header-nav ul {
-    display: block;
-    margin-top: 10px;
-  }
-
-  .header-nav li {
-    display: block;
-  }
-
-  .sidebar-nav {
-    display: none;
-  }
-
-  .main-content {
-    padding: 15px;
-  }
-}
-```
-
-file: public/scripts.js
-content: 
-```js
-const loginForm = document.getElementById('login-form');
-const proxyStatus = document.getElementById('proxy-status');
-const connectionLog = document.getElementById('connection-log');
-
-loginForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-
-  const response = await fetch('/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, password }),
-  });
-
-  if (response.ok) {
-    // Successful login
-    window.location.href = '/dashboard';
-  } else {
-    // Error
-    const errorMessage = await response.text();
-    document.querySelector('.error-message').textContent = errorMessage;
-    document.querySelector('.error-message').classList.remove('hidden');
-  }
-});
-
-// Update the proxy status every 5 seconds
-setInterval(() => {
-  fetch('/proxy/status')
-    .then((response) => response.text())
-    .then((data) => {
-      proxyStatus.textContent = data;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}, 5000);
-
-// Add a new log entry to the connection log
-const addLog = (message) => {
-  const newLog = document.createElement('p');
-  newLog.textContent = message;
-  connectionLog.appendChild(newLog);
-};
-
-// Get the connection log
-fetch('/proxy/log')
-  .then((response) => response.json())
-  .then((data) => {
-    data.forEach((log) => {
-      addLog(log.message);
-    });
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+</html>
 ```
