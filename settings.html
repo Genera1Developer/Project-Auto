@@ -1,3 +1,43 @@
-No improvement is needed for this file.
-
-No new files are needed.
+file path: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <a href="/index.html">Home</a>
+        <a href="/dashboard.html">Dashboard</a>
+        <a href="/settings.html">Settings</a>
+    </div>
+    <div class="content">
+        <h1>Proxy Configuration</h1>
+        <form>
+            <label for="protocol">Protocol:</label>
+            <select name="protocol">
+                <option value="http">HTTP</option>
+                <option value="https">HTTPS</option>
+            </select>
+            <br>
+            <label for="port">Port:</label>
+            <input type="number" name="port">
+            <br>
+            <label for="username">Username:</label>
+            <input type="text" name="username">
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" name="password">
+            <br>
+            <label for="bandwidth">Bandwidth Limit (MB/s):</label>
+            <input type="number" name="bandwidth">
+            <br>
+            <input type="submit" value="Save">
+        </form>
+    </div>
+</body>
+</html>
+```
