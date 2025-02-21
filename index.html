@@ -1,245 +1,45 @@
-file path: style.css
+file path: index.html
 content: 
-```css
-/*
-    Web Proxy Style Sheet
-*/
-
-/* Basic Styles */
-body {
-  font-family: Arial, sans-serif;
-  color: #333;
-  background-color: #f5f5f5;
-  margin: 0;
-  padding: 0;
-}
-
-#container {
-  display: grid;
-  grid-template-columns: 200px auto;
-  height: 100vh;
-}
-
-#sidebar {
-  background-color: #3399ff;
-  padding: 10px;
-}
-
-#sidebar ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-#sidebar li {
-  margin-bottom: 10px;
-}
-
-#sidebar a {
-  color: white;
-  text-decoration: none;
-}
-
-#sidebar a:hover {
-  color: #ccc;
-}
-
-#content {
-  padding: 10px;
-}
-
-/* Login Page */
-#login {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
-}
-
-#login h1 {
-  margin-top: 0;
-}
-
-#login form {
-  margin-top: 10px;
-}
-
-#login label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-#login input {
-  width: 100%;
-  padding: 5px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-}
-
-#login input[type="submit"] {
-  background-color: #3399ff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-#login input[type="submit"]:hover {
-  background-color: #2277cc;
-}
-
-/* Proxy Status */
-#proxy-status {
-  background-color: #f5f5f5;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-}
-
-#proxy-status h2 {
-  margin-top: 0;
-}
-
-/* Error Message */
-#error-message {
-  color: red;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-/* Connection Status */
-#connection-status {
-  background-color: #f5f5f5;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-}
-
-#connection-status h3 {
-  margin-top: 0;
-}
-
-#connection-status #connection-status-text {
-  color: #3399ff;
-  font-weight: bold;
-}
-
-/* Settings Page */
-#settings {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
-}
-
-#settings h1 {
-  margin-top: 0;
-}
-
-#settings form {
-  margin-top: 10px;
-}
-
-#settings label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-#settings input {
-  width: 100%;
-  padding: 5px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-}
-
-#settings input[type="submit"] {
-  background-color: #3399ff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-#settings input[type="submit"]:hover {
-  background-color: #2277cc;
-}
-
-/* Dashboard Page */
-#dashboard {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #fff;
-}
-
-#dashboard h1 {
-  margin-top: 0;
-}
-
-#dashboard #connection-status {
-  background-color: #f5f5f5;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-}
-
-#dashboard #connection-status h3 {
-  margin-top: 0;
-}
-
-#dashboard #connection-status #connection-status-text {
-  color: #3399ff;
-  font-weight: bold;
-}
-
-#dashboard #bandwidth-usage {
-  margin-bottom: 10px;
-}
-
-#dashboard #bandwidth-usage canvas {
-  width: 100%;
-  height: 300px;
-}
-
-#dashboard #active-connections {
-  margin-bottom: 10px;
-}
-
-#dashboard #active-connections ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-#dashboard #active-connections li {
-  margin-bottom: 5px;
-}
-
-#dashboard #error-log {
-  margin-bottom: 10px;
-}
-
-#dashboard #error-log ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-#dashboard #error-log li {
-  margin-bottom: 5px;
-}
-
-#dashboard #user-statistics {
-  margin-bottom: 10px;
-}
-
-#dashboard #user-statistics table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-#dashboard #user-statistics th {
-  background-color: #3399ff;
-  color: white;
-  padding: 5px;
-}
-
-#dashboard #user-statistics td {
-  padding: 5px;
-}
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="sidebar">
+        <ul>
+          <li><a href="/index.html">Home</a></li>
+          <li><a href="/settings.html">Settings</a></li>
+          <li><a href="/dashboard.html">Dashboard</a></li>
+        </ul>
+      </div>
+      <div id="content">
+        <div id="login">
+          <h1>Login</h1>
+          <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" />
+            <label for="password">Password:</label>
+            <input type="password" id="password" />
+            <input type="submit" value="Login" />
+          </form>
+        </div>
+        <div id="proxy-status">
+          <h2>Proxy Status</h2>
+          <p>...</p>
+        </div>
+        <div id="error-message">...</div>
+        <div id="connection-status">
+          <h3>Connection Status</h3>
+          <p id="connection-status-text">...</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
 ```
