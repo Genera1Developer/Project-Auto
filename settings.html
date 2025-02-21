@@ -7,7 +7,79 @@ content:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Proxy Settings</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar-nav {
+      width: 200px;
+      padding: 20px;
+      background-color: #f2f2f2;
+    }
+
+    .sidebar-nav ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .sidebar-nav a {
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      color: #000;
+    }
+
+    .sidebar-nav a:hover {
+      background-color: #e0e0e0;
+    }
+
+    .sidebar-nav a.active {
+      background-color: #ccc;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      cursor: pointer;
+      background-color: #000;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+    }
+
+    button:hover {
+      background-color: #333;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -50,78 +122,4 @@ content:
 </body>
 </html>
 
-file path: styles.css
-content: 
-```css
-body {
-  font-family: Arial, sans-serif;
-}
-
-.container {
-  display: flex;
-  height: 100vh;
-}
-
-.sidebar-nav {
-  width: 200px;
-  padding: 20px;
-  background-color: #f2f2f2;
-}
-
-.sidebar-nav ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar-nav a {
-  display: block;
-  padding: 10px;
-  text-decoration: none;
-  color: #000;
-}
-
-.sidebar-nav a:hover {
-  background-color: #e0e0e0;
-}
-
-.sidebar-nav a.active {
-  background-color: #ccc;
-}
-
-main {
-  flex: 1;
-  padding: 20px;
-}
-
-h1 {
-  margin-bottom: 10px;
-}
-
-.form-group {
-  margin-bottom: 10px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input,
-select {
-  width: 100%;
-  padding: 5px;
-  border: 1px solid #ccc;
-}
-
-button {
-  cursor: pointer;
-  background-color: #000;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-}
-
-button:hover {
-  background-color: #333;
-}
 ```
