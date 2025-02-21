@@ -1,4 +1,4 @@
-file path: settings.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,10 +7,10 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* CSS styles for settings.html */
+        /* CSS styles for index.html */
 
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -64,17 +64,19 @@ content:
             margin-top: 0;
         }
 
-        .container {
+        .form-container {
             display: flex;
-            flex-wrap: wrap;
-            margin-top: 20px;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 80px);
         }
 
-        .box {
-            width: 100%;
+        .form-wrapper {
+            width: 400px;
             padding: 20px;
             background-color: #fff;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
@@ -93,13 +95,6 @@ content:
             border-radius: 3px;
         }
 
-        .form-select {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
         .form-button {
             padding: 5px 10px;
             background-color: #333;
@@ -107,6 +102,48 @@ content:
             border: none;
             border-radius: 3px;
             cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: #d9534f;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .success-message {
+            color: #4caf50;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            background-color: #d9534f;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -115,111 +152,40 @@ content:
     <div class="wrapper">
         <aside class="sidebar">
             <ul>
-                <li><a href="/index.html">Home</a></li>
-                <li><a class="active" href="/settings.html">Settings</a></li>
+                <li><a href="/index.html" class="active">Home</a></li>
+                <li><a href="/settings.html">Settings</a></li>
                 <li><a href="/dashboard.html">Dashboard</a></li>
             </ul>
         </aside>
         <main class="content">
-            <h1>Settings</h1>
-            <section class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="box">
-                            <h3>Proxy Configuration</h3>
-                            <form id="proxy-config-form">
-                                <div class="form-group">
-                                    <label for="protocol">Protocol:</label>
-                                    <select id="protocol" class="form-select">
-                                        <option value="http">HTTP</option>
-                                        <option value="https">HTTPS</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="port">Port:</label>
-                                    <input type="number" id="port" class="form-input" value="8080">
-                                </div>
-                                <div class="form-group">
-                                    <label for="authentication">Authentication:</label>
-                                    <input type="checkbox" id="authentication" class="form-input">
-                                </div>
-                                <div class="form-group" id="auth-fields" style="display: none;">
-                                    <label for="username">Username:</label>
-                                    <input type="text" id="username" class="form-input">
-                                    <label for="password">Password:</label>
-                                    <input type="password" id="password" class="form-input">
-                                </div>
-                                <div class="form-group">
-                                    <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
-                                    <input type="number" id="bandwidth-limit" class="form-input" value="100">
-                                </div>
-                                <div class="form-group">
-                                    <input type="submit" value="Save" class="form-button">
-                                </div>
-                            </form>
+            <h1>Web Proxy</h1>
+            <div class="form-container">
+                <div class="form-wrapper">
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="username">Username:</label>
+                            <input type="text" id="username" class="form-input">
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" id="password" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Login" class="form-button">
+                        </div>
+                    </form>
+                    <div class="error-message" id="error-message"></div>
+                    <div class="success-message" id="success-message"></div>
                 </div>
-            </section>
+            </div>
+            <div class="connection-status">
+                <div class="status-indicator"></div>
+                <span id="connection-status">Proxy Not Connected</span>
+            </div>
         </main>
     </div>
 
-    <!-- <script src="script.js"></script> -->
-    <script>
-        // JavaScript for settings.html
-
-        // Get elements
-        const protocol = document.getElementById('protocol');
-        const port = document.getElementById('port');
-        const authentication = document.getElementById('authentication');
-        const authFields = document.getElementById('auth-fields');
-        const username = document.getElementById('username');
-        const password = document.getElementById('password');
-        const bandwidthLimit = document.getElementById('bandwidth-limit');
-        const proxyConfigForm = document.getElementById('proxy-config-form');
-
-        // Handle authentication checkbox
-        authentication.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                authFields.style.display = 'block';
-            } else {
-                authFields.style.display = 'none';
-            }
-        });
-
-        // Handle form submission
-        proxyConfigForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            // Get form data
-            const data = {
-                protocol: protocol.value,
-                port: port.value,
-                authentication: authentication.checked,
-                username: username.value,
-                password: password.value,
-                bandwidthLimit: bandwidthLimit.value
-            };
-
-            // Send data to server
-            // ...
-
-            // Display success message
-            alert('Settings saved successfully.');
-        });
-
-        // Main function
-        const main = () => {
-            // Get current settings from server
-            // ...
-
-            // Populate form with current settings
-            // ...
-        };
-
-        // Call main function
-        main();
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
