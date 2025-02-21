@@ -26,7 +26,7 @@ This project aims to create a structured web proxy with strictly defined files a
 - Connection status display
 - External CSS and JS files
 - Sidebar to /index.html, /dashboard.html, and /settings.html
-- Inline CSS and JS
+- **Inline CSS and JS**
 
 **2. settings.html:**
 
@@ -37,7 +37,7 @@ This project aims to create a structured web proxy with strictly defined files a
 - Bandwidth limits
 - Same styling as index.html
 - Sidebar to /index.html, /dashboard.html, and /settings.html
-- Inline CSS and JS
+- **Inline CSS and JS**
 
 **3. dashboard.html:**
 
@@ -48,7 +48,7 @@ This project aims to create a structured web proxy with strictly defined files a
 - User statistics
 - Same styling as index.html
 - Sidebar to /index.html, /dashboard.html, and /settings.html
-- Inline CSS and JS
+- **Inline CSS and JS**
 
 **4. README.md:**
 
@@ -56,7 +56,7 @@ This project aims to create a structured web proxy with strictly defined files a
 
 **Code Structure Rules:**
 
-- No inline scripts or styles
+- No inline scripts or styles (except for index.html, settings.html, and dashboard.html)
 - Semantic HTML elements only
 - Strict content security policy
 - Error handling for all operations
