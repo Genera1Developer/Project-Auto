@@ -64,3 +64,107 @@ content:
 
 </html>
 ```
+
+file path: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy Settings</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <a href="/index.html">Home</a>
+        <a href="/settings.html">Settings</a>
+        <a href="/dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="container">
+        <h1>Settings</h1>
+
+        <form id="settings-form">
+            <div class="section">
+                <h2>Proxy Configuration</h2>
+                <label for="protocol">Protocol:</label>
+                <select name="protocol">
+                    <option value="http">HTTP</option>
+                    <option value="https">HTTPS</option>
+                </select>
+                <br />
+                <label for="port">Port:</label>
+                <input type="number" name="port" min="1" max="65535" />
+            </div>
+
+            <div class="section">
+                <h2>Authentication</h2>
+                <label for="username">Username:</label>
+                <input type="text" name="username" />
+                <br />
+                <label for="password">Password:</label>
+                <input type="password" name="password" />
+            </div>
+
+            <div class="section">
+                <h2>Bandwidth Limits</h2>
+                <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
+                <input type="number" name="bandwidth-limit" min="0" />
+            </div>
+
+            <div class="section">
+                <button type="submit">Save</button>
+                <button type="reset">Cancel</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
+```
+
+file path: index.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <a href="/index.html">Home</a>
+        <a href="/settings.html">Settings</a>
+        <a href="/dashboard.html">Dashboard</a>
+    </div>
+
+    <div class="container">
+        <h1>Web Proxy</h1>
+
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" name="username" />
+            <br />
+            <label for="password">Password:</label>
+            <input type="password" name="password" />
+            <br />
+            <button type="submit">Login</button>
+        </form>
+
+        <div id="proxy-status" style="color: red;">Proxy is offline</div>
+        <div id="connection-status" style="color: red;">Not connected</div>
+        <div id="error-message"></div>
+    </div>
+</body>
+
+</html>
+```
