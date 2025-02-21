@@ -1,68 +1,51 @@
-file path: README.md
+file path: index.html
 content:
 
-Web Proxy Project
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-**Goal:**
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
 
-Create a structured web proxy project with strictly defined files and components, featuring a baby blue beautiful and rounded theming.
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <a href="/index.html" class="sidebar-link">Home</a>
+      <a href="/settings.html" class="sidebar-link">Settings</a>
+      <a href="/dashboard.html" class="sidebar-link">Dashboard</a>
+    </div>
+    <div class="main">
+      <h1>Login</h1>
+      <form action="#">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" />
+        <br />
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" />
+        <br />
+        <input type="submit" value="Login" />
+      </form>
+      <div class="status">
+        <p>Proxy Status: </p>
+        <span id="status-indicator"></span>
+      </div>
+      <div class="messages">
+        <p id="error-message"></p>
+      </div>
+      <div class="connection">
+        <p>Connection Status: </p>
+        <span id="connection-status"></span>
+      </div>
+    </div>
+  </div>
 
-**Allowed Files:**
+  <script src="js/main.js"></script>
+</body>
 
-- index.html (main landing page)
-- settings.html (proxy configuration page)
-- dashboard.html (user statistics and monitoring)
-- error.html (error page)
-
-**File Requirements:**
-
-**1. index.html:**
-
-- Login form with username/password fields
-- Navigation to settings and dashboard
-- Proxy status indicator
-- Error message display area
-- Connection status display
-- External CSS and JS files
-- Sidebar that goes to /index.html, /dashboard.html, and /settings.html
-- Custom CSS and JavaScript
-
-**2. settings.html:**
-
-- Proxy configuration form
-- Protocol selection (HTTP/HTTPS)
-- Port configuration
-- Authentication settings
-- Bandwidth limits
-- Same styling as index.html
-- Sidebar that goes to /index.html, /dashboard.html, and /settings.html
-- Custom CSS and JavaScript
-
-**3. dashboard.html:**
-
-- Real-time connection status
-- Bandwidth usage graphs
-- Active connections list
-- Error log display
-- User statistics
-- Same styling as index.html
-- Sidebar that goes to /index.html, /dashboard.html, and /settings.html
-- Custom CSS and JavaScript
-
-**4. error.html:**
-
-- Custom error message and navigation back to /index.html
-- Same styling as other pages
-
-**Code Structure Rules:**
-
-- No inline scripts or styles
-- Semantic HTML elements only
-- Strict content security policy
-- Error handling for all operations
-- Cross-browser compatibility
-- Mobile responsiveness
-- Clean, consistent indentation
-- Proper commenting
-- No external dependencies
-- No framework usage
+</html>
+```
