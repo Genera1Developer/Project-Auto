@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy Dashboard</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="scripts.js"></script>
 </head>
@@ -28,9 +28,27 @@ content:
       </ul>
     </div>
     <div class="content flex-1 p-4">
-      <div class="card bg-white rounded-lg p-4 shadow-md">
-        <h2 class="text-xl font-bold mb-4">Real-time Connection Status</h2>
-        <div class="flex items-center justify-between mb-4">
+      <div class="login-form">
+        <h2 class="text-xl font-bold mb-4">Login</h2>
+        <form id="login-form">
+          <div class="mb-4">
+            <label for="username" class="block text-sm font-medium mb-2">Username</label>
+            <input type="text" id="username" name="username" class="bg-white border border-gray-300 rounded-md w-full p-2">
+          </div>
+          <div class="mb-4">
+            <label for="password" class="block text-sm font-medium mb-2">Password</label>
+            <input type="password" id="password" name="password" class="bg-white border border-gray-300 rounded-md w-full p-2">
+          </div>
+          <div class="flex items-center justify-between">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md p-2">
+              Login
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="proxy-status mt-4">
+        <h3 class="text-lg font-bold mb-2">Proxy Status</h3>
+        <div class="flex items-center justify-between">
           <div class="text-green-500">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M19.5 12l-2-2-4 4" />
@@ -41,70 +59,29 @@ content:
             Last updated: <span id="last-updated"></span>
           </div>
         </div>
-        <div class="mb-4">
-          <h3 class="text-lg font-bold">Bandwidth Usage</h3>
-          <canvas id="bandwidth-chart" width="400" height="200"></canvas>
+      </div>
+      <div class="error-message mt-4">
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong class="font-bold">Error!</strong>
+          <span class="block sm:inline">The proxy server is currently experiencing issues.</span>
+          <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+            <svg class="h-6 w-6 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </span>
         </div>
-        <div class="mb-4">
-          <h3 class="text-lg font-bold">Active Connections</h3>
-          <table id="active-connections" class="w-full">
-            <thead>
-              <tr>
-                <th>IP Address</th>
-                <th>Hostname</th>
-                <th>Protocol</th>
-                <th>Port</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>127.0.0.1</td>
-                <td>localhost</td>
-                <td>HTTP</td>
-                <td>8080</td>
-                <td>00:00:05</td>
-              </tr>
-              <tr>
-                <td>192.168.1.1</td>
-                <td>router</td>
-                <td>HTTPS</td>
-                <td>443</td>
-                <td>00:00:10</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="mb-4">
-          <h3 class="text-lg font-bold">Error Log</h3>
-          <textarea id="error-log" class="w-full h-24 p-2 bg-white border border-gray-300 rounded-md" readonly></textarea>
-        </div>
-        <div class="mb-4">
-          <h3 class="text-lg font-bold">User Statistics</h3>
-          <table id="user-statistics" class="w-full">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Total Connections</th>
-                <th>Total Bandwidth Used</th>
-                <th>Average Connection Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>admin</td>
-                <td>10</td>
-                <td>100 MB</td>
-                <td>00:00:10</td>
-              </tr>
-              <tr>
-                <td>user1</td>
-                <td>5</td>
-                <td>50 MB</td>
-                <td>00:00:05</td>
-              </tr>
-            </tbody>
-          </table>
+      </div>
+      <div class="connection-status mt-4">
+        <h3 class="text-lg font-bold mb-2">Connection Status</h3>
+        <div class="flex items-center justify-between">
+          <div class="text-sm">
+            <span>IP Address:</span>
+            <span id="ip-address"></span>
+          </div>
+          <div class="text-sm">
+            <span>Hostname:</span>
+            <span id="hostname"></span>
+          </div>
         </div>
       </div>
     </div>
