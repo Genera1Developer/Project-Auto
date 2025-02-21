@@ -8,8 +8,100 @@ content:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <style>
+        /* CSS styles for dashboard.html */
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .wrapper {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar li a {
+            display: block;
+            padding: 5px 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .sidebar li a:hover {
+            background-color: #444;
+        }
+
+        .sidebar li a.active {
+            background-color: #555;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .content h1 {
+            margin-top: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .box {
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px 10px;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
 </head>
 
 <body>
@@ -92,7 +184,105 @@ content:
             </section>
         </main>
     </div>
-</body>
 
-</html>
-```
+    <!-- <script src="script.js"></script> -->
+    <script>
+        // JavaScript for dashboard.html
+
+        // Get elements
+        const totalConnections = document.getElementById('total-connections');
+        const activeConnections = document.getElementById('active-connections');
+        const inactiveConnections = document.getElementById('inactive-connections');
+        const bandwidthUsageChart = document.getElementById('bandwidth-usage-chart');
+        const activeConnectionsTable = document.getElementById('active-connections-table');
+        const errorLog = document.getElementById('error-log');
+        const totalUsers = document.getElementById('total-users');
+        const activeUsers = document.getElementById('active-users');
+        const inactiveUsers = document.getElementById('inactive-users');
+
+        // Update connection status
+        const updateConnectionStatus = (data) => {
+            totalConnections.textContent = data.totalConnections;
+            activeConnections.textContent = data.activeConnections;
+            inactiveConnections.textContent = data.inactiveConnections;
+        };
+
+        // Update bandwidth usage graph
+        const updateBandwidthUsageGraph = (data) => {
+            // Create chart
+            const ctx = bandwidthUsageChart.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Bandwidth Usage',
+                        data: data.data,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        };
+
+        // Update active connections table
+        const updateActiveConnectionsTable = (data) => {
+            // Clear table
+            activeConnectionsTable.innerHTML = '';
+
+            // Add rows
+            data.connections.forEach((connection) => {
+                const row = document.createElement('tr');
+                const ipAddress = document.createElement('td');
+                ipAddress.textContent = connection.ipAddress;
+                const port = document.createElement('td');
+                port.textContent = connection.port;
+                const protocol = document.createElement('td');
+                protocol.textContent = connection.protocol;
+                const status = document.createElement('td');
+                status.textContent = connection.status;
+                row.appendChild(ipAddress);
+                row.appendChild(port);
+                row.appendChild(protocol);
+                row.appendChild(status);
+                activeConnectionsTable.appendChild(row);
+            });
+        };
+
+        // Update error log
+        const updateErrorLog = (data) => {
+            // Clear log
+            errorLog.innerHTML = '';
+
+            // Add errors
+            data.errors.forEach((error) => {
+                const li = document.createElement('li');
+                li.textContent = error;
+                errorLog.appendChild(li);
+            });
+        };
+
+        // Update user statistics
+        const updateUserStatistics = (data) => {
+            totalUsers.textContent = data.totalUsers;
+            activeUsers.textContent = data.activeUsers;
+            inactiveUsers.textContent = data.inactiveUsers;
+        };
+
+        // Main function
+        const main = () => {
+            // Get data from server
+            const data = {
+                totalConnections: 100,
+                activeConnections: 50,
+                inactiveConnections:
