@@ -20,7 +20,7 @@ This project aims to create a structured web proxy with strictly defined files a
 - Error message display area
 - Connection status display
 - External CSS and JS files
-- Side bar to /index.html, /dashboard.html, and /settings.html
+- Sidebar to /index.html, /dashboard.html, and /settings.html
 - Inline CSS and JS
 
 **2. settings.html:**
@@ -31,7 +31,7 @@ This project aims to create a structured web proxy with strictly defined files a
 - Authentication settings
 - Bandwidth limits
 - Same styling as index.html
-- Side bar to /index.html, /dashboard.html, and /settings.html
+- Sidebar to /index.html, /dashboard.html, and /settings.html
 - Inline CSS and JS
 
 **3. dashboard.html:**
@@ -42,7 +42,7 @@ This project aims to create a structured web proxy with strictly defined files a
 - Error log display
 - User statistics
 - Same styling as index.html
-- Side bar to /index.html, /dashboard.html, and /settings.html
+- Sidebar to /index.html, /dashboard.html, and /settings.html
 - Inline CSS and JS
 
 **4. README.md:**
@@ -61,3 +61,9 @@ This project aims to create a structured web proxy with strictly defined files a
 - Proper commenting
 - No external dependencies
 - No framework usage
+
+**Suggested Additional Files:**
+
+- css/main.css: Centralized CSS styling for all pages
+- js/main.js: Centralized JavaScript for all pages
+- config.json: Configuration parameters for the proxy
