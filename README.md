@@ -3,60 +3,59 @@ content:
 
 Web Proxy Project
 
-Allowed Files:
+This project provides a structured web proxy with a user-friendly interface and comprehensive functionality.
 
-index.html (main landing page)
-settings.html (proxy configuration page)
-dashboard.html (user statistics and monitoring)
-styles.css (CSS styling for all pages)
-scripts.js (JavaScript for all pages)
-background.js (background proxy script)
-README.md (description of the site)
+Files:
 
-Strict File Requirements:
+- index.html: Main landing page with login, status, and navigation.
+- settings.html: Proxy configuration options.
+- dashboard.html: Real-time monitoring and user statistics.
+- styles.css: Baby blue and rounded theme.
+- scripts.js: JavaScript for all pages, including login, proxy configuration, dashboard management, sidebar navigation, and error handling.
+- background.js: Proxy server logic.
+
+Requirements:
 
 1. index.html:
-
-Login form with username/password fields
-Navigation to settings and dashboard using JavaScript
-Proxy status indicator
-Error message display area
-Connection status display
-Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript and CSS
-Must have its own CSS styling
-Must have its own javascript
+    - Login form with username/password fields.
+    - Navigation to settings and dashboard using JavaScript.
+    - Proxy status indicator.
+    - Error message display area.
+    - Connection status display.
+    - Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript and CSS.
+    - Custom CSS styling.
+    - Embedded JavaScript.
 
 2. settings.html:
-
-Proxy configuration form using JavaScript
-Protocol selection (HTTP/HTTPS)
-Port configuration
-Authentication settings
-Bandwidth limits
-Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript and CSS
-Must have its own CSS styling
-Must have its own javascript
+    - Proxy configuration form using JavaScript.
+    - Protocol selection (HTTP/HTTPS).
+    - Port configuration.
+    - Authentication settings.
+    - Bandwidth limits.
+    - Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript and CSS.
+    - Custom CSS styling.
+    - Embedded JavaScript.
 
 3. dashboard.html:
-
-Real-time connection status using JavaScript
-Bandwidth usage graphs using JavaScript
-Active connections list using JavaScript
-Error log display using JavaScript
-User statistics using JavaScript
-Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript and CSS
-Must have its own CSS styling
-Must have its own javascript
+    - Real-time connection status using JavaScript.
+    - Bandwidth usage graphs using JavaScript.
+    - Active connections list using JavaScript.
+    - Error log display using JavaScript.
+    - User statistics using JavaScript.
+    - Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript and CSS.
+    - Custom CSS styling.
+    - Embedded JavaScript.
 
 4. styles.css:
-
-Baby blue and rounded theming for all pages
+    - Consistent baby blue and rounded theme for all pages.
 
 5. scripts.js:
-
-JavaScript for login, proxy configuration, dashboard management, sidebar navigation, and error handling
-Must also handle cross-browser compatibility
+    - Login handling.
+    - Proxy configuration management.
+    - Dashboard data retrieval.
+    - Sidebar navigation functionality.
+    - Error handling for all pages.
+    - Cross-browser compatibility.
 
 6. background.js:
-
-Proxy server logic including initialization, connection handling, and data forwarding
+    - Proxy server initialization, connection handling, and data forwarding.
