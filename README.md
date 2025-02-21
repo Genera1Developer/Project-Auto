@@ -1,7 +1,7 @@
 file path: README.md
 content:
 
-# Web Proxy Project
+Web Proxy Project
 
 **Allowed Files:**
 
@@ -10,6 +10,7 @@ content:
 - dashboard.html (user statistics and monitoring)
 - styles.css (CSS styling for all pages)
 - scripts.js (JavaScript for all pages)
+- background.js (background proxy script)
 - README.md (description of the site)
 
 **Strict File Requirements:**
@@ -48,6 +49,10 @@ content:
 **5. scripts.js:**
 
 - JavaScript for login, proxy configuration, and dashboard management
+
+**6. background.js:**
+
+- Proxy server logic including initialization, connection handling, and data forwarding
 
 **Code Structure Rules:**
 
