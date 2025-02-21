@@ -1,4 +1,4 @@
-file path: index.html
+file path: settings.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,144 +7,12 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
+    <title>Web Proxy Settings</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* CSS styles for index.html */
+        /* CSS styles for settings.html */
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 14px;
-            color: #333;
-            background-color: #f5f5f5;
-        }
-
-        .wrapper {
-            display: flex;
-            height: 100vh;
-        }
-
-        .sidebar {
-            width: 250px;
-            padding: 20px;
-            background-color: #333;
-            color: #fff;
-        }
-
-        .sidebar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .sidebar li {
-            margin-bottom: 10px;
-        }
-
-        .sidebar li a {
-            display: block;
-            padding: 5px 10px;
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .sidebar li a:hover {
-            background-color: #444;
-        }
-
-        .sidebar li a.active {
-            background-color: #555;
-        }
-
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-        }
-
-        .content h1 {
-            margin-top: 0;
-        }
-
-        .form-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: calc(100vh - 80px);
-        }
-
-        .form-wrapper {
-            width: 400px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        .form-button {
-            padding: 5px 10px;
-            background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .error-message {
-            color: #d9534f;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .success-message {
-            color: #4caf50;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            background-color: #d9534f;
-            border-radius: 50%;
-            margin-right: 5px;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .connection-status {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+        /* Your code goes here */
     </style>
 </head>
 
@@ -152,35 +20,198 @@ content:
     <div class="wrapper">
         <aside class="sidebar">
             <ul>
-                <li><a href="/index.html" class="active">Home</a></li>
-                <li><a href="/settings.html">Settings</a></li>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/settings.html" class="active">Settings</a></li>
                 <li><a href="/dashboard.html">Dashboard</a></li>
             </ul>
         </aside>
         <main class="content">
-            <h1>Web Proxy</h1>
-            <div class="form-container">
-                <div class="form-wrapper">
-                    <form id="login-form">
-                        <div class="form-group">
-                            <label for="username">Username:</label>
-                            <input type="text" id="username" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Login" class="form-button">
-                        </div>
-                    </form>
-                    <div class="error-message" id="error-message"></div>
-                    <div class="success-message" id="success-message"></div>
+            <h1>Web Proxy Settings</h1>
+            <form id="settings-form">
+                <div class="form-group">
+                    <label for="protocol">Protocol:</label>
+                    <select id="protocol">
+                        <option value="http">HTTP</option>
+                        <option value="https">HTTPS</option>
+                    </select>
                 </div>
-            </div>
-            <div class="connection-status">
-                <div class="status-indicator"></div>
-                <span id="connection-status">Proxy Not Connected</span>
+                <div class="form-group">
+                    <label for="port">Port:</label>
+                    <input type="number" id="port" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="authentication">Authentication:</label>
+                    <input type="checkbox" id="authentication">
+                </div>
+                <div class="form-group" id="auth-settings" style="display: none;">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" class="form-input">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
+                    <input type="number" id="bandwidth-limit" class="form-input">
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="form-button">
+                    <input type="reset" value="Reset" class="form-button">
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+```
+file path: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS styles for dashboard.html */
+
+        /* Your code goes here */
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <aside class="sidebar">
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/settings.html">Settings</a></li>
+                <li><a href="/dashboard.html" class="active">Dashboard</a></li>
+            </ul>
+        </aside>
+        <main class="content">
+            <h1>Web Proxy Dashboard</h1>
+            <div class="dashboard-container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Real-Time Connection Status
+                            </div>
+                            <div class="card-body">
+                                <canvas id="connection-status-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-header">
+                                Bandwidth Usage
+                            </div>
+                            <div class="card-body">
+                                <canvas id="bandwidth-usage-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                Active Connections
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>IP Address</th>
+                                            <th>Port</th>
+                                            <th>Protocol</th>
+                                            <th>Duration</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>192.168.1.1</td>
+                                            <td>80</td>
+                                            <td>HTTP</td>
+                                            <td>10 minutes</td>
+                                        </tr>
+                                        <tr>
+                                            <td>192.168.1.2</td>
+                                            <td>443</td>
+                                            <td>HTTPS</td>
+                                            <td>20 minutes</td>
+                                        </tr>
+                                        <tr>
+                                            <td>192.168.1.3</td>
+                                            <td>8080</td>
+                                            <td>HTTP</td>
+                                            <td>30 minutes</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                Error Log
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    <li class="list-group-item">Error: Connection timed out</li>
+                                    <li class="list-group-item">Error: Invalid request</li>
+                                    <li class="list-group-item">Error: Authentication failed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                User Statistics
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Total Bandwidth Used</th>
+                                            <th>Total Connections</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>user1</td>
+                                            <td>100 MB</td>
+                                            <td>100</td>
+                                        </tr>
+                                        <tr>
+                                            <td>user2</td>
+                                            <td>200 MB</td>
+                                            <td>200</td>
+                                        </tr>
+                                        <tr>
+                                            <td>user3</td>
+                                            <td>300 MB</td>
+                                            <td>300</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
