@@ -85,3 +85,77 @@ content:
 
 </html>
 ```
+file: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <div class="wrapper flex">
+    <div class="sidebar bg-babyblue-100 rounded-r-lg p-4 w-1/4">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/logs.html">Logs</a></li>
+      </ul>
+    </div>
+    <div class="content flex-1 p-4">
+      <h1 class="text-3xl font-bold mb-4">Web Proxy Settings</h1>
+      <form id="settings-form">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white rounded-lg p-4 shadow-md">
+            <h2 class="text-xl font-bold mb-4">Proxy Configuration</h2>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="proxy-type">Proxy Type:</label>
+              <select class="w-full p-2 border rounded-md" name="proxy-type">
+                <option value="http">HTTP</option>
+                <option value="https">HTTPS</option>
+                <option value="socks4">SOCKS4</option>
+                <option value="socks5">SOCKS5</option>
+              </select>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="proxy-address">Proxy Address:</label>
+              <input class="w-full p-2 border rounded-md" type="text" name="proxy-address" />
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="proxy-port">Proxy Port:</label>
+              <input class="w-full p-2 border rounded-md" type="number" name="proxy-port" />
+            </div>
+          </div>
+          <div class="bg-white rounded-lg p-4 shadow-md">
+            <h2 class="text-xl font-bold mb-4">Authentication</h2>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="username">Username:</label>
+              <input class="w-full p-2 border rounded-md" type="text" name="username" />
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="password">Password:</label>
+              <input class="w-full p-2 border rounded-md" type="password" name="password" />
+            </div>
+          </div>
+          <div class="bg-white rounded-lg p-4 shadow-md">
+            <h2 class="text-xl font-bold mb-4">Bandwidth Limits</h2>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="max-bandwidth">Maximum Bandwidth:</label>
+              <input class="w-full p-2 border rounded-md" type="number" name="max-bandwidth" />
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-bold mb-2" for="time-period">Time Period:</label>
+              <select class="w-full p-2 border rounded-md" name="time-period">
+                <option value="hour">Hour</option>
+                <option value="day">Day</option>
+                <option value="week">Week</option>
+                <option value="month">Month</option>
+              </select>
+            </div>
+          </div>
