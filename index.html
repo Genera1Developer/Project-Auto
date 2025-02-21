@@ -1,4 +1,98 @@
-file: index.html
+:outline-none focus:shadow-outline"
+                value="8080"
+              />
+            </div>
+            <div class="mt-6">
+              <h2 class="text-xl font-bold">Authentication</h2>
+              <div class="mt-4">
+                <div>
+                  <label
+                    for="no-auth"
+                    class="block mb-2"
+                    ><input
+                      type="radio"
+                      id="no-auth"
+                      name="authentication"
+                      value="none"
+                      checked
+                    />
+                    No Authentication</label
+                  >
+                </div>
+                <div class="mt-2">
+                  <label
+                    for="basic-auth"
+                    class="block mb-2"
+                    ><input
+                      type="radio"
+                      id="basic-auth"
+                      name="authentication"
+                      value="basic"
+                    />
+                    Basic Authentication</label
+                  >
+                  <div
+                    id="basic-auth-fields"
+                    class="hidden mt-4"
+                  >
+                    <div>
+                      <label for="username" class="block mb-2">
+                        Username:
+                      </label>
+                      <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                    </div>
+                    <div class="mt-2">
+                      <label for="password" class="block mb-2">
+                        Password:
+                      </label>
+                      <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6">
+              <h2 class="text-xl font-bold">Bandwidth Limits</h2>
+              <div>
+                <label for="bandwidth-limit" class="block mb-2">
+                  Bandwidth Limit (MB/s):
+                </label>
+                <input
+                  type="number"
+                  id="bandwidth-limit"
+                  name="bandwidth-limit"
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+            </div>
+            <div class="mt-6">
+              <button
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Save Settings
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+    <script src="/public/scripts.js"></script>
+  </body>
+</html>
+
+```
+file: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -33,105 +127,99 @@ content:
       </aside>
       <main class="col-span-5">
         <div class="py-6">
-          <h1 class="text-2xl font-bold">Proxy Login</h1>
-          <p>
-            Use the form below to log in to the proxy dashboard.
-          </p>
-          <form id="login-form">
-            <div class="mt-6">
-              <label for="username" class="block mb-2">Username</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
+          <h1 class="text-2xl font-bold">Proxy Dashboard</h1>
+          <p>Monitor your proxy's performance and usage.</p>
+          <div class="mt-6">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-bold">Real-Time Connection Status</h2>
+              <span id="connection-status" class="text-green-500 font-bold"
+                >Connected</span
+              >
             </div>
             <div class="mt-6">
-              <label for="password" class="block mb-2">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-            </div>
-            <div class="mt-6">
-              <button
-                type="submit"
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Log In
-              </button>
-            </div>
-          </form>
-        </div>
-        <div class="error-message hidden bg-red-500 text-white py-2 px-4 rounded-md mt-6">
-          <span class="block text-sm">An error occurred.</span>
-          <button
-            type="button"
-            class="close-error-message cursor-pointer"
-            onclick="hideError()"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-        <div class="proxy-status mt-6 bg-blue-100 rounded-md p-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <span
-                class="text-green-500 font-bold"
-                id="proxy-status"
-              >
-                Connected
-              </span>
-              <br />
-              <span class="text-sm" id="last-updated">
-                Last updated: Just now
-              </span>
-            </div>
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+              <div class="card bg-blue-100 rounded-md p-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">Active Connections</span>
+                  <span id="active-connections" class="text-blue-500"
+                    >0</span
+                  >
+                </div>
+                <div class="mt-4">
+                  <table class="table-fixed w-full">
+                    <thead>
+                      <tr>
+                        <th class="px-3 py-2 text-left">IP Address</th>
+                        <th class="px-3 py-2 text-left">Hostname</th>
+                        <th class="px-3 py-2 text-left">Connected Since</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="hidden" id="active-connections-empty-state">
+                        <td colspan="3" class="text-center">
+                          No active connections
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="connection-status mt-6 bg-blue-100 rounded-md p-4">
-          <div>
-            <h2 class="text-xl font-bold">Connection Status</h2>
-            <div class="flex flex-col mt-6">
-              <div>
-                <span class="font-semibold">IP Address:</span>
-                <span id="ip-address" class="text-gray-700">N/A</span>
+          <div class="mt-6">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xl font-bold">Bandwidth Usage</h2>
+              <div class="flex items-center">
+                <span id="total-bandwidth" class="text-gray-700"
+                  >Total: 0 MB</span
+                >
+                <span class="mx-2">/</span>
+                <span id="bandwidth-limit" class="text-gray-700"
+                  >Limit: 0 MB/s</span
+                >
               </div>
-              <div class="mt-2">
-                <span class="font-semibold">Hostname:</span>
-                <span id="hostname" class="text-gray-700">N/A</span>
+            </div>
+            <div class="mt-6">
+              <canvas id="bandwidth-chart" width="600" height="300"></canvas>
+            </div>
+          </div>
+          <div class="mt-6">
+            <h2 class="text-xl font-bold">Error Log</h2>
+            <div class="mt-4">
+              <div class="card bg-blue-100 rounded-md p-4">
+                <ul id="error-log">
+                  <li class="hidden" id="error-log-empty-state">
+                    No errors logged
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6">
+            <h2 class="text-xl font-bold">User Statistics</h2>
+            <div class="mt-4">
+              <div class="card bg-blue-100 rounded-md p-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">Total Users</span>
+                  <span id="total-users" class="text-blue-500">0</span>
+                </div>
+                <div class="mt-4">
+                  <table class="table-fixed w-full">
+                    <thead>
+                      <tr>
+                        <th class="px-3 py-2 text-left">Username</th>
+                        <th class="px-3 py-2 text-left">Total Connections</th>
+                        <th class="px-3 py-2 text-left">Total Bandwidth</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="hidden" id="user-stats-empty-state">
+                        <td colspan="3" class="text-center">
+                          No user statistics available
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
@@ -143,83 +231,3 @@ content:
 </html>
 
 ```
-file: settings.html
-content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Proxy Settings</title>
-    <link rel="stylesheet" href="/public/styles.css" />
-  </head>
-  <body>
-    <div class="container grid grid-cols-6 gap-4 max-w-screen-lg mx-auto">
-      <aside class="col-span-1 bg-blue-50 h-screen">
-        <div class="sidebar-nav">
-          <ul>
-            <li>
-              <a href="/index.html" class="block px-3 py-2 rounded-md bg-blue-100">
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="/settings.html" class="block px-3 py-2 rounded-md bg-blue-100">
-                Settings
-              </a>
-            </li>
-            <li>
-              <a href="/dashboard.html" class="block px-3 py-2 rounded-md bg-blue-100">
-                Dashboard
-              </a>
-            </li>
-          </ul>
-        </div>
-      </aside>
-      <main class="col-span-5">
-        <div class="py-6">
-          <h1 class="text-2xl font-bold">Proxy Settings</h1>
-          <p>
-            Configure the following settings to customize your proxy setup.
-          </p>
-          <form id="settings-form">
-            <div class="mt-6">
-              <h2 class="text-xl font-bold">Protocol</h2>
-              <div class="mt-4">
-                <div>
-                  <label
-                    for="protocol-http"
-                    class="block mb-2"
-                    ><input
-                      type="radio"
-                      id="protocol-http"
-                      name="protocol"
-                      value="http"
-                      checked
-                    />
-                    HTTP</label
-                  >
-                </div>
-                <div class="mt-2">
-                  <label
-                    for="protocol-https"
-                    class="block mb-2"
-                    ><input
-                      type="radio"
-                      id="protocol-https"
-                      name="protocol"
-                      value="https"
-                    />
-                    HTTPS</label
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="mt-6">
-              <h2 class="text-xl font-bold">Port</h2>
-              <label for="port" class="block mb-2">Port:</label>
-              <input
-                type="number"
-                id="port"
-                name="port"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus
