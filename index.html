@@ -1,4 +1,4 @@
-file: settings.html
+file: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Web Proxy Settings</title>
+  <title>Web Proxy Dashboard</title>
   <link rel="stylesheet" href="/public/styles.css" />
 </head>
 
@@ -22,7 +22,7 @@ content:
     </div>
     <div class="main-content col-span-5">
       <div class="header bg-blue-100 rounded-md py-2 px-3">
-        <h1 class="text-xl">Web Proxy Settings</h1>
+        <h1 class="text-xl">Web Proxy Dashboard</h1>
         <div class="header-nav">
           <ul>
             <li><a href="/">Home</a></li>
@@ -32,33 +32,80 @@ content:
         </div>
       </div>
       <div class="content py-2 px-3">
-        <form id="settings-form">
-          <h2 class="text-xl mb-6">Proxy Configuration</h2>
-          <div class="form-group">
-            <label class="form-label block" for="proxy-type">Proxy Type</label>
-            <select class="form-input" name="proxy-type" id="proxy-type">
-              <option value="http">HTTP</option>
-              <option value="https">HTTPS</option>
-            </select>
+        <div class="grid-container gap-6">
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">Connection Status</h2>
+            </div>
+            <div class="card-body">
+              <div>Proxy Status: <span id="proxy-status">Loading...</span></div>
+              <div>Connections: <span id="connection-count">0</span></div>
+              <div>Bandwidth Usage: <span id="bandwidth-usage">0 KB/s</span></div>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label block" for="proxy-port">Proxy Port</label>
-            <input class="form-input" type="number" name="proxy-port" id="proxy-port" />
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">Bandwidth Usage Graph</h2>
+            </div>
+            <div class="card-body">
+              <canvas id="bandwidth-graph"></canvas>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label block" for="username">Username</label>
-            <input class="form-input" type="text" name="username" id="username" />
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">Active Connections</h2>
+            </div>
+            <div class="card-body">
+              <table class="connections-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>IP Address</th>
+                    <th>Port</th>
+                    <th>Protocol</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>192.168.1.1</td>
+                    <td>8080</td>
+                    <td>HTTP</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>192.168.1.2</td>
+                    <td>443</td>
+                    <td>HTTPS</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>192.168.1.3</td>
+                    <td>80</td>
+                    <td>HTTP</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label block" for="password">Password</label>
-            <input class="form-input" type="password" name="password" id="password" />
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">Error Log</h2>
+            </div>
+            <div class="card-body">
+              <ul id="error-log"></ul>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label block" for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
-            <input class="form-input" type="number" name="bandwidth-limit" id="bandwidth-limit" />
+          <div class="card bg-blue-50 rounded-md p-3">
+            <div class="card-header">
+              <h2 class="card-title">User Statistics</h2>
+            </div>
+            <div class="card-body">
+              <div>Total Users: <span id="user-count">0</span></div>
+              <div>Active Users: <span id="active-user-count">0</span></div>
+            </div>
           </div>
-          <button type="submit" class="form-button mt-6">Save Settings</button>
-        </form>
+        </div>
       </div>
     </div>
   </div>
