@@ -60,16 +60,3 @@ Must also handle cross-browser compatibility
 6. background.js:
 
 Proxy server logic including initialization, connection handling, and data forwarding
-
-Code Structure Rules:
-
-No inline scripts or styles
-Semantic HTML elements only
-Strict content security policy
-Error handling for all operations
-Cross-browser compatibility
-Mobile responsiveness
-Clean, consistent indentation
-Proper commenting
-No external dependencies
-No framework usage
