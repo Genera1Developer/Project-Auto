@@ -27,50 +27,27 @@ content:
       </ul>
     </div>
     <div class="content flex-1 p-4">
-      <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
       <div class="card bg-white rounded-lg p-4 shadow-md">
-        <h2 class="text-xl font-bold mb-4">Real-Time Connection Status</h2>
-        <div id="connection-status-graph">
-          <canvas id="connection-status-canvas"></canvas>
+        <h2 class="text-xl font-bold mb-4">Login</h2>
+        <form id="login-form" action="/login" method="POST">
+          <div class="mb-4">
+            <label for="username" class="block">Username:</label>
+            <input type="text" name="username" id="username" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:border-blue-400" />
+          </div>
+          <div class="mb-4">
+            <label for="password" class="block">Password:</label>
+            <input type="password" name="password" id="password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:border-blue-400" />
+          </div>
+          <button type="submit" class="px-4 py-2 rounded-md bg-blue-400 text-white hover:bg-blue-500">Login</button>
+        </form>
+      </div>
+      <div class="mt-4">
+        <h2 class="text-xl font-bold mb-4">Proxy Status</h2>
+        <div class="card bg-white rounded-lg p-4 shadow-md">
+          <div id="proxy-status-indicator"></div>
+          <div id="proxy-error-message"></div>
+          <div id="proxy-connection-status"></div>
         </div>
-      </div>
-
-      <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
-        <h2 class="text-xl font-bold mb-4">Bandwidth Usage</h2>
-        <div id="bandwidth-usage-graph">
-          <canvas id="bandwidth-usage-canvas"></canvas>
-        </div>
-      </div>
-
-      <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
-        <h2 class="text-xl font-bold mb-4">Active Connections</h2>
-        <table id="active-connections-table">
-          <thead>
-            <tr>
-              <th>IP Address</th>
-              <th>Port</th>
-              <th>Protocol</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
-        <h2 class="text-xl font-bold mb-4">Error Log</h2>
-        <div id="error-log">
-          <ul></ul>
-        </div>
-      </div>
-
-      <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
-        <h2 class="text-xl font-bold mb-4">User Statistics</h2>
-        <ul>
-          <li>Total Users: <span id="total-users"></span></li>
-          <li>Active Users: <span id="active-users"></span></li>
-          <li>Average Bandwidth Usage: <span id="average-bandwidth-usage"></span></li>
-        </ul>
       </div>
     </div>
   </div>
