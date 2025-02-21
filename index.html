@@ -1,46 +1,50 @@
-file: index.html
-content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-
-<body>
-  <div class="wrapper flex">
-    <div class="sidebar bg-babyblue-100 rounded-r-lg p-4 w-1/4">
-      <ul>
-        <li class="active"><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings.html">Settings</a></li>
+html">Settings</a></li>
       </ul>
     </div>
     <div class="content flex-1 p-4">
-      <h1 class="text-3xl font-bold mb-4">Web Proxy</h1>
+      <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
       <div class="card bg-white rounded-lg p-4 shadow-md">
-        <h2 class="text-xl font-bold mb-4">Login</h2>
-        <form id="login-form">
-          <label for="username" class="block mb-2 text-sm font-bold text-gray-700">Username</label>
-          <input type="text" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" />
-          <label for="password" class="block mb-2 text-sm font-bold text-gray-700">Password</label>
-          <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-          <button type="submit" class="bg-babyblue-500 hover:bg-babyblue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4">
-            Login
-          </button>
-        </form>
+        <h2 class="text-xl font-bold mb-4">Real-Time Connection Status</h2>
+        <div id="connection-status-graph">
+          <canvas id="connection-status-canvas"></canvas>
+        </div>
       </div>
 
       <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
-        <h2 class="text-xl font-bold mb-4">Status</h2>
+        <h2 class="text-xl font-bold mb-4">Bandwidth Usage</h2>
+        <div id="bandwidth-usage-graph">
+          <canvas id="bandwidth-usage-canvas"></canvas>
+        </div>
+      </div>
+
+      <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
+        <h2 class="text-xl font-bold mb-4">Active Connections</h2>
+        <table id="active-connections-table">
+          <thead>
+            <tr>
+              <th>IP Address</th>
+              <th>Port</th>
+              <th>Protocol</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
+        <h2 class="text-xl font-bold mb-4">Error Log</h2>
+        <div id="error-log">
+          <ul></ul>
+        </div>
+      </div>
+
+      <div class="card bg-white rounded-lg p-4 shadow-md mt-4">
+        <h2 class="text-xl font-bold mb-4">User Statistics</h2>
         <ul>
-          <li><span id="proxy-status" class="text-sm font-bold text-gray-700">Status: </span><span id="proxy-status-value" class="text-sm font-semibold"></span></li>
-          <li><span id="connection-status" class="text-sm font-bold text-gray-700">Connection: </span><span id="connection-status-value" class="text-sm font-semibold"></span></li>
-          <li><span id="error-message" class="text-sm font-bold text-red-500"></span></li>
+          <li>Total Users: <span id="total-users"></span></li>
+          <li>Active Users: <span id="active-users"></span></li>
+          <li>Average Bandwidth Usage: <span id="average-bandwidth-usage"></span></li>
         </ul>
       </div>
     </div>
@@ -51,103 +55,3 @@ content:
 
 </html>
 ```
-
-file: settings.html
-content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <title>Settings</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-
-<body>
-  <div class="wrapper flex">
-    <div class="sidebar bg-babyblue-100 rounded-r-lg p-4 w-1/4">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li class="active"><a href="/settings.html">Settings</a></li>
-      </ul>
-    </div>
-    <div class="content flex-1 p-4">
-      <h1 class="text-3xl font-bold mb-4">Settings</h1>
-      <div class="card bg-white rounded-lg p-4 shadow-md">
-        <form id="settings-form">
-          <h2 class="text-xl font-bold mb-4">Proxy Configuration</h2>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="protocol" class="block mb-2 text-sm font-bold text-gray-700">Protocol</label>
-              <select id="protocol" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                <option value="HTTP">HTTP</option>
-                <option value="HTTPS">HTTPS</option>
-              </select>
-            </div>
-            <div>
-              <label for="port" class="block mb-2 text-sm font-bold text-gray-700">Port</label>
-              <input type="number" id="port" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-          </div>
-
-          <h2 class="text-xl font-bold mb-4 mt-8">Authentication</h2>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="username" class="block mb-2 text-sm font-bold text-gray-700">Username</label>
-              <input type="text" id="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-            <div>
-              <label for="password" class="block mb-2 text-sm font-bold text-gray-700">Password</label>
-              <input type="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-          </div>
-
-          <h2 class="text-xl font-bold mb-4 mt-8">Bandwidth Limits</h2>
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="download-limit" class="block mb-2 text-sm font-bold text-gray-700">Download Limit</label>
-              <input type="number" id="download-limit" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-            <div>
-              <label for="upload-limit" class="block mb-2 text-sm font-bold text-gray-700">Upload Limit</label>
-              <input type="number" id="upload-limit" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            </div>
-          </div>
-
-          <button type="submit" class="bg-babyblue-500 hover:bg-babyblue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-8">
-            Save
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <script src="scripts.js"></script>
-</body>
-
-</html>
-```
-
-file: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <title>Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-
-<body>
-  <div class="wrapper flex">
-    <div class="sidebar bg-babyblue-100 rounded-r-lg p-4 w-1/4">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li class="active"><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings
