@@ -1,92 +1,13 @@
-file: dashboard.html
+file: README.md
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```text
+## Web Proxy Project
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Web Proxy Dashboard</title>
-  <link rel="stylesheet" href="/public/styles.css" />
-</head>
+This project aims to create a structured web proxy with a baby blue, beautiful, and rounded theme. It consists of three main files:
 
-<body>
-  <div class="container grid">
-    <div class="sidebar-nav col-span-1 bg-blue-50 rounded-md">
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/settings">Settings</a></li>
-      </ul>
-    </div>
-    <div class="main-content col-span-5">
-      <div class="header bg-blue-100 rounded-md py-2 px-3">
-        <h1 class="text-xl">Web Proxy Dashboard</h1>
-        <div class="header-nav">
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/settings">Settings</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="content py-2 px-3">
-        <div class="dashboard-cards row gap-4">
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">Real-time Connection Status</h2>
-            </div>
-            <div class="card-body">
-              <div class="connection-status-display">
-                <p>Current Connections: <span id="current-connections">0</span></p>
-                <p>Active Connections: <span id="active-connections">0</span></p>
-                <p>Total Data Transferred: <span id="total-data-transferred">0</span></p>
-              </div>
-            </div>
-          </div>
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">Bandwidth Usage</h2>
-            </div>
-            <div class="card-body">
-              <div id="bandwidth-usage-chart"></div>
-            </div>
-          </div>
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">Active Connections</h2>
-            </div>
-            <div class="card-body">
-              <ul id="active-connections-list"></ul>
-            </div>
-          </div>
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">Error Log</h2>
-            </div>
-            <div class="card-body">
-              <ul id="error-log"></ul>
-            </div>
-          </div>
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">User Statistics</h2>
-            </div>
-            <div class="card-body">
-              <ul>
-                <li>Total Users: <span id="total-users">0</span></li>
-                <li>Total Connections: <span id="total-connections">0</span></li>
-                <li>Average Connection Time: <span id="average-connection-time">0</span></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="/public/scripts.js"></script>
-</body>
+* **index.html:** The landing page with login, navigation, proxy status, and error handling.
+* **settings.html:** Configuration page for proxy settings, including protocol, port, authentication, and bandwidth limits.
+* **dashboard.html:** Statistics and monitoring page displaying connection status, bandwidth usage, active connections, error logs, and user statistics.
 
-</html>
+All files use semantic HTML elements, external CSS and JS, and consistent styling. They feature a sidebar for navigation and must be provided in raw code without additional files or markdown blocks.
 ```
