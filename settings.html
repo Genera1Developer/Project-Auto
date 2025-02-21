@@ -1,11 +1,11 @@
-file path: index.html
+file path: settings.html
 content: 
 ```html
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Web Proxy</title>
+    <title>Web Proxy Settings</title>
     <link rel="stylesheet" href="/public/styles.css" />
   </head>
   <body>
@@ -13,13 +13,13 @@ content:
       <aside class="col-span-1 bg-blue-50 h-screen">
         <div class="sidebar-nav">
           <ul>
-            <li class="active">
-              <a href="/index.html" class="block px-3 py-2 rounded-md bg-blue-100">
+            <li>
+              <a href="/index.html" class="block px-3 py-2 rounded-md">
                 Home
               </a>
             </li>
-            <li>
-              <a href="/settings.html" class="block px-3 py-2 rounded-md">
+            <li class="active">
+              <a href="/settings.html" class="block px-3 py-2 rounded-md bg-blue-100">
                 Settings
               </a>
             </li>
@@ -34,36 +34,83 @@ content:
       <main class="col-span-5">
         <div class="py-6">
           <div class="flex flex-col items-center">
-            <h1 class="text-2xl font-bold text-center">Web Proxy</h1>
-            <p class="text-gray-500">
-              Stay anonymous and protect your privacy while browsing the web.
-            </p>
+            <h1 class="text-2xl font-bold text-center">Web Proxy Settings</h1>
           </div>
           <div class="mt-6">
-            <form id="proxy-form">
+            <form id="proxy-settings-form">
               <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div class="col-span-1">
-                  <label for="username" class="block text-sm font-bold"
-                    >Username:</label
+                  <label for="proxy-protocol" class="block text-sm font-bold"
+                    >Protocol:</label
+                  >
+                  <select
+                    name="proxy-protocol"
+                    id="proxy-protocol"
+                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
+                  >
+                    <option value="http">HTTP</option>
+                    <option value="https">HTTPS</option>
+                    <option value="socks5">SOCKS5</option>
+                  </select>
+                </div>
+                <div class="col-span-1">
+                  <label for="proxy-port" class="block text-sm font-bold"
+                    >Port:</label
+                  >
+                  <input
+                    type="number"
+                    id="proxy-port"
+                    name="proxy-port"
+                    min="1"
+                    max="65535"
+                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
+                    required
+                  />
+                </div>
+                <div class="col-span-2">
+                  <label for="proxy-server" class="block text-sm font-bold"
+                    >Server Address:</label
                   >
                   <input
                     type="text"
-                    id="username"
-                    name="username"
+                    id="proxy-server"
+                    name="proxy-server"
                     class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
                     required
                   />
                 </div>
                 <div class="col-span-1">
-                  <label for="password" class="block text-sm font-bold"
-                    >Password:</label
+                  <label for="proxy-user" class="block text-sm font-bold"
+                    >Username (optional):</label
+                  >
+                  <input
+                    type="text"
+                    id="proxy-user"
+                    name="proxy-user"
+                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
+                  />
+                </div>
+                <div class="col-span-1">
+                  <label for="proxy-pass" class="block text-sm font-bold"
+                    >Password (optional):</label
                   >
                   <input
                     type="password"
-                    id="password"
-                    name="password"
+                    id="proxy-pass"
+                    name="proxy-pass"
                     class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                    required
+                  />
+                </div>
+                <div class="col-span-2">
+                  <label for="bandwidth-limit" class="block text-sm font-bold"
+                    >Bandwidth Limit (MB/day):</label
+                  >
+                  <input
+                    type="number"
+                    id="bandwidth-limit"
+                    name="bandwidth-limit"
+                    min="0"
+                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
                   />
                 </div>
               </div>
@@ -72,32 +119,10 @@ content:
                   type="submit"
                   class="px-4 py-2 bg-blue-500 rounded-md text-white font-bold"
                 >
-                  Login
+                  Save Settings
                 </button>
               </div>
             </form>
-          </div>
-          <div class="mt-6">
-            <div class="bg-blue-100 rounded-md p-4 text-sm">
-              <div class="flex items-center justify-between">
-                <span class="font-bold">Status:</span>
-                <span id="proxy-status" class="text-green-500 font-bold"
-                  >Not connected</span
-                >
-              </div>
-              <div class="mt-2">
-                <span class="font-bold">Connection:</span>
-                <span id="connection-status" class="text-gray-500"
-                  >No connection established</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="mt-6">
-            <div class="bg-red-100 rounded-md p-4 text-sm">
-              <h2 class="font-bold">Error Message:</h2>
-              <p id="error-message" class="text-red-500"></p>
-            </div>
           </div>
         </div>
       </main>
