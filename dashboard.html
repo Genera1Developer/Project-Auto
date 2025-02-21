@@ -1,5 +1,96 @@
-file path: database.js
+file path: dashboard.html
 content: 
-```javascript
-// Implement the functionality for managing the database connection and operations
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="dashboard.js"></script>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="settings.html">Settings</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+  </div>
+  <div class="main-content">
+    <h1>Dashboard</h1>
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            Real-Time Connection Status
+          </div>
+          <div class="card-body">
+            <p>Total Connections: <span id="total-connections"></span></p>
+            <p>Active Connections: <span id="active-connections"></span></p>
+            <p>Inactive Connections: <span id="inactive-connections"></span></p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            Bandwidth Usage Graphs
+          </div>
+          <div class="card-body">
+            <canvas id="bandwidth-usage-graph"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            Active Connections List
+          </div>
+          <div class="card-body">
+            <table id="active-connections-table">
+              <thead>
+                <tr>
+                  <th>IP Address</th>
+                  <th>Port</th>
+                  <th>Protocol</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            Error Log Display
+          </div>
+          <div class="card-body">
+            <ul id="error-log"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header">
+            User Statistics
+          </div>
+          <div class="card-body">
+            <p>Total Users: <span id="total-users"></span></p>
+            <p>Active Users: <span id="active-users"></span></p>
+            <p>Inactive Users: <span id="inactive-users"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
 ```
