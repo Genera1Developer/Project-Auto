@@ -1,7 +1,6 @@
 file path: README.md
 content:
 
-```
 Web Proxy Project
 
 **Goal:**
@@ -25,9 +24,8 @@ Create a structured web proxy project with strictly defined files and components
 - Error message display area
 - Connection status display
 - External CSS and JS files
-- Side bar that goes to /index.html, /dashboard.html, and /settings.html
-- Custom CSS styling
-- Embedded JavaScript
+- Sidebar that goes to /index.html, /dashboard.html, and /settings.html
+- Custom CSS and JavaScript
 
 **2. settings.html:**
 
@@ -37,9 +35,8 @@ Create a structured web proxy project with strictly defined files and components
 - Authentication settings
 - Bandwidth limits
 - Same styling as index.html
-- Side bar that goes to /index.html, /dashboard.html, and /settings.html
-- Custom CSS styling
-- Embedded JavaScript
+- Sidebar that goes to /index.html, /dashboard.html, and /settings.html
+- Custom CSS and JavaScript
 
 **3. dashboard.html:**
 
@@ -49,9 +46,8 @@ Create a structured web proxy project with strictly defined files and components
 - Error log display
 - User statistics
 - Same styling as index.html
-- Side bar that goes to /index.html, /dashboard.html, and /settings.html
-- Custom CSS styling
-- Embedded JavaScript
+- Sidebar that goes to /index.html, /dashboard.html, and /settings.html
+- Custom CSS and JavaScript
 
 **4. error.html:**
 
@@ -70,4 +66,3 @@ Create a structured web proxy project with strictly defined files and components
 - Proper commenting
 - No external dependencies
 - No framework usage
-```
