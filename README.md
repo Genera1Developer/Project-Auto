@@ -18,29 +18,35 @@ Web Proxy Project
 **1. index.html:**
 
 - Login form with username/password fields
-- Navigation to settings and dashboard
+- Navigation to settings and dashboard using JavaScript
 - Proxy status indicator
 - Error message display area
 - Connection status display
-- Sidebar to /index.html, /dashboard.html, and /settings.html
+- Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript
+- Must have its own CSS styling within the HTML
+- Must have its own javascript within the HTML
 
 **2. settings.html:**
 
-- Proxy configuration form
+- Proxy configuration form using JavaScript
 - Protocol selection (HTTP/HTTPS)
 - Port configuration
 - Authentication settings
 - Bandwidth limits
-- Sidebar to /index.html, /dashboard.html, and /settings.html
+- Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript
+- Must have its own CSS styling within the HTML
+- Must have its own javascript within the HTML
 
 **3. dashboard.html:**
 
-- Real-time connection status
-- Bandwidth usage graphs
-- Active connections list
-- Error log display
-- User statistics
-- Sidebar to /index.html, /dashboard.html, and /settings.html
+- Real-time connection status using JavaScript
+- Bandwidth usage graphs using JavaScript
+- Active connections list using JavaScript
+- Error log display using JavaScript
+- User statistics using JavaScript
+- Sidebar to /index.html, /dashboard.html, and /settings.html using JavaScript
+- Must have its own CSS styling within the HTML
+- Must have its own javascript within the HTML
 
 **4. styles.css:**
 
@@ -48,7 +54,8 @@ Web Proxy Project
 
 **5. scripts.js:**
 
-- JavaScript for login, proxy configuration, and dashboard management
+- JavaScript for login, proxy configuration, dashboard management, and sidebar navigation
+- Must also handle error handling and cross-browser compatibility
 
 **6. background.js:**
 
