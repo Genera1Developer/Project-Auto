@@ -30,24 +30,44 @@ content:
         <input type="number" name="port" min="1" max="65535" value="8080">
       </div>
       <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" name="username">
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" name="password">
-      </div>
-      <div class="form-group">
-        <label for="bandwidth-limit">Bandwidth Limit (KB/s):</label>
-        <input type="number" name="bandwidth-limit" min="0">
-      </div>
-      <div class="form-group">
         <label for="authentication">Authentication:</label>
         <select name="authentication">
           <option value="none" selected>None</option>
           <option value="basic">Basic</option>
           <option value="digest">Digest</option>
         </select>
+      </div>
+      <div class="form-group" data-auth="basic">
+        <label for="username">Username:</label>
+        <input type="text" name="username">
+      </div>
+      <div class="form-group" data-auth="basic">
+        <label for="password">Password:</label>
+        <input type="password" name="password">
+      </div>
+      <div class="form-group" data-auth="digest">
+        <label for="realm">Realm:</label>
+        <input type="text" name="realm">
+      </div>
+      <div class="form-group" data-auth="digest">
+        <label for="qop">Quality of Protection:</label>
+        <select name="qop">
+          <option value="auth" selected>auth</option>
+          <option value="auth-int">auth-int</option>
+          <option value="auth-conf">auth-conf</option>
+        </select>
+      </div>
+      <div class="form-group" data-auth="digest">
+        <label for="nonce">Nonce:</label>
+        <input type="text" name="nonce">
+      </div>
+      <div class="form-group" data-auth="digest">
+        <label for="uri">URI:</label>
+        <input type="text" name="uri">
+      </div>
+      <div class="form-group">
+        <label for="bandwidth-limit">Bandwidth Limit (KB/s):</label>
+        <input type="number" name="bandwidth-limit" min="0">
       </div>
       <div class="form-actions">
         <button type="submit" class="btn btn-primary">Save</button>
