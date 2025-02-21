@@ -1,5 +1,7 @@
 file path: README.md
-content: ##### Web Proxy Project
+content: 
+
+# Web Proxy Project
 
 This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue, beautiful, and rounded theme.
 
@@ -9,6 +11,9 @@ This project aims to create a structured web proxy with strictly defined files a
 - settings.html (proxy configuration page)
 - dashboard.html (user statistics and monitoring)
 - README.md (description of the site)
+- css/main.css (centralized CSS styling)
+- js/main.js (centralized JavaScript)
+- config.json (configuration parameters)
 
 **Strict File Requirements:**
 
@@ -62,8 +67,8 @@ This project aims to create a structured web proxy with strictly defined files a
 - No external dependencies
 - No framework usage
 
-**Suggested Additional Files:**
+**Additional Files:**
 
-- css/main.css: Centralized CSS styling for all pages
-- js/main.js: Centralized JavaScript for all pages
-- config.json: Configuration parameters for the proxy
+- **css/main.css**: Centralized CSS styling for all pages
+- **js/main.js**: Centralized JavaScript for all pages
+- **config.json**: Configuration parameters for the proxy
