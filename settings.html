@@ -2,67 +2,151 @@ file path: settings.html
 content: 
 ```html
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Settings</title>
-    <link rel="stylesheet" href="/style.css">
-    <script src="/settings.js"></script>
-</head>
-<body style="background-color: #f5f9fc;">
-    <div class="sidebar">
-        <a href="/index.html" class="sidebar-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            Home
-        </a>
-        <a href="/dashboard.html" class="sidebar-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bar-chart-2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            Dashboard
-        </a>
-        <a href="/settings.html" class="sidebar-item active">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.6 1.65 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.6 1.65z"></path></svg>
-            Settings
-        </a>
-    </div>
-    <div class="content">
-        <div class="card">
-            <div class="card-header">
-                Proxy Configuration
-            </div>
-            <div class="card-body">
-                <form id="settings-form">
-                    <div class="form-group">
-                        <label for="protocol">Protocol:</label>
-                        <select id="protocol" name="protocol">
-                            <option value="http">HTTP</option>
-                            <option value="https">HTTPS</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="port">Port:</label>
-                        <input type="number" id="port" name="port" min="1" max="65535" value="8080">
-                    </div>
-                    <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="email" id="username" name="username">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password">
-                    </div>
-                    <div class="form-group">
-                        <label for="bandwidth">Bandwidth Limit (MB/s):</label>
-                        <input type="number" id="bandwidth" name="bandwidth" min="0" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="authentication">Authentication:</label>
-                        <input type="checkbox" id="authentication" name="authentication">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
-            </div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Proxy Settings</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <div class="container grid grid-cols-6 gap-4 max-w-screen-lg mx-auto">
+      <aside class="col-span-1 bg-blue-50 h-screen">
+        <div class="sidebar-nav">
+          <ul>
+            <li>
+              <a href="/index.html" class="block px-3 py-2 rounded-md bg-blue-100">
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="/settings.html" class="block px-3 py-2 rounded-md bg-blue-100">
+                Settings
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard.html" class="block px-3 py-2 rounded-md bg-blue-100">
+                Dashboard
+              </a>
+            </li>
+          </ul>
         </div>
+      </aside>
+      <main class="col-span-5">
+        <div class="py-6">
+          <h1 class="text-2xl font-bold">Proxy Settings</h1>
+          <p>
+            Configure the following settings to customize your proxy setup.
+          </p>
+          <form id="settings-form">
+            <div class="mt-6">
+              <h2 class="text-xl font-bold">Protocol</h2>
+              <div class="mt-4">
+                <div>
+                  <label
+                    for="protocol-http"
+                    class="block mb-2"
+                    ><input
+                      type="radio"
+                      id="protocol-http"
+                      name="protocol"
+                      value="http"
+                      checked
+                    />
+                    HTTP</label
+                  >
+                </div>
+                <div class="mt-2">
+                  <label
+                    for="protocol-https"
+                    class="block mb-2"
+                    ><input
+                      type="radio"
+                      id="protocol-https"
+                      name="protocol"
+                      value="https"
+                    />
+                    HTTPS</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="mt-6">
+              <h2 class="text-xl font-bold">Port</h2>
+              <label for="port" class="block mb-2">Port:</label>
+              <input
+                type="number"
+                id="port"
+                name="port"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                min="1"
+                max="65535"
+                value="8080"
+              />
+            </div>
+            <div class="mt-6">
+              <h2 class="text-xl font-bold">Authentication</h2>
+              <div class="mt-4">
+                <label for="authentication" class="block mb-2">
+                  <input
+                    type="checkbox"
+                    id="authentication"
+                    name="authentication"
+                  />
+                  Require Authentication</label
+                >
+              </div>
+            </div>
+            <div class="mt-6 authentication-fields hidden">
+              <h2 class="text-xl font-bold">Authentication Details</h2>
+              <div class="mt-4">
+                <label for="username" class="block mb-2">Username:</label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+              <div class="mt-4">
+                <label for="password" class="block mb-2">Password:</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+            </div>
+            <div class="mt-6">
+              <h2 class="text-xl font-bold">Bandwidth Limit</h2>
+              <div class="mt-4">
+                <label for="bandwidth" class="block mb-2"
+                  >Bandwidth Limit (MB/s):</label
+                >
+                <input
+                  type="number"
+                  id="bandwidth"
+                  name="bandwidth"
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  min="0"
+                  value="0"
+                />
+              </div>
+            </div>
+            <div class="mt-6">
+              <button
+                type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
     </div>
-</body>
+    <script src="/public/scripts.js"></script>
+  </body>
 </html>
+
 ```
