@@ -1,4 +1,4 @@
-file: index.html
+file: settings.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Web Proxy</title>
+  <title>Web Proxy Settings</title>
   <link rel="stylesheet" href="/public/styles.css" />
 </head>
 
@@ -22,7 +22,7 @@ content:
     </div>
     <div class="main-content col-span-5">
       <div class="header bg-blue-100 rounded-md py-2 px-3">
-        <h1 class="text-xl">Web Proxy</h1>
+        <h1 class="text-xl">Web Proxy Settings</h1>
         <div class="header-nav">
           <ul>
             <li><a href="/">Home</a></li>
@@ -32,8 +32,19 @@ content:
         </div>
       </div>
       <div class="content py-2 px-3">
-        <form id="login-form">
-          <h2 class="text-xl mb-6">Login</h2>
+        <form id="settings-form">
+          <h2 class="text-xl mb-6">Proxy Configuration</h2>
+          <div class="form-group">
+            <label class="form-label block" for="proxy-type">Proxy Type</label>
+            <select class="form-input" name="proxy-type" id="proxy-type">
+              <option value="http">HTTP</option>
+              <option value="https">HTTPS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label block" for="proxy-port">Proxy Port</label>
+            <input class="form-input" type="number" name="proxy-port" id="proxy-port" />
+          </div>
           <div class="form-group">
             <label class="form-label block" for="username">Username</label>
             <input class="form-input" type="text" name="username" id="username" />
@@ -42,16 +53,12 @@ content:
             <label class="form-label block" for="password">Password</label>
             <input class="form-input" type="password" name="password" id="password" />
           </div>
-          <button type="submit" class="form-button mt-6">Login</button>
+          <div class="form-group">
+            <label class="form-label block" for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
+            <input class="form-input" type="number" name="bandwidth-limit" id="bandwidth-limit" />
+          </div>
+          <button type="submit" class="form-button mt-6">Save Settings</button>
         </form>
-        <div class="error-message hidden"></div>
-        <div class="proxy-status mt-6">
-          <strong>Proxy Status:</strong> <span id="proxy-status"></span>
-        </div>
-        <div class="connection-log mt-6">
-          <strong>Connection Log:</strong>
-          <ul id="connection-log"></ul>
-        </div>
       </div>
     </div>
   </div>
