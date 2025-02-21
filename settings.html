@@ -1,121 +1,118 @@
-file path: settings.html
+file path: styles.css
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```css
+body {
+  font-family: Arial, sans-serif;
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy Settings</title>
-  <link rel="stylesheet" href="/styles.css" />
-</head>
+.container {
+  padding: 20px;
+}
 
-<body class="bg-blue-50">
-  <div class="container grid grid-cols-6 gap-4 max-w-screen-lg mx-auto">
-    <aside class="col-span-1 h-screen bg-blue-50 rounded-r-xl">
-      <div class="sidebar-nav">
-        <ul>
-          <li>
-            <a href="/index.html" class="block px-3 py-2 rounded-md">
-              Home
-            </a>
-          </li>
-          <li class="active">
-            <a href="/settings.html" class="block px-3 py-2 rounded-md bg-blue-100">
-              Settings
-            </a>
-          </li>
-          <li>
-            <a href="/dashboard.html" class="block px-3 py-2 rounded-md">
-              Dashboard
-            </a>
-          </li>
-        </ul>
-      </div>
-    </aside>
-    <main class="col-span-5 p-6">
-      <div class="flex flex-col items-center">
-        <h1 class="text-2xl font-bold text-center">Web Proxy Settings</h1>
-      </div>
-      <div class="mt-6">
-        <form id="proxy-settings-form">
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div class="col-span-1">
-              <label for="proxy-server" class="block text-sm font-bold">Server Address:</label>
-              <input type="text" id="proxy-server" name="proxy-server"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                required>
-            </div>
-            <div class="col-span-1">
-              <label for="proxy-port" class="block text-sm font-bold">Port:</label>
-              <input type="number" id="proxy-port" name="proxy-port" min="1" max="65535"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                required>
-            </div>
-            <div class="col-span-2">
-              <label for="proxy-protocol" class="block text-sm font-bold">Protocol:</label>
-              <select name="proxy-protocol" id="proxy-protocol"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1">
-                <option value="http">HTTP</option>
-                <option value="https">HTTPS</option>
-                <option value="socks5">SOCKS5</option>
-              </select>
-            </div>
-            <div class="col-span-1">
-              <label for="proxy-user" class="block text-sm font-bold">Username (optional):</label>
-              <input type="text" id="proxy-user" name="proxy-user"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1">
-            </div>
-            <div class="col-span-1">
-              <label for="proxy-pass" class="block text-sm font-bold">Password (optional):</label>
-              <input type="password" id="proxy-pass" name="proxy-pass"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1">
-            </div>
-            <div class="col-span-2">
-              <label for="bandwidth-limit" class="block text-sm font-bold">Bandwidth Limit (MB/day):</label>
-              <input type="number" id="bandwidth-limit" name="bandwidth-limit" min="0"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1">
-            </div>
-          </div>
-          <div class="mt-6">
-            <button type="submit"
-              class="px-4 py-2 bg-blue-500 rounded-md text-white font-bold">Save Settings</button>
-          </div>
-        </form>
-      </div>
-    </main>
-  </div>
-  <script>
-    const form = document.getElementById('proxy-settings-form');
+.sidebar-nav {
+  height: 100%;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+.sidebar-nav ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-      const formData = new FormData(form);
+.sidebar-nav li {
+  margin-bottom: 10px;
+}
 
-      fetch('/settings', {
-        method: 'POST',
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
-            alert('Settings saved successfully.');
-          } else {
-            alert('Error saving settings.');
-          }
-        })
-        .catch((error) => {
-          console.error('Error submitting form:', error);
-        });
-    });
-  </script>
-</body>
+.sidebar-nav a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #000;
+}
 
-</html>
-```
-file path: proxy.js
-content: 
-```javascript
-// ... Your JS code here ...
+.sidebar-nav a:hover {
+  background-color: #f5f5f5;
+}
+
+.sidebar-nav a.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+main {
+  padding: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+button {
+  cursor: pointer;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0069d9;
+}
+
+.bg-blue-50 {
+  background-color: #f5f5f5;
+}
+
+.bg-blue-100 {
+  background-color: #e5e5e5;
+}
+
+.text-blue-500 {
+  color: #007bff;
+}
+
+.text-red-500 {
+  color: #ff0000;
+}
+
+.rounded-md {
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-nav {
+    display: none;
+  }
+}
 ```
