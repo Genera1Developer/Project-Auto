@@ -1,4 +1,4 @@
-file: index.html
+file: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -85,77 +85,79 @@ content:
 
 </html>
 ```
-file: settings.html
+file: README.md
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```markdown
+# Web Proxy Dashboard
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy Settings</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
+This project provides a structured web proxy with strictly defined files, components, and baby blue beautiful and rounded theming.
 
-<body>
-  <div class="wrapper flex">
-    <div class="sidebar bg-babyblue-100 rounded-r-lg p-4 w-1/4">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/logs.html">Logs</a></li>
-      </ul>
-    </div>
-    <div class="content flex-1 p-4">
-      <h1 class="text-3xl font-bold mb-4">Web Proxy Settings</h1>
-      <form id="settings-form">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-white rounded-lg p-4 shadow-md">
-            <h2 class="text-xl font-bold mb-4">Proxy Configuration</h2>
-            <div class="mb-4">
-              <label class="block text-sm font-bold mb-2" for="proxy-type">Proxy Type:</label>
-              <select class="w-full p-2 border rounded-md" name="proxy-type">
-                <option value="http">HTTP</option>
-                <option value="https">HTTPS</option>
-                <option value="socks4">SOCKS4</option>
-                <option value="socks5">SOCKS5</option>
-              </select>
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-bold mb-2" for="proxy-address">Proxy Address:</label>
-              <input class="w-full p-2 border rounded-md" type="text" name="proxy-address" />
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-bold mb-2" for="proxy-port">Proxy Port:</label>
-              <input class="w-full p-2 border rounded-md" type="number" name="proxy-port" />
-            </div>
-          </div>
-          <div class="bg-white rounded-lg p-4 shadow-md">
-            <h2 class="text-xl font-bold mb-4">Authentication</h2>
-            <div class="mb-4">
-              <label class="block text-sm font-bold mb-2" for="username">Username:</label>
-              <input class="w-full p-2 border rounded-md" type="text" name="username" />
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-bold mb-2" for="password">Password:</label>
-              <input class="w-full p-2 border rounded-md" type="password" name="password" />
-            </div>
-          </div>
-          <div class="bg-white rounded-lg p-4 shadow-md">
-            <h2 class="text-xl font-bold mb-4">Bandwidth Limits</h2>
-            <div class="mb-4">
-              <label class="block text-sm font-bold mb-2" for="max-bandwidth">Maximum Bandwidth:</label>
-              <input class="w-full p-2 border rounded-md" type="number" name="max-bandwidth" />
-            </div>
-            <div class="mb-4">
-              <label class="block text-sm font-bold mb-2" for="time-period">Time Period:</label>
-              <select class="w-full p-2 border rounded-md" name="time-period">
-                <option value="hour">Hour</option>
-                <option value="day">Day</option>
-                <option value="week">Week</option>
-                <option value="month">Month</option>
-              </select>
-            </div>
-          </div>
+## Allowed Files
+
+- index.html (main landing page)
+- settings.html (proxy configuration page)
+- dashboard.html (user statistics and monitoring)
+- README.md (description of the site)
+
+## Strict File Requirements
+
+**index.html**
+
+- Must contain:
+  - Login form with username/password fields
+  - Navigation to settings and dashboard
+  - Proxy status indicator
+  - Error message display area
+  - Connection status display
+  - Must use external CSS and JS files
+  - Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
+  - MUST have its own CSS styling within the HTML
+  - Must be provided in raw code and don't tell me what the file is for my purposes
+  - Must have its own javascript within the HTML
+
+**settings.html**
+
+- Must contain:
+  - Proxy configuration form
+  - Protocol selection (HTTP/HTTPS)
+  - Port configuration
+  - Authentication settings
+  - Bandwidth limits
+  - Must use same styling as index.html
+  - Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
+  - MUST have its own CSS styling within the HTML
+  - Must be provided in raw code and don't tell me what the file is for my purposes
+  - Must have its own javascript within the HTML
+
+**dashboard.html**
+
+- Must contain:
+  - Real-time connection status
+  - Bandwidth usage graphs
+  - Active connections list
+  - Error log display
+  - User statistics
+  - Must use same styling as index.html
+  - Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
+  - MUST have its own CSS styling within the HTML
+  - Must be provided in raw code and don't tell me what the file is for my purposes
+  - Must have its own javascript within the HTML
+
+**README.md**
+
+- Must contain:
+  - Raw markdown text only
+
+## Code Structure Rules
+
+- No inline scripts or styles
+- Semantic HTML elements only
+- Strict content security policy
+- Error handling for all operations
+- Cross-browser compatibility required
+- Mobile responsiveness required
+- Clean, consistent indentation
+- Proper commenting required
+- No external dependencies
+- No framework usage
+```
