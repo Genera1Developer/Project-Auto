@@ -1,4 +1,4 @@
-file: index.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -41,10 +41,200 @@ content:
 
       <div id="error-message"></div>
 
-      <div id="connection-status"></div>
+      <div id="connection-status">
+        <h3>Connection Status: <span id="connection-status-text">Disconnected</span></h3>
+      </div>
     </div>
   </div>
 </body>
 
 </html>
+```
+
+file path: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Settings</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="settings.js"></script>
+</head>
+
+<body>
+  <div id="container">
+    <div id="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+
+    <div id="content">
+      <h1>Proxy Settings</h1>
+      <form>
+        <label for="protocol">Protocol:</label>
+        <select id="protocol">
+          <option value="http">HTTP</option>
+          <option value="https">HTTPS</option>
+        </select>
+        <br>
+        <label for="port">Port:</label>
+        <input type="number" id="port" min="1" max="65535">
+        <br>
+        <label for="username">Username:</label>
+        <input type="text" id="username">
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password">
+        <br>
+        <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
+        <input type="number" id="bandwidth-limit" min="0">
+        <br>
+        <input type="submit" value="Save Settings">
+      </form>
+    </div>
+  </div>
+</body>
+
+</html>
+```
+
+file path: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="dashboard.js"></script>
+</head>
+
+<body>
+  <div id="container">
+    <div id="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+
+    <div id="content">
+      <h1>Dashboard</h1>
+      <div id="connection-status">
+        <h3>Connection Status: <span id="connection-status-text">Disconnected</span></h3>
+      </div>
+      <div id="bandwidth-usage">
+        <h3>Bandwidth Usage</h3>
+        <canvas id="bandwidth-usage-chart" width="600" height="400"></canvas>
+      </div>
+      <div id="active-connections">
+        <h3>Active Connections</h3>
+        <ul id="active-connections-list"></ul>
+      </div>
+      <div id="error-log">
+        <h3>Error Log</h3>
+        <ul id="error-log-list"></ul>
+      </div>
+      <div id="user-statistics">
+        <h3>User Statistics</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Total Bandwidth Used</th>
+              <th>Total Connections</th>
+            </tr>
+          </thead>
+          <tbody id="user-statistics-table"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
+```
+
+file path: README.md
+content: 
+```markdown
+## Web Proxy Project
+
+This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue beautiful and rounded theme.
+
+### Allowed Files
+
+- index.html: Main landing page
+- settings.html: Proxy configuration page
+- dashboard.html: User statistics and monitoring
+- README.md: Description of the site
+
+### Strict File Requirements
+
+**index.html**
+
+- Login form with username/password fields
+- Navigation to settings and dashboard
+- Proxy status indicator
+- Error message display area
+- Connection status display
+- Must use external CSS and JS files
+- Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
+- Must have its own CSS styling within the HTML
+- Must have its own javascript within the HTML
+
+**settings.html**
+
+- Proxy configuration form
+- Protocol selection (HTTP/HTTPS)
+- Port configuration
+- Authentication settings
+- Bandwidth limits
+- Must use same styling as index.html
+- Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
+- Must have its own CSS styling within the HTML
+- Must have its own javascript within the HTML
+
+**dashboard.html**
+
+- Real-time connection status
+- Bandwidth usage graphs
+- Active connections list
+- Error log display
+- User statistics
+- Must use same styling as index.html
+- Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
+- Must have its own CSS styling within the HTML
+- Must have its own javascript within the HTML
+
+**README.md**
+
+- Raw markdown text only
+
+### Code Structure Rules
+
+- No inline scripts or styles
+- Semantic HTML elements only
+- Strict content security policy
+- Error handling for all operations
+- Cross-browser compatibility required
+- Mobile responsiveness required
+- Clean, consistent indentation
+- Proper commenting required
+- No external dependencies
+- No framework usage
+
+### Output Format
+
+file path: {exact_path}
+content: {raw_code_only}
 ```
