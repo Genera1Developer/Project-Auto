@@ -54,8 +54,8 @@ content:
 
 **5. scripts.js:**
 
-- JavaScript for login, proxy configuration, dashboard management, and sidebar navigation
-- Must also handle error handling and cross-browser compatibility
+- JavaScript for login, proxy configuration, dashboard management, sidebar navigation, and error handling
+- Must also handle cross-browser compatibility
 
 **6. background.js:**
 
