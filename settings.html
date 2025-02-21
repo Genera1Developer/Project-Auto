@@ -3,155 +3,116 @@ content:
 ```html
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy Settings</title>
-    <link rel="stylesheet" href="/styles.css" />
-  </head>
-  <body>
-    <div class="container grid grid-cols-6 gap-4 max-w-screen-lg mx-auto">
-      <aside class="col-span-1 bg-blue-50 h-screen">
-        <div class="sidebar-nav">
-          <ul>
-            <li>
-              <a href="/index.html" class="block px-3 py-2 rounded-md">
-                Home
-              </a>
-            </li>
-            <li class="active">
-              <a href="/settings.html" class="block px-3 py-2 rounded-md bg-blue-100">
-                Settings
-              </a>
-            </li>
-            <li>
-              <a href="/dashboard.html" class="block px-3 py-2 rounded-md">
-                Dashboard
-              </a>
-            </li>
-          </ul>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy Settings</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+  <div class="container grid grid-cols-6 gap-4 max-w-screen-lg mx-auto">
+    <aside class="col-span-1 bg-blue-50 h-screen">
+      <div class="sidebar-nav">
+        <ul>
+          <li>
+            <a href="/index.html" class="block px-3 py-2 rounded-md">
+              Home
+            </a>
+          </li>
+          <li class="active">
+            <a href="/settings.html" class="block px-3 py-2 rounded-md bg-blue-100">
+              Settings
+            </a>
+          </li>
+          <li>
+            <a href="/dashboard.html" class="block px-3 py-2 rounded-md">
+              Dashboard
+            </a>
+          </li>
+        </ul>
+      </div>
+    </aside>
+    <main class="col-span-5">
+      <div class="py-6">
+        <div class="flex flex-col items-center">
+          <h1 class="text-2xl font-bold text-center">Web Proxy Settings</h1>
         </div>
-      </aside>
-      <main class="col-span-5">
-        <div class="py-6">
-          <div class="flex flex-col items-center">
-            <h1 class="text-2xl font-bold text-center">Web Proxy Settings</h1>
-          </div>
-          <div class="mt-6">
-            <form id="proxy-settings-form">
-              <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div class="col-span-1">
-                  <label for="proxy-protocol" class="block text-sm font-bold"
-                    >Protocol:</label
-                  >
-                  <select
-                    name="proxy-protocol"
-                    id="proxy-protocol"
-                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                  >
-                    <option value="http">HTTP</option>
-                    <option value="https">HTTPS</option>
-                    <option value="socks5">SOCKS5</option>
-                  </select>
-                </div>
-                <div class="col-span-1">
-                  <label for="proxy-port" class="block text-sm font-bold"
-                    >Port:</label
-                  >
-                  <input
-                    type="number"
-                    id="proxy-port"
-                    name="proxy-port"
-                    min="1"
-                    max="65535"
-                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                    required
-                  />
-                </div>
-                <div class="col-span-2">
-                  <label for="proxy-server" class="block text-sm font-bold"
-                    >Server Address:</label
-                  >
-                  <input
-                    type="text"
-                    id="proxy-server"
-                    name="proxy-server"
-                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                    required
-                  />
-                </div>
-                <div class="col-span-1">
-                  <label for="proxy-user" class="block text-sm font-bold"
-                    >Username (optional):</label
-                  >
-                  <input
-                    type="text"
-                    id="proxy-user"
-                    name="proxy-user"
-                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                  />
-                </div>
-                <div class="col-span-1">
-                  <label for="proxy-pass" class="block text-sm font-bold"
-                    >Password (optional):</label
-                  >
-                  <input
-                    type="password"
-                    id="proxy-pass"
-                    name="proxy-pass"
-                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                  />
-                </div>
-                <div class="col-span-2">
-                  <label for="bandwidth-limit" class="block text-sm font-bold"
-                    >Bandwidth Limit (MB/day):</label
-                  >
-                  <input
-                    type="number"
-                    id="bandwidth-limit"
-                    name="bandwidth-limit"
-                    min="0"
-                    class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
-                  />
-                </div>
+        <div class="mt-6">
+          <form id="proxy-settings-form">
+            <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div class="col-span-1">
+                <label for="proxy-protocol" class="block text-sm font-bold">Protocol:</label>
+                <select name="proxy-protocol" id="proxy-protocol"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1">
+                  <option value="http">HTTP</option>
+                  <option value="https">HTTPS</option>
+                  <option value="socks5">SOCKS5</option>
+                </select>
               </div>
-              <div class="mt-6">
-                <button
-                  type="submit"
-                  class="px-4 py-2 bg-blue-500 rounded-md text-white font-bold"
-                >
-                  Save Settings
-                </button>
+              <div class="col-span-1">
+                <label for="proxy-port" class="block text-sm font-bold">Port:</label>
+                <input type="number" id="proxy-port" name="proxy-port" min="1" max="65535"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
+                  required>
               </div>
-            </form>
-          </div>
+              <div class="col-span-2">
+                <label for="proxy-server" class="block text-sm font-bold">Server Address:</label>
+                <input type="text" id="proxy-server" name="proxy-server"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1"
+                  required>
+              </div>
+              <div class="col-span-1">
+                <label for="proxy-user" class="block text-sm font-bold">Username (optional):</label>
+                <input type="text" id="proxy-user" name="proxy-user"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1">
+              </div>
+              <div class="col-span-1">
+                <label for="proxy-pass" class="block text-sm font-bold">Password (optional):</label>
+                <input type="password" id="proxy-pass" name="proxy-pass"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1">
+              </div>
+              <div class="col-span-2">
+                <label for="bandwidth-limit" class="block text-sm font-bold">Bandwidth Limit (MB/day):</label>
+                <input type="number" id="bandwidth-limit" name="bandwidth-limit" min="0"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:ring-1">
+              </div>
+            </div>
+            <div class="mt-6">
+              <button type="submit"
+                class="px-4 py-2 bg-blue-500 rounded-md text-white font-bold">Save Settings</button>
+            </div>
+          </form>
         </div>
-      </main>
-    </div>
-    <script>
-      const form = document.getElementById('proxy-settings-form');
+      </div>
+    </main>
+  </div>
+  <script>
+    const form = document.getElementById('proxy-settings-form');
 
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-        const formData = new FormData(form);
+      const formData = new FormData(form);
 
-        fetch('/settings', {
-          method: 'POST',
-          body: formData,
+      fetch('/settings', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            alert('Settings saved successfully.');
+          } else {
+            alert('Error saving settings.');
+          }
         })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success) {
-              alert('Settings saved successfully.');
-            } else {
-              alert('Error saving settings.');
-            }
-          })
-          .catch((error) => {
-            console.error('Error submitting form:', error);
-          });
-      });
-    </script>
-  </body>
+        .catch((error) => {
+          console.error('Error submitting form:', error);
+        });
+    });
+  </script>
+</body>
+
 </html>
 ```
