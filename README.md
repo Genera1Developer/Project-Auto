@@ -1,5 +1,6 @@
 file: README.md
-content: 
+content:
+
 
 # Web Proxy Project
 
@@ -9,6 +10,7 @@ content:
 - settings.html (proxy configuration page)
 - dashboard.html (user statistics and monitoring)
 - README.md (description of the site)
+- styles.css (CSS styling for all pages)
 
 **Strict File Requirements:**
 
@@ -40,7 +42,11 @@ content:
 - User statistics
 - Sidebar to /index.html, /dashboard.html, and /settings.html
 
-**4. README.md:**
+**4. styles.css:**
+
+- Baby blue and rounded theming for all pages
+
+**5. README.md:**
 
 - Raw markdown text only
 
