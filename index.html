@@ -1,240 +1,245 @@
-file path: index.html
+file path: style.css
 content: 
-```html
-<!DOCTYPE html>
-<html>
+```css
+/*
+    Web Proxy Style Sheet
+*/
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="index.js"></script>
-</head>
+/* Basic Styles */
+body {
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
 
-<body>
-  <div id="container">
-    <div id="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
+#container {
+  display: grid;
+  grid-template-columns: 200px auto;
+  height: 100vh;
+}
 
-    <div id="content">
-      <div id="login">
-        <h1>Log In</h1>
-        <form>
-          <label for="username">Username:</label>
-          <input type="text" id="username">
-          <br>
-          <label for="password">Password:</label>
-          <input type="password" id="password">
-          <br>
-          <input type="submit" value="Log In">
-        </form>
-      </div>
+#sidebar {
+  background-color: #3399ff;
+  padding: 10px;
+}
 
-      <div id="proxy-status">
-        <h2>Proxy Status: Offline</h2>
-      </div>
+#sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
 
-      <div id="error-message"></div>
+#sidebar li {
+  margin-bottom: 10px;
+}
 
-      <div id="connection-status">
-        <h3>Connection Status: <span id="connection-status-text">Disconnected</span></h3>
-      </div>
-    </div>
-  </div>
-</body>
+#sidebar a {
+  color: white;
+  text-decoration: none;
+}
 
-</html>
-```
+#sidebar a:hover {
+  color: #ccc;
+}
 
-file path: settings.html
-content: 
-```html
-<!DOCTYPE html>
-<html>
+#content {
+  padding: 10px;
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy Settings</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="settings.js"></script>
-</head>
+/* Login Page */
+#login {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+}
 
-<body>
-  <div id="container">
-    <div id="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
+#login h1 {
+  margin-top: 0;
+}
 
-    <div id="content">
-      <h1>Proxy Settings</h1>
-      <form>
-        <label for="protocol">Protocol:</label>
-        <select id="protocol">
-          <option value="http">HTTP</option>
-          <option value="https">HTTPS</option>
-        </select>
-        <br>
-        <label for="port">Port:</label>
-        <input type="number" id="port" min="1" max="65535">
-        <br>
-        <label for="username">Username:</label>
-        <input type="text" id="username">
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password">
-        <br>
-        <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
-        <input type="number" id="bandwidth-limit" min="0">
-        <br>
-        <input type="submit" value="Save Settings">
-      </form>
-    </div>
-  </div>
-</body>
+#login form {
+  margin-top: 10px;
+}
 
-</html>
-```
+#login label {
+  display: block;
+  margin-bottom: 5px;
+}
 
-file path: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html>
+#login input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="dashboard.js"></script>
-</head>
+#login input[type="submit"] {
+  background-color: #3399ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 
-<body>
-  <div id="container">
-    <div id="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-      </ul>
-    </div>
+#login input[type="submit"]:hover {
+  background-color: #2277cc;
+}
 
-    <div id="content">
-      <h1>Dashboard</h1>
-      <div id="connection-status">
-        <h3>Connection Status: <span id="connection-status-text">Disconnected</span></h3>
-      </div>
-      <div id="bandwidth-usage">
-        <h3>Bandwidth Usage</h3>
-        <canvas id="bandwidth-usage-chart" width="600" height="400"></canvas>
-      </div>
-      <div id="active-connections">
-        <h3>Active Connections</h3>
-        <ul id="active-connections-list"></ul>
-      </div>
-      <div id="error-log">
-        <h3>Error Log</h3>
-        <ul id="error-log-list"></ul>
-      </div>
-      <div id="user-statistics">
-        <h3>User Statistics</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Total Bandwidth Used</th>
-              <th>Total Connections</th>
-            </tr>
-          </thead>
-          <tbody id="user-statistics-table"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</body>
+/* Proxy Status */
+#proxy-status {
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
 
-</html>
-```
+#proxy-status h2 {
+  margin-top: 0;
+}
 
-file path: README.md
-content: 
-```markdown
-## Web Proxy Project
+/* Error Message */
+#error-message {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 
-This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue beautiful and rounded theme.
+/* Connection Status */
+#connection-status {
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
 
-### Allowed Files
+#connection-status h3 {
+  margin-top: 0;
+}
 
-- index.html: Main landing page
-- settings.html: Proxy configuration page
-- dashboard.html: User statistics and monitoring
-- README.md: Description of the site
+#connection-status #connection-status-text {
+  color: #3399ff;
+  font-weight: bold;
+}
 
-### Strict File Requirements
+/* Settings Page */
+#settings {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+}
 
-**index.html**
+#settings h1 {
+  margin-top: 0;
+}
 
-- Login form with username/password fields
-- Navigation to settings and dashboard
-- Proxy status indicator
-- Error message display area
-- Connection status display
-- Must use external CSS and JS files
-- Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
-- Must have its own CSS styling within the HTML
-- Must have its own javascript within the HTML
+#settings form {
+  margin-top: 10px;
+}
 
-**settings.html**
+#settings label {
+  display: block;
+  margin-bottom: 5px;
+}
 
-- Proxy configuration form
-- Protocol selection (HTTP/HTTPS)
-- Port configuration
-- Authentication settings
-- Bandwidth limits
-- Must use same styling as index.html
-- Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
-- Must have its own CSS styling within the HTML
-- Must have its own javascript within the HTML
+#settings input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
 
-**dashboard.html**
+#settings input[type="submit"] {
+  background-color: #3399ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
 
-- Real-time connection status
-- Bandwidth usage graphs
-- Active connections list
-- Error log display
-- User statistics
-- Must use same styling as index.html
-- Must have a side bar that goes to /index.html, /dashboard.html, and /settings.html
-- Must have its own CSS styling within the HTML
-- Must have its own javascript within the HTML
+#settings input[type="submit"]:hover {
+  background-color: #2277cc;
+}
 
-**README.md**
+/* Dashboard Page */
+#dashboard {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #fff;
+}
 
-- Raw markdown text only
+#dashboard h1 {
+  margin-top: 0;
+}
 
-### Code Structure Rules
+#dashboard #connection-status {
+  background-color: #f5f5f5;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
 
-- No inline scripts or styles
-- Semantic HTML elements only
-- Strict content security policy
-- Error handling for all operations
-- Cross-browser compatibility required
-- Mobile responsiveness required
-- Clean, consistent indentation
-- Proper commenting required
-- No external dependencies
-- No framework usage
+#dashboard #connection-status h3 {
+  margin-top: 0;
+}
 
-### Output Format
+#dashboard #connection-status #connection-status-text {
+  color: #3399ff;
+  font-weight: bold;
+}
 
-file path: {exact_path}
-content: {raw_code_only}
+#dashboard #bandwidth-usage {
+  margin-bottom: 10px;
+}
+
+#dashboard #bandwidth-usage canvas {
+  width: 100%;
+  height: 300px;
+}
+
+#dashboard #active-connections {
+  margin-bottom: 10px;
+}
+
+#dashboard #active-connections ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#dashboard #active-connections li {
+  margin-bottom: 5px;
+}
+
+#dashboard #error-log {
+  margin-bottom: 10px;
+}
+
+#dashboard #error-log ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+#dashboard #error-log li {
+  margin-bottom: 5px;
+}
+
+#dashboard #user-statistics {
+  margin-bottom: 10px;
+}
+
+#dashboard #user-statistics table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#dashboard #user-statistics th {
+  background-color: #3399ff;
+  color: white;
+  padding: 5px;
+}
+
+#dashboard #user-statistics td {
+  padding: 5px;
+}
 ```
