@@ -10,6 +10,7 @@ content:
 - dashboard.html (user statistics and monitoring)
 - styles.css (CSS styling for all pages)
 - README.md (description of the site)
+- scripts.js (JavaScript for all pages)
 
 **Strict File Requirements:**
 
@@ -20,7 +21,6 @@ content:
 - Proxy status indicator
 - Error message display area
 - Connection status display
-- External CSS and JS files
 - Sidebar to /index.html, /dashboard.html, and /settings.html
 
 **2. settings.html:**
@@ -44,6 +44,10 @@ content:
 **4. styles.css:**
 
 - Baby blue and rounded theming for all pages
+
+**5. scripts.js:**
+
+- JavaScript for login, proxy configuration, and dashboard management
 
 **Code Structure Rules:**
 
