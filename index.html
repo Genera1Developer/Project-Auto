@@ -1,4 +1,4 @@
-file: dashboard.html
+file: settings.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Web Proxy Dashboard</title>
+  <title>Web Proxy Settings</title>
   <link rel="stylesheet" href="/public/styles.css" />
 </head>
 
@@ -22,7 +22,7 @@ content:
     </div>
     <div class="main-content col-span-5">
       <div class="header bg-blue-100 rounded-md py-2 px-3">
-        <h1 class="text-xl">Web Proxy Dashboard</h1>
+        <h1 class="text-xl">Web Proxy Settings</h1>
         <div class="header-nav">
           <ul>
             <li><a href="/">Home</a></li>
@@ -32,80 +32,63 @@ content:
         </div>
       </div>
       <div class="content py-2 px-3">
-        <div class="grid-container gap-6">
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">Connection Status</h2>
+        <form id="settings-form">
+          <div class="grid-container gap-6">
+            <div class="card bg-blue-50 rounded-md p-3">
+              <div class="card-header">
+                <h2 class="card-title">Proxy Configuration</h2>
+              </div>
+              <div class="card-body">
+                <div class="field-group">
+                  <label for="protocol">Protocol:</label>
+                  <select id="protocol">
+                    <option value="http">HTTP</option>
+                    <option value="https">HTTPS</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="port">Port:</label>
+                  <input type="number" id="port" min="1" max="65535" value="8080" />
+                </div>
+                <div class="field-group">
+                  <label for="authentication">Authentication:</label>
+                  <select id="authentication">
+                    <option value="none">None</option>
+                    <option value="basic">Basic</option>
+                    <option value="digest">Digest</option>
+                  </select>
+                </div>
+                <div class="field-group">
+                  <label for="username">Username:</label>
+                  <input type="text" id="username" />
+                </div>
+                <div class="field-group">
+                  <label for="password">Password:</label>
+                  <input type="password" id="password" />
+                </div>
+              </div>
             </div>
-            <div class="card-body">
-              <div>Proxy Status: <span id="proxy-status">Loading...</span></div>
-              <div>Connections: <span id="connection-count">0</span></div>
-              <div>Bandwidth Usage: <span id="bandwidth-usage">0 KB/s</span></div>
-            </div>
-          </div>
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">Bandwidth Usage Graph</h2>
-            </div>
-            <div class="card-body">
-              <canvas id="bandwidth-graph"></canvas>
-            </div>
-          </div>
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">Active Connections</h2>
-            </div>
-            <div class="card-body">
-              <table class="connections-table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>IP Address</th>
-                    <th>Port</th>
-                    <th>Protocol</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>192.168.1.1</td>
-                    <td>8080</td>
-                    <td>HTTP</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>192.168.1.2</td>
-                    <td>443</td>
-                    <td>HTTPS</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>192.168.1.3</td>
-                    <td>80</td>
-                    <td>HTTP</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="card bg-blue-50 rounded-md p-3">
+              <div class="card-header">
+                <h2 class="card-title">Bandwidth Limits</h2>
+              </div>
+              <div class="card-body">
+                <div class="field-group">
+                  <label for="upload-limit">Upload Limit:</label>
+                  <input type="number" id="upload-limit" min="0" value="0" />
+                </div>
+                <div class="field-group">
+                  <label for="download-limit">Download Limit:</label>
+                  <input type="number" id="download-limit" min="0" value="0" />
+                </div>
+              </div>
             </div>
           </div>
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">Error Log</h2>
-            </div>
-            <div class="card-body">
-              <ul id="error-log"></ul>
-            </div>
+          <div class="button-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="reset" class="btn btn-secondary">Reset</button>
           </div>
-          <div class="card bg-blue-50 rounded-md p-3">
-            <div class="card-header">
-              <h2 class="card-title">User Statistics</h2>
-            </div>
-            <div class="card-body">
-              <div>Total Users: <span id="user-count">0</span></div>
-              <div>Active Users: <span id="active-user-count">0</span></div>
-            </div>
-          </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
