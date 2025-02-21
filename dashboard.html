@@ -84,6 +84,98 @@ content:
     </div>
   </div>
 
+  <script>
+    // Get the elements
+    const totalConnections = document.getElementById('total-connections');
+    const activeConnections = document.getElementById('active-connections');
+    const inactiveConnections = document.getElementById('inactive-connections');
+    const bandwidthUsageChart = document.getElementById('bandwidth-usage-chart');
+    const activeConnectionsTable = document.getElementById('active-connections-table');
+    const errorLog = document.getElementById('error-log');
+    const totalUsers = document.getElementById('total-users');
+    const activeUsers = document.getElementById('active-users');
+    const inactiveUsers = document.getElementById('inactive-users');
+
+    // Update the elements
+    totalConnections.innerHTML = 100;
+    activeConnections.innerHTML = 50;
+    inactiveConnections.innerHTML = 50;
+
+    // Create the bandwidth usage chart
+    const ctx = bandwidthUsageChart.getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        datasets: [{
+          label: 'Bandwidth Usage',
+          data: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+
+    // Add data to the active connections table
+    const activeConnectionsData = [
+      {
+        ip: '192.168.1.1',
+        port: 80,
+        protocol: 'HTTP',
+        status: 'Active'
+      },
+      {
+        ip: '192.168.1.2',
+        port: 443,
+        protocol: 'HTTPS',
+        status: 'Active'
+      },
+      {
+        ip: '192.168.1.3',
+        port: 22,
+        protocol: 'SSH',
+        status: 'Active'
+      }
+    ];
+
+    activeConnectionsData.forEach(connection => {
+      const row = activeConnectionsTable.insertRow();
+      const ipCell = row.insertCell();
+      const portCell = row.insertCell();
+      const protocolCell = row.insertCell();
+      const statusCell = row.insertCell();
+
+      ipCell.innerHTML = connection.ip;
+      portCell.innerHTML = connection.port;
+      protocolCell.innerHTML = connection.protocol;
+      statusCell.innerHTML = connection.status;
+    });
+
+    // Add data to the error log
+    const errorLogData = [
+      'Error: Connection refused',
+      'Error: Timeout',
+      'Error: Invalid request'
+    ];
+
+    errorLogData.forEach(error => {
+      const li = document.createElement('li');
+      li.innerHTML = error;
+      errorLog.appendChild(li);
+    });
+
+    // Update the user statistics
+    totalUsers.innerHTML = 1000;
+    activeUsers.innerHTML = 500;
+    inactiveUsers.innerHTML = 500;
+  </script>
 </body>
 
 </html>
