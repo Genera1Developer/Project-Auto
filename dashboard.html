@@ -1,170 +1,198 @@
-file path: dashboard.html
+file path: style.css
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```css
+/* Global styles */
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
-</head>
+body {
+    font-family: sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
 
-<body>
-    <div class="sidebar">
-        <a href="/index.html">Home</a>
-        <a href="/settings.html">Settings</a>
-        <a href="/dashboard.html">Dashboard</a>
-    </div>
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
 
-    <div class="container">
-        <h1>Dashboard</h1>
+h2 {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
 
-        <div class="section">
-            <h2>Connection Status</h2>
-            <div id="connection-status"></div>
-        </div>
+.container {
+    max-width: 1000px;
+    padding: 20px;
+}
 
-        <div class="section">
-            <h2>Bandwidth Usage</h2>
-            <canvas id="bandwidth-usage-graph"></canvas>
-        </div>
+.sidebar {
+    float: left;
+    width: 150px;
+    background-color: #ffffff;
+    border-right: 1px solid #dddddd;
+}
 
-        <div class="section">
-            <h2>Active Connections</h2>
-            <table id="active-connections-table">
-                <thead>
-                    <tr>
-                        <th>IP Address</th>
-                        <th>Port</th>
-                        <th>Protocol</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+.sidebar a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #000000;
+}
 
-        <div class="section">
-            <h2>Error Log</h2>
-            <ul id="error-log"></ul>
-        </div>
+.sidebar a:hover {
+    background-color: #dddddd;
+}
 
-        <div class="section">
-            <h2>User Statistics</h2>
-            <ul>
-                <li>Total Users: <span id="total-users"></span></li>
-                <li>Active Users: <span id="active-users"></span></li>
-                <li>Inactive Users: <span id="inactive-users"></span></li>
-            </ul>
-        </div>
-    </div>
-</body>
+.section {
+    margin-top: 20px;
+}
 
-</html>
+.field-label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #dddddd;
+}
+
+button {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #dddddd;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+button:hover {
+    background-color: #333333;
+}
+
+/* Dashboard styles */
+
+#connection-status {
+    font-weight: bold;
+}
+
+#bandwidth-usage-graph {
+    width: 100%;
+    height: 250px;
+}
+
+#active-connections-table {
+    width: 100%;
+}
+
+#active-connections-table th,
+#active-connections-table td {
+    padding: 5px;
+    border: 1px solid #dddddd;
+}
+
+#error-log {
+    list-style-type: none;
+    padding: 0;
+}
+
+#error-log li {
+    padding: 5px;
+    background-color: #ff0000;
+    color: #ffffff;
+}
+
+#user-statistics {
+    list-style-type: none;
+    padding: 0;
+}
+
+#user-statistics li {
+    padding: 5px;
+}
 ```
 
-file path: settings.html
+file path: script.js
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
+```javascript
+// Proxy status indicator
+const proxyStatus = document.getElementById("proxy-status");
+const connectionStatus = document.getElementById("connection-status");
+const errorMessage = document.getElementById("error-message");
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy Settings</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
-</head>
+// Update proxy status
+function updateProxyStatus(status) {
+    if (status === "online") {
+        proxyStatus.style.color = "green";
+        proxyStatus.innerText = "Proxy is online";
+    } else {
+        proxyStatus.style.color = "red";
+        proxyStatus.innerText = "Proxy is offline";
+    }
+}
 
-<body>
-    <div class="sidebar">
-        <a href="/index.html">Home</a>
-        <a href="/settings.html">Settings</a>
-        <a href="/dashboard.html">Dashboard</a>
-    </div>
+// Update connection status
+function updateConnectionStatus(status) {
+    if (status === "connected") {
+        connectionStatus.style.color = "green";
+        connectionStatus.innerText = "Connected";
+    } else {
+        connectionStatus.style.color = "red";
+        connectionStatus.innerText = "Not connected";
+    }
+}
 
-    <div class="container">
-        <h1>Settings</h1>
+// Display error message
+function displayErrorMessage(message) {
+    errorMessage.innerText = message;
+    errorMessage.style.display = "block";
+}
 
-        <form id="settings-form">
-            <div class="section">
-                <h2>Proxy Configuration</h2>
-                <label for="protocol">Protocol:</label>
-                <select name="protocol">
-                    <option value="http">HTTP</option>
-                    <option value="https">HTTPS</option>
-                </select>
-                <br />
-                <label for="port">Port:</label>
-                <input type="number" name="port" min="1" max="65535" />
-            </div>
+// Clear error message
+function clearErrorMessage() {
+    errorMessage.innerText = "";
+    errorMessage.style.display = "none";
+}
 
-            <div class="section">
-                <h2>Authentication</h2>
-                <label for="username">Username:</label>
-                <input type="text" name="username" />
-                <br />
-                <label for="password">Password:</label>
-                <input type="password" name="password" />
-            </div>
+// Login form submission
+const loginForm = document.getElementById("login-form");
+loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-            <div class="section">
-                <h2>Bandwidth Limits</h2>
-                <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
-                <input type="number" name="bandwidth-limit" min="0" />
-            </div>
+    const formData = new FormData(loginForm);
+    const username = formData.get("username");
+    const password = formData.get("password");
 
-            <div class="section">
-                <button type="submit">Save</button>
-                <button type="reset">Cancel</button>
-            </div>
-        </form>
-    </div>
-</body>
+    // Validate username and password
+    if (username === "" || password === "") {
+        displayErrorMessage("Please enter a username and password");
+        return;
+    }
 
-</html>
-```
-
-file path: index.html
-content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
-</head>
-
-<body>
-    <div class="sidebar">
-        <a href="/index.html">Home</a>
-        <a href="/settings.html">Settings</a>
-        <a href="/dashboard.html">Dashboard</a>
-    </div>
-
-    <div class="container">
-        <h1>Web Proxy</h1>
-
-        <form id="login-form">
-            <label for="username">Username:</label>
-            <input type="text" name="username" />
-            <br />
-            <label for="password">Password:</label>
-            <input type="password" name="password" />
-            <br />
-            <button type="submit">Login</button>
-        </form>
-
-        <div id="proxy-status" style="color: red;">Proxy is offline</div>
-        <div id="connection-status" style="color: red;">Not connected</div>
-        <div id="error-message"></div>
-    </div>
-</body>
-
-</html>
+    // Send login request
+    fetch("/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.success) {
+                // Login successful, update UI
+                updateProxyStatus("online");
+                updateConnectionStatus("connected");
+                clearErrorMessage();
+            } else {
+                // Login failed, display error
+                displayErrorMessage(data.message);
+            }
+        })
+        .catch((error) => {
+            // Network error
+            displayErrorMessage("Network error, please try again");
+        });
+});
 ```
