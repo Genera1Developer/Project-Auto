@@ -143,3 +143,83 @@ content:
 </html>
 
 ```
+file: settings.html
+content: 
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Proxy Settings</title>
+    <link rel="stylesheet" href="/public/styles.css" />
+  </head>
+  <body>
+    <div class="container grid grid-cols-6 gap-4 max-w-screen-lg mx-auto">
+      <aside class="col-span-1 bg-blue-50 h-screen">
+        <div class="sidebar-nav">
+          <ul>
+            <li>
+              <a href="/index.html" class="block px-3 py-2 rounded-md bg-blue-100">
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="/settings.html" class="block px-3 py-2 rounded-md bg-blue-100">
+                Settings
+              </a>
+            </li>
+            <li>
+              <a href="/dashboard.html" class="block px-3 py-2 rounded-md bg-blue-100">
+                Dashboard
+              </a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+      <main class="col-span-5">
+        <div class="py-6">
+          <h1 class="text-2xl font-bold">Proxy Settings</h1>
+          <p>
+            Configure the following settings to customize your proxy setup.
+          </p>
+          <form id="settings-form">
+            <div class="mt-6">
+              <h2 class="text-xl font-bold">Protocol</h2>
+              <div class="mt-4">
+                <div>
+                  <label
+                    for="protocol-http"
+                    class="block mb-2"
+                    ><input
+                      type="radio"
+                      id="protocol-http"
+                      name="protocol"
+                      value="http"
+                      checked
+                    />
+                    HTTP</label
+                  >
+                </div>
+                <div class="mt-2">
+                  <label
+                    for="protocol-https"
+                    class="block mb-2"
+                    ><input
+                      type="radio"
+                      id="protocol-https"
+                      name="protocol"
+                      value="https"
+                    />
+                    HTTPS</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="mt-6">
+              <h2 class="text-xl font-bold">Port</h2>
+              <label for="port" class="block mb-2">Port:</label>
+              <input
+                type="number"
+                id="port"
+                name="port"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus
