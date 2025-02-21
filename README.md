@@ -4,7 +4,11 @@ content:
 ```
 Web Proxy Project
 
-This project provides a structured web proxy with a user-friendly interface and comprehensive functionality.
+This project provides a structured web proxy with a baby blue and rounded theme, accessible via the following pages:
+
+- index.html: Main landing page with login, status, and navigation.
+- settings.html: Proxy configuration options.
+- dashboard.html: Real-time monitoring and user statistics.
 
 Files:
 
@@ -13,8 +17,6 @@ Files:
 - dashboard.html: Real-time monitoring and user statistics.
 - styles.css: Baby blue and rounded theme.
 - scripts.js: JavaScript for all pages, including login, proxy configuration, dashboard management, sidebar navigation, and error handling.
-- background.js: Proxy server logic.
-- config.json: Proxy server configuration parameters.
 
 Requirements:
 
@@ -58,10 +60,4 @@ Requirements:
 - Sidebar navigation functionality.
 - Error handling for all pages.
 - Cross-browser compatibility.
-
-6. background.js:
-- Proxy server initialization, connection handling, and data forwarding.
-
-7. config.json:
-- Proxy server configuration parameters, such as hostname, port, authentication settings, etc.
 ```
