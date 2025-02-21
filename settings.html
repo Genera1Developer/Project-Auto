@@ -125,3 +125,43 @@ content:
                       </tr>
                     </tbody>
                   </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6">
+            <h2 class="text-xl font-bold">Banned IPs</h2>
+            <div class="mt-4">
+              <div class="card bg-blue-100 rounded-md p-4">
+                <div class="flex items-center justify-between">
+                  <span class="text-xl font-bold">Total Banned IPs</span>
+                  <span id="total-banned-ips" class="text-red-500">0</span>
+                </div>
+                <div class="mt-4">
+                  <table class="table-fixed w-full">
+                    <thead>
+                      <tr>
+                        <th class="px-3 py-2 text-left">IP Address</th>
+                        <th class="px-3 py-2 text-left">Hostname</th>
+                        <th class="px-3 py-2 text-left">Banned Since</th>
+                        <th class="px-3 py-2 text-left">Reason</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="hidden" id="banned-ips-empty-state">
+                        <td colspan="4" class="text-center">
+                          No banned IPs available
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
+```
