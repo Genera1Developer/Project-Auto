@@ -3,51 +3,54 @@ content:
 ```html
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <div id="container">
-      <div id="sidebar" style="border-radius: 10px; background-color: #a9d1d1; padding: 10px;">
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
+<body>
+  <div id="container">
+    <div id="sidebar" style="border-radius: 10px; background-color: #a9d1d1; padding: 10px;">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+    <div id="content" style="margin-left: 200px; border-radius: 10px; background-color: #e9eef4; padding: 20px;">
+      <div id="login">
+        <h1>Login</h1>
+        <form>
+          <label for="username">Username:</label>
+          <input type="text" id="username" />
+          <label for="password">Password:</label>
+          <input type="password" id="password" />
+          <input type="submit" value="Login" />
+        </form>
+      </div>
+      <div id="proxy-status">
+        <h2>Proxy Status</h2>
+        <p>Connecting...</p>
+      </div>
+      <div id="error-message" style="color: red;">...</div>
+      <div id="connection-status">
+        <h3>Connection Status</h3>
+        <p id="connection-status-text">...</p>
+      </div>
+      <div id="user-statistics" style="border-top: 1px solid #bbb; padding-top: 10px;">
+        <h4>User Statistics</h4>
         <ul>
-          <li><a href="/index.html">Home</a></li>
-          <li><a href="/settings.html">Settings</a></li>
-          <li><a href="/dashboard.html">Dashboard</a></li>
+          <li>Total Connections: ...</li>
+          <li>Active Connections: ...</li>
+          <li>Average Connection Time: ...</li>
         </ul>
       </div>
-      <div id="content" style="margin-left: 200px; border-radius: 10px; background-color: #e9eef4; padding: 20px;">
-        <div id="login">
-          <h1>Login</h1>
-          <form>
-            <label for="username">Username:</label>
-            <input type="text" id="username" />
-            <label for="password">Password:</label>
-            <input type="password" id="password" />
-            <input type="submit" value="Login" />
-          </form>
-        </div>
-        <div id="proxy-status">
-          <h2>Proxy Status</h2>
-          <p>Connecting...</p>
-        </div>
-        <div id="error-message" style="color: red;">...</div>
-        <div id="connection-status">
-          <h3>Connection Status</h3>
-          <p id="connection-status-text">...</p>
-        </div>
-        <div id="user-statistics" style="border-top: 1px solid #bbb; padding-top: 10px;">
-          <h4>User Statistics</h4>
-          <ul>
-            <li>Total Connections: ...</li>
-            <li>Active Connections: ...</li>
-            <li>Average Connection Time: ...</li>
-          </ul>
-        </div>
-      </div>
     </div>
-  </body>
+  </div>
+  <div id="footer">
+    <p>Copyright © 2023 Web Proxy</p>
+  </div>
+</body>
 </html>
 ```
