@@ -1,11 +1,11 @@
-file path: settings.html
+file path: dashboard.html
 content: ```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
-  <title>Settings</title>
+  <title>Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -20,25 +20,52 @@ content: ```html
       </div>
     </div>
     <div class="main-content">
-      <div class="settings-form">
-        <form>
-          <label for="protocol">Protocol:</label>
-          <select id="protocol">
-            <option value="HTTP">HTTP</option>
-            <option value="HTTPS">HTTPS</option>
-          </select>
-          <label for="port">Port:</label>
-          <input class="form-input" type="number" id="port" />
-          <div class="authentication-settings">
-            <label for="username">Username:</label>
-            <input class="form-input" type="text" id="username" />
-            <label for="password">Password:</label>
-            <input class="form-input" type="password" id="password" />
+      <div class="dashboard-content">
+        <div class="connection-status">
+          <h3>Connection Status</h3>
+          <p class="status connected">Connected</p>
+        </div>
+        <div class="bandwidth-usage">
+          <h3>Bandwidth Usage</h3>
+          <canvas id="bandwidth-chart"></canvas>
+        </div>
+        <div class="active-connections">
+          <h3>Active Connections</h3>
+          <ul class="connection-list">
+            <li>
+              <p>192.168.1.1:80</p>
+              <p>HTTP</p>
+            </li>
+            <li>
+              <p>192.168.1.2:443</p>
+              <p>HTTPS</p>
+            </li>
+          </ul>
+        </div>
+        <div class="error-log">
+          <h3>Error Log</h3>
+          <ul class="error-list">
+            <li>
+              <p>Error: Failed to connect to proxy server</p>
+            </li>
+            <li>
+              <p>Error: Connection timed out</p>
+            </li>
+          </ul>
+        </div>
+        <div class="user-statistics">
+          <h3>User Statistics</h3>
+          <div class="user-stats">
+            <div>
+              <p>Total Users:</p>
+              <span id="total-users">5</span>
+            </div>
+            <div>
+              <p>Active Users:</p>
+              <span id="active-users">2</span>
+            </div>
           </div>
-          <label for="bandwidth-limit">Bandwidth Limit:</label>
-          <input class="form-input" type="number" id="bandwidth-limit" />
-          <button class="save-button" type="submit">Save</button>
-        </form>
+        </div>
       </div>
     </div>
   </div>
