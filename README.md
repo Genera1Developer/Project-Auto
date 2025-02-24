@@ -1,3 +1,6 @@
+file: dashboard.html
+
+content:
 ```html
 <!DOCTYPE html>
 <html>
@@ -37,57 +40,32 @@
             margin-left: 220px;
         }
 
-        .form-container {
-            max-width: 500px;
+        .dashboard-container {
+            max-width: 800px;
             margin: 0 auto;
             padding: 20px;
             border-radius: 10px;
             background-color: #ffffff;
         }
 
-        .form-group {
-            margin-bottom: 10px;
+        .dashboard-section {
+            margin-bottom: 20px;
         }
 
-        .form-label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .button-container {
-            margin-top: 10px;
-        }
-
-        .button {
-            padding: 5px 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: white;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background-color: #2980b9;
-        }
-
-        .error-message {
-            color: red;
+        .dashboard-section-title {
             font-weight: bold;
             margin-bottom: 10px;
         }
 
-        .success-message {
-            color: green;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .dashboard-section-content {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
         }
 
         .status-indicator {
@@ -104,6 +82,36 @@
         .offline {
             background-color: red;
         }
+
+        .bandwidth-graph {
+            width: 100%;
+            height: 200px;
+        }
+
+        .active-connections-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .active-connections-table th {
+            background-color: #3498db;
+            color: white;
+            padding: 5px;
+        }
+
+        .active-connections-table td {
+            padding: 5px;
+        }
+
+        .error-log {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .error-log-item {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -116,35 +124,61 @@
     <div class="content">
         <h1>Dashboard</h1>
         <p>Monitor your proxy usage and make adjustments as needed.</p>
-        <div class="form-container">
-            <form action="/dashboard/update" method="post">
-                <div class="form-group">
-                    <label class="form-label" for="protocol">Protocol</label>
-                    <select class="form-input" name="protocol" id="protocol">
-                        <option value="HTTP">HTTP</option>
-                        <option value="HTTPS">HTTPS</option>
-                    </select>
+        <div class="dashboard-container">
+            <div class="dashboard-section">
+                <div class="dashboard-section-title">Connection Status</div>
+                <div class="dashboard-section-content">
+                    <div class="connection-status">
+                        <div class="status-indicator online"></div>
+                        <span>Online</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="port">Port</label>
-                    <input class="form-input" type="number" name="port" id="port" min="0" max="65535">
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-section-title">Bandwidth Usage</div>
+                <div class="dashboard-section-content">
+                    <canvas id="bandwidth-graph"></canvas>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="authentication">Authentication</label>
-                    <input class="form-input" type="checkbox" name="authentication" id="authentication">
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-section-title">Active Connections</div>
+                <div class="dashboard-section-content">
+                    <table class="active-connections-table">
+                        <thead>
+                            <tr>
+                                <th>Remote IP</th>
+                                <th>Local IP</th>
+                                <th>Port</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>192.168.1.1</td>
+                                <td>127.0.0.1</td>
+                                <td>8080</td>
+                            </tr>
+                            <tr>
+                                <td>192.168.1.2</td>
+                                <td>127.0.0.1</td>
+                                <td>8081</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="username">Username</label>
-                    <input class="form-input" type="text" name="username" id="username" disabled>
+            </div>
+            <div class="dashboard-section">
+                <div class="dashboard-section-title">Error Log</div>
+                <div class="dashboard-section-content error-log">
+                    <div class="error-log-item">
+                        <span>2023-03-08 10:00:00</span>
+                        <span>Error connecting to remote host</span>
+                    </div>
+                    <div class="error-log-item">
+                        <span>2023-03-08 10:01:00</span>
+                        <span>Error sending data to remote host</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="password">Password</label>
-                    <input class="form-input" type="password" name="password" id="password" disabled>
-                </div>
-                <div class="button-container">
-                    <button class="button" type="submit">Update</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </body>
