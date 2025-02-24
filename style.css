@@ -33,6 +33,7 @@ body {
   grid-template-columns: 1fr;
   padding: 16px;
   z-index: 1;
+  overflow-y: auto;
 }
 .sidebar h1 {
   grid-area: header;
@@ -186,6 +187,16 @@ h6 {
   }
   .sidebar {
     display: none;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 56px;
+    padding: 8px;
+  }
+  .sidebar-item:hover {
+    background: #394959;
   }
   .navigation-links {
     display: flex;
