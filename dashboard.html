@@ -7,64 +7,72 @@
   <title>Proxy Dashboard</title>
 </head>
 <body>
-  <sidebar-navigation></sidebar-navigation>
-  <div class="container">
-    <div class="section-header">
+  <aside id="sidebar-navigation"></aside>
+  <main class="container">
+    <header class="section-header">
       <h1>Dashboard</h1>
-    </div>
-    <div class="section-content">
+    </header>
+    <section class="section-content">
       <div class="row">
         <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
+          <article class="card">
+            <header class="card-header">
               <h2>Proxy Status</h2>
+            </header>
+            <div class="card-body" id="proxy-status">
+              Loading...
             </div>
-            <div class="card-body" id="proxy-status">Loading...</div>
-          </div>
+          </article>
         </div>
         <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
+          <article class="card">
+            <header class="card-header">
               <h2>Total Connections</h2>
+            </header>
+            <div class="card-body" id="total-connections">
+              Loading...
             </div>
-            <div class="card-body" id="total-connections">Loading...</div>
-          </div>
+          </article>
         </div>
         <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
+          <article class="card">
+            <header class="card-header">
               <h2>Active Connections</h2>
+            </header>
+            <div class="card-body" id="active-connections">
+              Loading...
             </div>
-            <div class="card-body" id="active-connections">Loading...</div>
-          </div>
+          </article>
         </div>
         <div class="col-lg-6">
-          <div class="card">
-            <div class="card-header">
+          <article class="card">
+            <header class="card-header">
               <h2>Bandwidth Used</h2>
+            </header>
+            <div class="card-body" id="bandwidth-used">
+              Loading...
             </div>
-            <div class="card-body" id="bandwidth-used">Loading...</div>
-          </div>
+          </article>
         </div>
       </div>
       <div class="row">
         <div class="col-lg-12">
-          <div class="card">
-            <div class="card-header">
+          <article class="card">
+            <header class="card-header">
               <h2>Bandwidth Usage Graph</h2>
-            </div>
+            </header>
             <div class="card-body">
               <canvas id="bandwidth-usage-chart" width="100%" height="400"></canvas>
             </div>
-          </div>
+          </article>
         </div>
       </div>
       <div class="row">
         <div class="col-lg-12">
-          <div class="card">
-            <div class="card-header">
+          <article class="card">
+            <header class="card-header">
               <h2>Active Connections</h2>
-            </div>
+            </header>
             <div class="card-body">
               <table id="active-connections-list">
                 <thead>
@@ -81,24 +89,24 @@
                 </tbody>
               </table>
             </div>
-          </div>
+          </article>
         </div>
       </div>
       <div class="row">
         <div class="col-lg-12">
-          <div class="card">
-            <div class="card-header">
+          <article class="card">
+            <header class="card-header">
               <h2>Error Log</h2>
-            </div>
+            </header>
             <div class="card-body">
               <ul id="error-log-list">
                 <li>Loading...</li>
               </ul>
             </div>
-          </div>
+          </article>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 </body>
 </html>
