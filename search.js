@@ -1,1 +1,1 @@
-"// shared advanced search functionality\nexport default from './search.js'"
+"export default from './search.js'"
