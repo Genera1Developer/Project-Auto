@@ -7,10 +7,10 @@
       <header class="card-header">
         <h2>Active Connections List</h2>
         <div class="buttons-container">
-          <button class="reload-btn" title="Refresh the list of active connections" type="button" data-target-table="connections">
+          <button class="btn btn-reload" title="Refresh the list of active connections" type="button" data-target-table="connections">
             <span class="material-icons md-24 reload-icon">refresh</span>
           </button>
-          <button class="clear-btn" title="Clear the list of active connections" type="button" data-target-table="connections">
+          <button class="btn btn-clear" title="Clear the list of active connections" type="button" data-target-table="connections">
             <span class="material-icons md-24 clear-icon">clear</span>
           </button>
         </div>
@@ -31,10 +31,10 @@
       <header class="card-header">
         <h2>Error Log</h2>
         <div class="buttons-container">
-          <button class="clear-btn" title="Clear the error log" type="button" data-target-list="errors">
+          <button class="btn btn-clear" title="Clear the error log" type="button" data-target-list="errors">
             <span class="material-icons md-24 clear-icon">clear</span>
           </button>
-          <button class="export-btn" title="Export the error log" type="button" data-target-list="errors">
+          <button class="btn btn-export" title="Export the error log" type="button" data-target-list="errors">
             <span class="material-icons md-24 export-icon">file_download</span>
           </button>
         </div>
@@ -59,8 +59,8 @@
       <header class="card-header">
         <h2>Active Users List</h2>
         <div class="buttons-container">
-          <button class="reload-btn" title="Refresh the list of active users" type="button" data-target-table="users"><span class="material-icons md-24 reload-icon">refresh</span></button>
-          <button class="clear-btn" title="Clear the list of active users" type="button" data-target-table="users"><span class="material-icons md-24 clear-icon">clear</span></button>
+          <button class="btn btn-reload" title="Refresh the list of active users" type="button" data-target-table="users"><span class="material-icons md-24 reload-icon">refresh</span></button>
+          <button class="btn btn-clear" title="Clear the list of active users" type="button" data-target-table="users"><span class="material-icons md-24 clear-icon">clear</span></button>
         </div>
       </header>
       <div class="card-body">
@@ -81,7 +81,7 @@
   </div>
 </footer>
 <script>
-  const reloadButtons = Array.from(document.querySelectorAll('.reload-btn'));
+  const reloadButtons = Array.from(document.querySelectorAll('.btn-reload'));
   reloadButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetTable = e.target.getAttribute('data-target-table');
@@ -93,7 +93,7 @@
     });
   });
 
-  const clearButtons = Array.from(document.querySelectorAll('.clear-btn'));
+  const clearButtons = Array.from(document.querySelectorAll('.btn-clear'));
   clearButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetTable = e.target.getAttribute('data-target-table');
@@ -106,7 +106,7 @@
     });
   });
   
-  const exportButtons = Array.from(document.querySelectorAll('.export-btn'));
+  const exportButtons = Array.from(document.querySelectorAll('.btn-export'));
   exportButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetList = e.target.getAttribute('data-target-list');
