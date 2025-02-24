@@ -9,6 +9,10 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const forms = document.querySelectorAll("form");
+      const tabs = document.querySelectorAll(".settings-tabs li a");
+      const tabContents = document.querySelectorAll(".settings-tab-container");
+
+      // Form submission handler
       forms.forEach(form => {
         form.addEventListener("submit", e => {
           e.preventDefault();
@@ -23,11 +27,36 @@
             .then(response => response.text())
             .then(data => alert(data))
             .catch(error => {
-              alert("An error occurred while submitting the form. Please try again.");
+              alert(
+                "An error occurred while submitting the form. Please try again."
+              );
               console.error(error);
             });
         });
       });
+
+      // Tab switching handler
+      tabs.forEach(tab => {
+        tab.addEventListener("click", e => {
+          e.preventDefault();
+
+          const targetTab = e.target.getAttribute("href");
+
+          tabs.forEach(tab => {
+            tab.classList.remove("active");
+          });
+
+          tabContents.forEach(tabContent => {
+            tabContent.style.display = "none";
+          });
+
+          e.target.classList.add("active");
+          document.querySelector(targetTab).style.display = "block";
+        });
+      });
+
+      // Initial tab activation
+      tabs[0].click();
     });
   </script>
 </head>
@@ -46,7 +75,9 @@
 
   <main class="main-content">
     <section class="settings-section">
-      <h1 class="page-title">Settings <span class="note">(Changes require a proxy restart)</span></h1>
+      <h1 class="page-title">
+        Settings <span class="note">(Changes require a proxy restart)</span>
+      </h1>
 
       <p class="intro">
         Configure your web proxy settings for secure and anonymous web browsing.
@@ -63,12 +94,27 @@
 
           <label class="input-container">
             <span class="label">Username</span>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus autocomplete="username" />
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Enter your username"
+              required
+              autofocus
+              autocomplete="username"
+            />
           </label>
 
           <label class="input-container">
             <span class="label">Password</span>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            />
           </label>
 
           <div class="btn-container">
@@ -83,12 +129,24 @@
 
           <label class="input-container">
             <span class="label">Proxy Address</span>
-            <input type="text" id="proxy-address" name="proxy-address" placeholder="Enter the proxy address" required />
+            <input
+              type="text"
+              id="proxy-address"
+              name="proxy-address"
+              placeholder="Enter the proxy address"
+              required
+            />
           </label>
 
           <label class="input-container">
             <span class="label">Proxy Port</span>
-            <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" required />
+            <input
+              type="number"
+              id="proxy-port"
+              name="proxy-port"
+              placeholder="Enter the proxy port"
+              required
+            />
           </label>
 
           <label class="input-container">
