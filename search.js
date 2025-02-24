@@ -1,1 +1,1 @@
-"// This file was generated automatically and should not be edited by hand\n---END---\n"
+"// This file was generated automatically and should not be edited by hand"
