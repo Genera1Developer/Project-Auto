@@ -129,7 +129,6 @@ body {
   display: none !important;
 }
 
-/* Extra Classes for Reusability */
 h1,
 h2,
 h3,
@@ -243,6 +242,10 @@ h6 {
   }
 
   .sidebar-item {
+    padding: 6px;
+  }
+
+  .main-content {
     padding: 6px;
   }
 }
