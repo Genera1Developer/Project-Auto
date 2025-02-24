@@ -40,9 +40,7 @@ content: ```html
       <div class="connection-status"></div>
       <div class="error-messages"></div>
     </main>
-    <script>
-      // Your JavaScript code here.
-    </script>
+    <script src="main.js"></script>
   </body>
 </html>
 ```
@@ -98,9 +96,7 @@ content: ```html
         <button class="form-button" type="submit">Save</button>
       </form>
     </main>
-    <script>
-      // Your JavaScript code here.
-    </script>
+    <script src="main.js"></script>
   </body>
 </html>
 ```
@@ -135,9 +131,7 @@ content: ```html
       <div class="error-log"></div>
       <div class="user-statistics"></div>
     </main>
-    <script>
-      // Your JavaScript code here.
-    </script>
+    <script src="main.js"></script>
   </body>
 </html>
 ```
@@ -154,6 +148,7 @@ The project consists of four main files:
 - `index.html`: Main landing page with login form, navigation to settings and dashboard, proxy status indicator, error message display, and connection status display.
 - `settings.html`: Proxy configuration page with settings for proxy protocol, port, authentication, and bandwidth limits.
 - `dashboard.html`: User statistics and monitoring page with real-time connection status, bandwidth usage graphs, active connections list, error log display, and user statistics.
+- `main.js`: JavaScript file for handling login, settings, and dashboard functionality.
 - `style.css`: Styling for all pages, including baby blue and rounded theme.
 
 ## Key Features
