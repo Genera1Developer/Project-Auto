@@ -14,13 +14,13 @@
 
       const username = document.querySelector("#username").value.trim();
       if (!username) {
-        alert("Username is required.");
+        alert("Please enter a username.");
         return;
       }
 
       const password = document.querySelector("#password").value.trim();
       if (!password) {
-        alert("Password is required.");
+        alert("Please enter a password.");
         return;
       }
 
@@ -47,12 +47,12 @@
 
         <form action="login.php" method="post" class="form">
           <div class="input-group">
-            <label for="username">Username:</label>
+            <label for="username">Username</label>
             <input type="text" id="username" name="username" required autofocus autocomplete="username" />
           </div>
 
           <div class="input-group">
-            <label for="password">Password:</label>
+            <label for="password">Password</label>
             <input type="password" id="password" name="password" required autocomplete="current-password" />
           </div>
 
