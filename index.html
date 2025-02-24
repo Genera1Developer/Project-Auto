@@ -1,6 +1,3 @@
-file path: settings.html
-content:
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,15 +17,14 @@ content:
     }
 
     .container {
-      display: flex;
-      flex-direction: row;
+      display: grid;
+      grid-template-columns: 250px 1fr;
       height: 100vh;
     }
 
     .sidebar {
       background: #0099ff;
       color: #fff;
-      width: 250px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -47,8 +43,8 @@ content:
     }
 
     .main-content {
-      flex: 1;
       padding: 1rem;
+      overflow: scroll;
     }
 
     .main-content h1 {
@@ -124,4 +120,3 @@ content:
 </body>
 
 </html>
-```
