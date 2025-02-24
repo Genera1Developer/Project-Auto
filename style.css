@@ -102,12 +102,7 @@ body {
 }
 
 /* Extra Classes for Reusability */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
 }
 
@@ -134,4 +129,27 @@ h6 {
   align-items: center;
   justify-content: space-between;
   padding: 12px;
+}
+
+.visually-hidden {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    flex: 1 0 120px;
+    width: 120px;
+  }
+
+  .sidebar h1 {
+    font-size: 1.25rem;
+  }
+
+  .wrapper {
+    gap: 16px;
+  }
+
+  .main-content {
+    padding: 8px;
+  }
 }
