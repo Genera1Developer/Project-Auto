@@ -1,1 +1,1 @@
-"// Generated automatically by NSXPT_ST RESOLVE tool\nfunction Search() {}\n"
+"// Generated automatically by NSXPT_ST RESOLVE tool\nfunction Search(a, b) {return a + b;}\n"
