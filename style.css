@@ -4,12 +4,16 @@ body {
   margin: 0;
   height: 100vh;
   display: grid;
+  grid-template-areas:
+    "header header"
+    "sidebar main";
   grid-template-rows: 48px 1fr;
   grid-template-columns: 200px 1fr;
   gap: 24px;
 }
 
 .wrapper {
+  grid-area: main;
   height: calc(100vh - 48px);
   max-width: 1024px;
   gap: 24px;
@@ -21,25 +25,30 @@ body {
 }
 
 .sidebar {
+  grid-area: sidebar;
   background-color: #2c3e50;
   color: white;
   display: grid;
+  grid-template-areas:
+    "header"
+    "nav";
   grid-template-rows: 64px 1fr;
 }
 
 .sidebar h1 {
+  grid-area: header;
   font-size: 1.5rem;
   padding: 16px;
   margin-bottom: 12px;
-  grid-row: 1;
 }
 
 .navigation-links {
-  list-style-type: none;
+  grid-area: nav;
   display: flex;
   flex-direction: column;
   gap: 12px;
   margin: 0;
+  list-style-type: none;
 }
 
 .navigation-link {
@@ -65,6 +74,7 @@ body {
   padding: 16px;
   overflow-y: auto;
   gap: 12px;
+  max-width: 100%;
 }
 
 .login-form {
@@ -149,18 +159,28 @@ h6 {
 
 @media (max-width: 768px) {
   body {
-    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main";
     grid-template-rows: 48px 1fr;
+    grid-template-columns: 1fr;
   }
 
   .wrapper {
     gap: 16px;
     flex-direction: column;
+    grid-template-areas:
+      "sidebar"
+      "main";
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
   }
 
   .sidebar {
+    grid-area: sidebar;
+    grid-template-areas:
+      "header"
+      "nav";
     grid-template-rows: 48px 1fr;
     grid-column: 1;
     grid-row: 1;
@@ -171,6 +191,7 @@ h6 {
   }
 
   .main-content {
+    grid-area: main;
     padding: 8px;
     grid-column: 1;
     grid-row: 2;
