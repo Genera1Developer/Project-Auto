@@ -10,35 +10,35 @@
 
 ## Password Management
 
-- Enforce robust password policies (minimum length, character requirements, expiration intervals) for increased account security.
-- Implement multi-factor authentication to enhance account protection.
-- Utilize password managers to securely store and manage user credentials, reducing the risk of compromised passwords.
-- Conduct regular password audits to detect and address weak or compromised passwords, ensuring ongoing password health.
+- Enforce strong password policies (length, complexity, expiration) for account security.
+- Implement multi-factor authentication for enhanced protection.
+- Utilize password managers for secure storage and management, reducing password compromise risk.
+- Conduct regular audits to identify weak or compromised passwords, ensuring password health.
 
 ## Access Control
 
-- Define granular roles and permissions for user groups based on their job responsibilities, ensuring that users only have access to the necessary resources.
-- Implement role-based access control (RBAC) to restrict access to sensitive data, mitigating the risk of unauthorized access.
-- Monitor user access patterns and identify anomalies that may indicate suspicious activity, enabling timely detection of potential threats.
-- Review and adjust access privileges periodically to ensure that permissions remain appropriate, reducing the risk of privilege escalation.
+- Define granular roles and permissions based on job responsibilities, ensuring need-to-know access.
+- Implement RBAC to restrict access to sensitive data, mitigating unauthorized access.
+- Monitor user access and identify anomalies, enabling early threat detection.
+- Review access privileges regularly to ensure appropriateness, reducing privilege escalation risk.
 
 ## Data Protection
 
-- Encrypt sensitive data both at rest and in transit using industry-standard encryption algorithms, safeguarding data from unauthorized access.
-- Employ data masking techniques to obfuscate sensitive data when stored or transmitted, minimizing the risk of data exposure.
-- Implement data loss prevention (DLP) measures to detect and prevent unauthorized data exfiltration, protecting sensitive data from unauthorized access.
-- Establish regular data backup and restore procedures to ensure data integrity and recoverability, ensuring business continuity in the event of data loss.
+- Encrypt sensitive data at rest and in transit using industry-standard algorithms for data security.
+- Implement data masking for sensitive data obfuscation, minimizing exposure risk.
+- Employ DLP measures to detect and prevent unauthorized data exfiltration, protecting data integrity.
+- Establish regular data backup and restore procedures for data recovery in case of loss.
 
 ## Vulnerability Management
 
-- Conduct regular vulnerability assessments using automated scanning tools to identify potential security weaknesses, proactively addressing vulnerabilities before they can be exploited.
-- Prioritize and promptly patch or update systems to address identified vulnerabilities, reducing the attack surface and mitigating risks.
-- Track open vulnerabilities and monitor for new vulnerabilities that may emerge, ensuring continuous vulnerability awareness.
-- Conduct penetration testing to simulate real-world attacks and assess the effectiveness of security controls, identifying areas for improvement.
+- Conduct vulnerability assessments using automated tools to identify potential security weaknesses.
+- Prioritize and patch identified vulnerabilities promptly, reducing attack surface and mitigating risks.
+- Track open vulnerabilities and monitor for emerging threats, ensuring continuous vulnerability awareness.
+- Conduct penetration testing to simulate attacks and assess control effectiveness, identifying improvement areas.
 
 ## Incident Response
 
-- Establish a comprehensive incident response plan and train an incident response team to ensure effective response to security incidents.
-- Implement intrusion detection and prevention systems (IDS/IPS) to detect and block malicious activity, reducing the impact of potential attacks.
-- Train staff on incident response procedures and responsibilities, ensuring a coordinated response to incidents.
-- Conduct simulated incident response exercises to test response capabilities and identify areas for improvement, enhancing preparedness and response efficiency.
+- Establish a comprehensive incident response plan and train a response team for effective incident response.
+- Implement IDS/IPS to detect and block malicious activity, reducing potential attack impact.
+- Train staff on incident response procedures and responsibilities, ensuring a coordinated response.
+- Conduct simulated incident response exercises to test capabilities and identify areas for improvement, enhancing preparedness and response efficiency.
