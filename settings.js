@@ -16,7 +16,7 @@ const settings = {
   application: {
     name: "My Application",
     version: "1.0.0",
-    buildDate: "2023-01-01T00:00:00Z", // Use ISO 8601 format for timestamps.
+    buildDate: "2023-01-01T00:00:00.000Z", // Use ISO 8601 format with milliseconds for timestamps.
     environment: "development",
   },
 };
