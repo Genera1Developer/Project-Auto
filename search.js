@@ -1,1 +1,1 @@
-$("#inputSearchField").focus(); console.log('search');
+$(".search-field").focus(); console.log('search');
