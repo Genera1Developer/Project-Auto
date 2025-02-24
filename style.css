@@ -109,4 +109,62 @@ button {
     transform: scale(1);
   }
 }
+
+/* Main page specific styles */
+
+#main-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+#status-indicator {
+  width: 20px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+}
+
+#proxy-status {
+  margin-left: 10px;
+}
+
+#error-message {
+  color: #d9534f;
+  margin-top: 10px;
+}
+
+#connection-status {
+  color: #4caf50;
+  margin-top: 10px;
+}
+
+/* Proxy configuration page specific styles */
+
+#proxy-settings {
+  display: flex;
+  justify-content: space-between;
+}
+
+#proxy-form {
+  width: 50%;
+}
+
+#authentication-settings {
+  width: 50%;
+}
+
+/* Dashboard page specific styles */
+
+#dashboard-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+#connection-stats {
+  width: 50%;
+}
+
+#error-log {
+  width: 50%;
+}
 ```
