@@ -4,7 +4,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="./style.css" />
-  <script type="module" src="./settings.js"></script>
+  <script type="module" src="./settings.js" defer></script>
 </head>
 <body>
   <div class="container">
@@ -109,7 +109,7 @@
           <button
             type="button"
             class="btn btn-link"
-            onclick="location.href='/dashboard.html'"
+            onclick="window.location.href='/dashboard.html'"
           >
             Cancel
           </button>
