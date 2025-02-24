@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy Settings - Settings</title>
+  <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="style.css">
   <script type="module" src="settings.js"></script>
 </head>
@@ -10,16 +10,14 @@
   <div class="container">
     <header class="header">
       <a href="/">
-        <h1>Web Proxy Settings</h1>
+        <h1>Web Proxy</h1>
       </a>
+      <nav class="links">
+        <a href="/">Home</a>
+        <a href="/settings.html" class="active">Settings</a>
+        <a href="/dashboard.html">Dashboard</a>
+      </nav>
     </header>
-    <nav class="sidebar">
-      <ul>
-        <li><a href="/" class="nav-link">Home</a></li>
-        <li><a href="/settings.html" class="nav-link active">Settings</a></li>
-        <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
-      </ul>
-    </nav>
     <main class="main-content">
       <h2>Proxy Configuration</h2>
       <p>Configure your proxy settings here. Leave any field blank to disable the corresponding option.</p>
@@ -38,53 +36,22 @@
           </div>
           <div class="field-container">
             <label for="proxy-host">Host IP or Domain:</label>
-            <input
-              id="proxy-host"
-              name="host"
-              type="text"
-              pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
-              placeholder="e.g. 192.168.1.101"
-              aria-label="Proxy host IP or domain"
-              required
-            />
+            <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" placeholder="e.g. 192.168.1.101" aria-label="Proxy host IP or domain" required>
           </div>
           <div class="field-container">
             <label for="proxy-port">Port:</label>
-            <input
-              id="proxy-port"
-              name="port"
-              type="number"
-              min="0"
-              max="65535"
-              step="1"
-              placeholder="e.g. 8080"
-              required
-              aria-label="Proxy port number"
-            />
+            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" placeholder="e.g. 8080" aria-label="Proxy port number" required>
           </div>
           <div class="field-container">
             <label for="proxy-authentication">Proxy Authentication (Optional):</label>
-            <input
-              id="proxy-authentication"
-              name="authentication"
-              type="text"
-              pattern="^([^:]+):(.+)$"
-              placeholder="username:password"
-              aria-label="Proxy authentication"
-            />
+            <input id="proxy-authentication" name="authentication" type="text" pattern="^([^:]+):(.+)$" placeholder="username:password" aria-label="Proxy authentication">
           </div>
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit (Optional)</legend>
           <div class="field-container">
             <label for="bandwidth-limit">Limit (MB/s):</label>
-            <input
-              id="bandwidth-limit"
-              name="bandwidth_limit"
-              type="number"
-              min="0"
-              aria-label="Bandwidth limit"
-            />
+            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth limit">
           </div>
           <small>Leave blank to disable bandwidth limit.</small>
         </fieldset>
