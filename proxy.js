@@ -1,1 +1,1 @@
-`const app = express();
+`const proxy = require('express-http-proxy');
