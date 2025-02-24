@@ -1,1 +1,1 @@
----START---
+import { createProxyMiddleware } from 'http-proxy-middleware';
