@@ -13,6 +13,7 @@
 
     body {
       --primary-color: #007bff;
+      font-family: sans-serif;
     }
 
     .container {
@@ -130,10 +131,8 @@
     </header>
     <main class="main-content">
       <h1 class="page-title">Proxy Settings</h1>
-      <form id="proxy-settings-form" class="form-container" action="/save_settings" method="POST" autocomplete="off"
-        novalidate>
-        <p>Configure your proxy settings here. Leaving any field blank will disable the
-          corresponding option.</p>
+      <form id="proxy-settings-form" class="form-container" action="/save_settings" method="POST" autocomplete="off" novalidate>
+        <p>Configure your proxy settings here. Leaving any field blank will disable the corresponding option.</p>
         <fieldset>
           <legend>Proxy Settings</legend>
           <div class="form-group">
@@ -148,20 +147,17 @@
           </div>
           <div class="form-group">
             <label for="proxy-host" class="label">Host IP or Domain:</label>
-            <input id="proxy-host" name="host" type="text" class="input" aria-label="Proxy Host"
-              pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$)"
-              required />
+            <input id="proxy-host" name="host" type="text" class="input" aria-label="Proxy Host" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$)" required>
             <span class="error-message" id="host-error-message"></span>
           </div>
           <div class="form-group">
             <label for="proxy-port" class="label">Port:</label>
-            <input id="proxy-port" name="port" type="number" class="input" min="0" max="65535" aria-label="Proxy Port" required />
+            <input id="proxy-port" name="port" type="number" class="input" min="0" max="65535" aria-label="Proxy Port" required>
             <span class="error-message" id="port-error-message"></span>
           </div>
           <div class="form-group">
             <label for="proxy-authentication" class="label">Proxy Authentication (Optional):</label>
-            <input id="proxy-authentication" name="authentication" type="text" class="input" aria-label="Proxy Authentication"
-              pattern="^([^:]+):(.+)?$" placeholder="username:password" />
+            <input id="proxy-authentication" name="authentication" type="text" class="input" aria-label="Proxy Authentication" pattern="^([^:]+):(.+)?$" placeholder="username:password">
             <span class="error-message" id="authentication-error-message"></span>
           </div>
         </fieldset>
@@ -169,13 +165,12 @@
           <legend>Bandwidth Limit (Optional)</legend>
           <div class="form-group">
             <label for="bandwidth-limit" class="label">Limit (MB/s):</label>
-            <input id="bandwidth-limit" name="bandwidth_limit" type="number" class="input" min="0" aria-label="Bandwidth Limit"
-              placeholder="0 to disable" />
+            <input id="bandwidth-limit" name="bandwidth_limit" type="number" class="input" min="0" aria-label="Bandwidth Limit" placeholder="0 to disable">
           </div>
         </fieldset>
         <div class="form-group button-container">
-          <input class="btn btn-primary" type="submit" value="Save" />
-          <input class="btn btn-secondary" type="reset" value="Reset" />
+          <input class="btn btn-primary" type="submit" value="Save">
+          <input class="btn btn-secondary" type="reset" value="Reset">
           <a href="/dashboard.html" class="btn btn-link">Cancel</a>
         </div>
       </form>
