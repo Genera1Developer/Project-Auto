@@ -22,7 +22,7 @@
     </nav>
     <main class="main-content">
       <h2>Proxy Configuration</h2>
-      <form id="proxy-settings-form" action="/save_settings" method="post">
+      <form id="proxy-settings-form" action="/save_settings" method="post" novalidate>
         <fieldset>
           <legend>Proxy Settings</legend>
           <label for="proxy-protocol">Proxy Protocol:</label>
@@ -33,7 +33,7 @@
             <option value="SOCKS5">SOCKS5</option>
           </select>
           <label for="proxy-host">Proxy Server (IP or domain):</label>
-          <input type="text" id="proxy-host" name="host" required />
+          <input type="text" id="proxy-host" name="host" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" title="Must be a valid IP address or domain" required />
           <label for="proxy-port">Proxy Server Port:</label>
           <input type="number" min="0" max="65535" step="1" id="proxy-port" name="port" required />
           <label for="proxy-authentication">Proxy Authentication (optional):</label>
