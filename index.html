@@ -12,7 +12,7 @@
     </header>
     <nav class="sidebar">
       <ul>
-        <li><a href="/index.html" class="nav-link">Home</a></li>
+        <li><a href="/" class="nav-link">Home</a></li>
         <li><a href="/settings.html" class="nav-link active">Settings</a></li>
         <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
       </ul>
@@ -34,22 +34,22 @@
           </div>
           <div class="field-container">
             <label for="proxy-host">Host IP or domain:</label>
-            <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" placeholder="e.g. 192.168.1.101" required />
+            <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" placeholder="e.g. 192.168.1.101" aria-label="Proxy host IP or domain" required />
           </div>
           <div class="field-container">
             <label for="proxy-port">Port:</label>
-            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" required />
+            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" required aria-label="Proxy port number" />
           </div>
           <div class="field-container">
             <label for="proxy-authentication">Proxy Authentication:</label>
-            <input id="proxy-authentication" name="authentication" type="text" placeholder="username:password" />
+            <input id="proxy-authentication" name="authentication" type="text" placeholder="username:password" aria-label="Proxy authentication" />
           </div>
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit (optional)</legend>
           <div class="field-container">
             <label for="bandwidth-limit">Limit (MB/s):</label>
-            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" />
+            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth limit" />
           </div>
           <small>Enter 0 to disable bandwidth limit.</small>
         </fieldset>
