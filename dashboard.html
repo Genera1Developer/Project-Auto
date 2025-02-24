@@ -1,6 +1,6 @@
 <header>
   <div class="graph-container">
-    <canvas></canvas>
+    <canvas id="graph"></canvas>
   </div>
   <div class="wide-card" data-widget="active-connections-list">
     <header class="card-header">
@@ -14,7 +14,7 @@
             <th>Time Connected</th>
           </tr>
         </thead>
-        <tbody data-container>
+        <tbody id="connections">
           <!-- Connections list goes here -->
         </tbody>
       </table>
@@ -25,7 +25,7 @@
       <h2>Error Log</h2>
     </header>
     <div class="card-body">
-      <ul data-container>
+      <ul id="errors">
         <!-- Error log list goes here -->
       </ul>
     </div>
@@ -37,7 +37,7 @@
       <header class="card-header">
         <h2>Stats</h2>
       </header>
-      <div class="card-body">
+      <div class="card-body" id="stats">
         <!-- Stats go here -->
       </div>
     </div>
