@@ -12,7 +12,7 @@ body {
 .wrapper {
   height: calc(100vh - 48px);
   max-width: 1024px;
-  grid-column-gap: 24px;
+  gap: 24px;
   justify-content: space-between;
   align-items: stretch;
   margin: 0 auto;
@@ -62,7 +62,7 @@ body {
 .main-content {
   padding: 16px;
   overflow-y: auto;
-  grid-gap: 12px;
+  gap: 12px;
 }
 
 .login-form {
@@ -151,7 +151,7 @@ h6 {
   }
 
   .wrapper {
-    grid-column-gap: 16px;
+    gap: 16px;
     flex-direction: column;
     grid-template-columns: 1fr;
   }
