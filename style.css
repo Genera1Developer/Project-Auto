@@ -11,6 +11,7 @@ body {
   gap: 24px;
   padding: 24px;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .sidebar {
@@ -40,6 +41,7 @@ body {
   transition: background-color 0.2s ease-in-out;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .navigation-link:hover {
@@ -147,6 +149,7 @@ h1, h2, h3, h4, h5, h6 {
 
   .wrapper {
     gap: 16px;
+    flex-direction: column;
   }
 
   .main-content {
