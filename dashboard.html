@@ -109,14 +109,22 @@
   const currentYearEl = document.querySelector('.current-year');
   currentYearEl.textContent = new Date().getFullYear();
 
-  const activeCards = document.querySelectorAll('.card.active');
+  // Make the active-connections card active by default
+  const activeConnectionsCard = document.querySelector('.card.active-connections');
+  activeConnectionsCard.classList.add('active');
+
+  // Get the buttons and attach event listeners to them
   const buttons = document.querySelectorAll('.btn');
   buttons.forEach((btn) => {
     btn.addEventListener('click', () => {
+      // Get the target element or table
       const target = btn.getAttribute('data-target-table') || btn.getAttribute('data-target-element') || btn.getAttribute('data-target-list');
+
+      // Get the widget name
       const widget = btn.closest('[data-widget]').getAttribute('data-widget');
 
       if (target && widget) {
+        // Make a fetch request to the server
         fetch(`/${widget}/${target}`)
           .then((res) => res.json())
           .then((data) => {
@@ -133,6 +141,7 @@
     });
   });
 
+  // Function to display stats
   const displayStats = (data) => {
     const statsEl = document.getElementById('stats');
     statsEl.innerHTML = '';
@@ -144,6 +153,7 @@
     }
   };
 
+  // Function to display a list
   const displayList = (data, target) => {
     const listEl = document.getElementById(target);
     listEl.innerHTML = '';
