@@ -1,11 +1,12 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Helvetica', 'Arial', sans-serif;
 }
 
 .wrapper {
   display: flex;
   height: 100vh;
   min-width: 100vh;
+  justify-content: space-around;
   gap: 24px;
 }
 
@@ -34,7 +35,6 @@ body {
   padding: 12px;
   text-decoration: none;
   color: inherit;
-  display: block;
 }
 
 .navigation-link:hover {
@@ -73,7 +73,6 @@ body {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  text-align: center;
 }
 
 .btn:hover {
