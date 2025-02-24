@@ -7,18 +7,18 @@
       <div class="cards-container">
         <div class="card" data-widget="active-connections">
           <header class="card-header">
-            <h2 aria-labelledby="active-connections-heading" class="card-title">Active Connections</h2>
+            <h2 id="active-connections-heading" class="card-title">Active Connections</h2>
             <div class="actions">
-              <button class="btn btn-reload" title="Refresh the list of active connections" type="button" aria-labelledby="active-connections-heading" data-target-table="connections">
+              <button class="btn btn-reload" aria-labelledby="active-connections-heading" data-target-table="connections" type="button" aria-label="Refresh the list of active connections">
                 <span class="material-icons md-24">refresh</span>
               </button>
-              <button class="btn btn-clear" title="Clear the list of active connections" type="button" aria-labelledby="active-connections-heading" data-target-table="connections">
+              <button class="btn btn-clear" aria-labelledby="active-connections-heading" data-target-table="connections" type="button" aria-label="Clear the list of active connections">
                 <span class="material-icons md-24">clear</span>
               </button>
             </div>
           </header>
           <div class="card-body">
-            <table id="connections-table" aria-labelledby="active-connections-heading" class="table">
+            <table id="connections-table" class="table">
               <thead>
                 <tr>
                   <th scope="col">IP Address</th>
@@ -31,18 +31,18 @@
         </div>
         <div class="card" data-widget="error-log">
           <header class="card-header">
-            <h2 aria-labelledby="error-log-heading" class="card-title">Error Log</h2>
+            <h2 id="error-log-heading" class="card-title">Error Log</h2>
             <div class="actions">
-              <button class="btn btn-clear" title="Clear the error log" type="button" aria-labelledby="error-log-heading" data-target-list="errors">
+              <button class="btn btn-clear" aria-labelledby="error-log-heading" data-target-list="errors" type="button" aria-label="Clear the error log">
                 <span class="material-icons md-24">clear</span>
               </button>
-              <button class="btn btn-export" title="Export the error log" type="button" aria-labelledby="error-log-heading" data-target-list="errors">
+              <button class="btn btn-export" aria-labelledby="error-log-heading" data-target-list="errors" type="button" aria-label="Export the error log">
                 <span class="material-icons md-24">file_download</span>
               </button>
             </div>
           </header>
           <div class="card-body">
-            <ol id="errors" aria-labelledby="error-log-heading"></ol>
+            <ol id="errors"></ol>
           </div>
         </div>
       </div>
@@ -61,18 +61,18 @@
   <section class="active-users-section">
     <div class="card" data-widget="active-users">
       <header class="card-header">
-        <h2 aria-labelledby="active-users-heading" class="card-title">Active Users</h2>
+        <h2 id="active-users-heading" class="card-title">Active Users</h2>
         <div class="actions">
-          <button class="btn btn-reload" title="Refresh the list of active users" type="button" aria-labelledby="active-users-heading" data-target-table="users">
+          <button class="btn btn-reload" aria-labelledby="active-users-heading" data-target-table="users" type="button" aria-label="Refresh the list of active users">
             <span class="material-icons md-24">refresh</span>
           </button>
-          <button class="btn btn-clear" title="Clear the list of active users" type="button" aria-labelledby="active-users-heading" data-target-table="users">
+          <button class="btn btn-clear" aria-labelledby="active-users-heading" data-target-table="users" type="button" aria-label="Clear the list of active users">
             <span class="material-icons md-24">clear</span>
           </button>
         </div>
       </header>
       <div class="card-body">
-        <ol id="users" aria-labelledby="active-users-heading"></ol>
+        <ol id="users"></ol>
       </div>
     </div>
   </section>
@@ -103,16 +103,4 @@
 <script>
   const currentYearEl = document.querySelector('.current-year');
   currentYearEl.textContent = new Date().getFullYear();
-
-  // Add accessibility features to the buttons
-  const refreshButtons = document.querySelectorAll('.btn-reload');
-  const clearButtons = document.querySelectorAll('.btn-clear');
-
-  refreshButtons.forEach(btn => {
-    btn.setAttribute('aria-label', `Refresh the ${btn.parentNode.parentNode.querySelector('h2').textContent}`);
-  });
-
-  clearButtons.forEach(btn => {
-    btn.setAttribute('aria-label', `Clear the ${btn.parentNode.parentNode.querySelector('h2').textContent}`);
-  });
 </script>
