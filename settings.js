@@ -1,1 +1,1 @@
-"const { levels } = require('pino'); const logLevel = process.env.LOG_LEVEL || levels.debug; const port = parseInt(process.env.PORT) || 3000; module.exports = { logLevel, port };"
+"const { levels } = require('pino'); const logLevel = process.env.LOG_LEVEL || levels.debug; const port = parseInt(process.env.PORT) || 3000; module.exports = { logLevel, port };\n\n// Ensures verbose logging on development machines.\nconsole.log = process.env.NODE_ENV === 'production' ? console.log : (x) => { if (logLevel === levels.debug) console.log(x); };"
