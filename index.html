@@ -1,10 +1,10 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Proxy Settings</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <script type="module" src="settings.js"></script>
 </head>
 
@@ -37,28 +37,28 @@
           </div>
           <div class="field-container">
             <label for="proxy-host">Host IP or Domain:</label>
-            <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" placeholder="e.g. 192.168.1.101" aria-label="Proxy host IP or domain" required />
+            <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" placeholder="e.g. 192.168.1.101" aria-label="Proxy host IP or domain" required>
           </div>
           <div class="field-container">
             <label for="proxy-port">Port:</label>
-            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" required aria-label="Proxy port number" />
+            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" required aria-label="Proxy port number">
           </div>
           <div class="field-container">
             <label for="proxy-authentication">Proxy Authentication (Optional):</label>
-            <input id="proxy-authentication" name="authentication" type="text" placeholder="username:password" aria-label="Proxy authentication" />
+            <input id="proxy-authentication" name="authentication" type="text" placeholder="username:password" aria-label="Proxy authentication">
           </div>
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit (Optional)</legend>
           <div class="field-container">
             <label for="bandwidth-limit">Limit (MB/s):</label>
-            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth limit" />
+            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth limit">
           </div>
           <small>Enter 0 to disable bandwidth limit.</small>
         </fieldset>
         <div class="button-container">
-          <input type="submit" class="btn btn-primary" value="Save" />
-          <input type="reset" class="btn btn-secondary" value="Reset" />
+          <input type="submit" class="btn btn-primary" value="Save">
+          <input type="reset" class="btn btn-secondary" value="Reset">
           <a href="/dashboard.html" class="btn btn-link">Cancel</a>
         </div>
       </form>
