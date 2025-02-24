@@ -18,7 +18,7 @@
             </div>
           </header>
           <div class="card-body">
-            <table id="connections-table" class="table">
+            <table id="connections-table" class="table table-hover">
               <thead>
                 <tr>
                   <th scope="col">IP Address</th>
@@ -42,7 +42,7 @@
             </div>
           </header>
           <div class="card-body">
-            <ul id="errors"></ul>
+            <ul id="errors" class="list-group list-group-flush"></ul>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@
         </div>
       </header>
       <div class="card-body">
-        <ul id="users"></ul>
+        <ul id="users" class="list-group list-group-flush"></ul>
       </div>
     </div>
   </section>
@@ -160,6 +160,7 @@
 
     data.forEach((item) => {
       const listItemEl = document.createElement('li');
+      listItemEl.classList.add('list-group-item');
       listItemEl.textContent = item;
       listEl.appendChild(listItemEl);
     });
