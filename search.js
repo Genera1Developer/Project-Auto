@@ -1,1 +1,1 @@
-"export const search = (query) => {
+"export const search = (query) => {\n  return fetch(`https://example.com/search?q=${query}`, { method: 'GET' })\n    .then(res => res.json())\n    .catch(error => console.error('Error searching:', error));\n}"
