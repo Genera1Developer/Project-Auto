@@ -31,7 +31,6 @@
 
     formProxy.addEventListener('submit', (e) => {
       e.preventDefault();
-
       const proxyAddress = document.querySelector('#proxy-address').value.trim();
       const proxyPort = document.querySelector('#proxy-port').value.trim();
 
@@ -64,7 +63,7 @@
         Note that changes made here will require a restart of the proxy service.
       </p>
 
-      <form action="save-settings.php" method="post" class="form">
+      <form class="form form-auth">
         <div class="settings-group">
           <h2 class="settings-title">Authentication</h2>
 
@@ -79,8 +78,14 @@
           </div>
         </div>
 
-        <hr>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Auth</button>
+        </div>
+      </form>
 
+      <hr>
+
+      <form class="form form-proxy">
         <div class="settings-group">
           <h2 class="settings-title">Proxy Settings</h2>
 
@@ -96,7 +101,7 @@
         </div>
 
         <div class="form-actions">
-          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="submit" class="btn btn-primary">Save Proxy</button>
         </div>
       </form>
     </section>
