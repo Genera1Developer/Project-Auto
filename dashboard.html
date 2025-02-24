@@ -1,55 +1,57 @@
 <header>
-  <div class="graph-container">
-    <canvas id="chart" width="100%" height="400"></canvas>
-  </div>
-  <div class="cards-container">
-    <div class="card" data-widget="active-connections-list">
-      <header class="card-header">
-        <h2 id="active-connections-heading">Active Connections List</h2>
-        <div class="actions">
-          <button class="btn btn-reload" title="Refresh the list of active connections" type="button" data-target-table="connections" aria-labelledby="active-connections-heading">
-            <span class="material-icons md-24">refresh</span>
-            <span class="tooltip">Refresh</span>
-          </button>
-          <button class="btn btn-clear" title="Clear the list of active connections" type="button" data-target-table="connections" aria-labelledby="active-connections-heading">
-            <span class="material-icons md-24">clear</span>
-            <span class="tooltip">Clear</span>
-          </button>
-        </div>
-      </header>
-      <div class="card-body">
-        <table id="connections-table" aria-labelledby="active-connections-heading" class="table">
-          <thead>
-            <tr>
-              <th scope="col">IP Address</th>
-              <th scope="col">Time Connected</th>
-            </tr>
-          </thead>
-          <tbody id="connections"></tbody>
-        </table>
-      </div>
+  <div class="container">
+    <div class="graph-container">
+      <canvas id="chart" width="100%" height="400"></canvas>
     </div>
-    <div class="card" data-widget="error-log-list">
-      <header class="card-header">
-        <h2 id="error-log-heading">Error Log</h2>
-        <div class="actions">
-          <button class="btn btn-clear" title="Clear the error log" type="button" data-target-list="errors" aria-labelledby="error-log-heading">
-            <span class="material-icons md-24">clear</span>
-            <span class="tooltip">Clear</span>
-          </button>
-          <button class="btn btn-export" title="Export the error log" type="button" data-target-list="errors" aria-labelledby="error-log-heading">
-            <span class="material-icons md-24">file_download</span>
-            <span class="tooltip">Export</span>
-          </button>
+    <div class="cards-container">
+      <div class="card" data-widget="active-connections-list">
+        <header class="card-header">
+          <h2 id="active-connections-heading">Active Connections List</h2>
+          <div class="actions">
+            <button class="btn btn-reload" title="Refresh the list of active connections" type="button" data-target-table="connections" aria-labelledby="active-connections-heading">
+              <span class="material-icons md-24">refresh</span>
+              <span class="tooltip">Refresh</span>
+            </button>
+            <button class="btn btn-clear" title="Clear the list of active connections" type="button" data-target-table="connections" aria-labelledby="active-connections-heading">
+              <span class="material-icons md-24">clear</span>
+              <span class="tooltip">Clear</span>
+            </button>
+          </div>
+        </header>
+        <div class="card-body">
+          <table id="connections-table" aria-labelledby="active-connections-heading" class="table">
+            <thead>
+              <tr>
+                <th scope="col">IP Address</th>
+                <th scope="col">Time Connected</th>
+              </tr>
+            </thead>
+            <tbody id="connections"></tbody>
+          </table>
         </div>
-      </header>
-      <div class="card-body">
-        <ol id="errors" aria-labelledby="error-log-heading"></ol>
+      </div>
+      <div class="card" data-widget="error-log-list">
+        <header class="card-header">
+          <h2 id="error-log-heading">Error Log</h2>
+          <div class="actions">
+            <button class="btn btn-clear" title="Clear the error log" type="button" data-target-list="errors" aria-labelledby="error-log-heading">
+              <span class="material-icons md-24">clear</span>
+              <span class="tooltip">Clear</span>
+            </button>
+            <button class="btn btn-export" title="Export the error log" type="button" data-target-list="errors" aria-labelledby="error-log-heading">
+              <span class="material-icons md-24">file_download</span>
+              <span class="tooltip">Export</span>
+            </button>
+          </div>
+        </header>
+        <div class="card-body">
+          <ol id="errors" aria-labelledby="error-log-heading"></ol>
+        </div>
       </div>
     </div>
   </div>
 </header>
-<main>
+<main class="container">
   <section>
     <div class="card" data-widget="stats-card">
       <header class="card-header">
@@ -80,21 +82,17 @@
   </section>
 </main>
 <footer class="footer">
-  <div class="footer-nav">
-    <ul>
-      <li>
-        <a href="#">Privacy Policy</a>
-      </li>
-      <li>
-        <a href="#">Terms of Service</a>
-      </li>
-      <li>
-        <a href="#">Contact Us</a>
-      </li>
-    </ul>
-  </div>
-  <div class="footer-info">
-    <span class="current-year"></span>
-    &copy; 2023 Proxy Corp
-  </div>
+  <ul class="footer-nav">
+    <li>
+      <a href="#">Privacy Policy</a>
+    </li>
+    <li>
+      <a href="#">Terms of Service</a>
+    </li>
+    <li>
+      <a href="#">Contact Us</a>
+    </li>
+  </ul>
+  <p class="footer-info">&copy; 2023 Proxy Corp</p>
+  <span class="current-year"></span>
 </footer>
