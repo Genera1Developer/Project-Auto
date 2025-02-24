@@ -2,38 +2,40 @@
   <div class="graph-container">
     <canvas id="chart"></canvas>
   </div>
-  <div class="wide-card" data-widget="active-connections-list">
-    <header class="card-header">
-      <h2>Active Connections List</h2>
-      <button class="reload-btn" title="Refresh the list of active connections">
-        <i class="material-icons md-24">refresh</i>
-      </button>
-    </header>
-    <div class="card-body">
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">IP Address</th>
-            <th scope="col">Time Connected</th>
-          </tr>
-        </thead>
-        <tbody id="connections">
-          <!-- Connections list goes here -->
-        </tbody>
-      </table>
+  <div class="cards-container">
+    <div class="wide-card" data-widget="active-connections-list">
+      <header class="card-header">
+        <h2>Active Connections List</h2>
+        <button class="reload-btn" title="Refresh the list of active connections">
+          <i class="material-icons md-24">refresh</i>
+        </button>
+      </header>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">IP Address</th>
+              <th scope="col">Time Connected</th>
+            </tr>
+          </thead>
+          <tbody id="connections">
+            <!-- Connections list goes here -->
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-  <div class="wide-card" data-widget="error-log-list">
-    <header class="card-header">
-      <h2>Error Log</h2>
-      <button class="clear-btn" title="Clear the error log">
-        <i class="material-icons md-24">delete</i>
-      </button>
-    </header>
-    <div class="card-body">
-      <ul id="errors">
-        <!-- Error log list goes here -->
-      </ul>
+    <div class="wide-card" data-widget="error-log-list">
+      <header class="card-header">
+        <h2>Error Log</h2>
+        <button class="clear-btn" title="Clear the error log">
+          <i class="material-icons md-24">delete</i>
+        </button>
+      </header>
+      <div class="card-body">
+        <ul id="errors">
+          <!-- Error log list goes here -->
+        </ul>
+      </div>
     </div>
   </div>
 </header>
