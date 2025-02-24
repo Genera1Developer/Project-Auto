@@ -1,96 +1,20 @@
-<header>
-  <div class="container">
-    <div class="dashboard-header">
-      <div class="graph-container">
-        <canvas id="chart" width="100%" height="400"></canvas>
-      </div>
-      <div class="cards-container">
-        <div class="card active-connections active" data-widget="active-connections">
-          <h3 class="screen-reader-only">Active Connections Widget</h3>
-          <header class="card-header">
-            <h2 id="active-connections-heading" class="card-title">Active Connections</h2>
-            <div class="actions">
-              <button class="btn refresh-btn" aria-labelledby="active-connections-heading" data-target-table="connections" type="button" title="Refresh the list of active connections">
-                <span class="material-icons md-24" aria-hidden="true">refresh</span>
-              </button>
-              <button class="btn clear-btn" aria-labelledby="active-connections-heading" data-target-table="connections" type="button" title="Clear the list of active connections">
-                <span class="material-icons md-24" aria-hidden="true">clear</span>
-              </button>
-            </div>
-          </header>
-          <div class="card-body">
-            <table id="connections-table" class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">IP Address</th>
-                  <th scope="col">Time Connected</th>
-                </tr>
-              </thead>
-              <tbody id="connections"></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card error-log" data-widget="error-log">
-          <h3 class="screen-reader-only">Error Log Widget</h3>
-          <header class="card-header">
-            <h2 id="error-log-heading" class="card-title">Error Log</h2>
-            <div class="actions">
-              <button class="btn clear-btn" aria-labelledby="error-log-heading" data-target-list="errors" type="button" title="Clear the error log">
-                <span class="material-icons md-24" aria-hidden="true">clear</span>
-              </button>
-              <button class="btn export-btn" aria-labelledby="error-log-heading" data-target-list="errors" type="button" title="Export the error log">
-                <span class="material-icons md-24" aria-hidden="true">file_download</span>
-              </button>
-            </div>
-          </header>
-          <div class="card-body">
-            <ul id="errors" class="list-group list-group-flush"></ul>
-          </div>
-        </div>
-      </div>
+<header class="card-header">
+        <h2 id="alerts-heading" class="card-title">Alerts</h2>
+      </header>
+      <div class="card-body" id="alerts"></div>
     </div>
-  </div>
-</header>
-<main class="container">
-  <section class="stats-section">
-    <div class="card stats active" data-widget="stats">
-      <h3 class="screen-reader-only">Stats Widget</h3>
-      <header class="card-header">
-        <h2 id="stats-heading" class="card-title">Stats</h2>
-        <button class="btn refresh-btn" aria-labelledby="stats-heading" type="button" data-target-element="stats" title="Refresh the stats">
-          <span class="material-icons md-24" aria-hidden="true">refresh</span>
+  </section>
+</main>
+<modal>
+  <div class="modal-container" id="modal">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 id="modal-title" class="modal-title"></h2>
+        <button class="close-modal-btn" aria-label="Close modal" type="button">
+          <span class="material-icons md-24" aria-hidden="true">close</span>
         </button>
       </header>
-      <div class="card-body" id="stats"></div>
+      <div class="modal-body" id="modal-body"></div>
     </div>
-  </section>
-  <section class="active-users-section">
-    <div class="card active-users" data-widget="active-users">
-      <h3 class="screen-reader-only">Active Users Widget</h3>
-      <header class="card-header">
-        <h2 id="active-users-heading" class="card-title">Active Users</h2>
-        <div class="actions">
-          <button class="btn refresh-btn" aria-labelledby="active-users-heading" data-target-table="users" type="button" title="Refresh the list of active users">
-            <span class="material-icons md-24" aria-hidden="true">refresh</span>
-          </button>
-          <button class="btn clear-btn" aria-labelledby="active-users-heading" data-target-table="users" type="button" title="Clear the list of active users">
-            <span class="material-icons md-24" aria-hidden="true">clear</span>
-          </button>
-        </div>
-      </header>
-      <div class="card-body">
-        <table id="users-table" class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Username</th>
-              <th scope="col">Last Active</th>
-            </tr>
-          </thead>
-          <tbody id="users"></tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-  <section class="alerts-section">
-    <div class="card alerts" data-widget="alerts">
-      <h3 class="screen-reader-only">Alerts Widget</h3>
+  </div>
+</modal>
