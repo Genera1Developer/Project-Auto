@@ -44,16 +44,15 @@
           </div>
           <div class="field-container">
             <label class="label" for="proxy-authentication">Proxy Authentication (Optional):</label>
-            <input id="proxy-authentication" name="authentication" type="text" aria-label="Proxy Authentication" pattern="^([^:]+):(.+)?$" />
+            <input id="proxy-authentication" name="authentication" type="text" aria-label="Proxy Authentication" pattern="^([^:]+):(.+)?$" placeholder="username:password" />
           </div>
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit (Optional)</legend>
           <div class="field-container">
             <label class="label" for="bandwidth-limit">Limit (MB/s):</label>
-            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth Limit" />
+            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth Limit" placeholder="0 to disable" />
           </div>
-          <small>Leave blank to disable bandwidth limit.</small>
         </fieldset>
         <div class="button-container">
           <button type="submit" class="btn btn-primary">Save</button>
