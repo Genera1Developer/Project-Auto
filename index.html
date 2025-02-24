@@ -13,7 +13,7 @@
 
     body {
       --primary-color: #007bff;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
     }
 
     .container {
@@ -86,6 +86,7 @@
       display: flex;
       gap: 1rem;
       margin-top: 1rem;
+      align-self: flex-end;
     }
 
     .btn {
@@ -168,7 +169,7 @@
             <input id="bandwidth-limit" name="bandwidth_limit" type="number" class="input" min="0" aria-label="Bandwidth Limit" placeholder="0 to disable">
           </div>
         </fieldset>
-        <div class="form-group button-container">
+        <div class="button-container">
           <input class="btn btn-primary" type="submit" value="Save">
           <input class="btn btn-secondary" type="reset" value="Reset">
           <a href="/dashboard.html" class="btn btn-link">Cancel</a>
