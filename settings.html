@@ -7,7 +7,7 @@
   <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="style.css" />
   <script>
-    const forms = document.querySelectorAll('form');
+    const forms = Array.from(document.querySelectorAll('form'));
 
     forms.forEach((form) => {
       form.addEventListener('submit', (e) => {
@@ -23,7 +23,7 @@
         .then(response => response.text())
         .then(data => {
           alert(data);
-          window.location.reload();
+          location.reload();
         })
         .catch(error => {
           alert('An error occurred while submitting the form. Please try again.');
@@ -35,11 +35,13 @@
 
 <body class="settings-page">
   <aside class="sidebar">
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="dashboard.html">Dashboard</a></li>
-      <li><a href="settings.html" class="active">Settings</a></li>
-    </ul>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="settings.html" class="active">Settings</a></li>
+      </ul>
+    </nav>
   </aside>
 
   <main class="main-content">
@@ -53,8 +55,8 @@
 
       <div class="settings-form">
         <form class="form form-auth" action="auth.php">
-          <div class="settings-group">
-            <h2 class="settings-title">Authentication</h2>
+          <fieldset class="settings-group">
+            <legend class="settings-title">Authentication</legend>
 
             <div class="input-group">
               <label for="username">Username</label>
@@ -65,7 +67,7 @@
               <label for="password">Password</label>
               <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
             </div>
-          </div>
+          </fieldset>
 
           <div class="btn-container">
             <button type="submit" class="btn btn-primary">Save</button>
@@ -75,8 +77,8 @@
         <hr />
 
         <form class="form form-proxy" action="proxy.php">
-          <div class="settings-group">
-            <h2 class="settings-title">Proxy Settings</h2>
+          <fieldset class="settings-group">
+            <legend class="settings-title">Proxy Settings</legend>
 
             <div class="input-group">
               <label for="proxy-address">Proxy Address</label>
@@ -87,7 +89,7 @@
               <label for="proxy-port">Proxy Port</label>
               <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" required />
             </div>
-          </div>
+          </fieldset>
 
           <div class="btn-container">
             <button type="submit" class="btn btn-primary">Save</button>
