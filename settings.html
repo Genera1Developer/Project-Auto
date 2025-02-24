@@ -33,6 +33,7 @@
       <ul class="settings-tabs">
         <li><a href="#authentication" class="active">Authentication</a></li>
         <li><a href="#proxy">Proxy Settings</a></li>
+        <li><a href="#advanced">Advanced</a></li>
       </ul>
 
       <div class="settings-tab-container" id="authentication">
@@ -103,6 +104,36 @@
               <option value="socks4">SOCKS4</option>
               <option value="socks5">SOCKS5</option>
             </select>
+          </label>
+
+          <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="settings-tab-container" id="advanced" style="display: none;">
+        <form class="form form-advanced" action="advanced.php" method="POST">
+          <h2 class="settings-group-title">Advanced Settings</h2>
+
+          <label class="input-container">
+            <span class="label">Block Ads</span>
+            <input type="checkbox" id="block-ads" name="block-ads" />
+          </label>
+
+          <label class="input-container">
+            <span class="label">Enable SOCKS Proxy</span>
+            <input type="checkbox" id="enable-socks" name="enable-socks" />
+          </label>
+
+          <label class="input-container">
+            <span class="label">Custom Certificate</span>
+            <input
+              type="file"
+              id="custom-certificate"
+              name="custom-certificate"
+              accept=".crt"
+            />
           </label>
 
           <div class="btn-container">
