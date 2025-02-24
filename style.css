@@ -175,6 +175,27 @@ h6 {
   flex-direction: row;
 }
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  z-index: 6;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: #394959;
+  color: white;
+  min-width: 100%;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
 @media screen and (max-width: 768px) {
   body {
     grid-template-areas: "header" "main";
