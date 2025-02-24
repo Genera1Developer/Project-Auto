@@ -1,5 +1,5 @@
-file path: index.html
-content: 
+file path: settings.html
+content:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy</title>
+  <title>Web Proxy Settings</title>
   <style>
     * {
       box-sizing: border-box;
@@ -85,56 +85,42 @@ content:
     .main-content button:hover {
       background: #007acc;
     }
-
-    .error {
-      color: #d6332f;
-    }
-
-    #proxy-status {
-      background: #d6332f;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      margin: 1rem 0;
-    }
-
-    #connection-status {
-      background: #0099ff;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      margin: 1rem 0;
-    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <div class="sidebar">
-      <a href="/index.html" class="active">Home</a>
-      <a href="/settings.html">Settings</a>
+      <a href="/index.html">Home</a>
+      <a href="/settings.html" class="active">Settings</a>
       <a href="/dashboard.html">Dashboard</a>
     </div>
     <div class="main-content">
-      <h1>Web Proxy</h1>
-      <div id="proxy-status">
-        Proxy Status: Inactive
-      </div>
-      <div id="connection-status">
-        Connection Status: Disconnected
-      </div>
-      <form id="login-form">
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username">
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password">
-        <button type="submit">Login</button>
+      <h1>Web Proxy Settings</h1>
+      <form id="settings-form">
+        <label for="protocol">Protocol:</label>
+        <select name="protocol" id="protocol">
+          <option value="http">HTTP</option>
+          <option value="https">HTTPS</option>
+        </select>
+        <label for="port">Port:</label>
+        <input type="number" name="port" id="port" min="1" max="65535">
+        <label for="authentication">Authentication:</label>
+        <input type="checkbox" name="authentication" id="authentication">
+        <div id="authentication-settings" style="display: none;">
+          <label for="username">Username:</label>
+          <input type="text" name="username" id="username">
+          <label for="password">Password:</label>
+          <input type="password" name="password" id="password">
+        </div>
+        <label for="bandwidth-limit">Bandwidth Limit (GB/month):</label>
+        <input type="number" name="bandwidth-limit" id="bandwidth-limit" min="0">
+        <button type="submit">Save</button>
       </form>
-      <div id="error-message"></div>
     </div>
   </div>
   <script>
-    // Implement the login functionality here
+    // Implement the settings functionality here
   </script>
 </body>
 
