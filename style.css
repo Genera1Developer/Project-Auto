@@ -1,35 +1,69 @@
-file path: main.js
-content: ```js
-// Login Form
-const loginForm = document.getElementById('login-form');
-loginForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-  // TODO: Implement login logic and redirect to dashboard if successful
-});
+file path: style.css
+content: ```css
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f5f5f5;
+}
 
-// Settings Form
-const settingsForm = document.getElementById('settings-form');
-settingsForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const proxyProtocol = document.getElementById('proxy-protocol').value;
-  const proxyPort = document.getElementById('proxy-port').value;
-  const authUsername = document.getElementById('auth-username').value;
-  const authPassword = document.getElementById('auth-password').value;
-  const bandwidthLimit = document.getElementById('bandwidth-limit').value;
-  // TODO: Implement settings save logic
-});
+#sidebar {
+  width: 250px;
+  background-color: #d9d9d9;
+  height: 100vh;
+  border-right: 1px solid #ccc;
+}
 
-// Update status and connection indicators
-const status = document.querySelector('.status');
-const connectionStatus = document.querySelector('.connection-status');
-const updateStatus = (message, type) => {
-  status.innerText = message;
-  type === 'error' ? (status.classList.add('error')) : (status.classList.remove('error'));
-};
-const updateConnectionStatus = (status) => {
-  connectionStatus.innerText = status;
-  status === 'Connected' ? (connectionStatus.classList.add('connected')) : (connectionStatus.classList.remove('connected'));
-};
+#content {
+  padding: 20px;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+form {
+  margin-top: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+button {
+  cursor: pointer;
+  padding: 5px 10px;
+  background-color: #337ab7;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+
+.error {
+  color: #d9534f;
+}
+
+.connected {
+  color: #4caf50;
+}
+
+.loading {
+  animation: loading 1s infinite;
+}
+
+@keyframes loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 ```
