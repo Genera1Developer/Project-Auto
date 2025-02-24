@@ -165,4 +165,38 @@
       listEl.appendChild(listItemEl);
     });
   };
+
+  // Add accessibility improvements
+  // Add aria-labels to buttons
+  buttons.forEach((btn) => {
+    btn.setAttribute('aria-label', `Refresh ${btn.textContent.toLowerCase()}`);
+  });
+
+  // Add headings to cards
+  const cards = document.querySelectorAll('.card');
+  cards.forEach((card) => {
+    const heading = document.createElement('h3');
+    heading.classList.add('visually-hidden');
+    heading.textContent = card.querySelector('h2').textContent;
+    card.insertBefore(heading, card.querySelector('h2'));
+  });
+
+  // Add skip links
+  const mainEl = document.querySelector('main');
+  const skipLinks = [
+    {
+      id: 'skip-to-content',
+      text: 'Skip to main content',
+      target: mainEl,
+    },
+  ];
+
+  skipLinks.forEach((link) => {
+    const skipLink = document.createElement('a');
+    skipLink.id = link.id;
+    skipLink.href = `#${link.target.id}`;
+    skipLink.classList.add('skip-link');
+    skipLink.textContent = link.text;
+    document.body.insertBefore(skipLink, mainEl);
+  });
 </script>
