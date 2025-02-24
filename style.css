@@ -170,12 +170,15 @@ h6 {
   }
 
   .wrapper {
-    gap: 16px;
-    display: flex;
-    flex-direction: column;
     grid-template-areas: "sidebar" "main";
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .wrapper > div {
+    gap: 8px;
   }
 
   .sidebar {
@@ -206,7 +209,9 @@ h6 {
 
 @media (max-width: 576px) {
   .wrapper {
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .sidebar-item {
