@@ -1,1 +1,1 @@
-"// This file was generated automatically and should not be edited by hand"
+"// This file was generated automatically by the search component and should not be edited by hand"
