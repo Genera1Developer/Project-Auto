@@ -1,4 +1,4 @@
-file: dashboard.html
+file: settings.html
 
 content:
 ```html
@@ -8,7 +8,7 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Settings</title>
     <link rel="stylesheet" href="./css/main.css">
     <script src="./js/main.js"></script>
     <style>
@@ -40,7 +40,7 @@ content:
             margin-left: 220px;
         }
 
-        .dashboard-container {
+        .settings-container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
@@ -48,69 +48,51 @@ content:
             background-color: #ffffff;
         }
 
-        .dashboard-section {
+        .settings-section {
             margin-bottom: 20px;
         }
 
-        .dashboard-section-title {
+        .settings-section-title {
             font-weight: bold;
             margin-bottom: 10px;
         }
 
-        .dashboard-section-content {
+        .settings-section-content {
             background-color: #f5f5f5;
             padding: 10px;
             border-radius: 5px;
         }
 
-        .connection-status {
+        .input-container {
             display: flex;
             align-items: center;
+            margin-bottom: 10px;
         }
 
-        .status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 5px;
+        .input-label {
+            width: 150px;
         }
 
-        .online {
-            background-color: green;
+        .input-field {
+            width: 200px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
-        .offline {
-            background-color: red;
+        .button-container {
+            text-align: right;
         }
 
-        .bandwidth-graph {
-            width: 100%;
-            height: 200px;
-        }
-
-        .active-connections-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .active-connections-table th {
+        .button {
+            padding: 5px 10px;
+            border-radius: 5px;
             background-color: #3498db;
             color: white;
-            padding: 5px;
         }
 
-        .active-connections-table td {
-            padding: 5px;
-        }
-
-        .error-log {
-            background-color: #f5f5f5;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .error-log-item {
-            margin-bottom: 10px;
+        .button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
@@ -122,62 +104,58 @@ content:
         <a href="/dashboard.html">Dashboard</a>
     </div>
     <div class="content">
-        <h1>Dashboard</h1>
-        <p>Monitor your proxy usage and make adjustments as needed.</p>
-        <div class="dashboard-container">
-            <div class="dashboard-section">
-                <div class="dashboard-section-title">Connection Status</div>
-                <div class="dashboard-section-content">
-                    <div class="connection-status">
-                        <div class="status-indicator online"></div>
-                        <span>Online</span>
+        <h1>Settings</h1>
+        <p>Configure your proxy settings to match your requirements.</p>
+        <div class="settings-container">
+            <div class="settings-section">
+                <div class="settings-section-title">Protocol</div>
+                <div class="settings-section-content">
+                    <div class="input-container">
+                        <div class="input-label">Protocol:</div>
+                        <select class="input-field">
+                            <option value="http">HTTP</option>
+                            <option value="https">HTTPS</option>
+                        </select>
                     </div>
                 </div>
             </div>
-            <div class="dashboard-section">
-                <div class="dashboard-section-title">Bandwidth Usage</div>
-                <div class="dashboard-section-content">
-                    <canvas id="bandwidth-graph"></canvas>
-                </div>
-            </div>
-            <div class="dashboard-section">
-                <div class="dashboard-section-title">Active Connections</div>
-                <div class="dashboard-section-content">
-                    <table class="active-connections-table">
-                        <thead>
-                            <tr>
-                                <th>Remote IP</th>
-                                <th>Local IP</th>
-                                <th>Port</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>192.168.1.1</td>
-                                <td>127.0.0.1</td>
-                                <td>8080</td>
-                            </tr>
-                            <tr>
-                                <td>192.168.1.2</td>
-                                <td>127.0.0.1</td>
-                                <td>8081</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="dashboard-section">
-                <div class="dashboard-section-title">Error Log</div>
-                <div class="dashboard-section-content error-log">
-                    <div class="error-log-item">
-                        <span>2023-03-08 10:00:00</span>
-                        <span>Error connecting to remote host</span>
-                    </div>
-                    <div class="error-log-item">
-                        <span>2023-03-08 10:01:00</span>
-                        <span>Error sending data to remote host</span>
+            <div class="settings-section">
+                <div class="settings-section-title">Port</div>
+                <div class="settings-section-content">
+                    <div class="input-container">
+                        <div class="input-label">Port:</div>
+                        <input type="number" class="input-field" value="8080">
                     </div>
                 </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title">Authentication</div>
+                <div class="settings-section-content">
+                    <div class="input-container">
+                        <div class="input-label">Username:</div>
+                        <input type="text" class="input-field">
+                    </div>
+                    <div class="input-container">
+                        <div class="input-label">Password:</div>
+                        <input type="password" class="input-field">
+                    </div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title">Bandwidth Limits</div>
+                <div class="settings-section-content">
+                    <div class="input-container">
+                        <div class="input-label">Daily Limit (MB):</div>
+                        <input type="number" class="input-field">
+                    </div>
+                    <div class="input-container">
+                        <div class="input-label">Monthly Limit (GB):</div>
+                        <input type="number" class="input-field">
+                    </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <button class="button">Save</button>
             </div>
         </div>
     </div>
