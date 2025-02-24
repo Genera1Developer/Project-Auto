@@ -1,1 +1,1 @@
-'console.log("Hello, world!"); alert("This is an alert.");'
+'console.log("Hello, world!"); alert("This is an alert.");
