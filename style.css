@@ -180,10 +180,10 @@ h6 {
   }
 
   .wrapper {
+    max-width: 100%;
     grid-template-areas: "main" "sidebar";
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    max-width: 100%;
   }
 
   .wrapper > div {
@@ -273,6 +273,10 @@ h6 {
 }
 
 @media (hover: none) {
+  body {
+    font-size: 0.9rem;
+  }
+
   .sidebar-item:hover {
     background: #394959;
   }
