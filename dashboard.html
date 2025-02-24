@@ -3,15 +3,15 @@
     <canvas id="chart" width="100%" height="400"></canvas>
   </div>
   <div class="cards-container">
-    <div class="wide-card" data-widget="active-connections-list">
+    <div class="card" data-widget="active-connections-list">
       <header class="card-header">
         <h2>Active Connections List</h2>
-        <div class="buttons-container">
+        <div class="actions">
           <button class="btn btn-reload" title="Refresh the list of active connections" type="button" data-target-table="connections">
-            <span class="material-icons md-24 reload-icon">refresh</span>
+            <span class="material-icons md-24">refresh</span>
           </button>
           <button class="btn btn-clear" title="Clear the list of active connections" type="button" data-target-table="connections">
-            <span class="material-icons md-24 clear-icon">clear</span>
+            <span class="material-icons md-24">clear</span>
           </button>
         </div>
       </header>
@@ -27,15 +27,15 @@
         </table>
       </div>
     </div>
-    <div class="wide-card" data-widget="error-log-list">
+    <div class="card" data-widget="error-log-list">
       <header class="card-header">
         <h2>Error Log</h2>
-        <div class="buttons-container">
+        <div class="actions">
           <button class="btn btn-clear" title="Clear the error log" type="button" data-target-list="errors">
-            <span class="material-icons md-24 clear-icon">clear</span>
+            <span class="material-icons md-24">clear</span>
           </button>
           <button class="btn btn-export" title="Export the error log" type="button" data-target-list="errors">
-            <span class="material-icons md-24 export-icon">file_download</span>
+            <span class="material-icons md-24">file_download</span>
           </button>
         </div>
       </header>
@@ -47,7 +47,7 @@
 </header>
 <main>
   <section>
-    <div class="wide-card" data-widget="stats-card">
+    <div class="card" data-widget="stats-card">
       <header class="card-header">
         <h2>Stats</h2>
       </header>
@@ -55,12 +55,12 @@
     </div>
   </section>
   <section>
-    <div class="narrow-card" data-widget="active-users-list">
+    <div class="card" data-widget="active-users-list">
       <header class="card-header">
         <h2>Active Users List</h2>
-        <div class="buttons-container">
-          <button class="btn btn-reload" title="Refresh the list of active users" type="button" data-target-table="users"><span class="material-icons md-24 reload-icon">refresh</span></button>
-          <button class="btn btn-clear" title="Clear the list of active users" type="button" data-target-table="users"><span class="material-icons md-24 clear-icon">clear</span></button>
+        <div class="actions">
+          <button class="btn btn-reload" title="Refresh the list of active users" type="button" data-target-table="users"><span class="material-icons md-24">refresh</span></button>
+          <button class="btn btn-clear" title="Clear the list of active users" type="button" data-target-table="users"><span class="material-icons md-24">clear</span></button>
         </div>
       </header>
       <div class="card-body">
@@ -81,7 +81,7 @@
   </div>
 </footer>
 <script>
-  const reloadButtons = Array.from(document.querySelectorAll('.btn-reload'));
+  const reloadButtons = document.querySelectorAll('.btn-reload');
   reloadButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetTable = e.target.getAttribute('data-target-table');
@@ -93,7 +93,7 @@
     });
   });
 
-  const clearButtons = Array.from(document.querySelectorAll('.btn-clear'));
+  const clearButtons = document.querySelectorAll('.btn-clear');
   clearButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetTable = e.target.getAttribute('data-target-table');
@@ -106,7 +106,7 @@
     });
   });
   
-  const exportButtons = Array.from(document.querySelectorAll('.btn-export'));
+  const exportButtons = document.querySelectorAll('.btn-export');
   exportButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetList = e.target.getAttribute('data-target-list');
