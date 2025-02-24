@@ -9,9 +9,6 @@ body {
   grid-template-rows: auto 1fr;
   grid-template-columns: 250px 1fr;
   gap: 16px;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .wrapper {
@@ -23,9 +20,6 @@ body {
   flex-direction: column;
   gap: 16px;
   overflow: auto;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .sidebar {
@@ -42,9 +36,6 @@ body {
   padding: 16px;
   z-index: 1;
   overflow-y: auto;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .sidebar h1 {
@@ -65,9 +56,6 @@ body {
   gap: 12px;
   width: 100%;
   z-index: 2;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .sidebar-item:hover {
@@ -81,9 +69,6 @@ body {
   margin: 0;
   list-style-type: none;
   padding: 0;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .navigation-link {
@@ -96,9 +81,6 @@ body {
   justify-content: center;
   width: 100%;
   z-index: 3;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .navigation-link:hover {
@@ -109,9 +91,6 @@ body {
   grid-area: main;
   grid-gap: 12px;
   height: calc(100vh - 64px);
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .login-form {
@@ -119,33 +98,21 @@ body {
   margin: 0 auto;
   background: #f5f5f5;
   padding: 16px;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .login-form-container {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .form-group {
   display: flex;
   gap: 4px;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .form-group label {
   margin: 0;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .btn {
@@ -160,9 +127,6 @@ body {
   cursor: pointer;
   transition: background 0.2s;
   z-index: 4;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .btn:hover {
@@ -171,30 +135,18 @@ body {
 
 .error-message {
   color: red;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .connection-status {
   color: green;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .proxy-status {
   color: blue;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .visually-hidden {
   display: none !important;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 h1,
@@ -204,39 +156,24 @@ h4,
 h5,
 h6 {
   margin-bottom: 0;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .bold {
   font-weight: bold;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .flex-center {
   display: flex;
   align-items: center;
   justify-content: center;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .flex-column {
   flex-direction: column;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .flex-row {
   flex-direction: row;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .dropdown {
@@ -244,9 +181,6 @@ h6 {
   display: inline-block;
   width: 100%;
   z-index: 6;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .dropdown-content {
@@ -257,9 +191,6 @@ h6 {
   min-width: 100%;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 5;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  touch-action: none;
 }
 
 .dropdown:hover .dropdown-content {
@@ -275,4 +206,21 @@ h6 {
     max-width: 100%;
     grid-template-areas: "sidebar" "main";
     grid-template-columns: 1fr;
-    grid-template
+    grid-template-rows: auto 1fr;
+  }
+
+  .sidebar {
+    grid-area: sidebar;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0;
+  }
+
+  .sidebar-open {
+    grid-area: sidebar;
+    display: flex;
+  }
+}
