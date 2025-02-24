@@ -11,6 +11,7 @@
     forms.forEach(form => {
       form.addEventListener('submit', e => {
         e.preventDefault();
+
         const actionUrl = form.getAttribute('action');
         const formData = new FormData(form);
 
