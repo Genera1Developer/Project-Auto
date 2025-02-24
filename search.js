@@ -1,1 +1,1 @@
-`---START---
+"console.log('Search Function');"
