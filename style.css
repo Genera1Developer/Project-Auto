@@ -1,5 +1,5 @@
 body {
-  font: "Helvetica", "Arial", sans-serif;
+  font-family: "Helvetica", "Arial", sans-serif;
   font-size: 1rem;
   background: #efefef;
   margin: 0;
@@ -85,7 +85,7 @@ body {
 .main-content {
   grid-area: main;
   gap: 12px;
-  height: calc(100vh - 48px);
+  height:calc(100vh - 48px);
 }
 
 .login-form {
@@ -121,6 +121,7 @@ body {
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.2s;
+  z-index: 4;
 }
 
 .btn:hover {
