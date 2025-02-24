@@ -6,6 +6,7 @@ body {
   display: grid;
   grid-template-rows: 48px 1fr;
   grid-template-columns: 200px 1fr;
+  gap: 24px;
 }
 
 .wrapper {
@@ -61,6 +62,7 @@ body {
 .main-content {
   padding: 16px;
   overflow-y: auto;
+  grid-gap: 12px;
 }
 
 .login-form {
@@ -144,6 +146,10 @@ h6 {
 }
 
 @media (max-width: 768px) {
+  body {
+    grid-template-columns: 1fr;
+  }
+
   .wrapper {
     grid-column-gap: 16px;
     flex-direction: column;
