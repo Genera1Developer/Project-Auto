@@ -1,1 +1,1 @@
-"//Focus the search input when the page is loaded
+"//Focus the search input when the page is loaded\ndocument.getElementById('search-input').focus();"
