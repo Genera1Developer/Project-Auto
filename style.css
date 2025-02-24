@@ -60,6 +60,7 @@ body {
 }
 
 .navigation-links {
+  grid-area: nav;
   display: flex;
   grid-gap: 12px;
   margin: 0;
