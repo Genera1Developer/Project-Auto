@@ -17,7 +17,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  overflow-y: auto;
 }
 
 .sidebar {
@@ -62,7 +61,7 @@ body {
   margin: 0;
   list-style-type: none;
   padding: 0;
-  padding-left: 0;
+  list-style-position: inside;
 }
 
 .navigation-link {
@@ -163,7 +162,7 @@ h6 {
   flex-direction: row;
 }
 
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
   body {
     grid-template-areas: "header" "main";
     grid-template-columns: 1fr;
@@ -211,7 +210,7 @@ h6 {
   }
 }
 
-@media (max-width: 576px) {
+@media screen and (max-width: 576px) {
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -235,7 +234,7 @@ h6 {
   }
 }
 
-@media (max-width: 425px) {
+@media screen and (max-width: 425px) {
   .main-content {
     padding: 6px;
   }
