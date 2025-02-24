@@ -11,7 +11,6 @@ body {
 
 .wrapper {
   grid-area: main;
-  height: calc(100vh - 48px);
   max-width: 1024px;
   width: 100%;
   padding: 16px;
@@ -46,11 +45,11 @@ body {
   justify-content: space-between;
   padding: 12px;
   background: #394959;
+  cursor: pointer;
 }
 
 .sidebar-item:hover {
   background: #364656;
-  cursor: pointer;
 }
 
 .navigation-links {
@@ -77,6 +76,7 @@ body {
 .main-content {
   grid-area: main;
   gap: 12px;
+  height: calc(100vh - 48px);
 }
 
 .login-form {
