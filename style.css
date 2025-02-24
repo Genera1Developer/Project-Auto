@@ -48,6 +48,11 @@ body {
   background-color: #394959;
 }
 
+.sidebar-item:hover {
+  background-color: #364656;
+  cursor: pointer;
+}
+
 .navigation-links {
   grid-area: nav;
   display: flex;
@@ -154,11 +159,6 @@ h6 {
 
 .flex-row {
   flex-direction: row;
-}
-
-.sidebar-item:hover {
-  background-color: #364656;
-  cursor: pointer;
 }
 
 @media (max-width: 768px) {
