@@ -5,6 +5,8 @@ body {
 .wrapper {
   display: flex;
   height: 100vh;
+  min-width: 100vh;
+  gap: 24px;
 }
 
 .sidebar {
@@ -22,6 +24,9 @@ body {
 
 .navigation-links {
   list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   padding: 0;
 }
 
