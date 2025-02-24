@@ -165,8 +165,8 @@ h6 {
     grid-template-areas:
       "header"
       "main";
-    grid-template-rows: 48px 1fr;
     grid-template-columns: 1fr;
+    grid-template-rows: 48px 1fr;
   }
 
   .wrapper {
@@ -182,12 +182,13 @@ h6 {
 
   .sidebar {
     grid-area: sidebar;
+    display: flex;
+    flex-direction: column;
     grid-template-areas:
       "header"
       "nav";
+    grid-template-columns: 1fr;
     grid-template-rows: 48px 1fr;
-    grid-column: 1;
-    grid-row: 1;
   }
 
   .sidebar h1 {
@@ -197,8 +198,8 @@ h6 {
   .main-content {
     grid-area: main;
     padding: 8px;
-    grid-column: 1;
-    grid-row: 2;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
   }
 
   .navigation-link {
@@ -206,7 +207,6 @@ h6 {
   }
 
   .sidebar-item {
-    background-color: #394959;
     padding: 8px;
   }
 }
