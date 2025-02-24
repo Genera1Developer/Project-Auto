@@ -4,7 +4,23 @@
     <span class="material-icons md-18" aria-hidden="true">refresh</span>
   </button>
 </header>
-<div class="card-body" id="alerts"></div>
+<div class="card-body" id="alerts">
+  <div class="alert alert--success" role="alert" hidden>
+    <span class="material-icons md-18 success-icon" aria-hidden="true">check_circle</span>
+    <span class="alert-text" id="success-alert"></span>
+    <button class="close-alert" type="button">×</button>
+  </div>
+  <div class="alert alert--error" role="alert" hidden>
+    <span class="material-icons md-18 error-icon" aria-hidden="true">error</span>
+    <span class="alert-text" id="error-alert"></span>
+    <button class="close-alert" type="button">×</button>
+  </div>
+  <div class="alert alert--info" role="alert" hidden>
+    <span class="material-icons md-18 info-icon" aria-hidden="true">info</span>
+    <span class="alert-text" id="info-alert"></span>
+    <button class="close-alert" type="button">×</button>
+  </div>
+</div>
 </div>
 </section>
 </main>
