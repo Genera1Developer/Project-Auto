@@ -1,1 +1,1 @@
-"// Generated automatically by NSXPT_ST RESOLVE tool\nconsole.log('Search function imported');\nfunction Search(a, b) { return a + b; }\nconsole.log('Search function executed');"
+"// This file was generated automatically and should not be edited by hand\nconsole.log('Search function imported');\nexport function Search(a, b) { return a + b; }\nconsole.log('Search function executed');"
