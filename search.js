@@ -1,1 +1,1 @@
-"// Decorator method to add search functionality to any array\nconst search = (query, data) => {\n  if (!query || !query.trim()) return data;\n  const lcQuery = query.toLowerCase().trim();\n  return data.filter(item => item.name.toLowerCase().includes(lcQuery));\n};\n\nexport default search;\n\n// Example usage\nconst data = [{ name: 'Foo' }, { name: 'Bar' }, { name: 'Baz' }];\nconst query = 'ba';\nconst results = search(query, data);\nconsole.log(results); // [{ name: 'Bar' }, { name: 'Baz' }]
+---START---
