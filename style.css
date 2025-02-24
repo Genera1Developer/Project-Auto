@@ -10,7 +10,6 @@ body {
   max-width: 1024px;
   gap: 24px;
   justify-content: space-between;
-  flex-wrap: wrap;
   align-items: stretch;
   margin: 0 auto;
   padding: 16px;
@@ -118,7 +117,7 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 0;
+  margin-bottom: 0;
 }
 
 .bold {
