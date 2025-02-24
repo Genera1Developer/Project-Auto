@@ -74,3 +74,25 @@
             <span class="material-icons md-24" aria-hidden="true">refresh</span>
           </button>
           <button class="btn clear-btn" aria-labelledby="active-users-heading" data-target-table="users" type="button"
+    ">Clear the list of active users</button>
+        </div>
+      </header>
+      <div class="card-body">
+        <table id="users-table" class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Username</th>
+              <th scope="col">Last Active</th>
+            </tr>
+          </thead>
+          <tbody id="users"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+  <section class="alerts-section">
+    <div class="card alerts" data-widget="alerts">
+      <h3 class="screen-reader-only">Alerts Widget</h3>
+      <header class="card-header">
+        <h2 id="alerts-heading" class="card-title">Alerts</h2>
+        <button class="btn clear-btn" aria-labelledby="alerts-heading" data-target-list="alerts
