@@ -1,1 +1,1 @@
-`const getProxy = require('@envelop/express').proxy;`
+`// Query and mutation requests are proxied to the upstream server.
