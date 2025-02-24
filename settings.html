@@ -7,9 +7,10 @@
   <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="style.css" />
   <script>
-    const form = document.querySelector("form");
+    const formAuth = document.querySelector("form.form-auth");
+    const formProxy = document.querySelector("form.form-proxy");
 
-    form.addEventListener("submit", (e) => {
+    formAuth.addEventListener("submit", (e) => {
       e.preventDefault();
 
       const username = document.querySelector("#username").value.trim();
@@ -24,7 +25,25 @@
         return;
       }
 
-      form.submit();
+      formAuth.submit();
+    });
+
+    formProxy.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const proxyAddress = document.querySelector("#proxy-address").value.trim();
+      if (!proxyAddress) {
+        alert("Please enter a proxy address.");
+        return;
+      }
+
+      const proxyPort = document.querySelector("#proxy-port").value.trim();
+      if (!proxyPort) {
+        alert("Please enter a proxy port.");
+        return;
+      }
+
+      formProxy.submit();
     });
   </script>
 </head>
@@ -47,7 +66,7 @@
       <div class="section">
         <h2 class="section-title">Authentication</h2>
 
-        <form action="login.php" method="post" class="form">
+        <form action="login.php" method="post" class="form form-auth">
           <div class="input-group">
             <label for="username">Username</label>
             <input type="text" id="username" name="username" required autofocus autocomplete="username" placeholder="Enter your username" />
@@ -66,7 +85,7 @@
       <div class="section">
         <h2 class="section-title">Proxy Settings</h2>
 
-        <form action="proxy.php" method="post" class="form">
+        <form action="proxy.php" method="post" class="form form-proxy">
           <div class="setting-group">
             <label for="proxy-address">Proxy Address</label>
             <input type="text" id="proxy-address" name="proxy-address" required placeholder="Enter the proxy address" />
