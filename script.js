@@ -1,1 +1,1 @@
-'console.log("Hello, world!")'
+'console.log("Hello, world!");\nalert("This is an alert.");'
