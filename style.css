@@ -7,6 +7,7 @@ body {
 
 .wrapper {
   display: flex;
+  flex-direction: row;
   height: calc(100vh - 16px);
   max-width: 1024px;
   gap: 24px;
