@@ -9,8 +9,8 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const forms = document.querySelectorAll("form");
-      forms.forEach((form) => {
-        form.addEventListener("submit", (e) => {
+      forms.forEach(form => {
+        form.addEventListener("submit", e => {
           e.preventDefault();
 
           const actionUrl = form.getAttribute("action");
@@ -20,19 +20,17 @@
             method: "POST",
             body: formData,
           })
-            .then((response) => {
+            .then(response => {
               if (!response.ok) {
                 throw new Error(response.statusText);
               }
               return response.text();
             })
-            .then((data) => {
+            .then(data => {
               alert(data);
             })
-            .catch((error) => {
-              alert(
-                "An error occurred while submitting the form. Please try again."
-              );
+            .catch(error => {
+              alert("An error occurred while submitting the form. Please try again.");
               console.error(error);
             });
         });
@@ -58,23 +56,23 @@
       <h1 class="page-title">Settings</h1>
 
       <p class="intro">
-        Configure your web proxy settings for secure and anonymous web browsing.
-        Restart the proxy service to apply any changes.
+        Configure your web proxy settings for secure and anonymous web browsing. Restart the proxy service to apply any changes.
       </p>
 
-      <div class="settings-form">
+      <div class="settings-container">
+
         <form class="form form-auth" action="auth.php">
           <h2 class="settings-group-title">Authentication</h2>
 
-          <div class="input-group">
-            <label for="username">Username</label>
+          <label class="input-container" for="username">
+            <span class="label">Username</span>
             <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus autocomplete="username" />
-          </div>
+          </label>
 
-          <div class="input-group">
-            <label for="password">Password</label>
+          <label for="password" class="input-container">
+            <span class="label">Password</span>
             <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
-          </div>
+          </label>
 
           <div class="btn-container">
             <button type="submit" class="btn btn-primary">Save</button>
@@ -86,24 +84,24 @@
         <form class="form form-proxy" action="proxy.php">
           <h2 class="settings-group-title">Proxy Settings</h2>
 
-          <div class="input-group">
-            <label for="proxy-address">Proxy Address</label>
+          <label class="input-container" for="proxy-address">
+            <span class="label">Proxy Address</span>
             <input type="text" id="proxy-address" name="proxy-address" placeholder="Enter the proxy address" required />
-          </div>
+          </label>
 
-          <div class="input-group">
-            <label for="proxy-port">Proxy Port</label>
+          <label class="input-container" for="proxy-port">
+            <span class="label">Proxy Port</span>
             <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" required />
-          </div>
+          </label>
 
-          <div class="input-group">
-            <label for="proxy-type">Proxy Type</label>
+          <label class="input-container" for="proxy-type">
+            <span class="label">Proxy Type</span>
             <select id="proxy-type" name="proxy-type">
               <option value="http" selected>HTTP</option>
               <option value="socks4">SOCKS4</option>
               <option value="socks5">SOCKS5</option>
             </select>
-          </div>
+          </label>
 
           <div class="btn-container">
             <button type="submit" class="btn btn-primary">Save</button>
