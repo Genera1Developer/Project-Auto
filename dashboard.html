@@ -1,3 +1,5 @@
+html 
+---BEGIN FILE CONTENT---
 <header>
   <div class="graph-container">
     <canvas id="chart" width="100%" height="400"></canvas>
@@ -86,56 +88,4 @@
   </div>
   <div class="footer-info">
     <span class="current-year"></span>
-    © Proxy Corp.
-  </div>
-</footer>
-<script>
-  const reloadButtons = document.querySelectorAll('.btn-reload');
-  reloadButtons.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const targetTable = e.target.getAttribute('data-target-table');
-      switch (targetTable) {
-        case 'connections':
-          // Reload active connections list
-          break;
-        case 'users':
-          // Reload active users list
-          break;
-        default:
-          break;
-      }
-    });
-  });
-
-  const clearButtons = document.querySelectorAll('.btn-clear');
-  clearButtons.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const targetTable = e.target.getAttribute('data-target-table');
-      const targetList = e.target.getAttribute('data-target-list');
-      if (targetTable) {
-        // Clear active connections table
-      } else if (targetList) {
-        // Clear error log list
-      }
-    });
-  });
-
-  const exportButtons = document.querySelectorAll('.btn-export');
-  exportButtons.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      const targetList = e.target.getAttribute('data-target-list');
-      if (targetList === 'errors') {
-        // Export error log
-      }
-    });
-  });
-
-  const footerYear = document.querySelector('.current-year');
-  const updateFooterYear = () => {
-    const currentYear = new Date().getFullYear();
-    footerYear.textContent = currentYear;
-  };
-  updateFooterYear();
-
-  // Custom code can be added below
-</script>
+    © 2023 Proxy Corp
