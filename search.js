@@ -1,1 +1,1 @@
-console.log('search');
+console.log('search'); $("#inputSearchField").focus();
