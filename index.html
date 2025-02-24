@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <div class="container flex">
+  <div class="container">
     <header class="header">
       <h1>Web Proxy Settings</h1>
     </header>
@@ -19,7 +19,7 @@
         <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
       </ul>
     </nav>
-    <main class="main-content flex-auto">
+    <main class="main-content">
       <h2>Proxy Configuration</h2>
       <form id="proxy-settings-form" action="/save_settings" method="post" novalidate>
         <fieldset>
@@ -35,8 +35,8 @@
           </div>
           <div class="field-container">
             <label for="proxy-host">Host IP or domain:</label>
-            <input id="proxy-host" name="host" type="text" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
-              placeholder="e.g. 192.168.1.101" required />
+            <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" placeholder="e.g. 192.168.1.101"
+              required />
           </div>
           <div class="field-container">
             <label for="proxy-port">Port:</label>
