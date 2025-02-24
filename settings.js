@@ -1,1 +1,1 @@
-"export const settings = {user: 'Jane Doe', updated: true};"
+"export const settings = {\n  user: 'Jane Doe',\n  updated: new Date().toISOString()\n};"
