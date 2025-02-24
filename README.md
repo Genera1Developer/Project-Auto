@@ -1,4 +1,4 @@
-file path: settings.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,8 +7,96 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy Settings</title>
+    <title>Web Proxy</title>
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            background-color: #e5f1f4;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+        }
+
+        .sidebar {
+            background-color: #3b5998;
+            padding: 20px;
+            width: 250px;
+        }
+
+        .sidebar-link {
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn {
+            background-color: #3b5998;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .message-container {
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .error {
+            background-color: #f44336;
+        }
+
+        .success {
+            background-color: #4caf50;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-indicator--online {
+            background-color: #00ff00;
+        }
+
+        .status-indicator--offline {
+            background-color: #ff0000;
+        }
+    </style>
 </head>
 
 <body>
@@ -19,87 +107,23 @@ content:
             <a href="/dashboard.html" class="sidebar-link">Dashboard</a>
         </div>
         <div class="main">
-            <h1>Proxy Settings</h1>
-            <section id="proxy-configuration">
-                <h2>Proxy Configuration</h2>
-                <form id="proxy-configuration-form">
-                    <label for="protocol">Protocol:</label>
-                    <select id="protocol">
-                        <option value="http">HTTP</option>
-                        <option value="https">HTTPS</option>
-                    </select>
-                    <br>
-                    <label for="port">Port:</label>
-                    <input type="number" id="port">
-                    <br>
-                    <label for="authentication">Authentication:</label>
-                    <input type="checkbox" id="authentication">
-                    <br>
-                    <label for="username">Username:</label>
-                    <input type="text" id="username">
-                    <br>
-                    <label for="password">Password:</label>
-                    <input type="password" id="password">
-                    <br>
-                    <label for="bandwidth-limit">Bandwidth Limit (GB/Month):</label>
-                    <input type="number" id="bandwidth-limit">
-                    <br>
-                    <button type="submit">Save</button>
-                </form>
-            </section>
+            <div class="form-container">
+                <h1>Web Proxy</h1>
+                <div class="form-group">
+                    <label class="form-label" for="username">Username:</label>
+                    <input class="form-input" type="text" id="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password:</label>
+                    <input class="form-input" type="password" id="password">
+                </div>
+                <button class="btn" type="submit" id="login-btn">Login</button>
+            </div>
+            <div class="message-container hidden" id="error-message"></div>
+            <div class="message-container hidden" id="success-message"></div>
         </div>
     </div>
-    <script src="/js/settings.js"></script>
-</body>
-
-</html>
-```
-file path: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy Dashboard</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <a href="/index.html" class="sidebar-link">Home</a>
-            <a href="/settings.html" class="sidebar-link">Settings</a>
-            <a href="/dashboard.html" class="sidebar-link">Dashboard</a>
-        </div>
-        <div class="main">
-            <h1>Dashboard</h1>
-            <section id="real-time-connection-status">
-                <h2>Real-Time Connection Status</h2>
-                <div id="real-time-connection-status-indicator"></div>
-                <p id="real-time-connection-status-message"></p>
-            </section>
-            <section id="bandwidth-usage">
-                <h2>Bandwidth Usage</h2>
-                <canvas id="bandwidth-usage-graph"></canvas>
-            </section>
-            <section id="active-connections">
-                <h2>Active Connections</h2>
-                <ul id="active-connections-list"></ul>
-            </section>
-            <section id="error-log">
-                <h2>Error Log</h2>
-                <pre id="error-log-text"></pre>
-            </section>
-            <section id="user-statistics">
-                <h2>User Statistics</h2>
-                <ul id="user-statistics-list"></ul>
-            </section>
-        </div>
-    </div>
-    <script src="/js/dashboard.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>
