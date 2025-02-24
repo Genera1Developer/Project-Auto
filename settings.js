@@ -1,1 +1,1 @@
-"// Settings here are used to build the Chat Platform\nconst settings = {};\n\nconsole.log(\"settings loaded\");\nconsole.log(settings);"
+"// Settings here are used to build the Chat Platform\nconst settings = {\n  // a placeholder value is used for演示 purposes\n  isHappy: true\n};\n\nconsole.log(\"settings loaded\");\nconsole.log(settings);"
