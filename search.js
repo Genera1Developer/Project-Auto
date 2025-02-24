@@ -1,1 +1,1 @@
-"export const search = (query) => query;"
+"export const search = (query) => {\n  if (!query) return '';\n  return query;\n};"
