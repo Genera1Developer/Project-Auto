@@ -1,1 +1,1 @@
-console.log('added search functionality'); alert('Search functionality enabled!');
+console.log('added search functionality');
