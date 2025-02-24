@@ -1,48 +1,85 @@
-file path: index.html
-content: ```html
-<!DOCTYPE html>
-<html lang="en">
+body {
+  font-family: sans-serif;
+}
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Web Proxy</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+.wrapper {
+  display: flex;
+  height: 100vh;
+}
 
-<body>
-  <div class="wrapper">
-    <div class="sidebar">
-      <h1>Web Proxy</h1>
-      <div class="navigation-links">
-        <a class="navigation-link" href="/index.html">Home</a>
-        <a class="navigation-link" href="/dashboard.html">Dashboard</a>
-        <a class="navigation-link" href="/settings.html">Settings</a>
-      </div>
-    </div>
-    <div class="main-content">
-      <div class="login-form">
-        <form class="login-form-container" id="login-form">
-          <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" />
-          </div>
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" />
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn" id="login-btn">Login</button>
-          </div>
-        </form>
-      </div>
-      <div class="error-message" id="error-message"></div>
-      <div class="connection-status" id="connection-status"></div>
-    </div>
-    <div class="proxy-status" id="proxy-status"></div>
-  </div>
+.sidebar {
+  background-color: #2c3e50;
+  color: white;
+  width: 200px;
+}
 
-  <script src="script.js"></script>
-</body>
+.sidebar h1 {
+  margin-top: 0;
+  padding: 12px;
+  font-size: 1.5rem;
+}
 
-</html>
-```
+.navigation-links {
+  list-style-type: none;
+  padding: 0;
+}
+
+.navigation-link {
+  display: block;
+  padding: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.navigation-link:hover {
+  background-color: #394959;
+}
+
+.main-content {
+  flex: 1;
+  padding: 16px;
+}
+
+.login-form {
+  max-width: 300px;
+}
+
+.login-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-group label {
+  flex-basis: 100px;
+}
+
+.btn {
+  background-color: #394959;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #2c3e50;
+}
+
+.error-message {
+  color: red;
+}
+
+.connection-status {
+  color: green;
+}
+
+.proxy-status {
+  color: blue;
+}
