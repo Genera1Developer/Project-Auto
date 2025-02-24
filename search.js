@@ -1,1 +1,1 @@
-console.log('advanced search functionality now available');
+console.log('shared advanced search functionality');
