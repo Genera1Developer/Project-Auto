@@ -1,1 +1,1 @@
-function Search() {
+"// Generated automatically by NSXPT_ST RESOLVE tool\nfunction Search() {}\n"
