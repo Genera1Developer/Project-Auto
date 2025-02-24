@@ -1,107 +1,97 @@
-file path: dashboard.html
+file path: dashboard.js
 content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy - Dashboard</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <style>
-        body {
-            background-color: #e5f1f4;
+```javascript
+const connectionStatusChart = new Chart(
+    document.getElementById('connection-status-chart'),
+    {
+        type: 'line',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6'],
+            datasets: [{
+                label: 'Connection Status',
+                data: [0, 10, 5, 2, 20, 30],
+                borderColor: '#3b5998',
+                backgroundColor: '#3b5998',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
         }
+    }
+);
 
-        .container {
-            display: flex;
-            flex-direction: row;
-            height: 100vh;
+const bandwidthUsageChart = new Chart(
+    document.getElementById('bandwidth-usage-chart'),
+    {
+        type: 'bar',
+        data: {
+            labels: ['1', '2', '3', '4', '5', '6'],
+            datasets: [{
+                label: 'Bandwidth Usage',
+                data: [100, 200, 300, 400, 500, 600],
+                backgroundColor: '#3b5998'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
         }
+    }
+);
 
-        .sidebar {
-            background-color: #3b5998;
-            padding: 20px;
-            width: 250px;
-        }
+const activeConnectionsList = document.getElementById('active-connections-list');
+const errorLogList = document.getElementById('error-log-list');
+const userStatisticsList = document.getElementById('user-statistics-list');
 
-        .sidebar-link {
-            color: #fff;
-            text-decoration: none;
-            margin-bottom: 10px;
-            display: block;
-        }
+const activeConnections = [];
+const errorLog = [];
+const userStatistics = [];
 
-        .main {
-            flex: 1;
-            padding: 20px;
-        }
+setInterval(() => {
+    // Update connection status chart
+    connectionStatusChart.data.datasets[0].data.shift();
+    connectionStatusChart.data.datasets[0].data.push(Math.random() * 100);
+    connectionStatusChart.update();
 
-        .dashboard-content {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-        }
+    // Update bandwidth usage chart
+    bandwidthUsageChart.data.datasets[0].data.shift();
+    bandwidthUsageChart.data.datasets[0].data.push(Math.random() * 1000);
+    bandwidthUsageChart.update();
 
-        .dashboard-card {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            flex: 1;
-        }
+    // Update active connections list
+    activeConnectionsList.innerHTML = '';
+    activeConnections.forEach(connection => {
+        const li = document.createElement('li');
+        li.textContent = connection;
+        activeConnectionsList.appendChild(li);
+    });
 
-        .dashboard-chart {
-            width: 100%;
-            height: 250px;
-        }
+    // Update error log list
+    errorLogList.innerHTML = '';
+    errorLog.forEach(error => {
+        const li = document.createElement('li');
+        li.textContent = error;
+        errorLogList.appendChild(li);
+    });
 
-        .dashboard-data-list {
-            list-style-type: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <a href="/index.html" class="sidebar-link">Home</a>
-            <a href="/settings.html" class="sidebar-link">Settings</a>
-            <a href="/dashboard.html" class="sidebar-link">Dashboard</a>
-        </div>
-        <div class="main">
-            <div class="dashboard-content">
-                <div class="dashboard-card">
-                    <h2>Connection Status</h2>
-                    <div id="connection-status-chart" class="dashboard-chart"></div>
-                </div>
-                <div class="dashboard-card">
-                    <h2>Bandwidth Usage</h2>
-                    <div id="bandwidth-usage-chart" class="dashboard-chart"></div>
-                </div>
-                <div class="dashboard-card">
-                    <h2>Active Connections</h2>
-                    <ul class="dashboard-data-list" id="active-connections-list">
-                    </ul>
-                </div>
-                <div class="dashboard-card">
-                    <h2>Error Log</h2>
-                    <ul class="dashboard-data-list" id="error-log-list">
-                    </ul>
-                </div>
-                <div class="dashboard-card">
-                    <h2>User Statistics</h2>
-                    <ul class="dashboard-data-list" id="user-statistics-list">
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="/js/dashboard.js"></script>
-</body>
-
-</html>
+    // Update user statistics list
+    userStatisticsList.innerHTML = '';
+    userStatistics.forEach(statistic => {
+        const li = document.createElement('li');
+        li.textContent = statistic;
+        userStatisticsList.appendChild(li);
+    });
+}, 1000);
 ```
