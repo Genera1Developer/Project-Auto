@@ -1,1 +1,1 @@
-"export const search = (query) => {\n  if (!query) return '';\n  return query;\n};"
+"export const search = (query) => {\n  if (!query) throw new Error(\"No query passed\");\n  return query;\n};"
