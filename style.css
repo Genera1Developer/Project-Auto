@@ -142,4 +142,13 @@ th, td {
   border: 1px solid #e5e5e5;
   padding: 5px;
 }
+
+/* Baby blue and rounded theming */
+.baby-blue {
+  background-color: #2979ff;
+}
+
+.rounded-corners {
+  border-radius: 5px;
+}
 ```
