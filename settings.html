@@ -25,25 +25,23 @@
         return;
       }
 
-      formAuth.submit();
+      const redirectUrl = formAuth.getAttribute('action') + '?username=' + username + '&password=' + password;
+      window.location.href = redirectUrl;
     });
 
     formProxy.addEventListener('submit', (e) => {
       e.preventDefault();
 
       const proxyAddress = document.querySelector('#proxy-address').value.trim();
-      if (!proxyAddress) {
-        alert('Please enter a proxy address.');
-        return;
-      }
-
       const proxyPort = document.querySelector('#proxy-port').value.trim();
-      if (!proxyPort) {
-        alert('Please enter a proxy port.');
+
+      if (!proxyAddress || !proxyPort) {
+        alert('Please enter a proxy address and port.');
         return;
       }
 
-      formProxy.submit();
+      const redirectUrl = formProxy.getAttribute('action') + '?proxy-address=' + proxyAddress + '&proxy-port=' + proxyPort;
+      window.location.href = redirectUrl;
     });
   </script>
 </head>
@@ -72,12 +70,12 @@
         <form action="login.php" method="post" class="form form-auth">
           <div class="input-group">
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" required autofocus autocomplete="username" placeholder="Enter your username">
+            <input type="text" id="username" name="username" required autofocus autocomplete="username">
           </div>
 
           <div class="input-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
+            <input type="password" id="password" name="password" required autocomplete="current-password">
           </div>
 
           <div class="form-actions">
@@ -92,12 +90,12 @@
         <form action="proxy.php" method="post" class="form form-proxy">
           <div class="setting-group">
             <label for="proxy-address">Proxy Address</label>
-            <input type="text" id="proxy-address" name="proxy-address" required placeholder="Enter the proxy address">
+            <input type="text" id="proxy-address" name="proxy-address" required>
           </div>
 
           <div class="setting-group">
             <label for="proxy-port">Proxy Port</label>
-            <input type="number" id="proxy-port" name="proxy-port" required placeholder="Enter the proxy port">
+            <input type="number" id="proxy-port" name="proxy-port" required>
           </div>
 
           <div class="form-actions">
