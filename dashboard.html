@@ -72,16 +72,24 @@
 <footer class="footer">
   <div class="footer-content">
     <span class="current-year"></span> © Proxy Corp.
-    <ul>
-      <li><a href="#">Privacy Policy</a></li>
-      <li><a href="#">Terms of Service</a></li>
-    </ul>
+    <nav>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+      </ul>
+    </nav>
   </div>
 </footer>
 <script>
   const reloadButtons = document.querySelectorAll('.reload-btn');
   const clearButtons = document.querySelectorAll('.clear-btn');
   const exportButtons = document.querySelectorAll('.export-btn');
+  const footerYear = document.querySelector('.current-year');
+
+  const updateFooterYear = () => {
+    const currentYear = new Date().getFullYear();
+    footerYear.textContent = currentYear;
+  }
 
   reloadButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -114,4 +122,6 @@
       }
     });
   });
+
+  updateFooterYear();
 </script>
