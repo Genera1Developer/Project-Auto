@@ -14,13 +14,11 @@
       const username = document.querySelector('#username');
       const password = document.querySelector('#password');
 
-      // Check if username is valid
+      // Check if username and password are valid
       if (!username.value) {
         alert('Username cannot be empty');
         return;
       }
-
-      // Check if password is valid
       if (!password.value) {
         alert('Password cannot be empty');
         return;
@@ -33,13 +31,13 @@
 </head>
 
 <body>
-  <div class="sidebar">
+  <nav class="sidebar">
     <a href="index.html" class="active">Home</a>
     <a href="dashboard.html">Dashboard</a>
     <a href="settings.html">Settings</a>
-  </div>
+  </nav>
 
-  <div class="main-content">
+  <main class="main-content">
     <h1>Web Proxy - Settings</h1>
     <p>
       This is a simple web proxy that allows you to browse the internet anonymously.
@@ -57,9 +55,9 @@
         <input type="password" id="password" name="password">
       </div>
 
-      <input type="submit" value="Login">
+      <button type="submit">Login</button>
     </form>
-  </div>
+  </main>
 </body>
 
 </html>
