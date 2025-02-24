@@ -12,9 +12,9 @@
   <div class="container">
     <header class="header">
       <nav class="links">
-        <a href="/">Home</a>
-        <a href="/settings.html" class="active">Settings</a>
-        <a href="/dashboard.html">Dashboard</a>
+        <a href="/" class="link">Home</a>
+        <a href="/settings.html" class="link active">Settings</a>
+        <a href="/dashboard.html" class="link">Dashboard</a>
       </nav>
       <div class="logo">
         <h1>Web Proxy</h1>
@@ -28,7 +28,7 @@
           <legend>Proxy Settings</legend>
           <div class="field-container">
             <label class="label" for="proxy-protocol">Protocol:</label>
-            <select id="proxy-protocol" name="protocol" required aria-label="Proxy Protocol">
+            <select id="proxy-protocol" name="protocol" aria-label="Proxy Protocol" required>
               <option value="" disabled selected>Select</option>
               <option value="HTTP">HTTP</option>
               <option value="HTTPS">HTTPS</option>
@@ -44,7 +44,7 @@
           </div>
           <div class="field-container">
             <label class="label" for="proxy-port">Port:</label>
-            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" aria-label="Proxy Port" required />
+            <input id="proxy-port" name="port" type="number" min="0" max="65535" aria-label="Proxy Port" required />
           </div>
           <div class="field-container">
             <label class="label" for="proxy-authentication">Proxy Authentication (Optional):</label>
