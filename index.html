@@ -27,22 +27,22 @@
           <legend>Proxy Settings</legend>
           <label for="proxy-protocol">Proxy Protocol:</label>
           <select id="proxy-protocol" name="protocol" required>
-            <option value="HTTP" selected>HTTP</option>
-            <option value="HTTPS" selected>HTTPS</option>
+            <option value="HTTP">HTTP</option>
+            <option value="HTTPS">HTTPS</option>
             <option value="SOCKS">SOCKS</option>
             <option value="SOCKS5">SOCKS5</option>
           </select>
           <label for="proxy-host">Proxy Server (IP or domain):</label>
-          <input type="text" id="proxy-host" name="host" required placeholder="Enter the proxy server IP or domain" />
+          <input type="text" id="proxy-host" name="host" required />
           <label for="proxy-port">Proxy Server Port:</label>
-          <input type="number" id="proxy-port" name="port" min="0" step="1" required placeholder="Enter the proxy server port" value="8080" />
+          <input type="number" id="proxy-port" name="port" min="0" step="1" required />
           <label for="proxy-authentication">Proxy Authentication (optional):</label>
           <input type="text" id="proxy-authentication" name="authentication" placeholder="username:password" />
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit</legend>
           <label for="bandwidth-limit">Limit (MB/s):</label>
-          <input type="number" id="bandwidth-limit" name="bandwidth_limit" min="0" placeholder="Enter the bandwidth limit" value="10" />
+          <input type="number" id="bandwidth-limit" name="bandwidth_limit" min="0" />
         </fieldset>
         <div class="button-container">
           <button type="submit">Save Settings</button>
