@@ -5,49 +5,49 @@ const settings = {
     enabled: true,
 
     // The default language of the app
-    language: 'en',
+    language: "en",
 
     // The default currency of the app
-    currency: 'USD',
+    currency: "USD",
 
     // The default time zone of the app
-    timeZone: 'UTC',
+    timeZone: "UTC",
 
     // The default date format of the app
-    dateFormat: 'YYYY-MM-DD',
+    dateFormat: "YYYY-MM-DD",
 
     // The default time format of the app
-    timeFormat: 'HH:mm:ss',
+    timeFormat: "HH:mm:ss",
   },
 
   // User settings
   user: {
     // The default user name
-    name: 'John Doe',
+    name: "John Doe",
 
     // The default user email
-    email: 'john.doe@example.com',
+    email: "john.doe@example.com",
 
     // The default user password
-    password: 'password', // Consider handling passwords securely in a real application.
+    password: "password", // Consider handling passwords securely in a real application.
 
     // The default user role
-    role: 'user',
+    role: "user",
   },
 
   // Application settings
   application: {
     // The default application name
-    name: 'My Application',
+    name: "My Application",
 
     // The default application version
-    version: '1.0.0',
+    version: "1.0.0",
 
     // The default application build date
-    buildDate: '2023-01-01',
+    buildDate: "2023-01-01",
 
     // The default application environment
-    environment: 'development',
+    environment: "development",
   },
 };
 
