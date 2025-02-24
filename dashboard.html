@@ -76,33 +76,25 @@ content:
             <div class="dashboard-content">
                 <div class="dashboard-card">
                     <h2>Connection Status</h2>
-                    <div class="dashboard-chart"></div>
+                    <div id="connection-status-chart" class="dashboard-chart"></div>
                 </div>
                 <div class="dashboard-card">
                     <h2>Bandwidth Usage</h2>
-                    <div class="dashboard-chart"></div>
+                    <div id="bandwidth-usage-chart" class="dashboard-chart"></div>
                 </div>
                 <div class="dashboard-card">
                     <h2>Active Connections</h2>
-                    <ul class="dashboard-data-list">
-                        <li>192.168.1.1:80</li>
-                        <li>192.168.1.2:443</li>
-                        <li>192.168.1.3:8080</li>
+                    <ul class="dashboard-data-list" id="active-connections-list">
                     </ul>
                 </div>
                 <div class="dashboard-card">
                     <h2>Error Log</h2>
-                    <ul class="dashboard-data-list">
-                        <li>Connection failed to 192.168.1.1:80</li>
-                        <li>Authentication failed for 192.168.1.2:443</li>
+                    <ul class="dashboard-data-list" id="error-log-list">
                     </ul>
                 </div>
                 <div class="dashboard-card">
                     <h2>User Statistics</h2>
-                    <ul class="dashboard-data-list">
-                        <li>Total users: 10</li>
-                        <li>Active users: 5</li>
-                        <li>Average bandwidth usage: 100MB/s</li>
+                    <ul class="dashboard-data-list" id="user-statistics-list">
                     </ul>
                 </div>
             </div>
