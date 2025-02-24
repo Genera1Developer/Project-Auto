@@ -22,7 +22,7 @@
   </aside>
   <main class="main-content">
     <section class="settings-section">
-      <h1 class="page-title">Settings<span class="note">(Changes require a proxy restart)</span></h1>
+      <h1 class="page-title">Settings <span class="note">(Changes require a proxy restart)</span></h1>
       <p class="intro">Configure your web proxy settings for secure and anonymous web browsing.</p>
       <ul class="settings-tabs">
         <li><a href="#authentication" class="active">Authentication</a></li>
@@ -44,7 +44,7 @@
           <a class="btn btn-link" href="#">Reset Password</a>
         </form>
       </div>
-      <div class="settings-tab-container" id="proxy" style="display: none;">
+      <div class="settings-tab-container" id="proxy">
         <h2 class="settings-group-title">Proxy Settings</h2>
         <form class="form form-proxy">
           <div class="input-container">
@@ -91,6 +91,28 @@
       </div>
     </section>
   </main>
+  <script>
+    const tabs = document.querySelectorAll(".settings-tab-container");
+    const tabButtons = document.querySelectorAll(".settings-tabs a");
+
+    const tabSwitch = (e) => {
+      e.preventDefault();
+      const targetTab = e.target.getAttribute("href");
+      tabs.forEach((tab) => {
+        tab.style.display = "none";
+      });
+      document.querySelector(targetTab).style.display = "block";
+
+      tabButtons.forEach((btn) => {
+        btn.classList.remove("active");
+      });
+      e.target.classList.add("active");
+    };
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", tabSwitch);
+    });
+  </script>
 </body>
 
 </html>
