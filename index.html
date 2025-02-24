@@ -20,12 +20,12 @@
       <form id="proxy-settings-form">
         <label for="proxy-protocol">Proxy Protocol</label>
         <select id="proxy-protocol" required>
-          <option value="http">HTTP</option>
-          <option value="https">HTTPS</option>
+          <option value="HTTP">HTTP</option>
+          <option value="HTTPS">HTTPS</option>
         </select>
 
         <label for="proxy-port">Proxy Port</label>
-        <input type="number" id="proxy-port" min="0" required />
+        <input type="number" id="proxy-port" min="0" step="1" required />
 
         <label for="proxy-authentication">Proxy Authentication</label>
         <input type="text" id="proxy-authentication" />
