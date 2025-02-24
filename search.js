@@ -1,1 +1,1 @@
-"export default {\n  search(searchString) {\n    if (!searchString) {\n      return;\n    }\n\n    // Do something\n  }\n}"
+"export default {\n  search(searchString) {\n    if (!searchString) {\n      return;\n    }\n\n    // Do something\n    return searchResult;\n  }\n}"
