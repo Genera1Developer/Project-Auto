@@ -7,27 +7,29 @@
   <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="style.css" />
   <script>
-    const forms = document.querySelectorAll("form");
-    forms.forEach((form) => {
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
+    document.addEventListener("DOMContentLoaded", () => {
+      const forms = document.querySelectorAll("form");
+      forms.forEach((form) => {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
 
-        const actionUrl = form.getAttribute("action");
-        const formData = new FormData(form);
+          const actionUrl = form.getAttribute("action");
+          const formData = new FormData(form);
 
-        fetch(actionUrl, {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.text())
-          .then((data) => {
-            alert(data);
+          fetch(actionUrl, {
+            method: "POST",
+            body: formData,
           })
-          .catch((error) => {
-            alert(
-              "An error occurred while submitting the form. Please try again."
-            );
-          });
+            .then((response) => response.text())
+            .then((data) => {
+              alert(data);
+            })
+            .catch((error) => {
+              alert(
+                "An error occurred while submitting the form. Please try again."
+              );
+            });
+        });
       });
     });
   </script>
