@@ -4,19 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web Proxy Settings</title>
-  <!-- External stylesheet link -->
   <link rel="stylesheet" href="style.css" />
-  <!-- External JavaScript module link -->
   <script type="module" src="settings.js"></script>
 </head>
 
 <body>
   <div class="container">
-    <!-- Header section -->
     <header class="header">
       <h1>Web Proxy Settings</h1>
     </header>
-    <!-- Sidebar navigation -->
     <nav class="sidebar">
       <ul>
         <li><a href="/" class="nav-link">Home</a></li>
@@ -24,17 +20,15 @@
         <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
       </ul>
     </nav>
-    <!-- Main content section -->
     <main class="main-content">
       <h2>Proxy Configuration</h2>
-      <!-- Form for proxy settings -->
       <form id="proxy-settings-form" action="/save_settings" method="post">
         <fieldset>
           <legend>Proxy Settings</legend>
           <div class="field-container">
             <label for="proxy-protocol">Protocol:</label>
             <select id="proxy-protocol" name="protocol" required>
-              <option value="" disabled selected>Select</option>
+              <option value="" selected disabled>Select</option>
               <option value="HTTP">HTTP</option>
               <option value="HTTPS">HTTPS</option>
               <option value="SOCKS">SOCKS</option>
@@ -50,19 +44,18 @@
             <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" required aria-label="Proxy port number" />
           </div>
           <div class="field-container">
-            <label for="proxy-authentication">Proxy Authentication:</label>
+            <label for="proxy-authentication">Proxy Authentication (Optional):</label>
             <input id="proxy-authentication" name="authentication" type="text" placeholder="username:password" aria-label="Proxy authentication" />
           </div>
         </fieldset>
         <fieldset>
-          <legend>Bandwidth Limit (optional)</legend>
+          <legend>Bandwidth Limit (Optional)</legend>
           <div class="field-container">
             <label for="bandwidth-limit">Limit (MB/s):</label>
             <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth limit" />
           </div>
           <small>Enter 0 to disable bandwidth limit.</small>
         </fieldset>
-        <!-- Button container for submit, reset, and cancel actions -->
         <div class="button-container">
           <button type="submit" class="btn btn-primary">Save</button>
           <button type="reset" class="btn btn-secondary">Reset</button>
@@ -71,8 +64,6 @@
       </form>
     </main>
   </div>
-  <!-- Include a footer or copyright notice if desired -->
-  <!-- ... -->
 </body>
 
 </html>
