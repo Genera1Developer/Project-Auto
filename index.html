@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="container flex">
     <header class="header">
       <h1>Web Proxy Settings</h1>
     </header>
@@ -19,30 +19,40 @@
         <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
       </ul>
     </nav>
-    <main class="main-content">
+    <main class="main-content flex-auto">
       <h2>Proxy Configuration</h2>
       <form id="proxy-settings-form" action="/save_settings" method="post" novalidate>
         <fieldset>
           <legend>Proxy Settings</legend>
-          <label for="proxy-protocol">Protocol:</label>
-          <select id="proxy-protocol" name="protocol" required>
-            <option value="HTTP">HTTP</option>
-            <option value="HTTPS">HTTPS</option>
-            <option value="SOCKS">SOCKS</option>
-            <option value="SOCKS5">SOCKS5</option>
-          </select>
-          <label for="proxy-host">Host IP or domain:</label>
-          <input id="proxy-host" name="host" type="text" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
-            placeholder="e.g. 192.168.1.101" required />
-          <label for="proxy-port">Port:</label>
-          <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" required />
-          <label for="proxy-authentication">Proxy Authentication (optional):</label>
-          <input id="proxy-authentication" name="authentication" placeholder="username:password" type="text" />
+          <div class="field-container">
+            <label for="proxy-protocol">Protocol:</label>
+            <select id="proxy-protocol" name="protocol" required>
+              <option value="HTTP">HTTP</option>
+              <option value="HTTPS">HTTPS</option>
+              <option value="SOCKS">SOCKS</option>
+              <option value="SOCKS5">SOCKS5</option>
+            </select>
+          </div>
+          <div class="field-container">
+            <label for="proxy-host">Host IP or domain:</label>
+            <input id="proxy-host" name="host" type="text" pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"
+              placeholder="e.g. 192.168.1.101" required />
+          </div>
+          <div class="field-container">
+            <label for="proxy-port">Port:</label>
+            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" required />
+          </div>
+          <div class="field-container">
+            <label for="proxy-authentication">Proxy Authentication (optional):</label>
+            <input id="proxy-authentication" name="authentication" placeholder="username:password" type="text" />
+          </div>
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit (optional)</legend>
-          <label for="bandwidth-limit">Limit (MB/s):</label>
-          <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" />
+          <div class="field-container">
+            <label for="bandwidth-limit">Limit (MB/s):</label>
+            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" />
+          </div>
           <small>Enter 0 to disable bandwidth limit.</small>
         </fieldset>
         <div class="button-container">
