@@ -10,13 +10,13 @@ const settings = {
   user: {
     name: "John Doe",
     email: "john.doe@example.com",
-    password: "password", // Properly handle passwords in a real application.
+    passwordHash: "hash-of-your-password", // Properly handle passwords in a real application.
     role: "user",
   },
   application: {
     name: "My Application",
     version: "1.0.0",
-    buildDate: "2023-01-01",
+    buildDate: "2023-01-01T00:00:00Z", // Use ISO 8601 format for timestamps.
     environment: "development",
   },
 };
