@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content:
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Proxy Settings</title>
+  <title>Web Proxy Dashboard</title>
   <style>
     * {
       box-sizing: border-box;
@@ -55,35 +55,36 @@ content:
       margin-top: 0;
     }
 
-    .main-content form {
+    .main-content .row {
       display: flex;
-      flex-direction: column;
+      justify-content: space-around;
       gap: 1rem;
     }
 
-    .main-content label {
-      font-weight: bold;
-    }
-
-    .main-content input,
-    .main-content select {
-      width: 100%;
-      padding: 0.5rem;
+    .main-content .card {
+      width: 250px;
+      padding: 1rem;
       border: 1px solid #ccc;
       border-radius: 5px;
+      background: #f5f5f5;
     }
 
-    .main-content button {
-      padding: 0.5rem 1rem;
-      border: 1px solid #0099ff;
-      border-radius: 5px;
-      background: #0099ff;
-      color: #fff;
-      cursor: pointer;
+    .main-content .card h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
     }
 
-    .main-content button:hover {
-      background: #007acc;
+    .main-content .card p {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    .main-content .card .list {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
   </style>
 </head>
@@ -92,37 +93,117 @@ content:
   <div class="container">
     <div class="sidebar">
       <a href="/index.html">Home</a>
-      <a href="/settings.html" class="active">Settings</a>
-      <a href="/dashboard.html">Dashboard</a>
+      <a href="/settings.html">Settings</a>
+      <a href="/dashboard.html" class="active">Dashboard</a>
     </div>
     <div class="main-content">
-      <h1>Web Proxy Settings</h1>
-      <form id="settings-form">
-        <label for="protocol">Protocol:</label>
-        <select name="protocol" id="protocol">
-          <option value="http">HTTP</option>
-          <option value="https">HTTPS</option>
-        </select>
-        <label for="port">Port:</label>
-        <input type="number" name="port" id="port" min="1" max="65535">
-        <label for="authentication">Authentication:</label>
-        <input type="checkbox" name="authentication" id="authentication">
-        <div id="authentication-settings" style="display: none;">
-          <label for="username">Username:</label>
-          <input type="text" name="username" id="username">
-          <label for="password">Password:</label>
-          <input type="password" name="password" id="password">
+      <h1>Web Proxy Dashboard</h1>
+      <div class="row">
+        <div class="card">
+          <h2>Real-time Status</h2>
+          <p>Connection Status: <span id="connection-status">Loading...</span></p>
+          <p>Active Connections: <span id="active-connections">Loading...</span></p>
+          <p>Bandwidth Usage: <span id="bandwidth-usage">Loading...</span></p>
         </div>
-        <label for="bandwidth-limit">Bandwidth Limit (GB/month):</label>
-        <input type="number" name="bandwidth-limit" id="bandwidth-limit" min="0">
-        <button type="submit">Save</button>
-      </form>
+        <div class="card">
+          <h2>Bandwidth Usage</h2>
+          <canvas id="bandwidth-graph"></canvas>
+        </div>
+        <div class="card">
+          <h2>Active Connections</h2>
+          <ul id="active-connections-list">
+            <li>Loading...</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Error Log</h2>
+          <ul id="error-log">
+            <li>Loading...</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>User Statistics</h2>
+          <ul id="user-statistics">
+            <li>Loading...</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
   <script>
-    // Implement the settings functionality here
+    // Implement the dashboard functionality here
   </script>
 </body>
 
 </html>
+```
+
+file path: README.md
+content:
+```
+# Web Proxy Project
+
+This project creates a structured web proxy with strictly defined files and components, featuring a baby blue, beautiful, and rounded theme.
+
+## Files
+
+- index.html: Main landing page
+- settings.html: Proxy configuration page
+- dashboard.html: User statistics and monitoring
+- README.md: Description of the site
+
+## Requirements
+
+**index.html**
+
+- Login form with username/password fields
+- Navigation to settings and dashboard
+- Proxy status indicator
+- Error message display area
+- Connection status display
+- External CSS and JS files
+- Side bar with links to index.html, dashboard.html, and settings.html
+- Inline CSS styling
+- Inline JavaScript
+
+**settings.html**
+
+- Proxy configuration form
+- Protocol selection (HTTP/HTTPS)
+- Port configuration
+- Authentication settings
+- Bandwidth limits
+- Same styling as index.html
+- Side bar with links to index.html, dashboard.html, and settings.html
+- Inline CSS styling
+- Inline JavaScript
+
+**dashboard.html**
+
+- Real-time connection status
+- Bandwidth usage graphs
+- Active connections list
+- Error log display
+- User statistics
+- Same styling as index.html
+- Side bar with links to index.html, dashboard.html, and settings.html
+- Inline CSS styling
+- Inline JavaScript
+
+**README.md**
+
+- Raw markdown text only
+
+## Code Structure
+
+- No inline scripts or styles
+- Semantic HTML elements only
+- Strict content security policy
+- Error handling for all operations
+- Cross-browser compatibility
+- Mobile responsiveness
+- Clean, consistent indentation
+- Proper commenting
+- No external dependencies
+- No framework usage
 ```
