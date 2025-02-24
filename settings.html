@@ -7,41 +7,27 @@
   <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="style.css" />
   <script>
-    const formAuth = document.querySelector('form.form-auth');
-    const formProxy = document.querySelector('form.form-proxy');
+    const forms = document.querySelectorAll('form');
 
-    formAuth.addEventListener('submit', (e) => {
-      e.preventDefault();
+    forms.forEach((form) => {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-      const username = document.querySelector('#username').value.trim();
-      if (!username) {
-        alert('Please enter a username.');
-        return;
-      }
+        const actionUrl = form.getAttribute('action');
+        const formData = new FormData(form);
 
-      const password = document.querySelector('#password').value.trim();
-      if (!password) {
-        alert('Please enter a password.');
-        return;
-      }
-
-      const redirectUrl = formAuth.getAttribute('action') + '?username=' + username + '&password=' + password;
-      window.location.href = redirectUrl;
-    });
-
-    formProxy.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const proxyAddress = document.querySelector('#proxy-address').value.trim();
-      const proxyPort = document.querySelector('#proxy-port').value.trim();
-
-      if (!proxyAddress || !proxyPort) {
-        alert('Please enter a proxy address and port.');
-        return;
-      }
-
-      const redirectUrl = formProxy.getAttribute('action') + '?proxy-address=' + proxyAddress + '&proxy-port=' + proxyPort;
-      window.location.href = redirectUrl;
+        fetch(actionUrl, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+          window.location.href = data;
+        })
+        .catch(error => {
+          alert('An error occurred while submitting the form. Please try again.');
+        });
+      });
     });
   </script>
 </head>
@@ -65,7 +51,7 @@
       </p>
 
       <div class="settings-form">
-        <form class="form form-auth">
+        <form class="form form-auth" action="auth.php">
           <div class="settings-group">
             <h2 class="settings-title">Authentication</h2>
 
@@ -87,7 +73,7 @@
 
         <hr />
 
-        <form class="form form-proxy">
+        <form class="form form-proxy" action="proxy.php">
           <div class="settings-group">
             <h2 class="settings-title">Proxy Settings</h2>
 
