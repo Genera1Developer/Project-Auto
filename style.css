@@ -1,11 +1,11 @@
-file path: index.html
+file path: settings.html
 content: ```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
-  <title>Web Proxy</title>
+  <title>Settings</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -20,15 +20,25 @@ content: ```html
       </div>
     </div>
     <div class="main-content">
-      <div class="login-form">
+      <div class="settings-form">
         <form>
-          <input class="form-input" type="text" placeholder="Username" />
-          <input class="form-input" type="password" placeholder="Password" />
-          <button class="login-button" type="submit">Log in</button>
+          <label for="protocol">Protocol:</label>
+          <select id="protocol">
+            <option value="HTTP">HTTP</option>
+            <option value="HTTPS">HTTPS</option>
+          </select>
+          <label for="port">Port:</label>
+          <input class="form-input" type="number" id="port" />
+          <div class="authentication-settings">
+            <label for="username">Username:</label>
+            <input class="form-input" type="text" id="username" />
+            <label for="password">Password:</label>
+            <input class="form-input" type="password" id="password" />
+          </div>
+          <label for="bandwidth-limit">Bandwidth Limit:</label>
+          <input class="form-input" type="number" id="bandwidth-limit" />
+          <button class="save-button" type="submit">Save</button>
         </form>
-        <div class="error-message" id="error-message"></div>
-        <div class="connection-status" id="connection-status"></div>
-        <div class="proxy-status" id="proxy-status"></div>
       </div>
     </div>
   </div>
