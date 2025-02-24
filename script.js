@@ -1,1 +1,1 @@
-"console.log('Hello, world!');\nconsole.log(new Date());"
+"console.log('Hello, world!');console.log(new Date());"
