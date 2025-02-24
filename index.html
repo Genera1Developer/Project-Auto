@@ -1,4 +1,4 @@
-file path: settings.html
+file path: dashboard.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,10 +7,10 @@ content:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Baby Blue Web Proxy Settings</title>
+  <title>Baby Blue Web Proxy Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* CSS Styles for settings.html */
+    /* CSS Styles for dashboard.html */
     body {
       font-family: sans-serif;
       background-color: #f0f8ff;
@@ -63,36 +63,36 @@ content:
       margin-top: 0;
     }
 
-    .form-container {
+    .dashboard-container {
       background-color: #fff;
       padding: 1rem;
       border-radius: 5px;
       margin-bottom: 1rem;
     }
 
-    .form-group {
+    .dashboard-section {
       margin-bottom: 1rem;
     }
 
-    label {
-      display: block;
+    .dashboard-section-title {
+      font-weight: bold;
       margin-bottom: 0.5rem;
     }
 
-    input,
-    select {
+    .dashboard-graph {
       width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      height: 250px;
     }
 
-    button {
-      padding: 0.5rem 1rem;
+    .dashboard-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .dashboard-table th,
+    .dashboard-table td {
+      padding: 0.5rem;
       border: 1px solid #ccc;
-      border-radius: 5px;
-      background-color: #0099ff;
-      color: #fff;
     }
 
     .error {
@@ -106,48 +106,38 @@ content:
     <aside class="sidebar">
       <ul>
         <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html" class="active">Settings</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+        <li><a href="/dashboard.html" class="active">Dashboard</a></li>
       </ul>
     </aside>
     <main class="content">
-      <h1>Baby Blue Web Proxy Settings</h1>
-      <form id="settings-form">
-        <div class="form-container">
-          <h2 class="form-title">Proxy Configuration</h2>
-          <div class="form-group">
-            <label for="protocol">Protocol:</label>
-            <select name="protocol">
-              <option value="http">HTTP</option>
-              <option value="https">HTTPS</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="port">Port:</label>
-            <input type="number" name="port" min="1" max="65535" value="8080" />
-          </div>
-          <div class="form-group">
-            <label for="authentication">Authentication:</label>
-            <input type="checkbox" name="authentication" />
-          </div>
-          <div class="form-group" id="authentication-options" style="display: none;">
-            <label for="username">Username:</label>
-            <input type="text" name="username" />
-            <label for="password">Password:</label>
-            <input type="password" name="password" />
-          </div>
-          <div class="form-group">
-            <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
-            <input type="number" name="bandwidth-limit" min="0" />
-          </div>
+      <h1>Baby Blue Web Proxy Dashboard</h1>
+      <div class="dashboard-container">
+        <div class="dashboard-section">
+          <h2 class="dashboard-section-title">Realtime Connection Status</h2>
+          <div id="connection-status"></div>
         </div>
-        <button type="submit">Save</button>
-      </form>
-    </main>
-  </div>
-
-  <script src="script.js"></script>
-</body>
-
-</html>
-```
+        <div class="dashboard-section">
+          <h2 class="dashboard-section-title">Bandwidth Usage</h2>
+          <div id="bandwidth-graph"></div>
+        </div>
+        <div class="dashboard-section">
+          <h2 class="dashboard-section-title">Active Connections</h2>
+          <table class="dashboard-table" id="active-connections">
+            <thead>
+              <tr>
+                <th>IP Address</th>
+                <th>Port</th>
+                <th>Protocol</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="dashboard-section">
+          <h2 class="dashboard-section-title">Error Log</h2>
+          <ul id="error-log"></ul>
+        </div>
+        <div class="dashboard-section">
+          <h2 class="dashboard
