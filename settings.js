@@ -1,1 +1,1 @@
-"// Settings here are used to build the Chat Platform\nconst settings = {};\n\nconsole.log('settings loaded');"
+"// Settings here are used to build the Chat Platform\nconst settings = {};\n\nconsole.log(\"settings loaded\");\nconsole.log(settings);"
