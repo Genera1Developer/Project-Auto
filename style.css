@@ -1,15 +1,24 @@
 file path: style.css
 content: ```css
-body {
+/* Reset styles */
+
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Custom styles */
+
+body {
   font-family: Arial, Helvetica, sans-serif;
   background-color: #f5f5f5;
 }
 
 #sidebar {
   width: 250px;
-  background-color: #d9d9d9;
   height: 100vh;
+  background-color: #cfe2ff;
   border-right: 1px solid #ccc;
 }
 
@@ -35,6 +44,7 @@ select {
   width: 100%;
   padding: 5px;
   margin-bottom: 10px;
+  border: 1px solid #ccc;
   border-radius: 5px;
 }
 
@@ -68,22 +78,22 @@ button {
   }
 }
 
-/* Custom styles */
+/* Custom color scheme */
 
 .custom-sidebar {
-  background-color: #b3e5fc;
+  background-color: #e0f2f1;
 }
 
 .custom-content {
-  background-color: #dfe3e6;
+  background-color: #f5f5f5;
 }
 
 .custom-button {
-  background-color: #0084d3;
+  background-color: #3f51b5;
 }
 
 .custom-loading {
-  color: #0099ff;
+  color: #3f51b5;
   animation: custom-loading 1s infinite;
 }
 
