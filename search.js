@@ -1,1 +1,1 @@
-$(".search-field").focus(); console.log('search');
+"$(document).ready(function() { $(".search-field").focus(); console.log('search'); });"
