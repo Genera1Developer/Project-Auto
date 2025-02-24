@@ -91,10 +91,16 @@
       </li>
     </ul>
     <p class="footer-info">
-      &copy; <span class="current-year"></span> Proxy Corp
+      &copy;
+      <span class="current-year"></span>
+      Proxy Corp
       <span class="footer-attribution">
         <a href="https://www.freepik.com/vectors/background">Background vector created by rawpixel.com - www.freepik.com</a>
       </span>
     </p>
   </div>
 </footer>
+<script>
+  const currentYearEl = document.querySelector('.current-year');
+  currentYearEl.textContent = new Date().getFullYear();
+</script>
