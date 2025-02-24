@@ -1,1 +1,1 @@
-`// Query and mutation requests are proxied to the upstream server.
+`// Query and mutation requests are proxied to the upstream server via the
