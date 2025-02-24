@@ -22,7 +22,8 @@
         })
         .then(response => response.text())
         .then(data => {
-          window.location.href = data;
+          alert(data);
+          window.location.reload();
         })
         .catch(error => {
           alert('An error occurred while submitting the form. Please try again.');
