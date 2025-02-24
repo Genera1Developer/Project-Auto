@@ -34,9 +34,9 @@
 
 <body>
   <nav class="sidebar">
-    <a href="index.html" class="active">Home</a>
+    <a href="index.html">Home</a>
     <a href="dashboard.html">Dashboard</a>
-    <a href="settings.html">Settings</a>
+    <a href="settings.html" class="active">Settings</a>
   </nav>
 
   <main class="main-content">
@@ -44,7 +44,7 @@
     <p>This is a simple web proxy that allows you to browse the internet anonymously.</p>
 
     <h2>Login</h2>
-    <form action="login.php" method="post">
+    <form action="login.php" method="post" class="form">
       <div class="form-group">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required autofocus />
