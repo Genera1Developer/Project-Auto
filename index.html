@@ -19,9 +19,9 @@
       <a href="/dashboard.html" class="nav-link">Dashboard</a>
     </nav>
     <main class="main-content">
+      <h2>Proxy Configuration</h2>
       <form id="proxy-settings-form">
         <fieldset>
-          <legend>Proxy Configuration</legend>
           <label for="proxy-protocol">Protocol:</label>
           <select id="proxy-protocol" required>
             <option value="HTTP" selected>HTTP</option>
@@ -32,8 +32,8 @@
           <label for="proxy-authentication">Authentication:</label>
           <input type="text" id="proxy-authentication" placeholder="username:password" />
         </fieldset>
+        <h2>Bandwidth Limit</h2>
         <fieldset>
-          <legend>Bandwidth Limit</legend>
           <label for="bandwidth-limit">Limit (MB/s):</label>
           <input type="number" id="bandwidth-limit" min="0" value="10" />
         </fieldset>
