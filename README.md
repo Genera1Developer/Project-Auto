@@ -1,5 +1,3 @@
-file: index.html
-
 ```html
 <!DOCTYPE html>
 <html>
@@ -117,33 +115,18 @@ file: index.html
 <body>
     <div class="container">
         <div class="sidebar">
-            <a href="/index.html">Dashboard</a>
+            <a href="/index.html">Proxy</a>
             <a href="/settings.html">Settings</a>
             <a href="/dashboard.html">Dashboard</a>
         </div>
         <div class="content">
-            <h1>Web Proxy</h1>
-            <div class="form-container">
-                <form id="login-form">
-                    <div class="form-group">
-                        <label class="form-label" for="username">Username:</label>
-                        <input class="form-input" type="text" name="username" id="username">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="password">Password:</label>
-                        <input class="form-input" type="password" name="password" id="password">
-                    </div>
-                    <div class="button-container">
-                        <button class="button" type="submit">Login</button>
-                    </div>
-                </form>
+            <h1>Proxy</h1>
+            <p>Connect to the web anonymously and securely with our advanced proxy service.</p>
+            <div class="button-container">
+                <a class="button" href="/settings.html">Configure Proxy</a>
             </div>
-            <div id="error-message"></div>
-            <div id="success-message"></div>
-            <div id="status-indicator" class="status-indicator"></div>
-            <div id="connection-status"></div>
         </div>
     </div>
-    <script>
-        const loginForm = document.getElementById("login-form");
-        const errorMessage = document
+</body>
+</html>
+```
