@@ -20,7 +20,7 @@
     </header>
     <main class="main-content">
       <h2>Proxy Configuration</h2>
-      <p>Configure your proxy settings here. Leave any field blank to disable the corresponding option.</p>
+      <p>Configure your proxy settings here. Any field left blank will disable the corresponding option.</p>
       <form id="proxy-settings-form" action="/save_settings" method="POST" autocomplete="off">
         <fieldset>
           <legend>Proxy Settings</legend>
@@ -36,22 +36,22 @@
           </div>
           <div class="field-container">
             <label for="proxy-host">Host IP or Domain:</label>
-            <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" placeholder="e.g. 192.168.1.101" aria-label="Proxy host IP or domain" required>
+            <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$"  aria-label="Proxy host IP or domain" required>
           </div>
           <div class="field-container">
             <label for="proxy-port">Port:</label>
-            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" placeholder="e.g. 8080" aria-label="Proxy port number" required>
+            <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1"  aria-label="Proxy port number" required>
           </div>
           <div class="field-container">
             <label for="proxy-authentication">Proxy Authentication (Optional):</label>
-            <input id="proxy-authentication" name="authentication" type="text" pattern="^([^:]+):(.+)$" placeholder="username:password" aria-label="Proxy authentication">
+            <input id="proxy-authentication" name="authentication" type="text" pattern="^([^:]+):(.+)$"  aria-label="Proxy authentication">
           </div>
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit (Optional)</legend>
           <div class="field-container">
             <label for="bandwidth-limit">Limit (MB/s):</label>
-            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth limit">
+            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0"  aria-label="Bandwidth limit">
           </div>
           <small>Leave blank to disable bandwidth limit.</small>
         </fieldset>
