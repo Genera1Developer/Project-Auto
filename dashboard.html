@@ -1,179 +1,114 @@
-file path: index.html
+file path: style.css
 content: 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Web Proxy Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <a href="/index.html">Dashboard</a>
-            <a href="/settings.html">Settings</a>
-            <a href="/dashboard.html">Dashboard</a>
-        </div>
-        <div class="section">
-            <h1>Web Proxy Dashboard</h1>
-            <div id="proxy-status">Proxy status: offline</div>
-            <div id="connection-status">Connection status: not connected</div>
-            <div id="error-message" style="display: none;"></div>
-            <form id="login-form">
-                <label class="field-label" for="username">Username:</label>
-                <input type="text" id="username" name="username">
-                <label class="field-label" for="password">Password:</label>
-                <input type="password" id="password" name="password">
-                <button type="submit">Login</button>
-            </form>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
-```
+```css
+body {
+    background-color: #e0f7fa;
+    font-family: Arial, sans-serif;
+}
 
-file path: settings.html
-content: 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Web Proxy Settings</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <a href="/index.html">Dashboard</a>
-            <a href="/settings.html">Settings</a>
-            <a href="/dashboard.html">Dashboard</a>
-        </div>
-        <div class="section">
-            <h1>Web Proxy Settings</h1>
-            <form>
-                <label class="field-label" for="protocol">Protocol:</label>
-                <select id="protocol" name="protocol">
-                    <option value="http">HTTP</option>
-                    <option value="https">HTTPS</option>
-                </select>
-                <label class="field-label" for="port">Port:</label>
-                <input type="number" id="port" name="port">
-                <label class="field-label" for="username">Username:</label>
-                <input type="text" id="username" name="username">
-                <label class="field-label" for="password">Password:</label>
-                <input type="password" id="password" name="password">
-                <label class="field-label" for="bandwidth-limit">Bandwidth limit (MB/s):</label>
-                <input type="number" id="bandwidth-limit" name="bandwidth-limit">
-                <button type="submit">Save</button>
-            </form>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
-```
+.container {
+    display: flex;
+    min-height: 100vh;
+}
 
-file path: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Web Proxy Dashboard</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="container">
-        <div class="sidebar">
-            <a href="/index.html">Dashboard</a>
-            <a href="/settings.html">Settings</a>
-            <a href="/dashboard.html">Dashboard</a>
-        </div>
-        <div class="section">
-            <h1>Web Proxy Dashboard</h1>
-            <div id="connection-status">Connection status: not connected</div>
-            <div id="bandwidth-usage-graph"></div>
-            <table id="active-connections-table">
-                <thead>
-                    <tr>
-                        <th>IP Address</th>
-                        <th>Port</th>
-                        <th>Protocol</th>
-                        <th>Duration</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>127.0.0.1</td>
-                        <td>8080</td>
-                        <td>HTTP</td>
-                        <td>10:02:35</td>
-                    </tr>
-                    <tr>
-                        <td>192.168.0.1</td>
-                        <td>443</td>
-                        <td>HTTPS</td>
-                        <td>00:23:45</td>
-                    </tr>
-                    <tr>
-                        <td>10.0.0.1</td>
-                        <td>80</td>
-                        <td>HTTP</td>
-                        <td>01:05:12</td>
-                    </tr>
-                </tbody>
-            </table>
-            <ul id="error-log">
-                <li>Error: Could not connect to server</li>
-                <li>Error: Invalid protocol specified</li>
-            </ul>
-            <ul id="user-statistics">
-                <li>Total users: 10</li>
-                <li>Active users: 5</li>
-                <li>Average bandwidth usage: 10 MB/s</li>
-            </ul>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
-```
+.sidebar {
+    background-color: #2e86c1;
+    padding: 20px;
+    width: 200px;
+}
 
-file path: README.md
-content: 
-```markdown
-# Web Proxy Dashboard
+.sidebar a {
+    display: block;
+    padding: 10px 0;
+    text-decoration: none;
+    color: #fff;
+}
 
-This project is a simple web proxy dashboard that allows users to monitor and manage their proxy settings.
+.sidebar a:hover {
+    background-color: #1e6091;
+}
 
-The dashboard includes the following features:
+.section {
+    flex: 1;
+    padding: 20px;
+}
 
-- Real-time connection status
-- Bandwidth usage graphs
-- Active connections list
-- Error log display
-- User statistics
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-The dashboard is designed to be easy to use and understand, and it provides a comprehensive overview of the proxy's performance and usage.
+label {
+    font-weight: bold;
+}
 
-## Usage
+input,
+select {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
 
-To use the dashboard, simply open the index.html file in a web browser. The dashboard will automatically connect to the proxy and start displaying real-time data.
+button {
+    background-color: #1e6091;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-You can use the settings page to configure the proxy's settings, such as the protocol, port, and authentication credentials.
+#proxy-status {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: green;
+}
 
-## Requirements
+#connection-status {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: red;
+}
 
-The dashboard requires the following:
+#error-message {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: red;
+}
 
-- A web browser
-- A web proxy server
+#bandwidth-usage-graph {
+    width: 100%;
+    height: 200px;
+    background-color: #eee;
+}
 
-## License
+#active-connections-table {
+    width: 100%;
+    border-collapse: collapse;
+}
 
-This project is licensed under the MIT License.
+#active-connections-table th,
+#active-connections-table td {
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+#error-log {
+    list-style-type: none;
+    padding: 0;
+}
+
+#error-log li {
+    color: red;
+}
+
+#user-statistics {
+    list-style-type: none;
+    padding: 0;
+}
+
+#user-statistics li {
+    font-weight: bold;
+}
 ```
