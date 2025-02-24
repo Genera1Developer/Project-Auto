@@ -1,5 +1,4 @@
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +6,6 @@
   <link rel="stylesheet" href="style.css" />
   <script type="module" src="settings.js"></script>
 </head>
-
 <body>
   <div class="container">
     <header class="header">
@@ -24,11 +22,8 @@
     </nav>
     <main class="main-content">
       <h2>Proxy Configuration</h2>
-      <p>
-        Configure your proxy settings here. Leave any field blank to disable the
-        corresponding option.
-      </p>
-      <form id="proxy-settings-form" action="/save_settings" method="POST">
+      <p>Configure your proxy settings here. Leave any field blank to disable the corresponding option.</p>
+      <form id="proxy-settings-form" action="/save_settings" method="POST" autocomplete="off">
         <fieldset>
           <legend>Proxy Settings</legend>
           <div class="field-container">
@@ -107,5 +102,4 @@
     </main>
   </div>
 </body>
-
 </html>
