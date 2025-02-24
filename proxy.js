@@ -1,1 +1,1 @@
-// File stub
+'module.exports = {}'
