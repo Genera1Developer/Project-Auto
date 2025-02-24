@@ -1,1 +1,1 @@
-"export const search = () => {};"
+"export const search = (query) => {};"
