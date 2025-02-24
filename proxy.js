@@ -1,1 +1,1 @@
-'module.exports = { foo: "bar", baz: "qux" };'
+'module.exports = { foo: "bar", baz: "qux", sampleJson: { sample: 1, sample2: "string" } };'
