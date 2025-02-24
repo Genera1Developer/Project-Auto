@@ -31,7 +31,8 @@ body {
   grid-template-areas:
     "header"
     "nav";
-  grid-template-rows: 64px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
 }
 
 .sidebar h1 {
@@ -168,6 +169,7 @@ h6 {
   .wrapper {
     gap: 16px;
     flex-direction: column;
+    display: flex;
     grid-template-areas:
       "sidebar"
       "main";
@@ -177,6 +179,7 @@ h6 {
 
   .sidebar {
     grid-area: sidebar;
+    display: grid;
     grid-template-areas:
       "header"
       "nav";
@@ -187,6 +190,7 @@ h6 {
 
   .sidebar h1 {
     font-size: 1.25rem;
+    grid-template-areas: "header";
   }
 
   .main-content {
