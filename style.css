@@ -1,163 +1,35 @@
-file path: index.html
-content: ```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header>
-      <div class="logo">Web Proxy</div>
-      <nav class="nav-links">
-        <li><a href="/settings">Settings</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-      </nav>
-    </header>
-    <aside class="sidebar">
-      <ul class="sidebar-list">
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-      </ul>
-    </aside>
-    <main class="main-content">
-      <div class="form-container">
-        <form id="login-form">
-          <div class="form-group">
-            <label class="form-label" for="username">Username</label>
-            <input class="form-control" type="text" name="username" id="username" />
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="password">Password</label>
-            <input class="form-control" type="password" name="password" id="password" />
-          </div>
-          <button class="form-button" type="submit">Login</button>
-        </form>
-      </div>
-      <div class="status"></div>
-      <div class="connection-status"></div>
-      <div class="error-messages"></div>
-    </main>
-    <script src="main.js"></script>
-  </body>
-</html>
-```
-file path: settings.html
-content: ```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy - Settings</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header>
-      <div class="logo">Web Proxy</div>
-      <nav class="nav-links">
-        <li><a href="/index">Home</a></li>
-        <li><a href="/dashboard">Dashboard</a></li>
-      </nav>
-    </header>
-    <aside class="sidebar">
-      <ul class="sidebar-list">
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-      </ul>
-    </aside>
-    <main class="main-content">
-      <form id="settings-form">
-        <div class="form-group">
-          <label class="form-label" for="proxy-protocol">Proxy Protocol</label>
-          <select class="form-control" id="proxy-protocol">
-            <option value="http">HTTP</option>
-            <option value="https">HTTPS</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="proxy-port">Proxy Port</label>
-          <input class="form-control" type="number" name="proxy-port" id="proxy-port" />
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="auth-username">Authentication Username</label>
-          <input class="form-control" type="text" name="auth-username" id="auth-username" />
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="auth-password">Authentication Password</label>
-          <input class="form-control" type="password" name="auth-password" id="auth-password" />
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="bandwidth-limit">Bandwidth Limit (MB)</label>
-          <input class="form-control" type="number" name="bandwidth-limit" id="bandwidth-limit" />
-        </div>
-        <button class="form-button" type="submit">Save</button>
-      </form>
-    </main>
-    <script src="main.js"></script>
-  </body>
-</html>
-```
-file path: dashboard.html
-content: ```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Web Proxy - Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header>
-      <div class="logo">Web Proxy</div>
-      <nav class="nav-links">
-        <li><a href="/index">Home</a></li>
-        <li><a href="/settings">Settings</a></li>
-      </nav>
-    </header>
-    <aside class="sidebar">
-      <ul class="sidebar-list">
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/dashboard.html">Dashboard</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-      </ul>
-    </aside>
-    <main class="main-content">
-      <div class="connection-status"></div>
-      <div class="bandwidth-usage"></div>
-      <div class="active-connections"></div>
-      <div class="error-log"></div>
-      <div class="user-statistics"></div>
-    </main>
-    <script src="main.js"></script>
-  </body>
-</html>
-```
-file path: README.md
-content: ```
-# Web Proxy Project
+file path: main.js
+content: ```js
+// Login Form
+const loginForm = document.getElementById('login-form');
+loginForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  // TODO: Implement login logic and redirect to dashboard if successful
+});
 
-This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue and rounded theme.
+// Settings Form
+const settingsForm = document.getElementById('settings-form');
+settingsForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const proxyProtocol = document.getElementById('proxy-protocol').value;
+  const proxyPort = document.getElementById('proxy-port').value;
+  const authUsername = document.getElementById('auth-username').value;
+  const authPassword = document.getElementById('auth-password').value;
+  const bandwidthLimit = document.getElementById('bandwidth-limit').value;
+  // TODO: Implement settings save logic
+});
 
-## Project Structure
-
-The project consists of four main files:
-
-- `index.html`: Main landing page with login form, navigation to settings and dashboard, proxy status indicator, error message display, and connection status display.
-- `settings.html`: Proxy configuration page with settings for proxy protocol, port, authentication, and bandwidth limits.
-- `dashboard.html`: User statistics and monitoring page with real-time connection status, bandwidth usage graphs, active connections list, error log display, and user statistics.
-- `main.js`: JavaScript file for handling login, settings, and dashboard functionality.
-- `style.css`: Styling for all pages, including baby blue and rounded theme.
-
-## Key Features
-
-- Clean and consistent HTML structure
-- Semantic HTML elements used throughout
-- Strict content security policy implemented
-- Error handling included for all operations
-- Cross-browser compatibility
-- Mobile responsiveness
-- Baby blue and rounded theme
+// Update status and connection indicators
+const status = document.querySelector('.status');
+const connectionStatus = document.querySelector('.connection-status');
+const updateStatus = (message, type) => {
+  status.innerText = message;
+  type === 'error' ? (status.classList.add('error')) : (status.classList.remove('error'));
+};
+const updateConnectionStatus = (status) => {
+  connectionStatus.innerText = status;
+  status === 'Connected' ? (connectionStatus.classList.add('connected')) : (connectionStatus.classList.remove('connected'));
+};
 ```
