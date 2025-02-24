@@ -4,15 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web Proxy Settings</title>
+  <!-- External stylesheet link -->
   <link rel="stylesheet" href="style.css" />
+  <!-- External JavaScript module link -->
   <script type="module" src="settings.js"></script>
 </head>
 
 <body>
   <div class="container">
+    <!-- Header section -->
     <header class="header">
       <h1>Web Proxy Settings</h1>
     </header>
+    <!-- Sidebar navigation -->
     <nav class="sidebar">
       <ul>
         <li><a href="/" class="nav-link">Home</a></li>
@@ -20,8 +24,10 @@
         <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
       </ul>
     </nav>
+    <!-- Main content section -->
     <main class="main-content">
       <h2>Proxy Configuration</h2>
+      <!-- Form for proxy settings -->
       <form id="proxy-settings-form" action="/save_settings" method="post">
         <fieldset>
           <legend>Proxy Settings</legend>
@@ -56,6 +62,7 @@
           </div>
           <small>Enter 0 to disable bandwidth limit.</small>
         </fieldset>
+        <!-- Button container for submit, reset, and cancel actions -->
         <div class="button-container">
           <button type="submit" class="btn btn-primary">Save</button>
           <button type="reset" class="btn btn-secondary">Reset</button>
