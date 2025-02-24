@@ -17,7 +17,6 @@ body {
   height: calc(100vh - 48px);
   max-width: 1024px;
   gap: 24px;
-  justify-content: space-between;
   align-items: stretch;
   margin: 0 auto;
   display: flex;
