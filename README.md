@@ -1,4 +1,4 @@
-file: index.html
+file: settings.html
 
 content:
 ```html
@@ -8,9 +8,9 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
+    <title>Settings</title>
     <link rel="stylesheet" href="./css/main.css">
-    <script src="./js/index.js"></script>
+    <script src="./js/settings.js"></script>
     <style>
         body {
             background-color: #e0f2f1;
@@ -40,7 +40,7 @@ content:
             margin-left: 220px;
         }
 
-        .login-container {
+        .settings-container {
             max-width: 400px;
             margin: 0 auto;
             padding: 20px;
@@ -48,7 +48,7 @@ content:
             background-color: #ffffff;
         }
 
-        .login-form {
+        .settings-form {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -91,42 +91,6 @@ content:
             font-weight: bold;
             margin-bottom: 10px;
         }
-
-        .proxy-status {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: white;
-        }
-
-        .proxy-status-connected {
-            background-color: #2ecc71;
-        }
-
-        .proxy-status-disconnected {
-            background-color: #e74c3c;
-        }
-
-        .connection-status {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            background-color: #3498db;
-            color: white;
-        }
-
-        .connection-status-connected {
-            background-color: #2ecc71;
-        }
-
-        .connection-status-disconnected {
-            background-color: #e74c3c;
-        }
     </style>
 </head>
 
@@ -137,23 +101,40 @@ content:
         <a href="/dashboard.html">Dashboard</a>
     </div>
     <div class="content">
-        <div class="proxy-status proxy-status-disconnected">Proxy Disconnected</div>
-        <div class="connection-status connection-status-disconnected">Not Connected</div>
-        <h1>Web Proxy</h1>
-        <p>Connect to the web securely and privately with our web proxy.</p>
-        <div class="login-container">
-            <form class="login-form">
+        <h1>Settings</h1>
+        <p>Configure your proxy settings here.</p>
+        <div class="settings-container">
+            <form class="settings-form">
                 <div class="error-message" id="error-message"></div>
                 <div class="input-container">
+                    <div class="input-label">Protocol:</div>
+                    <select class="input-field" id="protocol">
+                        <option value="HTTP">HTTP</option>
+                        <option value="HTTPS">HTTPS</option>
+                    </select>
+                </div>
+                <div class="input-container">
+                    <div class="input-label">Port:</div>
+                    <input type="number" class="input-field" id="port">
+                </div>
+                <div class="input-container">
+                    <div class="input-label">Authentication:</div>
+                    <input type="checkbox" class="input-field" id="authentication">
+                </div>
+                <div class="input-container" id="authentication-details" style="display: none;">
                     <div class="input-label">Username:</div>
                     <input type="text" class="input-field" id="username">
                 </div>
-                <div class="input-container">
+                <div class="input-container" id="authentication-details" style="display: none;">
                     <div class="input-label">Password:</div>
                     <input type="password" class="input-field" id="password">
                 </div>
+                <div class="input-container">
+                    <div class="input-label">Bandwidth Limit:</div>
+                    <input type="number" class="input-field" id="bandwidth-limit">
+                </div>
                 <div class="button-container">
-                    <button class="button" id="login-button">Login</button>
+                    <button class="button" id="save-button">Save</button>
                 </div>
             </form>
         </div>
