@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Proxy - Settings</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <script>
     (function () {
       const form = document.querySelector('form');
@@ -13,18 +13,16 @@
       form.addEventListener('submit', (e) => {
         e.preventDefault();
 
-        const username = document.querySelector('#username');
-        const password = document.querySelector('#password');
+        const username = document.querySelector('#username').value.trim();
+        const password = document.querySelector('#password').value.trim();
 
-        if (!username.value) {
+        if (!username) {
           alert('Please enter your username.');
-          username.focus();
           return false;
         }
 
-        if (!password.value) {
+        if (!password) {
           alert('Please enter your password.');
-          password.focus();
           return false;
         }
 
@@ -51,14 +49,14 @@
     <h2>Authentication</h2>
     <form action="login.php" method="post" class="form">
       <label for="username">Username:</label>
-      <input type="text" id="username" name="username" required autofocus />
-      <br />
+      <input type="text" id="username" name="username" required autofocus>
+      <br>
 
       <label for="password">Password:</label>
-      <input type="password" id="password" name="password" required />
-      <br />
+      <input type="password" id="password" name="password" required>
+      <br>
 
-      <input type="submit" value="Login" class="btn" />
+      <input type="submit" value="Login" class="btn">
     </form>
   </main>
 </body>
