@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: settings.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,7 +7,7 @@ content:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Settings</title>
   <style>
     * {
       box-sizing: border-box;
@@ -55,40 +55,35 @@ content:
       margin-top: 0;
     }
 
-    .main-content .container {
+    .main-content form {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       gap: 1rem;
-      flex-wrap: wrap;
     }
 
-    .main-content .card {
-      flex: 1 1 200px;
-      background: #fff;
-      padding: 1rem;
+    .main-content label {
+      font-weight: bold;
+    }
+
+    .main-content input,
+    .main-content select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
       border-radius: 5px;
     }
 
-    .main-content .card h3 {
-      margin-top: 0;
+    .main-content button {
+      padding: 0.5rem 1rem;
+      border: 1px solid #0099ff;
+      border-radius: 5px;
+      background: #0099ff;
+      color: #fff;
+      cursor: pointer;
     }
 
-    .main-content .card ul {
-      list-style-type: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .main-content .card table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .main-content .card table th,
-    .main-content .card table td {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
+    .main-content button:hover {
+      background: #007acc;
     }
 
     .error {
@@ -101,51 +96,35 @@ content:
   <div class="container">
     <div class="sidebar">
       <a href="/index.html">Home</a>
-      <a href="/settings.html">Settings</a>
-      <a href="/dashboard.html" class="active">Dashboard</a>
+      <a href="/settings.html" class="active">Settings</a>
+      <a href="/dashboard.html">Dashboard</a>
     </div>
     <div class="main-content">
-      <h1>Dashboard</h1>
-      <div class="container">
-        <div class="card">
-          <h3>Connection Status</h3>
-          <div id="connection-status"></div>
+      <h1>Settings</h1>
+      <form id="settings-form">
+        <label for="proxy-protocol">Proxy Protocol:</label>
+        <select name="proxy-protocol" id="proxy-protocol">
+          <option value="http">HTTP</option>
+          <option value="https">HTTPS</option>
+        </select>
+        <label for="proxy-port">Proxy Port:</label>
+        <input type="number" name="proxy-port" id="proxy-port" min="1" max="65535">
+        <label for="authentication-enabled">Authentication:</label>
+        <input type="checkbox" name="authentication-enabled" id="authentication-enabled">
+        <div id="authentication-settings" style="display: none;">
+          <label for="username">Username:</label>
+          <input type="text" name="username" id="username">
+          <label for="password">Password:</label>
+          <input type="password" name="password" id="password">
         </div>
-        <div class="card">
-          <h3>Bandwidth Usage</h3>
-          <div id="bandwidth-graph"></div>
-        </div>
-        <div class="card">
-          <h3>Active Connections</h3>
-          <table id="active-connections">
-            <thead>
-              <tr>
-                <th>IP Address</th>
-                <th>Port</th>
-                <th>Protocol</th>
-                <th>Duration</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="card">
-          <h3>Error Log</h3>
-          <ul id="error-log"></ul>
-        </div>
-        <div class="card">
-          <h3>User Statistics</h3>
-          <ul>
-            <li>Total Users: <span id="total-users"></span></li>
-            <li>Concurrent Users: <span id="concurrent-users"></span></li>
-            <li>Average Bandwidth Usage: <span id="avg-bandwidth"></span></li>
-          </ul>
-        </div>
-      </div>
+        <label for="bandwidth-limit">Bandwidth Limit:</label>
+        <input type="number" name="bandwidth-limit" id="bandwidth-limit" min="0">
+        <button type="submit">Save</button>
+      </form>
     </div>
   </div>
   <script>
-    // Implement the dashboard functionality here
+    // Implement the settings functionality here
   </script>
 </body>
 
