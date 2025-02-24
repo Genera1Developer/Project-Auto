@@ -20,15 +20,8 @@
             method: "POST",
             body: formData,
           })
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(response.statusText);
-              }
-              return response.text();
-            })
-            .then(data => {
-              alert(data);
-            })
+            .then(response => response.text())
+            .then(data => alert(data))
             .catch(error => {
               alert("An error occurred while submitting the form. Please try again.");
               console.error(error);
@@ -53,7 +46,7 @@
 
   <main class="main-content">
     <section>
-      <h1 class="page-title">Settings<span class="note"> (Changes require a proxy restart)</span></h1>
+      <h1 class="page-title">Settings <span class="note">(Changes require a proxy restart)</span></h1>
 
       <p class="intro">
         Configure your web proxy settings for secure and anonymous web browsing.
@@ -64,7 +57,7 @@
         <form class="form form-auth" action="auth.php">
           <h2 class="settings-group-title">Authentication</h2>
 
-          <label class="input-container" for="username">
+          <label for="username" class="input-container">
             <span class="label">Username</span>
             <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus autocomplete="username" />
           </label>
@@ -84,17 +77,17 @@
         <form class="form form-proxy" action="proxy.php">
           <h2 class="settings-group-title">Proxy Settings</h2>
 
-          <label class="input-container" for="proxy-address">
+          <label for="proxy-address" class="input-container">
             <span class="label">Proxy Address</span>
             <input type="text" id="proxy-address" name="proxy-address" placeholder="Enter the proxy address" required />
           </label>
 
-          <label class="input-container" for="proxy-port">
+          <label for="proxy-port" class="input-container">
             <span class="label">Proxy Port</span>
             <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" required />
           </label>
 
-          <label class="input-container" for="proxy-type">
+          <label for="proxy-type" class="input-container">
             <span class="label">Proxy Type</span>
             <select id="proxy-type" name="proxy-type">
               <option value="http" selected>HTTP</option>
