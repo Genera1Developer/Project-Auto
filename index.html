@@ -33,16 +33,16 @@
             <option value="SOCKS5">SOCKS5</option>
           </select>
           <label for="proxy-host">Host (IP or domain):</label>
-          <input type="text" id="proxy-host" name="host" required />
+          <input type="text" id="proxy-host" name="host" required placeholder="Enter the proxy server IP or domain" />
           <label for="proxy-port">Port:</label>
-          <input type="number" id="proxy-port" name="port" min="0" step="1" required value="8080" />
-          <label for="proxy-authentication">Authentication:</label>
+          <input type="number" id="proxy-port" name="port" min="0" step="1" required placeholder="Enter the proxy server port" value="8080" />
+          <label for="proxy-authentication">Authentication (optional):</label>
           <input type="text" id="proxy-authentication" name="authentication" placeholder="username:password" />
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit</legend>
           <label for="bandwidth-limit">Limit (MB/s):</label>
-          <input type="number" id="bandwidth-limit" name="bandwidth_limit" min="0" value="10" />
+          <input type="number" id="bandwidth-limit" name="bandwidth_limit" min="0" placeholder="Enter the bandwidth limit" value="10" />
         </fieldset>
         <button type="submit">Save Settings</button>
       </form>
