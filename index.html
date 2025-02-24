@@ -151,15 +151,18 @@
             <input id="proxy-host" name="host" type="text" class="input" aria-label="Proxy Host"
               pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$)"
               required />
+            <span class="error-message" id="host-error-message"></span>
           </div>
           <div class="form-group">
             <label for="proxy-port" class="label">Port:</label>
             <input id="proxy-port" name="port" type="number" class="input" min="0" max="65535" aria-label="Proxy Port" required />
+            <span class="error-message" id="port-error-message"></span>
           </div>
           <div class="form-group">
             <label for="proxy-authentication" class="label">Proxy Authentication (Optional):</label>
             <input id="proxy-authentication" name="authentication" type="text" class="input" aria-label="Proxy Authentication"
               pattern="^([^:]+):(.+)?$" placeholder="username:password" />
+            <span class="error-message" id="authentication-error-message"></span>
           </div>
         </fieldset>
         <fieldset>
