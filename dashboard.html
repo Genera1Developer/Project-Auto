@@ -11,7 +11,7 @@
         </button>
       </header>
       <div class="card-body">
-        <table class="table">
+        <table aria-labelledby="active-connections-list" class="table">
           <thead>
             <tr>
               <th scope="col">IP Address</th>
@@ -30,7 +30,7 @@
         </button>
       </header>
       <div class="card-body">
-        <ol id="errors"></ol>
+        <ol id="errors" aria-labelledby="error-log-list"></ol>
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@
         <button class="reload-btn" title="Refresh the list of active users" type="button" data-target-table="users"><span class="material-icons md-24 reload-icon">refresh</span></button>
       </header>
       <div class="card-body">
-        <ol id="users"></ol>
+        <ol id="users" aria-labelledby="active-users-list"></ol>
       </div>
     </div>
   </section>
