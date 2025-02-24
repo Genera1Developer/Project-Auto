@@ -1,1 +1,1 @@
-console.log('search'); $("#inputSearchField").focus();
+console.log('search'); $("#inputSearchField").focus({ preventScroll: true });
