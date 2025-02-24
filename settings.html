@@ -9,7 +9,7 @@
   <script>
     // Login form submission
     const form = document.querySelector('form');
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', e => {
       e.preventDefault();
       const username = document.querySelector('#username');
       const password = document.querySelector('#password');
@@ -39,20 +39,18 @@
 
   <main class="main-content">
     <h1>Web Proxy - Settings</h1>
-    <p>
-      This is a simple web proxy that allows you to browse the internet anonymously.
-    </p>
+    <p>This is a simple web proxy that allows you to browse the internet anonymously.</p>
 
     <h2>Login</h2>
     <form action="login.php" method="post">
       <div class="form-group">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username">
+        <input type="text" id="username" name="username" required>
       </div>
 
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password">
+        <input type="password" id="password" name="password" required>
       </div>
 
       <button type="submit">Login</button>
