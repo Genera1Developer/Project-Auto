@@ -6,7 +6,7 @@
       </div>
       <div class="cards-container">
         <div class="card active-connections active" data-widget="active-connections">
-          <h3 class="visually-hidden">Active Connections Widget</h3>
+          <h3 class="screen-reader-only">Active Connections Widget</h3>
           <header class="card-header">
             <h2 id="active-connections-heading" class="card-title">Active Connections</h2>
             <div class="actions">
@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="card error-log" data-widget="error-log">
-          <h3 class="visually-hidden">Error Log Widget</h3>
+          <h3 class="screen-reader-only">Error Log Widget</h3>
           <header class="card-header">
             <h2 id="error-log-heading" class="card-title">Error Log</h2>
             <div class="actions">
@@ -54,7 +54,7 @@
 <main class="container">
   <section class="stats-section">
     <div class="card stats active" data-widget="stats">
-      <h3 class="visually-hidden">Stats Widget</h3>
+      <h3 class="screen-reader-only">Stats Widget</h3>
       <header class="card-header">
         <h2 id="stats-heading" class="card-title">Stats</h2>
         <button class="btn refresh-btn" aria-labelledby="stats-heading" type="button" data-target-element="stats" title="Refresh the stats">
@@ -66,7 +66,7 @@
   </section>
   <section class="active-users-section">
     <div class="card active-users" data-widget="active-users">
-      <h3 class="visually-hidden">Active Users Widget</h3>
+      <h3 class="screen-reader-only">Active Users Widget</h3>
       <header class="card-header">
         <h2 id="active-users-heading" class="card-title">Active Users</h2>
         <div class="actions">
@@ -180,7 +180,7 @@
   const cards = document.querySelectorAll('.card');
   cards.forEach((card) => {
     const heading = document.createElement('h3');
-    heading.classList.add('visually-hidden');
+    heading.classList.add('screen-reader-only');
     heading.textContent = card.querySelector('h2').textContent;
     card.insertBefore(heading, card.querySelector('h2'));
   });
@@ -196,4 +196,4 @@
   ];
 
   skipLinks.forEach((link) => {
-    const skipLink = document.createElement
+    const skip
