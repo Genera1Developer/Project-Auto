@@ -1,1 +1,1 @@
-"const settings = {\n  isHappy: false,\n  debugMode: false,\n  colorPreference: \"red\"\n};"
+"const settings = {\n  isHappy: true,\n  debugMode: true,\n  colorPreference: \"blue\"\n};"
