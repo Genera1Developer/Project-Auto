@@ -34,7 +34,7 @@
 
       <ul class="settings-tabs">
         <li><a href="#authentication" class="active">Authentication</a></li>
-        <li><a href="#proxy">Proxy Settings</a></li>
+        <li><a href="#proxy">Proxy</a></li>
         <li><a href="#advanced">Advanced</a></li>
       </ul>
 
@@ -115,7 +115,7 @@
       </div>
 
       <div class="settings-tab-container" id="advanced" style="display: none;">
-        <form class="form form-advanced" action="advanced.php" method="POST">
+        <form class="form form-advanced" action="advanced.php" method="POST" enctype="multipart/form-data">
           <h2 class="settings-group-title">Advanced Settings</h2>
 
           <label class="input-container">
@@ -130,7 +130,7 @@
 
           <label class="input-container">
             <span class="label">Custom Certificate</span>
-            <span class="file-input">
+            <label class="file-input">
               <input
                 type="file"
                 id="custom-certificate"
@@ -138,7 +138,7 @@
                 accept=".crt"
               />
               <span class="button">Browse</span>
-            </span>
+            </label>
           </label>
 
           <div class="btn-container">
