@@ -1,1 +1,1 @@
-"console.log('Hello, Lambda!');\nconsole.log('Node version: ' + process.version);"
+|
