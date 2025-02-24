@@ -6,7 +6,7 @@
     <div class="wide-card" data-widget="active-connections-list">
       <header class="card-header">
         <h2>Active Connections List</h2>
-        <button class="reload-btn" title="Refresh the list of active connections" type="button"><span class="material-icons md-24">refresh</span></button>
+        <button class="reload-btn" title="Refresh the list of active connections" type="button" data-target-table="connections"><span class="material-icons md-24">refresh</span></button>
       </header>
       <div class="card-body">
         <table class="table">
@@ -23,7 +23,7 @@
     <div class="wide-card" data-widget="error-log-list">
       <header class="card-header">
         <h2>Error Log</h2>
-        <button class="clear-btn" title="Clear the error log" type="button"><span class="material-icons md-24">delete</span></button>
+        <button class="clear-btn" title="Clear the error log" type="button" data-target-list="errors"><span class="material-icons md-24">delete</span></button>
       </header>
       <div class="card-body">
         <ul id="errors"></ul>
@@ -42,9 +42,11 @@
     <div class="narrow-card" data-widget="active-users-list">
       <header class="card-header">
         <h2>Active Users List</h2>
-        <button class="reload-btn" title="Refresh the list of active users" type="button"><span class="material-icons md-24">refresh</span></button>
+        <button class="reload-btn" title="Refresh the list of active users" type="button" data-target-table="users"><span class="material-icons md-24">refresh</span></button>
       </header>
-      <div class="card-body"></div>
+      <div class="card-body">
+        <ul id="users"></ul>
+      </div>
     </div>
   </section>
 </main>
