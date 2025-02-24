@@ -152,59 +152,139 @@ content:
 
 </html>
 ```
-file path: README.md
+file path: settings.html
 content: 
-```markdown
-# Baby Blue Web Proxy
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-This project consists of several HTML files with strictly defined content and styling, adhering to the following requirements:
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baby Blue Web Proxy</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* CSS Styles for settings.html */
+    body {
+      font-family: sans-serif;
+      background-color: #f0f8ff;
+      color: #000;
+    }
 
-- Index page (index.html)
-- Settings page (settings.html)
-- Dashboard page (dashboard.html)
-- Project description (README.md)
+    .wrapper {
+      display: flex;
+      height: 100vh;
+    }
 
-Each file includes its own CSS styling within the HTML and its own JavaScript for functionality. The project utilizes a baby blue and rounded theming throughout.
+    .sidebar {
+      width: 250px;
+      background-color: #0099ff;
+      border-radius: 5px;
+      padding: 1rem;
+    }
 
-## Project Structure
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+    }
 
-### index.html
+    .sidebar li {
+      margin-bottom: 1rem;
+    }
 
-- Login form with username and password fields
-- Sidebar for navigation to index, settings, and dashboard pages
-- Proxy status indicator
-- Error message display area
-- Connection status display
-- External CSS and JavaScript files
+    .sidebar a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+    }
 
-### settings.html
+    .sidebar a:hover {
+      background-color: #007acc;
+    }
 
-- Proxy configuration form
-- Protocol selection (HTTP/HTTPS)
-- Port configuration
-- Authentication settings
-- Bandwidth limits
-- Sidebar for navigation to index, settings, and dashboard pages
-- External CSS and JavaScript files
+    .sidebar a.active {
+      background-color: #007acc;
+    }
 
-### dashboard.html
+    .content {
+      flex-grow: 1;
+      padding: 1rem;
+    }
 
-- Real-time connection status
-- Bandwidth usage graphs
-- Active connections list
-- Error log display
-- User statistics
-- Sidebar for navigation to index, settings, and dashboard pages
-- External CSS and JavaScript files
+    h1 {
+      margin-top: 0;
+    }
 
-## Additional Notes
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-- No inline scripts or styles are used.
-- Semantic HTML elements are employed throughout.
-- A strict content security policy is implemented.
-- Error handling is included for all operations.
-- Cross-browser compatibility and mobile responsiveness are ensured.
-- Clean and consistent indentation is maintained.
-- Proper commenting is provided.
-- No external dependencies or frameworks are used.
-```
+    .form-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    label {
+      width: 100px;
+    }
+
+    .form-input {
+      flex-grow: 1;
+    }
+
+    .form-button {
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      background-color: #0099ff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .form-button:hover {
+      background-color: #007acc;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <aside class="sidebar">
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/settings.html" class="active">Settings</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </aside>
+    <main class="content">
+      <h1>Baby Blue Web Proxy</h1>
+      <form id="settings-form">
+        <div class="form-group">
+          <label for="proxy-protocol">Protocol:</label>
+          <select id="proxy-protocol" class="form-input">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="proxy-port">Port:</label>
+          <input type="number" id="proxy-port" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label for="proxy-auth">Authentication:</label>
+          <input type="text" id="proxy-auth" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label for="proxy-bandwidth">Bandwidth Limit:</label>
+          <input type="number" id="proxy-bandwidth" class="form-input" />
+        </div>
+        <div class="form-group">
+          <input type="submit" value="Save" class="form-button" />
+          <input type="reset" value="Reset" class="form-button" />
+        </div>
+      </form>
+    </main>
