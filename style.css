@@ -1,84 +1,133 @@
-file path: script.js
-content: ```javascript
-// Login form submission
-const loginForm = document.getElementById('login-form');
-loginForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+file path: style.css
+content: ```css
+/* Global styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
+body {
+  background-color: #b0e0e6;
+  height: 100vh;
+  width: 100vw;
+}
 
-  // Validate input
-  if (!username || !password) {
-    displayErrorMessage('Please enter a username and password.');
-    return;
-  }
+.wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
 
-  // Simulate authentication
-  if (username === 'admin' && password === 'password') {
-    window.location.href = '/dashboard.html';
-  } else {
-    displayErrorMessage('Invalid credentials.');
-  }
-});
+.sidebar {
+  background-color: #0091ea;
+  height: 100vh;
+  width: 200px;
+  padding: 20px;
+}
 
-// Proxy settings form submission
-const proxyForm = document.getElementById('proxy-form');
-proxyForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
 
-  const protocol = document.getElementById('protocol').value;
-  const port = document.getElementById('port').value;
+/* Main landing page styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
 
-  // Validate input
-  if (!protocol || !port) {
-    displayErrorMessage('Please enter a protocol and port.');
-    return;
-  }
+.form-input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-  // Simulate saving settings
-  console.log('Proxy settings saved.');
-});
+.login-button {
+  width: 300px;
+  padding: 10px;
+  background-color: #0091ea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
 
-// Authentication settings form submission
-const authenticationForm = document.getElementById('authentication-form');
-authenticationForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+.navigation-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
 
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
+.navigation-link {
+  color: #0091ea;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
 
-  // Validate input
-  if (!username || !password) {
-    displayErrorMessage('Please enter a username and password.');
-    return;
-  }
+.proxy-status {
+  color: #0091ea;
+  font-size: 1.5rem;
+}
 
-  // Simulate saving settings
-  console.log('Authentication settings saved.');
-});
+.error-message {
+  color: red;
+  background-color: #f8d7da;
+  padding: 10px;
+  margin: 20px 0;
+  display: none;
+}
 
-// Other settings form submission
-const otherSettingsForm = document.getElementById('other-settings-form');
-otherSettingsForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+.connection-status {
+  color: #0091ea;
+  font-size: 1.2rem;
+}
 
-  const bandwidthLimit = document.getElementById('bandwidth-limit').value;
+/* Proxy configuration page styles */
+.proxy-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
 
-  // Validate input
-  if (!bandwidthLimit) {
-    displayErrorMessage('Please enter a bandwidth limit.');
-    return;
-  }
+.form-select {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
 
-  // Simulate saving settings
-  console.log('Other settings saved.');
-});
+.form-checkbox {
+  margin-right: 10px;
+}
 
-// Display error message
-const displayErrorMessage = (message) => {
-  const errorMessage = document.getElementById('error-message');
-  errorMessage.textContent = message;
-  errorMessage.style.display = 'block';
-};
+/* Dashboard page styles */
+.dashboard-content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.widget {
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.widget-title {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.widget-data {
+  font-size: 1.5rem;
+}
 ```
