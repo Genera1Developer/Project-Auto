@@ -1,1 +1,1 @@
-"export const settings = \"\";"
+"export const settings = {test: 1};"
