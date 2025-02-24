@@ -1,1 +1,1 @@
-"module.exports = { foo: \"bar\", baz: \"qux\", sampleJson: {\"sample\":1,\"sampleString\":\"string\"}, sampleArr: [1,\"string\"], sampleFunc: (arg) => { console.log(\"Sample function logs: \", arg); return arg; } };"
+"module.exports = { foo: \"bar\", baz: \"qux\", sampleJson: {\"sample\":1,\"sampleString\":\"string\"}, sampleArr: [1,\"string\"], sampleFunc: (arg) => { console.log(\"Sample function logs: \", arg); return arg; }, sampleObj: { sub_sample: 4 } };"
