@@ -1,13 +1,13 @@
 body {
   font-family: "Helvetica", "Arial", sans-serif;
-  font-size: 1rem;
+  font-size: 16px;
   color: #333;
   background: #efefef;
   margin: 0;
   display: grid;
   grid-template-areas: "header header" "main sidebar";
-  grid-template-rows: 48px 1fr;
-  grid-template-columns: 200px 1fr;
+  grid-template-rows: 64px 1fr;
+  grid-template-columns: 250px 1fr;
   gap: 16px;
 }
 
@@ -24,7 +24,7 @@ body {
 
 .sidebar {
   grid-area: sidebar;
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - 64px);
   background: #2c3e50;
   color: white;
   display: flex;
@@ -89,7 +89,7 @@ body {
 .main-content {
   grid-area: main;
   grid-gap: 12px;
-  height: calc(100vh - 48px);
+  height: calc(100vh - 64px);
 }
 
 .login-form {
@@ -200,8 +200,8 @@ h6 {
   body {
     grid-template-areas: "header" "main";
     grid-template-columns: 1fr;
-    grid-template-rows: 48px 1fr;
-    font-size: 0.875rem;
+    grid-template-rows: 64px 1fr;
+    font-size: 14px;
   }
 
   .wrapper {
@@ -246,7 +246,7 @@ h6 {
 
 @media screen and (max-width: 576px) {
   body {
-    font-size: 0.8rem;
+    font-size: 13px;
   }
 
   .wrapper {
@@ -299,7 +299,7 @@ h6 {
 
 @media (hover: none) {
   body {
-    font-size: 0.9rem;
+    font-size: 14px;
   }
 
   .sidebar-item:hover {
