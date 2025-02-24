@@ -61,7 +61,6 @@ body {
   margin: 0;
   list-style-type: none;
   padding: 0;
-  list-style-position: inside;
 }
 
 .navigation-link {
@@ -69,6 +68,10 @@ body {
   text-decoration: none;
   color: inherit;
   transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .navigation-link:hover {
@@ -97,8 +100,6 @@ body {
 .form-group {
   display: flex;
   gap: 4px;
-  align-items: center;
-  justify-content: space-between;
 }
 
 .form-group label {
@@ -106,6 +107,9 @@ body {
 }
 
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 8px 12px;
   color: white;
   background: #394959;
