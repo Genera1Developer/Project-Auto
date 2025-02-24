@@ -1,1 +1,1 @@
-"export const settings = { user: \"Jane Doe\", lastUpdated: Date.now() / 1000.0 };"
+"export const settings = { user: \"Jane Doe\", lastUpdated: new Date().getTime() / 1000.0 };"
