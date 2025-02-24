@@ -20,6 +20,7 @@ body {
   height: 100vh;
   background-color: #cfe2ff;
   border-right: 1px solid #ccc;
+  border-radius: 10px;
 }
 
 #content {
