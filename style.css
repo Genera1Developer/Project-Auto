@@ -16,6 +16,8 @@ body {
   justify-content: space-between;
   align-items: stretch;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar {
@@ -148,17 +150,20 @@ h6 {
 @media (max-width: 768px) {
   body {
     grid-template-columns: 1fr;
+    grid-template-rows: 48px 1fr;
   }
 
   .wrapper {
     gap: 16px;
     flex-direction: column;
     grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
   }
 
   .sidebar {
     grid-template-rows: 48px 1fr;
     grid-column: 1;
+    grid-row: 1;
   }
 
   .sidebar h1 {
@@ -168,6 +173,7 @@ h6 {
   .main-content {
     padding: 8px;
     grid-column: 1;
+    grid-row: 2;
   }
 
   .navigation-link {
