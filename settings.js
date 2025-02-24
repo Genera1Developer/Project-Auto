@@ -1,1 +1,1 @@
-// intentionally empty
+module.exports = { logLevel: 'info' };
