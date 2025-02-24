@@ -30,6 +30,7 @@ body {
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
   padding: 16px;
+  z-index: 1;
 }
 
 .sidebar h1 {
@@ -48,6 +49,7 @@ body {
   cursor: pointer;
   border-radius: 4px;
   width: fit-content;
+  z-index: 2;
 }
 
 .sidebar-item:hover {
@@ -72,6 +74,7 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
+  z-index: 3;
 }
 
 .navigation-link:hover {
