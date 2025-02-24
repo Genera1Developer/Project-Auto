@@ -1,114 +1,134 @@
-file path: style.css
+file path: index.html
 content: 
-```css
-body {
-    background-color: #e0f7fa;
-    font-family: Arial, sans-serif;
-}
+```html
+<!DOCTYPE html>
+<html lang="en">
 
-.container {
-    display: flex;
-    min-height: 100vh;
-}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        body {
+            background-color: #e5f1f4;
+        }
 
-.sidebar {
-    background-color: #2e86c1;
-    padding: 20px;
-    width: 200px;
-}
+        .container {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+        }
 
-.sidebar a {
-    display: block;
-    padding: 10px 0;
-    text-decoration: none;
-    color: #fff;
-}
+        .sidebar {
+            background-color: #3b5998;
+            padding: 20px;
+            width: 250px;
+        }
 
-.sidebar a:hover {
-    background-color: #1e6091;
-}
+        .sidebar-link {
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 10px;
+            display: block;
+        }
 
-.section {
-    flex: 1;
-    padding: 20px;
-}
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
 
-label {
-    font-weight: bold;
-}
+        .form-group {
+            margin-bottom: 10px;
+        }
 
-input,
-select {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #ccc;
-}
+        .form-label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
 
-button {
-    background-color: #1e6091;
-    color: #fff;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+        .form-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
 
-#proxy-status {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: green;
-}
+        .btn {
+            background-color: #3b5998;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-#connection-status {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: red;
-}
+        .message-container {
+            padding: 10px;
+            border-radius: 10px;
+        }
 
-#error-message {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: red;
-}
+        .error {
+            background-color: #f44336;
+        }
 
-#bandwidth-usage-graph {
-    width: 100%;
-    height: 200px;
-    background-color: #eee;
-}
+        .success {
+            background-color: #4caf50;
+        }
 
-#active-connections-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+        #proxy-status {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: green;
+        }
 
-#active-connections-table th,
-#active-connections-table td {
-    padding: 5px;
-    border: 1px solid #ccc;
-}
+        #connection-status {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: red;
+        }
 
-#error-log {
-    list-style-type: none;
-    padding: 0;
-}
+        #error-message {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+</head>
 
-#error-log li {
-    color: red;
-}
-
-#user-statistics {
-    list-style-type: none;
-    padding: 0;
-}
-
-#user-statistics li {
-    font-weight: bold;
-}
-```
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <a href="/index.html" class="sidebar-link">Home</a>
+            <a href="/settings.html" class="sidebar-link">Settings</a>
+            <a href="/dashboard.html" class="sidebar-link">Dashboard</a>
+        </div>
+        <div class="main">
+            <div class="form-container">
+                <h1>Web Proxy</h1>
+                <form action="/login" method="post">
+                    <div class="form-group">
+                        <label class="form-label" for="username">Username:</label>
+                        <input class="form-input" type="text" name="username" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password:</label>
+                        <input class="form-input" type="password" name="password" id="password">
+                    </div>
+                    <button class="btn" type="submit">Login</button>
+                </form>
+                <div class="message-container hidden" id="error-message"></div>
+            </div>
+            <div class="status-container">
+                <div id="proxy-status">Proxy Disabled</div>
+                <div id="connection-status">Disconnected</div>
+            </div>
+        </div>
+    </div>
+    <script src="/
