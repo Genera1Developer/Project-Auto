@@ -9,6 +9,9 @@
 </head>
 
 <body class="settings-page">
+  <header class="header">
+    <h1>Web Proxy</h1>
+  </header>
   <aside class="sidebar">
     <nav>
       <ul>
@@ -58,7 +61,8 @@
           <div class="input-container">
             <label for="proxy-type">Proxy Type</label>
             <select id="proxy-type" name="proxy-type">
-              <option value="http" selected>HTTP</option>
+              <option value="" selected disabled>Select</option>
+              <option value="http">HTTP</option>
               <option value="socks4">SOCKS4</option>
               <option value="socks5">SOCKS5</option>
             </select>
