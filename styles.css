@@ -1,1 +1,1 @@
-'"body { margin: 0; padding: 0; font-family: "Arial", "Helvetica", sans-serif; } /* Other styles */\n@media print { body { margin: 0.5em 1em; padding: 0.5em 1em; }}"'
+'"body {\n  margin: 0;\n  padding: 0;\n  font-family: "Arial", "Helvetica", sans-serif;\n} /* Other styles */\n\n@media print {\n  body {\n    margin: 0.5em 1em;\n    padding: 0.5em 1em;\n  }\n}"'
