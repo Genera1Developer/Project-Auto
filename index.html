@@ -27,7 +27,7 @@
           <legend>Proxy Settings</legend>
           <label for="proxy-protocol">Proxy Protocol:</label>
           <select id="proxy-protocol" name="protocol" required>
-            <option value="HTTP">HTTP</option>
+            <option value="HTTP" selected>HTTP</option>
             <option value="HTTPS">HTTPS</option>
             <option value="SOCKS">SOCKS</option>
             <option value="SOCKS5">SOCKS5</option>
@@ -43,6 +43,7 @@
           <legend>Bandwidth Limit (optional)</legend>
           <label for="bandwidth-limit">Limit (MB/s):</label>
           <input type="number" min="0" id="bandwidth-limit" name="bandwidth_limit" />
+          <small>Enter 0 to disable bandwidth limit.</small>
         </fieldset>
         <div class="button-container">
           <button type="submit">Save Settings</button>
