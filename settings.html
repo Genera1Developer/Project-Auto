@@ -20,14 +20,14 @@
           method: 'POST',
           body: formData
         })
-        .then(response => response.text())
-        .then(data => {
-          alert(data);
-          location.reload();
-        })
-        .catch(error => {
-          alert('An error occurred while submitting the form. Please try again.');
-        });
+          .then(response => response.text())
+          .then(data => {
+            alert(data);
+            location.reload();
+          })
+          .catch(error => {
+            alert('An error occurred while submitting the form. Please try again.');
+          });
       });
     });
   </script>
@@ -49,8 +49,7 @@
       <h1 class="page-title">Settings</h1>
 
       <p class="intro">
-        Configure your web proxy settings for secure and anonymous web browsing. <br>
-        Note that changes made here will require a restart of the proxy service.
+        Configure your web proxy settings for secure and anonymous web browsing. Note that changes made here will require a restart of the proxy service.
       </p>
 
       <div class="settings-form">
