@@ -1,1 +1,1 @@
-"$(document).ready(function() { $('input.search-field').focus(); console.log('search'); });"
+"//Focus the search input when the page is loaded
