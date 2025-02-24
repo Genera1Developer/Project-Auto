@@ -5,92 +5,88 @@ content:
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Baby Blue Web Proxy Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
   <style>
-    /* CSS Styles for dashboard.html */
-    body {
-      font-family: sans-serif;
-      background-color: #f0f8ff;
-      color: #000;
+    * {
+      box-sizing: border-box;
     }
 
-    .wrapper {
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica', 'Arial', sans-serif;
+    }
+
+    .container {
       display: flex;
+      flex-direction: row;
       height: 100vh;
     }
 
     .sidebar {
+      background: #0099ff;
+      color: #fff;
       width: 250px;
-      background-color: #0099ff;
-      border-radius: 5px;
-      padding: 1rem;
-    }
-
-    .sidebar ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .sidebar li {
-      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
     }
 
     .sidebar a {
-      display: block;
-      color: #fff;
       text-decoration: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
+      color: #fff;
+      font-size: 1.2rem;
+      margin: 1rem;
     }
 
     .sidebar a:hover {
-      background-color: #007acc;
+      color: #007acc;
     }
 
-    .sidebar a.active {
-      background-color: #007acc;
-    }
-
-    .content {
-      flex-grow: 1;
+    .main-content {
+      flex: 1;
       padding: 1rem;
     }
 
-    h1 {
+    .main-content h1 {
       margin-top: 0;
     }
 
-    .dashboard-container {
-      background-color: #fff;
+    .main-content .container {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .main-content .card {
+      flex: 1 1 200px;
+      background: #fff;
       padding: 1rem;
       border-radius: 5px;
-      margin-bottom: 1rem;
     }
 
-    .dashboard-section {
-      margin-bottom: 1rem;
+    .main-content .card h3 {
+      margin-top: 0;
     }
 
-    .dashboard-section-title {
-      font-weight: bold;
-      margin-bottom: 0.5rem;
+    .main-content .card ul {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
-    .dashboard-graph {
-      width: 100%;
-      height: 250px;
-    }
-
-    .dashboard-table {
+    .main-content .card table {
       width: 100%;
       border-collapse: collapse;
     }
 
-    .dashboard-table th,
-    .dashboard-table td {
+    .main-content .card table th,
+    .main-content .card table td {
       padding: 0.5rem;
       border: 1px solid #ccc;
     }
@@ -102,28 +98,26 @@ content:
 </head>
 
 <body>
-  <div class="wrapper">
-    <aside class="sidebar">
-      <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html" class="active">Dashboard</a></li>
-      </ul>
-    </aside>
-    <main class="content">
-      <h1>Baby Blue Web Proxy Dashboard</h1>
-      <div class="dashboard-container">
-        <div class="dashboard-section">
-          <h2 class="dashboard-section-title">Realtime Connection Status</h2>
+  <div class="container">
+    <div class="sidebar">
+      <a href="/index.html">Home</a>
+      <a href="/settings.html">Settings</a>
+      <a href="/dashboard.html" class="active">Dashboard</a>
+    </div>
+    <div class="main-content">
+      <h1>Dashboard</h1>
+      <div class="container">
+        <div class="card">
+          <h3>Connection Status</h3>
           <div id="connection-status"></div>
         </div>
-        <div class="dashboard-section">
-          <h2 class="dashboard-section-title">Bandwidth Usage</h2>
+        <div class="card">
+          <h3>Bandwidth Usage</h3>
           <div id="bandwidth-graph"></div>
         </div>
-        <div class="dashboard-section">
-          <h2 class="dashboard-section-title">Active Connections</h2>
-          <table class="dashboard-table" id="active-connections">
+        <div class="card">
+          <h3>Active Connections</h3>
+          <table id="active-connections">
             <thead>
               <tr>
                 <th>IP Address</th>
@@ -135,12 +129,12 @@ content:
             <tbody></tbody>
           </table>
         </div>
-        <div class="dashboard-section">
-          <h2 class="dashboard-section-title">Error Log</h2>
+        <div class="card">
+          <h3>Error Log</h3>
           <ul id="error-log"></ul>
         </div>
-        <div class="dashboard-section">
-          <h2 class="dashboard-section-title">User Statistics</h2>
+        <div class="card">
+          <h3>User Statistics</h3>
           <ul>
             <li>Total Users: <span id="total-users"></span></li>
             <li>Concurrent Users: <span id="concurrent-users"></span></li>
@@ -148,7 +142,7 @@ content:
           </ul>
         </div>
       </div>
-    </main>
+    </div>
   </div>
   <script>
     // Implement the dashboard functionality here
