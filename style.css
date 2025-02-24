@@ -168,8 +168,8 @@ h6 {
 
   .wrapper {
     gap: 16px;
-    flex-direction: column;
     display: flex;
+    flex-direction: column;
     grid-template-areas:
       "sidebar"
       "main";
@@ -179,7 +179,6 @@ h6 {
 
   .sidebar {
     grid-area: sidebar;
-    display: grid;
     grid-template-areas:
       "header"
       "nav";
@@ -190,7 +189,6 @@ h6 {
 
   .sidebar h1 {
     font-size: 1.25rem;
-    grid-template-areas: "header";
   }
 
   .main-content {
@@ -207,5 +205,27 @@ h6 {
   .sidebar-item {
     border-bottom: none;
     padding: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  body {
+    font-size: 14px;
+  }
+
+  .wrapper {
+    gap: 12px;
+  }
+
+  .main-content {
+    padding: 8px 0;
+  }
+
+  .form-group {
+    gap: 2px;
+  }
+
+  .btn {
+    padding: 6px 8px;
   }
 }
