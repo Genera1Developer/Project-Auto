@@ -1,1 +1,1 @@
-`// Query and mutation requests are proxied to the upstream server via the
+"// Query and mutation requests are proxied to the upstream server via the\n// ApolloLink returned by the `createApolloLink` function."
