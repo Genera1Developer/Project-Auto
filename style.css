@@ -1,11 +1,11 @@
-file path: settings.html
+file path: index.html
 content: ```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
-  <title>Settings</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -20,39 +20,25 @@ content: ```html
       </div>
     </div>
     <div class="main-content">
-      <div class="settings-content">
-        <form class="settings-form" id="settings-form">
+      <div class="login-form">
+        <form class="login-form-container" id="login-form">
           <div class="form-group">
-            <label for="protocol">Protocol:</label>
-            <select id="protocol">
-              <option value="http">HTTP</option>
-              <option value="https">HTTPS</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="port">Port:</label>
-            <input type="number" min="1" max="65535" id="port" value="8080" />
-          </div>
-          <div class="form-group">
-            <label for="authentication">Authentication:</label>
-            <input type="checkbox" id="authentication" />
-          </div>
-          <div class="form-group" id="auth-fields">
             <label for="username">Username:</label>
             <input type="text" id="username" />
+          </div>
+          <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" id="password" />
           </div>
           <div class="form-group">
-            <label for="bandwidth-limit">Bandwidth Limit (MB/s):</label>
-            <input type="number" min="0" id="bandwidth-limit" value="0" />
-          </div>
-          <div class="form-group">
-            <button type="submit" class="btn" id="save-settings-btn">Save Settings</button>
+            <button type="submit" class="btn" id="login-btn">Login</button>
           </div>
         </form>
       </div>
+      <div class="error-message" id="error-message"></div>
+      <div class="connection-status" id="connection-status"></div>
     </div>
+    <div class="proxy-status" id="proxy-status"></div>
   </div>
 
   <script src="script.js"></script>
