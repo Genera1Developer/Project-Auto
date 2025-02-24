@@ -1,198 +1,179 @@
-file path: style.css
+file path: index.html
 content: 
-```css
-/* Global styles */
-
-body {
-    font-family: sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 0;
-}
-
-h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-}
-
-h2 {
-    font-size: 18px;
-    margin-bottom: 5px;
-}
-
-.container {
-    max-width: 1000px;
-    padding: 20px;
-}
-
-.sidebar {
-    float: left;
-    width: 150px;
-    background-color: #ffffff;
-    border-right: 1px solid #dddddd;
-}
-
-.sidebar a {
-    display: block;
-    padding: 10px;
-    text-decoration: none;
-    color: #000000;
-}
-
-.sidebar a:hover {
-    background-color: #dddddd;
-}
-
-.section {
-    margin-top: 20px;
-}
-
-.field-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input,
-select {
-    width: 100%;
-    padding: 5px;
-    border: 1px solid #dddddd;
-}
-
-button {
-    cursor: pointer;
-    padding: 5px 10px;
-    border: 1px solid #dddddd;
-    background-color: #000000;
-    color: #ffffff;
-}
-
-button:hover {
-    background-color: #333333;
-}
-
-/* Dashboard styles */
-
-#connection-status {
-    font-weight: bold;
-}
-
-#bandwidth-usage-graph {
-    width: 100%;
-    height: 250px;
-}
-
-#active-connections-table {
-    width: 100%;
-}
-
-#active-connections-table th,
-#active-connections-table td {
-    padding: 5px;
-    border: 1px solid #dddddd;
-}
-
-#error-log {
-    list-style-type: none;
-    padding: 0;
-}
-
-#error-log li {
-    padding: 5px;
-    background-color: #ff0000;
-    color: #ffffff;
-}
-
-#user-statistics {
-    list-style-type: none;
-    padding: 0;
-}
-
-#user-statistics li {
-    padding: 5px;
-}
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web Proxy Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <a href="/index.html">Dashboard</a>
+            <a href="/settings.html">Settings</a>
+            <a href="/dashboard.html">Dashboard</a>
+        </div>
+        <div class="section">
+            <h1>Web Proxy Dashboard</h1>
+            <div id="proxy-status">Proxy status: offline</div>
+            <div id="connection-status">Connection status: not connected</div>
+            <div id="error-message" style="display: none;"></div>
+            <form id="login-form">
+                <label class="field-label" for="username">Username:</label>
+                <input type="text" id="username" name="username">
+                <label class="field-label" for="password">Password:</label>
+                <input type="password" id="password" name="password">
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
 ```
 
-file path: script.js
+file path: settings.html
 content: 
-```javascript
-// Proxy status indicator
-const proxyStatus = document.getElementById("proxy-status");
-const connectionStatus = document.getElementById("connection-status");
-const errorMessage = document.getElementById("error-message");
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web Proxy Settings</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <a href="/index.html">Dashboard</a>
+            <a href="/settings.html">Settings</a>
+            <a href="/dashboard.html">Dashboard</a>
+        </div>
+        <div class="section">
+            <h1>Web Proxy Settings</h1>
+            <form>
+                <label class="field-label" for="protocol">Protocol:</label>
+                <select id="protocol" name="protocol">
+                    <option value="http">HTTP</option>
+                    <option value="https">HTTPS</option>
+                </select>
+                <label class="field-label" for="port">Port:</label>
+                <input type="number" id="port" name="port">
+                <label class="field-label" for="username">Username:</label>
+                <input type="text" id="username" name="username">
+                <label class="field-label" for="password">Password:</label>
+                <input type="password" id="password" name="password">
+                <label class="field-label" for="bandwidth-limit">Bandwidth limit (MB/s):</label>
+                <input type="number" id="bandwidth-limit" name="bandwidth-limit">
+                <button type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+```
 
-// Update proxy status
-function updateProxyStatus(status) {
-    if (status === "online") {
-        proxyStatus.style.color = "green";
-        proxyStatus.innerText = "Proxy is online";
-    } else {
-        proxyStatus.style.color = "red";
-        proxyStatus.innerText = "Proxy is offline";
-    }
-}
+file path: dashboard.html
+content: 
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Web Proxy Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <a href="/index.html">Dashboard</a>
+            <a href="/settings.html">Settings</a>
+            <a href="/dashboard.html">Dashboard</a>
+        </div>
+        <div class="section">
+            <h1>Web Proxy Dashboard</h1>
+            <div id="connection-status">Connection status: not connected</div>
+            <div id="bandwidth-usage-graph"></div>
+            <table id="active-connections-table">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Port</th>
+                        <th>Protocol</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>127.0.0.1</td>
+                        <td>8080</td>
+                        <td>HTTP</td>
+                        <td>10:02:35</td>
+                    </tr>
+                    <tr>
+                        <td>192.168.0.1</td>
+                        <td>443</td>
+                        <td>HTTPS</td>
+                        <td>00:23:45</td>
+                    </tr>
+                    <tr>
+                        <td>10.0.0.1</td>
+                        <td>80</td>
+                        <td>HTTP</td>
+                        <td>01:05:12</td>
+                    </tr>
+                </tbody>
+            </table>
+            <ul id="error-log">
+                <li>Error: Could not connect to server</li>
+                <li>Error: Invalid protocol specified</li>
+            </ul>
+            <ul id="user-statistics">
+                <li>Total users: 10</li>
+                <li>Active users: 5</li>
+                <li>Average bandwidth usage: 10 MB/s</li>
+            </ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+```
 
-// Update connection status
-function updateConnectionStatus(status) {
-    if (status === "connected") {
-        connectionStatus.style.color = "green";
-        connectionStatus.innerText = "Connected";
-    } else {
-        connectionStatus.style.color = "red";
-        connectionStatus.innerText = "Not connected";
-    }
-}
+file path: README.md
+content: 
+```markdown
+# Web Proxy Dashboard
 
-// Display error message
-function displayErrorMessage(message) {
-    errorMessage.innerText = message;
-    errorMessage.style.display = "block";
-}
+This project is a simple web proxy dashboard that allows users to monitor and manage their proxy settings.
 
-// Clear error message
-function clearErrorMessage() {
-    errorMessage.innerText = "";
-    errorMessage.style.display = "none";
-}
+The dashboard includes the following features:
 
-// Login form submission
-const loginForm = document.getElementById("login-form");
-loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+- Real-time connection status
+- Bandwidth usage graphs
+- Active connections list
+- Error log display
+- User statistics
 
-    const formData = new FormData(loginForm);
-    const username = formData.get("username");
-    const password = formData.get("password");
+The dashboard is designed to be easy to use and understand, and it provides a comprehensive overview of the proxy's performance and usage.
 
-    // Validate username and password
-    if (username === "" || password === "") {
-        displayErrorMessage("Please enter a username and password");
-        return;
-    }
+## Usage
 
-    // Send login request
-    fetch("/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-    })
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.success) {
-                // Login successful, update UI
-                updateProxyStatus("online");
-                updateConnectionStatus("connected");
-                clearErrorMessage();
-            } else {
-                // Login failed, display error
-                displayErrorMessage(data.message);
-            }
-        })
-        .catch((error) => {
-            // Network error
-            displayErrorMessage("Network error, please try again");
-        });
-});
+To use the dashboard, simply open the index.html file in a web browser. The dashboard will automatically connect to the proxy and start displaying real-time data.
+
+You can use the settings page to configure the proxy's settings, such as the protocol, port, and authentication credentials.
+
+## Requirements
+
+The dashboard requires the following:
+
+- A web browser
+- A web proxy server
+
+## License
+
+This project is licensed under the MIT License.
 ```
