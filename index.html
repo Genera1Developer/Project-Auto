@@ -1,4 +1,4 @@
-file path: dashboard.html
+file path: settings.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,10 +7,10 @@ content:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Baby Blue Web Proxy Dashboard</title>
+  <title>Baby Blue Web Proxy Settings</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* CSS Styles for dashboard.html */
+    /* CSS Styles for settings.html */
     body {
       font-family: sans-serif;
       background-color: #f0f8ff;
@@ -63,49 +63,45 @@ content:
       margin-top: 0;
     }
 
-    .dashboard-stats {
+    form {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
       gap: 1rem;
     }
 
-    .dashboard-stat {
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      text-align: center;
+    label {
+      font-weight: bold;
     }
 
-    .dashboard-graph {
-      height: 250px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .dashboard-table {
+    input,
+    select {
       width: 100%;
-      border-collapse: collapse;
-    }
-
-    .dashboard-table th,
-    .dashboard-table td {
       padding: 0.5rem;
       border: 1px solid #ccc;
+      border-radius: 5px;
     }
 
-    .dashboard-table th {
+    .button-container {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
       background-color: #0099ff;
       color: #fff;
+      cursor: pointer;
     }
 
-    .dashboard-error-log {
-      max-height: 250px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 1rem;
-      font-family: monospace;
+    .button:hover {
+      background-color: #007acc;
+    }
+
+    .error {
+      color: #d6332f;
     }
   </style>
 </head>
@@ -115,47 +111,43 @@ content:
     <aside class="sidebar">
       <ul>
         <li><a href="/index.html">Home</a></li>
-        <li><a href="/settings.html">Settings</a></li>
-        <li><a href="/dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="/settings.html" class="active">Settings</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
       </ul>
     </aside>
     <main class="content">
-      <h1>Baby Blue Web Proxy Dashboard</h1>
-      <div class="dashboard-stats">
-        <div class="dashboard-stat">
-          <h2>Connections</h2>
-          <span id="connection-count">0</span>
+      <h1>Baby Blue Web Proxy Settings</h1>
+      <form id="settings-form">
+        <fieldset>
+          <legend>Proxy Configuration</legend>
+          <label for="protocol">Protocol:</label>
+          <select name="protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+          <label for="port">Port:</label>
+          <input type="number" name="port" value="8080" min="1" max="65535" />
+        </fieldset>
+        <fieldset>
+          <legend>Authentication</legend>
+          <label for="username">Username:</label>
+          <input type="text" name="username" />
+          <label for="password">Password:</label>
+          <input type="password" name="password" />
+        </fieldset>
+        <fieldset>
+          <legend>Bandwidth Limits</legend>
+          <label for="download-limit">Download Limit (MB/s):</label>
+          <input type="number" name="download-limit" min="0" />
+          <label for="upload-limit">Upload Limit (MB/s):</label>
+          <input type="number" name="upload-limit" min="0" />
+        </fieldset>
+        <div class="button-container">
+          <button type="submit" class="button">Save</button>
+          <button type="reset" class="button">Reset</button>
         </div>
-        <div class="dashboard-stat">
-          <h2>Bandwidth Usage</h2>
-          <span id="bandwidth-usage">0 MB</span>
-        </div>
-        <div class="dashboard-stat">
-          <h2>Average Speed</h2>
-          <span id="average-speed">0 MB/s</span>
-        </div>
-      </div>
-      <div class="dashboard-graph">
-        <!-- Graph will be inserted here -->
-      </div>
-      <div class="dashboard-table">
-        <thead>
-          <tr>
-            <th>IP Address</th>
-            <th>Port</th>
-            <th>Protocol</th>
-            <th>Duration</th>
-            <th>Data Sent</th>
-            <th>Data Received</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Table rows will be inserted here -->
-        </tbody>
-      </div>
-      <div class="dashboard-error-log">
-        <!-- Error log will be inserted here -->
-      </div>
+        <div class="error" id="error-message"></div>
+      </form>
     </main>
   </div>
 
