@@ -2,44 +2,44 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Proxy - Settings</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
   <script>
-    const formAuth = document.querySelector("form.form-auth");
-    const formProxy = document.querySelector("form.form-proxy");
+    const formAuth = document.querySelector('form.form-auth');
+    const formProxy = document.querySelector('form.form-proxy');
 
-    formAuth.addEventListener("submit", (e) => {
+    formAuth.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const username = document.querySelector("#username").value.trim();
+      const username = document.querySelector('#username').value.trim();
       if (!username) {
-        alert("Please enter a username.");
+        alert('Please enter a username.');
         return;
       }
 
-      const password = document.querySelector("#password").value.trim();
+      const password = document.querySelector('#password').value.trim();
       if (!password) {
-        alert("Please enter a password.");
+        alert('Please enter a password.');
         return;
       }
 
       formAuth.submit();
     });
 
-    formProxy.addEventListener("submit", (e) => {
+    formProxy.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const proxyAddress = document.querySelector("#proxy-address").value.trim();
+      const proxyAddress = document.querySelector('#proxy-address').value.trim();
       if (!proxyAddress) {
-        alert("Please enter a proxy address.");
+        alert('Please enter a proxy address.');
         return;
       }
 
-      const proxyPort = document.querySelector("#proxy-port").value.trim();
+      const proxyPort = document.querySelector('#proxy-port').value.trim();
       if (!proxyPort) {
-        alert("Please enter a proxy port.");
+        alert('Please enter a proxy port.');
         return;
       }
 
@@ -69,12 +69,12 @@
         <form action="login.php" method="post" class="form form-auth">
           <div class="input-group">
             <label for="username">Username</label>
-            <input type="text" id="username" name="username" required autofocus autocomplete="username" placeholder="Enter your username" />
+            <input type="text" id="username" name="username" required autofocus autocomplete="username" placeholder="Enter your username">
           </div>
 
           <div class="input-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password" />
+            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
           </div>
 
           <div class="form-actions">
@@ -88,12 +88,12 @@
         <form action="proxy.php" method="post" class="form form-proxy">
           <div class="setting-group">
             <label for="proxy-address">Proxy Address</label>
-            <input type="text" id="proxy-address" name="proxy-address" required placeholder="Enter the proxy address" />
+            <input type="text" id="proxy-address" name="proxy-address" required placeholder="Enter the proxy address">
           </div>
 
           <div class="setting-group">
             <label for="proxy-port">Proxy Port</label>
-            <input type="number" id="proxy-port" name="proxy-port" required placeholder="Enter the proxy port" />
+            <input type="number" id="proxy-port" name="proxy-port" required placeholder="Enter the proxy port">
           </div>
 
           <div class="form-actions">
