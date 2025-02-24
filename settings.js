@@ -1,1 +1,1 @@
-"const { levels } = require('pino'); const logLevel = process.env.LOG_LEVEL || levels[process.env.LOG_LEVEL || 'info']; const port = parseInt(process.env.PORT || '8080', 10); module.exports = { logLevel, port };"
+"const { levels } = require('pino'); const logLevel = process.env.LOG_LEVEL || levels[process.env.LOG_LEVEL || 'info']; const port = parseInt(process.env.PORT || '8080', 10); \nconst express = require('express'); const app = express(); app.get('/', (req, res) => { res.send('Hello World!'); }); app.listen(port); module.exports = { logLevel, port };"
