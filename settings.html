@@ -1,4 +1,4 @@
-file path: settings.html
+file path: index.html
 content: 
 ```html
 <!DOCTYPE html>
@@ -7,43 +7,26 @@ content:
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings</title>
+  <title>Web Proxy</title>
   <link rel="stylesheet" href="style.css" />
   <script>
     // Error handling for input validation
     const form = document.querySelector('form');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const proxyEnabled = document.querySelector('#proxy-enabled');
-      const proxyAddress = document.querySelector('#proxy-address');
-      const proxyPort = document.querySelector('#proxy-port');
-      const bandwidthLimitEnabled = document.querySelector('#bandwidth-limit-enabled');
-      const bandwidthLimit = document.querySelector('#bandwidth-limit');
+      const username = document.querySelector('#username');
+      const password = document.querySelector('#password');
 
-      // Check if proxy is enabled
-      if (!proxyEnabled.checked) {
-        alert('Proxy must be enabled');
+      // Check if username is valid
+      if (!username.value) {
+        alert('Username cannot be empty');
         return;
       }
 
-      // Check if proxy address is valid
-      if (!proxyAddress.value) {
-        alert('Proxy address cannot be empty');
+      // Check if password is valid
+      if (!password.value) {
+        alert('Password cannot be empty');
         return;
-      }
-
-      // Check if proxy port is valid
-      if (!proxyPort.value || isNaN(proxyPort.value)) {
-        alert('Proxy port must be a valid number');
-        return;
-      }
-
-      // Check if bandwidth limit is enabled and valid
-      if (bandwidthLimitEnabled.checked) {
-        if (!bandwidthLimit.value || isNaN(bandwidthLimit.value)) {
-          alert('Bandwidth limit must be a valid number');
-          return;
-        }
       }
 
       // Submit form if all inputs are valid
@@ -54,94 +37,56 @@ content:
 
 <body>
   <div class="sidebar">
-    <a href="index.html">Home</a>
+    <a href="index.html" class="active">Home</a>
     <a href="dashboard.html">Dashboard</a>
-    <a href="settings.html" class="active">Settings</a>
+    <a href="settings.html">Settings</a>
   </div>
 
   <div class="main-content">
-    <h1>Settings</h1>
+    <h1>Web Proxy</h1>
 
-    <form action="settings.php" method="post">
+    <form action="login.php" method="post">
       <div class="form-group">
-        <label for="proxy-enabled">Enable proxy:</label>
-        <input type="checkbox" id="proxy-enabled" name="proxy-enabled" checked>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
       </div>
 
       <div class="form-group">
-        <label for="proxy-address">Proxy address:</label>
-        <input type="text" id="proxy-address" name="proxy-address" value="localhost">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
       </div>
 
-      <div class="form-group">
-        <label for="proxy-port">Proxy port:</label>
-        <input type="number" id="proxy-port" name="proxy-port" value="8080">
-      </div>
-
-      <div class="form-group">
-        <label for="bandwidth-limit-enabled">Enable bandwidth limit:</label>
-        <input type="checkbox" id="bandwidth-limit-enabled" name="bandwidth-limit-enabled">
-      </div>
-
-      <div class="form-group">
-        <label for="bandwidth-limit">Bandwidth limit (KB/s):</label>
-        <input type="number" id="bandwidth-limit" name="bandwidth-limit" value="100">
-      </div>
-
-      <input type="submit" value="Save">
+      <input type="submit" value="Login">
     </form>
   </div>
 </body>
 
 </html>
 ```
-file path: settings.php
+file path: login.php
 content: 
 ```php
 <?php
 // Get POST data
 
-$proxyEnabled = isset($_POST['proxy-enabled']) ? $_POST['proxy-enabled'] : 0;
-$proxyAddress = $_POST['proxy-address'];
-$proxyPort = $_POST['proxy-port'];
-$bandwidthLimitEnabled = isset($_POST['bandwidth-limit-enabled']) ? $_POST['bandwidth-limit-enabled'] : 0;
-$bandwidthLimit = $_POST['bandwidth-limit'];
+$username = $_POST['username'];
+$password = $_POST['password'];
 
+// Authenticate user
 
-// Check if proxy is enabled
+if ($username === 'admin' && $password === 'password') {
+  // Set session cookie
 
-if (!$proxyEnabled) {
-  $error = 'Proxy must be enabled';
-}
-
-// Check if proxy address is valid
-
-if (!$proxyAddress) {
-  $error = 'Proxy address cannot be empty';
-}
-
-// Check if proxy port is valid
-
-if (!$proxyPort || !is_numeric($proxyPort)) {
-  $error = 'Proxy port must be a valid number';
-}
-
-// Check if bandwidth limit is enabled and valid
-
-if ($bandwidthLimitEnabled) {
-  if (!$bandwidthLimit || !is_numeric($bandwidthLimit)) {
-    $error = 'Bandwidth limit must be a valid number';
-  }
-}
-
-// Save settings
-
-if (!$error) {
-  // Save settings to database or config file
+  session_start();
+  $_SESSION['authenticated'] = true;
 
   // Redirect to index page
 
   header('Location: index.html');
   exit;
+} else {
+  // Display error message
+
+  $error = 'Invalid username or password';
 }
 ```
