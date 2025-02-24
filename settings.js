@@ -1,1 +1,1 @@
-'// Settings here are used to build the Chat Platform\nmodule.exports = {};'
+'// Settings here are used to build the Chat Platform\nmodule.exports = {chatClient: {helloWorld: "Girish"}};'
