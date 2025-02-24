@@ -1,14 +1,14 @@
-file path: settings.html
-content: 
+file path: dashboard.html
+content:
 ```html
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <script src="settings.js"></script>
+    <script src="dashboard.js"></script>
 </head>
 <body>
     <div class="sidebar">
@@ -17,47 +17,92 @@ content:
         <a href="settings.html">Settings</a>
     </div>
     <div class="content">
-        <h1>Settings</h1>
-        <form id="settings-form">
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="proxy-protocol">Proxy Protocol</label>
-                    <select name="proxy-protocol" id="proxy-protocol">
-                        <option value="http">HTTP</option>
-                        <option value="https">HTTPS</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="proxy-port">Proxy Port</label>
-                    <input type="number" name="proxy-port" id="proxy-port" min="1" max="65535" value="8080">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="proxy-username">Proxy Username</label>
-                    <input type="text" name="proxy-username" id="proxy-username">
-                </div>
-                <div class="col-md-6">
-                    <label for="proxy-password">Proxy Password</label>
-                    <input type="password" name="proxy-password" id="proxy-password">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="bandwidth-limit">Bandwidth Limit (MB/s)</label>
-                    <input type="number" name="bandwidth-limit" id="bandwidth-limit" min="0" max="1000">
-                </div>
-                <div class="col-md-6">
-                    <label for="connection-timeout">Connection Timeout (seconds)</label>
-                    <input type="number" name="connection-timeout" id="connection-timeout" min="1" max="300">
+        <h1>Dashboard</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Real-Time Status</div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <tr>
+                                <th>Proxy Status</th>
+                                <td><span id="proxy-status">Loading...</span></td>
+                            </tr>
+                            <tr>
+                                <th>Total Connections</th>
+                                <td><span id="total-connections">Loading...</span></td>
+                            </tr>
+                            <tr>
+                                <th>Active Connections</th>
+                                <td><span id="active-connections">Loading...</span></td>
+                            </tr>
+                            <tr>
+                                <th>Bandwidth Used</th>
+                                <td><span id="bandwidth-used">Loading...</span></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <button type="submit" id="save-settings-button">Save Settings</button>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Bandwidth Usage Graph</div>
+                    <div class="panel-body">
+                        <canvas id="bandwidth-usage-chart"></canvas>
+                    </div>
                 </div>
             </div>
-        </form>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Active Connections</div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>IP Address</th>
+                                    <th>Time Connected</th>
+                                </tr>
+                            </thead>
+                            <tbody id="active-connections-list">
+                                <!-- Data will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Error Log</div>
+                    <div class="panel-body">
+                        <ul id="error-log-list">
+                            <!-- Data will be populated dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">User Statistics</div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Bandwidth Used</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-statistics-list">
+                                <!-- Data will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
