@@ -40,25 +40,29 @@
   </nav>
 
   <main class="main-content">
-    <h1 class="page-title">Settings</h1>
-    <p class="intro">
-      Connect to the web securely and anonymously with our user-friendly web proxy.
-      Protect your online privacy now!
-    </p>
+    <section>
+      <h1 class="page-title">Settings</h1>
 
-    <section class="section">
-      <h2 class="section-title">Authentication</h2>
-      <form action="login.php" method="post" class="form">
-        <label for="username" class="form-label">Username:</label>
-        <input type="text" id="username" name="username" required autofocus>
-        <br>
+      <p class="intro">
+        Connect to the web securely and anonymously with our user-friendly web proxy.
+        Protect your online privacy now!
+      </p>
 
-        <label for="password" class="form-label">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
+      <div class="section">
+        <h2 class="section-title">Authentication</h2>
 
-        <input type="submit" value="Login" class="btn">
-      </form>
+        <form action="login.php" method="post" class="form">
+          <label for="username" class="form-label">Username:</label>
+          <input type="text" id="username" name="username" required autofocus>
+          <br>
+
+          <label for="password" class="form-label">Password:</label>
+          <input type="password" id="password" name="password" required>
+          <br>
+
+          <input type="submit" value="Login" class="btn">
+        </form>
+      </div>
     </section>
   </main>
 </body>
