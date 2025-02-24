@@ -20,7 +20,7 @@
     </header>
     <main class="main-content">
       <h2>Proxy Configuration</h2>
-      <p>Configure your proxy settings here. Any field left blank will disable the corresponding option.</p>
+      <p>Configure your proxy settings here. Leaving any field blank will disable the corresponding option.</p>
       <form id="proxy-settings-form" action="/save_settings" method="POST" autocomplete="off" novalidate>
         <fieldset>
           <legend>Proxy Settings</legend>
@@ -44,7 +44,7 @@
           </div>
           <div class="field-container">
             <label for="proxy-authentication">Proxy Authentication (Optional):</label>
-            <input id="proxy-authentication" name="authentication" type="text" pattern="^([^:]+):(.+)$">
+            <input id="proxy-authentication" name="authentication" type="text" pattern="^([^:]+):(.+)?$">
           </div>
         </fieldset>
         <fieldset>
