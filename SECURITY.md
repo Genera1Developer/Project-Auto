@@ -9,8 +9,8 @@
 
 - Define granular roles and permissions aligned with job responsibilities, implementing the principle of least privilege.
 - Implement Role-Based Access Control (RBAC) to restrict access to sensitive data, minimizing unauthorized access and privilege escalation risks.
+- Regularly review access privileges to ensure appropriateness and minimize privilege creep.
 - Monitor user access and analyze anomalous behavior to enable early threat detection and investigation.
-- Periodically review access privileges to ensure appropriateness and minimize privilege creep.
 
 ## Data Protection
 
