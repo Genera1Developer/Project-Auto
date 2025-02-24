@@ -2,6 +2,7 @@ body {
   font: 16px "Helvetica", "Arial", sans-serif;
   background: #f5f5f5;
   margin: 0;
+  height: 100%;
 }
 
 .wrapper {
@@ -51,6 +52,14 @@ body {
 
 .navigation-link:hover {
   background: #394959;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #394959;
 }
 
 .main-content {
@@ -138,27 +147,20 @@ h6 {
   flex-direction: row;
 }
 
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px;
-  border-bottom: 1px solid #394959;
-}
-
 @media (max-width: 768px) {
   .sidebar {
     flex: 1 0 120px;
     width: 120px;
-  }
-
-  .sidebar h1 {
-    font-size: 1.25rem;
+    min-width: 120px;
   }
 
   .wrapper {
     gap: 16px;
     flex-direction: column;
+  }
+
+  .sidebar h1 {
+    font-size: 1.25rem;
   }
 
   .main-content {
