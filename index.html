@@ -29,7 +29,11 @@
           <select id="proxy-protocol" required>
             <option value="HTTP" selected>HTTP</option>
             <option value="HTTPS">HTTPS</option>
+            <option value="SOCKS">SOCKS</option>
+            <option value="SOCKS5">SOCKS5</option>
           </select>
+          <label for="proxy-host">Host (IP or domain):</label>
+          <input type="text" id="proxy-host" required />
           <label for="proxy-port">Port:</label>
           <input type="number" id="proxy-port" min="0" step="1" required value="8080" />
           <label for="proxy-authentication">Authentication:</label>
