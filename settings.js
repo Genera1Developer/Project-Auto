@@ -1,1 +1,1 @@
-"// Settings here are used to build the Chat Platform\nconst settings = {\n  isHappy: true,\n  debugMode: false,\n  colorPreference: \"blue\"\n};"
+"const settings = {\n  isHappy: false,\n  debugMode: true,\n  colorPreference: \"red\"\n};"
