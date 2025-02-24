@@ -95,3 +95,53 @@ content:
 
 </html>
 ```
+file path: settings.php
+content: 
+```php
+<?php
+// Get POST data
+
+$proxyEnabled = isset($_POST['proxy-enabled']) ? $_POST['proxy-enabled'] : 0;
+$proxyAddress = $_POST['proxy-address'];
+$proxyPort = $_POST['proxy-port'];
+$bandwidthLimitEnabled = isset($_POST['bandwidth-limit-enabled']) ? $_POST['bandwidth-limit-enabled'] : 0;
+$bandwidthLimit = $_POST['bandwidth-limit'];
+
+
+// Check if proxy is enabled
+
+if (!$proxyEnabled) {
+  $error = 'Proxy must be enabled';
+}
+
+// Check if proxy address is valid
+
+if (!$proxyAddress) {
+  $error = 'Proxy address cannot be empty';
+}
+
+// Check if proxy port is valid
+
+if (!$proxyPort || !is_numeric($proxyPort)) {
+  $error = 'Proxy port must be a valid number';
+}
+
+// Check if bandwidth limit is enabled and valid
+
+if ($bandwidthLimitEnabled) {
+  if (!$bandwidthLimit || !is_numeric($bandwidthLimit)) {
+    $error = 'Bandwidth limit must be a valid number';
+  }
+}
+
+// Save settings
+
+if (!$error) {
+  // Save settings to database or config file
+
+  // Redirect to index page
+
+  header('Location: index.html');
+  exit;
+}
+```
