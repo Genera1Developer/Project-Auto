@@ -10,13 +10,116 @@
     .error {
       color: red;
     }
+
+    body {
+      --primary-color: #007bff;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #000;
+    }
+
+    .active {
+      color: var(--primary-color);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .main-content {
+      margin-top: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .label {
+      font-weight: bold;
+      width: 100px;
+    }
+
+    .input {
+      width: 250px;
+    }
+
+    .error-message {
+      font-size: 0.8rem;
+      color: red;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background-color: #ccc;
+      color: #000;
+    }
+
+    .btn-link {
+      background-color: transparent;
+      color: var(--primary-color);
+    }
+
+    footer {
+      margin-top: 2rem;
+      text-align: center;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <header class="header">
-      <nav class="links">
+      <nav class="nav">
         <a href="/" class="link">Home</a>
         <a href="/settings.html" class="link active">Proxy Settings</a>
         <a href="/dashboard.html" class="link">Dashboard</a>
@@ -27,13 +130,13 @@
     </header>
     <main class="main-content">
       <h1 class="page-title">Proxy Settings</h1>
-      <form id="proxy-settings-form" action="/save_settings" method="POST" autocomplete="off"
+      <form id="proxy-settings-form" class="form-container" action="/save_settings" method="POST" autocomplete="off"
         novalidate>
         <p>Configure your proxy settings here. Leaving any field blank will disable the
           corresponding option.</p>
         <fieldset>
           <legend>Proxy Settings</legend>
-          <div class="field-container">
+          <div class="form-group">
             <label for="proxy-protocol" class="label">Protocol:</label>
             <select id="proxy-protocol" name="protocol" aria-label="Proxy Protocol" required>
               <option value="" disabled selected>Select</option>
@@ -43,31 +146,31 @@
               <option value="SOCKS5">SOCKS5</option>
             </select>
           </div>
-          <div class="field-container">
+          <div class="form-group">
             <label for="proxy-host" class="label">Host IP or Domain:</label>
-            <input id="proxy-host" name="host" type="text" aria-label="Proxy Host"
+            <input id="proxy-host" name="host" type="text" class="input" aria-label="Proxy Host"
               pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$)"
               required />
           </div>
-          <div class="field-container">
+          <div class="form-group">
             <label for="proxy-port" class="label">Port:</label>
-            <input id="proxy-port" name="port" type="number" min="0" max="65535" aria-label="Proxy Port" required />
+            <input id="proxy-port" name="port" type="number" class="input" min="0" max="65535" aria-label="Proxy Port" required />
           </div>
-          <div class="field-container">
+          <div class="form-group">
             <label for="proxy-authentication" class="label">Proxy Authentication (Optional):</label>
-            <input id="proxy-authentication" name="authentication" type="text" aria-label="Proxy Authentication"
+            <input id="proxy-authentication" name="authentication" type="text" class="input" aria-label="Proxy Authentication"
               pattern="^([^:]+):(.+)?$" placeholder="username:password" />
           </div>
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit (Optional)</legend>
-          <div class="field-container">
+          <div class="form-group">
             <label for="bandwidth-limit" class="label">Limit (MB/s):</label>
-            <input id="bandwidth-limit" name="bandwidth_limit" type="number" min="0" aria-label="Bandwidth Limit"
+            <input id="bandwidth-limit" name="bandwidth_limit" type="number" class="input" min="0" aria-label="Bandwidth Limit"
               placeholder="0 to disable" />
           </div>
         </fieldset>
-        <div class="button-container">
+        <div class="form-group button-container">
           <button class="btn btn-primary" type="submit">Save</button>
           <button class="btn btn-secondary" type="reset">Reset</button>
           <a href="/dashboard.html" class="btn btn-link">Cancel</a>
