@@ -81,8 +81,8 @@
                 <table id="active-connections-list">
                   <thead>
                     <tr>
-                      <th scope="col">IP Address</th>
-                      <th scope="col">Time Connected</th>
+                      <th>IP Address</th>
+                      <th>Time Connected</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -109,7 +109,15 @@
           </div>
         </div>
       </section>
+      <div class="footer">
+        <p>&copy; <span class="current-year"></span> Proxy Inc.</p>
+      </div>
     </main>
   </div>
+  <script>
+    // Add current year to footer
+    const currentYear = new Date().getFullYear();
+    document.querySelector('.current-year').textContent = currentYear;
+  </script>
 </body>
 </html>
