@@ -81,16 +81,7 @@
   </div>
 </footer>
 <script>
-  const reloadButtons = document.querySelectorAll('.reload-btn');
-  const clearButtons = document.querySelectorAll('.clear-btn');
-  const exportButtons = document.querySelectorAll('.export-btn');
-  const footerYear = document.querySelector('.current-year');
-
-  const updateFooterYear = () => {
-    const currentYear = new Date().getFullYear();
-    footerYear.textContent = currentYear;
-  }
-
+  const reloadButtons = Array.from(document.querySelectorAll('.reload-btn'));
   reloadButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetTable = e.target.getAttribute('data-target-table');
@@ -102,6 +93,7 @@
     });
   });
 
+  const clearButtons = Array.from(document.querySelectorAll('.clear-btn'));
   clearButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetTable = e.target.getAttribute('data-target-table');
@@ -113,7 +105,8 @@
       }
     });
   });
-
+  
+  const exportButtons = Array.from(document.querySelectorAll('.export-btn'));
   exportButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const targetList = e.target.getAttribute('data-target-list');
@@ -122,6 +115,11 @@
       }
     });
   });
-
+  
+  const footerYear = document.querySelector('.current-year');
+  const updateFooterYear = () => {
+    const currentYear = new Date().getFullYear();
+    footerYear.textContent = currentYear;
+  }
   updateFooterYear();
 </script>
