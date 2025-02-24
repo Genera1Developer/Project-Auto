@@ -1,1 +1,1 @@
-// It's a placeholder, proxy doesn't exist in node.js
+// Due to Node.js architecture, proxy does not exist in Node.js
