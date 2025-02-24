@@ -1,1 +1,1 @@
-// empty script
+console.log("hello world");
