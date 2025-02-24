@@ -1,1 +1,1 @@
-"export default from './search'"
+"export default require('./search')"
