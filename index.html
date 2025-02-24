@@ -19,7 +19,7 @@
     </nav>
     <main class="main-content">
       <h2>Proxy Configuration</h2>
-      <form id="proxy-settings-form" action="/save_settings" method="post" novalidate>
+      <form id="proxy-settings-form" action="/save_settings" method="post">
         <fieldset>
           <legend>Proxy Settings</legend>
           <div class="field-container">
@@ -41,7 +41,7 @@
             <input id="proxy-port" name="port" type="number" min="0" max="65535" step="1" required />
           </div>
           <div class="field-container">
-            <label for="proxy-authentication">Proxy Authentication (optional):</label>
+            <label for="proxy-authentication">Proxy Authentication:</label>
             <input id="proxy-authentication" name="authentication" type="text" placeholder="username:password" />
           </div>
         </fieldset>
