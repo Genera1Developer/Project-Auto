@@ -45,62 +45,65 @@
   </aside>
 
   <main class="main-content">
-    <section>
+    <section class="settings-section">
       <h1 class="page-title">Settings <span class="note">(Changes require a proxy restart)</span></h1>
 
       <p class="intro">
         Configure your web proxy settings for secure and anonymous web browsing.
       </p>
 
-      <div class="settings-container">
-        <div class="settings-group">
+      <ul class="settings-tabs">
+        <li><a href="#authentication" class="active">Authentication</a></li>
+        <li><a href="#proxy">Proxy Settings</a></li>
+      </ul>
+
+      <div class="settings-tab-container" id="authentication">
+        <form class="form form-auth" action="auth.php">
           <h2 class="settings-group-title">Authentication</h2>
-          <form class="form form-auth" action="auth.php">
-            <label class="input-container">
-              <span class="label">Username</span>
-              <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus autocomplete="username" />
-            </label>
 
-            <label class="input-container">
-              <span class="label">Password</span>
-              <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
-            </label>
+          <label class="input-container">
+            <span class="label">Username</span>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus autocomplete="username" />
+          </label>
 
-            <div class="btn-container">
-              <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-          </form>
-        </div>
+          <label class="input-container">
+            <span class="label">Password</span>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password" />
+          </label>
 
-        <hr />
+          <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
 
-        <div class="settings-group">
+      <div class="settings-tab-container" id="proxy" style="display: none;">
+        <form class="form form-proxy" action="proxy.php">
           <h2 class="settings-group-title">Proxy Settings</h2>
-          <form class="form form-proxy" action="proxy.php">
-            <label class="input-container">
-              <span class="label">Proxy Address</span>
-              <input type="text" id="proxy-address" name="proxy-address" placeholder="Enter the proxy address" required />
-            </label>
 
-            <label class="input-container">
-              <span class="label">Proxy Port</span>
-              <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" required />
-            </label>
+          <label class="input-container">
+            <span class="label">Proxy Address</span>
+            <input type="text" id="proxy-address" name="proxy-address" placeholder="Enter the proxy address" required />
+          </label>
 
-            <label class="input-container">
-              <span class="label">Proxy Type</span>
-              <select id="proxy-type" name="proxy-type">
-                <option value="http" selected>HTTP</option>
-                <option value="socks4">SOCKS4</option>
-                <option value="socks5">SOCKS5</option>
-              </select>
-            </label>
+          <label class="input-container">
+            <span class="label">Proxy Port</span>
+            <input type="number" id="proxy-port" name="proxy-port" placeholder="Enter the proxy port" required />
+          </label>
 
-            <div class="btn-container">
-              <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-          </form>
-        </div>
+          <label class="input-container">
+            <span class="label">Proxy Type</span>
+            <select id="proxy-type" name="proxy-type">
+              <option value="http" selected>HTTP</option>
+              <option value="socks4">SOCKS4</option>
+              <option value="socks5">SOCKS5</option>
+            </select>
+          </label>
+
+          <div class="btn-container">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
       </div>
     </section>
   </main>
