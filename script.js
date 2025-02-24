@@ -1,1 +1,1 @@
-"// This script prints a message to the console.\nconsole.log(\"Hello!\");"
+"// This script prints a message to the console.\nconsole.log(\"Hello from the AI!\");"
