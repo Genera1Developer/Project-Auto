@@ -1,1 +1,1 @@
-const settings = { isHappy: true, debugMode: false, colorPreference: "lightmode", isLoggedIn: false };
+const settings = { isHappy: true, debugMode: false, colorPreference: "darkmode", isLoggedIn: false };
