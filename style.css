@@ -30,12 +30,13 @@ body {
   grid-template-areas: "header" "nav";
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
+  padding: 16px;
 }
 
 .sidebar h1 {
   grid-area: header;
   font-size: 1.5rem;
-  padding: 16px;
+  padding: 8px;
   margin-bottom: 12px;
 }
 
@@ -46,6 +47,7 @@ body {
   padding: 12px;
   background: #394959;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 .sidebar-item:hover {
@@ -55,7 +57,6 @@ body {
 .navigation-links {
   grid-area: nav;
   display: flex;
-  flex-direction: column;
   gap: 12px;
   margin: 0;
   list-style-type: none;
@@ -172,7 +173,6 @@ h6 {
     grid-template-areas: "main" "sidebar";
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
-    width: 100%;
     display: flex;
     flex-direction: column;
   }
@@ -260,14 +260,6 @@ h6 {
   padding-left: 0;
 }
 
-.navigation-link {
-  width: fit-content;
-}
-
-.sidebar {
-  padding: 16px;
-}
-
 .sidebar-item {
-  border-radius: 4px;
+  width: fit-content;
 }
