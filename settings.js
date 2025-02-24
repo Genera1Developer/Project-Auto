@@ -29,7 +29,7 @@ const settings = {
     email: 'john.doe@example.com',
 
     // The default user password
-    password: 'password',
+    password: 'password', // Consider handling passwords securely in a real application.
 
     // The default user role
     role: 'user',
