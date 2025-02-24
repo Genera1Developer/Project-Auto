@@ -1,1 +1,1 @@
-"export default search\n\nfunction search() {}"
+"export default {\n  search() {}\n}"
