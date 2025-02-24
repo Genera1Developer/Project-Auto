@@ -1,1 +1,1 @@
-"export default {\n  search() {}\n}"
+"export default {\n  search(searchString) {\n    // Do something\n  }\n}"
