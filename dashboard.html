@@ -1,202 +1,111 @@
-file path: dashboard.js
+file path: dashboard.html
 content:
-```javascript
-// Update real-time status
-function updateStatus() {
-    // Send an XHR request to the server to get the latest status
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/status", true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-            
-            // Update the proxy status
-            const proxyStatus = document.getElementById("proxy-status");
-            proxyStatus.textContent = data.proxyStatus;
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="/css/dashboard.css">
 
-            // Update the total connections
-            const totalConnections = document.getElementById("total-connections");
-            totalConnections.textContent = data.totalConnections;
+    <title>Proxy Dashboard</title>
+</head>
+<body>
+    
+    <sidebar-navigation></sidebar-navigation>
 
-            // Update the active connections
-            const activeConnections = document.getElementById("active-connections");
-            activeConnections.textContent = data.activeConnections;
+    <div class="container">
+        <div class="section-header">
+            <h1>Dashboard</h1>
+        </div>
 
-            // Update the bandwidth used
-            const bandwidthUsed = document.getElementById("bandwidth-used");
-            bandwidthUsed.textContent = data.bandwidthUsed;
-        } else {
-            console.error("Error getting status:", xhr.status, xhr.statusText);
-        }
-    };
-    xhr.onerror = function() {
-        console.error("Error getting status:", xhr.status, xhr.statusText);
-    };
-    xhr.send();
-}
-
-// Update the bandwidth usage graph
-function updateBandwidthUsageGraph() {
-    // Send an XHR request to the server to get the bandwidth usage data
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/bandwidth-usage", true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-
-            // Create a new chart object
-            const ctx = document.getElementById("bandwidth-usage-chart").getContext("2d");
-            const chart = new Chart(ctx, {
-                type: "line",
-                data: {
-                    labels: data.labels,
-                    datasets: [{
-                        label: "Bandwidth Usage",
-                        data: data.data
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
-        } else {
-            console.error("Error getting bandwidth usage data:", xhr.status, xhr.statusText);
-        }
-    };
-    xhr.onerror = function() {
-        console.error("Error getting bandwidth usage data:", xhr.status, xhr.statusText);
-    };
-    xhr.send();
-}
-
-// Update the active connections list
-function updateActiveConnectionsList() {
-    // Send an XHR request to the server to get the active connections list
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/active-connections", true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-
-            // Clear the existing list
-            const activeConnectionsList = document.getElementById("active-connections-list");
-            activeConnectionsList.innerHTML = "";
-
-            // Add the new connections to the list
-            for (let i = 0; i < data.length; i++) {
-                const connection = data[i];
-
-                const newRow = document.createElement("tr");
-
-                const ipAddressCell = document.createElement("td");
-                ipAddressCell.textContent = connection.ipAddress;
-
-                const timeConnectedCell = document.createElement("td");
-                timeConnectedCell.textContent = connection.timeConnected;
-
-                newRow.appendChild(ipAddressCell);
-                newRow.appendChild(timeConnectedCell);
-
-                activeConnectionsList.appendChild(newRow);
-            }
-        } else {
-            console.error("Error getting active connections list:", xhr.status, xhr.statusText);
-        }
-    };
-    xhr.onerror = function() {
-        console.error("Error getting active connections list:", xhr.status, xhr.statusText);
-    };
-    xhr.send();
-}
-
-// Update the error log
-function updateErrorLog() {
-    // Send an XHR request to the server to get the error log
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/error-log", true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-
-            // Clear the existing log
-            const errorLog = document.getElementById("error-log-list");
-            errorLog.innerHTML = "";
-
-            // Add the new errors to the log
-            for (let i = 0; i < data.length; i++) {
-                const error = data[i];
-
-                const newListItem = document.createElement("li");
-                newListItem.textContent = error.message;
-
-                errorLog.appendChild(newListItem);
-            }
-        } else {
-            console.error("Error getting error log:", xhr.status, xhr.statusText);
-        }
-    };
-    xhr.onerror = function() {
-        console.error("Error getting error log:", xhr.status, xhr.statusText);
-    };
-    xhr.send();
-}
-
-// Update the user statistics
-function updateUserStatistics() {
-    // Send an XHR request to the server to get the user statistics
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "/user-statistics", true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-
-            // Clear the existing list
-            const userStatisticsList = document.getElementById("user-statistics-list");
-            userStatisticsList.innerHTML = "";
-
-            // Add the new users to the list
-            for (let i = 0; i < data.length; i++) {
-                const user = data[i];
-
-                const newRow = document.createElement("tr");
-
-                const usernameCell = document.createElement("td");
-                usernameCell.textContent = user.username;
-
-                const bandwidthUsedCell = document.createElement("td");
-                bandwidthUsedCell.textContent = user.bandwidthUsed;
-
-                newRow.appendChild(usernameCell);
-                newRow.appendChild(bandwidthUsedCell);
-
-                userStatisticsList.appendChild(newRow);
-            }
-        } else {
-            console.error("Error getting user statistics:", xhr.status, xhr.statusText);
-        }
-    };
-    xhr.onerror = function() {
-        console.error("Error getting user statistics:", xhr.status, xhr.statusText);
-    };
-    xhr.send();
-}
-
-// Update all the data on the page
-function updateAll() {
-    updateStatus();
-    updateBandwidthUsageGraph();
-    updateActiveConnectionsList();
-    updateErrorLog();
-    updateUserStatistics();
-}
-
-// Start the updates
-updateAll();
-setInterval(updateAll, 1000);
-```
+        <div class="section-content">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Proxy Status</h2>
+                        </div>
+                        <div class="card-body" id="proxy-status">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Total Connections</h2>
+                        </div>
+                        <div class="card-body" id="total-connections">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Active Connections</h2>
+                        </div>
+                        <div class="card-body" id="active-connections">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Bandwidth Used</h2>
+                        </div>
+                        <div class="card-body" id="bandwidth-used">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Bandwidth Usage Graph</h2>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="bandwidth-usage-chart" width="100%" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Active Connections</h2>
+                        </div>
+                        <div class="card-body">
+                            <table id="active-connections-list">
+                                <thead>
+                                    <tr>
+                                        <th>IP Address</th>
+                                        <th>Time Connected</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Loading...</td>
+                                        <td>Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Error Log</h2>
+                        </div>
+                        <div class="card-body">
+                            <ul id="error-log-list">
+                                <li>Loading...
