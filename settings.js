@@ -1,1 +1,1 @@
-"export const settings = {test: 1, updated: true};"
+"export const settings = {user: 'Jane Doe', updated: true};"
