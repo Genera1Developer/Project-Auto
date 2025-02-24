@@ -1,1 +1,1 @@
-module.exports = { logLevel: 'info' };
+module.exports = { logLevel: 'info', port: 3000 };
