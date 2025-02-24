@@ -1,1 +1,1 @@
-"// Simple JavaScript that logs 'Hello, world!' and the current time to the console.
+"// Simple JavaScript that logs 'Hello, world!' and the current time to the console.\nconsole.log('Hello, world!');\nconsole.log(Date());"
