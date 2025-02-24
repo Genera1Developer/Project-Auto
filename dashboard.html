@@ -2,7 +2,6 @@ file path: dashboard.html
 content:
 ```html
 <!DOCTYPE html>
-<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -107,3 +106,156 @@ content:
 </body>
 </html>
 ```
+file path: dashboard.js
+content:
+```javascript
+// Update real-time status
+function updateStatus() {
+    // Send an XHR request to the server to get the latest status
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/status", true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            
+            // Update the proxy status
+            const proxyStatus = document.getElementById("proxy-status");
+            proxyStatus.textContent = data.proxyStatus;
+
+            // Update the total connections
+            const totalConnections = document.getElementById("total-connections");
+            totalConnections.textContent = data.totalConnections;
+
+            // Update the active connections
+            const activeConnections = document.getElementById("active-connections");
+            activeConnections.textContent = data.activeConnections;
+
+            // Update the bandwidth used
+            const bandwidthUsed = document.getElementById("bandwidth-used");
+            bandwidthUsed.textContent = data.bandwidthUsed;
+        } else {
+            console.error("Error getting status:", xhr.status, xhr.statusText);
+        }
+    };
+    xhr.onerror = function() {
+        console.error("Error getting status:", xhr.status, xhr.statusText);
+    };
+    xhr.send();
+}
+
+// Update the bandwidth usage graph
+function updateBandwidthUsageGraph() {
+    // Send an XHR request to the server to get the bandwidth usage data
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/bandwidth-usage", true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+
+            // Create a new chart object
+            const ctx = document.getElementById("bandwidth-usage-chart").getContext("2d");
+            const chart = new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: "Bandwidth Usage",
+                        data: data.data
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        } else {
+            console.error("Error getting bandwidth usage data:", xhr.status, xhr.statusText);
+        }
+    };
+    xhr.onerror = function() {
+        console.error("Error getting bandwidth usage data:", xhr.status, xhr.statusText);
+    };
+    xhr.send();
+}
+
+// Update the active connections list
+function updateActiveConnectionsList() {
+    // Send an XHR request to the server to get the active connections list
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/active-connections", true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+
+            // Clear the existing list
+            const activeConnectionsList = document.getElementById("active-connections-list");
+            activeConnectionsList.innerHTML = "";
+
+            // Add the new connections to the list
+            for (let i = 0; i < data.length; i++) {
+                const connection = data[i];
+
+                const newRow = document.createElement("tr");
+
+                const ipAddressCell = document.createElement("td");
+                ipAddressCell.textContent = connection.ipAddress;
+
+                const timeConnectedCell = document.createElement("td");
+                timeConnectedCell.textContent = connection.timeConnected;
+
+                newRow.appendChild(ipAddressCell);
+                newRow.appendChild(timeConnectedCell);
+
+                activeConnectionsList.appendChild(newRow);
+            }
+        } else {
+            console.error("Error getting active connections list:", xhr.status, xhr.statusText);
+        }
+    };
+    xhr.onerror = function() {
+        console.error("Error getting active connections list:", xhr.status, xhr.statusText);
+    };
+    xhr.send();
+}
+
+// Update the error log
+function updateErrorLog() {
+    // Send an XHR request to the server to get the error log
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", "/error-log", true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+
+            // Clear the existing log
+            const errorLog = document.getElementById("error-log-list");
+            errorLog.innerHTML = "";
+
+            // Add the new errors to the log
+            for (let i = 0; i < data.length; i++) {
+                const error = data[i];
+
+                const newListItem = document.createElement("li");
+                newListItem.textContent = error.message;
+
+                errorLog.appendChild(newListItem);
+            }
+        } else {
+            console.error("Error getting error log:", xhr.status, xhr.statusText);
+        }
+    };
+    xhr.onerror = function() {
+        console.error("Error getting error log:", xhr.status, xhr.statusText);
+    };
+    xhr.send();
+}
+
+// Update the user statistics
+function updateUserStatistics() {
+    // Send an XHR request to the server to get the user statistics
+    const xhr = new XMLHttpRequest
