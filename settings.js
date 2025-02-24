@@ -1,1 +1,1 @@
-const settings = {\n  isHappy: true,\n  debugMode: false,\n  colorPreference: "blue"\n};
+const settings = { isHappy: true, debugMode: false, colorPreference: "blue", isLoggedIn: false };
