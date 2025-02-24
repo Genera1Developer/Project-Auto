@@ -1,206 +1,42 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/dashboard.css">
-  <title>Proxy Dashboard</title>
-  <script>
-    // Add current year to footer
-    const currentYear = new Date().getFullYear();
-    document.querySelector('.current-year').textContent = currentYear;
-
-    // Add JavaScript functionality for dashboard widgets here
-    window.addEventListener('DOMContentLoaded', () => {
-      // Proxy Status widget
-      const proxyStatusWidget = document.querySelector('[data-widget="proxy-status"]');
-      const proxyStatusCardBody = proxyStatusWidget.querySelector('.card-body');
-      fetch('/proxy/status')
-        .then(response => response.json())
-        .then(data => {
-          const status = data.status;
-          const statusMessage = status === 'online' ? 'Online' : 'Offline';
-          proxyStatusCardBody.innerHTML = `<span>${statusMessage}</span>`;
-        })
-        .catch(error => {
-          proxyStatusCardBody.innerHTML = `<span>Error fetching data: ${error.message}</span>`;
-        });
-
-      // Total Connections widget
-      const totalConnectionsWidget = document.querySelector('[data-widget="total-connections"]');
-      const totalConnectionsCardBody = totalConnectionsWidget.querySelector('.card-body');
-      fetch('/connections/total')
-        .then(response => response.json())
-        .then(data => {
-          const totalConnections = data.totalConnections;
-          totalConnectionsCardBody.innerHTML = `<span>${totalConnections}</span>`;
-        })
-        .catch(error => {
-          totalConnectionsCardBody.innerHTML = `<span>Error fetching data: ${error.message}</span>`;
-        });
-
-      // Active Connections widget
-      const activeConnectionsWidget = document.querySelector('[data-widget="active-connections"]');
-      const activeConnectionsCardBody = activeConnectionsWidget.querySelector('.card-body');
-      fetch('/connections/active')
-        .then(response => response.json())
-        .then(data => {
-          const activeConnections = data.activeConnections;
-          activeConnectionsCardBody.innerHTML = `<span>${activeConnections}</span>`;
-        })
-        .catch(error => {
-          activeConnectionsCardBody.innerHTML = `<span>Error fetching data: ${error.message}</span>`;
-        });
-
-      // Bandwidth Used widget
-      const bandwidthUsedWidget = document.querySelector('[data-widget="bandwidth-used"]');
-      const bandwidthUsedCardBody = bandwidthUsedWidget.querySelector('.card-body');
-      fetch('/bandwidth/used')
-        .then(response => response.json())
-        .then(data => {
-          const bandwidthUsed = data.bandwidthUsed;
-          bandwidthUsedCardBody.innerHTML = `<span>${bandwidthUsed}</span>`;
-        })
-        .catch(error => {
-          bandwidthUsedCardBody.innerHTML = `<span>Error fetching data: ${error.message}</span>`;
-        });
-
-      // Bandwidth Usage Graph widget
-      const bandwidthUsageChartWidget = document.querySelector('[data-widget="bandwidth-usage-chart"]');
-      const bandwidthUsageChartCanvas = bandwidthUsageChartWidget.querySelector('canvas');
-      const bandwidthUsageChartLabels = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
-      const bandwidthUsageChartData = [];
-
-      fetch('/bandwidth/usage')
-        .then(response => response.json())
-        .then(data => {
-          data.bandwidthUsage.forEach(usage => {
-            bandwidthUsageChartData.push(usage.bandwidth);
-          });
-          const bandwidthUsageChartConfig = {
-            type: 'line',
-            data: {
-              labels: bandwidthUsageChartLabels,
-              datasets: [{
-                label: 'Bandwidth Usage',
-                data: bandwidthUsageChartData,
-                fill: false,
-                borderColor: '#000',
-                pointRadius: 3,
-                pointBackgroundColor: '#000',
-                pointBorderColor: '#000',
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: '#000',
-                pointHoverBorderColor: '#000'
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    beginAtZero: true,
-                    callback: (value) => {
-                      return value + ' MB';
-                    }
-                  }
-                }]
-              }
-            }
-          };
-          new Chart(bandwidthUsageChartCanvas, bandwidthUsageChartConfig);
-        })
-        .catch(error => {
-          bandwidthUsageChartCanvas.innerHTML = `<span>Error fetching data: ${error.message}</span>`;
-        });
-
-      // Active Connections List widget
-      const activeConnectionsListWidget = document.querySelector('[data-widget="active-connections-list"]');
-      const activeConnectionsListTable = activeConnectionsListWidget.querySelector('table');
-      fetch('/connections/active/list')
-        .then(response => response.json())
-        .then(data => {
-          const activeConnectionsList = data.activeConnections;
-          activeConnectionsList.forEach(connection => {
-            const newRow = document.createElement('tr');
-            const newIpAddressCell = document.createElement('td');
-            newIpAddressCell.textContent = connection.ipAddress;
-            const newTimeConnectedCell = document.createElement('td');
-            newTimeConnectedCell.textContent = connection.timeConnected;
-            newRow.appendChild(newIpAddressCell);
-            newRow.appendChild(newTimeConnectedCell);
-            activeConnectionsListTable.appendChild(newRow);
-          });
-        })
-        .catch(error => {
-          activeConnectionsListTable.innerHTML = `<tbody><tr><td colspan="2"><span>Error fetching data: ${error.message}</span></td></tr></tbody>`;
-        });
-
-      // Error Log List widget
-      const errorLogListWidget = document.querySelector('[data-widget="error-log-list"]');
-      const errorLogList = errorLogListWidget.querySelector('ul');
-      fetch('/error-log')
-        .then(response => response.json())
-        .then(data => {
-          const errorLogs = data.errorLogs;
-          errorLogs.forEach(errorLog => {
-            const newListItem = document.createElement('li');
-            newListItem.textContent = errorLog;
-            errorLogList.appendChild(newListItem);
-          });
-        })
-        .catch(error => {
-          errorLogList.innerHTML = `<li><span>Error fetching data: ${error.message}</span></li>`;
-        });
-    });
-  </script>
-</head>
-<body>
-  <div class="wrapper">
-    <nav id="sidebar-navigation">
-      <h1>Menu</h1>
-      <ul>
-        <!-- Navigation menu goes here -->
-      </ul>
-    </nav>
-    <main class="container">
-      <header class="section-header">
-        <h1>Dashboard</h1>
-      </header>
-      <section class="section-content">
-        <div class="cards-container">
-          <div class="card" data-widget="proxy-status">
-            <header class="card-header">
-              <h2>Proxy Status</h2>
-            </header>
-            <div class="card-body">
-              <span>Loading...</span>
-            </div>
+</header>
+            <canvas></canvas>
           </div>
-          <div class="card" data-widget="total-connections">
-            <header class="card-header">
-              <h2>Total Connections</h2>
-            </header>
-            <div class="card-body">
-              <span>Loading...</span>
-            </div>
-          </div>
-          <div class="card" data-widget="active-connections">
-            <header class="card-header">
-              <h2>Active Connections</h2>
-            </header>
-            <div class="card-body">
-              <span>Loading...</span>
-            </div>
-          </div>
-          <div class="card" data-widget="bandwidth-used">
-            <header class="card-header">
-              <h2>Bandwidth Used</h2>
-            </header>
-            <div class="card-body">
-              <span>Loading...</span>
-            </div>
-          </div>
-          <div class="wide-card" data-widget="bandwidth-usage-chart">
+          <div class="wide-card" data-widget="active-connections-list">
             <header class="card-
+    header">
+              <h2>Active Connections List</h2>
+            </header>
+            <div class="card-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>IP Address</th>
+                    <th>Time Connected</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Connections list goes here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="wide-card" data-widget="error-log-list">
+            <header class="card-
+    header">
+              <h2>Error Log</h2>
+            </header>
+            <div class="card-body">
+              <ul>
+                <!-- Error log list goes here -->
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+      <footer class="footer">
+        <span class="current-year"></span> &copy; Proxy Corp.
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
