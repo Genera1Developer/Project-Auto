@@ -1,1 +1,1 @@
-import { createProxyMiddleware } from 'http-proxy-middleware';
+// @ts-nocheck
