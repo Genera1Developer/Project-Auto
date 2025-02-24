@@ -7,106 +7,108 @@
   <title>Proxy Dashboard</title>
 </head>
 <body>
-  <aside id="sidebar-navigation"></aside>
-  <main class="container">
-    <header class="section-header">
-      <h1>Dashboard</h1>
-    </header>
-    <section class="section-content">
-      <div class="row">
-        <div class="col-lg-6">
-          <article class="card">
-            <header class="card-header">
-              <h2>Proxy Status</h2>
-            </header>
-            <div class="card-body" id="proxy-status">
-              Loading...
-            </div>
-          </article>
+  <div class="wrapper">
+    <aside id="sidebar-navigation"></aside>
+    <main class="container">
+      <header class="section-header">
+        <h1>Dashboard</h1>
+      </header>
+      <section class="section-content">
+        <div class="row">
+          <div class="col-lg-6">
+            <article class="card">
+              <header class="card-header">
+                <h2>Proxy Status</h2>
+              </header>
+              <div class="card-body" id="proxy-status">
+                Loading...
+              </div>
+            </article>
+          </div>
+          <div class="col-lg-6">
+            <article class="card">
+              <header class="card-header">
+                <h2>Total Connections</h2>
+              </header>
+              <div class="card-body" id="total-connections">
+                Loading...
+              </div>
+            </article>
+          </div>
+          <div class="col-lg-6">
+            <article class="card">
+              <header class="card-header">
+                <h2>Active Connections</h2>
+              </header>
+              <div class="card-body" id="active-connections">
+                Loading...
+              </div>
+            </article>
+          </div>
+          <div class="col-lg-6">
+            <article class="card">
+              <header class="card-header">
+                <h2>Bandwidth Used</h2>
+              </header>
+              <div class="card-body" id="bandwidth-used">
+                Loading...
+              </div>
+            </article>
+          </div>
         </div>
-        <div class="col-lg-6">
-          <article class="card">
-            <header class="card-header">
-              <h2>Total Connections</h2>
-            </header>
-            <div class="card-body" id="total-connections">
-              Loading...
-            </div>
-          </article>
+        <div class="row">
+          <div class="col-lg-12">
+            <article class="card">
+              <header class="card-header">
+                <h2>Bandwidth Usage Graph</h2>
+              </header>
+              <div class="card-body">
+                <canvas id="bandwidth-usage-chart" width="100%" height="400"></canvas>
+              </div>
+            </article>
+          </div>
         </div>
-        <div class="col-lg-6">
-          <article class="card">
-            <header class="card-header">
-              <h2>Active Connections</h2>
-            </header>
-            <div class="card-body" id="active-connections">
-              Loading...
-            </div>
-          </article>
+        <div class="row">
+          <div class="col-lg-12">
+            <article class="card">
+              <header class="card-header">
+                <h2>Active Connections</h2>
+              </header>
+              <div class="card-body">
+                <table id="active-connections-list">
+                  <thead>
+                    <tr>
+                      <th>IP Address</th>
+                      <th>Time Connected</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Loading...</td>
+                      <td>Loading...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
         </div>
-        <div class="col-lg-6">
-          <article class="card">
-            <header class="card-header">
-              <h2>Bandwidth Used</h2>
-            </header>
-            <div class="card-body" id="bandwidth-used">
-              Loading...
-            </div>
-          </article>
+        <div class="row">
+          <div class="col-lg-12">
+            <article class="card">
+              <header class="card-header">
+                <h2>Error Log</h2>
+              </header>
+              <div class="card-body">
+                <ul id="error-log-list">
+                  <li>Loading...</li>
+                </ul>
+              </div>
+            </article>
+          </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <article class="card">
-            <header class="card-header">
-              <h2>Bandwidth Usage Graph</h2>
-            </header>
-            <div class="card-body">
-              <canvas id="bandwidth-usage-chart" width="100%" height="400"></canvas>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <article class="card">
-            <header class="card-header">
-              <h2>Active Connections</h2>
-            </header>
-            <div class="card-body">
-              <table id="active-connections-list">
-                <thead>
-                  <tr>
-                    <th>IP Address</th>
-                    <th>Time Connected</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Loading...</td>
-                    <td>Loading...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <article class="card">
-            <header class="card-header">
-              <h2>Error Log</h2>
-            </header>
-            <div class="card-body">
-              <ul id="error-log-list">
-                <li>Loading...</li>
-              </ul>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
+  </div>
 </body>
 </html>
