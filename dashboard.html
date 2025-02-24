@@ -78,3 +78,40 @@
     </ul>
   </div>
 </footer>
+<script>
+  const reloadButtons = document.querySelectorAll('.reload-btn');
+  const clearButtons = document.querySelectorAll('.clear-btn');
+  const exportButtons = document.querySelectorAll('.export-btn');
+
+  reloadButtons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const targetTable = e.target.getAttribute('data-target-table');
+      if (targetTable === 'connections') {
+        // Reload active connections list
+      } else if (targetTable === 'users') {
+        // Reload active users list
+      }
+    });
+  });
+
+  clearButtons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const targetTable = e.target.getAttribute('data-target-table');
+      const targetList = e.target.getAttribute('data-target-list');
+      if (targetTable) {
+        // Clear active connections table
+      } else if (targetList) {
+        // Clear error log list
+      }
+    });
+  });
+
+  exportButtons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const targetList = e.target.getAttribute('data-target-list');
+      if (targetList === 'errors') {
+        // Export error log
+      }
+    });
+  });
+</script>
