@@ -1,10 +1,11 @@
 body {
   font-family: "Helvetica", "Arial", sans-serif;
   font-size: 1rem;
+  color: #333;
   background: #efefef;
   margin: 0;
   display: grid;
-  gap: 16px;
+  grid-gap: 16px;
   grid-template-areas: "header header" "main sidebar";
   grid-template-rows: 48px 1fr;
   grid-template-columns: 200px 1fr;
@@ -17,7 +18,7 @@ body {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  grid-gap: 16px;
 }
 
 .sidebar {
@@ -26,7 +27,7 @@ body {
   color: white;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  grid-gap: 12px;
   grid-template-areas: "header" "nav";
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
@@ -49,7 +50,7 @@ body {
   background: #394959;
   cursor: pointer;
   border-radius: 4px;
-  gap: 12px;
+  grid-gap: 12px;
   width: 100%;
   z-index: 2;
 }
@@ -60,7 +61,7 @@ body {
 
 .navigation-links {
   display: flex;
-  gap: 12px;
+  grid-gap: 12px;
   margin: 0;
   list-style-type: none;
   padding: 0;
@@ -84,7 +85,7 @@ body {
 
 .main-content {
   grid-area: main;
-  gap: 12px;
+  grid-gap: 12px;
   height: calc(100vh - 48px);
 }
 
@@ -98,12 +99,12 @@ body {
 .login-form-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  grid-gap: 12px;
 }
 
 .form-group {
   display: flex;
-  gap: 4px;
+  grid-gap: 4px;
 }
 
 .form-group label {
@@ -181,13 +182,13 @@ h6 {
 
   .wrapper {
     max-width: 100%;
-    grid-template-areas: "main" "sidebar";
+    grid-template-areas: "sidebar" "main";
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
   }
 
   .wrapper > div {
-    gap: 8px;
+    grid-gap: 8px;
   }
 
   .sidebar {
@@ -210,7 +211,7 @@ h6 {
   }
 
   .form-group {
-    gap: 2px;
+    grid-gap: 2px;
   }
 
   .btn {
@@ -227,7 +228,7 @@ h6 {
   .wrapper {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    grid-gap: 8px;
   }
 
   .main-content {
@@ -235,7 +236,7 @@ h6 {
   }
 
   .form-group {
-    gap: 2px;
+    grid-gap: 2px;
   }
 
   .btn {
@@ -259,7 +260,7 @@ h6 {
   }
 
   .form-group {
-    gap: 2px;
+    grid-gap: 2px;
   }
 
   .btn {
