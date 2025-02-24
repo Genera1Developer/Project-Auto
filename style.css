@@ -4,10 +4,10 @@ body {
   background: #efefef;
   margin: 0;
   display: grid;
+  gap: 16px;
   grid-template-areas: "header header" "main sidebar";
   grid-template-rows: 48px 1fr;
   grid-template-columns: 200px 1fr;
-  gap: 16px;
 }
 
 .wrapper {
@@ -49,7 +49,8 @@ body {
   background: #394959;
   cursor: pointer;
   border-radius: 4px;
-  width: fit-content;
+  gap: 12px;
+  width: 100%;
   z-index: 2;
 }
 
