@@ -1,1 +1,1 @@
-"module.exports = { logLevel: 'debug', port: 3001 };"
+"const logLevel = 'debug'; const port = process.env.PORT || 3001; module.exports = { logLevel, port };"
