@@ -103,4 +103,16 @@
 <script>
   const currentYearEl = document.querySelector('.current-year');
   currentYearEl.textContent = new Date().getFullYear();
+
+  // Add accessibility features to the buttons
+  const refreshButtons = document.querySelectorAll('.btn-reload');
+  const clearButtons = document.querySelectorAll('.btn-clear');
+
+  refreshButtons.forEach(btn => {
+    btn.setAttribute('aria-label', `Refresh the ${btn.parentNode.parentNode.querySelector('h2').textContent}`);
+  });
+
+  clearButtons.forEach(btn => {
+    btn.setAttribute('aria-label', `Clear the ${btn.parentNode.parentNode.querySelector('h2').textContent}`);
+  });
 </script>
