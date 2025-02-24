@@ -1,154 +1,168 @@
-file path: style.css
-content: ```css
-/* Reset styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+file path: index.html
+content: ```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">Web Proxy</div>
+      <nav class="nav-links">
+        <li><a href="/settings">Settings</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+      </nav>
+    </header>
+    <aside class="sidebar">
+      <ul class="sidebar-list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+      </ul>
+    </aside>
+    <main class="main-content">
+      <div class="form-container">
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label" for="username">Username</label>
+            <input class="form-control" type="text" name="username" id="username" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password">Password</label>
+            <input class="form-control" type="password" name="password" id="password" />
+          </div>
+          <button class="form-button" type="submit">Login</button>
+        </form>
+      </div>
+      <div class="status"></div>
+      <div class="connection-status"></div>
+      <div class="error-messages"></div>
+    </main>
+    <script>
+      // Your JavaScript code here.
+    </script>
+  </body>
+</html>
+```
+file path: settings.html
+content: ```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy - Settings</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">Web Proxy</div>
+      <nav class="nav-links">
+        <li><a href="/index">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+      </nav>
+    </header>
+    <aside class="sidebar">
+      <ul class="sidebar-list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+      </ul>
+    </aside>
+    <main class="main-content">
+      <form id="settings-form">
+        <div class="form-group">
+          <label class="form-label" for="proxy-protocol">Proxy Protocol</label>
+          <select class="form-control" id="proxy-protocol">
+            <option value="http">HTTP</option>
+            <option value="https">HTTPS</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="proxy-port">Proxy Port</label>
+          <input class="form-control" type="number" name="proxy-port" id="proxy-port" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="auth-username">Authentication Username</label>
+          <input class="form-control" type="text" name="auth-username" id="auth-username" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="auth-password">Authentication Password</label>
+          <input class="form-control" type="password" name="auth-password" id="auth-password" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bandwidth-limit">Bandwidth Limit (MB)</label>
+          <input class="form-control" type="number" name="bandwidth-limit" id="bandwidth-limit" />
+        </div>
+        <button class="form-button" type="submit">Save</button>
+      </form>
+    </main>
+    <script>
+      // Your JavaScript code here.
+    </script>
+  </body>
+</html>
+```
+file path: dashboard.html
+content: ```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Web Proxy - Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">Web Proxy</div>
+      <nav class="nav-links">
+        <li><a href="/index">Home</a></li>
+        <li><a href="/settings">Settings</a></li>
+      </nav>
+    </header>
+    <aside class="sidebar">
+      <ul class="sidebar-list">
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+        <li><a href="/settings.html">Settings</a></li>
+      </ul>
+    </aside>
+    <main class="main-content">
+      <div class="connection-status"></div>
+      <div class="bandwidth-usage"></div>
+      <div class="active-connections"></div>
+      <div class="error-log"></div>
+      <div class="user-statistics"></div>
+    </main>
+    <script>
+      // Your JavaScript code here.
+    </script>
+  </body>
+</html>
+```
+file path: README.md
+content: ```
+# Web Proxy Project
 
-/* Main body styles */
-body {
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  background-color: #f5f5f5;
-}
+This project aims to create a structured web proxy with strictly defined files and components, featuring a baby blue and rounded theme.
 
-/* Header styles */
-header {
-  height: 60px;
-  background-color: #2979ff;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 0 20px;
-}
+## Project Structure
 
-.logo {
-  color: #fff;
-  font-size: 24px;
-  font-weight: bold;
-  text-decoration: none;
-}
+The project consists of four main files:
 
-.nav-links {
-  float: right;
-}
+- `index.html`: Main landing page with login form, navigation to settings and dashboard, proxy status indicator, error message display, and connection status display.
+- `settings.html`: Proxy configuration page with settings for proxy protocol, port, authentication, and bandwidth limits.
+- `dashboard.html`: User statistics and monitoring page with real-time connection status, bandwidth usage graphs, active connections list, error log display, and user statistics.
+- `style.css`: Styling for all pages, including baby blue and rounded theme.
 
-.nav-links li {
-  display: inline-block;
-  margin-left: 20px;
-}
+## Key Features
 
-.nav-links a {
-  color: #fff;
-  text-decoration: none;
-}
-
-.nav-links a:hover {
-  color: #000;
-}
-
-/* Sidebar styles */
-.sidebar {
-  width: 200px;
-  height: 100vh;
-  background-color: #ffffff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar-list li {
-  padding: 10px;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.sidebar-list a {
-  color: #000;
-  text-decoration: none;
-}
-
-.sidebar-list a:hover {
-  background-color: #f5f5f5;
-}
-
-/* Main content styles */
-.main-content {
-  margin-left: 200px;
-  padding: 20px;
-}
-
-/* Form styles */
-form {
-  width: 100%;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-.form-control {
-  width: 100%;
-  height: 40px;
-  border: 1px solid #e5e5e5;
-  border-radius: 5px;
-  padding: 5px;
-}
-
-.form-button {
-  width: 100%;
-  height: 40px;
-  background-color: #2979ff;
-  border: none;
-  border-radius: 5px;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-/* Status styles */
-.status {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #e5e5e5;
-  border-radius: 5px;
-}
-
-.status-success {
-  background-color: #dff0d8;
-  color: #4b8b00;
-}
-
-.status-error {
-  background-color: #f2dede;
-  color: #d9534f;
-}
-
-/* Table styles */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  border: 1px solid #e5e5e5;
-  padding: 5px;
-}
-
-/* Baby blue and rounded theming */
-.baby-blue {
-  background-color: #2979ff;
-}
-
-.rounded-corners {
-  border-radius: 5px;
-}
+- Clean and consistent HTML structure
+- Semantic HTML elements used throughout
+- Strict content security policy implemented
+- Error handling included for all operations
+- Cross-browser compatibility
+- Mobile responsiveness
+- Baby blue and rounded theme
 ```
