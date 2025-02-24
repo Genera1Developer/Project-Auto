@@ -1,1 +1,1 @@
-"export const settings = {\n  user: 'Jane Doe',\n  updated: new Date().getTime()\n};"
+"export const settings = {\n  user: 'Jane Doe',\n  updated: Date.now()\n};"
