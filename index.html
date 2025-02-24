@@ -1,10 +1,12 @@
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Web Proxy Settings</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <div class="container">
     <header class="header">
@@ -33,7 +35,7 @@
             </select>
           </div>
           <div class="field-container">
-            <label for="proxy-host">Host IP or domain:</label>
+            <label for="proxy-host">Host IP or Domain:</label>
             <input id="proxy-host" name="host" type="text" pattern="^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$" placeholder="e.g. 192.168.1.101" aria-label="Proxy host IP or domain" required />
           </div>
           <div class="field-container">
@@ -63,4 +65,5 @@
   </div>
   <script type="module" src="settings.js"></script>
 </body>
+
 </html>
