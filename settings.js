@@ -1,1 +1,1 @@
-'// Settings here are used to build the Chat Platform\nmodule.exports = {chatClient: {helloWorld: "Alice", goodbyeWorld: "Goodbye Alice"}};'
+'// Settings here are used to build the Chat Platform\nmodule.exports = {chatClient: {helloWorld: "Alice", goodbyeWorld: "Goodbye Alice"}, slack: {webhook: ""}};'
