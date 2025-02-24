@@ -9,21 +9,16 @@
 <body>
   <div class="container">
     <header class="header">
-      <a href="/">
-        <h1>Web Proxy</h1>
-      </a>
       <nav class="links">
         <a href="/">Home</a>
         <a href="/settings.html" class="active">Settings</a>
         <a href="/dashboard.html">Dashboard</a>
       </nav>
+      <div class="logo">
+        <h1>Web Proxy</h1>
+      </div>
     </header>
     <main class="main-content">
-      <h2 class="page-title">Proxy Configuration</h2>
-      <p>
-        Configure your proxy settings here. Leaving any field blank will
-        disable the corresponding option.
-      </p>
       <form
         id="proxy-settings-form"
         action="/save_settings"
@@ -31,6 +26,11 @@
         autocomplete="off"
         novalidate
       >
+        <h2 class="page-title">Proxy Configuration</h2>
+        <p>
+          Configure your proxy settings here. Leaving any field blank will
+          disable the corresponding option.
+        </p>
         <fieldset>
           <legend>Proxy Settings</legend>
           <div class="field-container">
@@ -49,9 +49,7 @@
             </select>
           </div>
           <div class="field-container">
-            <label class="label" for="proxy-host"
-              >Host IP or Domain:</label
-            >
+            <label class="label" for="proxy-host">Host IP or Domain:</label>
             <input
               id="proxy-host"
               name="host"
@@ -75,9 +73,7 @@
             />
           </div>
           <div class="field-container">
-            <label class="label" for="proxy-authentication"
-              >Proxy Authentication (Optional):</label
-            >
+            <label class="label" for="proxy-authentication">Proxy Authentication (Optional):</label>
             <input
               id="proxy-authentication"
               name="authentication"
@@ -90,9 +86,7 @@
         <fieldset>
           <legend>Bandwidth Limit (Optional)</legend>
           <div class="field-container">
-            <label class="label" for="bandwidth-limit"
-              >Limit (MB/s):</label
-            >
+            <label class="label" for="bandwidth-limit">Limit (MB/s):</label>
             <input
               id="bandwidth-limit"
               name="bandwidth_limit"
