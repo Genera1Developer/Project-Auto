@@ -35,14 +35,14 @@
           <label for="proxy-host">Proxy Server (IP or domain):</label>
           <input type="text" id="proxy-host" name="host" required />
           <label for="proxy-port">Proxy Server Port:</label>
-          <input type="number" id="proxy-port" name="port" min="0" step="1" required />
+          <input type="number" min="0" max="65535" step="1" id="proxy-port" name="port" required />
           <label for="proxy-authentication">Proxy Authentication (optional):</label>
-          <input type="text" id="proxy-authentication" name="authentication" placeholder="username:password" />
+          <input id="proxy-authentication" name="authentication" placeholder="username:password" type="text" />
         </fieldset>
         <fieldset>
           <legend>Bandwidth Limit (optional)</legend>
           <label for="bandwidth-limit">Limit (MB/s):</label>
-          <input type="number" id="bandwidth-limit" name="bandwidth_limit" min="0" />
+          <input type="number" min="0" id="bandwidth-limit" name="bandwidth_limit" />
         </fieldset>
         <div class="button-container">
           <button type="submit">Save Settings</button>
