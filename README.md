@@ -1,4 +1,4 @@
-file: settings.html
+file: index.html
 
 content:
 ```html
@@ -8,7 +8,7 @@ content:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings</title>
+    <title>Web Proxy</title>
     <link rel="stylesheet" href="./css/main.css">
     <script src="./js/main.js"></script>
     <style>
@@ -40,27 +40,18 @@ content:
             margin-left: 220px;
         }
 
-        .settings-container {
-            max-width: 800px;
+        .login-container {
+            max-width: 400px;
             margin: 0 auto;
             padding: 20px;
             border-radius: 10px;
             background-color: #ffffff;
         }
 
-        .settings-section {
-            margin-bottom: 20px;
-        }
-
-        .settings-section-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .settings-section-content {
-            background-color: #f5f5f5;
-            padding: 10px;
-            border-radius: 5px;
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .input-container {
@@ -70,7 +61,7 @@ content:
         }
 
         .input-label {
-            width: 150px;
+            width: 100px;
         }
 
         .input-field {
@@ -94,6 +85,26 @@ content:
         .button:hover {
             background-color: #2980b9;
         }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ff0000;
+            margin-right: 5px;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 
@@ -104,59 +115,27 @@ content:
         <a href="/dashboard.html">Dashboard</a>
     </div>
     <div class="content">
-        <h1>Settings</h1>
-        <p>Configure your proxy settings to match your requirements.</p>
-        <div class="settings-container">
-            <div class="settings-section">
-                <div class="settings-section-title">Protocol</div>
-                <div class="settings-section-content">
-                    <div class="input-container">
-                        <div class="input-label">Protocol:</div>
-                        <select class="input-field">
-                            <option value="http">HTTP</option>
-                            <option value="https">HTTPS</option>
-                        </select>
-                    </div>
+        <h1>Web Proxy</h1>
+        <p>Use this proxy to access websites securely and privately.</p>
+        <div class="login-container">
+            <form class="login-form">
+                <div class="input-container">
+                    <div class="input-label">Username:</div>
+                    <input type="text" class="input-field" id="username">
                 </div>
-            </div>
-            <div class="settings-section">
-                <div class="settings-section-title">Port</div>
-                <div class="settings-section-content">
-                    <div class="input-container">
-                        <div class="input-label">Port:</div>
-                        <input type="number" class="input-field" value="8080">
-                    </div>
+                <div class="input-container">
+                    <div class="input-label">Password:</div>
+                    <input type="password" class="input-field" id="password">
                 </div>
-            </div>
-            <div class="settings-section">
-                <div class="settings-section-title">Authentication</div>
-                <div class="settings-section-content">
-                    <div class="input-container">
-                        <div class="input-label">Username:</div>
-                        <input type="text" class="input-field">
-                    </div>
-                    <div class="input-container">
-                        <div class="input-label">Password:</div>
-                        <input type="password" class="input-field">
-                    </div>
+                <div class="button-container">
+                    <button class="button" id="login-button">Login</button>
                 </div>
-            </div>
-            <div class="settings-section">
-                <div class="settings-section-title">Bandwidth Limits</div>
-                <div class="settings-section-content">
-                    <div class="input-container">
-                        <div class="input-label">Daily Limit (MB):</div>
-                        <input type="number" class="input-field">
-                    </div>
-                    <div class="input-container">
-                        <div class="input-label">Monthly Limit (GB):</div>
-                        <input type="number" class="input-field">
-                    </div>
-                </div>
-            </div>
-            <div class="button-container">
-                <button class="button">Save</button>
-            </div>
+                <div class="error-message" id="error-message"></div>
+            </form>
+        </div>
+        <div class="connection-status">
+            <div class="status-indicator" id="status-indicator"></div>
+            <span id="connection-status">Disconnected</span>
         </div>
     </div>
 </body>
