@@ -28,7 +28,7 @@
         Configure your proxy settings here. Leave any field blank to disable the
         corresponding option.
       </p>
-      <form id="proxy-settings-form" action="/save_settings" method="post">
+      <form id="proxy-settings-form" action="/save_settings" method="POST">
         <fieldset>
           <legend>Proxy Settings</legend>
           <div class="field-container">
@@ -62,6 +62,7 @@
               min="0"
               max="65535"
               step="1"
+              placeholder="e.g. 8080"
               required
               aria-label="Proxy port number"
             />
@@ -72,6 +73,7 @@
               id="proxy-authentication"
               name="authentication"
               type="text"
+              pattern="^([^:]+):(.+)$"
               placeholder="username:password"
               aria-label="Proxy authentication"
             />
