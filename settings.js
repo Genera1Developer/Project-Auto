@@ -1,1 +1,1 @@
-'// Settings here are used to build the Chat Platform
+// Settings here are used to build the Chat Platform
