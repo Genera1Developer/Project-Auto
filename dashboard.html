@@ -1,97 +1,48 @@
-file path: dashboard.js
+file path: dashboard.html
 content: 
-```javascript
-const connectionStatusChart = new Chart(
-    document.getElementById('connection-status-chart'),
-    {
-        type: 'line',
-        data: {
-            labels: ['1', '2', '3', '4', '5', '6'],
-            datasets: [{
-                label: 'Connection Status',
-                data: [0, 10, 5, 2, 20, 30],
-                borderColor: '#3b5998',
-                backgroundColor: '#3b5998',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    }
-);
-
-const bandwidthUsageChart = new Chart(
-    document.getElementById('bandwidth-usage-chart'),
-    {
-        type: 'bar',
-        data: {
-            labels: ['1', '2', '3', '4', '5', '6'],
-            datasets: [{
-                label: 'Bandwidth Usage',
-                data: [100, 200, 300, 400, 500, 600],
-                backgroundColor: '#3b5998'
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    }
-);
-
-const activeConnectionsList = document.getElementById('active-connections-list');
-const errorLogList = document.getElementById('error-log-list');
-const userStatisticsList = document.getElementById('user-statistics-list');
-
-const activeConnections = [];
-const errorLog = [];
-const userStatistics = [];
-
-setInterval(() => {
-    // Update connection status chart
-    connectionStatusChart.data.datasets[0].data.shift();
-    connectionStatusChart.data.datasets[0].data.push(Math.random() * 100);
-    connectionStatusChart.update();
-
-    // Update bandwidth usage chart
-    bandwidthUsageChart.data.datasets[0].data.shift();
-    bandwidthUsageChart.data.datasets[0].data.push(Math.random() * 1000);
-    bandwidthUsageChart.update();
-
-    // Update active connections list
-    activeConnectionsList.innerHTML = '';
-    activeConnections.forEach(connection => {
-        const li = document.createElement('li');
-        li.textContent = connection;
-        activeConnectionsList.appendChild(li);
-    });
-
-    // Update error log list
-    errorLogList.innerHTML = '';
-    errorLog.forEach(error => {
-        const li = document.createElement('li');
-        li.textContent = error;
-        errorLogList.appendChild(li);
-    });
-
-    // Update user statistics list
-    userStatisticsList.innerHTML = '';
-    userStatistics.forEach(statistic => {
-        const li = document.createElement('li');
-        li.textContent = statistic;
-        userStatisticsList.appendChild(li);
-    });
-}, 1000);
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="dashboard.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="settings.html">Settings</a>
+    </div>
+    <div class="content">
+        <h1>Dashboard</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <canvas id="connection-status-chart"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="bandwidth-usage-chart"></canvas>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Active Connections</h3>
+                <ul id="active-connections-list"></ul>
+            </div>
+            <div class="col-md-6">
+                <h3>Error Log</h3>
+                <ul id="error-log-list"></ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h3>User Statistics</h3>
+                <ul id="user-statistics-list"></ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
 ```
