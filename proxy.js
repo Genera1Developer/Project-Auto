@@ -1,1 +1,1 @@
-`const proxy = require('express-http-proxy');
+`const { proxy } = require('@envelop/express');
