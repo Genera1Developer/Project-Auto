@@ -7,28 +7,30 @@
   <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="style.css" />
   <script>
-    const form = document.querySelector('form');
+    (function () {
+      const form = document.querySelector('form');
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-      const username = document.querySelector('#username');
-      const password = document.querySelector('#password');
+        const username = document.querySelector('#username');
+        const password = document.querySelector('#password');
 
-      if (!username.value) {
-        alert('Please enter your username.');
-        username.focus();
-        return false;
-      }
+        if (!username.value) {
+          alert('Please enter your username.');
+          username.focus();
+          return false;
+        }
 
-      if (!password.value) {
-        alert('Please enter your password.');
-        password.focus();
-        return false;
-      }
+        if (!password.value) {
+          alert('Please enter your password.');
+          password.focus();
+          return false;
+        }
 
-      form.submit();
-    });
+        form.submit();
+      });
+    })();
   </script>
 </head>
 
@@ -45,15 +47,11 @@
 
     <h2>Login</h2>
     <form action="login.php" method="post" class="form">
-      <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required autofocus />
-      </div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required autofocus />
 
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-      </div>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required />
 
       <button type="submit">Login</button>
     </form>
