@@ -35,6 +35,7 @@ select {
   width: 100%;
   padding: 5px;
   margin-bottom: 10px;
+  border-radius: 5px;
 }
 
 button {
@@ -64,6 +65,37 @@ button {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+/* Custom styles */
+
+.custom-sidebar {
+  background-color: #b3e5fc;
+}
+
+.custom-content {
+  background-color: #dfe3e6;
+}
+
+.custom-button {
+  background-color: #0084d3;
+}
+
+.custom-loading {
+  color: #0099ff;
+  animation: custom-loading 1s infinite;
+}
+
+@keyframes custom-loading {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 ```
