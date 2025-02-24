@@ -1,1 +1,1 @@
-"export const settings = {  user: \"Jane Doe\",  updated: new Date()/1000.0};"
+"export const settings = {  user: \"Jane Doe\",  lastUpdated: new Date()/1000.0};"
