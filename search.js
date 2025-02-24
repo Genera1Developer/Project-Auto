@@ -1,1 +1,1 @@
-"console.log('added search');"
+console.log('added search');
