@@ -202,7 +202,7 @@ h6 {
 
   .navigation-link {
     padding: 8px;
-    font-size:12px;
+    font-size: 12px;
   }
 
   .main-content {
@@ -215,14 +215,15 @@ h6 {
 
   .btn {
     padding: 6px 8px;
-    font-size:12px;
+    font-size: 12px;
   }
 }
 
 @media screen and (max-width: 576px) {
-  body{
+  body {
     font-size: 0.8rem;
   }
+
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -239,7 +240,7 @@ h6 {
 
   .btn {
     padding: 6px 8px;
-    font-size:12px;
+    font-size: 12px;
   }
 
   .error-message {
@@ -254,7 +255,7 @@ h6 {
 
   .navigation-link {
     padding: 6px;
-    font-size:12px;
+    font-size: 12px;
   }
 
   .form-group {
@@ -263,15 +264,24 @@ h6 {
 
   .btn {
     padding: 6px 8px;
-    font-size:12px;
+    font-size: 12px;
   }
 
   .wrapper {
     padding: 8px;
   }
 }
+
 @media (hover: none) {
   .sidebar-item:hover {
+    background: #394959;
+  }
+
+  .navigation-link:hover {
+    background: inherit;
+  }
+
+  .btn:hover {
     background: #394959;
   }
 }
