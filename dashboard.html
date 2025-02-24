@@ -59,8 +59,12 @@
       <header class="card-header">
         <h2>Active Users List</h2>
         <div class="actions">
-          <button class="btn btn-reload" title="Refresh the list of active users" type="button" data-target-table="users"><span class="material-icons md-24">refresh</span></button>
-          <button class="btn btn-clear" title="Clear the list of active users" type="button" data-target-table="users"><span class="material-icons md-24">clear</span></button>
+          <button class="btn btn-reload" title="Refresh the list of active users" type="button" data-target-table="users">
+            <span class="material-icons md-24">refresh</span>
+          </button>
+          <button class="btn btn-clear" title="Clear the list of active users" type="button" data-target-table="users">
+            <span class="material-icons md-24">clear</span>
+          </button>
         </div>
       </header>
       <div class="card-body">
@@ -72,12 +76,17 @@
 <footer class="footer">
   <div class="footer-nav">
     <ul>
-      <li><a href="#">Privacy Policy</a></li>
-      <li><a href="#">Terms of Service</a></li>
+      <li>
+        <a href="#">Privacy Policy</a>
+      </li>
+      <li>
+        <a href="#">Terms of Service</a>
+      </li>
     </ul>
   </div>
   <div class="footer-info">
-    <span class="current-year"></span> © Proxy Corp.
+    <span class="current-year"></span>
+    © Proxy Corp.
   </div>
 </footer>
 <script>
@@ -105,7 +114,7 @@
       }
     });
   });
-  
+
   const exportButtons = document.querySelectorAll('.btn-export');
   exportButtons.forEach((btn) => {
     btn.addEventListener('click', (e) => {
@@ -115,13 +124,13 @@
       }
     });
   });
-  
+
   const footerYear = document.querySelector('.current-year');
   const updateFooterYear = () => {
     const currentYear = new Date().getFullYear();
     footerYear.textContent = currentYear;
-  }
+  };
   updateFooterYear();
-  
+
   // Custom code can be added below
 </script>
