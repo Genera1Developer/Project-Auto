@@ -1,1 +1,1 @@
-"const logLevel = 'debug'; const port = process.env.PORT || 3000; module.exports = { logLevel, port };"
+"const { levels } = require('pino'); const logLevel = process.env.LOG_LEVEL || levels.debug; const port = process.env.PORT || 3000; module.exports = { logLevel, port };"
