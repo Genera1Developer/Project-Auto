@@ -179,12 +179,11 @@ h6 {
   }
 
   .sidebar {
-    flex-direction: column;
     grid-template-areas:
       "header"
       "nav";
     grid-template-columns: 1fr;
-    grid-template-rows: 48px 1fr;
+    grid-template-rows: auto 1fr;
   }
 
   .sidebar h1 {
@@ -232,5 +231,19 @@ h6 {
 
   .btn {
     padding: 6px 8px;
+  }
+}
+
+@media (max-width: 425px) {
+  .sidebar h1 {
+    font-size: 1rem;
+  }
+
+  .navigation-link {
+    padding: 6px;
+  }
+
+  .sidebar-item {
+    padding: 6px;
   }
 }
