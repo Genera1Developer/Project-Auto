@@ -85,7 +85,7 @@ body {
 .main-content {
   grid-area: main;
   gap: 12px;
-  height:calc(100vh - 48px);
+  height: calc(100vh - 48px);
 }
 
 .login-form {
@@ -184,8 +184,6 @@ h6 {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     max-width: 100%;
-    display: flex;
-    flex-direction: column;
   }
 
   .wrapper > div {
@@ -204,6 +202,7 @@ h6 {
 
   .navigation-link {
     padding: 8px;
+    font-size:12px;
   }
 
   .main-content {
@@ -216,10 +215,14 @@ h6 {
 
   .btn {
     padding: 6px 8px;
+    font-size:12px;
   }
 }
 
 @media screen and (max-width: 576px) {
+  body{
+    font-size: 0.8rem;
+  }
   .wrapper {
     display: flex;
     flex-direction: column;
@@ -236,6 +239,7 @@ h6 {
 
   .btn {
     padding: 6px 8px;
+    font-size:12px;
   }
 
   .error-message {
@@ -250,6 +254,7 @@ h6 {
 
   .navigation-link {
     padding: 6px;
+    font-size:12px;
   }
 
   .form-group {
@@ -258,9 +263,15 @@ h6 {
 
   .btn {
     padding: 6px 8px;
+    font-size:12px;
   }
 
   .wrapper {
     padding: 8px;
+  }
+}
+@media (hover: none) {
+  .sidebar-item:hover {
+    background: #394959;
   }
 }
