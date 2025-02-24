@@ -132,8 +132,8 @@
     </header>
     <main class="main-content">
       <h1 class="page-title">Proxy Settings</h1>
-      <form id="proxy-settings-form" class="form-container" action="/save_settings" method="POST" autocomplete="off" novalidate>
-        <p>Configure your proxy settings here. Leaving any field blank will disable the corresponding option.</p>
+      <p>Configure your proxy settings here. Leaving any field blank will disable the corresponding option.</p>
+      <form id="proxy-settings-form" class="form-container" action="#" method="POST" autocomplete="off" novalidate>
         <fieldset>
           <legend>Proxy Settings</legend>
           <div class="form-group">
@@ -170,8 +170,8 @@
           </div>
         </fieldset>
         <div class="button-container">
-          <input class="btn btn-primary" type="submit" value="Save">
-          <input class="btn btn-secondary" type="reset" value="Reset">
+          <button class="btn btn-primary" type="submit">Save</button>
+          <button class="btn btn-secondary" type="reset">Reset</button>
           <a href="/dashboard.html" class="btn btn-link">Cancel</a>
         </div>
       </form>
