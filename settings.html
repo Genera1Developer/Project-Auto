@@ -1,13 +1,10 @@
-file path: index.html
-content: 
-```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy</title>
+  <title>Web Proxy - Settings</title>
   <link rel="stylesheet" href="style.css" />
   <script>
     // Login form submission
@@ -43,7 +40,7 @@ content:
   </div>
 
   <div class="main-content">
-    <h1>Web Proxy</h1>
+    <h1>Web Proxy - Settings</h1>
     <p>
       This is a simple web proxy that allows you to browse the internet anonymously.
     </p>
@@ -62,140 +59,7 @@ content:
 
       <input type="submit" value="Login">
     </form>
-
-    <div id="status-indicator"></div>
-    <div id="error-display"></div>
-    <div id="connection-status"></div>
   </div>
 </body>
 
 </html>
-```
-file path: login.php
-content: 
-```php
-<?php
-// Get POST data
-
-$username = $_POST['username'];
-$password = $_POST['password'];
-
-// Check if username and password are correct
-
-if ($username === 'admin' && $password === 'password') {
-  // Login successful, start session
-
-  session_start();
-  $_SESSION['logged_in'] = true;
-
-  // Redirect to index page
-
-  header('Location: index.html');
-  exit;
-} else {
-  // Login failed, display error
-
-  header('Location: index.html#error-display=Login%20failed');
-  exit;
-}
-```
-file path: dashboard.html
-content: 
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Web Proxy - Dashboard</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-
-<body>
-  <div class="sidebar">
-    <a href="index.html">Home</a>
-    <a href="dashboard.html" class="active">Dashboard</a>
-    <a href="settings.html">Settings</a>
-  </div>
-
-  <div class="main-content">
-    <h1>Web Proxy - Dashboard</h1>
-    
-    <div class="stats">
-      <div class="stat-item">
-        <h3>Active Connections</h3>
-        <div id="active-connections"></div>
-      </div>
-
-      <div class="stat-item">
-        <h3>Bandwidth Usage</h3>
-        <div id="bandwidth-usage"></div>
-      </div>
-
-      <div class="stat-item">
-        <h3>Error Log</h3>
-        <div id="error-log"></div>
-      </div>
-    </div>
-
-    <div class="user-stats">
-      <h3>User Statistics</h3>
-      <table id="user-stats-table">
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Connection Count</th>
-            <th>Bandwidth Usage</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>admin</td>
-            <td>123</td>
-            <td>10 GB</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</body>
-
-</html>
-```
-file path: README.md
-content: 
-```markdown
-## Web Proxy Project
-
-This project is a simple web proxy that allows users to browse the internet anonymously. It features a login page, a settings page, and a dashboard that shows real-time connection status, bandwidth usage, active connections, error log, and user statistics.
-
-### Features
-
-- Login page with username and password authentication
-- Settings page for configuring proxy settings
-- Dashboard with real-time connection status, bandwidth usage, active connections, error log, and user statistics
-- Error handling for all operations
-- Cross-browser compatibility
-- Mobile responsiveness
-- Clean, consistent indentation
-- Proper commenting
-
-### Requirements
-
-- No inline scripts or styles
-- Semantic HTML elements only
-- Strict content security policy
-- No external dependencies
-- No framework usage
-
-### Files
-
-- index.html: Main landing page
-- settings.html: Proxy configuration page
-- dashboard.html: User statistics and monitoring
-- README.md: Description of the site
-- style.css: CSS styling for all pages
-- login.php: Login script
-- save-settings.php: Save settings script
-```
