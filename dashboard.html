@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/dashboard.css">
   <title>Proxy Dashboard</title>
+  <script>
+    // Add current year to footer
+    const currentYear = new Date().getFullYear();
+    document.querySelector('.current-year').textContent = currentYear;
+  </script>
 </head>
 <body>
   <div class="wrapper">
@@ -114,10 +119,5 @@
       </div>
     </main>
   </div>
-  <script>
-    // Add current year to footer
-    const currentYear = new Date().getFullYear();
-    document.querySelector('.current-year').textContent = currentYear;
-  </script>
 </body>
 </html>
