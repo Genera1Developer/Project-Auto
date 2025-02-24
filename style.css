@@ -1,5 +1,6 @@
 body {
-  font: "Helvetica", "Arial", sans-serif 1rem;
+  font: "Helvetica", "Arial", sans-serif;
+  font-size: 1rem;
   background: #f5f5f5;
   margin: 0;
   display: grid;
@@ -173,7 +174,7 @@ h6 {
     grid-template-areas: "header" "main";
     grid-template-columns: 1fr;
     grid-template-rows: 48px 1fr;
-    font: "Helvetica", "Arial", sans-serif 0.875rem;
+    font-size: 0.875rem;
   }
 
   .wrapper {
