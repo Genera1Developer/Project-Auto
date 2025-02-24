@@ -8,7 +8,7 @@ body {
     "sidebar main";
   grid-template-rows: 48px 1fr;
   grid-template-columns: 200px 1fr;
-  gap: 24px;
+  gap: 16px;
 }
 
 .wrapper {
@@ -18,7 +18,7 @@ body {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .sidebar {
