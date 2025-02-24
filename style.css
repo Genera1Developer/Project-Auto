@@ -1,133 +1,40 @@
-file path: style.css
-content: ```css
-/* Global styles */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
-}
+file path: index.html
+content: ```html
+<!DOCTYPE html>
+<html lang="en">
 
-body {
-  background-color: #b0e0e6;
-  height: 100vh;
-  width: 100vw;
-}
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Proxy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 
-.wrapper {
-  display: flex;
-  height: 100vh;
-  width: 100vw;
-}
+<body>
+  <div class="wrapper">
+    <div class="sidebar">
+      <h1>Web Proxy</h1>
+      <div class="navigation-links">
+        <a class="navigation-link" href="/index.html">Home</a>
+        <a class="navigation-link" href="/dashboard.html">Dashboard</a>
+        <a class="navigation-link" href="/settings.html">Settings</a>
+      </div>
+    </div>
+    <div class="main-content">
+      <div class="login-form">
+        <form>
+          <input class="form-input" type="text" placeholder="Username" />
+          <input class="form-input" type="password" placeholder="Password" />
+          <button class="login-button" type="submit">Log in</button>
+        </form>
+        <div class="error-message" id="error-message"></div>
+        <div class="connection-status" id="connection-status"></div>
+        <div class="proxy-status" id="proxy-status"></div>
+      </div>
+    </div>
+  </div>
 
-.sidebar {
-  background-color: #0091ea;
-  height: 100vh;
-  width: 200px;
-  padding: 20px;
-}
+  <script src="script.js"></script>
+</body>
 
-.main-content {
-  flex: 1;
-  padding: 20px;
-}
-
-/* Main landing page styles */
-.login-form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
-.form-input {
-  width: 300px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.login-button {
-  width: 300px;
-  padding: 10px;
-  background-color: #0091ea;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.navigation-links {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.navigation-link {
-  color: #0091ea;
-  text-decoration: none;
-  font-size: 1.2rem;
-}
-
-.proxy-status {
-  color: #0091ea;
-  font-size: 1.5rem;
-}
-
-.error-message {
-  color: red;
-  background-color: #f8d7da;
-  padding: 10px;
-  margin: 20px 0;
-  display: none;
-}
-
-.connection-status {
-  color: #0091ea;
-  font-size: 1.2rem;
-}
-
-/* Proxy configuration page styles */
-.proxy-form {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
-.form-select {
-  width: 300px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.form-checkbox {
-  margin-right: 10px;
-}
-
-/* Dashboard page styles */
-.dashboard-content {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.widget {
-  padding: 20px;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.widget-title {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
-
-.widget-data {
-  font-size: 1.5rem;
-}
+</html>
 ```
