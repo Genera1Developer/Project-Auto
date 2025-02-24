@@ -5,10 +5,10 @@ body {
   background: #efefef;
   margin: 0;
   display: grid;
-  grid-gap: 16px;
   grid-template-areas: "header header" "main sidebar";
   grid-template-rows: 48px 1fr;
   grid-template-columns: 200px 1fr;
+  gap: 16px;
 }
 
 .wrapper {
@@ -18,16 +18,18 @@ body {
   padding: 16px;
   display: flex;
   flex-direction: column;
-  grid-gap: 16px;
+  gap: 16px;
+  overflow: auto;
 }
 
 .sidebar {
   grid-area: sidebar;
+  max-height: calc(100vh - 48px);
   background: #2c3e50;
   color: white;
   display: flex;
   flex-direction: column;
-  grid-gap: 12px;
+  gap: 12px;
   grid-template-areas: "header" "nav";
   grid-template-rows: auto 1fr;
   grid-template-columns: 1fr;
@@ -50,7 +52,7 @@ body {
   background: #394959;
   cursor: pointer;
   border-radius: 4px;
-  grid-gap: 12px;
+  gap: 12px;
   width: 100%;
   z-index: 2;
 }
@@ -62,7 +64,7 @@ body {
 .navigation-links {
   grid-area: nav;
   display: flex;
-  grid-gap: 12px;
+  gap: 12px;
   margin: 0;
   list-style-type: none;
   padding: 0;
@@ -100,12 +102,12 @@ body {
 .login-form-container {
   display: flex;
   flex-direction: column;
-  grid-gap: 12px;
+  gap: 12px;
 }
 
 .form-group {
   display: flex;
-  grid-gap: 4px;
+  gap: 4px;
 }
 
 .form-group label {
@@ -189,7 +191,7 @@ h6 {
   }
 
   .wrapper > div {
-    grid-gap: 8px;
+    gap: 8px;
   }
 
   .sidebar {
@@ -229,7 +231,7 @@ h6 {
   .wrapper {
     display: flex;
     flex-direction: column;
-    grid-gap: 8px;
+    gap: 8px;
   }
 
   .main-content {
