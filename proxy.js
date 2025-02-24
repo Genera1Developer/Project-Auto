@@ -1,12 +1,5 @@
-const viewProxy = (fn) => new Proxy(fn, {
-  get: (target, prop) => {
-    if (typeof target[prop] === 'function') {
-      return viewProxy(target[prop]);
-    }
-    return target[prop];
-  },
-  apply: (target, _, args) => {
-    console.log(`Function ${target.name} was called with args: ${args.toString()}`);
-    return target.apply(this, args);
-  },
+const viewProxy = (fn) => 
+  new Proxy(fn, {
+    get: (target, prop) => typeof target[prop] === 'function' ? viewProxy(target[prop]) : target[prop],
+    apply: (target, _, args) => { console.log(`Function ${target.name} was called with args: ${args}`); return target.apply(this, args); },
 });
