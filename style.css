@@ -102,3 +102,21 @@ body {
 .visually-hidden {
   display: none !important;
 }
+
+.bold {
+  font-weight: bold;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
