@@ -67,7 +67,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  border-bottom: 1px solid #394959;
+  background-color: #394959;
 }
 
 .main-content {
@@ -80,6 +80,8 @@ body {
 .login-form {
   max-width: 300px;
   margin: 0 auto;
+  background-color: #f5f5f5;
+  padding: 16px;
 }
 
 .login-form-container {
@@ -203,7 +205,7 @@ h6 {
   }
 
   .sidebar-item {
-    border-bottom: none;
+    background-color: #394959;
     padding: 8px;
   }
 }
