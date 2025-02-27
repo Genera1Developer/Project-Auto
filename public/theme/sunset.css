@@ -1,1 +1,75 @@
+:root {
+    --bg-color: #34495e;
+    --text-color: #ecf0f1;
+    --accent-color: #e74c3c;
+    --input-bg: #2c3e50;
+    --input-text: #ecf0f1;
+}
 
+body {
+    font-family: sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    width: 80%;
+    max-width: 400px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: darken(var(--accent-color), 10%);
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Proxy specific styles */
+#proxy-container {
+    width: 90%;
+    max-width: 800px;
+    padding: 20px;
+    background-color: rgba(52, 73, 94, 0.8); /* Slightly transparent background */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+#proxy-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+#proxy-description {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+}
