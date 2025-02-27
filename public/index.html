@@ -131,6 +131,7 @@
       <div class="proxy-controls">
         <button class="control-btn" id="fullscreenBtn">⤢</button>
         <button class="control-btn hidden" id="minimizeBtn">⤡</button>
+        <button class="control-btn" id="newTabBtn">Open in New Tab</button>
       </div>
       <iframe id="proxyFrame"></iframe>
       <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
@@ -230,6 +231,7 @@
     const qualityToggle = document.getElementById('qualityToggle');
     const textSizeSlider = document.getElementById('textSizeSlider');
     const particleBlurToggle = document.getElementById('particleBlurToggle');
+    const newTabBtn = document.getElementById('newTabBtn');
 
     let isAdBlockEnabled = false;
     let currentAdBlockMethod = 'curse';
@@ -348,6 +350,15 @@
       proxyContainer.classList.remove('fullscreen');
       minimizeBtn.classList.add('hidden');
       fullscreenBtn.classList.remove('hidden');
+    });
+
+    newTabBtn.addEventListener('click', () => {
+        const currentURL = proxyFrame.src;
+        if (currentURL) {
+            window.open(currentURL, '_blank');
+        } else {
+            alert('No URL loaded in the proxy frame.');
+        }
     });
 
     adBlockToggle.addEventListener('click', () => {
