@@ -6,13 +6,14 @@ const httpsAgent = require('./httpsAgent');
 
 module.exports = async (req, res) => {
     cors(req, res, () => {
-        const { url: targetUrl } = req.query;
+        let { url: targetUrl } = req.query;
 
         if (!targetUrl) {
             return res.status(400).send('URL parameter is required');
         }
 
         try {
+            targetUrl = decodeURIComponent(targetUrl);
             const parsedTargetUrl = new URL(targetUrl);
             const protocol = parsedTargetUrl.protocol === 'https:' ? https : http;
 
@@ -21,16 +22,22 @@ module.exports = async (req, res) => {
                 headers: {
                     'User-Agent': req.headers['user-agent'] || 'Web-Proxy',
                     'Referer': req.headers['referer'] || parsedTargetUrl.origin,
+                    'X-Forwarded-For': req.ip || req.connection.remoteAddress || req.socket.remoteAddress,
                 },
+                followRedirects: true,
             };
 
-            protocol.get(targetUrl, options, (proxyRes) => {
+            const proxyReq = protocol.request(targetUrl, options, (proxyRes) => {
                 res.writeHead(proxyRes.statusCode, proxyRes.headers);
                 proxyRes.pipe(res);
-            }).on('error', (e) => {
-                console.error('Proxy error:', e);
-                res.status(500).send('Proxy error');
             });
+
+            proxyReq.on('error', (e) => {
+                console.error('Proxy request error:', e);
+                res.status(500).send('Proxy request error');
+            });
+
+            req.pipe(proxyReq);
         } catch (error) {
             console.error('URL parsing error:', error);
             res.status(400).send('Invalid URL');
