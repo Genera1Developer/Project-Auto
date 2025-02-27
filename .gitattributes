@@ -20,10 +20,11 @@
 *.mp3 binary
 *.webm binary
 *.ogg binary
+*.flac binary
 
 # Proxy specific files
-/api/* text=auto eol=lf
-/uv/* text=auto eol=lf
+api/* text=auto eol=lf
+uv/* text=auto eol=lf
 public/* text=auto eol=lf
 
 # Configuration files
@@ -36,6 +37,7 @@ public/* text=auto eol=lf
 *.js text=auto eol=lf
 *.sh text=auto eol=lf
 *.py text=auto eol=lf
+*.go text=auto eol=lf
 
 # Documentation
 *.md text=auto eol=lf
@@ -46,3 +48,20 @@ public/* text=auto eol=lf
 # Add certificate files
 *.crt text=auto eol=lf
 *.pem text=auto eol=lf
+
+# Logs
+*.log text=auto eol=lf
+
+# Archives
+*.zip binary
+*.tar.gz binary
+*.tar.bz2 binary
+*.7z binary
+
+# Databases
+*.db binary
+*.sqlite binary
+*.sqlite3 binary
+
+# Add webmanifest
+*.webmanifest text=auto eol=lf
