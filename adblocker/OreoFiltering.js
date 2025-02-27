@@ -5,6 +5,7 @@
   let filters = [];
   let filterRegex = null;
   let filterUpdateInterval = 3600000;
+  let blockedUrls = new Set();
 
   async function loadFilters(url) {
     try {
@@ -40,7 +41,14 @@
   }
 
   function isBlocked(url) {
-    return filterRegex && filterRegex.test(url);
+    if (blockedUrls.has(url)) {
+      return true;
+    }
+    const blocked = filterRegex && filterRegex.test(url);
+    if (blocked) {
+      blockedUrls.add(url);
+    }
+    return blocked;
   }
 
   function removeElement(element) {
