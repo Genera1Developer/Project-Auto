@@ -2,5 +2,5 @@
   "watch": ["*.js", "public", "uv", "api"],
   "ignore": ["node_modules", "cache/*", "storage/*", "uv/node_modules", "public/js/sw.js"],
   "ext": "js,html,css,txt,json",
-  "delay": "2500"
+  "delay": "1000"
 }
