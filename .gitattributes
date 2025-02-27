@@ -16,11 +16,15 @@
 *.eot binary
 *.svg binary
 *.wasm binary
+*.mp4 binary
+*.mp3 binary
+*.webm binary
+*.ogg binary
 
 # Proxy specific files
 /api/* text=auto eol=lf
 /uv/* text=auto eol=lf
-/public/* text=auto eol=lf
+public/* text=auto eol=lf
 
 # Configuration files
 *.json text=auto eol=lf
@@ -38,3 +42,7 @@
 
 # Add .txt files
 *.txt text=auto eol=lf
+
+# Add certificate files
+*.crt text=auto eol=lf
+*.pem text=auto eol=lf
