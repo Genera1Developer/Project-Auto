@@ -28,5 +28,11 @@
   },
   "env": {
     "NODE_OPTIONS": "--enable-source-maps"
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/warmup",
+      "schedule": "0 * * * *"
+    }
+  ]
 }
