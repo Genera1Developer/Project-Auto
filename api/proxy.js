@@ -1,36 +1,39 @@
 const { URL } = require('url');
 const https = require('https');
 const http = require('http');
+const cors = require('./cors');
+const httpsAgent = require('./httpsAgent');
 
-module.exports = (req, res) => {
-    const targetUrl = req.query.url;
+module.exports = async (req, res) => {
+    cors(req, res, () => {
+        const { url: targetUrl } = req.query;
 
-    if (!targetUrl) {
-        return res.status(400).send('URL parameter is required');
-    }
+        if (!targetUrl) {
+            return res.status(400).send('URL parameter is required');
+        }
 
-    let parsedUrl;
-    try {
-        parsedUrl = new URL(targetUrl);
-    } catch (error) {
-        return res.status(400).send('Invalid URL');
-    }
+        try {
+            const parsedTargetUrl = new URL(targetUrl);
+            const protocol = parsedTargetUrl.protocol === 'https:' ? https : http;
 
-    const protocol = parsedUrl.protocol === 'https:' ? https : http;
+            const options = {
+                agent: parsedTargetUrl.protocol === 'https:' ? httpsAgent : undefined,
+                headers: {
+                    'User-Agent': req.headers['user-agent'] || 'Web-Proxy',
+                    'Referer': req.headers['referer'] || parsedTargetUrl.origin,
+                },
+            };
 
-    const proxyReq = protocol.request(targetUrl, {
-        method: req.method,
-        headers: req.headers,
-        rejectUnauthorized: false // Consider making this configurable or removing it for production
-    }, (proxyRes) => {
-        res.writeHead(proxyRes.statusCode, proxyRes.headers);
-        proxyRes.pipe(res);
+            protocol.get(targetUrl, options, (proxyRes) => {
+                res.writeHead(proxyRes.statusCode, proxyRes.headers);
+                proxyRes.pipe(res);
+            }).on('error', (e) => {
+                console.error('Proxy error:', e);
+                res.status(500).send('Proxy error');
+            });
+        } catch (error) {
+            console.error('URL parsing error:', error);
+            res.status(400).send('Invalid URL');
+        }
     });
-
-    proxyReq.on('error', (error) => {
-        console.error('Proxy request error:', error);
-        res.status(500).send(`Proxy error: ${error.message}`);
-    });
-
-    req.pipe(proxyReq);
 };
