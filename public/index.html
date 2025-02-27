@@ -5,52 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Proxy</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="themes/default.css" id="theme-link">
-    <style>
-        #themeSelector {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .theme-dropdown {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            display: none;
-            z-index: 1000;
-        }
-
-        .theme-dropdown.show {
-            display: block;
-        }
-
-        .theme-item {
-            padding: 10px 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .theme-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        .theme-preview {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="visuals/dropdown.css">
+    <link id="theme-link" rel="stylesheet" href="themes/default.css">
+    <link rel="icon" href="visuals/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="visuals/loading.css">
 </head>
 <body>
     <div class="container">
@@ -58,127 +16,34 @@
         <div class="input-area">
             <input type="text" id="urlInput" placeholder="Enter URL">
             <button id="proxyButton">Go</button>
-            <button id="headersButton">Get Headers</button>
         </div>
-        <div id="loadingIndicator" style="display: none;">Loading...</div>
         <div class="content-area">
-            <iframe id="proxyFrame"></iframe>
+            <div id="loadingSpinner" class="lds-dual-ring"></div>
+            <iframe id="proxyFrame" src="" style="display:none;"></iframe>
         </div>
-        <div id="headersDisplay" style="display: none;">
-            <h2>Headers</h2>
-            <pre id="headersContent"></pre>
-        </div>
-        <button id="themeSelector">Theme</button>
-        <div class="theme-dropdown">
-            <div class="theme-item" data-theme="default">
-                <span class="theme-preview" style="background-color: #f4f4f4;"></span> Default
-            </div>
-            <div class="theme-item" data-theme="dark">
-                <span class="theme-preview" style="background-color: #34495e;"></span> Dark
-            </div>
-            <div class="theme-item" data-theme="light">
-                <span class="theme-preview" style="background-color: #ecf0f1;"></span> Light
-            </div>
+        <div class="info-area">
+            <button id="headersButton">Show Headers</button>
+            <div id="headersDisplay" style="display:none;"></div>
         </div>
     </div>
+
+    <button id="themeSelector">
+        <img src="visuals/theme-icon.svg" alt="Theme" width="24">
+    </button>
+
+    <div class="theme-dropdown">
+        <div class="theme-item" data-theme="default">
+            <span class="theme-preview" style="background-color: #2980b9;"></span> Default
+        </div>
+        <div class="theme-item" data-theme="dark">
+            <span class="theme-preview" style="background-color: #34495e;"></span> Dark
+        </div>
+        <div class="theme-item" data-theme="light">
+            <span class="theme-preview" style="background-color: #ecf0f1;"></span> Light
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script src="visuals/dropdown.js"></script>
 </body>
 </html>
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('urlInput');
-    const proxyButton = document.getElementById('proxyButton');
-    const headersButton = document.getElementById('headersButton');
-    const proxyFrame = document.getElementById('proxyFrame');
-    const headersDisplay = document.getElementById('headersDisplay');
-    const headersContent = document.getElementById('headersContent');
-    const loadingIndicator = document.getElementById('loadingIndicator');
-    const themeSelector = document.getElementById('themeSelector');
-    const themeDropdown = document.querySelector('.theme-dropdown');
-    const themeItems = document.querySelectorAll('.theme-item');
-    const themeLink = document.getElementById('theme-link');
-
-    function showLoading() {
-        loadingIndicator.style.display = 'block';
-    }
-
-    function hideLoading() {
-        loadingIndicator.style.display = 'none';
-    }
-
-    function loadContent(url) {
-        showLoading();
-        proxyFrame.src = '/api/proxy?url=' + encodeURIComponent(url);
-        headersDisplay.style.display = 'none';
-    }
-
-    function fetchHeaders(url) {
-        showLoading();
-        fetch('/api/headers?url=' + encodeURIComponent(url))
-            .then(response => response.json())
-            .then(data => {
-                headersContent.textContent = JSON.stringify(data, null, 2);
-                headersDisplay.style.display = 'block';
-                hideLoading();
-            })
-            .catch(error => {
-                console.error('Error fetching headers:', error);
-                headersContent.textContent = 'Error fetching headers.';
-                headersDisplay.style.display = 'block';
-                hideLoading();
-            });
-    }
-
-    proxyButton.addEventListener('click', function() {
-        const url = urlInput.value;
-        if (url) {
-            loadContent(url);
-        } else {
-            alert('Please enter a URL.');
-        }
-    });
-
-    headersButton.addEventListener('click', function() {
-        const url = urlInput.value;
-        if (url) {
-            fetchHeaders(url);
-        } else {
-            alert('Please enter a URL.');
-        }
-    });
-
-    proxyFrame.onload = function() {
-        hideLoading();
-    };
-
-    proxyFrame.onerror = function() {
-        hideLoading();
-        alert('Failed to load the URL in the iframe.');
-    };
-
-    themeSelector.addEventListener('click', function() {
-        themeDropdown.classList.toggle('show');
-    });
-
-    themeItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const theme = this.dataset.theme;
-            themeLink.href = `themes/${theme}.css`;
-            themeDropdown.classList.remove('show');
-        });
-    });
-
-    window.addEventListener('click', function(event) {
-        if (!event.target.matches('#themeSelector')) {
-            if (themeDropdown.classList.contains('show')) {
-                themeDropdown.classList.remove('show');
-            }
-        }
-    });
-
-    urlInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            loadContent(urlInput.value);
-        }
-    });
-});
