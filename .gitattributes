@@ -19,4 +19,4 @@
 # Proxy specific files
 /api/* text=auto eol=lf
 /uv/* text=auto eol=lf
-/public/uv/* text=auto eol=lf
+/public/* text=auto eol=lf
