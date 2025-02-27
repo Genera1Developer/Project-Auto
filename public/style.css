@@ -1,8 +1,10 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212;
+    color: white;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    overflow-x: hidden;
 }
 
 .container {
@@ -11,126 +13,107 @@ body {
     overflow: hidden;
 }
 
-header {
-    background: #5e5e5e;
-    color: white;
-    padding-top: 30px;
-    min-height: 70px;
-    border-bottom: #bbb 3px solid;
-}
-
-header a {
-    color: #fff;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 16px;
-}
-
-header ul {
-    margin: 0;
-    padding: 0;
-}
-
-header li {
-    float: left;
-    display: inline;
-    padding: 0 20px 0 20px;
-}
-
-header #branding {
-    float: left;
-}
-
-header #branding h1 {
-    margin: 0;
-}
-
-header nav {
-    float: right;
-    margin-top: 10px;
-}
-
-header .highlight, header .current a {
-    color: #e8491d;
-    font-weight: bold;
-}
-
-header a:hover {
-    color: #bbb;
-    font-weight: bold;
-}
-
-#newsletter {
-    padding: 15px;
-    color: #fff;
-    background: #35424a;
-}
-
-#newsletter h1 {
-    float: left;
-}
-
-#newsletter form {
-    float: right;
-    margin-top: 15px;
-}
-
-#newsletter input[type="email"] {
-    padding: 4px;
-    height: 25px;
-    width: 250px;
-}
-
-.button_1 {
-    height: 38px;
-    background: #e8491d;
-    border: 0;
-    padding-left: 20px;
-    padding-right: 20px;
-    color: #fff;
-}
-
-#boxes {
-    margin-top: 20px;
-}
-
-#boxes .box {
-    float: left;
+.search-container {
     text-align: center;
-    width: 30%;
-    padding: 10px;
-}
-
-#boxes .box img {
-    width: 90px;
-}
-
-footer {
     padding: 20px;
-    margin-top: 20px;
-    color: #fff;
-    background-color: #e8491d;
-    text-align: center;
 }
 
-/* Media Queries */
-@media(max-width: 768px) {
-    header #branding,
-    header nav,
-    header nav li,
-    #newsletter h1,
-    #newsletter form,
-    #boxes .box {
-        float: none;
-        text-align: center;
-        width: 100%;
-    }
-
-    header {
-        padding-bottom: 20px;
-    }
-
-    #newsletter form {
-        margin-top: 0px;
-    }
+.search-input {
+    padding: 10px;
+    width: 70%;
+    border: none;
+    border-radius: 5px;
+    background-color: #333;
+    color: white;
 }
+
+.search-button {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #4cae4c;
+}
+
+edit filepath: api/route.js
+content: export async function GET(request) {
+  return new Response('Hello, Next.js!')
+}
+
+edit filepath: uv/uv.bundle.js
+content: // Placeholder file for uv.bundle.js
+// Replace with actual Ultraviolet bundle content
+console.log("Ultraviolet bundle loaded.");
+
+edit filepath: uv/uv.config.js
+content: // Placeholder file for uv.config.js
+// Replace with actual Ultraviolet configuration
+self.__uv$config = {
+    prefix: '/uv/',
+    bare: '/bare/',
+    encodeUrl: Ultraviolet.codec.xor.encode,
+    decodeUrl: Ultraviolet.codec.xor.decode,
+    handler: '/uv/uv.handler.js',
+    bundle: '/uv/uv.bundle.js',
+    config: '/uv/uv.config.js',
+    sw: '/uv/uv.sw.js',
+};
+
+edit filepath: uv/uv.handler.js
+content: // Placeholder file for uv.handler.js
+// Replace with actual Ultraviolet handler content
+console.log("Ultraviolet handler loaded.");
+
+edit filepath: uv/uv.sw.js
+content: // Placeholder file for uv.sw.js
+// Replace with actual Ultraviolet service worker content
+console.log("Ultraviolet service worker loaded.");
+
+edit filepath: bare/bare.bundle.js
+content: // Placeholder file for bare.bundle.js
+console.log("Bare bundle loaded.");
+
+edit filepath: index.js
+content: console.log("Main application loaded.");
+
+edit filepath: public/404.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>404 Not Found</title>
+</head>
+<body>
+    <h1>404 Not Found</h1>
+    <p>The requested resource could not be found.</p>
+</body>
+</html>
+
+edit filepath: public/banned.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Banned</title>
+</head>
+<body>
+    <h1>Banned</h1>
+    <p>You have been banned from using this service.</p>
+</body>
+</html>
+
+edit filepath: Games/bbr.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Basketball Random</title>
+</head>
+<body>
+    <h1>Basketball Random</h1>
+    <p>Play Basketball Random here!</p>
+    <iframe src="https://html5.gamedistribution.com/rvvASMiM/d7ef894572654250a8f0ca58e71a4f79-mobile/index.html" width="800" height="600"></iframe>
+</body>
+</html>
