@@ -1,3 +1,166 @@
-(async()=>{let t=await fetch("/adblocker/filters/easylist.txt").then(t=>t.text()),e=t.split("\n").filter(t=>t.trim()&&"!"!==t.trim()[0]),r=e.map(t=>t.replace(/([.?+^$[\]\\(){}|-])/g,"\\$1").replace(/\*/g,".*?").replace(/^@@\|\|/,".*://").replace(/^\|\|/,"^https?://").replace(/^@@/,"^https?://(?!").replace(/^\|/,"^").replace(/\|$/,"$")),n=new RegExp(r.join("|"),"i"),o=new Set(["img","script","iframe","object","embed","video","audio","source","link","style"]);function a(t){return n.test(t)}function c(t){let e=new URL(t.src||"",location.href).href;a(e)&&(t.remove(),t.src="",t.srcset="",t.href="data:,")}function l(t){let e=new URL(t.detail.url||"",location.href).href;a(e)&&t.preventDefault()}function i(){for(let t of document.querySelectorAll(o.size?Array.from(o).join(","):"*"))c(t)}function s(t){if("object"==typeof t&&"src"in t){let e=new URL(t.src||"",location.href).href;a(e)&&(t.src="",t.srcset="",t.href="data:,")}}function u(t){if("string"==typeof t){let e=new URL(t,location.href).href;a(e)&&(t="data:,")}}function f(t){return a(t.url)?Promise.reject({type:"filtering",url:t.url}):fetch(t.url,t)}function p(){MutationObserver&&(new MutationObserver(t=>{for(let e of t)for(let t of e.addedNodes)1===t.nodeType&&s(t)})).observe(document,{childList:!0,subtree:!0}),window.XMLHttpRequest&&(XMLHttpRequest.prototype.open=new Proxy(XMLHttpRequest.prototype.open,{apply:(t,e,r)=>{if(a(r[1]))return;return t.apply(e,r)}})),window.fetch&&(window.fetch=new Proxy(fetch,{apply:(t,e,r)=>f(r[0])})),EventTarget.prototype.addEventListener&&(EventTarget.prototype.addEventListener=new Proxy(EventTarget.prototype.addEventListener,{apply:(t,e,r)=>{if("beforescriptexecute"===r[0]||"beforeload"===r[0]){if(a(r[1]))return}return t.apply(e,r)}})),document.addEventListener("DOMContentLoaded",i),document.addEventListener("beforeload",l,!0),document.addEventListener("beforescriptexecute",l,!0),window.open=new Proxy(window.open,{apply:(t,e,r)=>a(r[0])?null:t.apply(e,r)})}p()})();
-// haha get obsfucated monkey <3
-// if you see this, im gonna ping you blanky, <3
+(async () => {
+  const filterListUrl = "/adblocker/filters/easylist.txt";
+  const elementTypes = new Set(["img", "script", "iframe", "object", "embed", "video", "audio", "source", "link", "style"]);
+  const dataUrl = "data:,";
+
+  async function loadFilters(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to load filter list from ${url}: ${response.status}`);
+      }
+      const text = await response.text();
+      return text.split("\n")
+        .filter(line => line.trim() && line.trim()[0] !== "!")
+        .map(line => line
+          .replace(/([.?+^$[\]\\(){}|-])/g, "\\$1")
+          .replace(/\*/g, ".*?")
+          .replace(/^@@\|\|/, ".*://")
+          .replace(/^\|\|/, "^https?://")
+          .replace(/^@@/, "^https?://(?!")
+          .replace(/^\|/, "^")
+          .replace(/\|$/, "$"));
+    } catch (error) {
+      console.error("Error loading or processing filter list:", error);
+      return [];
+    }
+  }
+
+  const filters = await loadFilters(filterListUrl);
+  const filterRegex = new RegExp(filters.join("|"), "i");
+
+  function isBlocked(url) {
+    return filterRegex.test(url);
+  }
+
+  function removeElement(element) {
+    element.remove();
+  }
+
+  function replaceUrl(element) {
+    if (element.src) {
+      element.src = dataUrl;
+    }
+    if (element.srcset) {
+      element.srcset = dataUrl;
+    }
+    if (element.href) {
+      element.href = dataUrl;
+    }
+  }
+
+  function handleElement(element) {
+    const url = new URL(element.src || element.srcset || element.href || "", location.href).href;
+    if (isBlocked(url)) {
+      removeElement(element);
+      replaceUrl(element);
+    }
+  }
+
+  function handleBeforeLoad(event) {
+    const url = new URL(event.detail.url || "", location.href).href;
+    if (isBlocked(url)) {
+      event.preventDefault();
+    }
+  }
+
+  function applyFiltersToDocument() {
+    document.querySelectorAll(elementTypes.size ? Array.from(elementTypes).join(",") : "*")
+      .forEach(element => {
+        if (element.tagName === 'SCRIPT') {
+            const src = element.src || '';
+            if (isBlocked(src)) {
+                removeElement(element);
+                return;
+            }
+        } else {
+            handleElement(element);
+        }
+      });
+  }
+
+    function handleNode(node) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+            if (node.tagName === 'SCRIPT') {
+                if (isBlocked(node.src)) {
+                    node.remove();
+                    return;
+                }
+            }
+            handleElement(node);
+        }
+    }
+
+    function observeDOM() {
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                mutation.addedNodes.forEach(node => {
+                    handleNode(node);
+                });
+            });
+        });
+
+        observer.observe(document, {
+            childList: true,
+            subtree: true,
+        });
+    }
+
+    function proxyFetch() {
+        if (window.fetch) {
+            const originalFetch = window.fetch;
+            window.fetch = new Proxy(originalFetch, {
+                apply: async function(target, thisArg, args) {
+                    const url = args[0];
+                    if (typeof url === 'string' && isBlocked(url)) {
+                        console.warn(`[Adblocker] Blocking fetch request to ${url}`);
+                        return Promise.reject(new Error(`Blocked by adblocker: ${url}`));
+                    }
+                    try {
+                        return await target.apply(thisArg, args);
+                    } catch (error) {
+                        console.error(`[Adblocker] Fetch error for ${url}:`, error);
+                        throw error;
+                    }
+                }
+            });
+        }
+    }
+
+    function proxyXmlHttpRequest() {
+        if (window.XMLHttpRequest) {
+            const originalOpen = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function(method, url) {
+                if (isBlocked(url)) {
+                    console.warn(`[Adblocker] Blocking XMLHttpRequest to ${url}`);
+                    return;
+                }
+                return originalOpen.apply(this, arguments);
+            };
+        }
+    }
+
+    function proxyWindowOpen() {
+        window.open = new Proxy(window.open, {
+            apply: function(target, thisArg, args) {
+                const url = args[0];
+                if (isBlocked(url)) {
+                    console.warn(`[Adblocker] Blocking window.open to ${url}`);
+                    return null;
+                }
+                return target.apply(thisArg, args);
+            }
+        });
+    }
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    applyFiltersToDocument();
+    observeDOM();
+    proxyFetch();
+    proxyXmlHttpRequest();
+    proxyWindowOpen();
+  });
+
+
+})();
