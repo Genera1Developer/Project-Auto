@@ -1,0 +1,91 @@
+:root {
+    --primary-glow: rgba(255, 0, 0, 0.8);
+    --secondary-glow: rgba(255, 0, 0, 0.6); 
+    --background-color: #000; 
+}
+
+.light {
+    --primary-glow: rgba(0, 123, 255, 0.8);
+    --secondary-glow: rgba(0, 123, 255, 0.6); 
+    --background-color: #f0f0f0;
+}
+
+body {
+    margin: 0;
+    background: var(--background-color);
+    overflow: hidden;
+    position: relative;
+    height: 100vh;
+    transition: background-color 0.3s ease;
+}
+
+#canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; 
+}
+
+.cyber-bg {
+    display: none; 
+}
+
+.cyber-card {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.light .cyber-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.cyber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.cyber-input {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.light .cyber-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    color: black;
+}
+
+.cyber-input:focus {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.cyber-button {
+    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+    transition: all 0.3s ease;
+}
+
+.cyber-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+
+.theme-icon-dark {
+    display: none;
+}
+
+.light .theme-icon-dark {
+    display: block;
+}
+
+.light .theme-icon-light {
+    display: none;
+}
