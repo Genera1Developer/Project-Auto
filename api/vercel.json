@@ -5,12 +5,20 @@
       "src": "/api/proxy.js",
       "use": "@vercel/node",
       "config": { "maxDuration": 60 }
+    },
+    {
+      "src": "/api/warmup.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/api/proxy/(.*)",
       "dest": "/api/proxy.js"
+    },
+    {
+      "src": "/api/warmup",
+      "dest": "/api/warmup.js"
     },
     {
       "src": "/(.*)",
@@ -21,6 +29,10 @@
     "api/proxy.js": {
       "memory": 512,
       "maxDuration": 60
+    },
+    "api/warmup.js": {
+      "memory": 256,
+      "maxDuration": 10
     }
   },
   "github": {
