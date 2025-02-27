@@ -28,7 +28,10 @@
   "functions": {
     "api/proxy.js": {
       "memory": 512,
-      "maxDuration": 60
+      "maxDuration": 60,
+      "includeFiles": [
+        "node_modules/**/*"
+      ]
     },
     "api/warmup.js": {
       "memory": 256,
@@ -50,6 +53,14 @@
   "middleware": [
     {
       "src": "/api/middleware.js"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
     }
   ]
 }
