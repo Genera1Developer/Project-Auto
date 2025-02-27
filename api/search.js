@@ -1,4 +1,4 @@
-import axios from 'axios'; //adding this note for redeplopy fix
+import axios from 'axios';
 import { Transform } from 'stream';
 
 export default async function handler(req, res) {
@@ -23,17 +23,18 @@ export default async function handler(req, res) {
     } catch {
       searchUrl = `${searxInstance}/search`;
     }
-    const response = await axios({
+
+    const axiosConfig = {
       method: 'GET',
       url: searchUrl,
       ...(searchUrl === `${searxInstance}/search` ? {
         params: {
-          q: searchQuery, //define q because we for somereason need to
+          q: searchQuery,
           format: 'html',
           language: 'en-US',
           categories: 'general,images,videos,news',
           theme: 'simple',
-          safesearch: 0 // watch your fucking porn weirdos
+          safesearch: 0
         }
       } : {}),
       responseType: 'stream',
@@ -42,11 +43,14 @@ export default async function handler(req, res) {
         'Accept-Language': 'en-US,en;q=0.5',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'DNT': '1',
-        'Connection': 'keep-alive' //stay the fuck awake
+        'Connection': 'keep-alive'
       },
-      maxRedirects: 10, //virus block
-      timeout: 10000  
-    });
+      maxRedirects: 10,
+      timeout: 10000
+    };
+
+    const response = await axios(axiosConfig);
+
     const transformStream = new Transform({
       transform(chunk, encoding, callback) {
         let chunkStr = chunk.toString('utf8');
@@ -54,38 +58,46 @@ export default async function handler(req, res) {
         resourceTypes.forEach(type => {
           chunkStr = chunkStr.replace(
             new RegExp(`${type}=["'](\/[^"']+)["']`, 'gi'),
-            (match, url) => `${type}="/api/proxy.js?q=${encodeURIComponent(searxInstance + url)}"`
+            (match, url) => `${type}="/api/proxy?q=${encodeURIComponent(searxInstance + url)}"`
           );
           chunkStr = chunkStr.replace(
-            new RegExp(`${type}=["'](https?:\/\/[^"']+)["']`, 'gi'), //HOLY GOSH, i love regex
-            (match, url) => `${type}="/api/proxy.js?q=${encodeURIComponent(url)}"`
+            new RegExp(`${type}=["'](https?:\/\/[^"']+)["']`, 'gi'),
+            (match, url) => `${type}="/api/proxy?q=${encodeURIComponent(url)}"`
           );
         });
+
         if (chunkStr.includes('<head>')) {
-          const csp = "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *;\">";
+          const csp = `<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *;">`;
           chunkStr = chunkStr.replace('<head>', `<head>${csp}`);
         }
 
         callback(null, chunkStr);
       }
     });
+
     const headers = response.headers;
     for (const [key, value] of Object.entries(headers)) {
       if (!['content-length', 'content-encoding', 'transfer-encoding'].includes(key.toLowerCase())) {
         res.setHeader(key, value);
       }
     }
+
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-XSS-Protection', '1; mode=block');
+
     response.data.pipe(transformStream).pipe(res);
+
     transformStream.on('error', (err) => {
       console.error('Transform stream error:', err);
+      res.status(500).send('Transform stream error');
       res.end();
     });
+
     response.data.on('error', (err) => {
       console.error('SearX stream error:', err);
+      res.status(500).send('SearX stream error');
       res.end();
     });
 
@@ -94,17 +106,15 @@ export default async function handler(req, res) {
     res.status(500).send(`
       <html>
         <head>
-          <title>U BROKE IT</title>
+          <title>Error</title>
           <style>
-            body { font-family: system-ui; padding: 2rem; }
+            body { font-family: sans-serif; padding: 2rem; }
             .error { color: #e11d48; }
           </style>
         </head>
         <body>
-          <h1 class="error">U Broke It!</h1>
-          <p>An error occurred while processing your request: ${error.message}</p>
-          <p>Bastard.</p>
-          <p>HA i added an extra p tag just cus i can </p>
+          <h1 class="error">Error</h1>
+          <p>An error occurred: ${error.message}</p>
         </body>
       </html>
     `);
