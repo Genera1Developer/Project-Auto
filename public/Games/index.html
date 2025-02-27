@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/theme/particles.css">
     <link rel="stylesheet" href="/theme/forest.css">
     <link rel="stylesheet" href="/public/style.css">
+    <link rel="stylesheet" href="/public/games.css">
 </head>
 <body>
     <canvas id="canvas"></canvas>
@@ -66,30 +67,49 @@
          <input type="text" id="search-input" placeholder="Search the web..." class="search-input">
          <button id="search-button" class="search-button">Go</button>
         </div>
+        
+        <div class="category-selector">
+        <button class="category-button active" data-category="all">All</button>
+        <button class="category-button" data-category="action">Action</button>
+        <button class="category-button" data-category="sports">Sports</button>
+        <button class="category-button" data-category="puzzle">Puzzle</button>
+    </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            <div class="cyber-card rounded-lg p-6 text-center">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="games-grid">
+            <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="sports">
                 <a href="/Games/bbr.html" class="block">
                     <img src="/games/game1.jpg" alt="Basketball Random" class="w-full h-48 object-cover rounded-lg">
                     <h3 class="mt-4 text-xl font-semibold text-white">BasketBall Random</h3>
                 </a>
             </div>
-            <div class="cyber-card rounded-lg p-6 text-center">
+            <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="action">
                 <a href="/game2.html" class="block">
                     <img src="/games/game2.jpg" alt="Game 2" class="w-full h-48 object-cover rounded-lg">
                     <h3 class="mt-4 text-xl font-semibold text-white">Game 2</h3>
                 </a>
             </div>
-            <div class="cyber-card rounded-lg p-6 text-center">
+            <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="puzzle">
                 <a href="/game3.html" class="block">
                     <img src="/games/game3.jpg" alt="Game 3" class="w-full h-48 object-cover rounded-lg">
                     <h3 class="mt-4 text-xl font-semibold text-white">Game 3</h3>
                 </a>
             </div>
-            <div class="cyber-card rounded-lg p-6 text-center">
+            <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="action">
                 <a href="/game4.html" class="block">
                     <img src="/games/game4.jpg" alt="Game 4" class="w-full h-48 object-cover rounded-lg">
                     <h3 class="mt-4 text-xl font-semibold text-white">Game 4</h3>
+                </a>
+            </div>
+             <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="sports">
+                <a href="/game5.html" class="block">
+                    <img src="/games/game5.jpg" alt="Game 5" class="w-full h-48 object-cover rounded-lg">
+                    <h3 class="mt-4 text-xl font-semibold text-white">Game 5</h3>
+                </a>
+            </div>
+             <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="puzzle">
+                <a href="/game6.html" class="block">
+                    <img src="/games/game6.jpg" alt="Game 6" class="w-full h-48 object-cover rounded-lg">
+                    <h3 class="mt-4 text-xl font-semibold text-white">Game 6</h3>
                 </a>
             </div>
         </div>
@@ -103,6 +123,8 @@
         const themeDropdown = document.getElementById('themeDropdown');
         const searchInput = document.getElementById('search-input');
         const searchButton = document.getElementById('search-button');
+        const categoryButtons = document.querySelectorAll('.category-button');
+        const gameCards = document.querySelectorAll('.game-card');
 
         themeToggle.addEventListener('click', () => {
             html.classList.toggle('light');
@@ -141,8 +163,80 @@
                 searchButton.click();
             }
         });
+        
+         categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const category = button.getAttribute('data-category');
+
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                gameCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
     </script>
     
     <script src="/theme/particles.js"></script> <!--perticles-->
 </body>
 </html>
+
+edit filepath: public/games.css
+content: 
+.category-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.category-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.category-button:hover {
+    background-color: #555;
+}
+
+.category-button.active {
+    background-color: #4CAF50;
+}
+
+#games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.game-card {
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+}
+
+.game-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.game-card h3 {
+    color: white;
+    font-size: 1.2em;
+}
+
+
+edit filepath:
