@@ -5,6 +5,9 @@
     --bg-color: #2f4f4f;
     --card-bg: rgba(0, 0, 0, 0.2);
     --input-bg: rgba(0, 0, 0, 0.2);
+    --error-color: #ff6666;
+    --success-color: #66ff66;
+    --warning-color: #ffcc66;
 }
 
 .light {
@@ -14,6 +17,9 @@
     --bg-color: #3e5b41;
     --card-bg: rgba(255, 255, 255, 0.1);
     --input-bg: rgba(255, 255, 255, 0.1);
+    --error-color: #cc3333;
+    --success-color: #33cc33;
+    --warning-color: #cc9933;
 }
 
 body {
@@ -366,15 +372,15 @@ footer {
 }
 
 .console-log .log-item.error {
-    color: #ff4444;
+    color: var(--error-color);
 }
 
 .console-log .log-item.info {
-    color: #44ff44;
+    color: var(--success-color);
 }
 
 .console-log .log-item.warn {
-    color: #ffcc00;
+    color: var(--warning-color);
 }
 
 .detached {
@@ -394,4 +400,22 @@ footer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
+}
+.fullscreen-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--primary-glow);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.fullscreen-button:hover {
+    background: var(--primary-glow);
+    color: black;
 }
