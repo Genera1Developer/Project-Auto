@@ -1,4 +1,4 @@
-  sSSs   .S       S.    .S_sSSs      sSSs    sSSs         .S_SSSs     .S_sSSs     .S  
+sSSs   .S       S.    .S_sSSs      sSSs    sSSs         .S_SSSs     .S_sSSs     .S  
  d%%SP  .SS       SS.  .SS~YS%%b    d%%SP   d%%SP        .SS~SSSSS   .SS~YS%%b   .SS  
 d%S'    S%S       S%S  S%S   `S%b  d%S'    d%S'          S%S   SSSS  S%S   `S%b  S%S  
 S%S     S%S       S%S  S%S    S%S  S%|     S%S           S%S    S%S  S%S    S%S  S%S  
@@ -27,26 +27,26 @@ S*S.    S*S.     .S*S  S*S    S%S    .S*P  S*S.          S*S    S*S  S*S        
 
   To use this properly within your static, or dynamic site, you can follow these steps:
 
-    - Create an embedd function within your site
-    - Specify said embedd to /api/proxy.js?q=${url}
-    - Create a simple textbox, with the contents set to {url}
-    - Create a way such as the enter button or a go button to utilize the redirect
+    1.  **Install Dependencies:** Ensure you have Node.js and npm installed.
+
+    2.  **Create an embed function within your site:** This function will handle the proxy request.
+
+    3.  **Specify the embed URL:** Set the embed URL to `/api/proxy.js?q=${url}`.  Make sure your server is running and accessible.
+
+    4.  **Create a user input:** Implement a simple textbox for users to enter the URL (`{url}`).
+
+    5.  **Implement Redirection:** Add a button or use the Enter key to trigger the proxy request.  The URL should be correctly encoded.
 
   By the end of all this, you should be good to go.  
-  When testing, check that the URL switches to {yoursite}//api/proxy.js?q={https}%3A%2F%2F{site}
+  When testing, check that the URL switches to `{yoursite}/api/proxy.js?q={https}%3A%2F%2F{site}`.
+
+  **Important Considerations:**
+
+    *   **Error Handling:** Implement robust error handling to catch issues with the proxy request or target website.
+    *   **Security:** Sanitize user input to prevent potential security vulnerabilities.
+    *   **CORS:** Be mindful of CORS issues when proxying requests. You may need to set appropriate headers in your proxy server.
+    *   **Rate Limiting:** Implement rate limiting to prevent abuse of your proxy server.
+    *   **HTTPS:** Ensure your proxy supports HTTPS to protect user data.
+    *   **URL Encoding:** Correctly encode the URL when passing it to the proxy. Use `encodeURIComponent()` in JavaScript.
 
 >?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?
-
-Proxy.js 🟢
-
-Search.js 🟡
-
-Package.json 🟢
-
-nodemon.json 🟢
-
-vercel.json 🟢
-
-.env 🟡
-
-API 🟡
