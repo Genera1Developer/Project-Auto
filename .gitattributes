@@ -1,1 +1,22 @@
 * text=auto eol=lf
+
+# Normalize end-of-line characters
+* text=auto
+
+# Handle binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.eot binary
+*.svg binary
+
+# Proxy specific files
+/api/* text=auto eol=lf
+/uv/* text=auto eol=lf
+/public/uv/* text=auto eol=lf
