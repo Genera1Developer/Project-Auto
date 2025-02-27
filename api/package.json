@@ -1,6 +1,6 @@
 {
   "name": "Curse-Static",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Curse Static Web Proxy",
   "type": "module",
   "main": "proxy.js",
@@ -19,7 +19,9 @@
     "cors": "^2.8.5",
     "http-proxy-middleware": "^2.0.6",
     "dotenv": "^16.3.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-cache": "^5.1.2",
+    "ua-parser-js": "^1.0.37"
   },
   "devDependencies": {
     "nodemon": "^3.0.2",
