@@ -1,22 +1,30 @@
 :root {
     --primary-glow: rgba(255, 0, 0, 0.8);
-    --secondary-glow: rgba(255, 0, 0, 0.6); 
-    --background-color: #000; 
+    --secondary-glow: rgba(255, 0, 0, 0.6);
+    --background-color: #000;
+    --text-color: #fff;
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    --input-border: rgba(255, 255, 255, 0.1);
 }
 
 .light {
     --primary-glow: rgba(0, 123, 255, 0.8);
-    --secondary-glow: rgba(0, 123, 255, 0.6); 
+    --secondary-glow: rgba(0, 123, 255, 0.6);
     --background-color: #f0f0f0;
+    --text-color: #000;
+    --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    --input-border: rgba(0, 0, 0, 0.2);
 }
 
 body {
     margin: 0;
     background: var(--background-color);
+    color: var(--text-color);
     overflow: hidden;
     position: relative;
     height: 100vh;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Arial', sans-serif;
 }
 
 #canvas {
@@ -25,23 +33,26 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; 
+    z-index: -1;
 }
 
 .cyber-bg {
-    display: none; 
+    display: none;
 }
 
 .cyber-card {
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--card-shadow);
     transition: all 0.3s ease;
 }
 
 .light .cyber-card {
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .cyber-card:hover {
@@ -52,24 +63,33 @@ body {
 .cyber-input {
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: calc(100% - 22px);
     transition: all 0.3s ease;
 }
 
 .light .cyber-input {
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(0, 0, 0, 0.2);
     color: black;
 }
 
 .cyber-input:focus {
+    outline: none;
     transform: scale(1.02);
     box-shadow: 0 0 20px var(--primary-glow);
 }
 
 .cyber-button {
     background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
     transition: all 0.3s ease;
 }
 
@@ -89,3 +109,279 @@ body {
 .light .theme-icon-light {
     display: none;
 }
+
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+nav {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.light nav {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+edit filepath: index.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="public/theme/particles.css">
+    <link rel="stylesheet" href="public/theme/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div class="container">
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Settings</a>
+        </nav>
+
+        <h1>Web Proxy</h1>
+        <p>Enter the URL you want to access:</p>
+
+        <div class="cyber-card">
+            <input type="text" class="cyber-input" placeholder="Enter URL">
+            <button class="cyber-button">Go</button>
+        </div>
+    </div>
+
+    <button id="theme-toggle" class="cyber-button">
+        <i class="fas fa-sun theme-icon-light"></i>
+        <i class="fas fa-moon theme-icon-dark"></i>
+    </button>
+
+    <script src="public/script.js"></script>
+    <script src="public/particles.js"></script>
+</body>
+</html>
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    themeToggle.addEventListener('click', () => {
+        body.classList.toggle('light');
+    });
+});
+edit filepath: public/particles.js
+content: window.onload = function() {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particlesArray;
+
+    function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 9000;
+        for (let i = 0; i < numberOfParticles; i++) {
+            let size = (Math.random() * 2) + 1;
+            let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+            let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+            let directionX = (Math.random() * 2) - 1;
+            let directionY = (Math.random() * 2) - 1;
+            let color = 'rgba(255,255,255,0.5)';
+
+            particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+        }
+    }
+
+    class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+            this.x = x;
+            this.y = y;
+            this.directionX = directionX;
+            this.directionY = directionY;
+            this.size = size;
+            this.color = color;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+        update() {
+            if (this.x > canvas.width || this.x < 0) {
+                this.directionX = -this.directionX;
+            }
+            if (this.y > canvas.height || this.y < 0) {
+                this.directionY = -this.directionY;
+            }
+            this.x += this.directionX;
+            this.y += this.directionY;
+
+            this.draw();
+        }
+    }
+
+    init();
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+        for (let i = 0; i < particlesArray.length; i++) {
+            particlesArray[i].update();
+        }
+    }
+    animate();
+    window.addEventListener('resize',
+        function() {
+            canvas.width = innerWidth;
+            canvas.height = innerHeight;
+            init();
+        }
+    )
+}
+edit filepath: public/theme/style.css
+content: body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+edit filepath: api/proxy.js
+content: const { createProxyMiddleware } = require('http-proxy-middleware');
+
+module.exports = (req, res) => {
+  let target = req.query.url;
+
+  if (!target) {
+    return res.status(400).send('URL parameter is required');
+  }
+
+  try {
+    new URL(target);
+  } catch (error) {
+    return res.status(400).send('Invalid URL');
+  }
+
+  createProxyMiddleware({
+    target: target,
+    changeOrigin: true,
+    secure: false,
+    logLevel: 'debug',
+    pathRewrite: {
+      '^/api/proxy': '',
+    },
+  })(req, res);
+};
+edit filepath: package.json
+content: {
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "http-proxy-middleware": "^2.0.6",
+    "express": "^4.17.1"
+  }
+}
+edit filepath: index.js
+content: const express = require('express');
+const app = express();
+const proxy = require('./api/proxy');
+const port = 3000;
+
+app.use(express.static('public'));
+app.get('/api/proxy', proxy);
+
+app.listen(port, () => {
+  console.log(`Server listening at http://localhost:${port}`);
+});
+edit filepath: public/theme/responsive.css
+content: @media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    p {
+        font-size: 1em;
+    }
+
+    nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav a {
+        margin: 5px 0;
+    }
+
+    .cyber-card {
+        padding: 15px;
+    }
+
+    .cyber-input {
+        width: calc(100% - 22px);
+    }
+}
+edit filepath: .gitignore
+content: node_modules/
+/public/cache
+.DS_Store
+edit filepath: README.md
+content: # Web Proxy Project
+
+A simple web proxy built with Node.js and Express.
