@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/visuals/dropdown.css">
     <link rel="stylesheet" href="/theme/particles.css">
     <link rel="stylesheet" href="/theme/forest.css">
+    <link rel="stylesheet" href="/public/style.css">
 </head>
 <body>
     <canvas id="canvas"></canvas>
@@ -60,6 +61,12 @@
             </h1>
             <p class="text-gray-300">Choose Your Boredom Cure</p>
         </header>
+        
+        <div class="search-container">
+         <input type="text" id="search-input" placeholder="Search the web..." class="search-input">
+         <button id="search-button" class="search-button">Go</button>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <div class="cyber-card rounded-lg p-6 text-center">
                 <a href="/Games/bbr.html" class="block">
@@ -94,6 +101,8 @@
         const themeToggle = document.getElementById('themeToggle');
         const themeSelector = document.getElementById('themeSelector');
         const themeDropdown = document.getElementById('themeDropdown');
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
 
         themeToggle.addEventListener('click', () => {
             html.classList.toggle('light');
@@ -119,6 +128,19 @@
 
         const savedTheme = localStorage.getItem('theme') || 'default';
         html.setAttribute('data-theme', savedTheme);
+        
+                searchButton.addEventListener('click', () => {
+            const searchTerm = searchInput.value;
+            if (searchTerm) {
+                window.location.href = '/search?q=' + encodeURIComponent(searchTerm);
+            }
+        });
+
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                searchButton.click();
+            }
+        });
     </script>
     
     <script src="/theme/particles.js"></script> <!--perticles-->
