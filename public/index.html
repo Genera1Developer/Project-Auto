@@ -29,7 +29,7 @@
     .proxy-container {
       width: 100%;
       height: 80vh; 
-      overflow: auto;
+      overflow: hidden;
       position: relative;
     }
     .proxy-container.fullscreen {
@@ -46,7 +46,7 @@
       width: 100%;
       height: 100%;
       border: none;
-      overflow: auto;
+      overflow: hidden;
     }
   </style>
 </head>
@@ -130,10 +130,9 @@
       <div class="proxy-controls">
         <button class="control-btn" id="fullscreenBtn">⤢</button>
         <button class="control-btn hidden" id="minimizeBtn">⤡</button>
+        <button class="control-btn" id="newTabBtn">New Tab</button>
       </div>
       <iframe id="proxyFrame"></iframe>
-      <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>eruda.init();</script>
     </div>
 
     <div class="max-w-2xl mx-auto cyber-card rounded-lg p-6">
@@ -229,6 +228,7 @@
     const qualityToggle = document.getElementById('qualityToggle');
     const textSizeSlider = document.getElementById('textSizeSlider');
     const particleBlurToggle = document.getElementById('particleBlurToggle');
+    const newTabBtn = document.getElementById('newTabBtn');
 
     let isAdBlockEnabled = false;
     let currentAdBlockMethod = 'curse';
@@ -336,6 +336,20 @@
         }
       }
     });
+        
+    newTabBtn.addEventListener('click', () => {
+        const query = searchInput.value.trim();
+        if (query) {
+            let url;
+            if (isValidUrl(query)) {
+                url = query.startsWith('http://') || query.startsWith('https://') ? query : `https://${query}`;
+            } else {
+                url = `/api/search.js?q=${encodeURIComponent(query)}`;
+            }
+            window.open(`/api/proxy.js?q=${encodeURIComponent(url)}`, '_blank');
+        }
+    });
+
 
     fullscreenBtn.addEventListener('click', () => {
       proxyContainer.classList.add('fullscreen');
