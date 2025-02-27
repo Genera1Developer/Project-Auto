@@ -35,3 +35,6 @@
 
 # Documentation
 *.md text=auto eol=lf
+
+# Add .txt files
+*.txt text=auto eol=lf
