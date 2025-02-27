@@ -2,6 +2,8 @@
   const filterListUrl = "/adblocker/filters/easylist.txt";
   const elementTypes = new Set(["img", "script", "iframe", "object", "embed", "video", "audio", "source", "link", "style"]);
   const dataUrl = "data:,";
+  let filters = [];
+  let filterRegex = null;
 
   async function loadFilters(url) {
     try {
@@ -26,11 +28,14 @@
     }
   }
 
-  const filters = await loadFilters(filterListUrl);
-  const filterRegex = new RegExp(filters.join("|"), "i");
+    async function updateFilters() {
+        filters = await loadFilters(filterListUrl);
+        filterRegex = new RegExp(filters.join("|"), "i");
+        console.log("[Adblocker] Filter list updated.");
+    }
 
   function isBlocked(url) {
-    return filterRegex.test(url);
+    return filterRegex && filterRegex.test(url);
   }
 
   function removeElement(element) {
@@ -50,17 +55,25 @@
   }
 
   function handleElement(element) {
-    const url = new URL(element.src || element.srcset || element.href || "", location.href).href;
-    if (isBlocked(url)) {
-      removeElement(element);
-      replaceUrl(element);
+    try {
+        const url = new URL(element.src || element.srcset || element.href || "", location.href).href;
+        if (isBlocked(url)) {
+            removeElement(element);
+            replaceUrl(element);
+        }
+    } catch (e) {
+        console.warn("[Adblocker] Error processing element URL:", e);
     }
   }
 
   function handleBeforeLoad(event) {
-    const url = new URL(event.detail.url || "", location.href).href;
-    if (isBlocked(url)) {
-      event.preventDefault();
+    try {
+        const url = new URL(event.detail.url || "", location.href).href;
+        if (isBlocked(url)) {
+            event.preventDefault();
+        }
+    } catch (e) {
+        console.warn("[Adblocker] Error processing beforeLoad URL:", e);
     }
   }
 
@@ -154,13 +167,14 @@
     }
 
 
-  document.addEventListener("DOMContentLoaded", () => {
-    applyFiltersToDocument();
-    observeDOM();
-    proxyFetch();
-    proxyXmlHttpRequest();
-    proxyWindowOpen();
-  });
+  document.addEventListener("DOMContentLoaded", async () => {
+        await updateFilters();
+        applyFiltersToDocument();
+        observeDOM();
+        proxyFetch();
+        proxyXmlHttpRequest();
+        proxyWindowOpen();
 
-
+        setInterval(updateFilters, 3600000);
+    });
 })();
