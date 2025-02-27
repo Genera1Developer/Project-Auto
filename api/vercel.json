@@ -3,7 +3,8 @@
   "builds": [
     {
       "src": "/api/proxy.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": { "maxDuration": 30 }
     }
   ],
   "routes": [
@@ -11,5 +12,11 @@
       "src": "/(.*)",
       "dest": "/api/proxy.js"
     }
-  ]
+  ],
+  "functions": {
+    "api/proxy.js": {
+      "memory": 256,
+      "maxDuration": 30
+    }
+  }
 }
