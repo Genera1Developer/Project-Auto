@@ -20,18 +20,19 @@ module.exports = (req, res) => {
 
     const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
-    protocol.get(targetUrl, (proxyRes) => {
-        let data = '';
+    const proxyReq = protocol.request(targetUrl, {
+        method: req.method,
+        headers: req.headers,
+        rejectUnauthorized: false
+    }, (proxyRes) => {
+        res.writeHead(proxyRes.statusCode, proxyRes.headers);
+        proxyRes.pipe(res, { end: true });
+    });
 
-        proxyRes.on('data', (chunk) => {
-            data += chunk;
-        });
-
-        proxyRes.on('end', () => {
-            res.writeHead(proxyRes.statusCode, proxyRes.headers);
-            res.end(data);
-        });
-    }).on('error', (error) => {
+    proxyReq.on('error', (error) => {
+        console.error('Proxy request error:', error);
         res.status(500).send('Proxy error: ' + error.message);
     });
+
+    req.pipe(proxyReq, { end: true });
 };
