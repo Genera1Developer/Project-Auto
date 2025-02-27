@@ -1,75 +1,54 @@
-.S_sSSs      sSSs    sSSs         .S_SSSs     .S_sSSs     .S  
- d%%SP  .SS       SS.  .SS~YS%%b    d%%SP   d%%SP        .SS~SSSSS   .SS~YS%%b   .SS  
-d%S'    S%S       S%S  S%S   `S%b  d%S'    d%S'          S%S   SSSS  S%S   `S%b  S%S  
-S%S     S%S       S%S  S%S    S%S  S%|     S%S           S%S    S%S  S%S    S%S  S%S  
-S&S     S&S       S&S  S%S    d*S  S&S     S&S           S%S SSSS%S  S%S    d*S  S&S  
-S&S     S&S       S&S  S&S   .S*S  Y&Ss    S&S_Ss        S&S  SSS%S  S&S   .S*S  S&S  
-S&S     S&S       S&S  S&S_sdSSS   `S&&S   S&S~SP        S&S    S&S  S&S_sdSSS   S&S  
-S&S     S&S       S&S  S&S~YSY%b     `S*S  S&S           S&S    S&S  S&S~YSSY    S&S  
-S*b     S*b       d*S  S*S   `S%b     l*S  S*b           S*S    S&S  S*S         S*S  
-S*S.    S*S.     .S*S  S*S    S%S    .S*P  S*S.          S*S    S*S  S*S         S*S  
- SSSbs   SSSbs_sdSSS   S*S    S&S  sSS*S    SSSbs        S*S    S*S  S*S         S*S  
-  YSSP    YSSP~YSSY    S*S    SSS  YSS'      YSSP        SSS    S*S  S*S         S*S  
-                       SP                                       SP   SP          SP   
-                       Y                                        Y    Y           Y    
+# Setting Up Your Web Proxy
+
+To use this proxy effectively within your static or dynamic site, follow these steps:
+
+1.  **Prerequisites:**
+
+    *   Ensure Node.js and npm (Node Package Manager) are installed on your server.
+2.  **Embed Function:**
+
+    *   Create a JavaScript function in your site to handle proxy requests. This function will dynamically generate the proxy URL.
+3.  **Proxy Endpoint:**
+
+    *   The proxy URL endpoint is `/api/proxy?url=${targetURL}`. Your server must be running for this to work.
+4.  **User Input:**
+
+    *   Implement a text input field where users can enter the target URL they want to access.
+5.  **Redirection/Request:**
+
+    *   Use a button or the Enter key to trigger the proxy request. The URL entered by the user should be properly encoded before being sent to the proxy.
+
+### Example Implementation:
+
+**HTML:**
 
 
->?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?>?
+<input type="text" id="urlInput" placeholder="Enter URL">
+<button onclick="proxyRequest()">Go</button>
+<script>
+  function proxyRequest() {
+    const url = document.getElementById('urlInput').value;
+    const encodedURL = encodeURIComponent(url);
+    window.location.href = `/api/proxy?url=${encodedURL}`;
+  }
+</script>
 
-|\     /|(  ____ \(  ___  )(  ____ \(  ____ \      (  ____ \|\     /|\__   __/(  __  \ (  ____ \
-| )   ( || (    \/| (   ) || (    \/| (    \/      | (    \/| )   ( |   ) (   | (  \  )| (    \/
-| |   | || (_____ | (___) || |      | (__          | |      | |   | |   | |   | |   ) || (__    
-| |   | |(_____  )|  ___  || | ____ |  __)         | | ____ | |   | |   | |   | |   | ||  __)   
-| |   | |      ) || (   ) || | \_  )| (            | | \_  )| |   | |   | |   | |   ) || (      
-| (___) |/\____) || )   ( || (___) || (____/\      | (___) || (___) |___) (___| (__/  )| (____/\
-(_______)\_______)|/     \|(_______)(_______/      (_______)(_______)\_______/(______/ (_______/
 
+### Key Considerations:
 
-  # Setting Up Your Web Proxy
+*   **Error Handling:** Implement comprehensive error handling to manage issues during the proxy request or with the target website. Display user-friendly error messages.
+*   **Security:** Sanitize user input to prevent injection attacks and other security vulnerabilities. Validate and escape the URL.
+*   **CORS:** Be aware of Cross-Origin Resource Sharing (CORS) restrictions. Configure your proxy server to set appropriate headers to avoid CORS issues.
+*   **Rate Limiting:** Implement rate limiting to prevent abuse and protect your server from excessive requests.
+*   **HTTPS:** Ensure your proxy supports HTTPS to encrypt data and protect user privacy.
+*   **URL Encoding:** Always encode the URL using `encodeURIComponent()` in JavaScript before sending it to the proxy server.
+*   **Content Security Policy (CSP):** Configure your CSP headers to allow resources from proxied origins.
+*   **Blacklisting/Whitelisting:** Implement URL blacklisting or whitelisting to restrict access to certain websites.
+*   **Header Management:** Carefully manage headers to prevent information leakage or security issues. Remove or sanitize sensitive headers.
+*   **Logging & Monitoring:** Implement logging and monitoring to track proxy usage and identify potential problems.
+*   **Caching:** Implement caching mechanisms to reduce the load on the proxy server and improve response times.
+*   **WebSockets:** Consider supporting WebSockets if your proxy needs to handle real-time communication.
+*   **Authentication:** Add authentication to restrict access to the proxy server.
+*   **Bypass Detection:** Implement methods to bypass anti-bot and anti-proxy detection techniques employed by some websites.
 
-  To use this proxy effectively within your static or dynamic site, follow these steps:
-
-  1. **Prerequisites:**
-     - Ensure Node.js and npm (Node Package Manager) are installed on your server.
-
-  2. **Embed Function:**
-     - Create a JavaScript function in your site to handle proxy requests. This function will dynamically generate the proxy URL.
-
-  3. **Proxy Endpoint:**
-     - The proxy URL endpoint is `/api/proxy?url=${targetURL}`.  Your server must be running for this to work.
-
-  4. **User Input:**
-     - Implement a text input field where users can enter the target URL they want to access.
-
-  5. **Redirection/Request:**
-     - Use a button or the Enter key to trigger the proxy request.  The URL entered by the user should be properly encoded before being sent to the proxy.
-
-  ### Example Implementation:
-
-  **HTML:**
-  
-  <input type="text" id="urlInput" placeholder="Enter URL">
-  <button onclick="proxyRequest()">Go</button>
-  <script>
-    function proxyRequest() {
-      const url = document.getElementById('urlInput').value;
-      const encodedURL = encodeURIComponent(url);
-      window.location.href = `/api/proxy?url=${encodedURL}`;
-    }
-  </script>
-  
-
-  ### Key Considerations:
-
-  *   **Error Handling:** Implement comprehensive error handling to manage issues during the proxy request or with the target website. Display user-friendly error messages.
-  *   **Security:** Sanitize user input to prevent injection attacks and other security vulnerabilities.  Validate and escape the URL.
-  *   **CORS:** Be aware of Cross-Origin Resource Sharing (CORS) restrictions.  Configure your proxy server to set appropriate headers to avoid CORS issues.
-  *   **Rate Limiting:** Implement rate limiting to prevent abuse and protect your server from excessive requests.
-  *   **HTTPS:** Ensure your proxy supports HTTPS to encrypt data and protect user privacy.
-  *   **URL Encoding:** Always encode the URL using `encodeURIComponent()` in JavaScript before sending it to the proxy server.
-  *   **Content Security Policy (CSP):** Configure your CSP headers to allow resources from proxied origins.
-  *   **Blacklisting/Whitelisting:** Implement URL blacklisting or whitelisting to restrict access to certain websites.
-  *   **Header Management:** Carefully manage headers to prevent information leakage or security issues. Remove or sanitize sensitive headers.
-  *   **Logging & Monitoring:** Implement logging and monitoring to track proxy usage and identify potential problems.
-
-  By following these steps and considerations, you can set up a robust and secure web proxy. When testing, verify that the URL correctly transforms to `{yoursite}/api/proxy?url={encodedURL}`.
+By following these steps and considerations, you can set up a robust and secure web proxy. When testing, verify that the URL correctly transforms to `{yoursite}/api/proxy?url={encodedURL}`.
