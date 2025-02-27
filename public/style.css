@@ -1,23 +1,30 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f0f0f0;
     color: #333;
+    line-height: 1.6;
 }
 
 .container {
     width: 80%;
     margin: auto;
     overflow: hidden;
+    padding: 0 20px;
 }
 
 header {
-    background: #333;
+    background: #2c3e50;
     color: #fff;
-    padding-top: 30px;
-    min-height: 70px;
-    border-bottom: #bbb 3px solid;
+    padding: 20px 0;
+    border-bottom: 3px solid #e67e22;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 header a {
@@ -25,159 +32,238 @@ header a {
     text-decoration: none;
     text-transform: uppercase;
     font-size: 16px;
+    transition: color 0.3s ease;
 }
 
-header ul {
-    margin: 0;
-    padding: 0;
-}
-
-header li {
-    float: left;
-    display: inline;
-    padding: 0 20px 0 20px;
-}
-
-header #branding {
-    float: left;
+header a:hover {
+    color: #e67e22;
 }
 
 header #branding h1 {
     margin: 0;
+    font-size: 24px;
 }
 
-header nav {
-    float: right;
-    margin-top: 10px;
+header nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-header .highlight, header .current a {
-    color: #e8491d;
-    font-weight: bold;
+header nav li {
+    display: inline;
+    margin-left: 20px;
 }
 
-header a:hover {
-    color: #fff;
+header .highlight,
+header .current a {
+    color: #e67e22;
     font-weight: bold;
 }
 
 #showcase {
-    min-height: 400px;
-    background: url('../img/showcase.jpg') no-repeat 0 -400px;
-    text-align: center;
+    background: #34495e;
     color: #fff;
+    text-align: center;
+    padding: 50px 0;
 }
 
 #showcase h1 {
-    margin-top: 100px;
-    font-size: 55px;
+    font-size: 36px;
     margin-bottom: 10px;
 }
 
 #showcase p {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 #newsletter {
-    padding: 15px;
-    color: #fff;
     background: #333;
+    color: #fff;
+    padding: 20px 0;
+}
+
+#newsletter .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #newsletter h1 {
-    float: left;
+    margin: 0;
+    font-size: 20px;
 }
 
 #newsletter form {
-    float: right;
-    margin-top: 15px;
+    display: flex;
 }
 
 #newsletter input[type="email"] {
-    padding: 4px;
-    height: 25px;
-    width: 250px;
+    padding: 10px;
+    border: 0;
+    border-radius: 5px 0 0 5px;
+    width: 300px;
+    font-size: 16px;
 }
 
 .button_1 {
-    height: 38px;
-    background: #e8491d;
-    border: 0;
-    padding-left: 20px;
-    padding-right: 20px;
+    background: #e67e22;
     color: #fff;
+    border: 0;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button_1:hover {
+    background-color: #d35400;
+}
+
+#main {
+    padding: 30px 0;
+}
+
+#main .container {
+    display: flex;
 }
 
 article#main-col {
-    float: left;
-    width: 65%;
+    flex: 2;
+    padding-right: 30px;
 }
 
 aside#sidebar {
-    float: right;
-    width: 30%;
-    margin-top: 10px;
+    flex: 1;
+    background: #34495e;
+    color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+aside#sidebar h3 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+aside#sidebar .quote input,
+aside#sidebar .quote textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
 }
 
 #services {
-    padding: 40px;
-    margin-top: 10px;
+    padding: 40px 0;
+    background: #ecf0f1;
+}
+
+#services .container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 
 #services .box {
-    float: left;
     text-align: center;
     width: 30%;
-    padding: 10px;
-    border-bottom: #e8491d 3px solid;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-bottom: 3px solid #e67e22;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #services .box img {
-    width: 100px;
-}
-
-aside#sidebar .quote input, aside#sidebar .quote textarea {
-    width: 90%;
-    padding: 5px;
+    width: 70px;
+    margin-bottom: 10px;
 }
 
 footer {
-    padding: 20px;
-    margin-top: 20px;
+    background: #2c3e50;
     color: #fff;
-    background-color: #e8491d;
     text-align: center;
+    padding: 20px 0;
 }
 
 /* Media Queries */
 @media(max-width: 768px) {
-    header #branding,
-    header nav,
-    header nav li,
-    #newsletter h1,
-    #newsletter form,
-    #showcase h1,
-    #showcase p,
-    article#main-col,
-    aside#sidebar,
-    #services .box {
-        float: none;
+
+    header .container,
+    #newsletter .container,
+    #main .container,
+    #services .container {
+        flex-direction: column;
         text-align: center;
-        width: 100%;
     }
 
-    header {
-        padding-bottom: 20px;
+    header nav {
+        margin-top: 10px;
     }
 
-    #showcase {
-        margin-top: 40px;
+    header nav li {
+        margin: 0 10px;
     }
 
     #newsletter form {
-        margin-top: 0px;
+        margin-top: 10px;
+    }
+
+    #newsletter input[type="email"] {
+        width: 100%;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .button_1 {
+        border-radius: 5px;
+    }
+
+    article#main-col,
+    aside#sidebar {
+        width: 100%;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    #services .box {
+        width: 100%;
     }
 }
+edit filepath: public/proxy-form.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    const proxyForm = document.getElementById('proxyForm');
+    const urlInput = document.getElementById('urlInput');
+    const contentDiv = document.getElementById('content');
+
+    proxyForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const url = urlInput.value;
+
+        if (url) {
+            fetch(`/proxy?url=${encodeURIComponent(url)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    contentDiv.innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error fetching content:', error);
+                    contentDiv.innerHTML = `<p class="error-message">Error: Unable to retrieve content. Please check the URL and try again.</p>`;
+                });
+        } else {
+            contentDiv.innerHTML = '<p class="error-message">Please enter a URL.</p>';
+        }
+    });
+});
 edit filepath: index.html
 content: <!DOCTYPE html>
 <html lang="en">
@@ -207,149 +293,68 @@ content: <!DOCTYPE html>
         <div class="container">
             <h1>Browse the Web Anonymously</h1>
             <p>Enter the URL you want to visit.</p>
-        </div>
-    </section>
-
-    <section id="newsletter">
-        <div class="container">
-            <h1>Subscribe To Our Newsletter</h1>
-            <form>
-                <input type="email" placeholder="Enter Email...">
-                <button type="submit" class="button_1">Subscribe</button>
+            <form id="proxyForm">
+                <input type="url" id="urlInput" placeholder="Enter URL">
+                <button type="submit" class="button_1">Go</button>
             </form>
         </div>
     </section>
 
     <section id="main">
         <div class="container">
-            <article id="main-col">
-                <h1>About Us</h1>
-                <p>Welcome to My Web Proxy! This proxy allows you to browse the internet privately and securely. 
-		Simply enter the URL in the address bar to get started. 
-		We use advanced encryption techniques to protect your data and ensure your online activities remain anonymous.</p>
-            </article>
-
-            <aside id="sidebar">
-                <div class="quote">
-                    <h3>Get a Quote</h3>
-                    <form>
-                        <div>
-                            <label>Name</label><br>
-                            <input type="text" placeholder="Name">
-                        </div>
-                        <div>
-                            <label>Email</label><br>
-                            <input type="email" placeholder="Email Address">
-                        </div>
-                        <div>
-                            <label>Message</label><br>
-                            <textarea placeholder="Message"></textarea>
-                        </div>
-                        <button class="button_1" type="submit">Send</button>
-                    </form>
-                </div>
-            </aside>
-        </div>
-    </section>
-
-    <footer>
-        <p>My Web Proxy, Copyright &copy; 2024</p>
-    </footer>
-</body>
-</html>
-edit filepath: about.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About - My Web Proxy</title>
-    <link rel="stylesheet" href="public/style.css">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div id="branding">
-                <h1><span class="highlight">My</span> Web Proxy</h1>
+            <div id="content">
+                <!-- Content from the proxied URL will be displayed here -->
             </div>
-            <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li class="current"><a href="about.html">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <section id="main">
-        <div class="container">
-            <article id="main-col">
-                <h1>About</h1>
-                <p>
-                    My Web Proxy is designed to provide users with a secure and private way to browse the internet. 
-                    We believe that everyone has the right to online privacy, and our proxy is built to protect that right.
-                </p>
-                <p>
-                    Our mission is to offer a reliable and easy-to-use proxy service that encrypts your data and hides your IP address,
-                    allowing you to access the web without being tracked or monitored.
-                </p>
-            </article>
-
-            <aside id="sidebar">
-                <div class="quote">
-                    <h3>What We Do</h3>
-                    <p>We provide a secure web proxy service that encrypts your traffic and protects your identity online.</p>
-                </div>
-            </aside>
         </div>
     </section>
 
     <footer>
         <p>My Web Proxy, Copyright &copy; 2024</p>
     </footer>
+
+    <script src="public/proxy-form.js"></script>
 </body>
 </html>
-edit filepath: /api/proxy.js
+edit filepath: server.js
 content: const express = require('express');
-const router = express.Router();
 const request = require('request');
+const path = require('path');
 
-router.get('/', (req, res) => {
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+
+app.get('/proxy', (req, res) => {
     const url = req.query.url;
 
     if (!url) {
-        return res.status(400).send('URL parameter is required');
+        return res.status(400).send('URL is required');
     }
 
-    request(url, (error, response, body) => {
-        if (error) {
-            console.error(error);
+    request({
+        url: url,
+        encoding: null
+    }, (error, response, body) => {
+        if (error || response.statusCode !== 200) {
+            console.error('Request error:', error);
             return res.status(500).send('Proxy error');
         }
+
+        res.set({
+            'Content-Type': response.headers['content-type']
+        });
         res.send(body);
     });
 });
 
-module.exports = router;
-edit filepath: server.js
-content: const express = require('express');
-const app = express();
-const path = require('path');
-const proxyRoute = require('./api/proxy');
-
-const PORT = process.env.PORT || 3000;
-
-app.use(express.static('public'));
-
-app.use('/proxy', proxyRoute);
-
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
 edit filepath: package.json
 content: {
@@ -363,37 +368,191 @@ content: {
   "dependencies": {
     "express": "^4.17.1",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }
-edit filepath: .gitignore
-content: node_modules/
-edit filepath: public/script.js
+edit filepath: public/styles.css
+content: body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+}
+
+header {
+    background: #2c3e50;
+    color: #fff;
+    padding: 20px 0;
+    border-bottom: 3px solid #e67e22;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+    transition: color 0.3s ease;
+}
+
+header a:hover {
+    color: #e67e22;
+}
+
+header #branding h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+header nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+header nav li {
+    display: inline;
+    margin-left: 20px;
+}
+
+header .highlight,
+header .current a {
+    color: #e67e22;
+    font-weight: bold;
+}
+
+#showcase {
+    background: #34495e;
+    color: #fff;
+    text-align: center;
+    padding: 50px 0;
+}
+
+#showcase h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+#showcase p {
+    font-size: 18px;
+}
+
+#showcase form {
+    margin-top: 20px;
+}
+
+#showcase input[type="url"] {
+    padding: 10px;
+    width: 60%;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    font-size: 16px;
+}
+
+#showcase .button_1 {
+    background: #e67e22;
+    color: #fff;
+    border: 0;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#showcase .button_1:hover {
+    background-color: #d35400;
+}
+
+#main {
+    padding: 30px 0;
+}
+
+#main .container {
+    display: flex;
+}
+
+#content {
+    flex: 2;
+    padding-right: 30px;
+}
+
+#content iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+}
+
+footer {
+    background: #2c3e50;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+
+    header .container,
+    #main .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header nav {
+        margin-top: 10px;
+    }
+
+    header nav li {
+        margin: 0 10px;
+    }
+
+    #showcase input[type="url"] {
+        width: 100%;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    #showcase .button_1 {
+        border-radius: 5px;
+    }
+
+    #content {
+        width: 100%;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+}
+edit filepath: public/proxy-frame.js
 content: document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('proxyForm');
+    const proxyForm = document.getElementById('proxyForm');
+    const urlInput = document.getElementById('urlInput');
+    const contentDiv = document.getElementById('content');
 
-    form.addEventListener('submit', function(event) {
+    proxyForm.addEventListener('submit', function(event) {
         event.preventDefault();
-        const url = document.getElementById('urlInput').value;
+        const url = urlInput.value;
 
-        fetch(`/proxy?url=${encodeURIComponent(url)}`)
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('content').innerHTML = data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('content').innerHTML = 'An error occurred while fetching the content.';
-            });
-    });
-});
-edit filepath: public/index.js
-content: // Placeholder for any additional client-side scripting needed for index.html
-edit filepath: public/form.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        alert('Form submission is disabled for now.');
+        if (url) {
+            contentDiv.innerHTML = `<iframe src="/proxy?url=${encodeURIComponent(url)}"></iframe>`;
+        } else {
+            contentDiv.innerHTML = '<p class="error-message">Please enter a URL.</p>';
+        }
     });
 });
