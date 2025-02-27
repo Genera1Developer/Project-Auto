@@ -15,8 +15,23 @@
 *.otf binary
 *.eot binary
 *.svg binary
+*.wasm binary
 
 # Proxy specific files
 /api/* text=auto eol=lf
 /uv/* text=auto eol=lf
 /public/* text=auto eol=lf
+
+# Configuration files
+*.json text=auto eol=lf
+*.yml text=auto eol=lf
+*.toml text=auto eol=lf
+*.ini text=auto eol=lf
+
+# Scripts
+*.js text=auto eol=lf
+*.sh text=auto eol=lf
+*.py text=auto eol=lf
+
+# Documentation
+*.md text=auto eol=lf
