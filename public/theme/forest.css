@@ -1,20 +1,76 @@
 :root {
     --primary-glow: rgb(34, 139, 34);
     --secondary-glow: rgb(85, 107, 47);
+    --text-color: #eee;
+    --bg-color: #2f4f4f;
+    --card-bg: rgba(0, 0, 0, 0.2);
+    --input-bg: rgba(0, 0, 0, 0.2);
 }
 
 .light {
     --primary-glow: rgb(144, 238, 144);
     --secondary-glow: rgb(0, 128, 0);
+    --text-color: #333;
+    --bg-color: #3e5b41;
+    --card-bg: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.1);
 }
 
 body {
-    background-color: #2f4f4f;
-    transition: background-color 0.3s ease;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-.light body {
-    background-color: #3e5b41;
+/* Ensure content is pushed to the bottom */
+.content-wrapper {
+    flex: 1;
+    padding: 20px;
+}
+
+a {
+    color: var(--primary-glow);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--secondary-glow);
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+nav a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+footer {
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    padding: 1rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .cyber-bg {
@@ -72,16 +128,13 @@ body {
 }
 
 .cyber-card {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--card-bg);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
     border-radius: 12px;
-}
-
-.light .cyber-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1rem;
+    margin-bottom: 1rem;
 }
 
 .cyber-card:hover {
@@ -90,21 +143,19 @@ body {
 }
 
 .cyber-input {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--input-bg);
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    color: var(--text-color);
     transition: all 0.3s ease;
-}
-
-.light .cyber-input {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem;
+    border-radius: 6px;
 }
 
 .cyber-input:focus {
     transform: scale(1.02);
     box-shadow: 0 0 20px var(--primary-glow);
+    outline: none;
 }
 
 .cyber-button {
@@ -113,6 +164,8 @@ body {
     border-radius: 6px;
     padding: 8px 16px;
     color: white;
+    border: none;
+    cursor: pointer;
 }
 
 .cyber-button:hover {
@@ -139,6 +192,7 @@ body {
     background-color: #ccc;
     transition: background-color 0.3s ease;
     position: relative;
+    display: inline-block;
 }
 
 .toggle .circle {
@@ -186,7 +240,7 @@ body {
     bottom: 0;
     height: 100vh;
     z-index: 1000;
-    background: #2f4f4f;
+    background: var(--bg-color);
 }
 
 #proxyFrame {
@@ -327,4 +381,17 @@ body {
     position: absolute;
     resize: both;
     overflow: auto;
+}
+
+/* Utility classes */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
 }
