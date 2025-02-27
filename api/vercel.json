@@ -46,5 +46,10 @@
       "path": "/api/warmup",
       "schedule": "0 * * * *"
     }
+  ],
+  "middleware": [
+    {
+      "src": "/api/middleware.js"
+    }
   ]
 }
