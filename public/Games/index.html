@@ -76,42 +76,7 @@
     </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="games-grid">
-            <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="sports">
-                <a href="/Games/bbr.html" class="block">
-                    <img src="/games/game1.jpg" alt="Basketball Random" class="w-full h-48 object-cover rounded-lg">
-                    <h3 class="mt-4 text-xl font-semibold text-white">BasketBall Random</h3>
-                </a>
-            </div>
-            <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="action">
-                <a href="/game2.html" class="block">
-                    <img src="/games/game2.jpg" alt="Game 2" class="w-full h-48 object-cover rounded-lg">
-                    <h3 class="mt-4 text-xl font-semibold text-white">Game 2</h3>
-                </a>
-            </div>
-            <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="puzzle">
-                <a href="/game3.html" class="block">
-                    <img src="/games/game3.jpg" alt="Game 3" class="w-full h-48 object-cover rounded-lg">
-                    <h3 class="mt-4 text-xl font-semibold text-white">Game 3</h3>
-                </a>
-            </div>
-            <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="action">
-                <a href="/game4.html" class="block">
-                    <img src="/games/game4.jpg" alt="Game 4" class="w-full h-48 object-cover rounded-lg">
-                    <h3 class="mt-4 text-xl font-semibold text-white">Game 4</h3>
-                </a>
-            </div>
-             <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="sports">
-                <a href="/game5.html" class="block">
-                    <img src="/games/game5.jpg" alt="Game 5" class="w-full h-48 object-cover rounded-lg">
-                    <h3 class="mt-4 text-xl font-semibold text-white">Game 5</h3>
-                </a>
-            </div>
-             <div class="cyber-card rounded-lg p-6 text-center game-card" data-category="puzzle">
-                <a href="/game6.html" class="block">
-                    <img src="/games/game6.jpg" alt="Game 6" class="w-full h-48 object-cover rounded-lg">
-                    <h3 class="mt-4 text-xl font-semibold text-white">Game 6</h3>
-                </a>
-            </div>
+           
         </div>
 
     </div>
@@ -121,10 +86,6 @@
         const themeToggle = document.getElementById('themeToggle');
         const themeSelector = document.getElementById('themeSelector');
         const themeDropdown = document.getElementById('themeDropdown');
-        const searchInput = document.getElementById('search-input');
-        const searchButton = document.getElementById('search-button');
-        const categoryButtons = document.querySelectorAll('.category-button');
-        const gameCards = document.querySelectorAll('.game-card');
 
         themeToggle.addEventListener('click', () => {
             html.classList.toggle('light');
@@ -150,93 +111,459 @@
 
         const savedTheme = localStorage.getItem('theme') || 'default';
         html.setAttribute('data-theme', savedTheme);
-        
-                searchButton.addEventListener('click', () => {
-            const searchTerm = searchInput.value;
-            if (searchTerm) {
-                window.location.href = '/search?q=' + encodeURIComponent(searchTerm);
-            }
-        });
-
-        searchInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                searchButton.click();
-            }
-        });
-        
-         categoryButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const category = button.getAttribute('data-category');
-
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                gameCards.forEach(card => {
-                    if (category === 'all' || card.getAttribute('data-category') === category) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        });
     </script>
     
     <script src="/theme/particles.js"></script> <!--perticles-->
+    <script src="/public/script.js"></script>
 </body>
 </html>
 
-edit filepath: public/games.css
-content: 
-.category-selector {
+edit filepath: theme/particles.js
+content: window.onload = function() {
+    Particles.init({
+      selector: '#canvas',
+      color: ['#4CAF50', '#81C784', '#A5D6A7'],
+      connectParticles: true,
+      maxParticles: 80,
+      responsive: [
+        {
+          breakpoint: 768,
+          options: {
+            maxParticles: 50,
+            connectParticles: false
+          }
+        },
+        {
+          breakpoint: 480,
+          options: {
+            maxParticles: 30
+          }
+        }
+      ]
+    });
+  };
+
+edit filepath: public/style.css
+content: :root {
+    --primary-glow: #ff00ff;
+    --background-color: #121212;
+    --text-color: #ffffff;
+    --accent-color: #4CAF50;
+}
+
+[data-theme="forest"] {
+    --primary-glow: #00ff00;
+    --background-color: #1a2e1a;
+}
+
+[data-theme="sunset"] {
+    --primary-glow: #ff7e5f;
+    --background-color: #282828;
+}
+
+html {
+    transition: background-color 0.3s ease;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.text-red {
+    color: #e53e3e;
+}
+
+.cyber-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.cyber-blob {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(to right, var(--primary-glow), #444);
+    opacity: 0.5;
+    animation: float 10s infinite alternate, pulse 5s infinite alternate;
+}
+
+.cyber-blob.blob-1 {
+    top: 10%;
+    left: 10%;
+}
+
+.cyber-blob.blob-2 {
+    top: 30%;
+    left: 40%;
+    width: 300px;
+    height: 300px;
+}
+
+.cyber-blob.blob-3 {
+    top: 60%;
+    left: 70%;
+    width: 150px;
+    height: 150px;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(30px, 50px);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+.cyber-button {
+    background-color: #1a1a1a;
+    color: var(--text-color);
+    border: 2px solid var(--accent-color);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.cyber-button:hover {
+    background-color: var(--accent-color);
+    color: #1a1a1a;
+}
+
+.cyber-card {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cyber-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+}
+
+.theme-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    padding: 10px;
+    display: none;
+}
+
+.theme-dropdown.active {
+    display: block;
+}
+
+.theme-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.theme-item:hover {
+    background-color: #333;
+}
+
+.theme-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.search-container {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
 }
 
-.category-button {
-    background-color: #333;
+.search-input {
+    padding: 10px;
+    border: 2px solid #555;
+    border-radius: 5px 0 0 5px;
+    background-color: #222;
+    color: white;
+    width: 300px;
+}
+
+.search-button {
+    background-color: #4CAF50;
     color: white;
     border: none;
     padding: 10px 20px;
-    margin: 0 5px;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #45a049;
+}
+
+edit filepath: theme/default.css
+content: /* Default theme */
+:root {
+    --bg-color: #0a192f;
+    --text-color: #ccd6f6;
+    --accent-color: #64ffda;
+    --card-bg: #112240;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+/* Header styles */
+header {
+    background: var(--card-bg);
+    color: var(--text-color);
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: 3px solid var(--accent-color);
+}
+
+header a {
+    color: var(--text-color);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+header ul {
+    padding: 0;
+    margin: 0;
+}
+
+header li {
+    float: left;
+    display: inline;
+    padding: 0 20px 0 20px;
+}
+
+header #branding {
+    float: left;
+}
+
+header #branding h1 {
+    margin: 0;
+}
+
+header nav {
+    float: right;
+    margin-top: 10px;
+}
+
+header .highlight, header .current a {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+header a:hover {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+/* Showcase styles */
+#showcase {
+    min-height: 400px;
+    background: url('../img/showcase.jpg') no-repeat 0 -400px;
+    text-align: center;
+    color: var(--text-color);
+}
+
+#showcase h1 {
+    margin-top: 100px;
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+#showcase p {
+    font-size: 20px;
+}
+
+/* Newsletter styles */
+#newsletter {
+    padding: 15px;
+    color: var(--text-color);
+    background: var(--card-bg);
+}
+
+#newsletter h1 {
+    float: left;
+}
+
+#newsletter form {
+    float: right;
+    margin-top: 15px;
+}
+
+#newsletter input[type="email"] {
+    padding: 4px;
+    height: 25px;
+    width: 250px;
+}
+
+/* Boxes styles */
+#boxes {
+    margin-top: 20px;
+}
+
+#boxes .box {
+    float: left;
+    text-align: center;
+    width: 30%;
+    padding: 10px;
+}
+
+#boxes .box img {
+    width: 90px;
+}
+
+/* Sidebar styles */
+aside#sidebar {
+    float: right;
+    width: 30%;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+aside#sidebar .quote input, aside#sidebar .quote textarea {
+    width: 90%;
+    padding: 5px;
+}
+
+/* Main-col styles */
+article#main-col {
+    float: left;
+    width: 65%;
+    padding: 10px;
+}
+
+/* Services styles */
+ul#services li {
+    padding: 20px;
+    border: #cccccc solid 1px;
+    margin-bottom: 5px;
+    background: #e6e6e6;
+}
+
+/* Footer styles */
+footer {
+    padding: 20px;
+    margin-top: 20px;
+    color: var(--text-color);
+    background-color: var(--accent-color);
+    text-align: center;
+}
+
+/* Media Queries */
+@media(max-width: 768px) {
+    header #branding,
+    header nav,
+    header nav li,
+    #newsletter h1,
+    #newsletter form,
+    #boxes .box,
+    aside#sidebar,
+    article#main-col {
+        float: none;
+        text-align: center;
+        width: 100%;
+    }
+
+    header {
+        padding-bottom: 50px;
+    }
+
+    #showcase h1 {
+        margin-top: 40px;
+    }
+
+    #newsletter button {
+        display: block;
+        width: 100%;
+    }
+
+    #newsletter form input[type="email"] {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+edit filepath: visuals/dropdown.css
+content: .theme-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background-color: #1a1a1a;
     border-radius: 5px;
+    padding: 10px;
+    display: none;
+    z-index: 10;
+}
+
+.theme-dropdown.active {
+    display: block;
+}
+
+.theme-item {
+    display: flex;
+    align-items: center;
+    padding: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.category-button:hover {
-    background-color: #555;
+.theme-item:hover {
+    background-color: #333;
 }
 
-.category-button.active {
-    background-color: #4CAF50;
+.theme-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
 
-#games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
+edit filepath: Games/game1.jpg
+content: Placeholder image for game1.jpg
 
-.game-card {
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-}
-
-.game-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.game-card h3 {
-    color: white;
-    font-size: 1.2em;
-}
-
-
-edit filepath:
+edit filepath: Games/game2.jpg
+content: Placeholder image for game2.jpg
