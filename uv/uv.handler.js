@@ -40,8 +40,10 @@ async function handleRequest(req, res) {
     delete options.headers['upgrade'];
     delete options.headers['accept-encoding'];
     delete options.headers['proxy-connection'];
-    delete options.headers['if-none-match']; // Add to prevent caching
+    delete options.headers['if-none-match'];
     delete options.headers['if-modified-since'];
+    delete options.headers['pragma'];
+    delete options.headers['cache-control'];
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       const resHeaders = { ...proxyRes.headers };
@@ -62,7 +64,7 @@ async function handleRequest(req, res) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
       } else {
-        res.destroy(); // Destroy the response socket instead of res.socket
+        res.socket.destroy();
       }
     });
 
@@ -75,7 +77,7 @@ async function handleRequest(req, res) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error: ' + err.message);
       } else {
-        res.destroy(); // Destroy the response socket instead of res.socket
+        res.socket.destroy();
       }
     });
 
@@ -94,7 +96,7 @@ async function handleRequest(req, res) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
     } else {
-      res.destroy(); // Destroy the response socket instead of res.socket
+      res.socket.destroy();
     }
   }
 }
