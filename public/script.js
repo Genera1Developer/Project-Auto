@@ -1,62 +1,49 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('search-input');
-    const searchButton = document.getElementById('search-button');
-    const gamesGrid = document.getElementById('games-grid');
-    const categoryButtons = document.querySelectorAll('.category-button');
+    const urlForm = document.getElementById('urlForm');
+    const urlInput = document.getElementById('urlInput');
+    const contentArea = document.getElementById('contentArea');
+    const themeSelector = document.getElementById('themeSelector');
+    const themeDropdown = document.querySelector('.theme-dropdown');
+    const themeItems = document.querySelectorAll('.theme-item');
 
-    let games = [
-        { name: 'Awesome Action Game', category: 'action', imageUrl: '/Games/game1.jpg', url: 'https://example.com/action1' },
-        { name: 'Super Sports Game', category: 'sports', imageUrl: '/Games/game2.jpg', url: 'https://example.com/sports1' },
-        { name: 'Puzzle Mania', category: 'puzzle', imageUrl: '/Games/game1.jpg', url: 'https://example.com/puzzle1' },
-        { name: 'Another Action Game', category: 'action', imageUrl: '/Games/game2.jpg', url: 'https://example.com/action2' },
-        { name: 'Extreme Sports', category: 'sports', imageUrl: '/Games/game1.jpg', url: 'https://example.com/sports2' },
-        { name: 'Brain Teaser Puzzle', category: 'puzzle', imageUrl: '/Games/game2.jpg', url: 'https://example.com/puzzle2' },
-        { name: 'Action Packed Adventure', category: 'action', imageUrl: '/Games/game1.jpg', url: 'https://example.com/action3' },
-        { name: 'Ultimate Sports Challenge', category: 'sports', imageUrl: '/Games/game2.jpg', url: 'https://example.com/sports3' },
-        { name: 'Mind Bending Puzzle', category: 'puzzle', imageUrl: '/Games/game1.jpg', url: 'https://example.com/puzzle3' }
-    ];
+    urlForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const url = urlInput.value;
+        const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
 
-    function displayGames(gamesToDisplay) {
-        gamesGrid.innerHTML = '';
-        gamesToDisplay.forEach(game => {
-            const gameCard = document.createElement('div');
-            gameCard.className = 'cyber-card';
-            gameCard.innerHTML = `
-                <img src="${game.imageUrl}" alt="${game.name}" style="width:100%;">
-                <h3>${game.name}</h3>
-                <a href="${game.url}" class="cyber-button" target="_blank">Play Now</a>
-            `;
-            gamesGrid.appendChild(gameCard);
-        });
-    }
+        // Clear previous iframe content
+        contentArea.innerHTML = '';
 
-    function filterGames(category) {
-        const filteredGames = category === 'all' ? games : games.filter(game => game.category === category);
-        displayGames(filteredGames);
-    }
+        const iframe = document.createElement('iframe');
+        iframe.src = proxyUrl;
+        iframe.sandbox = 'allow-forms allow-scripts allow-same-origin allow-top-navigation'; // Added sandbox attribute
 
-    function searchGames(searchTerm) {
-        const searchedGames = games.filter(game => game.name.toLowerCase().includes(searchTerm.toLowerCase()));
-        displayGames(searchedGames);
-    }
+        contentArea.appendChild(iframe);
+    });
 
-    categoryButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            filterGames(this.dataset.category);
+    themeSelector.addEventListener('click', function() {
+        themeDropdown.classList.toggle('active');
+    });
+
+    themeItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const theme = this.getAttribute('data-theme');
+            const themeLink = document.getElementById('theme-link');
+
+            if (theme === 'default') {
+                themeLink.href = ''; // Reset to default
+            } else {
+                themeLink.href = `themes/${theme}.css`;
+            }
+
+            themeDropdown.classList.remove('active');
         });
     });
 
-    searchButton.addEventListener('click', function() {
-        searchGames(searchInput.value);
-    });
-
-    searchInput.addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            searchGames(searchInput.value);
+    // Close the dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!themeSelector.contains(event.target) && !themeDropdown.contains(event.target)) {
+            themeDropdown.classList.remove('active');
         }
     });
-
-    displayGames(games);
 });
