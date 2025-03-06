@@ -13,7 +13,7 @@ const proxyHandler = (req, res) => {
     const parsedURL = new URL(targetURL);
     const options = {
       method: req.method,
-      headers: req.headers,
+      headers: { ...req.headers, host: parsedURL.hostname },
     };
 
     const proxyReq = (parsedURL.protocol === 'https:' ? https : http).request(parsedURL.href, options, (proxyRes) => {
