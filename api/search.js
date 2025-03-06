@@ -158,7 +158,10 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Search error:', error);
-    res.status(500).send(`
+    // Provide more informative error message and include status code if available
+    const statusCode = error.response?.status || 500;
+    const errorMessage = error.message || 'An unexpected error occurred';
+    res.status(statusCode).send(`
       <html>
         <head>
           <title>Error</title>
@@ -169,7 +172,7 @@ export default async function handler(req, res) {
         </head>
         <body>
           <h1 class="error">Error</h1>
-          <p>An error occurred: ${error.message}</p>
+          <p>An error occurred: ${errorMessage} (Status Code: ${statusCode})</p>
         </body>
       </html>
     `);
