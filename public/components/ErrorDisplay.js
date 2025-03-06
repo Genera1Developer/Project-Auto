@@ -1,16 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+function ErrorDisplay({ errorMessage }) {
+  if (!errorMessage) {
+    return null;
+  }
 
-function ErrorDisplay({ message }) {
   return (
-    <div className="error-display" role="alert">
-      <p className="error-message">{message || "An unknown error occurred."}</p>
-    </div>
+    
+      <h2>Error</h2>
+      <p>{errorMessage}</p>
+    
   );
 }
-
-ErrorDisplay.propTypes = {
-  message: PropTypes.string,
-};
 
 export default ErrorDisplay;
