@@ -1,44 +1,18 @@
 const NodeCache = require( "node-cache" );
 
-const cache = new NodeCache({ stdTTL: 300, checkperiod: 120 });
+const cache = new NodeCache({ stdTTL: 300, checkperiod: 120 }); // TTL: 5 minutes, check every 2 minutes
 
 module.exports = {
-  get: async (key) => {
-    try {
-      const value = await cache.get(key);
-      return value === undefined ? null : value; // Explicitly return null for cache misses
-    } catch (err) {
-      console.error(`Cache get error for key ${key}: ${err}`);
-      return null; // Return null on error as well for consistency
-    }
+  get: (key) => {
+    return cache.get(key);
   },
-  set: async (key, value) => {
-    try {
-      await cache.set(key, value);
-    } catch (err) {
-      console.error(`Cache set error for key ${key}: ${err}`);
-    }
+  set: (key, value) => {
+    cache.set(key, value);
   },
-  del: async (key) => {
-    try{
-      await cache.del(key);
-    } catch (err) {
-      console.error(`Cache delete error for key ${key}: ${err}`);
-    }
+  del: (key) => {
+    cache.del(key);
   },
-  flush: async () => {
-    try {
-      await cache.flushAll();
-    } catch (err) {
-      console.error(`Cache flush error: ${err}`);
-    }
-  },
-  has: async (key) => {
-    try {
-      return await cache.has(key);
-    } catch (err) {
-      console.error(`Cache has error for key ${key}: ${err}`);
-      return false;
-    }
+  flush: () => {
+    cache.flushAll();
   }
 };
