@@ -1,4 +1,4 @@
-window.UV_CONFIG = {
+const UV_CONFIG = {
     prefix: '/service/',
     bare: '/bare/',
     encodeUrl: Ultraviolet.codec.base64.encode,
