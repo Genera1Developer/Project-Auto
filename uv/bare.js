@@ -26,7 +26,7 @@ class Bare {
                 console.error(`HTTP error! status: ${response.status} - ${response.url}`);
                 throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
             }
-            return response.json();
+            return await response.json();
         } catch (error) {
             console.error("Bare request error:", error);
             throw error;
