@@ -2,7 +2,17 @@ class URLInput extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
+    }
+
+    connectedCallback() {
         this.render();
+        this.inputElement = this.shadow.querySelector('input');
+        this.buttonElement = this.shadow.querySelector('button');
+
+        this.buttonElement.addEventListener('click', () => {
+            const url = this.inputElement.value;
+            this.dispatchEvent(new CustomEvent('urlSubmit', { detail: url }));
+        });
     }
 
     render() {
@@ -21,33 +31,19 @@ class URLInput extends HTMLElement {
                     width: 100%;
                 }
 
-                input[type="text"]:focus {
-                    outline: none;
-                    border-color: #66afe9;
-                    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
-                }
-
-                body.dark-mode input[type="text"] {
-                    background-color: #555;
-                    color: #eee;
-                    border-color: #777;
-                }
-
-                body.dark-mode input[type="text"]:focus {
-                    border-color: #88b3e1;
-                    box-shadow: 0 0 5px rgba(136, 179, 225, 0.5);
+                button {
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease, color 0.3s ease;
                 }
             </style>
-            <input type="text" id="url" placeholder="Enter URL">
+            <input type="text" placeholder="Enter URL">
+            <button>Go</button>
         `;
-    }
-
-    getValue() {
-        return this.shadow.querySelector('input[type="text"]').value;
-    }
-
-    clear() {
-        this.shadow.querySelector('input[type="text"]').value = '';
     }
 }
 
