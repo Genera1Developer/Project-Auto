@@ -23,14 +23,26 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       (async () => {
         try {
-          const response = await fetch(proxiedUrl, {
+          const requestInit = {
             headers: event.request.headers,
             method: event.request.method,
-            body: event.request.body,
-            mode: 'cors',
             credentials: 'omit',
             redirect: 'follow'
-          });
+          };
+
+          if (event.request.method !== 'GET' && event.request.method !== 'HEAD') {
+            try {
+              requestInit.body = await event.request.blob();
+            } catch (e) {
+              console.error("Failed to read request body:", e);
+              return new Response(`<h1>Error: Could not read request body</h1><p>${e}</p>`, {
+                status: 400,
+                headers: { 'Content-Type': 'text/html' },
+              });
+            }
+          }
+          
+          const response = await fetch(proxiedUrl, requestInit);
 
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -39,7 +51,9 @@ self.addEventListener('fetch', (event) => {
           const headers = new Headers(response.headers);
           headers.set('Access-Control-Allow-Origin', '*');
 
-          return new Response(response.body, {
+          const body = await response.blob();
+
+          return new Response(body, {
             status: response.status,
             statusText: response.statusText,
             headers: headers
