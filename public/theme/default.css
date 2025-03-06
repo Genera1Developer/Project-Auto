@@ -4,6 +4,7 @@ body {
     padding: 0;
     background-color: #f0f0f0;
     line-height: 1.6;
+    color: #333; /* Add default text color for better contrast */
 }
 
 .container {
@@ -35,6 +36,7 @@ input[type="text"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    font-size: 1em; /* Improve readability */
 }
 
 button {
@@ -60,6 +62,7 @@ button:hover {
     white-space: pre-wrap;
     word-wrap: break-word;
     font-family: monospace;
+    font-size: 0.9em; /* Improve readability */
 }
 
 .error {
