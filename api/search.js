@@ -8,19 +8,36 @@ const searxInstance = 'https://searx.be';
 const defaultCsp = `default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *;`;
 
 async function modifyHtml(htmlString, csp) {
+  if (!htmlString) return htmlString; // prevent errors with empty htmlString
+
   let chunkStr = htmlString;
   const resourceTypes = ['href', 'src', 'action', 'data-url', 'poster'];
-  resourceTypes.forEach(type => {
+
+  for (const type of resourceTypes) {
     // Correctly handle URLs with existing query parameters
-    chunkStr = chunkStr.replace(
-      new RegExp(`${type}=["'](\/[^"']+)["']`, 'gi'),
-      (match, url) => `${type}="/api/proxy?q=${encodeURIComponent(searxInstance + url)}&csp=${encodeURIComponent(csp)}"`
-    );
-    chunkStr = chunkStr.replace(
-      new RegExp(`${type}=["'](https?:\/\/[^"']+)["']`, 'gi'),
-      (match, url) => `${type}="/api/proxy?q=${encodeURIComponent(url)}&csp=${encodeURIComponent(csp)}"`
-    );
-  });
+    const regexAbsolute = new RegExp(`${type}=["'](https?:\/\/[^"']+)["']`, 'gi');
+    chunkStr = chunkStr.replace(regexAbsolute, (match, url) => {
+        try {
+            new URL(url); // Validate the URL
+            return `${type}="/api/proxy?q=${encodeURIComponent(url)}&csp=${encodeURIComponent(csp)}"`
+        } catch (e) {
+            console.warn(`Invalid URL found in ${type}: ${url}. Skipping.`);
+            return match; // Return original match if URL is invalid
+        }
+    });
+
+    const regexRelative = new RegExp(`${type}=["'](\/[^"']+)["']`, 'gi');
+    chunkStr = chunkStr.replace(regexRelative, (match, url) => {
+        try {
+            new URL(searxInstance + url); // Validate the URL
+
+            return `${type}="/api/proxy?q=${encodeURIComponent(searxInstance + url)}&csp=${encodeURIComponent(csp)}"`
+        } catch (e) {
+             console.warn(`Invalid URL found in ${type}: ${url}. Skipping.`);
+             return match; // Return original match if URL is invalid
+        }
+    });
+  }
 
   // Inject CSP meta tag only if it doesn't already exist. This prevents duplicates.
   if (chunkStr.includes('<head>') && !chunkStr.includes('Content-Security-Policy')) {
@@ -76,6 +93,9 @@ function handleHtmlResponse(response, res, csp) {
   const transformStream = new Transform({
     async transform(chunk, encoding, callback) {
       try {
+        if (!chunk) {
+          return callback(null, chunk); // Handle empty chunks
+        }
         let chunkStr = chunk.toString('utf8');
         chunkStr = await modifyHtml(chunkStr, csp);
         callback(null, chunkStr);
@@ -107,15 +127,25 @@ function handleHtmlResponse(response, res, csp) {
 
   transformStream.on('error', (err) => {
     console.error('Transform stream error:', err);
-    res.status(500).send('Transform stream error');
+    if (!res.headersSent) {
+        res.status(500).send('Transform stream error');
+    }
     res.end();
   });
 
   response.data.on('error', (err) => {
     console.error('SearX stream error:', err);
-    res.status(500).send('SearX stream error');
+      if (!res.headersSent) {
+          res.status(500).send('SearX stream error');
+      }
     res.end();
   });
+
+    res.on('close', () => {
+        // Clean up resources if the client closes the connection prematurely.
+        response.data.unpipe(transformStream);
+        transformStream.destroy();
+    });
 }
 
 function handleNonHtmlResponse(response, res) {
@@ -161,21 +191,27 @@ export default async function handler(req, res) {
     // Provide more informative error message and include status code if available
     const statusCode = error.response?.status || 500;
     const errorMessage = error.message || 'An unexpected error occurred';
-    res.status(statusCode).send(`
-      <html>
-        <head>
-          <title>Error</title>
-          <style>
-            body { font-family: sans-serif; padding: 2rem; }
-            .error { color: #e11d48; }
-          </style>
-        </head>
-        <body>
-          <h1 class="error">Error</h1>
-          <p>An error occurred: ${errorMessage} (Status Code: ${statusCode})</p>
-        </body>
-      </html>
-    `);
+    if (!res.headersSent) {
+      res.status(statusCode).send(`
+        <html>
+          <head>
+            <title>Error</title>
+            <style>
+              body { font-family: sans-serif; padding: 2rem; }
+              .error { color: #e11d48; }
+            </style>
+          </head>
+          <body>
+            <h1 class="error">Error</h1>
+            <p>An error occurred: ${errorMessage} (Status Code: ${statusCode})</p>
+          </body>
+        </html>
+      `);
+    } else {
+        console.warn("Error occurred but headers already sent, unable to send error page.");
+    }
+  } finally {
+    res.end(); // Ensure the response is always ended
   }
 }
 
