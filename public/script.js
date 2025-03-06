@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loadingIndicator = document.getElementById('loading');
   const corsBypassCheckbox = document.getElementById('corsBypass');
   const downloadButton = document.getElementById('downloadButton');
+  const downloadLink = document.getElementById('downloadLink');
 
   proxyForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     responseDiv.innerHTML = '';
     loadingIndicator.style.display = 'block';
     downloadButton.style.display = 'none';
+    downloadLink.style.display = 'none';
 
     try {
       const response = await fetch('/proxy', {
@@ -50,13 +52,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (contentDisposition && contentDisposition.includes('attachment')) {
         const blob = await response.blob();
         const blobUrl = window.URL.createObjectURL(blob);
-        const filename = contentDisposition.split('filename=')[1] || 'downloaded_file';
+        const filename = contentDisposition.split('filename=')[1]?.split(';')[0].trim() || 'downloaded_file';
 
-        downloadButton.href = blobUrl;
-        downloadButton.download = filename;
-        downloadButton.style.display = 'block';
+        downloadLink.href = blobUrl;
+        downloadLink.download = filename;
+        downloadLink.style.display = 'block';
 
-        downloadButton.onclick = () => {
+        downloadLink.onclick = () => {
           setTimeout(() => {
             window.URL.revokeObjectURL(blobUrl);
           }, 100);
@@ -70,3 +72,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+content: Fix: Improve filename extraction and add download link
