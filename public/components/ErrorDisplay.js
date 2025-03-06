@@ -1,3 +1,6 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
 function ErrorDisplay({ message }) {
   return (
     <div className="error-display">
@@ -5,5 +8,9 @@ function ErrorDisplay({ message }) {
     </div>
   );
 }
+
+ErrorDisplay.propTypes = {
+  message: PropTypes.string,
+};
 
 export default ErrorDisplay;
