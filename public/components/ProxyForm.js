@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 function ProxyForm() {
     const [url, setUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [responseText, setResponseText] = useState('');
+    const responseRef = useRef(null);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -35,12 +36,16 @@ function ProxyForm() {
             console.error('Error submitting URL:', error);
         } finally {
             setIsLoading(false);
+            if (responseRef.current) {
+                responseRef.current.focus();
+            }
         }
     };
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
+                <label htmlFor="url">URL:</label>
                 <input
                     type="text"
                     id="url"
@@ -57,7 +62,7 @@ function ProxyForm() {
             {responseText && (
                 <div>
                     <h3>Response:</h3>
-                    <pre>{responseText}</pre>
+                    <pre ref={responseRef} tabIndex="0">{responseText}</pre>
                 </div>
             )}
         </div>
