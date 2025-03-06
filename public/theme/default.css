@@ -5,6 +5,12 @@ body {
     background-color: #f0f0f0;
     line-height: 1.6;
     color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Added transition for dark mode */
+}
+
+body.dark-mode {
+    background-color: #333;
+    color: #f0f0f0;
 }
 
 .container {
@@ -15,12 +21,23 @@ body {
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Added transition for dark mode */
+}
+
+body.dark-mode .container {
+    background-color: #444;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 h1 {
     text-align: center;
     color: #333;
     margin-bottom: 20px;
+    transition: color 0.3s ease; /* Added transition for dark mode */
+}
+
+body.dark-mode h1 {
+    color: #fff;
 }
 
 form {
@@ -37,6 +54,15 @@ input[type="text"] {
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 1em;
+    background-color: #fff;
+    color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease; /* Added transition for dark mode */
+}
+
+body.dark-mode input[type="text"] {
+    background-color: #555;
+    color: #eee;
+    border-color: #777;
 }
 
 button {
@@ -46,11 +72,20 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Added transition for dark mode */
 }
 
 button:hover {
     background-color: #3e8e41;
+}
+
+body.dark-mode button {
+    background-color: #5cb85c;
+    color: #fff;
+}
+
+body.dark-mode button:hover {
+    background-color: #4cae4c;
 }
 
 .response {
@@ -63,11 +98,22 @@ button:hover {
     word-wrap: break-word;
     font-family: monospace;
     font-size: 0.9em;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Added transition for dark mode */
+}
+
+body.dark-mode .response {
+    background-color: #222;
+    color: #ccc;
+    border-color: #555;
 }
 
 .error {
     color: red;
     margin-top: 10px;
+}
+
+body.dark-mode .error {
+    color: #ff6666;
 }
 
 /* Add a subtle focus style to the input */
@@ -77,8 +123,41 @@ input[type="text"]:focus {
     box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
 }
 
+body.dark-mode input[type="text"]:focus {
+    border-color: #88b3e1;
+    box-shadow: 0 0 5px rgba(136, 179, 225, 0.5);
+}
+
 /* Add a more distinct hover effect to the button */
 button:focus {
     outline: none;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode toggle */
+.dark-mode-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark-mode-toggle:hover {
+    background-color: #555;
+}
+
+body.dark-mode .dark-mode-toggle {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+body.dark-mode .dark-mode-toggle:hover {
+    background-color: #ddd;
 }
