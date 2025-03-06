@@ -1,10 +1,13 @@
 body {
-  background-color: #f0fff0; /* Light background */
-  color: #333; /* Darker text for readability */
+  background-color: #f0fff0;
+  color: #333;
   font-family: sans-serif;
   margin: 0;
   padding: 0;
   line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
 }
 
 .container {
@@ -17,7 +20,7 @@ body {
 }
 
 h1 {
-  color: #228B22; /* Forest Green */
+  color: #228B22;
   text-align: center;
   margin-bottom: 20px;
 }
@@ -36,17 +39,17 @@ textarea {
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; /* Prevents padding from affecting width */
+  box-sizing: border-box;
   font-size: 16px;
 }
 
 textarea {
-  resize: vertical; /* Allows vertical resizing */
+  resize: vertical;
   min-height: 100px;
 }
 
 button {
-  background-color: #228B22; /* Forest Green */
+  background-color: #228B22;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -57,7 +60,7 @@ button {
 }
 
 button:hover {
-  background-color: #3CB371; /* LightSeaGreen */
+  background-color: #3CB371;
 }
 
 pre {
@@ -66,12 +69,12 @@ pre {
   border: 1px solid #ddd;
   border-radius: 4px;
   overflow-x: auto;
-  white-space: pre-wrap; /* Allows long lines to wrap */
+  white-space: pre-wrap;
   font-size: 14px;
 }
 
 a {
-  color: #228B22; /* Forest Green */
+  color: #228B22;
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -79,6 +82,15 @@ a {
 a:hover {
   text-decoration: underline;
   color: #3CB371;
+}
+
+footer {
+  text-align: center;
+  margin-top: auto; /* Push the footer to the bottom */
+  padding: 20px;
+  background-color: #f0fff0;
+  color: #333;
+  border-top: 1px solid #ddd;
 }
 
 /* Responsive adjustments */
