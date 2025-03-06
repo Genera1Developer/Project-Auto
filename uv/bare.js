@@ -10,7 +10,7 @@ class Bare {
         try {
             const response = await fetch(fetchUrl, options);
             if (!response.ok) {
-                console.error(`HTTP error! status: ${response.status} - ${response.url}`);
+                console.error(`Bare fetch error: HTTP error! status: ${response.status} - ${response.url}`);
                 throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
             }
             return response;
@@ -25,7 +25,7 @@ class Bare {
         try {
             const response = await fetch(fetchUrl, options);
             if (!response.ok) {
-                console.error(`HTTP error! status: ${response.status} - ${response.url}`);
+                console.error(`Bare request error: HTTP error! status: ${response.status} - ${response.url}`);
                 throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
             }
             return await response.json();
