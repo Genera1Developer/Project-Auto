@@ -6,7 +6,8 @@ self.addEventListener('install', function(event) {
           '/',
           '/index.html',
           '/style.css',
-          '/script.js'
+          '/script.js',
+          '/offline.html' // Add an offline page
         ]);
       })
   );
@@ -21,10 +22,6 @@ self.addEventListener('fetch', function(event) {
           return response;
         }
 
-        // IMPORTANT: Clone the request. A request is a stream and
-        // can only be consumed once. Since we are consuming this
-        // once by cache and once by the browser for fetch, we need
-        // to clone the response.
         var fetchRequest = event.request.clone();
 
         return fetch(fetchRequest).then(
@@ -34,10 +31,6 @@ self.addEventListener('fetch', function(event) {
               return response;
             }
 
-            // IMPORTANT: Clone the response. A response is a stream
-            // and because we want the browser to consume the response
-            // as well as the cache consuming the response, we need
-            // to clone it so we have two streams.
             var responseToCache = response.clone();
 
             caches.open('my-site-cache')
@@ -47,7 +40,13 @@ self.addEventListener('fetch', function(event) {
 
             return response;
           }
-        );
+        ).catch(function() {
+          // If both fail, show a generic fallback:
+          return caches.match('/offline.html');
+          // However, in reality you'd have many different
+          // fallbacks, depending on the URL & headers.
+          // Eg, a fallback silhouette image for avatars.
+        });
       })
     );
 });
