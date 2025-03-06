@@ -41,11 +41,24 @@ self.addEventListener('fetch', (event) => {
               });
             }
           }
-          
-          const response = await fetch(proxiedUrl, requestInit);
+
+          let response;
+          try {
+            response = await fetch(proxiedUrl, requestInit);
+          } catch (error) {
+            console.error('Fetch error:', error);
+            return new Response(`<h1>Error: Target server unavailable or invalid URL</h1><p>${error}</p>`, {
+              status: 502,
+              headers: { 'Content-Type': 'text/html' },
+            });
+          }
 
           if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            console.error('HTTP error:', response.status, response.statusText);
+            return new Response(`<h1>Error: Proxy request failed with status ${response.status}</h1><p>${response.statusText}</p>`, {
+              status: response.status,
+              headers: { 'Content-Type': 'text/html' },
+            });
           }
 
           const headers = new Headers(response.headers);
@@ -59,8 +72,8 @@ self.addEventListener('fetch', (event) => {
             headers: headers
           });
         } catch (error) {
-          console.error('Fetch error:', error);
-          return new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
+          console.error('Unexpected error:', error);
+          return new Response(`<h1>Error: An unexpected error occurred</h1><p>${error}</p>`, {
             status: 500,
             headers: { 'Content-Type': 'text/html' },
           });
