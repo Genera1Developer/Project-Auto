@@ -1,61 +1,72 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-function SearchBar({ onSearch }) {
-    const [query, setQuery] = useState('');
+function SearchBar({ onSearch, autoComplete }) {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
     const searchInputRef = useRef(null);
-    const autoCompleteEnabled = localStorage.getItem('autoComplete') === 'true' || true;
 
     useEffect(() => {
-        if (autoCompleteEnabled) {
-            const storedQuery = localStorage.getItem('lastQuery');
-            if (storedQuery) {
-                setQuery(storedQuery);
-            }
+        if (autoComplete) {
+            const storedSearches = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+            const filteredSuggestions = storedSearches.filter(item =>
+                item.toLowerCase().startsWith(searchTerm.toLowerCase()) && item !== searchTerm
+            );
+            setSuggestions(filteredSuggestions.slice(0, 5)); // Limit to 5 suggestions
+        } else {
+            setSuggestions([]);
         }
-    }, [autoCompleteEnabled]);
+    }, [searchTerm, autoComplete]);
 
     const handleChange = (event) => {
-        const newQuery = event.target.value;
-        setQuery(newQuery);
-        if (autoCompleteEnabled) {
-            localStorage.setItem('lastQuery', newQuery);
-        }
+        setSearchTerm(event.target.value);
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        onSearch(query);
+        if (searchTerm.trim()) {
+            onSearch(searchTerm);
+            updateSearchHistory(searchTerm);
+        }
     };
 
-    const handleClear = () => {
-        setQuery('');
-        localStorage.removeItem('lastQuery');
-        if (searchInputRef.current) {
-            searchInputRef.current.focus();
+    const updateSearchHistory = (term) => {
+        let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+        if (!searchHistory.includes(term)) {
+            searchHistory = [term, ...searchHistory].slice(0, 10); // Limit to 10 items
+            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
         }
-        onSearch('');
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        setSearchTerm(suggestion);
+        onSearch(suggestion);
+        setSuggestions([]);
+        searchInputRef.current.blur();
     };
 
     return (
-        <form onSubmit={handleSubmit} className="search-bar">
-            <input
-                type="text"
-                placeholder="Enter URL"
-                value={query}
-                onChange={handleChange}
-                ref={searchInputRef}
-                className="search-input"
-                aria-label="Search the web"
-            />
-            <div className="search-buttons">
-                <button type="submit" className="search-button">Go</button>
-                {query && (
-                    <button type="button" onClick={handleClear} className="clear-button">
-                        Clear
-                    </button>
-                )}
-            </div>
-        </form>
+        <div className="search-bar">
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Enter URL or search term"
+                    value={searchTerm}
+                    onChange={handleChange}
+                    ref={searchInputRef}
+                    autoComplete="off" // Disable browser autocomplete
+                />
+                <button type="submit">Search</button>
+            </form>
+            {suggestions.length > 0 && (
+                <ul className="suggestions">
+                    {suggestions.map((suggestion, index) => (
+                        <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                            {suggestion}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
     );
 }
 
