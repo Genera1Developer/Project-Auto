@@ -1,0 +1,13 @@
+{
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "Simple web proxy",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ua-parser-js": "^1.0.37"
+  },
+  "devDependencies": {}
+}
