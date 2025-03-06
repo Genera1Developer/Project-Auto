@@ -14,7 +14,7 @@ self.addEventListener('install', event => {
         console.log('Opened cache');
         return cache.addAll(urlsToCache);
       })
-      .catch(err => console.error('Failed to open cache:', err))
+      .catch(err => console.error('ServiceWorker: Cache opening failed: ', err))
   );
 });
 
@@ -48,7 +48,7 @@ self.addEventListener('fetch', event => {
               .then(cache => {
                 cache.put(event.request, responseToCache);
               })
-              .catch(err => console.warn('Failed to cache:', event.request.url, err));
+              .catch(err => console.warn('ServiceWorker: Cache PUT failed.', err));
 
             return response;
           })
@@ -56,25 +56,23 @@ self.addEventListener('fetch', event => {
             return caches.match('/offline.html');
           });
       })
-      .catch(err => console.error('Failed to fetch:', event.request.url, err))
+      .catch(err => console.error('ServiceWorker: Fetch failed: ', err))
   );
 });
 
 self.addEventListener('activate', event => {
-  const cacheWhitelist = [CACHE_NAME];
-
   event.waitUntil(
     caches.keys()
       .then(cacheNames => {
         return Promise.all(
           cacheNames.map(cacheName => {
-            if (cacheWhitelist.indexOf(cacheName) === -1) {
+            if (cacheName !== CACHE_NAME) {
               return caches.delete(cacheName);
             }
           })
         );
       })
       .then(() => self.clients.claim()) // This ensures fast updates.
-      .catch(err => console.error('Failed to activate service worker:', err))
+      .catch(err => console.error('ServiceWorker: Activation failed: ', err))
   );
 });
