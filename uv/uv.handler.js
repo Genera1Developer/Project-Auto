@@ -49,19 +49,12 @@ async function handleRequest(req, res) {
       proxyRes.pipe(res, { end: true });
     });
 
-    proxyReq.on('timeout', () => {
-      proxyReq.destroy();
-      if (!res.headersSent) {
-        res.writeHead(504, { 'Content-Type': 'text/plain' });
-        res.end('Proxy request timeout.');
-      } else {
-        res.socket?.destroy();
-      }
+    proxyReq.setTimeout(options.timeout, () => {
+        proxyReq.destroy(new Error('Proxy request timeout.'));
     });
 
     proxyReq.on('error', (err) => {
       console.error('Proxy request error:', err);
-      proxyReq.destroy();
       if (!res.headersSent) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error.');
@@ -74,7 +67,6 @@ async function handleRequest(req, res) {
 
     req.on('error', (err) => {
       console.error('Request pipe error:', err);
-      req.destroy();
       proxyReq.destroy(err);
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
