@@ -1,17 +1,10 @@
-self.importScripts('./uv.bundle.js', './uv.config.js');
-self.addEventListener('fetch', (event) => {
-  try {
-    event.respondWith(
-      (async () => {
-        //console.log('URL:', event.request.url);
-        if (event.request.url.startsWith(location.protocol + '//' + location.host + '/service/')) {
-          //console.log('Bypass');
-          return await fetch(event.request);
-        }
-        return await uv.fetch(event);
-      })()
-    );
-  } catch (e) {
-    console.error(e);
-  }
-});
+self.__uv$config = {
+    prefix: '/service/',
+    bare: '/bare/',
+    encodeUrl: Ultraviolet.codec.xor.encode,
+    decodeUrl: Ultraviolet.codec.xor.decode,
+    handler: '/uv/uv.handler.js',
+    bundle: '/uv/uv.bundle.js',
+    config: '/uv/uv.config.js',
+    sw: '/uv/uv.sw.js',
+};
