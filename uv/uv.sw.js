@@ -30,9 +30,10 @@ self.addEventListener('fetch', (event) => {
             redirect: 'follow'
           };
 
-          if (event.request.body) {
+          let body = null;
+          if (event.request.method !== 'GET' && event.request.method !== 'HEAD') {
             try {
-              requestInit.body = await event.request.blob();
+              body = await event.request.blob();
             } catch (e) {
               console.error("Failed to read request body:", e);
               return new Response(`<h1>Error: Could not read request body</h1><p>${e}</p>`, {
@@ -40,6 +41,7 @@ self.addEventListener('fetch', (event) => {
                 headers: { 'Content-Type': 'text/html' },
               });
             }
+            requestInit.body = body;
           }
 
           let response;
@@ -67,9 +69,9 @@ self.addEventListener('fetch', (event) => {
           headers.delete('content-security-policy-report-only');
           headers.delete('clear-site-data');
 
-          let body;
+          let responseBody;
           try {
-              body = await response.blob();
+              responseBody = await response.blob();
           } catch (error) {
               console.error('Failed to read response body:', error);
               return new Response(`<h1>Error: Could not read response body from target</h1><p>${error}</p>`, {
@@ -78,7 +80,7 @@ self.addEventListener('fetch', (event) => {
               });
           }
 
-          return new Response(body, {
+          return new Response(responseBody, {
             status: response.status,
             statusText: response.statusText,
             headers: headers
