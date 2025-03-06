@@ -8,11 +8,12 @@
     --hover-color: #c0392b;
     --border-color: #7f8c8d;
     --transition-speed: 0.3s;
-    --border-radius: 8px; /* Consistent border radius */
+    --border-radius: 8px;
+    --font-family: 'Arial', sans-serif; /* Define font family variable */
 }
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: var(--font-family);
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
@@ -36,6 +37,7 @@ input[type="text"] {
     max-width: 500px;
     font-size: 1rem;
     transition: box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    font-family: var(--font-family); /* Use font family variable */
 }
 
 input[type="text"]:focus {
@@ -53,6 +55,7 @@ button {
     cursor: pointer;
     font-size: 1.1rem;
     transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+    font-family: var(--font-family); /* Use font family variable */
 }
 
 button:hover {
