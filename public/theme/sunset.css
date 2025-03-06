@@ -11,7 +11,8 @@
     --border-radius: 8px;
     --font-family: 'Arial', sans-serif;
     --max-width: 800px;
-    --form-element-spacing: 15px; /* Spacing between form elements */
+    --form-element-spacing: 15px;
+    --footer-text-color: #95a5a6;
 }
 
 body {
@@ -112,7 +113,7 @@ footer {
     margin-top: 20px;
     padding: 10px;
     font-size: 0.8em;
-    color: #95a5a6;
+    color: var(--footer-text-color);
     text-align: center;
 }
 
