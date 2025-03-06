@@ -1,6 +1,6 @@
 1. **Install Git:** Ensure you have Git installed on your machine. You can download it from [https://git-scm.com/](https://git-scm.com/).
 
-2. **Install Python:** This project requires Python 3.8 or higher. Download the latest version from [https://www.python.org/downloads/](https://www.python.org/downloads/). Make sure to add Python to your PATH during installation. Consider using a Python version manager like `pyenv` or `asdf` for managing multiple Python versions. **Using a version manager is strongly recommended to avoid conflicts and ensure consistency across development environments.**
+2. **Install Python:** This project requires Python 3.8 or higher. Download the latest version from [https://www.python.org/downloads/](https://www.python.org/downloads/). Make sure to add Python to your PATH during installation. Consider using a Python version manager like `pyenv` or `asdf` for managing multiple Python versions. **Using a version manager is strongly recommended to avoid conflicts and ensure consistency across development environments.** It's also recommended to use a tool like `pyenv-virtualenv` to manage virtual environments in conjunction with `pyenv`.
 
 3. **Clone the Repository:** Clone the project repository to your local machine using:
 
@@ -9,7 +9,7 @@
    cd <repository_name>
    
 
-4. **Create a Virtual Environment:** Create a virtual environment to isolate the project dependencies. Using virtual environments like `venv`, `poetry`, or `pipenv` is highly recommended. These tools simplify dependency resolution and environment management. Choose **one** of the following methods:
+4. **Create and Activate a Virtual Environment:** Create a virtual environment to isolate the project dependencies. Using virtual environments like `venv`, `poetry`, or `pipenv` is highly recommended. These tools simplify dependency resolution and environment management. Choose **one** of the following methods:
 
    * **Using `venv`:**
 
@@ -64,4 +64,5 @@
 8. **Set up Environment Variables:** Refer to the `.env.example` file for the required environment variables. Create a `.env` file in the project root directory and populate it with the necessary values. It is recommended to use `python-dotenv` to load these. **Ensure the `.env` file is added to your `.gitignore` to avoid committing sensitive information to the repository. Never commit sensitive information to the repository. Double-check before committing.**
 
 9. **Set up pre-commit hooks:**
+
     * Install pre-
