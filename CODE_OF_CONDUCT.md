@@ -1,6 +1,6 @@
 ### Our Pledge
 
-We as contributors, leaders, and maintainers pledge to make participation in our community a welcoming, respectful, and harassment-free experience for everyone, regardless of age, body size, neurodiversity, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, political affiliation, or sexual orientation. This includes a commitment to accessibility and inclusivity for those with varied communication styles and needs.
+We as contributors, leaders, and maintainers pledge to make participation in our community a welcoming, respectful, and harassment-free experience for everyone, regardless of age, body size, neurodiversity, disability (visible or invisible), ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, political affiliation, or sexual orientation. This includes a commitment to accessibility and inclusivity for those with varied communication styles and needs.
 
 We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
 
@@ -30,6 +30,7 @@ Examples of unacceptable behavior include:
 *   Sustained disruption of discussions or other events.
 *   Making assumptions about others' identities or backgrounds.
 *   Exclusionary behavior or creating a hostile environment for any member.
+*   Unwelcome comments regarding a person’s lifestyle choices and practices, including those related to food, health, parenting, relationships, or employment.
 
 ### Enforcement Responsibilities
 
@@ -43,7 +44,7 @@ This Code of Conduct applies within all community spaces, both online and offlin
 
 ### Reporting
 
-If you experience or witness unacceptable behavior, or have any concerns, please report it to us. All reports will be treated with discretion and investigated promptly and fairly. Confidentiality will be maintained to the extent that it does not impede a thorough and fair investigation.
+If you experience or witness unacceptable behavior, or have any concerns, please report it to us. All reports will be treated with discretion and investigated promptly and fairly. Confidentiality will be maintained to the extent that it does not impede a thorough and fair investigation and is permitted by applicable law.
 
 We provide multiple reporting methods to ensure accessibility and comfort.
 
@@ -115,4 +116,3 @@ For any questions or concerns regarding this Code of Conduct, or to report a vio
 *   **Code of Conduct Team:** [List names and contact information of designated community leaders/team. E.g., "Jane Doe (jane.doe@example.com) or John Smith (john.smith@example.com)."]
 
 If you are unsure about whether something violates this Code of Conduct, please err on the side of reporting it. We value creating a safe and inclusive environment for all.
-content: [improved code]
