@@ -1,5 +1,5 @@
 {
-  "watch": ["api", "public", "uv"],
+  "watch": ["api", "public", "uv", "index.js"],
   "ignore": [
     "node_modules",
     "cache/*",
@@ -13,7 +13,8 @@
     "public/img/*",
     "cert/*",
     "db/*",
-    ".cache/*"
+    ".cache/*",
+    "sessions/*"
   ],
   "ext": "js,json,html,css,mjs",
   "delay": "250",
@@ -26,6 +27,7 @@
   },
   "env": {
     "NODE_ENV": "development",
-    "PORT": "3000"
+    "PORT": "3000",
+    "DEBUG": "proxy:*"
   }
 }
