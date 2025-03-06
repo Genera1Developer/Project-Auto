@@ -69,5 +69,6 @@
   "experimental": {
     "enableUndici": true
   },
-  "sendAnonymousTelemetry": false
+  "sendAnonymousTelemetry": false,
+    "trailingSlash": false
 }
