@@ -1,6 +1,6 @@
 ### Our Pledge
 
-We as contributors, leaders, and maintainers pledge to make participation in our community a welcoming, respectful, and harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual orientation.
+We as contributors, leaders, and maintainers pledge to make participation in our community a welcoming, respectful, and harassment-free experience for everyone, regardless of age, body size, neurodiversity, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, political affiliation, or sexual orientation. We also extend this pledge to those with varied communication styles and needs.
 
 We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
 
@@ -9,12 +9,13 @@ We pledge to act and interact in ways that contribute to an open, welcoming, div
 Examples of behavior that contributes to a positive environment for our community include:
 
 *   Being empathetic, patient, and kind toward other people
-*   Respecting differing opinions, viewpoints, and experiences
+*   Respecting differing opinions, viewpoints, and experiences, including those based on diverse cultural backgrounds.
 *   Giving and gracefully accepting constructive feedback
 *   Accepting responsibility and apologizing to those affected by our mistakes
 *   Focusing on what is best for the community
-*   Using welcoming and inclusive language
+*   Using welcoming and inclusive language, avoiding jargon or making assumptions about others' knowledge.
 *   Actively listening to understand different perspectives.
+*   Being mindful of how your communication style may be perceived by others.
 
 Examples of unacceptable behavior include:
 
@@ -26,6 +27,7 @@ Examples of unacceptable behavior include:
 *   Advocating for, or encouraging, any of the above behavior
 *   Deliberate intimidation, stalking, or following online or offline.
 *   Sustained disruption of discussions or other events.
+*   Making assumptions about others' identities or backgrounds.
 
 ### Enforcement Responsibilities
 
@@ -68,13 +70,13 @@ Community leaders will follow these Community Impact Guidelines to determine the
 
 **Community Impact:** Use of inappropriate language or other behavior deemed unprofessional or unwelcome in the community.
 
-**Consequence:** A private, written warning from community leaders, providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate. A public apology may be requested.
+**Consequence:** A private, written warning from community leaders, providing clarity around the nature of the violation and an explanation of why the behavior was inappropriate. A public apology may be requested. Educational resources on inclusive language and respectful communication may also be provided.
 
 #### 2. Warning
 
 **Community Impact:** A violation through a single incident or series of actions.
 
-**Consequence:** A warning with consequences for continued behavior. This may include a temporary restriction from interacting in community spaces. No unsolicited interaction with the people involved, including those enforcing the Code of Conduct, is allowed for a specified period. Violating these terms may lead to a temporary or permanent ban.
+**Consequence:** A warning with consequences for continued behavior. This may include a temporary restriction from interacting in community spaces. No unsolicited interaction with the people involved, including those enforcing the Code of Conduct, is allowed for a specified period. Violating these terms may lead to a temporary or permanent ban. The violator may also be required to participate in diversity and inclusion training.
 
 #### 3. Temporary Ban
 
@@ -104,5 +106,9 @@ For answers to common questions about this code of conduct, see the FAQ at [http
 
 ### Contact Information
 
-For any questions or concerns regarding this Code of Conduct, please contact [conduct@example.com](mailto:conduct@example.com).
-content: [enhanced inclusivity examples and added contact information]
+For any questions or concerns regarding this Code of Conduct, or to report a violation, please contact:
+
+*   **Email:** [conduct@example.com](mailto:conduct@example.com)
+*   **Code of Conduct Team:** [List names and contact information of designated community leaders/team. E.g., "Jane Doe (jane.doe@example.com) or John Smith (john.smith@example.com)."]
+
+If you are unsure about whether something violates this Code of Conduct, please err on the side of reporting it.
