@@ -4,7 +4,7 @@ body {
     padding: 0;
     background-color: #f0f0f0;
     line-height: 1.6;
-    color: #333; /* Add default text color for better contrast */
+    color: #333;
 }
 
 .container {
@@ -36,7 +36,7 @@ input[type="text"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 1em; /* Improve readability */
+    font-size: 1em;
 }
 
 button {
@@ -62,10 +62,23 @@ button:hover {
     white-space: pre-wrap;
     word-wrap: break-word;
     font-family: monospace;
-    font-size: 0.9em; /* Improve readability */
+    font-size: 0.9em;
 }
 
 .error {
     color: red;
     margin-top: 10px;
+}
+
+/* Add a subtle focus style to the input */
+input[type="text"]:focus {
+    outline: none;
+    border-color: #66afe9;
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
+}
+
+/* Add a more distinct hover effect to the button */
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
