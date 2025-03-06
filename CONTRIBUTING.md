@@ -145,4 +145,3 @@
     * Create a pull request on GitHub.
 
     * Ensure all tests pass and the code adheres to the project's coding style.
-content:
