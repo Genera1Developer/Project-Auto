@@ -2,9 +2,9 @@
     position: fixed;
     top: 60px;
     right: 16px;
-    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
+    background: var(--theme-button-bg, linear-gradient(45deg, var(--primary-glow), var(--secondary-glow)));
+    border: 1px solid var(--theme-button-border, rgba(255, 255, 255, 0.1));
+    color: var(--theme-button-color, white);
     padding: 8px;
     border-radius: 50%;
     cursor: pointer;
@@ -22,9 +22,9 @@
     position: fixed;
     top: 100px;
     right: 16px;
-    background: rgba(0, 0, 0, 0.7);
+    background: var(--dropdown-bg, rgba(0, 0, 0, 0.7));
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--dropdown-border, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
     padding: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -43,7 +43,7 @@
     padding: 8px;
     border-radius: 4px;
     cursor: pointer;
-    color: white;
+    color: var(--theme-item-color, white);
     transition: all 0.3s ease;
     margin-bottom: 4px;
 }
@@ -53,7 +53,7 @@
 }
 
 .theme-item:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-item-hover-bg, rgba(255, 255, 255, 0.1));
     transform: translateY(-2px);
     box-shadow: 0 0 10px var(--primary-glow), 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -64,7 +64,7 @@
     border-radius: 50%;
     display: inline-block;
     margin-right: 8px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid var(--theme-preview-border, rgba(255, 255, 255, 0.2));
     transition: all 0.3s ease;
 }
 
@@ -72,169 +72,6 @@
     border-color: var(--primary-glow);
     box-shadow: 0 0 5px var(--primary-glow);
 }
-
-.light #themeSelector {
-    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: black;
-}
-
-.light .theme-dropdown {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    color: black;
-}
-
-.light .theme-item {
-    color: black;
-}
-
-.light .theme-item:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.light .theme-preview {
-    border-color: rgba(0, 0, 0, 0.2);
-}
-
-.light .theme-preview:hover {
-    border-color: var(--primary-glow);
-}
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="visuals/dropdown.css">
-    <link id="theme-link" rel="stylesheet" href="themes/default.css">
-    <link rel="icon" href="visuals/favicon.ico" type="image/x-icon">
-</head>
-<body>
-    <div class="container">
-        <h1>Web Proxy</h1>
-        <div class="input-area">
-            <input type="text" id="urlInput" placeholder="Enter URL">
-            <button id="proxyButton">Go</button>
-        </div>
-        <div class="content-area">
-            <iframe id="proxyFrame" src=""></iframe>
-        </div>
-    </div>
-
-    <button id="themeSelector">
-        <img src="visuals/theme-icon.svg" alt="Theme" width="24">
-    </button>
-
-    <div class="theme-dropdown">
-        <div class="theme-item" data-theme="default">
-            <span class="theme-preview" style="background-color: #2980b9;"></span> Default
-        </div>
-        <div class="theme-item" data-theme="dark">
-            <span class="theme-preview" style="background-color: #34495e;"></span> Dark
-        </div>
-        <div class="theme-item" data-theme="light">
-            <span class="theme-preview" style="background-color: #ecf0f1;"></span> Light
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-    <script src="visuals/dropdown.js"></script>
-</body>
-</html>
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('urlInput');
-    const proxyButton = document.getElementById('proxyButton');
-    const proxyFrame = document.getElementById('proxyFrame');
-
-    proxyButton.addEventListener('click', function() {
-        let url = urlInput.value;
-        if (url) {
-            proxyFrame.src = '/api/proxy?url=' + encodeURIComponent(url);
-        }
-    });
-});
-edit filepath: api/proxy.js
-content: const { URL } = require('url');
-const http = require('http');
-const https = require('https');
-
-module.exports = (req, res) => {
-    const targetUrl = req.query.url;
-
-    if (!targetUrl) {
-        res.status(400).send('URL parameter is required');
-        return;
-    }
-
-    try {
-        new URL(targetUrl);
-    } catch (error) {
-        res.status(400).send('Invalid URL');
-        return;
-    }
-
-    const proxyRequest = (url, responseStream) => {
-        const options = {
-            url: url,
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (compatible; MyWebProxy/1.0)'
-            }
-        };
-
-        const protocol = url.startsWith('https') ? https : http;
-
-        protocol.get(url, options, (proxyRes) => {
-            responseStream.writeHead(proxyRes.statusCode, proxyRes.headers);
-            proxyRes.pipe(responseStream, { end: true });
-
-            proxyRes.on('error', (err) => {
-                console.error('Proxy response error:', err);
-                responseStream.status(500).send('Proxy response error');
-            });
-        }).on('error', (err) => {
-            console.error('Proxy request error:', err);
-            responseStream.status(500).send('Proxy request error');
-        });
-    };
-
-    proxyRequest(targetUrl, res);
-};
-edit filepath: package.json
-content: {
-  "name": "web-proxy",
-  "version": "1.0.0",
-  "description": "A simple web proxy",
-  "main": "index.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "http-proxy": "^1.18.1",
-    "express": "^4.17.1"
-  }
-}
-edit filepath: server.js
-content: const express = require('express');
-const app = express();
-const path = require('path');
-
-const proxyHandler = require('./api/proxy');
-
-const port = 3000;
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/api/proxy', (req, res) => {
-    proxyHandler(req, res);
-});
-
-app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
-});
 edit filepath: public/style.css
 content: body {
     font-family: Arial, sans-serif;
@@ -261,7 +98,7 @@ content: body {
     width: 80%;
     max-width: 1200px;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--container-bg, rgba(255, 255, 255, 0.1));
     backdrop-filter: blur(10px);
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -282,8 +119,8 @@ input[type="text"] {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.7);
-    color: #333;
+    background-color: var(--input-bg, rgba(255, 255, 255, 0.7));
+    color: var(--input-text-color, #333);
 }
 
 button {
@@ -318,43 +155,23 @@ iframe {
     --background: #ecf0f1;
     --text-color: #2c3e50;
 }
-edit filepath: public/visuals/theme-icon.svg
-content: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-edit filepath: public/visuals/dropdown.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const themeSelector = document.getElementById('themeSelector');
-    const themeDropdown = document.querySelector('.theme-dropdown');
-    const themeItems = document.querySelectorAll('.theme-item');
-    const themeLink = document.getElementById('theme-link');
-
-    themeSelector.addEventListener('click', function() {
-        themeDropdown.classList.toggle('active');
-    });
-
-    themeItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const theme = this.dataset.theme;
-            themeLink.href = `themes/${theme}.css`;
-            localStorage.setItem('selectedTheme', theme);
-            themeDropdown.classList.remove('active');
-        });
-    });
-
-    document.addEventListener('click', function(event) {
-        if (!themeSelector.contains(event.target) && !themeDropdown.contains(event.target)) {
-            themeDropdown.classList.remove('active');
-        }
-    });
-
-    const selectedTheme = localStorage.getItem('selectedTheme') || 'default';
-    themeLink.href = `themes/${selectedTheme}.css`;
-});
 edit filepath: public/themes/default.css
 content: :root {
     --primary-glow: #00bcd4;
     --secondary-glow: #e91e63;
     --background: #2c3e50;
     --text-color: #ecf0f1;
+    --container-bg: rgba(255, 255, 255, 0.1);
+    --input-bg: rgba(255, 255, 255, 0.7);
+    --input-text-color: #333;
+    --theme-button-bg: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+    --theme-button-border: rgba(255, 255, 255, 0.1);
+    --theme-button-color: white;
+    --dropdown-bg: rgba(0, 0, 0, 0.7);
+    --dropdown-border: rgba(255, 255, 255, 0.1);
+    --theme-item-color: white;
+    --theme-item-hover-bg: rgba(255, 255, 255, 0.1);
+    --theme-preview-border: rgba(255, 255, 255, 0.2);
 }
 edit filepath: public/themes/dark.css
 content: :root {
@@ -362,6 +179,17 @@ content: :root {
     --secondary-glow: #FF9800;
     --background: #34495e;
     --text-color: #bdc3c7;
+    --container-bg: rgba(0, 0, 0, 0.5);
+    --input-bg: rgba(0, 0, 0, 0.7);
+    --input-text-color: #eee;
+    --theme-button-bg: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+    --theme-button-border: rgba(255, 255, 255, 0.1);
+    --theme-button-color: white;
+    --dropdown-bg: rgba(0, 0, 0, 0.7);
+    --dropdown-border: rgba(255, 255, 255, 0.1);
+    --theme-item-color: white;
+    --theme-item-hover-bg: rgba(255, 255, 255, 0.1);
+    --theme-preview-border: rgba(255, 255, 255, 0.2);
 }
 edit filepath: public/themes/light.css
 content: :root {
@@ -369,24 +197,133 @@ content: :root {
     --secondary-glow: #e1523d;
     --background: #ecf0f1;
     --text-color: #2c3e50;
+    --container-bg: rgba(255, 255, 255, 0.8);
+    --input-bg: rgba(255, 255, 255, 0.9);
+    --input-text-color: #444;
+    --theme-button-bg: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+    --theme-button-border: rgba(0, 0, 0, 0.1);
+    --theme-button-color: black;
+    --dropdown-bg: rgba(255, 255, 255, 0.8);
+    --dropdown-border: rgba(0, 0, 0, 0.1);
+    --theme-item-color: black;
+    --theme-item-hover-bg: rgba(0, 0, 0, 0.1);
+    --theme-preview-border: rgba(0, 0, 0, 0.2);
 }
-edit filepath: .gitignore
-content: node_modules/
-edit filepath: api/headers.js
-content: module.exports = (req, res) => {
+edit filepath: api/cache.js
+content: const cache = {};
+
+module.exports = {
+    get: (key) => {
+        return cache[key] || null;
+    },
+    set: (key, value) => {
+        cache[key] = value;
+    }
+};
+edit filepath: api/proxy.js
+content: const { URL } = require('url');
+const http = require('http');
+const https = require('https');
+const cache = require('./cache');
+
+module.exports = (req, res) => {
     const targetUrl = req.query.url;
+    const cacheKey = `proxy:${targetUrl}`;
 
     if (!targetUrl) {
         res.status(400).send('URL parameter is required');
         return;
     }
 
-    const https = require('https');
+    try {
+        new URL(targetUrl);
+    } catch (error) {
+        res.status(400).send('Invalid URL');
+        return;
+    }
 
-    https.get(targetUrl, (proxyRes) => {
-        res.status(200).json(proxyRes.headers);
-    }).on('error', (err) => {
-        console.error('Error fetching headers:', err);
-        res.status(500).send('Error fetching headers');
-    });
+    const cachedResponse = cache.get(cacheKey);
+    if (cachedResponse) {
+        console.log('Serving from cache:', targetUrl);
+        res.writeHead(cachedResponse.status, cachedResponse.headers);
+        res.end(cachedResponse.data);
+        return;
+    }
+
+    const proxyRequest = (url, responseStream) => {
+        const options = {
+            url: url,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; MyWebProxy/1.0)'
+            }
+        };
+
+        const protocol = url.startsWith('https') ? https : http;
+
+        protocol.get(url, options, (proxyRes) => {
+            const chunks = [];
+
+            proxyRes.on('data', (chunk) => {
+                chunks.push(chunk);
+            });
+
+            proxyRes.on('end', () => {
+                const data = Buffer.concat(chunks);
+                const responseData = {
+                    status: proxyRes.statusCode,
+                    headers: proxyRes.headers,
+                    data: data
+                };
+                cache.set(cacheKey, responseData);
+
+                responseStream.writeHead(proxyRes.statusCode, proxyRes.headers);
+                responseStream.end(data);
+            });
+
+            proxyRes.on('error', (err) => {
+                console.error('Proxy response error:', err);
+                responseStream.status(500).send('Proxy response error');
+            });
+        }).on('error', (err) => {
+            console.error('Proxy request error:', err);
+            responseStream.status(500).send('Proxy request error');
+        });
+    };
+
+    console.log('Proxying:', targetUrl);
+    proxyRequest(targetUrl, res);
 };
+edit filepath: package.json
+content: {
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "http-proxy": "^1.18.1",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
+edit filepath: server.js
+content: const express = require('express');
+const app = express();
+const path = require('path');
+const proxyHandler = require('./api/proxy');
+
+const port = 3000;
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/api/proxy', (req, res) => {
+    proxyHandler(req, res);
+});
+
+app.listen(port, () => {
+    console.log(`Server listening at http://localhost:${port}`);
+});
