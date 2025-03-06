@@ -21,19 +21,23 @@ async function handleRequest(req, res) {
       return;
     }
 
-    const target = url.origin;
+    const target = url.hostname; // Use hostname instead of origin
+    const port = url.port || (url.protocol === 'https:' ? 443 : 80);
 
     const options = {
-      method: req.method,
+      hostname: target, // Use hostname instead of origin
+      port: port,
       path: url.pathname + url.search,
+      method: req.method,
       headers: req.headers,
       timeout: 10000,
     };
 
-    // Remove 'host' header to prevent issues with target server
+    // Remove 'host' and 'origin' headers to prevent issues with target server
     delete options.headers['host'];
+    delete options.headers['origin'];
 
-    const proxyReq = (url.protocol === 'https:' ? https : http).request(target, options, (proxyRes) => {
+    const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
       proxyRes.pipe(res, { end: true });
     });
@@ -43,6 +47,8 @@ async function handleRequest(req, res) {
       if (!res.headersSent) {
         res.writeHead(504, { 'Content-Type': 'text/plain' });
         res.end('Proxy request timeout.');
+      } else {
+        res.destroy();
       }
     });
 
@@ -51,6 +57,8 @@ async function handleRequest(req, res) {
       if (!res.headersSent) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error.');
+      } else {
+        res.destroy();
       }
     });
 
@@ -62,6 +70,8 @@ async function handleRequest(req, res) {
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error.');
+      } else {
+          res.destroy();
       }
     });
 
@@ -79,6 +89,8 @@ async function handleRequest(req, res) {
     if (!res.headersSent) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error.');
+    } else {
+      res.destroy();
     }
   }
 }
