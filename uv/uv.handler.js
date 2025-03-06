@@ -29,16 +29,20 @@ async function handleRequest(req, res) {
       port: port,
       path: url.pathname + url.search,
       method: req.method,
-      headers: req.headers,
+      headers: { ...req.headers }, // Copy headers to avoid modification issues
       timeout: 10000,
       followRedirects: false
     };
 
     delete options.headers['host'];
     delete options.headers['origin'];
+    delete options.headers['connection']; // Remove connection header
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
-      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      const resHeaders = { ...proxyRes.headers }; // Copy headers
+      delete resHeaders['transfer-encoding']; // Remove potentially problematic header
+
+      res.writeHead(proxyRes.statusCode, resHeaders);
       proxyRes.pipe(res, { end: true });
     });
 
