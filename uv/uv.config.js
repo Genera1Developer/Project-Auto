@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const uv = {
+  const config = {
     prefix: '/service/',
     bare: '/bare/',
     encodeUrl: Ultraviolet.codec.xor.encode,
@@ -10,5 +10,6 @@
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
   };
-  self.uv = uv;
+
+  self.__uv$config = config;
 })();
