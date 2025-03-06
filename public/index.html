@@ -15,6 +15,20 @@
         input[type="url"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; box-sizing: border-box; }
         button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
         button:hover { background-color: #3e8e41; }
+        #response-headers pre {
+            white-space: pre-wrap;       /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;  /* Mozilla, pre-Gecko */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        }
+        #response-body pre {
+            white-space: pre-wrap;       /* Since CSS 2.1 */
+            white-space: -moz-pre-wrap;  /* Mozilla, pre-Gecko */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+        }
     </style>
 </head>
 <body>
@@ -31,8 +45,8 @@
         </div>
         <div id="error"></div>
         <div id="response">
-            <div id="response-headers"></div>
-            <div id="response-body"></div>
+            <div id="response-headers"><pre></pre></div>
+            <div id="response-body"><pre></pre></div>
         </div>
     </div>
 
