@@ -1,10 +1,10 @@
 {
   "watch": ["api", "public", "uv", "index.js"],
   "ignore": [
-    "node_modules",
+    "node_modules/",
     "cache/*",
     "storage/*",
-    "uv/node_modules",
+    "uv/node_modules/",
     "public/js/sw.js",
     "public/uv/uv.bundle.js",
     "public/uv/uv.config.js",
@@ -14,7 +14,8 @@
     "cert/*",
     "db/*",
     ".cache/*",
-    "sessions/*"
+    "sessions/*",
+    "docs/*"
   ],
   "ext": "js,json,html,css,mjs",
   "delay": "250",
