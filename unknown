@@ -1,10 +1,36 @@
-const uv = {
-  prefix: '/service/',
-  bare: '/bare/',
-  encodeUrl: Ultraviolet.codec.xor.encode,
-  decodeUrl: Ultraviolet.codec.xor.decode,
-  handler: '/uv/uv.handler.js',
-  bundle: '/uv/uv.bundle.js',
-  config: '/uv/uv.config.js',
-  sw: '/uv/uv.sw.js',
-};
+const form = document.getElementById('uv-form');
+const address = document.getElementById('uv-address');
+const searchEngine = document.getElementById('uv-search-engine');
+const error = document.getElementById('uv-error');
+
+const urlRegex = /^(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
+
+form.addEventListener('submit', async event => {
+    event.preventDefault();
+    try {
+        let url = address.value.trim();
+
+        if (!url) {
+            throw new Error('Please enter a URL.');
+        }
+
+        if (!url.match(urlRegex)) {
+            url = 'https://' + url;
+            if (!url.match(urlRegex)) {
+                throw new Error('Invalid URL.');
+            }
+        }
+
+        if (searchEngine.value === 'google') {
+            url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+        } else if (searchEngine.value === 'duckduckgo') {
+            url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
+        }
+
+        // Use window.location.href for redirection
+        window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+    } catch (e) {
+        error.textContent = e.message;
+        console.error(e);
+    }
+});
