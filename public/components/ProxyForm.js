@@ -4,11 +4,13 @@ function ProxyForm() {
     const [url, setUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [responseText, setResponseText] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
         setErrorMessage('');
+        setResponseText('');
 
         try {
             const response = await fetch('/api/proxy', {
@@ -24,10 +26,9 @@ function ProxyForm() {
                 throw new Error(errorData.message || 'Failed to fetch URL');
             }
 
-            // Handle successful response (e.g., redirect, display content)
-            console.log('URL submitted:', url);
-            // For now, just log the response status
-            console.log('Response Status:', response.status);
+            const responseData = await response.text();
+            setResponseText(responseData);
+
 
         } catch (error) {
             setErrorMessage(error.message);
@@ -38,20 +39,28 @@ function ProxyForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                id="url"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="Enter URL"
-                disabled={isLoading}
-            />
-            <button type="submit" disabled={isLoading}>
-                {isLoading ? 'Loading...' : 'Go'}
-            </button>
-            {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
-        </form>
+        <div>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    id="url"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="Enter URL"
+                    disabled={isLoading}
+                />
+                <button type="submit" disabled={isLoading}>
+                    {isLoading ? 'Loading...' : 'Go'}
+                </button>
+                {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+            </form>
+            {responseText && (
+                <div>
+                    <h3>Response:</h3>
+                    <pre>{responseText}</pre>
+                </div>
+            )}
+        </div>
     );
 }
 
