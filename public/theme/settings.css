@@ -1,6 +1,6 @@
 .settings-container {
     width: 80%;
-    max-width: 800px; /* Added max-width for better responsiveness */
+    max-width: 800px;
     margin: 20px auto;
     background-color: #fff;
     padding: 20px;
@@ -26,7 +26,8 @@
 }
 
 .setting-item select,
-.setting-item input[type="text"], /* Added input[type="text"] to selector */
+.setting-item input[type="text"],
+.setting-item input[type="number"], /* Added input[type="number"] to selector */
 .setting-item input[type="checkbox"] {
     padding: 8px;
     border: 1px solid #ccc;
@@ -46,6 +47,7 @@
 /* Added focus state styling for better accessibility */
 .setting-item select:focus,
 .setting-item input[type="text"]:focus,
+.setting-item input[type="number"]:focus, /* Added focus to number input */
 .setting-item input[type="checkbox"]:focus {
     outline: none;
     border-color: #66afe9;
@@ -59,3 +61,4 @@
         padding: 15px;
     }
 }
+content: Added styling for number inputs.
