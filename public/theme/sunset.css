@@ -17,7 +17,7 @@
     --success-color: #2ecc71;
     --input-height: 48px;
     --button-width: 150px;
-    --input-focus-shadow: 0 0 8px rgba(231, 76, 60, 0.7); /* Define focus shadow */
+    --input-focus-shadow: 0 0 8px rgba(231, 76, 60, 0.7);
 }
 
 body {
@@ -67,6 +67,7 @@ body {
 #proxy-form > * {
     margin-bottom: var(--form-element-spacing);
     width: 100%;
+    box-sizing: border-box;
 }
 
 input[type="text"] {
@@ -75,7 +76,6 @@ input[type="text"] {
     border-radius: var(--border-radius);
     background-color: var(--input-bg);
     color: var(--input-text);
-    width: calc(100% - 32px);
     font-size: 1rem;
     transition: box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease;
     font-family: var(--font-family);
@@ -126,12 +126,15 @@ footer {
     text-align: center;
 }
 
+#proxy-error, #proxy-success {
+    margin-top: 10px;
+    text-align: center;
+}
+
 #proxy-error {
     color: var(--error-color);
-    margin-top: 10px;
 }
 
 #proxy-success {
     color: var(--success-color);
-    margin-top: 10px;
 }
