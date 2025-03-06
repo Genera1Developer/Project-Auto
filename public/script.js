@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const corsBypassCheckbox = document.getElementById('corsBypass');
   const downloadButton = document.getElementById('downloadButton');
   const downloadLink = document.getElementById('downloadLink');
+  const errorMessageDiv = document.getElementById('errorMessage');
 
   proxyForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const corsBypass = corsBypassCheckbox.checked;
 
     responseDiv.innerHTML = '';
+    errorMessageDiv.textContent = '';
     loadingIndicator.style.display = 'block';
     downloadButton.style.display = 'none';
     downloadLink.style.display = 'none';
@@ -63,9 +65,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("Failed to decode filename: ", e);
             filename = filenameMatch[1];
           }
-        } else if (contentDisposition.includes('filename=')) {
-          filename = contentDisposition.split('filename=')[1].split(';')[0].trim();
-          filename = filename.replace(/^"|"$/g, '');
+        } else if (contentDisposition && contentDisposition.includes('filename=')) {
+          let filenameValue = contentDisposition.split('filename=')[1];
+          filename = filenameValue.split(';')[0].trim().replace(/^"|"$/g, '');
         }
 
         downloadLink.href = blobUrl;
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
-      responseDiv.textContent = `Error: ${error.message}`;
+      errorMessageDiv.textContent = `Error: ${error.message}`;
     } finally {
       loadingIndicator.style.display = 'none';
     }
