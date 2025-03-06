@@ -50,14 +50,14 @@ async function handleRequest(req, res) {
     });
 
     proxyReq.setTimeout(options.timeout, () => {
-        proxyReq.destroy(new Error('Proxy request timeout.'));
+      proxyReq.destroy(new Error('Proxy request timeout.'));
     });
 
     proxyReq.on('error', (err) => {
       console.error('Proxy request error:', err);
       if (!res.headersSent) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
-        res.end('Proxy error.');
+        res.end('Proxy error: ' + err.message);
       } else {
         res.socket?.destroy();
       }
@@ -70,8 +70,8 @@ async function handleRequest(req, res) {
       proxyReq.destroy(err);
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end('Request error.');
-      }  else {
+        res.end('Request error: ' + err.message);
+      } else {
         res.socket?.destroy();
       }
     });
@@ -89,7 +89,7 @@ async function handleRequest(req, res) {
     console.error('Unexpected error:', error);
     if (!res.headersSent) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Internal server error.');
+      res.end('Internal server error: ' + error.message);
     } else {
       res.socket?.destroy();
     }
