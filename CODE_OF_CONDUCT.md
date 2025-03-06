@@ -1,6 +1,6 @@
 ### Our Pledge
 
-We as contributors, leaders, and maintainers pledge to make participation in our community a welcoming and harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual orientation.
+We as contributors, leaders, and maintainers pledge to make participation in our community a welcoming, respectful, and harassment-free experience for everyone, regardless of age, body size, visible or invisible disability, ethnicity, sex characteristics, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual orientation.
 
 We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community.
 
@@ -8,11 +8,12 @@ We pledge to act and interact in ways that contribute to an open, welcoming, div
 
 Examples of behavior that contributes to a positive environment for our community include:
 
-*   Being empathetic and kind toward other people
+*   Being empathetic, patient, and kind toward other people
 *   Respecting differing opinions, viewpoints, and experiences
 *   Giving and gracefully accepting constructive feedback
 *   Accepting responsibility and apologizing to those affected by our mistakes
 *   Focusing on what is best for the community
+*   Using welcoming and inclusive language
 
 Examples of unacceptable behavior include:
 
@@ -21,6 +22,7 @@ Examples of unacceptable behavior include:
 *   Public or private harassment of any form
 *   Publishing others' private information, such as physical or email addresses, without their explicit permission
 *   Any conduct that could reasonably be considered inappropriate in a professional setting
+*   Advocating for, or encouraging, any of the above behavior
 
 ### Enforcement Responsibilities
 
@@ -50,6 +52,7 @@ When making a report, please provide as much detail as possible, including:
 
 *   Identifying information of the person who violated the Code of Conduct
 *   The behavior that violated the Code of Conduct
+*   The context surrounding the incident
 *   The approximate time of the behavior (if applicable)
 *   Any witnesses (if applicable)
 *   Any other information you believe is relevant
@@ -81,6 +84,10 @@ Community leaders will follow these Community Impact Guidelines to determine the
 **Community Impact:** Demonstrating a pattern of violation of community standards, including sustained inappropriate behavior, harassment of an individual, or aggression toward or disparagement of classes of individuals.
 
 **Consequence:** A permanent ban from any sort of public interaction within the community.
+
+### Appeals
+
+Decisions regarding enforcement actions can be appealed by contacting the conduct team via [conduct@example.com](mailto:conduct@example.com). Appeals will be reviewed by a different member of the conduct team than the one who made the original decision, if possible.
 
 ### Attribution
 
