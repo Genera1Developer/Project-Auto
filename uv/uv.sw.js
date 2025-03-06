@@ -7,9 +7,17 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Add custom fetch logic here if needed.
-  // For example, you can intercept requests and modify them.
-  // Or you can serve cached content.
-  // By default, just pass the request through.
+  const url = new URL(event.request.url);
+
+  // Example: Intercept requests to a specific domain and redirect them.
+  if (url.hostname === 'example.com') {
+    event.respondWith(
+      new Response('<h1>This domain is being proxied!</h1>', {
+        headers: { 'Content-Type': 'text/html' },
+      })
+    );
+    return;
+  }
+
   event.respondWith(fetch(event.request));
 });
