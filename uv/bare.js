@@ -4,6 +4,7 @@ class Bare {
         this.pathname = opts.pathname || '/bare/';
         this.prefix = this.origin + this.pathname;
     }
+
     async fetch(url, options = {}) {
         const fetchUrl = this.prefix + encodeURIComponent(url);
         try {
@@ -18,6 +19,7 @@ class Bare {
             throw error;
         }
     }
+
     async request(url, options = {}) {
         const fetchUrl = this.prefix + encodeURIComponent(url);
         try {
@@ -33,7 +35,7 @@ class Bare {
         }
     }
 
-    createProxy(url, options = {}) {
+    createProxy(url) {
         return this.prefix + encodeURIComponent(url);
     }
 }
