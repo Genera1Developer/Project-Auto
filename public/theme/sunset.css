@@ -16,7 +16,8 @@
     --error-color: #e74c3c;
     --success-color: #2ecc71;
     --input-height: 48px;
-    --button-width: 150px; /* Define button width */
+    --button-width: 150px;
+    --input-focus-shadow: 0 0 8px rgba(231, 76, 60, 0.7); /* Define focus shadow */
 }
 
 body {
@@ -84,7 +85,7 @@ input[type="text"] {
 
 input[type="text"]:focus {
     outline: none;
-    box-shadow: 0 0 8px var(--accent-color);
+    box-shadow: var(--input-focus-shadow);
     border-color: var(--accent-color);
 }
 
@@ -98,7 +99,7 @@ button {
     font-size: 1.1rem;
     transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
     font-family: var(--font-family);
-    width: var(--button-width); /* Use defined button width */
+    width: var(--button-width);
 }
 
 button:hover {
