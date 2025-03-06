@@ -7,7 +7,7 @@ self.addEventListener('install', function(event) {
           '/index.html',
           '/style.css',
           '/script.js',
-          '/offline.html' // Add an offline page
+          '/offline.html'
         ]);
       })
   );
@@ -15,38 +15,48 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        // Cache hit - return response
-        if (response) {
-          return response;
-        }
+    caches.match(event.request).then(function(response) {
+      if (response) {
+        return response;
+      }
 
-        var fetchRequest = event.request.clone();
+      const fetchRequest = event.request.clone();
 
-        return fetch(fetchRequest).then(
-          function(response) {
-            // Check if we received a valid response
-            if(!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            var responseToCache = response.clone();
-
-            caches.open('my-site-cache')
-              .then(function(cache) {
-                cache.put(event.request, responseToCache);
-              });
-
+      return fetch(fetchRequest).then(
+        function(response) {
+          if(!response || response.status !== 200 || response.type !== 'basic') {
             return response;
           }
-        ).catch(function() {
-          // If both fail, show a generic fallback:
-          return caches.match('/offline.html');
-          // However, in reality you'd have many different
-          // fallbacks, depending on the URL & headers.
-          // Eg, a fallback silhouette image for avatars.
-        });
-      })
-    );
+
+          const responseToCache = response.clone();
+
+          caches.open('my-site-cache')
+            .then(function(cache) {
+              cache.put(event.request, responseToCache);
+            });
+
+          return response;
+        }
+      ).catch(function() {
+        return caches.match('/offline.html');
+      });
+    })
+  );
+});
+
+self.addEventListener('activate', function(event) {
+
+  var cacheWhitelist = ['my-site-cache'];
+
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
 });
