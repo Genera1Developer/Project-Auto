@@ -5,10 +5,11 @@ const cache = new NodeCache({ stdTTL: 300, checkperiod: 600 }); // TTL in second
 module.exports = {
   get: (key) => {
     try {
-      return cache.get(key);
+      const value = cache.get(key);
+      return value;
     } catch (error) {
       console.error(`Error getting cache for key ${key}:`, error);
-      return undefined; // Or handle the error as needed
+      return undefined;
     }
   },
   set: (key, value) => {
@@ -34,6 +35,11 @@ module.exports = {
     }
   },
   getStats: () => {
-    return cache.getStats();
+    try {
+      return cache.getStats();
+    } catch (error) {
+      console.error("Error getting cache stats:", error);
+      return {};
+    }
   },
 };
