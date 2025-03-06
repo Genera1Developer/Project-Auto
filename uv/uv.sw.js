@@ -14,13 +14,20 @@ self.addEventListener('fetch', (event) => {
     const proxiedUrl = url.searchParams.get('url');
     if (proxiedUrl) {
       try {
-        event.respondWith(fetch(proxiedUrl, {
-          headers: event.request.headers,
-          method: event.request.method,
-          body: event.request.body,
-          mode: 'cors',
-          credentials: 'omit',
-        }));
+        event.respondWith(
+          fetch(proxiedUrl, {
+            headers: event.request.headers,
+            method: event.request.method,
+            body: event.request.body,
+            mode: 'cors',
+            credentials: 'omit',
+          }).catch(error => {
+            return new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
+              status: 500,
+              headers: { 'Content-Type': 'text/html' },
+            });
+          })
+        );
       } catch (error) {
         event.respondWith(new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
           status: 500,
