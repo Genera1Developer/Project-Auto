@@ -29,25 +29,26 @@ async function handleRequest(req, res) {
       port: port,
       path: url.pathname + url.search,
       method: req.method,
-      headers: { ...req.headers }, // Copy headers to avoid modification issues
+      headers: { ...req.headers },
       timeout: 10000,
       followRedirects: false
     };
 
     delete options.headers['host'];
     delete options.headers['origin'];
-    delete options.headers['connection']; // Remove connection header
+    delete options.headers['connection'];
+    delete options.headers['upgrade'];
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
-      const resHeaders = { ...proxyRes.headers }; // Copy headers
-      delete resHeaders['transfer-encoding']; // Remove potentially problematic header
+      const resHeaders = { ...proxyRes.headers };
+      delete resHeaders['transfer-encoding'];
 
       res.writeHead(proxyRes.statusCode, resHeaders);
       proxyRes.pipe(res, { end: true });
     });
 
     proxyReq.on('timeout', () => {
-      proxyReq.destroy();
+      proxyReq.destroy(new Error('Proxy request timeout'));
       if (!res.headersSent) {
         res.writeHead(504, { 'Content-Type': 'text/plain' });
         res.end('Proxy request timeout.');
