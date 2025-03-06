@@ -48,6 +48,9 @@ async function verifyHash(string, hash, salt) {
 
   try {
     const computedHash = await hashString(string, salt);
+    if (typeof computedHash !== 'string') {
+        return false;
+    }
     return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(computedHash, 'hex'));
 
   } catch (error) {
