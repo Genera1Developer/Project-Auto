@@ -21,6 +21,12 @@ self.addEventListener('fetch', (event) => {
             body: event.request.body,
             mode: 'cors',
             credentials: 'omit',
+          }).then(response => {
+            // Check if the response is ok (status in the range 200-299)
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response;
           }).catch(error => {
             return new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
               status: 500,
