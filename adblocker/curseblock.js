@@ -731,8 +731,12 @@ const adServers = [
 const blockedURLs = [];
 
 function shouldBlock(url) {
-  const hostname = new URL(url).hostname;
-  return adServers.some(adServer => hostname === adServer || hostname.endsWith(`.${adServer}`));
+  try {
+    const hostname = new URL(url).hostname;
+    return adServers.some(adServer => hostname === adServer || hostname.endsWith(`.${adServer}`));
+  } catch (e) {
+    return false;
+  }
 }
 
 function logBlockedURL(url) {
@@ -784,10 +788,12 @@ function blockAds(doc) {
     });
   });
 
-  observer.observe(doc.body, {
-    childList: true,
-    subtree: true
-  });
+  if (doc && doc.body) {
+    observer.observe(doc.body, {
+      childList: true,
+      subtree: true
+    });
+  }
 }
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -801,80 +807,11 @@ if (typeof module !== 'undefined' && module.exports) {
     blockAds,
   };
 }
-edit filepath: index.js
-content: const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
-const path = require('path');
-
-app.use(express.static('public'));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Web Proxy</h1>
-    <input type="text" id="urlInput" placeholder="Enter URL">
-    <button id="proxyButton">Go</button>
-    <div id="content"></div>
-    <script src="script.js"></script>
-</body>
-</html>
-edit filepath: public/style.css
-content: body {
-    font-family: sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
-
-input[type="text"] {
-    padding: 10px;
-    margin: 10px;
-    width: 300px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-#content {
-    margin-top: 20px;
-    width: 80%;
-    border: 1px solid #ccc;
-    padding: 10px;
-}
-edit filepath: public/script.js
-content: document.getElementById('proxyButton').addEventListener('click', () => {
-    const url = document.getElementById('urlInput').value;
-    fetch(`/api/proxy?url=${encodeURIComponent(url)}`)
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('content').innerHTML = data;
-        });
-});
 edit filepath: api/proxy.js
 content: const express = require('express');
 const router = express.Router();
 const fetch = require('node-fetch');
+const adblocker = require('../adblocker/adblocker');
 
 router.get('/proxy', async (req, res) => {
     const url = req.query.url;
@@ -884,7 +821,18 @@ router.get('/proxy', async (req, res) => {
 
     try {
         const response = await fetch(url);
-        const data = await response.text();
+        let data = await response.text();
+
+        if (response.headers.get('content-type').includes('text/html')) {
+            const adBlockScript = `
+              <script>
+                ${adblocker.blockAds.toString()}
+                blockAds(document);
+              </script>
+            `;
+            data = data.replace('</body>', `${adBlockScript}</body>`);
+        }
+
         res.send(data);
     } catch (error) {
         console.error('Proxy error:', error);
@@ -893,14 +841,40 @@ router.get('/proxy', async (req, res) => {
 });
 
 module.exports = router;
-edit filepath: api/route.js
+edit filepath: public/script.js
+content: document.getElementById('proxyButton').addEventListener('click', () => {
+    const url = document.getElementById('urlInput').value;
+    fetch(`/api/proxy?url=${encodeURIComponent(url)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById('content').innerHTML = data;
+        })
+        .catch(error => {
+            document.getElementById('content').innerHTML = `<p>Error: ${error.message}</p>`;
+        });
+});
+edit filepath: index.js
 content: const express = require('express');
 const app = express();
-const proxyRoute = require('./proxy');
+const port = process.env.PORT || 3000;
+const path = require('path');
+const proxyRoute = require('./api/proxy');
 
+app.use(express.static('public'));
 app.use('/api', proxyRoute);
 
-module.exports = app;
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
 edit filepath: package.json
 content: {
   "name": "web-proxy",
@@ -913,11 +887,11 @@ content: {
   "dependencies": {
     "express": "^4.17.1",
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
-edit filepath: .gitignore
-content: node_modules/
-/public/cache/
 edit filepath: README.md
 content: # Web Proxy
 A simple web proxy built with Node.js and Express.
@@ -937,31 +911,103 @@ Enter the URL in the input field and click "Go".
 
 ## License
 MIT
-edit filepath: adblocker/adblocker.js
-content: const curseblock = require('./curseblock');
 
-function isAd(url) {
-    return curseblock.shouldBlock(url);
+## Additional Information
+This project now includes basic ad blocking by injecting a script into HTML responses to remove ad elements.
+edit filepath: public/style.css
+content: body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
 }
 
-module.exports = {
-    isAd
-};
-edit filepath: index.js
+input[type="text"] {
+    padding: 10px;
+    margin: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #367c39;
+}
+
+#content {
+    margin-top: 20px;
+    width: 80%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    overflow-x: auto;
+}
+
+#content p {
+    word-wrap: break-word;
+}
+edit filepath: api/proxy.js
 content: const express = require('express');
-const app = express();
-const port = process.env.PORT || 3000;
-const path = require('path');
-const proxyRoute = require('./api/proxy');
-const adblocker = require('./adblocker/adblocker');
+const router = express.Router();
+const fetch = require('node-fetch');
+const adblocker = require('../adblocker/adblocker');
 
-app.use(express.static('public'));
-app.use('/api', proxyRoute);
+router.get('/proxy', async (req, res) => {
+    const url = req.query.url;
+    if (!url) {
+        return res.status(400).send('URL parameter is required');
+    }
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Web-Proxy-App'
+            }
+        });
+        let data = await response.text();
+
+        if (response.headers.get('content-type') && response.headers.get('content-type').includes('text/html')) {
+            const adBlockScript = `
+              <script>
+                ${adblocker.blockAds.toString()}
+                blockAds(document);
+              </script>
+            `;
+            data = data.replace('</body>', `${adBlockScript}</body>`);
+        }
+
+        res.send(data);
+    } catch (error) {
+        console.error('Proxy error:', error);
+        res.status(500).send(`Proxy error: ${error.message}`);
+    }
 });
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+module.exports = router;
+edit filepath: public/script.js
+content: document.getElementById('proxyButton').addEventListener('click', () => {
+    const url = document.getElementById('urlInput').value;
+    document.getElementById('content').innerHTML = '<p>Loading...</p>';
+
+    fetch(`/api/proxy?url=${encodeURIComponent(url)}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById('content').innerHTML = data;
+        })
+        .catch(error => {
+            document.getElementById('content').innerHTML = `<p>Error: ${error.message}</p>`;
+        });
 });
