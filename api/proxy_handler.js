@@ -29,7 +29,6 @@ const proxyHandler = (req, res) => {
       'trailer',
       'proxy-authenticate',
       'proxy-authorization',
-      'content-encoding', // Added content-encoding
     ];
 
     hopByHopHeaders.forEach(header => {
