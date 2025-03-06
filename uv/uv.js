@@ -35,6 +35,9 @@ self.addEventListener('fetch', event => {
   } else {
     event.respondWith(
       fetch(event.request)
+        .then(response => {
+          return response;
+        })
         .catch(err => {
           console.error('Error fetching original request:', err);
           return new Response('Service Worker Error: Failed to fetch original request - ' + err.message, {
