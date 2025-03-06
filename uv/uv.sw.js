@@ -21,12 +21,29 @@ self.addEventListener('fetch', (event) => {
             body: event.request.body,
             mode: 'cors',
             credentials: 'omit',
-          }).then(response => {
+          }).then(async response => {
             // Check if the response is ok (status in the range 200-299)
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response;
+
+            // Clone the response so it can be used more than once
+            const clonedResponse = response.clone();
+            const contentType = clonedResponse.headers.get('content-type');
+
+            // Check if the content type is text-based before reading as text
+            if (contentType && contentType.includes('text')) {
+              const bodyText = await clonedResponse.text();
+              return new Response(bodyText, {
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers
+              });
+            } else {
+              // For non-text content, return the original cloned response
+              return clonedResponse;
+            }
+
           }).catch(error => {
             return new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
               status: 500,
