@@ -26,10 +26,14 @@ class Bare {
                 console.error(`HTTP error! status: ${response.status} - ${response.url}`);
                 throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
             }
-            return await response.json();
+            return response.json();
         } catch (error) {
             console.error("Bare request error:", error);
             throw error;
         }
+    }
+
+    createProxy(url, options = {}) {
+        return this.prefix + encodeURIComponent(url);
     }
 }
