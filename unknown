@@ -7,7 +7,7 @@
     --box-shadow-color: rgba(0, 0, 0, 0.3);
     --hover-color: #c0392b;
     --border-color: #7f8c8d;
-    --transition-speed: 0.3s;
+    --error-color: #ff6b6b; /* Error message color */
 }
 
 body {
@@ -22,7 +22,6 @@ body {
     justify-content: center;
     min-height: 100vh;
     line-height: 1.6;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
 input[type="text"] {
@@ -35,7 +34,7 @@ input[type="text"] {
     width: 80%;
     max-width: 500px;
     font-size: 1rem;
-    transition: box-shadow var(--transition-speed) ease, border-color var(--transition-speed) ease, background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 input[type="text"]:focus {
@@ -52,7 +51,7 @@ button {
     border-radius: 8px;
     cursor: pointer;
     font-size: 1.1rem;
-    transition: background-color var(--transition-speed) ease, transform 0.2s ease, color var(--transition-speed) ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
@@ -63,7 +62,7 @@ button:hover {
 a {
     color: var(--accent-color);
     text-decoration: none;
-    transition: color var(--transition-speed) ease;
+    transition: color 0.3s ease;
 }
 
 a:hover {
@@ -71,7 +70,6 @@ a:hover {
     color: var(--hover-color);
 }
 
-/* Proxy specific styles */
 #proxy-container {
     width: 90%;
     max-width: 800px;
@@ -80,7 +78,6 @@ a:hover {
     border-radius: 12px;
     box-shadow: 0 0 15px var(--box-shadow-color);
     text-align: center;
-    transition: background-color var(--transition-speed) ease;
 }
 
 #proxy-title {
@@ -88,14 +85,12 @@ a:hover {
     margin-bottom: 20px;
     color: var(--text-color);
     text-shadow: 2px 2px 4px var(--box-shadow-color);
-    transition: color var(--transition-speed) ease;
 }
 
 #proxy-description {
     font-size: 1.2em;
     margin-bottom: 30px;
     color: var(--text-color);
-    transition: color var(--transition-speed) ease;
 }
 
 footer {
@@ -104,34 +99,9 @@ footer {
     font-size: 0.8em;
     color: #95a5a6;
     text-align: center;
-    transition: color var(--transition-speed) ease;
 }
 
 #proxy-error {
-    color: #e74c3c;
+    color: var(--error-color);
     margin-top: 10px;
-}
-
-/* Dark mode toggle (optional) */
-.dark-mode-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2em;
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-    box-shadow: 0 0 5px var(--box-shadow-color);
-}
-
-.dark-mode-toggle:hover {
-    background-color: var(--border-color);
 }
