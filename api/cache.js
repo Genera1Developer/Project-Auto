@@ -2,9 +2,13 @@ const NodeCache = require('node-cache');
 
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
+const isValidURL = (url) => {
+    return typeof url === 'string' && url.trim() !== '';
+};
+
 module.exports = {
     get: async (url) => {
-        if (!url || typeof url !== 'string' || url.trim() === '') {
+        if (!isValidURL(url)) {
             console.warn('Attempted to get cache with invalid URL');
             return null;
         }
@@ -16,7 +20,7 @@ module.exports = {
         }
     },
     set: async (url, data, ttl = 3600) => {
-        if (!url || typeof url !== 'string' || url.trim() === '') {
+        if (!isValidURL(url)) {
             console.warn('Attempted to set cache with invalid URL');
             return false;
         }
@@ -33,7 +37,7 @@ module.exports = {
         }
     },
     clear: async (url) => {
-        if (!url || typeof url !== 'string' || url.trim() === '') {
+        if (!isValidURL(url)) {
             console.warn('Attempted to clear cache with invalid URL');
             return false;
         }
