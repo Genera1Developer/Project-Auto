@@ -16,19 +16,15 @@
         button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
         button:hover { background-color: #3e8e41; }
         #response-headers pre {
-            white-space: pre-wrap;       /* Since CSS 2.1 */
-            white-space: -moz-pre-wrap;  /* Mozilla, pre-Gecko */
-            white-space: -pre-wrap;      /* Opera 4-6 */
-            white-space: -o-pre-wrap;    /* Opera 7 */
-            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
         #response-body pre {
-            white-space: pre-wrap;       /* Since CSS 2.1 */
-            white-space: -moz-pre-wrap;  /* Mozilla, pre-Gecko */
-            white-space: -pre-wrap;      /* Opera 4-6 */
-            white-space: -o-pre-wrap;    /* Opera 7 */
-            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
+        #response-headers { margin-top: 20px; }
+        #response-body { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -45,7 +41,9 @@
         </div>
         <div id="error"></div>
         <div id="response">
+            <div class="response-header">Response Headers:</div>
             <div id="response-headers"><pre></pre></div>
+            <div class="response-header">Response Body:</div>
             <div id="response-body"><pre></pre></div>
         </div>
     </div>
