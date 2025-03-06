@@ -63,6 +63,9 @@ self.addEventListener('fetch', (event) => {
 
           const headers = new Headers(response.headers);
           headers.set('Access-Control-Allow-Origin', '*');
+          headers.delete('content-security-policy');
+          headers.delete('content-security-policy-report-only');
+          headers.delete('clear-site-data');
 
           const body = await response.blob();
 
