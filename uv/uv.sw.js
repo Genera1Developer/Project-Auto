@@ -22,29 +22,32 @@ self.addEventListener('fetch', (event) => {
             mode: 'cors',
             credentials: 'omit',
           }).then(async response => {
-            // Check if the response is ok (status in the range 200-299)
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            // Clone the response so it can be used more than once
-            const clonedResponse = response.clone();
-            const contentType = clonedResponse.headers.get('content-type');
+            const contentType = response.headers.get('content-type');
 
-            // Check if the content type is text-based before reading as text
             if (contentType && contentType.includes('text')) {
-              const bodyText = await clonedResponse.text();
-              return new Response(bodyText, {
-                status: response.status,
-                statusText: response.statusText,
-                headers: response.headers
-              });
+              try {
+                const bodyText = await response.text();
+                return new Response(bodyText, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers
+                });
+              } catch (textError) {
+                console.error('Error reading text:', textError);
+                return new Response(`<h1>Error: Could not read response as text</h1><p>${textError}</p>`, {
+                  status: 500,
+                  headers: { 'Content-Type': 'text/html' },
+                });
+              }
             } else {
-              // For non-text content, return the original cloned response
-              return clonedResponse;
+              return response;
             }
-
           }).catch(error => {
+            console.error('Fetch error:', error);
             return new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
               status: 500,
               headers: { 'Content-Type': 'text/html' },
@@ -52,6 +55,7 @@ self.addEventListener('fetch', (event) => {
           })
         );
       } catch (error) {
+        console.error('General error:', error);
         event.respondWith(new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
           status: 500,
           headers: { 'Content-Type': 'text/html' },
