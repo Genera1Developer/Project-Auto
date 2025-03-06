@@ -7,4 +7,5 @@ module.exports = {
   bundle: '/uv/uv.bundle.js',
   config: '/uv/uv.config.js',
   sw: '/uv/uv.sw.js',
+  constructUrl: Ultraviolet.constructURL,
 };
