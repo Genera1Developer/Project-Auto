@@ -40,6 +40,7 @@ async function handleRequest(req, res) {
     delete options.headers['upgrade'];
     delete options.headers['accept-encoding'];
     delete options.headers['proxy-connection'];
+    delete options.headers['if-none-match']; // Add to prevent caching
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       const resHeaders = { ...proxyRes.headers };
