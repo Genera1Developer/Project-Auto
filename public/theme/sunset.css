@@ -13,6 +13,7 @@
     --max-width: 800px;
     --form-element-spacing: 15px;
     --footer-text-color: #95a5a6;
+    --error-color: #e74c3c;
 }
 
 body {
@@ -118,6 +119,6 @@ footer {
 }
 
 #proxy-error {
-    color: #e74c3c;
+    color: var(--error-color);
     margin-top: 10px;
 }
