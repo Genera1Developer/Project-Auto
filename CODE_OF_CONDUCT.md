@@ -17,6 +17,7 @@ Examples of behavior that contributes to a positive environment for our communit
 *   Actively listening to understand different perspectives.
 *   Being mindful of how your communication style may be perceived by others.
 *   Providing alternative formats for content when possible to improve accessibility.
+*   Acknowledging and respecting individuals' boundaries.
 
 Examples of unacceptable behavior include:
 
@@ -30,7 +31,8 @@ Examples of unacceptable behavior include:
 *   Sustained disruption of discussions or other events.
 *   Making assumptions about others' identities or backgrounds.
 *   Exclusionary behavior or creating a hostile environment for any member.
-*   Unwelcome comments regarding a person’s lifestyle choices and practices, including those related to food, health, parenting, relationships, or employment.
+*   Continued one-on-one communication after requests to cease.
+*   Unwelcome or unsolicited advances or invitations.
 
 ### Enforcement Responsibilities
 
@@ -40,11 +42,11 @@ Community leaders have the right and responsibility to remove, edit, or reject c
 
 ### Scope
 
-This Code of Conduct applies within all community spaces, both online and offline, and also applies when an individual is representing the community in public spaces. Examples of representing our community include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event.
+This Code of Conduct applies within all community spaces, both online and offline, and also applies when an individual is representing the community in public spaces. Examples of representing our community include using an official email address, posting via an official social media account, or acting as an appointed representative at an online or offline event. It also applies to interactions with community members in individual contexts if those interactions stem from their involvement in the community.
 
 ### Reporting
 
-If you experience or witness unacceptable behavior, or have any concerns, please report it to us. All reports will be treated with discretion and investigated promptly and fairly. Confidentiality will be maintained to the extent that it does not impede a thorough and fair investigation and is permitted by applicable law.
+If you experience or witness unacceptable behavior, or have any concerns, please report it to us. All reports will be treated with discretion and investigated promptly and fairly. Confidentiality will be maintained to the extent that it does not impede a thorough and fair investigation.
 
 We provide multiple reporting methods to ensure accessibility and comfort.
 
@@ -86,17 +88,17 @@ Community leaders will follow these Community Impact Guidelines to determine the
 
 **Community Impact:** A serious violation of community standards, including sustained inappropriate behavior.
 
-**Consequence:** A temporary ban from any sort of interaction or public communication with the community for a specified period. No public or private interaction with the people involved, including those enforcing the Code of Conduct, is allowed during this period. Violating these terms may lead to a permanent ban. Upon return, the individual may be subject to probationary status with increased monitoring.
+**Consequence:** A temporary ban from any sort of interaction or public communication with the community for a specified period. No public or private interaction with the people involved, including those enforcing the Code of Conduct, is allowed during this period. Violating these terms may lead to a permanent ban. Upon return, the individual may be subject to probationary status with increased monitoring and required check-ins with the conduct team.
 
 #### 4. Permanent Ban
 
 **Community Impact:** Demonstrating a pattern of violation of community standards, including sustained inappropriate behavior, harassment of an individual, or aggression toward or disparagement of classes of individuals.
 
-**Consequence:** A permanent ban from any sort of public interaction within the community. The individual's contributions may be removed or anonymized.
+**Consequence:** A permanent ban from any sort of public interaction within the community. The individual's contributions may be removed or anonymized. The ban will be communicated to relevant platforms and communities to prevent further disruptive behavior.
 
 ### Appeals
 
-Decisions regarding enforcement actions can be appealed by contacting the conduct team via [conduct@example.com](mailto:conduct@example.com). Appeals will be reviewed by a different member of the conduct team than the one who made the original decision, if possible. If an entirely different member is not available, an outside mediator will be consulted.
+Decisions regarding enforcement actions can be appealed by contacting the conduct team via [conduct@example.com](mailto:conduct@example.com). Appeals will be reviewed by a different member of the conduct team than the one who made the original decision, if possible. If an entirely different member is not available, an outside mediator will be consulted. The appeal must be submitted within [Number] days of the enforcement action notification.
 
 ### Attribution
 
