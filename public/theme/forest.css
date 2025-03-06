@@ -100,10 +100,6 @@ footer {
   color: #333;
 }
 
-pre {
-  background-color: #f0f0f0;
-}
-
 .container:hover {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
 }
@@ -143,4 +139,10 @@ button:focus {
     font-size: 14px;
     padding: 10px 20px;
   }
+}
+code {
+  font-family: monospace;
+  background-color: #f0f0f0;
+  padding: 2px 5px;
+  border-radius: 5px;
 }
