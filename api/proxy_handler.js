@@ -45,11 +45,12 @@ const proxyHandler = (req, res) => {
       proxyRes.pipe(res);
     });
 
-    proxyReq.on('timeout', () => {
+    proxyReq.setTimeout(options.timeout, () => {
       console.error('Proxy request timed out.');
       proxyReq.destroy();
       if (!res.headersSent) {
-        return res.status(504).send('Proxy request timed out.');
+        res.writeHead(504, { 'Content-Type': 'text/plain' }); // Set headers before sending the response
+        return res.end('Proxy request timed out.');
       } else {
         res.end();
       }
@@ -58,7 +59,8 @@ const proxyHandler = (req, res) => {
     proxyReq.on('error', (err) => {
       console.error('Proxy request error:', err);
       if (!res.headersSent) {
-        return res.status(500).send('Proxy error.');
+        res.writeHead(500, { 'Content-Type': 'text/plain' }); // Set headers before sending the response
+        return res.end('Proxy error.');
       } else {
         res.end();
       }
