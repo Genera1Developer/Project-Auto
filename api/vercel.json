@@ -2,12 +2,12 @@
   "version": 2,
   "builds": [
     {
-      "src": "/api/proxy.js",
+      "src": "api/proxy.js",
       "use": "@vercel/node",
       "config": { "maxDuration": 60 }
     },
     {
-      "src": "/api/warmup.js",
+      "src": "api/warmup.js",
       "use": "@vercel/node"
     }
   ],
@@ -22,7 +22,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "/public/$1"
     }
   ],
   "functions": {
