@@ -13,13 +13,20 @@ self.addEventListener('fetch', (event) => {
     // Handle proxied requests
     const proxiedUrl = url.searchParams.get('url');
     if (proxiedUrl) {
-      event.respondWith(fetch(proxiedUrl, {
-        headers: event.request.headers,
-        method: event.request.method,
-        body: event.request.body,
-        mode: 'cors',
-        credentials: 'omit',
-      }));
+      try {
+        event.respondWith(fetch(proxiedUrl, {
+          headers: event.request.headers,
+          method: event.request.method,
+          body: event.request.body,
+          mode: 'cors',
+          credentials: 'omit',
+        }));
+      } catch (error) {
+        event.respondWith(new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
+          status: 500,
+          headers: { 'Content-Type': 'text/html' },
+        }));
+      }
       return;
     } else {
       event.respondWith(new Response('<h1>Error: Missing URL parameter</h1>', {
