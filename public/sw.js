@@ -15,7 +15,10 @@ self.addEventListener('install', event => {
         console.log('ServiceWorker: Opened cache');
         return cache.addAll(urlsToCache);
       })
-      .then(() => self.skipWaiting()) // Immediately activate
+      .then(() => {
+        console.log('ServiceWorker: Installation complete and ready!');
+        return self.skipWaiting(); // Immediately activate
+      })
       .catch(err => console.error('ServiceWorker: Cache opening failed: ', err))
   );
 });
@@ -48,14 +51,18 @@ self.addEventListener('fetch', event => {
             // as well as cache it, we need to clone it here.
             const responseToCache = response.clone();
 
-            caches.open(CACHE_NAME)
+            return caches.open(CACHE_NAME)
               .then(cache => {
-                cache.put(event.request, responseToCache);
-                console.log('ServiceWorker: Caching new resource:', event.request.url);
+                return cache.put(event.request, responseToCache);
               })
-              .catch(err => console.warn('ServiceWorker: Cache PUT failed.', err));
-
-            return response;
+              .then(() => {
+                console.log('ServiceWorker: Caching new resource:', event.request.url);
+                return response;
+              })
+              .catch(err => {
+                 console.warn('ServiceWorker: Cache PUT failed.', err);
+                 return response; // Return the original response even if caching fails.
+              });
           })
           .catch(() => {
             console.log('ServiceWorker: Network request failed, serving offline page');
@@ -68,13 +75,11 @@ self.addEventListener('fetch', event => {
 
 self.addEventListener('activate', event => {
   console.log('ServiceWorker: Activating...');
-  const cacheWhitelist = [CACHE_NAME];
-
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
+          if (cacheName !== CACHE_NAME) { // Use strict comparison
             console.log('ServiceWorker: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
