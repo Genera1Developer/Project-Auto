@@ -73,6 +73,7 @@
             overflow-x: auto; /* Add horizontal scroll if content is too wide */
             white-space: pre-wrap; /* Preserve formatting, including line breaks */
             word-wrap: break-word; /* Break long words */
+            min-height: 50px; /* Ensure the response area is always visible */
         }
 
         #error {
@@ -119,15 +120,17 @@
 
             const url = urlInput.value;
 
-            // Basic URL validation (can be improved)
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                errorDiv.textContent = 'Please enter a valid URL starting with http:// or https://';
+            // Basic URL validation
+            try {
+                new URL(url); // Will throw an error if the URL is invalid
+            } catch (e) {
+                errorDiv.textContent = 'Please enter a valid URL';
                 return;
             }
 
-            errorDiv.textContent = ''; // Clear previous errors
-            responseDiv.textContent = ''; // Clear previous response
-            loadingDiv.style.display = 'block'; // Show loading indicator
+            errorDiv.textContent = '';
+            responseDiv.textContent = '';
+            loadingDiv.style.display = 'block';
 
             try {
                 const response = await fetch('/proxy?url=' + encodeURIComponent(url));
@@ -138,8 +141,12 @@
 
                 const contentType = response.headers.get("content-type");
                 if (contentType && contentType.includes("application/json")) {
-                    const data = await response.json();
-                    responseDiv.textContent = JSON.stringify(data, null, 2); // Format JSON
+                    try {
+                        const data = await response.json();
+                        responseDiv.textContent = JSON.stringify(data, null, 2);
+                    } catch (jsonError) {
+                        responseDiv.textContent = "Error parsing JSON: " + jsonError.message + ". Raw response: " + await response.text();
+                    }
                 } else {
                     const text = await response.text();
                     responseDiv.textContent = text;
@@ -149,7 +156,7 @@
             } catch (error) {
                 errorDiv.textContent = 'An error occurred: ' + error.message;
             } finally {
-                loadingDiv.style.display = 'none'; // Hide loading indicator
+                loadingDiv.style.display = 'none';
             }
         });
     </script>
