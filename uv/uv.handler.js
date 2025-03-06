@@ -34,20 +34,28 @@ async function handleRequest(req, res) {
       followRedirects: false,
     };
 
-    delete options.headers['host'];
-    delete options.headers['origin'];
-    delete options.headers['connection'];
-    delete options.headers['upgrade'];
-    delete options.headers['accept-encoding'];
-    delete options.headers['proxy-connection'];
-    delete options.headers['if-none-match'];
-    delete options.headers['if-modified-since'];
-    delete options.headers['pragma'];
-    delete options.headers['cache-control'];
+    // Delete potentially problematic headers
+    const hopByHopHeaders = [
+      'host',
+      'origin',
+      'connection',
+      'upgrade',
+      'accept-encoding',
+      'proxy-connection',
+      'if-none-match',
+      'if-modified-since',
+      'pragma',
+      'cache-control',
+      'transfer-encoding' // Important to remove for proper handling
+    ];
+
+    hopByHopHeaders.forEach(header => delete options.headers[header]);
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       const resHeaders = { ...proxyRes.headers };
-      delete resHeaders['transfer-encoding'];
+
+      // Remove content-encoding to prevent issues with decompression. The client
+      // can handle decompression on its own.
       delete resHeaders['content-encoding'];
 
       res.writeHead(proxyRes.statusCode, resHeaders);
@@ -64,7 +72,11 @@ async function handleRequest(req, res) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
       } else {
-        res.socket.destroy();
+        try {
+          res.socket.destroy();
+        } catch (socketErr) {
+          console.error("Error destroying socket:", socketErr);
+        }
       }
     });
 
@@ -77,7 +89,11 @@ async function handleRequest(req, res) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error: ' + err.message);
       } else {
-        res.socket.destroy();
+        try {
+          res.socket.destroy();
+        } catch (socketErr) {
+          console.error("Error destroying socket:", socketErr);
+        }
       }
     });
 
@@ -96,7 +112,11 @@ async function handleRequest(req, res) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
     } else {
-      res.socket.destroy();
+      try {
+        res.socket.destroy();
+      } catch (socketErr) {
+        console.error("Error destroying socket:", socketErr);
+      }
     }
   }
 }
