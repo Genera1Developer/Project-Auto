@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 
-function generateRandomToken(length = 32) {
+async function generateRandomToken(length = 32) {
   if (!Number.isInteger(length) || length <= 0) {
     throw new TypeError('Length must be a positive integer.');
   }
@@ -16,7 +16,7 @@ function generateRandomToken(length = 32) {
   });
 }
 
-function hashString(string, salt) {
+async function hashString(string, salt) {
   if (typeof string !== 'string' || string.length === 0) {
     throw new TypeError('String must be a non-empty string.');
   }
@@ -25,18 +25,13 @@ function hashString(string, salt) {
   }
 
   return new Promise((resolve, reject) => {
-    try {
-      const hash = crypto.createHmac('sha512', salt);
-      hash.update(string);
-      const digest = hash.digest('hex');
-      if (!digest) {
-        return reject(new Error('Hashing failed: Digest is empty'));
+    crypto.pbkdf2(string, salt, 100000, 64, 'sha512', (err, derivedKey) => {
+      if (err) {
+        console.error('Error during hashing:', err);
+        return reject(new Error('Hashing failed.'));
       }
-      resolve(digest);
-    } catch (error) {
-      console.error('Error during hashing:', error);
-      reject(new Error('Hashing failed.'));
-    }
+      resolve(derivedKey.toString('hex'));
+    });
   });
 }
 
@@ -53,14 +48,8 @@ async function verifyHash(string, hash, salt) {
 
   try {
     const computedHash = await hashString(string, salt);
-    const computedHashBuffer = Buffer.from(computedHash, 'hex');
-    const hashBuffer = Buffer.from(hash, 'hex');
+    return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(computedHash, 'hex'));
 
-    if (computedHashBuffer.length !== hashBuffer.length) {
-      return false;
-    }
-
-    return crypto.timingSafeEqual(computedHashBuffer, hashBuffer);
   } catch (error) {
     console.error('Error during hash verification:', error);
     return false;
