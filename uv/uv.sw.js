@@ -80,6 +80,8 @@ self.addEventListener('fetch', (event) => {
               });
           }
 
+          const contentType = response.headers.get('content-type');
+
           return new Response(responseBody, {
             status: response.status,
             statusText: response.statusText,
