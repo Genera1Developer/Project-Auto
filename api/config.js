@@ -12,6 +12,7 @@ const config = {
   forceCodec: process.env.FORCE_CODEC === 'true',
   allowServiceWorkers: process.env.ALLOW_SERVICE_WORKERS === 'true',
   blockAll: process.env.BLOCK_ALL === 'true',
+  xForwardedFor: process.env.X_FORWARDED_FOR === 'true',
 };
 
 module.exports = config;
