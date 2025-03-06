@@ -32,8 +32,7 @@ module.exports = {
             return null;
         }
         try {
-            const value = cache.get(url);
-            return value !== undefined ? value : null;
+            return await safeCacheOperation(cache.get.bind(cache), url);
         } catch (error) {
             console.error(`Cache get operation failed for URL: ${url}`, error);
             return null;
@@ -49,8 +48,7 @@ module.exports = {
             return false;
         }
         try {
-            cache.set(url, data, ttl);
-            return true;
+            return await safeCacheOperation(cache.set.bind(cache), url, data, ttl);
         } catch (error) {
             console.error(`Cache set operation failed for URL: ${url}`, error);
             return false;
@@ -62,8 +60,7 @@ module.exports = {
             return false;
         }
         try {
-            const deleted = cache.del(url);
-            return deleted > 0;
+            return await safeCacheOperation(cache.del.bind(cache), url);
         } catch (error) {
             console.error(`Cache clear operation failed for URL: ${url}`, error);
             return false;
@@ -79,14 +76,6 @@ module.exports = {
         }
     },
     stats: async () => {
-        try {
-            return cache.getStats();
-        } catch (error) {
-            console.error('Error getting cache stats', error);
-            return null;
-        }
-    },
-    getStats: async () => {
         try {
             return cache.getStats();
         } catch (error) {
