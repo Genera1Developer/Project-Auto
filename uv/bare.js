@@ -11,7 +11,7 @@ class Bare {
             const response = await fetch(fetchUrl, options);
             if (!response.ok) {
                 console.error(`Bare fetch error: HTTP error! status: ${response.status} - ${response.url}`);
-                throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
+                throw new Error(`Bare fetch error: HTTP error! status: ${response.status} - ${response.url}`);
             }
             return response;
         } catch (error) {
@@ -26,7 +26,7 @@ class Bare {
             const response = await fetch(fetchUrl, options);
             if (!response.ok) {
                 console.error(`Bare request error: HTTP error! status: ${response.status} - ${response.url}`);
-                throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
+                throw new Error(`Bare request error: HTTP error! status: ${response.status} - ${response.url}`);
             }
             return await response.json();
         } catch (error) {
@@ -38,4 +38,13 @@ class Bare {
     createProxy(url) {
         return this.prefix + encodeURIComponent(url);
     }
+
+	/**
+	 * Resolves a URL to an absolute URL.
+	 * @param {string} url The URL to resolve.
+	 * @returns {string} The absolute URL.
+	 */
+	resolve(url) {
+		return new URL(url, this.origin).href;
+	}
 }
