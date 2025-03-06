@@ -1,16 +1,30 @@
 {
-  "watch": ["*.js", "public", "uv", "api"],
-  "ignore": ["node_modules", "cache/*", "storage/*", "uv/node_modules", "public/js/sw.js", "public/uv/uv.bundle.js", "public/uv/uv.config.js", "log/*", "public/img/*", "tmp/*"],
-  "ext": "js,html,css,txt,json",
-  "delay": "100",
+  "watch": ["api", "public", "uv"],
+  "ignore": [
+    "node_modules",
+    "cache/*",
+    "storage/*",
+    "uv/node_modules",
+    "public/js/sw.js",
+    "public/uv/uv.bundle.js",
+    "public/uv/uv.config.js",
+    "log/*",
+    "tmp/*",
+    "public/img/*",
+    "cert/*",
+    "db/*"
+  ],
+  "ext": "js,json,html,css",
+  "delay": "250",
   "legacyWatch": true,
-  "debounceTimeout": 150,
+  "debounceTimeout": 200,
   "verbose": true,
   "restartable": "rs",
   "execMap": {
     "js": "node"
   },
   "env": {
-    "NODE_ENV": "development"
+    "NODE_ENV": "development",
+    "PORT": "3000"
   }
 }
