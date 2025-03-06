@@ -3,10 +3,12 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
+    line-height: 1.6;
 }
 
 .container {
     width: 80%;
+    max-width: 960px;
     margin: 20px auto;
     background-color: #fff;
     padding: 20px;
@@ -17,19 +19,22 @@ body {
 h1 {
     text-align: center;
     color: #333;
+    margin-bottom: 20px;
 }
 
 form {
     margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 input[type="text"] {
-    width: 70%;
+    flex-grow: 1;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    margin-right: 10px;
 }
 
 button {
@@ -39,6 +44,7 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -53,6 +59,7 @@ button:hover {
     background-color: #f9f9f9;
     white-space: pre-wrap;
     word-wrap: break-word;
+    font-family: monospace;
 }
 
 .error {
