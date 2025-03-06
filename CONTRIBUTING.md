@@ -1,6 +1,6 @@
 1. **Install Git:** Ensure you have Git installed on your machine. You can download it from [https://git-scm.com/](https://git-scm.com/).
 
-2. **Install Python:** This project requires Python 3.8 or higher. Download the latest version from [https://www.python.org/downloads/](https://www.python.org/downloads/). Make sure to add Python to your PATH during installation. Consider using a Python version manager like `pyenv` or `asdf` for managing multiple Python versions. Using a version manager is strongly recommended.
+2. **Install Python:** This project requires Python 3.8 or higher. Download the latest version from [https://www.python.org/downloads/](https://www.python.org/downloads/). Make sure to add Python to your PATH during installation. Consider using a Python version manager like `pyenv` or `asdf` for managing multiple Python versions. **Using a version manager is strongly recommended to avoid conflicts and ensure consistency.**
 
 3. **Clone the Repository:** Clone the project repository to your local machine using:
 
@@ -59,10 +59,9 @@
      pipenv install --dev
      
 
-7. **Configure your Editor/IDE:** We recommend using VS Code with the Python extension. Configure your editor to use the virtual environment you created. Ensure your IDE uses `flake8` for linting, `pytest` for testing, and `black` for code formatting. Configure pre-commit hooks to automate code formatting and linting. Instructions for setting up pre-commit hooks are below.
+7. **Configure your Editor/IDE:** We recommend using VS Code with the Python extension. Configure your editor to use the virtual environment you created. Ensure your IDE uses `flake8` for linting, `pytest` for testing, and `black` for code formatting. **It's highly recommended to configure pre-commit hooks to automate code formatting and linting.** Instructions for setting up pre-commit hooks are below.
 
-8. **Set up Environment Variables:** Refer to the `.env.example` file for the required environment variables. Create a `.env` file in the project root directory and populate it with the necessary values. It is recommended to use `python-dotenv` to load these. Ensure the `.env` file is added to your `.gitignore` to avoid committing sensitive information.
+8. **Set up Environment Variables:** Refer to the `.env.example` file for the required environment variables. Create a `.env` file in the project root directory and populate it with the necessary values. It is recommended to use `python-dotenv` to load these. **Ensure the `.env` file is added to your `.gitignore` to avoid committing sensitive information. Never commit sensitive information to the repository.**
 
 9. **Set up pre-commit hooks:**
-
     * Install pre-
