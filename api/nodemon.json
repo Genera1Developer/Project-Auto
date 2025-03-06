@@ -1,5 +1,5 @@
 {
-  "watch": ["api", "public", "uv", "index.js"],
+  "watch": ["api", "public", "uv", "index.js", "config.js"],
   "ignore": [
     "node_modules/",
     "cache/*",
@@ -15,7 +15,8 @@
     "db/*",
     ".cache/*",
     "sessions/*",
-    "docs/*"
+    "docs/*",
+    "test/*"
   ],
   "ext": "js,json,html,css,mjs",
   "delay": "250",
@@ -29,6 +30,7 @@
   "env": {
     "NODE_ENV": "development",
     "PORT": "3000",
-    "DEBUG": "proxy:*"
+    "DEBUG": "proxy:*",
+    "UV_THREADPOOL_SIZE": "128"
   }
 }
