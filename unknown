@@ -1,9 +1,29 @@
-class ProxyError extends Error {
-  constructor(message, code) {
-    super(message);
-    this.name = "ProxyError";
-    this.code = code || 500;
-  }
-}
+const form = document.getElementById('url-form');
+const urlInput = document.getElementById('url-input');
+const proxyUrl = '/proxy/'; // Replace with your proxy endpoint
 
-export default ProxyError;
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  let url = urlInput.value.trim();
+
+  if (!url) {
+    alert('Please enter a URL.');
+    return;
+  }
+
+  try {
+    // Basic URL validation
+    new URL(url);
+  } catch (error) {
+    url = 'https://' + url; // Attempt to prepend https:// if invalid
+    try {
+      new URL(url); //Revalidate
+    } catch (e) {
+      alert('Invalid URL. Please enter a valid URL.');
+      return;
+    }
+  }
+    
+  window.location.href = proxyUrl + encodeURIComponent(url);
+});
