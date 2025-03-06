@@ -1,25 +1,35 @@
-const cache = {};
+const cache = new Map();
 
 module.exports = {
     get: (url) => {
-        return cache[url] || null;
+        const cachedItem = cache.get(url);
+        if (!cachedItem) {
+            return null;
+        }
+        if (cachedItem.expiry < Date.now()) {
+            cache.delete(url);
+            return null;
+        }
+        return cachedItem.data;
     },
     set: (url, data, ttl = 3600) => {
-        cache[url] = {
+        cache.set(url, {
             data,
             expiry: Date.now() + (ttl * 1000)
-        };
+        });
     },
     check: (url) => {
-        if (!cache[url]) {
+        const cachedItem = cache.get(url);
+
+        if (!cachedItem) {
             return null;
         }
 
-        if (cache[url].expiry < Date.now()) {
-            delete cache[url];
+        if (cachedItem.expiry < Date.now()) {
+            cache.delete(url);
             return null;
         }
 
-        return cache[url].data;
+        return cachedItem.data;
     }
 };
