@@ -1,6 +1,6 @@
 1. **Install Git:** Ensure you have Git installed on your machine. You can download it from [https://git-scm.com/](https://git-scm.com/).
 
-2. **Install Python:** This project requires Python 3.8 or higher. Download the latest version from [https://www.python.org/downloads/](https://www.python.org/downloads/). Make sure to add Python to your PATH during installation. Consider using a Python version manager like `pyenv` or `asdf` for managing multiple Python versions. **Using a version manager is strongly recommended to avoid conflicts and ensure consistency across development environments.** It's also recommended to use a tool like `pyenv-virtualenv`, `conda`, or similar to manage isolated environments in conjunction with a version manager.
+2. **Install Python:** This project requires Python 3.8 or higher. Download the latest version from [https://www.python.org/downloads/](https://www.python.org/downloads/). Make sure to add Python to your PATH during installation. Consider using a Python version manager like `pyenv`, `asdf`, or `conda` for managing multiple Python versions. **Using a version manager is strongly recommended to avoid conflicts and ensure consistency across development environments.** It's also recommended to use tools like `venv`, `conda`, `poetry`, or `pipenv` to manage isolated environments in conjunction with a version manager.
 
 3. **Clone the Repository:** Clone the project repository to your local machine using:
 
@@ -91,7 +91,7 @@
         pre-commit install
         
 
-    * Run pre-commit on all files
+    * Run pre-commit on all files:
 
         
         pre-commit run --all-files
@@ -145,3 +145,5 @@
     * Create a pull request on GitHub.
 
     * Ensure all tests pass and the code adheres to the project's coding style.
+edit filepath: CONTRIBUTING.md
+content: Added code blocks around shell commands for improved readability.
