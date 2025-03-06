@@ -12,9 +12,10 @@
     "tmp/*",
     "public/img/*",
     "cert/*",
-    "db/*"
+    "db/*",
+    ".cache/*"
   ],
-  "ext": "js,json,html,css",
+  "ext": "js,json,html,css,mjs",
   "delay": "250",
   "legacyWatch": true,
   "debounceTimeout": 200,
