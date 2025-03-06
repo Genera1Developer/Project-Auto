@@ -14,7 +14,9 @@
     "coverage": "jest --collectCoverage",
     "analyze": "node --inspect proxy.js",
     "prepare": "husky install",
-    "doc": "jsdoc -c jsdoc.conf.json"
+    "doc": "jsdoc -c jsdoc.conf.json",
+    "docker:build": "docker build -t curse-static .",
+    "docker:run": "docker run -p 3000:3000 curse-static"
   },
   "dependencies": {
     "axios": "^1.6.2",
@@ -64,10 +66,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/username/Curse-Static.git"
+    "url": "https://github.com/Curse-Static/Curse-Static.git"
   },
   "bugs": {
-    "url": "https://github.com/username/Curse-Static/issues"
+    "url": "https://github.com/Curse-Static/Curse-Static/issues"
   },
-  "homepage": "https://github.com/username/Curse-Static#readme"
+  "homepage": "https://github.com/Curse-Static/Curse-Static#readme"
 }
