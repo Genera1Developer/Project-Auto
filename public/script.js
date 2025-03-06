@@ -54,13 +54,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const blobUrl = window.URL.createObjectURL(blob);
         let filename = 'downloaded_file';
         const filenameRegex = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/i;
-        const filenameMatch = contentDisposition.match(filenameRegex);
+        let filenameMatch = contentDisposition.match(filenameRegex);
 
         if (filenameMatch && filenameMatch[1]) {
+          try {
             filename = decodeURIComponent(filenameMatch[1]);
+          } catch (e) {
+            console.warn("Failed to decode filename: ", e);
+            filename = filenameMatch[1];
+          }
         } else if (contentDisposition.includes('filename=')) {
-            filename = contentDisposition.split('filename=')[1].split(';')[0].trim();
-            filename = filename.replace(/^"|"$/g, '');
+          filename = contentDisposition.split('filename=')[1].split(';')[0].trim();
+          filename = filename.replace(/^"|"$/g, '');
         }
 
         downloadLink.href = blobUrl;
@@ -82,4 +87,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-content: [Improved filename extraction from Content-Disposition header, handling encoded filenames]
