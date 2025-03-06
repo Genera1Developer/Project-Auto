@@ -10,6 +10,9 @@
     --warning-color: #ffcc66;
     --scrollbar-thumb: rgba(255, 255, 255, 0.2);
     --scrollbar-track: rgba(0, 0, 0, 0.2);
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --focus-shadow: 0 0 5px var(--primary-glow);
+    --transition-duration: 0.3s;
 }
 
 .light {
@@ -24,12 +27,15 @@
     --warning-color: #cc9933;
     --scrollbar-thumb: rgba(0, 0, 0, 0.2);
     --scrollbar-track: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --focus-shadow: 0 0 5px var(--primary-glow);
+    --transition-duration: 0.3s;
 }
 
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color var(--transition-duration) ease, color var(--transition-duration) ease;
     font-family: sans-serif;
     margin: 0;
     padding: 0;
@@ -67,7 +73,7 @@ body {
 a {
     color: var(--primary-glow);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color var(--transition-duration) ease;
 }
 
 a:hover {
@@ -80,6 +86,7 @@ header {
     padding: 1rem;
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
 }
 
 nav {
@@ -93,6 +100,12 @@ nav a {
     padding: 0.5rem 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
+    transition: all var(--transition-duration) ease;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 footer {
@@ -101,6 +114,7 @@ footer {
     padding: 1rem;
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 -4px 6px -1px var(--shadow-color), 0 -2px 4px -1px var(--shadow-color);
 }
 
 .cyber-bg {
@@ -161,10 +175,11 @@ footer {
     background: var(--card-bg);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
     border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1rem;
+    box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
 }
 
 .cyber-card:hover {
@@ -177,25 +192,26 @@ footer {
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text-color);
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
     padding: 0.5rem;
     border-radius: 6px;
 }
 
 .cyber-input:focus {
     transform: scale(1.02);
-    box-shadow: 0 0 20px var(--primary-glow);
+    box-shadow: var(--focus-shadow);
     outline: none;
 }
 
 .cyber-button {
     background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
     border-radius: 6px;
     padding: 8px 16px;
     color: white;
     border: none;
     cursor: pointer;
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .cyber-button:hover {
@@ -220,7 +236,7 @@ footer {
     height: 25px;
     border-radius: 25px;
     background-color: #ccc;
-    transition: background-color 0.3s ease;
+    transition: background-color var(--transition-duration) ease;
     position: relative;
     display: inline-block;
 }
@@ -233,7 +249,8 @@ footer {
     height: 20px;
     background-color: white;
     border-radius: 50%;
-    transition: left 0.3s ease;
+    transition: left var(--transition-duration) ease;
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .toggle-on {
@@ -258,8 +275,9 @@ footer {
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 0.5rem;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
     height: 600px;
+    box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
 }
 
 .proxy-container.fullscreen {
@@ -296,7 +314,7 @@ footer {
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
 }
 
 .control-btn:hover {
@@ -318,7 +336,7 @@ footer {
     padding: 1rem;
     overflow-y: auto;
     z-index: 1000;
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
     display: none;
     transform: translateY(100%);
 }
@@ -347,7 +365,7 @@ footer {
     padding: 4px 8px;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
 }
 
 .light .console-header button {
@@ -370,7 +388,7 @@ footer {
     padding: 4px 8px;
     cursor: pointer;
     border-radius: 4px;
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
 }
 
 .console-tab.active {
@@ -436,7 +454,7 @@ footer {
     padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--transition-duration) ease;
 }
 
 .fullscreen-button:hover {
@@ -450,7 +468,7 @@ footer {
     margin-bottom: 1rem;
     border-radius: 0.25rem;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity var(--transition-duration) ease-in-out;
 }
 
 .alert.show {
@@ -493,7 +511,7 @@ textarea {
     border-radius: 0.25rem;
     box-sizing: border-box; /* Ensures padding doesn't affect width */
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    transition: border-color var(--transition-duration) ease;
 }
 
 input[type="text"]:focus,
@@ -502,7 +520,7 @@ input[type="email"]:focus,
 textarea:focus {
     border-color: var(--primary-glow);
     outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(var(--primary-glow-rgb), .25);
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, .25);
 }
 
 /* Form Styles */
@@ -809,6 +827,7 @@ form label {
     width: 80%; /* Could be more or less, depending on screen size */
     border-radius: 8px;
     position: relative;
+    box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
 }
 
 .close {
