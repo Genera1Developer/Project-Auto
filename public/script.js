@@ -5,10 +5,8 @@ document.getElementById('proxyForm').addEventListener('submit', async (event) =>
   const responseDiv = document.getElementById('response');
   const loadingIndicator = document.getElementById('loading');
 
-
   responseDiv.innerHTML = '';
   loadingIndicator.style.display = 'block';
-
 
   try {
     const response = await fetch('/proxy', {
@@ -20,7 +18,14 @@ document.getElementById('proxyForm').addEventListener('submit', async (event) =>
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      let errorText = `HTTP error! status: ${response.status}`;
+      try {
+          const errorBody = await response.text();
+          errorText += ` - ${errorBody}`;
+      } catch (bodyError) {
+          console.warn("Failed to parse error body:", bodyError);
+      }
+      throw new Error(errorText);
     }
 
     const data = await response.text();
