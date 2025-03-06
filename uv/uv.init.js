@@ -7,4 +7,5 @@ const UV_CONFIG = {
     bundle: '/uv/uv.bundle.js',
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
+    error: '/uv/uv.error.html',
 };
