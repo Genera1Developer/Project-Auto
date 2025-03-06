@@ -15,7 +15,10 @@ self.addEventListener('fetch', event => {
         .then(response => {
           if (!response.ok) {
             console.error('Service worker fetch failed:', response.status, response.statusText, event.request.url);
-            throw new Error(`Service worker fetch failed with status ${response.status}`);
+            return new Response(`Service Worker Error: ${response.status} ${response.statusText}`, {
+              status: response.status,
+              statusText: 'Service Worker Error'
+            });
           }
           return response;
         })
