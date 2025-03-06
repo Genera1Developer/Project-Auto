@@ -45,14 +45,15 @@ self.addEventListener('fetch', event => {
 
             return caches.open(CACHE_NAME)
               .then(cache => {
-                cache.put(event.request, responseToCache);
-                return response;
+                return cache.put(event.request, responseToCache);
               })
               .then(() => {
                 console.log('ServiceWorker: Caching new resource:', event.request.url);
+                return response;
               })
               .catch(err => {
                 console.warn('ServiceWorker: Cache PUT failed.', err);
+                return response; // Return the original response even if caching fails
               });
           })
           .catch(() => {
@@ -74,6 +75,7 @@ self.addEventListener('activate', event => {
             console.log('ServiceWorker: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
+          return Promise.resolve(); // Add a resolved promise for caches that don't need deleting
         })
       );
     }).then(() => {
