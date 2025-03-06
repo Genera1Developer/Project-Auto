@@ -1,45 +1,63 @@
-/* Ultraviolet Service Worker. (c) MIT License */
+.fade-in {
+    animation: fadeIn ease 0.5s;
+    -webkit-animation: fadeIn ease 0.5s;
+    -moz-animation: fadeIn ease 0.5s;
+    -o-animation: fadeIn ease 0.5s;
+    -ms-animation: fadeIn ease 0.5s;
+}
 
-const UV_SW_VERSION = '1.0.0';
-const UV_CONFIG = {
-  prefix: '/service/',
-  bare: '/bare/',
-  encodeUrl: Ultraviolet.codec.xor.encode,
-  decodeUrl: Ultraviolet.codec.xor.decode,
-};
+@keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
 
-importScripts('./ultraviolet.js', './uv.config.js');
+@-moz-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(self.skipWaiting());
-});
+@-webkit-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
-});
+@-o-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
 
-self.addEventListener('fetch', (event) => {
-  try {
-    const url = new URL(event.request.url);
+@-ms-keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
 
-    if (url.pathname.startsWith(UV_CONFIG.prefix)) {
-      event.respondWith(
-        Ultraviolet.handleRequest(event, UV_CONFIG)
-      );
-    } else if (url.pathname === '/uv/service-worker.js') {
-        event.respondWith(
-            fetch(event.request)
-        );
+.slide-up {
+    animation: slideUp 0.5s forwards;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
     }
-  } catch (e) {
-    console.error(e);
-    event.respondWith(
-      new Response('<h1>Error</h1><p>' + e.toString() + '</p>', {
-        status: 500,
-        headers: {
-          'content-type': 'text/html; charset=utf-8'
-        }
-      })
-    );
-  }
-});
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
