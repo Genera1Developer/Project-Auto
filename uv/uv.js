@@ -1,8 +1,21 @@
-// Placeholder for Ultraviolet service worker
+self.addEventListener('install', event => {
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener('fetch', event => {
-  // You can customize the fetch handling here
-  // For example, you can use the `event.respondWith()` method
-  // to provide a custom response.
-  // This is a basic example that simply fetches the original request.
-  event.respondWith(fetch(event.request));
+  const url = new URL(event.request.url);
+
+  if (url.pathname.startsWith('/service/')) {
+    // Handle requests to the proxy endpoint
+    event.respondWith(
+      fetch(event.request)
+    );
+  } else {
+    // Bypass other requests
+    event.respondWith(fetch(event.request));
+  }
 });
