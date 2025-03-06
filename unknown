@@ -1,19 +1,15 @@
-self.importScripts('./uv.bundle.js', './uv.config.js');
-self.addEventListener('fetch', (event) => {
-  try {
-    event.respondWith(
-      (async () => {
-        const url = new URL(event.request.url);
-        if (url.pathname === '/service-worker.js') {
-          return fetch(event.request);
-        }
-        return await uv.fetch(event);
-      })()
-    );
-  } catch (e) {
-    console.error(e);
-    event.respondWith(new Response(e.toString(), {
-      status: 500
-    }));
+class ErrorHandler {
+  static handle(err, req, res, next) {
+    console.error(err);
+
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Internal Server Error';
+
+    res.status(statusCode).json({
+      success: false,
+      message: message,
+    });
   }
-});
+}
+
+module.exports = ErrorHandler;
