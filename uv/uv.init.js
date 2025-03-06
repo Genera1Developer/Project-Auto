@@ -8,4 +8,5 @@ const UV_CONFIG = {
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
     error: '/uv/uv.error.html',
+    cloak: '/uv/uv.cloak.js'
 };
