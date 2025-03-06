@@ -16,7 +16,8 @@
     ".cache/*",
     "sessions/*",
     "docs/*",
-    "test/*"
+    "test/*",
+    "scripts/*"
   ],
   "ext": "js,json,html,css,mjs",
   "delay": "250",
