@@ -16,6 +16,7 @@ const proxyHandler = (req, res) => {
       headers: { ...req.headers, host: parsedURL.hostname },
       followRedirects: false,
       timeout: 15000, // Add a timeout to prevent hanging requests
+      agent: false, // Disable connection pooling
     };
 
     // Remove hop-by-hop headers
@@ -23,7 +24,8 @@ const proxyHandler = (req, res) => {
     delete options.headers['proxy-connection'];
     delete options.headers['transfer-encoding'];
     delete options.headers['upgrade'];
-    delete options.headers['keep-alive']; // Also remove keep-alive
+    delete options.headers['keep-alive'];
+    delete options.headers['te']; // Remove te header
 
     const proxyReq = (parsedURL.protocol === 'https:' ? https : http).request(parsedURL.href, options, (proxyRes) => {
       // Remove hop-by-hop headers from the response as well
@@ -31,7 +33,8 @@ const proxyHandler = (req, res) => {
       delete proxyRes.headers['proxy-connection'];
       delete proxyRes.headers['transfer-encoding'];
       delete proxyRes.headers['upgrade'];
-      delete proxyRes.headers['keep-alive']; // Also remove keep-alive
+      delete proxyRes.headers['keep-alive'];
+      delete proxyRes.headers['te']; // Remove te header
 
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
       proxyRes.pipe(res);
