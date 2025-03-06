@@ -35,8 +35,21 @@
     margin-top: 5px;
 }
 
-.setting-item input[type="checkbox"] {
-    width: auto;
-    margin-left: 10px;
-    vertical-align: middle;
+.setting-item select:focus,
+.setting-item input[type="checkbox"]:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+}
+
+@media (max-width: 768px) {
+    .settings-container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .setting-item select,
+    .setting-item input[type="checkbox"] {
+        font-size: 12px;
+    }
 }
