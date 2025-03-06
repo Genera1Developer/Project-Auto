@@ -1,63 +1,80 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>Web Proxy</title>
-     <link rel="stylesheet" href="/themes/default.css">
-     <style>
-         #loading { display: none; text-align: center; }
-         #error { color: red; }
-         .response-header { font-weight: bold; margin-top: 10px; }
-         .response-body { margin-top: 5px; }
-         body { font-family: sans-serif; }
-         .container { width: 80%; margin: 0 auto; padding: 20px; }
-         input[type="url"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; box-sizing: border-box; }
-         button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
-         button:hover { background-color: #3e8e41; }
-         #response-headers pre {
-             white-space: pre-wrap;
-             word-wrap: break-word;
-             font-family: monospace; /* Use monospace font for headers */
-         }
-         #response-body pre {
-             white-space: pre-wrap;
-             word-wrap: break-word;
-             font-family: monospace; /* Use monospace font for body */
-         }
-         #response-headers { margin-top: 20px; }
-         #response-body { margin-top: 20px; }
-         /* Add a subtle background to the response sections */
-         #response-headers, #response-body {
-             background-color: #f9f9f9;
-             padding: 10px;
-             border: 1px solid #eee;
-         }
-         /* Style the response container to be initially hidden */
-         #response { display: none; }
-     </style>
- </head>
- <body>
-     <div class="container">
-         <h1>Web Proxy</h1>
-         <form id="proxyForm">
-             <label for="url">Enter URL:</label>
-             <input type="url" id="url" name="url" placeholder="https://example.com" required>
-             <button type="submit">Fetch Content</button>
-         </form>
-         <div id="loading">
-             <img src="/loading.gif" alt="Loading...">
-             <p>Loading...</p>
-         </div>
-         <div id="error"></div>
-         <div id="response">
-             <div class="response-header">Response Headers:</div>
-             <div id="response-headers"><pre></pre></div>
-             <div class="response-header">Response Body:</div>
-             <div id="response-body"><pre></pre></div>
-         </div>
-     </div>
- 
-     <script src="script.js"></script>
- </body>
- </html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy</title>
+    <link rel="stylesheet" href="/themes/default.css">
+    <style>
+        #loading { display: none; text-align: center; }
+        #error { color: red; }
+        .response-header { font-weight: bold; margin-top: 10px; }
+        .response-body { margin-top: 5px; }
+        body { font-family: sans-serif; }
+        .container { width: 80%; margin: 0 auto; padding: 20px; }
+        input[type="url"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        button:hover { background-color: #3e8e41; }
+        #response-headers pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+        }
+        #response-body pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+        }
+        #response-headers { margin-top: 20px; }
+        #response-body { margin-top: 20px; }
+        #response-headers, #response-body {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
+        #response { display: none; }
+
+        /* Accessibility improvements */
+        label {
+            display: block; /* Make labels block-level for better spacing */
+            margin-bottom: 5px;
+        }
+
+        input[type="url"]:focus, button:focus {
+            outline: 2px solid #4CAF50; /* Add focus outline for accessibility */
+        }
+
+        /* Improve error message appearance */
+        #error {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid red;
+            background-color: #ffe6e6;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web Proxy</h1>
+        <form id="proxyForm">
+            <label for="url">Enter URL:</label>
+            <input type="url" id="url" name="url" placeholder="https://example.com" required>
+            <button type="submit">Fetch Content</button>
+        </form>
+        <div id="loading">
+            <img src="/loading.gif" alt="Loading...">
+            <p>Loading...</p>
+        </div>
+        <div id="error"></div>
+        <div id="response">
+            <div class="response-header">Response Headers:</div>
+            <div id="response-headers"><pre></pre></div>
+            <div class="response-header">Response Body:</div>
+            <div id="response-body"><pre></pre></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
