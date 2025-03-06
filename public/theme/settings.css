@@ -27,8 +27,7 @@
 
 .setting-item select,
 .setting-item input[type="text"],
-.setting-item input[type="number"],
-.setting-item input[type="checkbox"] {
+.setting-item input[type="number"] {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -39,18 +38,27 @@
 }
 
 .setting-item input[type="checkbox"] {
-    width: auto;
+    margin-top: 5px;
     margin-left: 10px;
-    vertical-align: middle;
+    vertical-align: middle; /* Align checkbox label text */
 }
 
 .setting-item select:focus,
 .setting-item input[type="text"]:focus,
-.setting-item input[type="number"]:focus,
-.setting-item input[type="checkbox"]:focus {
+.setting-item input[type="number"]:focus {
     outline: none;
     border-color: #66afe9;
     box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
+}
+
+.setting-item input[type="checkbox"]:focus {
+    outline: none;
+}
+
+.setting-item .checkbox-label {
+    display: inline-block;
+    margin-left: 5px; /* Space between checkbox and label */
+    vertical-align: middle; /* Align checkbox label text */
 }
 
 @media (max-width: 600px) {
