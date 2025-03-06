@@ -36,26 +36,7 @@ self.addEventListener('fetch', (event) => {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
 
-          const contentType = response.headers.get('content-type');
-
-          if (contentType && contentType.startsWith('text')) {
-            try {
-              const bodyText = await response.text();
-              return new Response(bodyText, {
-                status: response.status,
-                statusText: response.statusText,
-                headers: response.headers
-              });
-            } catch (textError) {
-              console.error('Error reading text:', textError);
-              return new Response(`<h1>Error: Could not read response as text</h1><p>${textError}</p>`, {
-                status: 500,
-                headers: { 'Content-Type': 'text/html' },
-              });
-            }
-          } else {
-            return response;
-          }
+          return response;
         } catch (error) {
           console.error('Fetch error:', error);
           return new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
