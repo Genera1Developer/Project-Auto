@@ -1,5 +1,3 @@
-* text=auto eol=lf
-
 # Normalize end-of-line characters
 * text=auto
 
@@ -14,18 +12,24 @@
 *.ttf binary
 *.otf binary
 *.eot binary
-*.svg binary
 *.wasm binary
 *.mp4 binary
 *.mp3 binary
 *.webm binary
 *.ogg binary
 *.flac binary
+*.mkv binary
+*.avi binary
+*.mov binary
+
+# Vector Images
+*.svg text=auto eol=lf
 
 # Proxy specific files
 api/* text=auto eol=lf
 uv/* text=auto eol=lf
 public/* text=auto eol=lf
+mitm/* text=auto eol=lf
 
 # Configuration files
 *.json text=auto eol=lf
@@ -38,6 +42,7 @@ public/* text=auto eol=lf
 *.sh text=auto eol=lf
 *.py text=auto eol=lf
 *.go text=auto eol=lf
+*.lua text=auto eol=lf
 
 # Documentation
 *.md text=auto eol=lf
@@ -65,3 +70,23 @@ public/* text=auto eol=lf
 
 # Add webmanifest
 *.webmanifest text=auto eol=lf
+
+# Certificates
+*.p12 binary
+*.pfx binary
+
+# Cache files
+cache/* binary
+
+# Add yarn lockfile
+yarn.lock text=auto eol=lf
+package-lock.json text=auto eol=lf
+pnpm-lock.yaml text=auto eol=lf
+.npmrc text=auto eol=lf
+
+# Minified files
+*.min.js text=auto eol=lf
+*.min.css text=auto eol=lf
+
+# Sourcemaps
+*.map text=auto eol=lf
