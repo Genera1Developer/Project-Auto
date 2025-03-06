@@ -20,19 +20,12 @@ document.getElementById('proxyForm').addEventListener('submit', async (event) =>
 
     if (!response.ok) {
       let errorText = `HTTP error! status: ${response.status}`;
-      let errorBody;
       try {
-        errorBody = await response.json();
-      } catch (e) {
-        errorBody = await response.text();
-      }
-
-      if (typeof errorBody === 'string') {
+        const errorBody = await response.text();
         errorText += ` - ${errorBody}`;
-      } else {
-        errorText += ` - ${JSON.stringify(errorBody)}`;
+      } catch (e) {
+        errorText += ` - Error parsing error body.`;
       }
-
       throw new Error(errorText);
     }
 
