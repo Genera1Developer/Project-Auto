@@ -1,46 +1,9 @@
-(function () {
-    'use strict';
+class ProxyError extends Error {
+  constructor(message, code) {
+    super(message);
+    this.name = "ProxyError";
+    this.code = code || 500;
+  }
+}
 
-    // Ultraviolet (UV) Bundle
-
-    // This bundle includes essential components for the Ultraviolet proxy.
-    // It should be served with the appropriate Content-Type header
-    // (e.g., application/javascript).
-
-    // Core functionality (example):
-    function decodeUrl(encodedUrl) {
-        try {
-            return decodeURIComponent(encodedUrl);
-        } catch (e) {
-            console.error("Error decoding URL:", encodedUrl, e);
-            return null; // Or handle the error as needed
-        }
-    }
-
-    function encodeUrl(url) {
-        try {
-            return encodeURIComponent(url);
-        } catch (e) {
-            console.error("Error encoding URL:", url, e);
-            return null; // Or handle the error as needed
-        }
-    }
-
-    // Example of a simple utility function
-    function isUrl(string) {
-      try {
-        new URL(string);
-        return true;
-      } catch (_) {
-        return false;
-      }
-    }
-
-    // Exported functions and variables (if needed)
-    window.UV = {
-        decodeUrl: decodeUrl,
-        encodeUrl: encodeUrl,
-        isUrl: isUrl
-    };
-
-})();
+export default ProxyError;
