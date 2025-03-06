@@ -15,9 +15,9 @@ async function handleRequest(req, res) {
     try {
       url = new URL(urlString);
     } catch (err) {
-      console.error('Invalid URL:', urlString, err);
+      console.error('Invalid URL:', urlString, err.message);
       res.writeHead(400, { 'Content-Type': 'text/plain' });
-      res.end('Invalid URL format.');
+      res.end('Invalid URL format: ' + err.message);
       return;
     }
 
@@ -54,7 +54,7 @@ async function handleRequest(req, res) {
     });
 
     proxyReq.on('error', (err) => {
-      console.error('Proxy request error:', err);
+      console.error('Proxy request error:', err.message);
       if (!res.headersSent) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
@@ -66,7 +66,7 @@ async function handleRequest(req, res) {
     req.pipe(proxyReq, { end: true });
 
     req.on('error', (err) => {
-      console.error('Request pipe error:', err);
+      console.error('Request pipe error:', err.message);
       proxyReq.destroy(err);
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
@@ -77,7 +77,7 @@ async function handleRequest(req, res) {
     });
 
     proxyReq.on('close', () => {
-      if (!req.complete) {
+      if (!req.complete && !req.destroyed) {
         req.destroy();
       }
     });
@@ -86,7 +86,7 @@ async function handleRequest(req, res) {
       proxyReq.destroy();
     });
   } catch (error) {
-    console.error('Unexpected error:', error);
+    console.error('Unexpected error:', error.message);
     if (!res.headersSent) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
