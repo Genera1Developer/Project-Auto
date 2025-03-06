@@ -3,17 +3,23 @@ const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
 const isValidURL = (url) => {
-    return typeof url === 'string' && url.trim() !== '';
+    try {
+        new URL(url);
+        return true;
+    } catch (error) {
+        return false;
+    }
 };
 
 module.exports = {
     get: async (url) => {
         if (!isValidURL(url)) {
-            console.warn('Attempted to get cache with invalid URL');
+            console.warn(`Attempted to get cache with invalid URL: ${url}`);
             return null;
         }
         try {
-            return cache.get(url) || null;
+            const value = cache.get(url);
+            return value !== undefined ? value : null;
         } catch (error) {
             console.error(`Cache get operation failed for URL: ${url}`, error);
             return null;
@@ -21,11 +27,11 @@ module.exports = {
     },
     set: async (url, data, ttl = 3600) => {
         if (!isValidURL(url)) {
-            console.warn('Attempted to set cache with invalid URL');
+            console.warn(`Attempted to set cache with invalid URL: ${url}`);
             return false;
         }
-        if (!data) {
-            console.warn('Attempted to set cache with null/undefined data for URL:', url);
+        if (data === null || data === undefined) {
+            console.warn(`Attempted to set cache with null/undefined data for URL: ${url}`);
             return false;
         }
         try {
@@ -38,11 +44,12 @@ module.exports = {
     },
     clear: async (url) => {
         if (!isValidURL(url)) {
-            console.warn('Attempted to clear cache with invalid URL');
+            console.warn(`Attempted to clear cache with invalid URL: ${url}`);
             return false;
         }
         try {
-            return cache.del(url) > 0;
+            const deleted = cache.del(url);
+            return deleted > 0;
         } catch (error) {
             console.error(`Cache clear operation failed for URL: ${url}`, error);
             return false;
