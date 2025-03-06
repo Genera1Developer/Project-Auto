@@ -15,7 +15,7 @@ self.addEventListener('fetch', (event) => {
     if (!proxiedUrl) {
       event.respondWith(new Response('<h1>Error: Missing URL parameter</h1>', {
         status: 400,
-        headers: { 'Content-Type': 'text/html' },
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
       }));
       return;
     }
@@ -38,7 +38,7 @@ self.addEventListener('fetch', (event) => {
               console.error("Failed to read request body:", e);
               return new Response(`<h1>Error: Could not read request body</h1><p>${e}</p>`, {
                 status: 400,
-                headers: { 'Content-Type': 'text/html' },
+                headers: { 'Content-Type': 'text/html; charset=utf-8' },
               });
             }
             requestInit.body = body;
@@ -51,7 +51,7 @@ self.addEventListener('fetch', (event) => {
             console.error('Fetch error:', error);
             return new Response(`<h1>Error: Target server unavailable or invalid URL</h1><p>${error}</p>`, {
               status: 502,
-              headers: { 'Content-Type': 'text/html' },
+              headers: { 'Content-Type': 'text/html; charset=utf-8' },
             });
           }
 
@@ -59,7 +59,7 @@ self.addEventListener('fetch', (event) => {
             console.error('HTTP error:', response.status, response.statusText);
             return new Response(`<h1>Error: Proxy request failed with status ${response.status}</h1><p>${response.statusText}</p>`, {
               status: response.status,
-              headers: { 'Content-Type': 'text/html' },
+              headers: { 'Content-Type': 'text/html; charset=utf-8' },
             });
           }
 
@@ -76,7 +76,7 @@ self.addEventListener('fetch', (event) => {
               console.error('Failed to read response body:', error);
               return new Response(`<h1>Error: Could not read response body from target</h1><p>${error}</p>`, {
                   status: 502,
-                  headers: { 'Content-Type': 'text/html' },
+                  headers: { 'Content-Type': 'text/html; charset=utf-8' },
               });
           }
 
@@ -89,7 +89,7 @@ self.addEventListener('fetch', (event) => {
           console.error('Unexpected error:', error);
           return new Response(`<h1>Error: An unexpected error occurred</h1><p>${error}</p>`, {
             status: 500,
-            headers: { 'Content-Type': 'text/html' },
+            headers: { 'Content-Type': 'text/html; charset=utf-8' },
           });
         }
       })()
@@ -102,7 +102,7 @@ self.addEventListener('fetch', (event) => {
       console.error('Fetch error for original request:', error);
       return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
         status: 500,
-        headers: { 'Content-Type': 'text/html' },
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
       });
     })
   );
