@@ -9,17 +9,18 @@
     <link id="theme-link" rel="stylesheet" href="themes/default.css">
     <link rel="icon" href="visuals/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="visuals/loading.css">
+    <meta name="description" content="A simple web proxy to browse the internet anonymously.">
 </head>
 <body>
     <div class="container">
         <h1>Web Proxy</h1>
         <div class="input-area">
-            <input type="text" id="urlInput" placeholder="Enter URL">
+            <input type="text" id="urlInput" placeholder="Enter URL" aria-label="URL to proxy">
             <button id="proxyButton">Go</button>
         </div>
         <div class="content-area">
             <div id="loadingSpinner" class="lds-dual-ring"></div>
-            <iframe id="proxyFrame" src="" style="display:none;"></iframe>
+            <iframe id="proxyFrame" src="" style="display:none;" title="Proxy View"></iframe>
         </div>
         <div class="info-area">
             <button id="headersButton">Show Headers</button>
@@ -27,7 +28,7 @@
         </div>
     </div>
 
-    <button id="themeSelector">
+    <button id="themeSelector" aria-label="Toggle Theme">
         <img src="visuals/theme-icon.svg" alt="Theme" width="24">
     </button>
 
