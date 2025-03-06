@@ -7,24 +7,46 @@ module.exports = {
         if (!url) {
             return null;
         }
-        return cache.get(url) || null;
+        try {
+            return cache.get(url) || null;
+        } catch (error) {
+            console.error(`Error getting cache for URL: ${url}`, error);
+            return null;
+        }
     },
     set: (url, data, ttl = 3600) => {
         if (!url || !data) {
             return;
         }
-        cache.set(url, data, ttl);
+        try {
+            cache.set(url, data, ttl);
+        } catch (error) {
+            console.error(`Error setting cache for URL: ${url}`, error);
+        }
     },
     clear: (url) => {
         if (!url) {
             return;
         }
-        cache.del(url);
+        try {
+            cache.del(url);
+        } catch (error) {
+            console.error(`Error clearing cache for URL: ${url}`, error);
+        }
     },
     flush: () => {
-        cache.flushAll();
+        try {
+            cache.flushAll();
+        } catch (error) {
+            console.error('Error flushing cache', error);
+        }
     },
     stats: () => {
-        return cache.getStats();
+        try {
+            return cache.getStats();
+        } catch (error) {
+            console.error('Error getting cache stats', error);
+            return null;
+        }
     }
 };
