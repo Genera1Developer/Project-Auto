@@ -68,5 +68,6 @@
   ],
   "experimental": {
     "enableUndici": true
-  }
+  },
+  "sendAnonymousTelemetry": false
 }
