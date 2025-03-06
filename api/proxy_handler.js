@@ -15,34 +15,40 @@ const proxyHandler = (req, res) => {
       method: req.method,
       headers: { ...req.headers, host: parsedURL.hostname },
       followRedirects: false,
-      timeout: 15000, // Add a timeout to prevent hanging requests
-      agent: false, // Disable connection pooling
+      timeout: 15000,
+      agent: false,
     };
 
-    // Remove hop-by-hop headers
-    delete options.headers['connection'];
-    delete options.headers['proxy-connection'];
-    delete options.headers['transfer-encoding'];
-    delete options.headers['upgrade'];
-    delete options.headers['keep-alive'];
-    delete options.headers['te']; // Remove te header
+    const hopByHopHeaders = [
+      'connection',
+      'proxy-connection',
+      'transfer-encoding',
+      'upgrade',
+      'keep-alive',
+      'te',
+      'trailer',
+      'proxy-authenticate',
+      'proxy-authorization',
+      'content-encoding', // Added content-encoding
+    ];
+
+    hopByHopHeaders.forEach(header => {
+      delete options.headers[header];
+    });
 
     const proxyReq = (parsedURL.protocol === 'https:' ? https : http).request(parsedURL.href, options, (proxyRes) => {
-      // Remove hop-by-hop headers from the response as well
-      delete proxyRes.headers['connection'];
-      delete proxyRes.headers['proxy-connection'];
-      delete proxyRes.headers['transfer-encoding'];
-      delete proxyRes.headers['upgrade'];
-      delete proxyRes.headers['keep-alive'];
-      delete proxyRes.headers['te']; // Remove te header
+      const proxyResHeaders = { ...proxyRes.headers }; // Copy headers to avoid modifying the original object.
+      hopByHopHeaders.forEach(header => {
+        delete proxyResHeaders[header];
+      });
 
-      res.writeHead(proxyRes.statusCode, proxyRes.headers);
+      res.writeHead(proxyRes.statusCode, proxyResHeaders);
       proxyRes.pipe(res);
     });
 
     proxyReq.on('timeout', () => {
       console.error('Proxy request timed out.');
-      proxyReq.destroy(); // Destroy the request
+      proxyReq.destroy();
       if (!res.headersSent) {
         return res.status(504).send('Proxy request timed out.');
       } else {
@@ -55,7 +61,6 @@ const proxyHandler = (req, res) => {
       if (!res.headersSent) {
         return res.status(500).send('Proxy error.');
       } else {
-        // If headers already sent, close the connection
         res.end();
       }
     });
