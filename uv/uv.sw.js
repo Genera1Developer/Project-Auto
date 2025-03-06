@@ -36,7 +36,14 @@ self.addEventListener('fetch', (event) => {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
 
-          return response;
+          const headers = new Headers(response.headers);
+          headers.set('Access-Control-Allow-Origin', '*');
+
+          return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: headers
+          });
         } catch (error) {
           console.error('Fetch error:', error);
           return new Response(`<h1>Error: Proxy request failed</h1><p>${error}</p>`, {
