@@ -4,21 +4,20 @@ const cache = new NodeCache({ stdTTL: 3600, checkperiod: 600 });
 
 module.exports = {
     get: async (url) => {
-        if (!url) {
-            console.warn('Attempted to get cache with null/undefined URL');
+        if (!url || typeof url !== 'string' || url.trim() === '') {
+            console.warn('Attempted to get cache with invalid URL');
             return null;
         }
         try {
-            const value = cache.get(url);
-            return value || null;
+            return cache.get(url) || null;
         } catch (error) {
             console.error(`Cache get operation failed for URL: ${url}`, error);
             return null;
         }
     },
     set: async (url, data, ttl = 3600) => {
-        if (!url) {
-            console.warn('Attempted to set cache with null/undefined URL');
+        if (!url || typeof url !== 'string' || url.trim() === '') {
+            console.warn('Attempted to set cache with invalid URL');
             return false;
         }
         if (!data) {
@@ -34,13 +33,12 @@ module.exports = {
         }
     },
     clear: async (url) => {
-        if (!url) {
-            console.warn('Attempted to clear cache with null/undefined URL');
+        if (!url || typeof url !== 'string' || url.trim() === '') {
+            console.warn('Attempted to clear cache with invalid URL');
             return false;
         }
         try {
-            cache.del(url);
-            return true;
+            return cache.del(url) > 0;
         } catch (error) {
             console.error(`Cache clear operation failed for URL: ${url}`, error);
             return false;
