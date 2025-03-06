@@ -33,21 +33,25 @@ module.exports = async (req, res) => {
             // Remove potentially problematic headers
             delete options.headers['content-length'];
             delete options.headers['content-encoding'];
+            delete options.headers['transfer-encoding']; // Remove transfer-encoding
+            delete options.headers['connection']; //Remove connection header
 
             const proxyReq = protocol.request(targetUrl, options, (proxyRes) => {
                 // Handle redirects manually
                 if (proxyRes.statusCode >= 300 && proxyRes.statusCode < 400 && proxyRes.headers.location) {
-                    const redirectUrl = proxyRes.headers.location;
+                    let redirectUrl = proxyRes.headers.location;
                     // Resolve relative redirects
-                    const absoluteRedirectUrl = new URL(redirectUrl, targetUrl).toString();
+                    redirectUrl = new URL(redirectUrl, targetUrl).toString();
 
                     // Redirect the client
-                    res.redirect(proxyRes.statusCode, absoluteRedirectUrl);
+                    res.redirect(proxyRes.statusCode, redirectUrl);
                     return;
                 }
 
+                // Remove hop-by-hop headers (connection, keep-alive, etc.) from response
+                const { 'content-encoding': contentEncoding, ...filteredHeaders } = proxyRes.headers;
 
-                res.writeHead(proxyRes.statusCode, proxyRes.headers);
+                res.writeHead(proxyRes.statusCode, filteredHeaders);
                 proxyRes.pipe(res);
             });
 
@@ -56,11 +60,11 @@ module.exports = async (req, res) => {
                 res.status(500).send(`Proxy request error: ${e.message}`);
             });
 
-            // Pipe the request body
-            req.pipe(proxyReq);
 
-            // Handle empty request bodies
-            if (req.method === 'GET' || req.method === 'HEAD') {
+            // Pipe the request body, handle undefined/null body gracefully
+            if (req.method !== 'GET' && req.method !== 'HEAD' && req.readable) {
+                req.pipe(proxyReq);
+            } else {
                 proxyReq.end();
             }
         } catch (error) {
