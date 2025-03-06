@@ -13,15 +13,17 @@
     --shadow-color: rgba(0, 0, 0, 0.5);
     --focus-shadow: 0 0 5px var(--primary-glow);
     --transition-duration: 0.3s;
+    --border-radius: 0.5rem; /* Consistent border radius */
+    --font-family: sans-serif; /* Define font family */
 }
 
 .light {
     --primary-glow: rgb(144, 238, 144);
     --secondary-glow: rgb(0, 128, 0);
     --text-color: #333;
-    --bg-color: #3e5b41;
-    --card-bg: rgba(255, 255, 255, 0.1);
-    --input-bg: rgba(255, 255, 255, 0.1);
+    --bg-color: #e0e8da; /* Lighter background for light mode */
+    --card-bg: rgba(255, 255, 255, 0.3); /* Slightly more opaque card background */
+    --input-bg: rgba(255, 255, 255, 0.3); /* Slightly more opaque input background */
     --error-color: #cc3333;
     --success-color: #33cc33;
     --warning-color: #cc9933;
@@ -36,7 +38,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     transition: background-color var(--transition-duration) ease, color var(--transition-duration) ease;
-    font-family: sans-serif;
+    font-family: var(--font-family);
     margin: 0;
     padding: 0;
     display: flex;
@@ -99,7 +101,7 @@ nav a {
     display: inline-block;
     padding: 0.5rem 1rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     transition: all var(--transition-duration) ease;
 }
 
@@ -176,7 +178,7 @@ footer {
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all var(--transition-duration) ease;
-    border-radius: 12px;
+    border-radius: var(--border-radius);
     padding: 1rem;
     margin-bottom: 1rem;
     box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
@@ -194,7 +196,7 @@ footer {
     color: var(--text-color);
     transition: all var(--transition-duration) ease;
     padding: 0.5rem;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
 }
 
 .cyber-input:focus {
@@ -206,7 +208,7 @@ footer {
 .cyber-button {
     background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
     transition: all var(--transition-duration) ease;
-    border-radius: 6px;
+    border-radius: var(--border-radius);
     padding: 8px 16px;
     color: white;
     border: none;
@@ -273,7 +275,7 @@ footer {
     position: relative;
     margin-top: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0.5rem;
+    border-radius: var(--border-radius);
     overflow: hidden;
     transition: all var(--transition-duration) ease;
     height: 600px;
@@ -298,28 +300,36 @@ footer {
     background: white;
 }
 
+/* Proxy Controls - Added some spacing and alignment */
 .proxy-controls {
     position: absolute;
     top: 10px;
     right: 10px;
     z-index: 1001;
     display: flex;
-    gap: 8px;
+    align-items: center; /* Vertically center items */
+    gap: 0.5rem;      /* Reduced gap for better spacing */
 }
 
 .control-btn {
     background: rgba(0, 0, 0, 0.5);
     border: 1px solid var(--primary-glow);
     color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
+    padding: 0.3rem 0.6rem; /* Reduced padding for smaller buttons */
+    border-radius: var(--border-radius);
     cursor: pointer;
     transition: all var(--transition-duration) ease;
+    font-size: 0.8rem;   /* Reduced font size for smaller buttons */
 }
 
 .control-btn:hover {
     background: var(--primary-glow);
     color: black;
+}
+
+.control-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .console-container {
@@ -466,7 +476,7 @@ footer {
 .alert {
     padding: 1rem;
     margin-bottom: 1rem;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius);
     opacity: 0;
     transition: opacity var(--transition-duration) ease-in-out;
 }
@@ -508,10 +518,12 @@ textarea {
     padding: 0.75rem;
     margin-bottom: 1rem;
     border: 1px solid #ddd;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius);
     box-sizing: border-box; /* Ensures padding doesn't affect width */
     font-size: 1rem;
     transition: border-color var(--transition-duration) ease;
+    background-color: var(--input-bg); /* Inherit input background */
+    color: var(--text-color);        /* Inherit text color */
 }
 
 input[type="text"]:focus,
@@ -572,7 +584,7 @@ form label {
     background-color: var(--card-bg);
     color: var(--text-color);
     padding: 1rem 2rem;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     z-index: 10000;
     opacity: 0;
@@ -587,7 +599,7 @@ form label {
 .btn {
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     color: white;
     cursor: pointer;
     font-size: 1rem;
@@ -880,4 +892,19 @@ form label {
         width: 100%;
         text-align: center;
     }
+
+    /* Adjust proxy control button size for smaller screens */
+    .proxy-controls {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: flex-end;   /* Align to the right */
+    }
+
+    .control-btn {
+        padding: 0.2rem 0.4rem; /* Further reduce padding */
+        font-size: 0.7rem;       /* Further reduce font size */
+    }
 }
+
+
+edit filepath: public/theme/forest.css
+content: /* Darker shadow for better contrast */
