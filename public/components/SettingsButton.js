@@ -9,12 +9,12 @@ function SettingsButton() {
     }, []);
 
     return (
-        <>
+        <div>
             <button onClick={toggleSettings}>
                 {showSettings ? 'Hide Settings' : 'Show Settings'}
             </button>
             {showSettings && <Settings />}
-        </>
+        </div>
     );
 }
 
