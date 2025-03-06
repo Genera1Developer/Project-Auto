@@ -16,7 +16,8 @@
     "prepare": "husky install",
     "doc": "jsdoc -c jsdoc.conf.json",
     "docker:build": "docker build -t curse-static .",
-    "docker:run": "docker run -p 3000:3000 curse-static"
+    "docker:run": "docker run -p 3000:3000 curse-static",
+    "docker:push": "docker push curse-static"
   },
   "dependencies": {
     "axios": "^1.6.2",
@@ -71,5 +72,6 @@
   "bugs": {
     "url": "https://github.com/Curse-Static/Curse-Static/issues"
   },
-  "homepage": "https://github.com/Curse-Static/Curse-Static#readme"
+  "homepage": "https://github.com/Curse-Static/Curse-Static#readme",
+  "packageManager": "npm@>=8.0.0"
 }
