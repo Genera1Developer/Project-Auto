@@ -27,7 +27,7 @@
 
 .setting-item select,
 .setting-item input[type="text"],
-.setting-item input[type="number"], /* Added input[type="number"] to selector */
+.setting-item input[type="number"],
 .setting-item input[type="checkbox"] {
     padding: 8px;
     border: 1px solid #ccc;
@@ -44,21 +44,18 @@
     vertical-align: middle;
 }
 
-/* Added focus state styling for better accessibility */
 .setting-item select:focus,
 .setting-item input[type="text"]:focus,
-.setting-item input[type="number"]:focus, /* Added focus to number input */
+.setting-item input[type="number"]:focus,
 .setting-item input[type="checkbox"]:focus {
     outline: none;
     border-color: #66afe9;
     box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
 }
 
-/* Small screen adjustments for responsiveness */
 @media (max-width: 600px) {
     .settings-container {
         width: 95%;
         padding: 15px;
     }
 }
-content: Added styling for number inputs.
