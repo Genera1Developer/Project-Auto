@@ -7,20 +7,21 @@ const urlsToCache = [
   '/offline.html'
 ];
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(function(cache) {
+      .then(cache => {
         console.log('Opened cache');
         return cache.addAll(urlsToCache);
       })
+      .catch(err => console.error('Failed to open cache:', err))
   );
 });
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(function(response) {
+      .then(response => {
         // Cache hit - return response
         if (response) {
           return response;
@@ -29,10 +30,10 @@ self.addEventListener('fetch', function(event) {
         // IMPORTANT: Clone the request. A request is a stream and
         // can only be consumed once. Since we are consuming this
         // to send to the server AND cache it, we need to clone it.
-        var fetchRequest = event.request.clone();
+        const fetchRequest = event.request.clone();
 
-        return fetch(fetchRequest).then(
-          function(response) {
+        return fetch(fetchRequest)
+          .then(response => {
             // Check if we received a valid response
             if(!response || response.status !== 200 || response.type !== 'basic') {
               return response;
@@ -41,38 +42,39 @@ self.addEventListener('fetch', function(event) {
             // IMPORTANT: Clone the response. A response is a stream
             // and because we want the browser to consume the response
             // as well as cache it, we need to clone it here.
-            var responseToCache = response.clone();
+            const responseToCache = response.clone();
 
             caches.open(CACHE_NAME)
-              .then(function(cache) {
+              .then(cache => {
                 cache.put(event.request, responseToCache);
-              });
+              })
+              .catch(err => console.warn('Failed to cache:', event.request.url, err));
 
             return response;
-          }
-        ).catch(function() {
-          return caches.match('/offline.html');
-        });
+          })
+          .catch(() => {
+            return caches.match('/offline.html');
+          });
       })
-    );
+      .catch(err => console.error('Failed to fetch:', event.request.url, err))
+  );
 });
 
-self.addEventListener('activate', function(event) {
-
+self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
 
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches.keys()
+      .then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheWhitelist.indexOf(cacheName) === -1) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => self.clients.claim()) // This ensures fast updates.
+      .catch(err => console.error('Failed to activate service worker:', err))
   );
-
-  // This ensures fast updates.
-  self.clients.claim();
 });
