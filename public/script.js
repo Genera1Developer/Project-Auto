@@ -23,14 +23,21 @@ document.getElementById('proxyForm').addEventListener('submit', async (event) =>
       try {
         const errorBody = await response.text();
         errorText += ` - ${errorBody}`;
-      } catch (e) {
-        errorText += ` - Error parsing error body.`;
+      } catch (parseError) {
+        errorText += ` - Error parsing error body: ${parseError.message}`;
       }
       throw new Error(errorText);
     }
 
-    const data = await response.text();
-    responseDiv.textContent = data;
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('json')) {
+      const data = await response.json();
+      responseDiv.textContent = JSON.stringify(data, null, 2);
+    } else {
+      const data = await response.text();
+      responseDiv.textContent = data;
+    }
+
   } catch (error) {
     console.error('Error fetching data:', error);
     responseDiv.textContent = `Error: ${error.message}`;
