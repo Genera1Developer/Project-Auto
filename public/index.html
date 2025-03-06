@@ -18,13 +18,21 @@
         #response-headers pre {
             white-space: pre-wrap;
             word-wrap: break-word;
+            font-family: monospace; /* Use monospace font for headers */
         }
         #response-body pre {
             white-space: pre-wrap;
             word-wrap: break-word;
+            font-family: monospace; /* Use monospace font for body */
         }
         #response-headers { margin-top: 20px; }
         #response-body { margin-top: 20px; }
+        /* Add a subtle background to the response sections */
+        #response-headers, #response-body {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
