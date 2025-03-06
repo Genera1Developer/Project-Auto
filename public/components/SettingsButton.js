@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Settings from './Settings';
 
 function SettingsButton() {
     const [showSettings, setShowSettings] = useState(false);
 
-    const toggleSettings = () => {
-        setShowSettings(!showSettings);
-    };
+    const toggleSettings = useCallback(() => {
+        setShowSettings(prevShowSettings => !prevShowSettings);
+    }, []);
 
     return (
         <div>
