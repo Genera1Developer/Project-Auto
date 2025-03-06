@@ -11,6 +11,7 @@ const config = {
   domain: process.env.DOMAIN || 'http://localhost:3000',
   forceCodec: process.env.FORCE_CODEC === 'true',
   allowServiceWorkers: process.env.ALLOW_SERVICE_WORKERS === 'true',
+  blockAll: process.env.BLOCK_ALL === 'true',
 };
 
 module.exports = config;
