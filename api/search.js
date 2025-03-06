@@ -4,9 +4,10 @@ import { URL } from 'url';
 
 const searxInstance = 'https://searx.be';
 
-const csp = `default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *;`;
+// Define a default CSP, allowing customization via query parameter.
+const defaultCsp = `default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: *;`;
 
-async function modifyHtml(htmlString) {
+async function modifyHtml(htmlString, csp) {
   let chunkStr = htmlString;
   const resourceTypes = ['href', 'src', 'action', 'data-url', 'poster'];
   resourceTypes.forEach(type => {
@@ -52,7 +53,9 @@ function buildAxiosConfig(searchUrl, q) {
       'Connection': 'keep-alive'
     },
     maxRedirects: 10,
-    timeout: 10000
+    timeout: 10000,
+    // Prevent axios from automatically parsing the response.
+    transformResponse: [(data) => data]
   };
 
   if (searchUrl === `${searxInstance}/search`) {
@@ -74,26 +77,31 @@ function handleHtmlResponse(response, res, csp) {
     async transform(chunk, encoding, callback) {
       try {
         let chunkStr = chunk.toString('utf8');
-        chunkStr = await modifyHtml(chunkStr);
+        chunkStr = await modifyHtml(chunkStr, csp);
         callback(null, chunkStr);
       } catch (e) {
+        console.error("Error during HTML transformation:", e);
         callback(e);
       }
     }
   });
 
+  // Copy headers from the origin response, excluding those that should not be copied or modified
   for (const [key, value] of Object.entries(response.headers)) {
-    if (!['content-length', 'content-encoding', 'transfer-encoding', 'content-security-policy'].includes(key.toLowerCase())) {
+    if (!['content-length', 'content-encoding', 'transfer-encoding', 'content-security-policy', 'content-type'].includes(key.toLowerCase())) {
       res.setHeader(key, value);
     }
   }
 
-  // Set the CSP header.  This overrides any CSP from the origin server.
-   res.setHeader('Content-Security-Policy', csp);
+  // Set the CSP header. This overrides any CSP from the origin server.
+  res.setHeader('Content-Security-Policy', csp);
+
+  // Set content type to ensure proper rendering.
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-XSS-Protection', '1; mode=block');
+
 
   response.data.pipe(transformStream).pipe(res);
 
@@ -111,12 +119,12 @@ function handleHtmlResponse(response, res, csp) {
 }
 
 function handleNonHtmlResponse(response, res) {
-  for (const [key, value] of Object.entries(response.headers)) {
-    if (!['content-length', 'content-encoding', 'transfer-encoding', 'content-security-policy'].includes(key.toLowerCase())) {
-      res.setHeader(key, value);
+    for (const [key, value] of Object.entries(response.headers)) {
+        if (!['content-length', 'content-encoding', 'transfer-encoding', 'content-security-policy'].includes(key.toLowerCase())) {
+            res.setHeader(key, value);
+        }
     }
-  }
-  response.data.pipe(res);
+    response.data.pipe(res);
 }
 
 export default async function handler(req, res) {
@@ -133,7 +141,7 @@ export default async function handler(req, res) {
   }
 
   q = Array.isArray(q) ? q[0] : q;
-    csp = Array.isArray(csp) ? csp[0] : csp;
+  csp = Array.isArray(csp) ? csp[0] : defaultCsp; // Use default CSP if not provided
 
   const searchUrl = determineSearchUrl(q);
   const axiosConfig = buildAxiosConfig(searchUrl, q);
