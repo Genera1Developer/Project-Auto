@@ -1,4 +1,4 @@
-module.exports = {
+self.__uv$config = {
     prefix: '/service/',
     bare: '/bare/',
     encodeUrl: Ultraviolet.codec.xor.encode,
