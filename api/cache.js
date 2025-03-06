@@ -32,7 +32,7 @@ module.exports = {
             return null;
         }
         try {
-            return await safeCacheOperation(cache.get.bind(cache), url);
+            return await cache.get(url);
         } catch (error) {
             console.error(`Cache get operation failed for URL: ${url}`, error);
             return null;
@@ -48,7 +48,7 @@ module.exports = {
             return false;
         }
         try {
-            return await safeCacheOperation(cache.set.bind(cache), url, data, ttl);
+            return await cache.set(url, data, ttl);
         } catch (error) {
             console.error(`Cache set operation failed for URL: ${url}`, error);
             return false;
@@ -60,7 +60,7 @@ module.exports = {
             return false;
         }
         try {
-            return await safeCacheOperation(cache.del.bind(cache), url);
+            return await cache.del(url);
         } catch (error) {
             console.error(`Cache clear operation failed for URL: ${url}`, error);
             return false;
