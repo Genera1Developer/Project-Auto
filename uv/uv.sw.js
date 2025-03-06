@@ -24,7 +24,7 @@ self.addEventListener('fetch', (event) => {
       (async () => {
         try {
           const requestInit = {
-            headers: event.request.headers,
+            headers: new Headers(event.request.headers),
             method: event.request.method,
             credentials: 'omit',
             redirect: 'follow'
