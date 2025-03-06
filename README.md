@@ -19,7 +19,12 @@ In today's fast-paced digital world, we're constantly navigating through website
 
 ### 🌟 Features
 
-Project Auto continuously evolves to meet the changing landscape of the internet, bringing advanced automation capabilities to your fingertips.
+- Github Automation
+- Music Creation
+- Image Generation
+- Prompt Enhancer
+- Text Generator
+- Code Generator
 
 ---
 
