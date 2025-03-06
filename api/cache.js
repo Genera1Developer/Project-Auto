@@ -48,7 +48,8 @@ module.exports = {
             return false;
         }
         try {
-            return await cache.set(url, data, ttl);
+            await cache.set(url, data, ttl);
+            return true;
         } catch (error) {
             console.error(`Cache set operation failed for URL: ${url}`, error);
             return false;
@@ -60,7 +61,8 @@ module.exports = {
             return false;
         }
         try {
-            return await cache.del(url);
+            const result = cache.del(url);
+            return result > 0; // Indicate success if at least one key was deleted
         } catch (error) {
             console.error(`Cache clear operation failed for URL: ${url}`, error);
             return false;
