@@ -57,11 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const contentType = response.headers.get('content-type');
       const contentDisposition = response.headers.get('content-disposition');
 
+      let data;
       if (contentType && contentType.includes('json')) {
-        const data = await response.json();
+        data = await response.json();
         responseDiv.textContent = JSON.stringify(data, null, 2);
       } else {
-        const data = await response.text();
+        data = await response.text();
         responseDiv.textContent = data;
       }
 
@@ -69,8 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const blob = await response.blob();
         const blobUrl = window.URL.createObjectURL(blob);
         let filename = 'downloaded_file';
+
         const filenameRegex = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/i;
-        let filenameMatch = contentDisposition.match(filenameRegex);
+        const filenameMatch = contentDisposition.match(filenameRegex);
 
         if (filenameMatch && filenameMatch[1]) {
           try {
@@ -79,10 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("Failed to decode filename: ", e);
             filename = filenameMatch[1];
           }
-        } else if (contentDisposition && contentDisposition.includes('filename=')) {
-          let filenameValue = contentDisposition.split('filename=')[1];
-          filename = filenameValue.split(';')[0].trim().replace(/^"|"$/g, '');
+        } else {
+          const filenameEqualsRegex = /filename=(["']?)([^"';\r\n]*)\1?/i;
+          const filenameEqualsMatch = contentDisposition.match(filenameEqualsRegex);
+          if (filenameEqualsMatch && filenameEqualsMatch[2]) {
+            filename = filenameEqualsMatch[2];
+          }
         }
+
 
         downloadLink.href = blobUrl;
         downloadLink.download = filename;
