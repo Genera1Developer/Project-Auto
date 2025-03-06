@@ -70,3 +70,30 @@
 .slide-out-right {
   animation: slideOutRight 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
 }
+
+/* Slide In From Right */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* Fade In Down */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.fade-in-down {
+  animation: fadeInDown 0.4s ease-out both;
+}
