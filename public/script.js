@@ -1,49 +1,40 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const urlForm = document.getElementById('urlForm');
+document.addEventListener('DOMContentLoaded', () => {
     const urlInput = document.getElementById('urlInput');
-    const contentArea = document.getElementById('contentArea');
+    const proxyButton = document.getElementById('proxyButton');
+    const iframe = document.getElementById('proxyFrame');
     const themeSelector = document.getElementById('themeSelector');
     const themeDropdown = document.querySelector('.theme-dropdown');
     const themeItems = document.querySelectorAll('.theme-item');
 
-    urlForm.addEventListener('submit', function(event) {
-        event.preventDefault();
+    proxyButton.addEventListener('click', () => {
         const url = urlInput.value;
-        const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
-
-        // Clear previous iframe content
-        contentArea.innerHTML = '';
-
-        const iframe = document.createElement('iframe');
-        iframe.src = proxyUrl;
-        iframe.sandbox = 'allow-forms allow-scripts allow-same-origin allow-top-navigation'; // Added sandbox attribute
-
-        contentArea.appendChild(iframe);
+        if (url) {
+            iframe.src = `/api/proxy?url=${encodeURIComponent(url)}`;
+        } else {
+            alert('Please enter a URL.');
+        }
     });
 
-    themeSelector.addEventListener('click', function() {
+    themeSelector.addEventListener('click', () => {
         themeDropdown.classList.toggle('active');
     });
 
     themeItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const theme = this.getAttribute('data-theme');
-            const themeLink = document.getElementById('theme-link');
+        item.addEventListener('click', () => {
+            const theme = item.dataset.theme;
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = `/themes/${theme}.css`;
+            link.id = 'theme-stylesheet';
 
-            if (theme === 'default') {
-                themeLink.href = ''; // Reset to default
-            } else {
-                themeLink.href = `themes/${theme}.css`;
+            const existingTheme = document.getElementById('theme-stylesheet');
+            if (existingTheme) {
+                existingTheme.parentNode.removeChild(existingTheme);
             }
 
+            document.head.appendChild(link);
             themeDropdown.classList.remove('active');
         });
-    });
-
-    // Close the dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!themeSelector.contains(event.target) && !themeDropdown.contains(event.target)) {
-            themeDropdown.classList.remove('active');
-        }
     });
 });
