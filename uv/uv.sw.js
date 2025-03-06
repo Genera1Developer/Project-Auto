@@ -80,8 +80,6 @@ self.addEventListener('fetch', (event) => {
               });
           }
 
-          const contentType = response.headers.get('content-type');
-
           return new Response(responseBody, {
             status: response.status,
             statusText: response.statusText,
@@ -99,5 +97,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  event.respondWith(fetch(event.request));
+  event.respondWith(
+    fetch(event.request).catch(error => {
+      console.error('Fetch error for original request:', error);
+      return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
+        status: 500,
+        headers: { 'Content-Type': 'text/html' },
+      });
+    })
+  );
 });
