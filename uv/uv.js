@@ -6,6 +6,15 @@ self.addEventListener('activate', event => {
   event.waitUntil(self.clients.claim());
 });
 
+const passthroughHeaders = new Set([
+  'content-encoding',
+  'content-length',
+  'content-type',
+  'content-language',
+  'etag',
+  'last-modified',
+]);
+
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
@@ -21,7 +30,19 @@ self.addEventListener('fetch', event => {
               headers: { 'Content-Type': 'text/plain' }
             });
           }
-          return response;
+
+          const headers = new Headers();
+          for (const [key, value] of response.headers.entries()) {
+            if (passthroughHeaders.has(key.toLowerCase())) {
+              headers.set(key, value);
+            }
+          }
+
+          return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers
+          });
         })
         .catch(err => {
           console.error('Error fetching from service worker:', err);
@@ -36,7 +57,17 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(response => {
-          return response;
+          const headers = new Headers();
+          for (const [key, value] of response.headers.entries()) {
+            if (passthroughHeaders.has(key.toLowerCase())) {
+              headers.set(key, value);
+            }
+          }
+          return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers
+          });
         })
         .catch(err => {
           console.error('Error fetching original request:', err);
