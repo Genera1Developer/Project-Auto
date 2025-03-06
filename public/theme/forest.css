@@ -1,1 +1,69 @@
+body {
+  background-color: #f0fff0; /* Light background */
+  color: #333; /* Darker text for readability */
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
+.container {
+  width: 80%;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #228B22; /* Forest Green */
+  text-align: center;
+}
+
+input[type="text"],
+input[type="url"],
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Prevents padding from affecting width */
+}
+
+button {
+  background-color: #228B22; /* Forest Green */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3CB371; /* LightSeaGreen */
+}
+
+pre {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ddd;
+  overflow-x: auto;
+  white-space: pre-wrap; /* Allows long lines to wrap */
+}
+
+a {
+  color: #228B22; /* Forest Green */
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+  }
+}
