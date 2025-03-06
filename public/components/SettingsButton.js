@@ -5,16 +5,16 @@ function SettingsButton() {
     const [showSettings, setShowSettings] = useState(false);
 
     const toggleSettings = useCallback(() => {
-        setShowSettings(prevShowSettings => !prevShowSettings);
+        setShowSettings((prevShowSettings) => !prevShowSettings);
     }, []);
 
     return (
-        <div>
+        <>
             <button onClick={toggleSettings}>
                 {showSettings ? 'Hide Settings' : 'Show Settings'}
             </button>
             {showSettings && <Settings />}
-        </div>
+        </>
     );
 }
 
