@@ -141,3 +141,14 @@
 .fade-in-up {
     animation: fadeInUp 0.4s ease-out both;
 }
+
+/* Keyframe for a subtle background color change */
+@keyframes backgroundColorPulse {
+  0% { background-color: rgba(240, 240, 240, 0.5); }
+  50% { background-color: rgba(220, 220, 220, 0.5); }
+  100% { background-color: rgba(240, 240, 240, 0.5); }
+}
+
+.background-pulse {
+  animation: backgroundColorPulse 5s linear infinite;
+}
