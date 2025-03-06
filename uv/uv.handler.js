@@ -21,19 +21,19 @@ async function handleRequest(req, res) {
       return;
     }
 
-    const target = url.hostname; // Use hostname instead of origin
+    const target = url.hostname;
     const port = url.port || (url.protocol === 'https:' ? 443 : 80);
 
     const options = {
-      hostname: target, // Use hostname instead of origin
+      hostname: target,
       port: port,
       path: url.pathname + url.search,
       method: req.method,
       headers: req.headers,
       timeout: 10000,
+      followRedirects: false
     };
 
-    // Remove 'host' and 'origin' headers to prevent issues with target server
     delete options.headers['host'];
     delete options.headers['origin'];
 
@@ -47,8 +47,6 @@ async function handleRequest(req, res) {
       if (!res.headersSent) {
         res.writeHead(504, { 'Content-Type': 'text/plain' });
         res.end('Proxy request timeout.');
-      } else {
-        res.destroy();
       }
     });
 
@@ -57,8 +55,6 @@ async function handleRequest(req, res) {
       if (!res.headersSent) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error.');
-      } else {
-        res.destroy();
       }
     });
 
@@ -70,8 +66,6 @@ async function handleRequest(req, res) {
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error.');
-      } else {
-          res.destroy();
       }
     });
 
@@ -89,8 +83,6 @@ async function handleRequest(req, res) {
     if (!res.headersSent) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error.');
-    } else {
-      res.destroy();
     }
   }
 }
