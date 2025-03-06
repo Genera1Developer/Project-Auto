@@ -1,5 +1,6 @@
 1.  **Install Git:** Ensure you have Git installed on your machine. You can download it from [https://git-scm.com/](https://git-scm.com/).
-2.  **Install Python 3.8+:** This project requires Python 3.8 or higher. Download the latest version from [https://www.python.org/downloads/](https://www.python.org/downloads/). Make sure to add Python to your PATH during installation. Consider using a Python version manager like `pyenv` or `asdf` for managing multiple Python versions.
+
+2.  **Install Python:** This project requires Python 3.8 or higher. Download the latest version from [https://www.python.org/downloads/](https://www.python.org/downloads/). Make sure to add Python to your PATH during installation. Consider using a Python version manager like `pyenv` or `asdf` for managing multiple Python versions.
 3.  **Clone the Repository:** Clone the project repository to your local machine using:
 
     
@@ -7,31 +8,49 @@
     cd <repository_name>
     
 
-4.  **Create a Virtual Environment:** Create a virtual environment to isolate the project dependencies.  Consider using `poetry` or `pipenv` for dependency management. Using these tools can simplify dependency resolution and environment management:
+4.  **Create a Virtual Environment:** Create a virtual environment to isolate the project dependencies. Using virtual environments like `venv`, `poetry`, or `pipenv` is highly recommended. These tools simplify dependency resolution and environment management:
 
-    
-    python3 -m venv venv
-    
+    *   Using `venv`:
+
+        
+        python3 -m venv venv
+        
+    *   Using `poetry`: Refer to [https://python-poetry.org/docs/](https://python-poetry.org/docs/) for installation and usage.
+    *   Using `pipenv`: Refer to [https://pipenv.pypa.io/en/latest/](https://pipenv.pypa.io/en/latest/) for installation and usage.
 
 5.  **Activate the Virtual Environment:**
 
-    *   On Linux/macOS:
+    *   On Linux/macOS (using `venv`):
 
         
         source venv/bin/activate
         
 
-    *   On Windows:
+    *   On Windows (using `venv`):
 
         
         venv\Scripts\activate
         
+    *   Using `poetry`: `poetry shell`
+    *   Using `pipenv`: `pipenv shell`
 
-6.  **Install Dependencies:** Install the project dependencies using pip:
+6.  **Install Dependencies:** Install the project dependencies. Choose the method that corresponds to your virtual environment manager:
 
-    
-    pip install -r requirements.txt
-    
+    *   Using `venv`:
+
+        
+        pip install -r requirements.txt
+        
+    *   Using `poetry`:
+
+        
+        poetry install
+        
+    *   Using `pipenv`:
+
+        
+        pipenv install --dev
+        
 
 7.  **Configure your Editor/IDE:** We recommend using VS Code with the Python extension. Configure your editor to use the virtual environment you created. Ensure your IDE uses `flake8` for linting, `pytest` for testing, and `black` for code formatting. Configure pre-commit hooks to automate code formatting and linting.
 8.  **Set up Environment Variables:** Refer to the `.env.example` file for the required environment variables. Create a `.env` file in the project root directory and populate it with the necessary values. It is recommended to use `python-dotenv` to load these.
@@ -41,7 +60,7 @@
 All pull requests will be reviewed by one or more project maintainers. The code review process is intended to:
 
 *   Ensure code quality.
-*   Verify that the changes meet the project's requirements and adhere to the project's coding style (PEP 8), and are formatted with `black`.
+*   Verify that the changes meet the project's requirements and adhere to the project's coding style (PEP 8) and are formatted with `black`.
 *   Identify potential bugs or issues.
 *   Provide feedback on the code's clarity, efficiency, and maintainability.
 *   Ensure adequate test coverage.
@@ -74,7 +93,7 @@ Please be responsive to feedback during the code review process. We may ask you 
 
 *   Use a clear and concise commit message describing the changes.
 *   Follow the conventional commits specification (e.g., `feat: add new feature`, `fix: resolve a bug`, `docs: update documentation`, `refactor: improve code structure`).
-*   Keep commit messages short and to the point, but provide sufficient context.
+*   Keep commit messages short and to the point but provide sufficient context.
 *   Reference any related issues in the commit message (e.g., `Fixes #123`). If the commit closes the issue, use `Closes #123`.
 *   Use imperative mood in the commit message (e.g., "Add feature" instead of "Added feature").
 *   Limit the subject line to 50 characters.
@@ -105,8 +124,8 @@ Please be responsive to feedback during the code review process. We may ask you 
 
 ## Dependency Management
 
-*   Use `pip` to manage project dependencies, or consider using `poetry` or `pipenv`.
-*   Update the `requirements.txt` file (or `pyproject.toml` and `poetry.lock` if using poetry) when adding or removing dependencies.
+*   Use `pip`, `poetry` or `pipenv` to manage project dependencies.
+*   Update the `requirements.txt` file (or `pyproject.toml` and `poetry.lock` if using poetry, or `Pipfile` and `Pipfile.lock` if using pipenv) when adding or removing dependencies.
 *   Specify version constraints for dependencies to ensure reproducibility.
 *   Prefer specific version numbers over version ranges where possible, but consider using compatible release operators (e.g., `~=`) where appropriate.
 *   Regularly audit dependencies for security vulnerabilities.
