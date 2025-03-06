@@ -1,39 +1,47 @@
-class Decoders {
-  static decodeBase64(encodedString) {
-    try {
-      return atob(encodedString);
-    } catch (e) {
-      console.error("Base64 Decoding Error:", e);
-      return null;
-    }
-  }
-
-  static encodeBase64(decodedString) {
-    try {
-      return btoa(decodedString);
-    } catch (e) {
-      console.error("Base64 Encoding Error:", e);
-      return null;
-    }
-  }
-
-  static decodeURIComponentSafe(encodedString) {
-    try {
-      return decodeURIComponent(encodedString);
-    } catch (e) {
-      console.error("URI Decoding Error:", e);
-      return null;
-    }
-  }
-
-  static encodeURIComponentSafe(decodedString) {
-    try {
-      return encodeURIComponent(decodedString);
-    } catch (e) {
-      console.error("URI Encoding Error:", e);
-      return null;
-    }
-  }
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
 }
 
-export { Decoders };
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #3e8e41;
+}
+
+#error {
+    color: red;
+    margin-top: 10px;
+}
