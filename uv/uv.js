@@ -15,7 +15,7 @@ self.addEventListener('fetch', event => {
         .then(response => {
           if (!response.ok) {
             console.error('Service worker fetch failed:', response.status, response.statusText, event.request.url);
-            return new Response(`Service Worker Error: ${response.status} ${response.statusText}`, {
+            return new Response(`Service Worker Error: ${response.status} ${response.statusText} - ${event.request.url}`, {
               status: response.status,
               statusText: 'Service Worker Error'
             });
@@ -35,7 +35,7 @@ self.addEventListener('fetch', event => {
       fetch(event.request)
         .catch(err => {
           console.error('Error fetching original request:', err);
-          return new Response('Service Worker Error: Failed to fetch original request', {
+          return new Response('Service Worker Error: Failed to fetch original request - ' + err.message, {
             status: 500,
             statusText: 'Service Worker Error'
           });
