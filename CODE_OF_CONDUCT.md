@@ -14,6 +14,7 @@ Examples of behavior that contributes to a positive environment for our communit
 *   Accepting responsibility and apologizing to those affected by our mistakes
 *   Focusing on what is best for the community
 *   Using welcoming and inclusive language
+*   Actively listening to understand different perspectives.
 
 Examples of unacceptable behavior include:
 
@@ -23,6 +24,8 @@ Examples of unacceptable behavior include:
 *   Publishing others' private information, such as physical or email addresses, without their explicit permission
 *   Any conduct that could reasonably be considered inappropriate in a professional setting
 *   Advocating for, or encouraging, any of the above behavior
+*   Deliberate intimidation, stalking, or following online or offline.
+*   Sustained disruption of discussions or other events.
 
 ### Enforcement Responsibilities
 
@@ -98,3 +101,8 @@ Community Impact Guidelines were inspired by [Mozilla's code of conduct enforcem
 [homepage]: https://www.contributor-covenant.org
 
 For answers to common questions about this code of conduct, see the FAQ at [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Translations are available at [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations).
+
+### Contact Information
+
+For any questions or concerns regarding this Code of Conduct, please contact [conduct@example.com](mailto:conduct@example.com).
+content: [enhanced inclusivity examples and added contact information]
