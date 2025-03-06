@@ -52,11 +52,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (contentDisposition && contentDisposition.includes('attachment')) {
         const blob = await response.blob();
         const blobUrl = window.URL.createObjectURL(blob);
-        const filename = contentDisposition.split('filename=')[1]?.split(';')[0].trim() || 'downloaded_file';
+        let filename = 'downloaded_file';
+        if (contentDisposition.includes('filename=')) {
+          filename = contentDisposition.split('filename=')[1].split(';')[0].trim();
+          // Remove quotes if present
+          filename = filename.replace(/^"|"$/g, '');
+        }
+
 
         downloadLink.href = blobUrl;
         downloadLink.download = filename;
         downloadLink.style.display = 'block';
+        downloadButton.style.display = 'block'; // Show the download button
 
         downloadLink.onclick = () => {
           setTimeout(() => {
@@ -72,4 +79,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-content: Fix: Improve filename extraction and add download link
