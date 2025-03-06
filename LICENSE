@@ -1,69 +1,73 @@
-MIT License
-
-Copyright (c) 2024 GeneralDeveloper
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-
-SPDX-License-Identifier: MIT
-
-<!-- Consider adding a line about attribution if required by dependencies -->
-<!-- For example: This software incorporates code from [Project Name] (License: [License Name]) -->
-edit filepath: proxy.py
-content: 
 import socket
 import threading
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def handle_client(client_socket):
     """Handles communication with a single client."""
     try:
-        request = client_socket.recv(4096).decode() # Increased buffer size
+        request = client_socket.recv(4096).decode()  # Increased buffer size
+
+        # Check for empty request
+        if not request:
+            logging.warning("Empty request received, closing connection.")
+            return
 
         # Extract hostname and port from request
         first_line = request.split('\n')[0]
-        url = first_line.split(' ')[1]
+        try:
+            url = first_line.split(' ')[1]
+        except IndexError:
+            logging.error(f"Invalid request format: {first_line}")
+            client_socket.sendall(b"HTTP/1.0 400 Bad Request\r\n\r\n")
+            return
 
-        hostname = url.split('/')[2] if '//' in url else url.split('/')[0] # Corrected hostname extraction.
+        hostname = url.split('/')[2] if '//' in url else url.split('/')[0]  # Corrected hostname extraction.
         port = 80  # Default port
 
         # Check for explicit port in hostname
         if ':' in hostname:
             hostname, port = hostname.split(':')
-            port = int(port)
+            try:
+                port = int(port)
+            except ValueError:
+                logging.error(f"Invalid port number: {port}")
+                client_socket.sendall(b"HTTP/1.0 400 Bad Request\r\n\r\n")
+                return
 
         # Create a socket to connect to the remote server
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.connect((hostname, port))
+        try:
+            server_socket.connect((hostname, port))
+        except socket.gaierror as e:
+            logging.error(f"Failed to resolve hostname {hostname}: {e}")
+            client_socket.sendall(b"HTTP/1.0 404 Not Found\r\n\r\n")
+            return
+        except socket.error as e:
+            logging.error(f"Connection error to {hostname}:{port}: {e}")
+            client_socket.sendall(b"HTTP/1.0 502 Bad Gateway\r\n\r\n")
+            return
+
 
         # Forward the client's request to the server
-        server_socket.sendall(request.encode()) # Explicitly encode request
+        server_socket.sendall(request.encode())  # Explicitly encode request
 
         # Receive data from the server and forward it to the client
         while True:
-            data = server_socket.recv(4096) # Increased buffer size
+            data = server_socket.recv(4096)  # Increased buffer size
             if not data:
                 break
             client_socket.sendall(data)
 
     except Exception as e:
-        print(f"Error: {e}")
+        logging.exception("Exception in handle_client") # Log full exception
     finally:
-        server_socket.close()
+        try:
+            server_socket.close()
+        except NameError:
+            pass #server_socket might not be defined if connection failed
         client_socket.close()
 
 
@@ -71,21 +75,28 @@ def main():
     """Main function to start the proxy server."""
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = ('localhost', 8080)  # Listen on localhost:8080
-    server_socket.bind(server_address)
+
+    try:
+        server_socket.bind(server_address)
+    except socket.error as e:
+        logging.error(f"Could not bind to {server_address}: {e}")
+        return
+
     server_socket.listen(5)  # Listen for up to 5 incoming connections
 
-    print(f"Proxy server listening on {server_address}")
+    logging.info(f"Proxy server listening on {server_address}")
 
     try:
         while True:
             client_socket, client_address = server_socket.accept()
-            print(f"Accepted connection from {client_address}")
+            logging.info(f"Accepted connection from {client_address}")
 
             # Create a new thread to handle the client
             client_thread = threading.Thread(target=handle_client, args=(client_socket,))
+            client_thread.daemon = True # Allow the program to exit even if this thread is running
             client_thread.start()
     except KeyboardInterrupt:
-        print("Shutting down the proxy server.")
+        logging.info("Shutting down the proxy server.")
     finally:
         server_socket.close()
 
