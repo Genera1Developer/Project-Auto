@@ -164,3 +164,29 @@ code {
   margin-bottom: 15px;
   border-radius: 4px;
 }
+
+.hidden {
+    display: none;
+}
+
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+#response-headers-toggle, #request-headers-toggle {
+    cursor: pointer;
+    color: #228B22;
+    text-decoration: underline;
+}
+
+#response-headers, #request-headers {
+    margin-top: 10px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-size: 14px;
+}
