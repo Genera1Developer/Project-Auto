@@ -9,14 +9,25 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Example: Intercept requests to a specific domain and redirect them.
-  if (url.hostname === 'example.com') {
-    event.respondWith(
-      new Response('<h1>This domain is being proxied!</h1>', {
+  if (url.pathname.startsWith('/service/')) {
+    // Handle proxied requests
+    const proxiedUrl = url.searchParams.get('url');
+    if (proxiedUrl) {
+      event.respondWith(fetch(proxiedUrl, {
+        headers: event.request.headers,
+        method: event.request.method,
+        body: event.request.body,
+        mode: 'cors',
+        credentials: 'omit',
+      }));
+      return;
+    } else {
+      event.respondWith(new Response('<h1>Error: Missing URL parameter</h1>', {
+        status: 400,
         headers: { 'Content-Type': 'text/html' },
-      })
-    );
-    return;
+      }));
+      return;
+    }
   }
 
   event.respondWith(fetch(event.request));
