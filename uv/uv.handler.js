@@ -30,6 +30,9 @@ async function handleRequest(req, res) {
       timeout: 10000,
     };
 
+    // Remove 'host' header to prevent issues with target server
+    delete options.headers['host'];
+
     const proxyReq = (url.protocol === 'https:' ? https : http).request(target, options, (proxyRes) => {
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
       proxyRes.pipe(res, { end: true });
