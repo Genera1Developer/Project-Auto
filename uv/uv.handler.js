@@ -15,7 +15,7 @@ async function handleRequest(req, res) {
     try {
       url = new URL(urlString);
     } catch (err) {
-      console.error('Invalid URL:', urlString, err.message);
+      console.error('Invalid URL:', urlString, err);
       res.writeHead(400, { 'Content-Type': 'text/plain' });
       res.end('Invalid URL format: ' + err.message);
       return;
@@ -44,6 +44,7 @@ async function handleRequest(req, res) {
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       const resHeaders = { ...proxyRes.headers };
       delete resHeaders['transfer-encoding'];
+      delete resHeaders['content-encoding'];
 
       res.writeHead(proxyRes.statusCode, resHeaders);
       proxyRes.pipe(res, { end: true });
@@ -54,25 +55,25 @@ async function handleRequest(req, res) {
     });
 
     proxyReq.on('error', (err) => {
-      console.error('Proxy request error:', err.message);
+      console.error('Proxy request error:', err);
       if (!res.headersSent) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
       } else {
-        res.destroy();
+        res.socket.destroy();
       }
     });
 
     req.pipe(proxyReq, { end: true });
 
     req.on('error', (err) => {
-      console.error('Request pipe error:', err.message);
+      console.error('Request pipe error:', err);
       proxyReq.destroy(err);
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error: ' + err.message);
       } else {
-        res.destroy();
+        res.socket.destroy();
       }
     });
 
@@ -86,12 +87,12 @@ async function handleRequest(req, res) {
       proxyReq.destroy();
     });
   } catch (error) {
-    console.error('Unexpected error:', error.message);
+    console.error('Unexpected error:', error);
     if (!res.headersSent) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
     } else {
-      res.destroy();
+      res.socket.destroy();
     }
   }
 }
