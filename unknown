@@ -1,15 +1,27 @@
-class ErrorHandler {
-  static handle(err, req, res, next) {
-    console.error(err);
+const form = document.getElementById('url-form');
+const urlInput = document.getElementById('url-input');
+const searchEngine = 'https://google.com/search?q=';
 
-    const statusCode = err.statusCode || 500;
-    const message = err.message || 'Internal Server Error';
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  let url = urlInput.value.trim();
 
-    res.status(statusCode).json({
-      success: false,
-      message: message,
-    });
+  if (!url) {
+    return;
   }
-}
 
-module.exports = ErrorHandler;
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    if (url.includes('.')) {
+      url = 'https://' + url;
+    } else {
+      url = searchEngine + url;
+    }
+  }
+
+  try {
+    window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+  } catch (e) {
+    console.error(e);
+    alert('Failed to proxy URL. Check console for details.');
+  }
+});
