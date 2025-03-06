@@ -31,6 +31,15 @@ self.addEventListener('fetch', event => {
         })
     );
   } else {
-    event.respondWith(fetch(event.request));
+    event.respondWith(
+      fetch(event.request)
+        .catch(err => {
+          console.error('Error fetching original request:', err);
+          return new Response('Service Worker Error: Failed to fetch original request', {
+            status: 500,
+            statusText: 'Service Worker Error'
+          });
+        })
+    );
   }
 });
