@@ -9,17 +9,18 @@
    cd <repository_name>
    
 
-4. **Create a Virtual Environment:** Create a virtual environment to isolate the project dependencies. Using virtual environments like `venv`, `poetry`, or `pipenv` is highly recommended. These tools simplify dependency resolution and environment management:
+4. **Create a Virtual Environment:** Create a virtual environment to isolate the project dependencies. Using virtual environments like `venv`, `poetry`, or `pipenv` is highly recommended. These tools simplify dependency resolution and environment management. Choose **one** of the following methods:
 
-   * Using `venv`:
+   * **Using `venv`:**
 
      
      python3 -m venv venv
      
+
      It's also recommended to add `venv` to your `.gitignore` file.
 
-   * Using `poetry`: Refer to [https://python-poetry.org/docs/](https://python-poetry.org/docs/) for installation and usage.
-   * Using `pipenv`: Refer to [https://pipenv.pypa.io/en/latest/](https://pipenv.pypa.io/en/latest/) for installation and usage.
+   * **Using `poetry`:** Refer to [https://python-poetry.org/docs/](https://python-poetry.org/docs/) for installation and usage.
+   * **Using `pipenv`:** Refer to [https://pipenv.pypa.io/en/latest/](https://pipenv.pypa.io/en/latest/) for installation and usage.
 
 5. **Activate the Virtual Environment:**
 
@@ -38,7 +39,7 @@
    * Using `poetry`: `poetry shell`
    * Using `pipenv`: `pipenv shell`
 
-6. **Install Dependencies:** Install the project dependencies. Choose the method that corresponds to your virtual environment manager:
+6. **Install Dependencies:** Install the project dependencies using the chosen virtual environment manager:
 
    * Using `venv`:
 
