@@ -1,27 +1,17 @@
-const form = document.getElementById('url-form');
-const urlInput = document.getElementById('url-input');
-const searchEngine = 'https://google.com/search?q=';
-
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  let url = urlInput.value.trim();
-
-  if (!url) {
-    return;
-  }
-
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    if (url.includes('.')) {
-      url = 'https://' + url;
-    } else {
-      url = searchEngine + url;
-    }
-  }
-
+self.importScripts('./uv.bundle.js', './uv.config.js');
+self.addEventListener('fetch', (event) => {
   try {
-    window.location.href = __uv$config.prefix + __uv$config.encodeUrl(url);
+    event.respondWith(
+      (async () => {
+        //console.log('URL:', event.request.url);
+        if (event.request.url.startsWith(location.protocol + '//' + location.host + '/service/')) {
+          //console.log('Bypass');
+          return await fetch(event.request);
+        }
+        return await uv.fetch(event);
+      })()
+    );
   } catch (e) {
     console.error(e);
-    alert('Failed to proxy URL. Check console for details.');
   }
 });
