@@ -6,15 +6,25 @@ class Bare {
     }
     async fetch(url, options = {}) {
         const fetchUrl = this.prefix + encodeURIComponent(url);
-        const response = await fetch(fetchUrl, options);
-        return response;
+        try {
+            const response = await fetch(fetchUrl, options);
+            return response;
+        } catch (error) {
+            console.error("Bare fetch error:", error);
+            throw error;
+        }
     }
     async request(url, options = {}) {
         const fetchUrl = this.prefix + encodeURIComponent(url);
-        const response = await fetch(fetchUrl, options);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        try {
+            const response = await fetch(fetchUrl, options);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        } catch (error) {
+            console.error("Bare request error:", error);
+            throw error;
         }
-        return response.json();
     }
 }
