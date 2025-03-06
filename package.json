@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "axios": "^1.6.7",
-    "ua-parser-js": "^1.0.37",
     "dotenv": "^16.0.0",
     "http-proxy": "^1.18.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "ua-parser-js": "^1.0.37"
   },
   "devDependencies": {
     "eslint": "^8.0.0",
@@ -30,5 +30,21 @@
   },
   "engines": {
     "node": ">=16.0.0"
-  }
+  },
+  "keywords": [
+    "proxy",
+    "web",
+    "http",
+    "https"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/your-repo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/your-repo/issues"
+  },
+  "homepage": "https://github.com/yourusername/your-repo#readme"
 }
