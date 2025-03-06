@@ -112,12 +112,10 @@ textarea:focus {
   box-shadow: 0 0 5px rgba(34, 139, 34, 0.5);
 }
 
-/* Improve button focus style */
 button:focus {
     outline: none;
     box-shadow: 0 0 5px rgba(34, 139, 34, 0.5);
 }
-
 
 @media (max-width: 768px) {
   .container {
@@ -197,4 +195,110 @@ code {
 #request-headers.hidden {
     display: none;
 }
-edit filepath: public/theme/forest.css
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="url"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="url"]:focus,
+.form-group textarea:focus {
+    border-color: #228B22;
+    outline: none;
+    box-shadow: 0 0 5px rgba(34, 139, 34, 0.5);
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+/* Add a subtle animation to the container */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+    animation: fadeIn 0.5s ease-out;
+}
+edit filepath: public/components/Settings.js
+content: import React, { useState, useEffect } from 'react';
+
+function Settings() {
+    const [settings, setSettings] = useState({
+        theme: localStorage.getItem('theme') || 'default',
+        autoComplete: localStorage.getItem('autoComplete') === 'true' || true,
+    });
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', settings.theme);
+        localStorage.setItem('theme', settings.theme);
+        localStorage.setItem('autoComplete', settings.autoComplete);
+    }, [settings.theme, settings.autoComplete]);
+
+    const handleThemeChange = (event) => {
+        setSettings(prevSettings => ({ ...prevSettings, theme: event.target.value }));
+    };
+
+    const handleAutoCompleteChange = (event) => {
+        setSettings(prevSettings => ({ ...prevSettings, autoComplete: event.target.checked }));
+    };
+
+    return (
+        <div className="settings-container">
+            <h2>Settings</h2>
+            <div className="setting-item">
+                <label htmlFor="theme-select">Theme:</label>
+                <select id="theme-select" value={settings.theme} onChange={handleThemeChange}>
+                    <option value="default">Default</option>
+                    <option value="forest">Forest</option>
+                    <option value="sunset">Sunset</option>
+                </select>
+            </div>
+            <div className="setting-item">
+                <label htmlFor="autocomplete-checkbox">Autocomplete:</label>
+                <input
+                    type="checkbox"
+                    id="autocomplete-checkbox"
+                    checked={settings.autoComplete}
+                    onChange={handleAutoCompleteChange}
+                />
+            </div>
+        </div>
+    );
+}
+
+export default Settings;
