@@ -18,29 +18,54 @@ module.exports = async (req, res) => {
             const protocol = parsedTargetUrl.protocol === 'https:' ? https : http;
 
             const options = {
+                method: req.method, // Forward the original request method
                 agent: parsedTargetUrl.protocol === 'https:' ? httpsAgent : undefined,
                 headers: {
+                    ...req.headers, // Forward all original headers
                     'User-Agent': req.headers['user-agent'] || 'Web-Proxy',
                     'Referer': req.headers['referer'] || parsedTargetUrl.origin,
                     'X-Forwarded-For': req.ip || req.connection.remoteAddress || req.socket.remoteAddress,
+                    'Host': parsedTargetUrl.host, // Set the Host header to the target URL's host
                 },
-                followRedirects: true,
+                followRedirects: false, // Handle redirects manually to avoid issues
             };
 
+            // Remove potentially problematic headers
+            delete options.headers['content-length'];
+            delete options.headers['content-encoding'];
+
             const proxyReq = protocol.request(targetUrl, options, (proxyRes) => {
+                // Handle redirects manually
+                if (proxyRes.statusCode >= 300 && proxyRes.statusCode < 400 && proxyRes.headers.location) {
+                    const redirectUrl = proxyRes.headers.location;
+                    // Resolve relative redirects
+                    const absoluteRedirectUrl = new URL(redirectUrl, targetUrl).toString();
+
+                    // Redirect the client
+                    res.redirect(proxyRes.statusCode, absoluteRedirectUrl);
+                    return;
+                }
+
+
                 res.writeHead(proxyRes.statusCode, proxyRes.headers);
                 proxyRes.pipe(res);
             });
 
             proxyReq.on('error', (e) => {
                 console.error('Proxy request error:', e);
-                res.status(500).send('Proxy request error');
+                res.status(500).send(`Proxy request error: ${e.message}`);
             });
 
+            // Pipe the request body
             req.pipe(proxyReq);
+
+            // Handle empty request bodies
+            if (req.method === 'GET' || req.method === 'HEAD') {
+                proxyReq.end();
+            }
         } catch (error) {
             console.error('URL parsing error:', error);
-            res.status(400).send('Invalid URL');
+            res.status(400).send(`Invalid URL: ${error.message}`);
         }
     });
 };
