@@ -126,22 +126,22 @@
       if (super(), this.socket = s, this.closed = false, this.id = n.generateRandomId(), typeof s == "string")
         try {
           this.socket = new WebSocket(s, a);
-        } catch (i) {
-          this.close(i);
+        } catch (p) {
+          this.close(p);
           return;
         }
       this.socket.addEventListener("open", () => {
         this.emit(r.Open);
-      }), this.socket.addEventListener("close", (i) => {
-        this.closed = true, this.emit(r.Close, i);
-      }), this.socket.addEventListener("error", (i) => {
-        this.emit(r.Error, i);
-      }), this.socket.addEventListener("message", (i) => {
+      }), this.socket.addEventListener("close", (p) => {
+        this.closed = true, this.emit(r.Close, p);
+      }), this.socket.addEventListener("error", (p) => {
+        this.emit(r.Error, p);
+      }), this.socket.addEventListener("message", (p) => {
         try {
-          const p = JSON.parse(i.data);
-          this.emit(r.Message, p);
-        } catch (p) {
-          this.close(p);
+          const f = JSON.parse(p.data);
+          this.emit(r.Message, f);
+        } catch (f) {
+          this.close(f);
         }
       });
     }
@@ -151,8 +151,8 @@
       try {
         this.socket.send(JSON.stringify(s));
         return true;
-      } catch (i) {
-        this.close(i);
+      } catch (p) {
+        this.close(p);
         return false;
       }
     }
@@ -174,39 +174,39 @@
         throw new Error("Invalid origin.");
     }
     async request(s) {
-      const i = await fetch(this.prefix, {
+      const p = await fetch(this.prefix, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(s)
       });
-      return await i.json();
+      return await p.json();
     }
     async ws(s) {
-      const i = new u(this.url.href);
-      i.on(r.Open, () => {
-        i.send(s);
+      const p = new u(this.url.href);
+      p.on(r.Open, () => {
+        p.send(s);
       });
-      return new Promise((p, f) => {
-        i.on(r.Message, (y) => {
-          p(y.data);
-        }), i.on(r.Error, (y) => {
-          f(y.error);
-        }), i.on(r.Close, (y) => {
-          if (y.error) {
-            f(y.error);
+      return new Promise((f, y) => {
+        p.on(r.Message, (b) => {
+          f(b.data);
+        }), p.on(r.Error, (b) => {
+          y(b.error);
+        }), p.on(r.Close, (b) => {
+          if (b.error) {
+            y(b.error);
             return;
           }
-          f(new Error("WebSocket closed."));
+          y(new Error("WebSocket closed."));
         });
       });
     }
   }
   const h = "https://github.com/tomphttp/bare-client";
   class m extends Error {
-    constructor(s, i) {
-      super(s), this.cause = i, this.name = "BareError";
+    constructor(s, p) {
+      super(s), this.cause = p, this.name = "BareError";
     }
   }
   const g = {
@@ -216,18 +216,18 @@
     events: r,
     errors: {
       BareClientError: class extends m {
-        constructor(s, i) {
-          super(s, i), this.name = "BareClientError";
+        constructor(s, p) {
+          super(s, p), this.name = "BareClientError";
         }
       },
       InvalidBareError: class extends m {
-        constructor(s, i) {
-          super(s, i), this.name = "InvalidBareError";
+        constructor(s, p) {
+          super(s, p), this.name = "InvalidBareError";
         }
       },
       SocketError: class extends m {
-        constructor(s, i) {
-          super(s, i), this.name = "SocketError";
+        constructor(s, p) {
+          super(s, p), this.name = "SocketError";
         }
       }
     },
