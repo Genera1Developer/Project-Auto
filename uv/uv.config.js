@@ -1,4 +1,7 @@
-self.__uv$config = {
+(() => {
+  'use strict';
+
+  const config = {
     prefix: '/service/',
     bare: '/bare/',
     encodeUrl: Ultraviolet.codec.xor.encode,
@@ -7,4 +10,7 @@ self.__uv$config = {
     bundle: '/uv/uv.bundle.js',
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
-};
+  };
+
+  self.uv = config;
+})();
