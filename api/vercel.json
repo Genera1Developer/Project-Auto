@@ -77,8 +77,7 @@
   "cache": {
     "api/proxy.js": {
       "maxAge": 0,
-      "staleWhileRevalidate": "1d",
-      "swr": true
+      "staleWhileRevalidate": "1d"
     }
   }
 }
