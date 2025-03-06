@@ -33,7 +33,9 @@ self.addEventListener('fetch', (event) => {
           let body = null;
           if (event.request.method !== 'GET' && event.request.method !== 'HEAD') {
             try {
-              body = await event.request.blob();
+              if (event.request.body) {
+                body = await event.request.blob();
+              }
             } catch (e) {
               console.error("Failed to read request body:", e);
               return new Response(`<h1>Error: Could not read request body</h1><p>${e}</p>`, {
