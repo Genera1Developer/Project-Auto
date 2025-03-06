@@ -11,6 +11,8 @@ const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 500,
     message: 'Too many requests, please try again later.',
+    standardHeaders: true,
+    legacyHeaders: false,
 });
 
 const proxyOptions = {
@@ -54,7 +56,7 @@ const proxyOptions = {
         }
     },
     onProxyReq: (proxyReq, req, res) => {
-        proxyReq.setHeader('X-Forwarded-For', req.connection.remoteAddress);
+        proxyReq.setHeader('X-Forwarded-For', req.ip);
     },
 };
 
@@ -100,7 +102,18 @@ content: function isValidUrl(url) {
     }
 }
 
-module.exports = { isValidUrl };
+function sanitizeUrl(url) {
+    try {
+        const parsedUrl = new URL(url);
+        parsedUrl.search = '';
+        parsedUrl.hash = '';
+        return parsedUrl.toString();
+    } catch (e) {
+        return null;
+    }
+}
+
+module.exports = { isValidUrl, sanitizeUrl };
 edit filepath: api/auth.js
 content: const basicAuth = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -109,7 +122,7 @@ content: const basicAuth = (req, res, next) => {
         return res.status(401).send('Authorization required');
     }
 
-    const auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
+    const auth = Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
     const user = auth[0];
     const pass = auth[1];
 
@@ -128,7 +141,8 @@ content: {
   "description": "A simple Node.js proxy server",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "jest"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -137,7 +151,10 @@ content: {
     "http-proxy-middleware": "^2.0.6",
     "memory-cache": "^0.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^27.4.0",
+    "supertest": "^6.1.6"
+  },
   "engines": {
     "node": ">=14"
   }
@@ -145,28 +162,44 @@ content: {
 edit filepath: server.js
 content: const express = require('express');
 const apiRouter = require('./api/route');
+const helmet = require('helmet');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(helmet());
 app.use('/api', apiRouter);
+app.use(express.static('public'));
 
 app.listen(port, () => {
     console.log(`Proxy server listening on port ${port}`);
 });
 edit filepath: public/index.html
 content: <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proxy Server</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Welcome to the Proxy Server</h1>
-    <p>The proxy server is running. Use it by sending requests to /api with the target URL.</p>
+    <header>
+        <h1>Welcome to the Proxy Server</h1>
+    </header>
+    <main>
+        <section>
+            <p>The proxy server is running. Use it by sending requests to /api with the target URL.</p>
+            <p>Example: <code>/api?target=https://www.example.com</code></p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Proxy Server</p>
+    </footer>
 </body>
 </html>
 edit filepath: Dockerfile
-content: FROM node:16-alpine
+content: FROM node:18-alpine
 
 WORKDIR /app
 
@@ -181,58 +214,65 @@ EXPOSE 3000
 CMD ["npm", "start"]
 edit filepath: .dockerignore
 content: node_modules
-edit filepath: README.md
-content: # Node.js Proxy Server
-edit filepath: CONTRIBUTING.md
-content: # Contributing to Node.js Proxy Server
+/public/style.css
+edit filepath: public/style.css
+content: body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+}
 
-We welcome contributions to the Node.js Proxy Server project! Here's how you can contribute:
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+}
 
-## Reporting Issues
+main {
+    padding: 20px;
+}
 
-If you find a bug or have a feature request, please open an issue on the [GitHub repository](https://github.com/your-username/your-repo). When reporting issues, please provide as much detail as possible, including:
+section {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-- A clear and descriptive title
-- Steps to reproduce the issue
-- Expected behavior
-- Actual behavior
-- Relevant error messages or logs
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background-color: #333;
+    color: #fff;
+}
 
-## Contributing Code
+code {
+    background-color: #eee;
+    padding: 2px 5px;
+    border-radius: 5px;
+}
+edit filepath: test/api.test.js
+content: const request = require('supertest');
+const app = require('../server');
 
-We accept code contributions via pull requests. To contribute code:
+describe('API Endpoints', () => {
+    it('should return 200 OK for the root endpoint', async () => {
+        const res = await request(app).get('/api');
+        expect(res.statusCode).toEqual(200);
+    });
 
-1.  Fork the repository on GitHub.
-2.  Create a new branch for your changes.
-3.  Make your changes, following the project's coding conventions.
-4.  Write tests for your changes.
-5.  Ensure all tests pass.
-6.  Commit your changes with clear, concise commit messages.
-7.  Push your branch to your forked repository.
-8.  Create a pull request to the main repository.
+    it('should proxy the target URL', async () => {
+        const res = await request(app).get('/api?target=https://www.google.com');
+        expect(res.statusCode).toEqual(200);
+    });
 
-Your pull request will be reviewed by a maintainer. Please be patient and responsive to any feedback.
-
-## Coding Conventions
-
-Please follow these coding conventions:
-
--   Use consistent indentation (e.g., 4 spaces).
--   Write clear and concise code.
--   Use meaningful variable and function names.
--   Document your code with comments where necessary.
--   Follow the existing code style.
-
-## Testing
-
-We use [testing framework] for testing. Please write tests for any new code you contribute. Ensure that all tests pass before submitting a pull request.
-
-## Documentation
-
-If you add or change any features, please update the documentation accordingly.
-
-## License
-
-By contributing to this project, you agree that your contributions will be licensed under the [License Name] license.
-
-Thank you for your contributions!
+    it('should return 401 for secure endpoint without authentication', async () => {
+        const res = await request(app).get('/api/secure');
+        expect(res.statusCode).toEqual(401);
+    });
+});
