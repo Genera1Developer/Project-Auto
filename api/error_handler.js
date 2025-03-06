@@ -16,8 +16,11 @@ function errorHandler(err, req, res, next) {
     statusCode = 400;
     message = 'Duplicate key error';
   } else if (err.name === 'UnauthorizedError') {
+    statusCode = 401;
+    message = 'Unauthorized: ' + err.message;
+  } else if (err.message && err.message.includes('jwt expired')) {
         statusCode = 401;
-        message = 'Unauthorized: ' + err.message;
+        message = 'Unauthorized: Token expired';
   }
 
   res.status(statusCode).json({
