@@ -7,7 +7,8 @@ const config = {
   decodeURL: process.env.DECODE_URL || '/decode/',
   apiKey: process.env.API_KEY || 'your-default-api-key',
   cacheAge: parseInt(process.env.CACHE_AGE, 10) || 86400,
-  logLevel: process.env.LOG_LEVEL || 'info', // Added log level
+  logLevel: process.env.LOG_LEVEL || 'info',
+  domain: process.env.DOMAIN || 'http://localhost:3000',
 };
 
 module.exports = config;
