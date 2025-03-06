@@ -1,4 +1,6 @@
 const { URL } = require('url');
+const http = require('http');
+const https = require('https');
 
 async function handleRequest(req, res) {
   try {
@@ -11,12 +13,14 @@ async function handleRequest(req, res) {
       return;
     }
 
-    const proxyReq = http.request(target, {
+    const options = {
       method: req.method,
       path: url.pathname + url.search,
       headers: req.headers,
       followRedirects: false,
-    }, (proxyRes) => {
+    };
+
+    const proxyReq = (url.protocol === 'https:' ? https : http).request(target, options, (proxyRes) => {
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
       proxyRes.pipe(res, { end: true });
     });
@@ -34,3 +38,5 @@ async function handleRequest(req, res) {
     res.end('Invalid URL format.');
   }
 }
+
+module.exports = { handleRequest };
