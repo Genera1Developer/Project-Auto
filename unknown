@@ -1,35 +1,39 @@
-self.addEventListener('fetch', event => {
-  // Check if the request is meant for the proxy.
-  if (event.request.url.startsWith(location.origin + '/service/')) {
-    event.respondWith(
-      (async () => {
-        try {
-          // Extract the URL from the request.
-          const url = new URL(event.request.url).searchParams.get('url');
-
-          if (!url) {
-            throw new Error('URL parameter is missing.');
-          }
-
-          // Fetch the resource through the proxy.
-          const response = await fetch(url, {
-            method: event.request.method,
-            headers: event.request.headers,
-            body: event.request.body,
-            redirect: 'follow'
-          });
-
-          // Return the proxied response.
-          return response;
-        } catch (error) {
-          // Handle errors gracefully.
-          console.error('Proxy error:', error);
-          return new Response(`Proxy error: ${error.message}`, {
-            status: 500,
-            headers: { 'Content-Type': 'text/plain' }
-          });
-        }
-      })()
-    );
+class Decoders {
+  static decodeBase64(encodedString) {
+    try {
+      return atob(encodedString);
+    } catch (e) {
+      console.error("Base64 Decoding Error:", e);
+      return null;
+    }
   }
-});
+
+  static encodeBase64(decodedString) {
+    try {
+      return btoa(decodedString);
+    } catch (e) {
+      console.error("Base64 Encoding Error:", e);
+      return null;
+    }
+  }
+
+  static decodeURIComponentSafe(encodedString) {
+    try {
+      return decodeURIComponent(encodedString);
+    } catch (e) {
+      console.error("URI Decoding Error:", e);
+      return null;
+    }
+  }
+
+  static encodeURIComponentSafe(decodedString) {
+    try {
+      return encodeURIComponent(decodedString);
+    } catch (e) {
+      console.error("URI Encoding Error:", e);
+      return null;
+    }
+  }
+}
+
+export { Decoders };
