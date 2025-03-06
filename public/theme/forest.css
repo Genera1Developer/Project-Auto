@@ -17,6 +17,7 @@ body {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
 }
 
 h1 {
@@ -41,6 +42,7 @@ textarea {
   border-radius: 4px;
   box-sizing: border-box;
   font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 textarea {
@@ -93,23 +95,19 @@ footer {
   border-top: 1px solid #ddd;
 }
 
-/* Darker background for better readability */
 ::selection {
   background-color: #b9e7b9;
   color: #333;
 }
 
-/* Improve code block contrast */
 pre {
   background-color: #f0f0f0;
 }
 
-/* Add a subtle hover effect to containers */
 .container:hover {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Form input focus styling */
 input[type="text"]:focus,
 input[type="url"]:focus,
 textarea:focus {
@@ -118,7 +116,13 @@ textarea:focus {
   box-shadow: 0 0 5px rgba(34, 139, 34, 0.5);
 }
 
-/* Responsive adjustments */
+/* Improve button focus style */
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(34, 139, 34, 0.5);
+}
+
+
 @media (max-width: 768px) {
   .container {
     width: 95%;
