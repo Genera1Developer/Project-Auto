@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const downloadButton = document.getElementById('downloadButton');
   const downloadLink = document.getElementById('downloadLink');
   const errorMessageDiv = document.getElementById('errorMessage');
+  const rawHeadersDiv = document.getElementById('rawHeaders');
 
   proxyForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     responseDiv.innerHTML = '';
     errorMessageDiv.textContent = '';
+    rawHeadersDiv.textContent = '';
     loadingIndicator.style.display = 'block';
     downloadButton.style.display = 'none';
     downloadLink.style.display = 'none';
@@ -28,6 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: JSON.stringify({ url: url, corsBypass: corsBypass }),
       });
+
+      // Display raw headers
+      let rawHeadersText = '';
+      for (const [key, value] of response.headers.entries()) {
+        rawHeadersText += `${key}: ${value}\n`;
+      }
+      rawHeadersDiv.textContent = rawHeadersText;
 
       if (!response.ok) {
         let errorText = `HTTP error! status: ${response.status}`;
