@@ -11,5 +11,5 @@
     sw: '/uv/uv.sw.js',
   };
 
-  self.uv = config;
+  self.__uv$config = config;
 })();
