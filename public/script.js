@@ -12,7 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
   proxyForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const url = urlInput.value;
+    const url = urlInput.value.trim();
+    if (!url) {
+      errorMessageDiv.textContent = 'Error: URL cannot be empty.';
+      return;
+    }
+
     const corsBypass = corsBypassCheckbox.checked;
 
     responseDiv.innerHTML = '';
