@@ -67,7 +67,16 @@ self.addEventListener('fetch', (event) => {
           headers.delete('content-security-policy-report-only');
           headers.delete('clear-site-data');
 
-          const body = await response.blob();
+          let body;
+          try {
+              body = await response.blob();
+          } catch (error) {
+              console.error('Failed to read response body:', error);
+              return new Response(`<h1>Error: Could not read response body from target</h1><p>${error}</p>`, {
+                  status: 502,
+                  headers: { 'Content-Type': 'text/html' },
+              });
+          }
 
           return new Response(body, {
             status: response.status,
