@@ -18,6 +18,7 @@
     --input-height: 48px;
     --button-width: 150px;
     --input-focus-shadow: 0 0 8px rgba(231, 76, 60, 0.7);
+    --header-height: 60px;
 }
 
 body {
@@ -29,9 +30,30 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     min-height: 100vh;
     line-height: 1.6;
+}
+
+header {
+    width: 100%;
+    background-color: rgba(52, 73, 94, 0.9);
+    color: var(--text-color);
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 2px 5px var(--box-shadow-color);
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    height: var(--header-height);
+}
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: var(--header-height);
+    padding-bottom: 60px;
 }
 
 #proxy-container {
@@ -119,11 +141,17 @@ a:hover {
 }
 
 footer {
-    margin-top: 20px;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(52, 73, 94, 0.9);
     padding: 10px;
     font-size: 0.8em;
     color: var(--footer-text-color);
     text-align: center;
+    box-shadow: 0 -2px 5px var(--box-shadow-color);
+    z-index: 100;
 }
 
 #proxy-error, #proxy-success {
