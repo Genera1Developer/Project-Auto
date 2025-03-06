@@ -9,8 +9,8 @@ class Bare {
         try {
             const response = await fetch(fetchUrl, options);
             if (!response.ok) {
-                console.error(`HTTP error! status: ${response.status}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                console.error(`HTTP error! status: ${response.status} - ${response.url}`);
+                throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
             }
             return response;
         } catch (error) {
@@ -23,8 +23,8 @@ class Bare {
         try {
             const response = await fetch(fetchUrl, options);
             if (!response.ok) {
-                console.error(`HTTP error! status: ${response.status}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                console.error(`HTTP error! status: ${response.status} - ${response.url}`);
+                throw new Error(`HTTP error! status: ${response.status} - ${response.url}`);
             }
             return await response.json();
         } catch (error) {
