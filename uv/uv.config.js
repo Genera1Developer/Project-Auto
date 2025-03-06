@@ -10,5 +10,12 @@
     config: "/uv/uv.config.js",
     sw: "/uv/uv.sw.js",
   };
-  self.uv = uv;
+
+  // Check if running in a service worker context
+  if (typeof self !== 'undefined' && 'ServiceWorkerGlobalScope' in self) {
+    self.uv = uv;
+  } else {
+    // Expose uv for non-service worker contexts (e.g., window)
+    window.uv = uv;
+  }
 })();
