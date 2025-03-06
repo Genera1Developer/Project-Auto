@@ -17,7 +17,7 @@
 }
 
 .slide-in-left {
-  animation: slideInLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: slideInLeft 0.4s cubic-bezier(0.2, 0.6, 0.5, 1) both; /* Adjusted cubic-bezier */
 }
 
 /* Scale Up */
@@ -68,7 +68,7 @@
 }
 
 .slide-out-right {
-  animation: slideOutRight 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+  animation: slideOutRight 0.4s cubic-bezier(0.5, 0, 0.7, 0.4) both; /* Adjusted cubic-bezier */
 }
 
 /* Slide In From Right */
@@ -78,22 +78,39 @@
 }
 
 .slide-in-right {
-    animation: slideInRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation: slideInRight 0.4s cubic-bezier(0.2, 0.6, 0.5, 1) both; /* Adjusted cubic-bezier */
 }
 
 /* Fade In Down */
 @keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translate3d(0, -20px, 0);
+    transform: translateY(-20px); /* Simplified transform */
   }
 
   to {
     opacity: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translateY(0);
   }
 }
 
 .fade-in-down {
   animation: fadeInDown 0.4s ease-out both;
+}
+
+/* Fade Out Up */
+@keyframes fadeOutUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.fade-out-up {
+  animation: fadeOutUp 0.4s ease-in both;
 }
