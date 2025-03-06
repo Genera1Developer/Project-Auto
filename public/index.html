@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Proxy</title>
     <link rel="stylesheet" href="/themes/default.css">
+    <style>
+        #loading { display: none; }
+        #error { color: red; }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -15,7 +19,7 @@
             <button type="submit">Fetch Content</button>
         </form>
         <div id="loading">
-            <img src="loading.gif" alt="Loading...">
+            <img src="/loading.gif" alt="Loading...">
         </div>
         <div id="error"></div>
         <div id="response"></div>
