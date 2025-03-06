@@ -30,7 +30,7 @@ self.addEventListener('fetch', (event) => {
             redirect: 'follow'
           };
 
-          if (event.request.method !== 'GET' && event.request.method !== 'HEAD') {
+          if (event.request.body) {
             try {
               requestInit.body = await event.request.blob();
             } catch (e) {
