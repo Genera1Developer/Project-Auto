@@ -10,11 +10,14 @@ class ProxyForm extends HTMLElement {
         this.input = this.shadow.querySelector('input[type="text"]');
         this.form.addEventListener('submit', this.handleSubmit.bind(this));
         this.input.addEventListener('keydown', this.handleKeydown.bind(this));
+
+        // Set focus to the input field when the component is connected
+        this.input.focus();
     }
 
     handleKeydown(event) {
         if (event.key === 'Enter') {
-            this.form.requestSubmit(); // Programmatically submit the form
+            this.form.requestSubmit();
         }
     }
 
@@ -24,6 +27,14 @@ class ProxyForm extends HTMLElement {
         if (!url.startsWith('http://') && !url.startsWith('https://')) {
             url = 'http://' + url;
         }
+
+        try {
+            new URL(url); // Validate URL format
+        } catch (error) {
+            alert('Invalid URL');
+            return;
+        }
+
         this.dispatchEvent(new CustomEvent('proxySubmit', { detail: url }));
     }
 
