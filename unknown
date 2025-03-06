@@ -1,29 +1,35 @@
-const form = document.getElementById('url-form');
-const urlInput = document.getElementById('url-input');
-const proxyUrl = '/proxy/'; // Replace with your proxy endpoint
+self.addEventListener('fetch', event => {
+  // Check if the request is meant for the proxy.
+  if (event.request.url.startsWith(location.origin + '/service/')) {
+    event.respondWith(
+      (async () => {
+        try {
+          // Extract the URL from the request.
+          const url = new URL(event.request.url).searchParams.get('url');
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
+          if (!url) {
+            throw new Error('URL parameter is missing.');
+          }
 
-  let url = urlInput.value.trim();
+          // Fetch the resource through the proxy.
+          const response = await fetch(url, {
+            method: event.request.method,
+            headers: event.request.headers,
+            body: event.request.body,
+            redirect: 'follow'
+          });
 
-  if (!url) {
-    alert('Please enter a URL.');
-    return;
+          // Return the proxied response.
+          return response;
+        } catch (error) {
+          // Handle errors gracefully.
+          console.error('Proxy error:', error);
+          return new Response(`Proxy error: ${error.message}`, {
+            status: 500,
+            headers: { 'Content-Type': 'text/plain' }
+          });
+        }
+      })()
+    );
   }
-
-  try {
-    // Basic URL validation
-    new URL(url);
-  } catch (error) {
-    url = 'https://' + url; // Attempt to prepend https:// if invalid
-    try {
-      new URL(url); //Revalidate
-    } catch (e) {
-      alert('Invalid URL. Please enter a valid URL.');
-      return;
-    }
-  }
-    
-  window.location.href = proxyUrl + encodeURIComponent(url);
 });
