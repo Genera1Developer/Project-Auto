@@ -9,6 +9,13 @@ class ProxyForm extends HTMLElement {
         this.form = this.shadow.querySelector('form');
         this.input = this.shadow.querySelector('input[type="text"]');
         this.form.addEventListener('submit', this.handleSubmit.bind(this));
+        this.input.addEventListener('keydown', this.handleKeydown.bind(this));
+    }
+
+    handleKeydown(event) {
+        if (event.key === 'Enter') {
+            this.form.requestSubmit(); // Programmatically submit the form
+        }
     }
 
     handleSubmit(event) {
