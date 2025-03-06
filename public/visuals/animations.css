@@ -7,7 +7,7 @@
 }
 
 .fade-in {
-  animation: fadeIn 0.3s ease-in-out forwards;
+  animation: fadeIn 0.3s ease-in-out both;
 }
 
 /* Slide In From Left */
@@ -17,7 +17,7 @@
 }
 
 .slide-in-left {
-  animation: slideInLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  animation: slideInLeft 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 /* Scale Up */
@@ -27,7 +27,7 @@
 }
 
 .scale-up {
-  animation: scaleUp 0.2s ease-out forwards;
+  animation: scaleUp 0.2s ease-out both;
 }
 
 /* Rotate */
@@ -58,7 +58,7 @@
 }
 
 .fade-out {
-  animation: fadeOut 0.3s ease-in-out forwards;
+  animation: fadeOut 0.3s ease-in-out both;
 }
 
 /* Slide Out To Right */
@@ -68,5 +68,5 @@
 }
 
 .slide-out-right {
-  animation: slideOutRight 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+  animation: slideOutRight 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
 }
