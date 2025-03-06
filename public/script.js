@@ -20,17 +20,19 @@ document.getElementById('proxyForm').addEventListener('submit', async (event) =>
 
     if (!response.ok) {
       let errorText = `HTTP error! status: ${response.status}`;
+      let errorBody;
       try {
-        const errorBody = await response.json(); // Attempt to parse as JSON first
-        errorText += ` - ${errorBody.message || JSON.stringify(errorBody)}`; // Use message if available
-      } catch (jsonError) {
-        try {
-          const errorBody = await response.text(); // Fallback to text if JSON parsing fails
-          errorText += ` - ${errorBody}`;
-        } catch (textError) {
-          console.warn("Failed to parse error body as JSON or text:", textError);
-        }
+        errorBody = await response.json();
+      } catch (e) {
+        errorBody = await response.text();
       }
+
+      if (typeof errorBody === 'string') {
+        errorText += ` - ${errorBody}`;
+      } else {
+        errorText += ` - ${JSON.stringify(errorBody)}`;
+      }
+
       throw new Error(errorText);
     }
 
