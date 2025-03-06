@@ -5,7 +5,11 @@ function generateRandomToken(length = 32) {
     throw new TypeError('Length must be a positive integer.');
   }
   try {
-    return crypto.randomBytes(length).toString('hex');
+    const token = crypto.randomBytes(length).toString('hex');
+    if (!token) {
+      throw new Error('Failed to generate token.');
+    }
+    return token;
   } catch (error) {
     console.error('Error generating random token:', error);
     throw new Error('Failed to generate random token.');
@@ -23,7 +27,11 @@ function hashString(string, salt) {
   try {
     const hash = crypto.createHmac('sha512', salt);
     hash.update(string);
-    return hash.digest('hex');
+    const digest = hash.digest('hex');
+    if (!digest) {
+        throw new Error('Hashing failed: Digest is empty');
+    }
+    return digest;
   } catch (error) {
     console.error('Error during hashing:', error);
     throw new Error('Hashing failed.');
@@ -43,7 +51,18 @@ function verifyHash(string, hash, salt) {
 
   try {
     const computedHash = hashString(string, salt);
-    return crypto.timingSafeEqual(Buffer.from(computedHash, 'hex'), Buffer.from(hash, 'hex'));
+    if (!computedHash) {
+      return false;
+    }
+
+    const computedHashBuffer = Buffer.from(computedHash, 'hex');
+    const hashBuffer = Buffer.from(hash, 'hex');
+
+    if (computedHashBuffer.length !== hashBuffer.length) {
+      return false;
+    }
+
+    return crypto.timingSafeEqual(computedHashBuffer, hashBuffer);
   } catch (error) {
     console.error('Error during hash verification:', error);
     return false;
