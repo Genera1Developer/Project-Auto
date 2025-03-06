@@ -70,5 +70,12 @@
     "enableUndici": true
   },
   "sendAnonymousTelemetry": false,
-    "trailingSlash": false
+  "trailingSlash": false,
+  "cache": {
+    "api/proxy.js": {
+      "maxAge": 0,
+      "staleWhileRevalidate": "1d",
+      "swr": true
+    }
+  }
 }
