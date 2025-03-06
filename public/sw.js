@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-site-cache-v2';
+const CACHE_NAME = 'my-site-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -17,7 +17,7 @@ self.addEventListener('install', event => {
       })
       .then(() => {
         console.log('ServiceWorker: Installation complete and ready!');
-        return self.skipWaiting(); // Immediately activate
+        return self.skipWaiting();
       })
       .catch(err => console.error('ServiceWorker: Cache opening failed: ', err))
   );
@@ -27,41 +27,32 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Cache hit - return response
         if (response) {
           console.log('ServiceWorker: Found in cache:', event.request.url);
           return response;
         }
 
-        // IMPORTANT: Clone the request. A request is a stream and
-        // can only be consumed once. Since we are consuming this
-        // to send to the server AND cache it, we need to clone it.
         const fetchRequest = event.request.clone();
 
         return fetch(fetchRequest)
           .then(response => {
-            // Check if we received a valid response
-            if(!response || response.status !== 200 || response.type !== 'basic') {
+            if (!response || response.status !== 200 || response.type !== 'basic') {
               console.log('ServiceWorker: Invalid response:', response ? response.status : 'No response');
               return response;
             }
 
-            // IMPORTANT: Clone the response. A response is a stream
-            // and because we want the browser to consume the response
-            // as well as cache it, we need to clone it here.
             const responseToCache = response.clone();
 
             return caches.open(CACHE_NAME)
               .then(cache => {
-                return cache.put(event.request, responseToCache);
+                cache.put(event.request, responseToCache);
+                return response;
               })
               .then(() => {
                 console.log('ServiceWorker: Caching new resource:', event.request.url);
-                return response;
               })
               .catch(err => {
-                 console.warn('ServiceWorker: Cache PUT failed.', err);
-                 return response; // Return the original response even if caching fails.
+                console.warn('ServiceWorker: Cache PUT failed.', err);
               });
           })
           .catch(() => {
@@ -79,7 +70,7 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) { // Use strict comparison
+          if (cacheName !== CACHE_NAME && cacheName.startsWith('my-site-cache')) {
             console.log('ServiceWorker: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
@@ -87,7 +78,7 @@ self.addEventListener('activate', event => {
       );
     }).then(() => {
       console.log('ServiceWorker: Activated and ready to handle fetches!');
-      return self.clients.claim(); //Take control of uncontrolled pages
+      return self.clients.claim();
     })
   );
 });
