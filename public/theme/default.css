@@ -1,23 +1,29 @@
 :root {
     --primary-glow: rgb(0, 255, 234);
-    --secondary-glow: rgb(0, 136, 255);
+    --secondary_glow: rgb(0, 136, 255);
     --text-color: #ffffff;
     --bg-color: #0a0a0a;
     --card-bg: rgba(0, 0, 0, 0.2);
     --input-bg: rgba(0, 0, 0, 0.2);
     --border-color: rgba(255, 255, 255, 0.1);
     --shadow-color: rgba(0, 0, 0, 0.5);
+    --error-color: #ff6666;
+    --warning-color: #ffcc66;
+    --success-color: #66ff66;
 }
 
 .light {
     --primary-glow: rgb(0, 195, 255);
-    --secondary-glow: rgb(0, 89, 255);
+    --secondary_glow: rgb(0, 89, 255);
     --text-color: #000000;
     --bg-color: #f0f0f0;
     --card-bg: rgba(255, 255, 255, 0.1);
     --input-bg: rgba(255, 255, 255, 0.1);
     --border-color: rgba(0, 0, 0, 0.1);
     --shadow-color: rgba(0, 0, 0, 0.1);
+    --error-color: #cc3333;
+    --warning-color: #b38f40;
+    --success-color: #40b340;
 }
 
 body {
@@ -39,7 +45,7 @@ a {
 }
 
 a:hover {
-    color: var(--secondary-glow);
+    color: var(--secondary_glow);
 }
 
 .cyber-bg {
@@ -72,7 +78,7 @@ a:hover {
 .blob-2 {
     width: 300px;
     height: 300px;
-    background: var(--secondary-glow);
+    background: var(--secondary_glow);
     top: 40%;
     right: 5%;
     animation-delay: -5s;
@@ -88,10 +94,22 @@ a:hover {
 }
 
 @keyframes float {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(30px, 30px) rotate(45deg); }
-    50% { transform: translate(0, 60px) rotate(90deg); }
-    75% { transform: translate(-30px, 30px) rotate(135deg); }
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+        transform: translate(30px, 30px) rotate(45deg);
+    }
+
+    50% {
+        transform: translate(0, 60px) rotate(90deg);
+    }
+
+    75% {
+        transform: translate(-30px, 30px) rotate(135deg);
+    }
 }
 
 .cyber-card {
@@ -132,7 +150,7 @@ a:hover {
 }
 
 .cyber-button {
-    background: linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
+    background: linear-gradient(45deg, var(--primary-glow), var(--secondary_glow));
     color: #000;
     border: none;
     padding: 1rem 2rem;
@@ -351,15 +369,15 @@ a:hover {
 }
 
 .console-log .log-item.error {
-    color: #ff4444;
-}
-
-.console-log .log-item.info {
-    color: #44ff44;
+    color: var(--error-color);
 }
 
 .console-log .log-item.warn {
-    color: #ffcc00;
+    color: var(--warning-color);
+}
+
+.console-log .log-item.info {
+    color: var(--success-color);
 }
 
 .detached {
