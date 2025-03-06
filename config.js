@@ -3,12 +3,15 @@ const config = {
   encodeUrl: true,
   decodeUrl: true,
   handler: '/handler.js',
-  port: process.env.PORT || 3000, // Default port or from environment variable
-  allowedOrigins: ['*'], // Allow all origins by default, consider restricting in production.  Example: ['http://example.com', 'https://example.org']
-  cacheMaxAge: 0, // Cache control max-age in seconds. 0 disables caching.
-  requestTimeout: 15000, // Request timeout in milliseconds
-  followRedirects: true, // Whether to follow redirects
-  maxRedirects: 5, // Maximum number of redirects to follow
+  port: process.env.PORT || 3000,
+  allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['*'],
+  cacheMaxAge: 0,
+  requestTimeout: 15000,
+  followRedirects: true,
+  maxRedirects: 5,
+  logLevel: process.env.LOG_LEVEL || 'info', // Add log level configuration, default to 'info'
+  userAgent: 'WebProxy/1.0', // Add a default User-Agent header
+  xForwardedFor: true, // Whether to add X-Forwarded-For header
 };
 
 export default config;
