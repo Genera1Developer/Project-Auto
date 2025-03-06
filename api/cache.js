@@ -17,10 +17,13 @@ module.exports = {
             console.warn('Attempted to get cache with null/undefined URL');
             return null;
         }
-        return safeCacheOperation(async (url) => {
-            const value = cache.get(url);
-            return value || null;
-        }, url);
+        try {
+          const value = cache.get(url);
+          return value || null;
+        } catch (error) {
+          console.error(`Cache get operation failed for URL: ${url}`, error);
+          return null;
+        }
     },
     set: async (url, data, ttl = 3600) => {
         if (!url) {
@@ -31,20 +34,26 @@ module.exports = {
             console.warn('Attempted to set cache with null/undefined data for URL:', url);
             return;
         }
-        return safeCacheOperation(async (url, data, ttl) => {
-            cache.set(url, data, ttl);
-            return true;
-        }, url, data, ttl);
+        try {
+          cache.set(url, data, ttl);
+          return true;
+        } catch (error) {
+          console.error(`Cache set operation failed for URL: ${url}`, error);
+          return null;
+        }
     },
     clear: async (url) => {
         if (!url) {
             console.warn('Attempted to clear cache with null/undefined URL');
             return;
         }
-        return safeCacheOperation(async (url) => {
-            cache.del(url);
-            return true;
-        }, url);
+        try {
+          cache.del(url);
+          return true;
+        } catch (error) {
+          console.error(`Cache clear operation failed for URL: ${url}`, error);
+          return null;
+        }
     },
     flush: async () => {
         try {
