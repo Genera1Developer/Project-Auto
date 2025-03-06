@@ -27,35 +27,56 @@ async function handleRequest(req, res) {
       method: req.method,
       path: url.pathname + url.search,
       headers: req.headers,
-      timeout: 10000, // Add a timeout of 10 seconds
+      timeout: 10000,
     };
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(target, options, (proxyRes) => {
       res.writeHead(proxyRes.statusCode, proxyRes.headers);
-      proxyRes.pipe(res);
+      proxyRes.pipe(res, { end: true });
     });
 
     proxyReq.on('timeout', () => {
       proxyReq.destroy();
-      res.writeHead(504, { 'Content-Type': 'text/plain' });
-      res.end('Proxy request timeout.');
+      if (!res.headersSent) {
+        res.writeHead(504, { 'Content-Type': 'text/plain' });
+        res.end('Proxy request timeout.');
+      }
     });
 
     proxyReq.on('error', (err) => {
       console.error('Proxy request error:', err);
-      res.writeHead(502, { 'Content-Type': 'text/plain' });
-      res.end('Proxy error.');
+      if (!res.headersSent) {
+        res.writeHead(502, { 'Content-Type': 'text/plain' });
+        res.end('Proxy error.');
+      }
     });
 
-    req.pipe(proxyReq);
+    req.pipe(proxyReq, { end: true });
+
     req.on('error', (err) => {
-        console.error('Request pipe error:', err);
-        proxyReq.destroy(err);
+      console.error('Request pipe error:', err);
+      proxyReq.destroy(err);
+      if (!res.headersSent) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Request error.');
+      }
+    });
+
+    proxyReq.on('close', () => {
+      if (!req.complete) {
+        req.destroy();
+      }
+    });
+
+    res.on('close', () => {
+      proxyReq.destroy();
     });
   } catch (error) {
     console.error('Unexpected error:', error);
-    res.writeHead(500, { 'Content-Type': 'text/plain' });
-    res.end('Internal server error.');
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Internal server error.');
+    }
   }
 }
 
