@@ -114,3 +114,13 @@
 .fade-out-up {
   animation: fadeOutUp 0.4s ease-in both;
 }
+
+/* Slide Out Left */
+@keyframes slideOutLeft {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(-100%); opacity: 0; }
+}
+
+.slide-out-left {
+    animation: slideOutLeft 0.4s cubic-bezier(0.5, 0, 0.7, 0.4) both;
+}
