@@ -14,6 +14,7 @@ const proxyHandler = (req, res) => {
     const options = {
       method: req.method,
       headers: { ...req.headers, host: parsedURL.hostname },
+      followRedirects: false, // Prevent proxy from following redirects
     };
 
     const proxyReq = (parsedURL.protocol === 'https:' ? https : http).request(parsedURL.href, options, (proxyRes) => {
@@ -23,13 +24,23 @@ const proxyHandler = (req, res) => {
 
     proxyReq.on('error', (err) => {
       console.error('Proxy request error:', err);
-      res.status(500).send('Proxy error.');
+      return res.status(500).send('Proxy error.');
     });
 
     req.pipe(proxyReq, { end: true });
+
+    req.on('error', (err) => {
+      console.error('Request pipe error:', err);
+      proxyReq.destroy(err); // Destroy the proxy request to prevent hanging
+    });
+
+    proxyReq.on('close', () => {
+      // Clean up if the connection to the target server is closed prematurely.
+    });
+
   } catch (error) {
     console.error('URL parsing error:', error);
-    res.status(400).send('Invalid URL.');
+    return res.status(400).send('Invalid URL.');
   }
 };
 
