@@ -8,12 +8,14 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  console.log('ServiceWorker: Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('Opened cache');
+        console.log('ServiceWorker: Opened cache');
         return cache.addAll(urlsToCache);
       })
+      .then(() => self.skipWaiting()) // Immediately activate
       .catch(err => console.error('ServiceWorker: Cache opening failed: ', err))
   );
 });
@@ -24,6 +26,7 @@ self.addEventListener('fetch', event => {
       .then(response => {
         // Cache hit - return response
         if (response) {
+          console.log('ServiceWorker: Found in cache:', event.request.url);
           return response;
         }
 
@@ -36,6 +39,7 @@ self.addEventListener('fetch', event => {
           .then(response => {
             // Check if we received a valid response
             if(!response || response.status !== 200 || response.type !== 'basic') {
+              console.log('ServiceWorker: Invalid response:', response ? response.status : 'No response');
               return response;
             }
 
@@ -47,12 +51,14 @@ self.addEventListener('fetch', event => {
             caches.open(CACHE_NAME)
               .then(cache => {
                 cache.put(event.request, responseToCache);
+                console.log('ServiceWorker: Caching new resource:', event.request.url);
               })
               .catch(err => console.warn('ServiceWorker: Cache PUT failed.', err));
 
             return response;
           })
           .catch(() => {
+            console.log('ServiceWorker: Network request failed, serving offline page');
             return caches.match('/offline.html');
           });
       })
@@ -61,6 +67,7 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('activate', event => {
+  console.log('ServiceWorker: Activating...');
   const cacheWhitelist = [CACHE_NAME];
 
   event.waitUntil(
@@ -68,13 +75,14 @@ self.addEventListener('activate', event => {
       return Promise.all(
         cacheNames.map(cacheName => {
           if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('ServiceWorker: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     }).then(() => {
-      console.log('Service Worker Activated');
-      return self.clients.claim();
+      console.log('ServiceWorker: Activated and ready to handle fetches!');
+      return self.clients.claim(); //Take control of uncontrolled pages
     })
   );
 });
