@@ -13,7 +13,10 @@ class ProxyForm extends HTMLElement {
 
     handleSubmit(event) {
         event.preventDefault();
-        const url = this.input.value;
+        let url = this.input.value;
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'http://' + url;
+        }
         this.dispatchEvent(new CustomEvent('proxySubmit', { detail: url }));
     }
 
