@@ -8,6 +8,8 @@
     <style>
         #loading { display: none; }
         #error { color: red; }
+        .response-header { font-weight: bold; margin-top: 10px; }
+        .response-body { margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -22,7 +24,10 @@
             <img src="/loading.gif" alt="Loading...">
         </div>
         <div id="error"></div>
-        <div id="response"></div>
+        <div id="response">
+            <div id="response-headers"></div>
+            <div id="response-body"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>
