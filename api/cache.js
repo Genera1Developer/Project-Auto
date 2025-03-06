@@ -11,6 +11,20 @@ const isValidURL = (url) => {
     }
 };
 
+const safeCacheOperation = async (operation, url, ...args) => {
+    if (!isValidURL(url)) {
+        console.warn(`Attempted to perform cache operation with invalid URL: ${url}`);
+        return false;
+    }
+    try {
+        return await operation(url, ...args);
+    } catch (error) {
+        console.error(`Cache operation failed for URL: ${url}`, error);
+        return false;
+    }
+};
+
+
 module.exports = {
     get: async (url) => {
         if (!isValidURL(url)) {
@@ -69,6 +83,22 @@ module.exports = {
             return cache.getStats();
         } catch (error) {
             console.error('Error getting cache stats', error);
+            return null;
+        }
+    },
+    getStats: async () => {
+        try {
+            return cache.getStats();
+        } catch (error) {
+            console.error('Error getting cache stats', error);
+            return null;
+        }
+    },
+    keys: async () => {
+        try {
+            return cache.keys();
+        } catch (error) {
+            console.error('Error getting cache keys', error);
             return null;
         }
     }
