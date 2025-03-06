@@ -1,1 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="url"] {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            overflow-x: auto; /* Add horizontal scroll if content is too wide */
+            white-space: pre-wrap; /* Preserve formatting, including line breaks */
+            word-wrap: break-word; /* Break long words */
+        }
+
+        #error {
+            color: red;
+            margin-top: 10px;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #loading img {
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web Proxy</h1>
+        <form id="proxyForm">
+            <label for="url">Enter URL:</label>
+            <input type="url" id="url" name="url" placeholder="https://example.com" required>
+            <button type="submit">Fetch Content</button>
+        </form>
+        <div id="loading">
+            <img src="loading.gif" alt="Loading...">
+        </div>
+        <div id="error"></div>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        const proxyForm = document.getElementById('proxyForm');
+        const urlInput = document.getElementById('url');
+        const responseDiv = document.getElementById('response');
+        const errorDiv = document.getElementById('error');
+        const loadingDiv = document.getElementById('loading');
+
+        proxyForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const url = urlInput.value;
+
+            // Basic URL validation (can be improved)
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                errorDiv.textContent = 'Please enter a valid URL starting with http:// or https://';
+                return;
+            }
+
+            errorDiv.textContent = ''; // Clear previous errors
+            responseDiv.textContent = ''; // Clear previous response
+            loadingDiv.style.display = 'block'; // Show loading indicator
+
+            try {
+                const response = await fetch('/proxy?url=' + encodeURIComponent(url));
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const data = await response.json();
+                    responseDiv.textContent = JSON.stringify(data, null, 2); // Format JSON
+                } else {
+                    const text = await response.text();
+                    responseDiv.textContent = text;
+                }
+
+
+            } catch (error) {
+                errorDiv.textContent = 'An error occurred: ' + error.message;
+            } finally {
+                loadingDiv.style.display = 'none'; // Hide loading indicator
+            }
+        });
+    </script>
+</body>
+</html>
