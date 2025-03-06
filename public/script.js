@@ -4,6 +4,7 @@ document.getElementById('proxyForm').addEventListener('submit', async (event) =>
   const url = document.getElementById('url').value;
   const responseDiv = document.getElementById('response');
   const loadingIndicator = document.getElementById('loading');
+  const corsBypass = document.getElementById('corsBypass').checked;
 
   responseDiv.innerHTML = '';
   loadingIndicator.style.display = 'block';
@@ -14,16 +15,16 @@ document.getElementById('proxyForm').addEventListener('submit', async (event) =>
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ url: url })
+      body: JSON.stringify({ url: url, corsBypass: corsBypass })
     });
 
     if (!response.ok) {
       let errorText = `HTTP error! status: ${response.status}`;
       try {
-          const errorBody = await response.text();
-          errorText += ` - ${errorBody}`;
+        const errorBody = await response.text();
+        errorText += ` - ${errorBody}`;
       } catch (bodyError) {
-          console.warn("Failed to parse error body:", bodyError);
+        console.warn("Failed to parse error body:", bodyError);
       }
       throw new Error(errorText);
     }
