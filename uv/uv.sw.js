@@ -94,12 +94,14 @@ self.addEventListener('fetch', (event) => {
           headers.delete('x-content-type-options');
           headers.delete('strict-transport-security');
           headers.delete('upgrade-insecure-requests');
-	  headers.delete('public-key-pins');
+	        headers.delete('public-key-pins');
           headers.delete('public-key-pins-report-only');
-	  headers.delete('x-powered-by');
-	  headers.delete('server');
+	        headers.delete('x-powered-by');
+	        headers.delete('server');
           headers.delete('X-AspNet-Version');
           headers.delete('X-AspNetMvc-Version');
+          headers.delete('Referrer-Policy');
+
 
           let responseBody;
           try {
@@ -170,6 +172,7 @@ self.addEventListener('fetch', (event) => {
            // Mitigate MIME confusion attack
            headers.set('Content-Type', 'text/html; charset=utf-8');
            headers.delete('Content-Length');
+           headers.delete('Referrer-Policy');
 
           return new Response(responseText, {
             status: response.status,
@@ -195,6 +198,7 @@ self.addEventListener('fetch', (event) => {
 		headers.set('X-XSS-Protection', '1; mode=block');
 		headers.set('Content-Type', 'application/javascript; charset=utf-8');
 		headers.delete('Content-Length');
+    headers.delete('Referrer-Policy');
 
 		return new Response(responseText, {
 			status: response.status,
