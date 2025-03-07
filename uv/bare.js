@@ -20,6 +20,21 @@ class Bare {
         }
     }
 
+    async route(url, options = {}) {
+        const fetchUrl = this.prefix + encodeURIComponent(url);
+        try {
+            const response = await fetch(fetchUrl, options);
+            if (!response.ok) {
+                console.error(`Bare route error: HTTP error! status: ${response.status} - ${fetchUrl}`);
+                throw new Error(`Bare route error: HTTP error! status: ${response.status}`);
+            }
+            return response;
+        } catch (error) {
+            console.error("Bare route error:", error);
+            throw error;
+        }
+    }
+
     async request(url, options = {}) {
         const fetchUrl = this.prefix + encodeURIComponent(url);
         try {
