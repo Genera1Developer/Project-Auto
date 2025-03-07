@@ -93,6 +93,7 @@ self.addEventListener('fetch', (event) => {
           headers.delete('x-xss-protection');
           headers.delete('x-content-type-options');
           headers.delete('strict-transport-security');
+          headers.delete('upgrade-insecure-requests');
 
           let responseBody;
           try {
@@ -150,7 +151,7 @@ self.addEventListener('fetch', (event) => {
             }
 
               // Inject the nonce into script tags in the response
-              responseText = responseText.replace(/<script/g, `<script nonce="${nonce}"`);
+              responseText = responseText.replace(/<script(?=[^>]*(?:src=['"]))?/g, (match) => `${match} nonce="${nonce}"`);
 
           } catch (error) {
             console.error('TrustedTypes error:', error);
@@ -159,6 +160,8 @@ self.addEventListener('fetch', (event) => {
           headers.set('X-Content-Type-Options', 'nosniff');
           headers.set('X-Frame-Options', 'DENY');
           headers.set('X-XSS-Protection', '1; mode=block');
+           // Mitigate MIME confusion attack
+           headers.set('Content-Type', 'text/html; charset=utf-8');
 
           return new Response(responseText, {
             status: response.status,
