@@ -7,31 +7,42 @@ const crypto = require('crypto'); // Import crypto module
 const router = express.Router();
 
 const logFilePath = path.join(__dirname, 'logs.txt'); // Define log file path
-const encryptionKey = process.env.LOG_ENCRYPTION_KEY || 'default_encryption_key'; // Store key securely. Use environment variable.
+const encryptionKey = process.env.LOG_ENCRYPTION_KEY; // Store key securely. Use environment variable.
 const algorithm = 'aes-256-cbc'; // Choose strong encryption algorithm
+
+if (!encryptionKey) {
+  console.error("FATAL: LOG_ENCRYPTION_KEY is not set. Exiting.");
+  process.exit(1); // Exit if encryption key is not set
+}
 
 // Function to encrypt data
 function encrypt(text) {
-  const iv = crypto.randomBytes(16); // Generate initialization vector
-  const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
-  let encrypted = cipher.update(text);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return iv.toString('hex') + ':' + encrypted.toString('hex');
+  try {
+    const iv = crypto.randomBytes(16); // Generate initialization vector
+    const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const ciphertext = iv.toString('hex') + ':' + encrypted.toString('hex');
+    return ciphertext;
+  } catch (error) {
+    console.error("Encryption error:", error);
+    return null; // Or throw the error if you want to halt the process
+  }
 }
 
 // Function to decrypt data
 function decrypt(text) {
   try {
-  const textParts = text.split(':');
-  const iv = Buffer.from(textParts.shift(), 'hex');
-  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-  const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
+    const textParts = text.split(':');
+    const iv = Buffer.from(textParts.shift(), 'hex');
+    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
   } catch (error) {
     console.error("Decryption error:", error);
-    return "Decryption Error"; // Handle decryption errors gracefully.  Do not reveal sensitive information.
+    return null; // Handle decryption errors gracefully. Do not reveal sensitive information.
   }
 }
 
@@ -42,7 +53,10 @@ const readLogs = async () => {
     await access(logFilePath);
     const encryptedLogs = await readFile(logFilePath, 'utf8');
     const encryptedLogArray = encryptedLogs.trim().split('\n'); // Split into lines
-    const decryptedLogs = encryptedLogArray.map(log => decrypt(log)).join('\n'); // Decrypt each line
+    const decryptedLogs = encryptedLogArray.map(log => {
+      const decrypted = decrypt(log);
+      return decrypted === null ? "Decryption Error" : decrypted;
+    }).join('\n'); // Decrypt each line
     return decryptedLogs;
   } catch (err) {
     if (err.code === 'ENOENT') {
@@ -74,6 +88,9 @@ router.post('/append', async (req, res) => {
 
   try {
     const encryptedLogData = encrypt(logData); // Encrypt the log data
+    if (encryptedLogData === null) {
+      return res.status(500).send("Error encrypting log data.");
+    }
     await appendFile(logFilePath, encryptedLogData + '\n');
     res.status(200).send("Log appended successfully.");
   } catch (err) {
