@@ -49,6 +49,9 @@
             font-weight: bold;
             margin-top: 10px;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -113,10 +116,15 @@
                 try {
                     const parsedURL = new URL(sanitizedDecodedURL);
                     // Check if the protocol is secure (HTTPS)
+                    if (parsedURL.protocol !== "https:" ) {
+                        securityWarnings.push("URL does not use HTTPS, which is less secure.");
+                    }
+
                     if (parsedURL.protocol !== "https:" && parsedURL.protocol !== "http:") {
                         sanitizedDecodedURL = "#invalid-protocol";
                         securityWarnings.push("URL uses an invalid protocol.");
                     }
+
 
                     // Check for potentially malicious patterns in the hostname or path
                     if (parsedURL.hostname.includes("javascript:") || parsedURL.pathname.includes("javascript:")) {
