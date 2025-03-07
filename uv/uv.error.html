@@ -60,7 +60,9 @@
         const errorType = urlParams.get('type');
 
         if (errorMessage) {
-            document.getElementById('error-message').textContent = errorMessage;
+            // Sanitize the error message to prevent XSS attacks
+            const sanitizedErrorMessage = DOMPurify.sanitize(errorMessage);
+            document.getElementById('error-message').textContent = sanitizedErrorMessage;
         }
 
         if (encodedURL) {
@@ -71,7 +73,9 @@
                 urlDisplay.classList.add('error-url');
 
                 const urlLink = document.createElement('a');
-                urlLink.href = decodedURL;
+                // Sanitize the URL before using it in href to prevent XSS
+                const sanitizedDecodedURL = DOMPurify.sanitize(decodedURL, { USE_PROFILES: { html: true } });
+                urlLink.href = sanitizedDecodedURL;
                 urlLink.textContent = decodedURL;
                 urlLink.target = "_blank"; // Open in a new tab
                 urlLink.rel = "noopener noreferrer"; // Security best practice
@@ -92,7 +96,17 @@
             console.error(`Error Type: ${errorType}`);
             // Log the error type to the server or perform other actions based on the error type
             // For example, you could send the error type to a logging service.
+
+            // Send error type to server (example - needs to be adapted to actual server-side code)
+            fetch('/log-error', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ errorType: errorType })
+            }).catch(error => console.error('Error sending error type to server:', error));
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
 </body>
 </html>
