@@ -2,8 +2,9 @@ class URLInput extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
-        this.onSubmit = this.onSubmit.bind(this); // Bind onSubmit in constructor
-        this.handleKeyDown = this.handleKeyDown.bind(this); // Bind handleKeyDown in constructor
+        this.onSubmit = this.onSubmit.bind(this);
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.validateURL = this.validateURL.bind(this);
     }
 
     connectedCallback() {
@@ -13,31 +14,48 @@ class URLInput extends HTMLElement {
 
         this.buttonElement.addEventListener('click', this.onSubmit);
         this.inputElement.addEventListener('keydown', this.handleKeyDown);
+        this.inputElement.addEventListener('blur', this.validateURL); // Validate on blur
     }
 
     disconnectedCallback() {
-        // Remove event listeners when the element is removed
         this.buttonElement.removeEventListener('click', this.onSubmit);
         this.inputElement.removeEventListener('keydown', this.handleKeyDown);
+        this.inputElement.removeEventListener('blur', this.validateURL);
     }
 
     handleKeyDown(event) {
         if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent form submission if inside a form
+            event.preventDefault();
             this.onSubmit();
+        }
+    }
+
+    validateURL() {
+        const url = this.inputElement.value;
+        if (url && !this.isValidURL(url)) {
+            this.inputElement.classList.add('invalid');
+        } else {
+            this.inputElement.classList.remove('invalid');
         }
     }
 
     onSubmit() {
         const url = this.inputElement.value;
         if (url) {
-            try {
-                new URL(url); // Basic URL validation
+            if (this.isValidURL(url)) {
                 this.dispatchEvent(new CustomEvent('urlSubmit', { detail: url }));
-            } catch (error) {
-                alert('Invalid URL'); // Simple error handling
+            } else {
+                alert('Invalid URL');
             }
+        }
+    }
 
+    isValidURL(url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (error) {
+            return false;
         }
     }
 
@@ -60,6 +78,11 @@ class URLInput extends HTMLElement {
                     color: #333;
                     transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
                     width: 100%;
+                }
+
+                input[type="text"].invalid {
+                    border-color: red;
+                    box-shadow: 0 0 5px red;
                 }
 
                 button {
