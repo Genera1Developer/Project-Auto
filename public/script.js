@@ -11,7 +11,7 @@ async function encryptAndSend(data, publicKey) {
       encodedData
     );
 
-    // Convert the ArrayBuffer to a Uint8Array, then map to a string of char codes, and finally base64 encode.
+    // Use TextEncoder to convert the ArrayBuffer to a Base64 string
     const encryptedBase64 = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
     return encryptedBase64;
 
@@ -104,11 +104,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const encryptButton = document.getElementById('encrypt');
     const decryptButton = document.getElementById('decrypt');
     const publicKeyDisplay = document.getElementById('publicKey');
-    const privateKeyDisplay = document.getElementById('privateKey');
     const originalText = document.getElementById('originalText');
     const encryptedText = document.getElementById('encryptedText');
     const decryptedText = document.getElementById('decryptedText');
     const downloadPublicKeyButton = document.getElementById('downloadPublicKey'); // Added download button
+    const importPublicKeyButton = document.getElementById('importPublicKey');
+    const importedPublicKeyInput = document.getElementById('importedPublicKey');
 
     let publicKey = null;
     let privateKey = null;
@@ -121,7 +122,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const exportedPublicKey = await exportPublicKey(publicKey);
             publicKeyDisplay.textContent = JSON.stringify(exportedPublicKey, null, 2);
-            privateKeyDisplay.textContent = 'Private key generated (not displayable)'; // For security
 
             encryptButton.disabled = false;
             decryptButton.disabled = false;
@@ -153,7 +153,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             decryptButton.disabled = false; // Enable decrypt after successful encryption
         } catch (error) {
             console.error("Encryption failed:", error);
-            //alert("Encryption failed. Check console for details."); // Handled in encryptAndSend
             decryptButton.disabled = true; // Disable decrypt button
         }
     });
@@ -175,7 +174,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             decryptedText.value = decrypted;
         } catch (error) {
             console.error("Decryption failed:", error);
-            //alert("Decryption failed. Check console for details."); // Handled in decryptData
         }
     });
 
@@ -200,6 +198,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             console.error("Error downloading public key:", error);
             alert("Error downloading public key. Check console for details.");
+        }
+    });
+
+    importPublicKeyButton.addEventListener('click', async () => {
+        try {
+            const jwkString = importedPublicKeyInput.value;
+            if (!jwkString) {
+                alert('Please enter a public key in JWK format.');
+                return;
+            }
+
+            const jwkData = JSON.parse(jwkString);
+            publicKey = await importPublicKey(jwkData);
+
+            publicKeyDisplay.textContent = JSON.stringify(jwkData, null, 2);
+            encryptButton.disabled = false;
+            alert('Public key imported successfully!');
+
+        } catch (error) {
+            console.error('Error importing public key:', error);
+            alert('Error importing public key. Check console for details.');
+            publicKey = null;
+            encryptButton.disabled = true;
+            publicKeyDisplay.textContent = '';
         }
     });
 });
