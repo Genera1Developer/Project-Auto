@@ -3,173 +3,467 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Web Proxy</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            width: 80%;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        input[type="url"] {
-            width: 70%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #3e8e41;
-        }
-        #securityInfo {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            border-radius: 4px;
-            text-align: center;
-        }
-
-        #securityInfo p {
-            color: #388e3c;
-            font-weight: bold;
-        }
-        #tlsStatus {
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-        #cspStatus {
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-        #hstsStatus {
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-        #referrerPolicyStatus {
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-    </style>
+    <title>Web Proxy with Encryption</title>
+    <link rel="stylesheet" href="theme/default.css">
+    <link rel="stylesheet" href="visuals/animations.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="visuals/icon.png">
+    <link rel="icon" href="visuals/icon.png" type="image/png">
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>Secure Web Proxy</h1>
-        <form id="proxyForm">
-            <input type="url" id="url" name="url" placeholder="Enter URL" required>
-            <button type="submit">Go</button>
-        </form>
-        <div id="securityInfo">
-            <p>All traffic is encrypted and proxied securely.</p>
-            <div id="tlsStatus"></div>
-            <div id="cspStatus"></div>
-            <div id="hstsStatus"></div>
-            <div id="referrerPolicyStatus"></div>
-        </div>
-    </div>
+        <nav>
+            <a href="settings.html">Settings</a>
+            <a href="logs/logs.html">Logs</a>
+            <a href="encryption.html">Encryption Tools</a>
+        </nav>
+    </header>
 
+    <main>
+        <section id="proxy-form">
+            <h2>Enter URL to Access Securely</h2>
+            <form id="url-form">
+                <input type="url" id="url-input" placeholder="https://www.example.com" required>
+                <button type="submit">Go</button>
+            </form>
+            <p id="proxy-status">Proxy Status: <span id="status"></span></p>
+        </section>
+
+        <section id="encryption-info">
+            <h2>Encryption Details</h2>
+            <p>This proxy uses TLS/SSL for secure communication.</p>
+            <p>Additional encryption layers can be configured in settings.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Secure Web Proxy</p>
+    </footer>
+    <script src="script.js"></script>
     <script>
-        document.getElementById('proxyForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => console.log('Service Worker registered with scope:', registration.scope))
+                .catch(error => console.error('Service Worker registration failed:', error));
+        }
 
-            const url = document.getElementById('url').value;
-            // Basic URL validation (can be improved)
-            try {
-                new URL(url); // Will throw an error if invalid URL
-            } catch (_) {
+        document.getElementById('url-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const url = document.getElementById('url-input').value;
+            // Basic URL validation (you might want a more robust solution)
+            if (url) {
+                window.location.href = '/api/proxy?url=' + encodeURIComponent(url);
+            } else {
                 alert('Please enter a valid URL.');
-                return;
             }
-
-            // Redirect to proxy endpoint - ADJUST THIS TO YOUR ACTUAL ENDPOINT
-            window.location.href = `/proxy?url=${encodeURIComponent(url)}`;
         });
 
-        // Check if the page is served over HTTPS
-        function checkTLS() {
-            if (window.location.protocol === "https:") {
-                document.getElementById('tlsStatus').innerHTML = '<p style="color: green;">Connection is secured with TLS.</p>';
-            } else {
-                document.getElementById('tlsStatus').innerHTML = '<p style="color: red;">Warning: Connection is NOT secured with TLS. Do not enter sensitive information.</p>';
-            }
-        }
-
-        // Check Content Security Policy (CSP) - basic check
-        function checkCSP() {
-            if (document.querySelector("meta[http-equiv='Content-Security-Policy']")) {
-                document.getElementById('cspStatus').innerHTML = '<p style="color: green;">Content Security Policy (CSP) is implemented.</p>';
-            } else {
-                document.getElementById('cspStatus').innerHTML = '<p style="color: orange;">Content Security Policy (CSP) is NOT explicitly set. Consider adding it for enhanced security.</p>';
-            }
-        }
-
-        // Check HTTP Strict Transport Security (HSTS)
-        function checkHSTS() {
-            // This is a client-side check and can be bypassed. Server-side HSTS enforcement is crucial.
-            // We're just providing information to the user here.
-            if (window.location.protocol === "https:") {
-                // Attempt to read HSTS header (This might not work due to browser security restrictions)
-                // A more robust server-side check is recommended.
-                fetch(window.location.href, { method: 'HEAD' })
-                    .then(response => {
-                        if (response.headers.has('Strict-Transport-Security')) {
-                            document.getElementById('hstsStatus').innerHTML = '<p style="color: green;">HTTP Strict Transport Security (HSTS) is enabled.</p>';
-                        } else {
-                            document.getElementById('hstsStatus').innerHTML = '<p style="color: orange;">HTTP Strict Transport Security (HSTS) is NOT enabled. Consider enabling it for enhanced security.</p>';
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error checking HSTS:", error);
-                        document.getElementById('hstsStatus').innerHTML = '<p style="color: gray;">Unable to determine HSTS status. Check server configuration.</p>';
-                    });
-            } else {
-                document.getElementById('hstsStatus').innerHTML = '<p style="color: gray;">HSTS is only relevant for HTTPS connections.</p>';
-            }
-        }
-
-         // Check Referrer Policy
-         function checkReferrerPolicy() {
-            if (document.querySelector("meta[name='referrer']") || document.querySelector("meta[http-equiv='Referrer-Policy']")) {
-                document.getElementById('referrerPolicyStatus').innerHTML = '<p style="color: green;">Referrer Policy is explicitly set.</p>';
-            } else {
-                document.getElementById('referrerPolicyStatus').innerHTML = '<p style="color: orange;">Referrer Policy is NOT explicitly set. Consider setting it for enhanced privacy.</p>';
-            }
-        }
-
-
-        // Call checkTLS on page load
-        window.onload = () => {
-            checkTLS();
-            checkCSP();
-            checkHSTS();
-            checkReferrerPolicy();
-        };
+        // Update proxy status (example, replace with actual status check)
+        document.getElementById('status').textContent = 'Secure';
     </script>
 </body>
 </html>
+edit filepath: public/encryption.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encryption Tools</title>
+    <link rel="stylesheet" href="theme/default.css">
+    <link rel="stylesheet" href="visuals/animations.css">
+    <link rel="stylesheet" href="theme/settings.css">
+</head>
+<body>
+    <header>
+        <h1>Encryption Tools</h1>
+        <nav>
+            <a href="index.html">Proxy</a>
+            <a href="settings.html">Settings</a>
+            <a href="logs/logs.html">Logs</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="key-generation">
+            <h2>RSA Key Pair Generation</h2>
+            <button id="generateKeys">Generate Key Pair</button>
+            <p>Public Key (JWK Format):</p>
+            <pre id="publicKey"></pre>
+            <button id="downloadPublicKey" disabled>Download Public Key</button>
+        </section>
+
+        <section id="key-import">
+            <h2>Import Public Key</h2>
+            <textarea id="importedPublicKey" placeholder="Enter Public Key in JWK format"></textarea>
+            <button id="importPublicKey">Import Public Key</button>
+        </section>
+
+        <section id="encryption-decryption">
+            <h2>Text Encryption/Decryption</h2>
+            <label for="originalText">Original Text:</label>
+            <textarea id="originalText" placeholder="Enter text to encrypt"></textarea>
+
+            <button id="encrypt" disabled>Encrypt</button>
+
+            <label for="encryptedText">Encrypted Text:</label>
+            <textarea id="encryptedText" readonly placeholder="Encrypted text will appear here"></textarea>
+
+            <button id="decrypt" disabled>Decrypt</button>
+
+            <label for="decryptedText">Decrypted Text:</label>
+            <textarea id="decryptedText" readonly placeholder="Decrypted text will appear here"></textarea>
+
+            <button id="clearText">Clear Text</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Secure Web Proxy</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+edit filepath: api/security.js
+content: const crypto = require('crypto');
+
+// Function to generate a secure random key
+function generateSecretKey(length = 32) {
+  return crypto.randomBytes(length).toString('hex');
+}
+
+// Function to encrypt data using AES
+function encryptAES(data, key) {
+  const iv = crypto.randomBytes(16); // Initialization vector
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+  let encrypted = cipher.update(data);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+}
+
+// Function to decrypt data using AES
+function decryptAES(data, key, iv) {
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+  let decrypted = decipher.update(Buffer.from(data, 'hex'));
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted.toString();
+}
+
+// Function to generate a secure hash (SHA-256)
+function generateHash(data) {
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+module.exports = {
+  generateSecretKey,
+  encryptAES,
+  decryptAES,
+  generateHash
+};
+edit filepath: api/proxy.js
+content: const express = require('express');
+const router = express.Router();
+const https = require('https');
+const { URL } = require('url');
+const { encryptAES, decryptAES } = require('./security');
+
+const SECRET_KEY = process.env.SECRET_KEY || 'defaultSecretKey'; // Use env var
+// Middleware to handle proxy requests
+router.get('/', async (req, res) => {
+    const targetUrl = req.query.url;
+
+    if (!targetUrl) {
+        return res.status(400).send('URL parameter is required');
+    }
+
+    try {
+        const parsedUrl = new URL(targetUrl);
+        const options = {
+            hostname: parsedUrl.hostname,
+            path: parsedUrl.pathname + parsedUrl.search,
+            method: 'GET',
+            headers: {
+                'User-Agent': 'SecureProxy' // Add a user agent
+            }
+        };
+
+        const proxyReq = https.request(options, (proxyRes) => {
+            let data = '';
+
+            proxyRes.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            proxyRes.on('end', () => {
+                try {
+                    const encryptedData = encryptAES(data, SECRET_KEY);
+                    res.json(encryptedData);
+                } catch (encryptionError) {
+                    console.error('Encryption Error:', encryptionError);
+                    res.status(500).send('Encryption failed');
+                }
+            });
+        });
+
+        proxyReq.on('error', (error) => {
+            console.error('Proxy Request Error:', error);
+            res.status(500).send('Proxy request failed');
+        });
+
+        proxyReq.end();
+
+    } catch (error) {
+        console.error('URL Parsing Error:', error);
+        res.status(400).send('Invalid URL');
+    }
+});
+
+module.exports = router;
+edit filepath: index.js
+content: const express = require('express');
+const app = express();
+const path = require('path');
+const proxyRoute = require('./api/proxy');
+const securityRoute = require('./api/security');
+
+const PORT = process.env.PORT || 3000;
+
+// Middleware to serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json()); // for parsing application/json
+
+// API routes
+app.use('/api/proxy', proxyRoute);
+app.use('/api/security', securityRoute);
+
+// Route to serve index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
+edit filepath: public/settings.js
+content: document.addEventListener('DOMContentLoaded', () => {
+    const themeSelect = document.getElementById('theme-select');
+    const customHeadersTextarea = document.getElementById('custom-headers');
+    const saveSettingsButton = document.getElementById('save-settings');
+    const clearSettingsButton = document.getElementById('clear-settings');
+
+    // Load saved settings
+    loadSettings();
+
+    // Event listener for saving settings
+    saveSettingsButton.addEventListener('click', () => {
+        const selectedTheme = themeSelect.value;
+        const customHeaders = customHeadersTextarea.value;
+
+        saveSettings(selectedTheme, customHeaders);
+    });
+
+    // Event listener for clearing settings
+    clearSettingsButton.addEventListener('click', () => {
+        clearSettings();
+    });
+
+    // Function to save settings to local storage
+    function saveSettings(theme, headers) {
+        localStorage.setItem('selectedTheme', theme);
+        localStorage.setItem('customHeaders', headers);
+        alert('Settings saved!');
+    }
+
+    // Function to load settings from local storage
+    function loadSettings() {
+        const savedTheme = localStorage.getItem('selectedTheme');
+        const savedHeaders = localStorage.getItem('customHeaders');
+
+        if (savedTheme) {
+            themeSelect.value = savedTheme;
+            applyTheme(savedTheme);
+        }
+
+        if (savedHeaders) {
+            customHeadersTextarea.value = savedHeaders;
+        }
+    }
+
+    // Function to clear settings from local storage
+    function clearSettings() {
+        localStorage.removeItem('selectedTheme');
+        localStorage.removeItem('customHeaders');
+        themeSelect.value = 'default';
+        customHeadersTextarea.value = '';
+        applyTheme('default');
+        alert('Settings cleared!');
+    }
+
+    // Function to apply the selected theme
+    function applyTheme(themeName) {
+        const themeLink = document.getElementById('theme-link');
+        if (themeLink) {
+            themeLink.href = `theme/${themeName}.css`;
+        } else {
+            const link = document.createElement('link');
+            link.id = 'theme-link';
+            link.rel = 'stylesheet';
+            link.href = `theme/${themeName}.css`;
+            document.head.appendChild(link);
+        }
+    }
+
+    themeSelect.addEventListener('change', (event) => {
+        applyTheme(event.target.value);
+    });
+
+    // Apply theme on load
+    const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+    applyTheme(savedTheme);
+});
+edit filepath: public/settings.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Settings</title>
+    <link rel="stylesheet" href="theme/default.css">
+    <link rel="stylesheet" href="visuals/animations.css">
+    <link rel="stylesheet" href="theme/settings.css">
+    <link id="theme-link" rel="stylesheet" href="theme/default.css">
+</head>
+<body>
+    <header>
+        <h1>Proxy Settings</h1>
+        <nav>
+            <a href="index.html">Proxy</a>
+            <a href="logs/logs.html">Logs</a>
+            <a href="encryption.html">Encryption Tools</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="theme-settings">
+            <h2>Theme Settings</h2>
+            <label for="theme-select">Select Theme:</label>
+            <select id="theme-select">
+                <option value="default">Default</option>
+                <option value="forest">Forest</option>
+                <option value="sunset">Sunset</option>
+            </select>
+        </section>
+
+        <section id="header-settings">
+            <h2>Custom Headers</h2>
+            <label for="custom-headers">Enter custom headers (one per line):</label>
+            <textarea id="custom-headers" placeholder="Example: Content-Security-Policy: ..."></textarea>
+        </section>
+
+        <section id="save-clear-settings">
+            <button id="save-settings">Save Settings</button>
+            <button id="clear-settings">Clear Settings</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Secure Web Proxy</p>
+    </footer>
+
+    <script src="settings.js"></script>
+</body>
+</html>
+edit filepath: encryption/key_management.js
+content: const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+
+const KEY_DIRECTORY = path.join(__dirname, 'keys');
+
+// Ensure the key directory exists
+if (!fs.existsSync(KEY_DIRECTORY)) {
+    fs.mkdirSync(KEY_DIRECTORY, { recursive: true });
+}
+
+// Function to generate a new AES key and store it securely
+function generateAndStoreKey(keyName, length = 32) {
+    const key = crypto.randomBytes(length).toString('hex');
+    const filePath = path.join(KEY_DIRECTORY, `${keyName}.key`);
+
+    try {
+        fs.writeFileSync(filePath, key, { encoding: 'utf8', mode: 0o400 }); // Restrict permissions
+        console.log(`Key "${keyName}" generated and stored securely at ${filePath}`);
+        return key;
+    } catch (error) {
+        console.error(`Error storing key "${keyName}":`, error);
+        throw error;
+    }
+}
+
+// Function to retrieve a stored key
+function retrieveKey(keyName) {
+    const filePath = path.join(KEY_DIRECTORY, `${keyName}.key`);
+
+    try {
+        const key = fs.readFileSync(filePath, 'utf8');
+        return key;
+    } catch (error) {
+        console.error(`Error retrieving key "${keyName}":`, error);
+        throw error;
+    }
+}
+
+module.exports = {
+    generateAndStoreKey,
+    retrieveKey
+};
+edit filepath: .env
+content: SECRET_KEY=your_secret_key_here
+    
+edit filepath: public/sw.js
+content: // This is a basic service worker - configure appropriately for prod
+self.addEventListener('install', event => {
+    event.waitUntil(
+        caches.open('secure-proxy-cache-v1').then(cache => {
+            return cache.addAll([
+                '/',
+                'index.html',
+                'settings.html',
+                'logs/logs.html',
+                'encryption.html',
+                'script.js',
+                'settings.js',
+                'theme/default.css',
+                'visuals/animations.css',
+                'visuals/icon.png'
+            ]);
+        })
+    );
+});
+
+self.addEventListener('fetch', event => {
+    event.respondWith(
+        caches.match(event.request).then(response => {
+            return response || fetch(event.request);
+        })
+    );
+});
+
+self.addEventListener('activate', event => {
+    const cacheWhitelist = ['secure-proxy-cache-v1'];
+
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
+    );
+});
