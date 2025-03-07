@@ -53,6 +53,10 @@
         #log-filter {
             margin-bottom: 10px;
         }
+        /* Style for search input */
+        #log-search {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -67,6 +71,11 @@
             <option value="ERROR">ERROR</option>
             <option value="CRITICAL">CRITICAL</option>
         </select>
+
+        <div id="log-search">
+            <label for="search-input">Search Logs:</label>
+            <input type="text" id="search-input" placeholder="Enter search term">
+        </div>
     </div>
 
     <div id="log-container" class="loading">Loading logs...</div>
@@ -74,9 +83,16 @@
     <script>
         let isFetching = false; // Prevent multiple simultaneous fetches
         let allLogs = []; // Store all logs for filtering
+        let searchTerm = ''; // Store search term
 
         const levelFilter = document.getElementById('level-filter');
+        const searchInput = document.getElementById('search-input');
+
         levelFilter.addEventListener('change', filterLogs);
+        searchInput.addEventListener('input', function() {
+            searchTerm = this.value.toLowerCase();
+            filterLogs();
+        });
 
 
         function fetchLogs() {
@@ -125,8 +141,17 @@
             let filteredLogs = allLogs;
 
             if (selectedLevel) {
-                filteredLogs = allLogs.filter(log => log.level === selectedLevel);
+                filteredLogs = filteredLogs.filter(log => log.level === selectedLevel);
             }
+
+            if (searchTerm) {
+                filteredLogs = filteredLogs.filter(log => {
+                    return log.message.toLowerCase().includes(searchTerm) ||
+                           log.source.toLowerCase().includes(searchTerm) ||
+                           log.level.toLowerCase().includes(searchTerm);
+                });
+            }
+
 
             if (!filteredLogs || filteredLogs.length === 0) {
                 logContainer.textContent = 'No logs found.';
