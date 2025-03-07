@@ -1,51 +1,48 @@
-import { randomBytes } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { encrypt, decrypt } from '../encryption/key_management.js';
 
 const SESSION_COOKIE_NAME = 'proxy_session';
-const SESSION_DURATION = 60 * 60 * 24; // 1 day
+const sessionStore = {};
 
-const sessions = {};
-
-function generateSessionId() {
-    return randomBytes(16).toString('hex');
-}
-
-export function attachSession(req, res) {
+export function attachSession(req, res, next) {
     let sessionId = req.cookies[SESSION_COOKIE_NAME];
 
     if (!sessionId) {
-        sessionId = generateSessionId();
-        const encryptedSessionId = encrypt(sessionId);
-
-        res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
+        sessionId = uuidv4();
+        res.cookie(SESSION_COOKIE_NAME, sessionId, {
             httpOnly: true,
             secure: true,
-            maxAge: SESSION_DURATION * 1000,
             sameSite: 'Strict'
         });
-        sessions[sessionId] = {};
+        sessionStore[sessionId] = {};
     } else {
         try {
             sessionId = decrypt(sessionId);
-            if (!sessions[sessionId]) {
-                sessions[sessionId] = {};
-            }
         } catch (error) {
-            console.error('Invalid session ID:', error);
-            // Clear the invalid cookie
+            console.error('Error decrypting session ID:', error);
+            sessionId = uuidv4();
             res.clearCookie(SESSION_COOKIE_NAME);
-            // Generate a new session
-            sessionId = generateSessionId();
+            res.cookie(SESSION_COOKIE_NAME, sessionId, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'Strict'
+            });
+            sessionStore[sessionId] = {};
+        }
+    }
+
+    req.session = sessionStore[sessionId];
+    res.on('finish', () => {
+        try {
             const encryptedSessionId = encrypt(sessionId);
             res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
                 httpOnly: true,
                 secure: true,
-                maxAge: SESSION_DURATION * 1000,
                 sameSite: 'Strict'
             });
-            sessions[sessionId] = {};
-        }
-    }
 
-    req.session = sessions[sessionId];
+        } catch (error) {
+            console.error('Error encrypting session ID:', error);
+        }
+    });
 }
