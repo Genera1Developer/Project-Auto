@@ -2,6 +2,8 @@ class URLInput extends HTMLElement {
     constructor() {
         super();
         this.shadow = this.attachShadow({ mode: 'open' });
+        this.onSubmit = this.onSubmit.bind(this); // Bind onSubmit in constructor
+        this.handleKeyDown = this.handleKeyDown.bind(this); // Bind handleKeyDown in constructor
     }
 
     connectedCallback() {
@@ -9,8 +11,14 @@ class URLInput extends HTMLElement {
         this.inputElement = this.shadow.querySelector('input');
         this.buttonElement = this.shadow.querySelector('button');
 
-        this.buttonElement.addEventListener('click', this.onSubmit.bind(this));
-        this.inputElement.addEventListener('keydown', this.handleKeyDown.bind(this));
+        this.buttonElement.addEventListener('click', this.onSubmit);
+        this.inputElement.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    disconnectedCallback() {
+        // Remove event listeners when the element is removed
+        this.buttonElement.removeEventListener('click', this.onSubmit);
+        this.inputElement.removeEventListener('keydown', this.handleKeyDown);
     }
 
     handleKeyDown(event) {
