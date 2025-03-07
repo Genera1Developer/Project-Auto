@@ -21,10 +21,15 @@ class SessionManager {
         if (!session) {
             return null;
         }
-        return { ...session }; // Return a copy to prevent direct modification
+        // Deep copy to prevent modifications to the original session object.
+        return JSON.parse(JSON.stringify(session));
     }
 
     updateSessionData(sessionId, data) {
+        if (!sessionId || typeof data !== 'object' || data === null) {
+            return false; // Input validation
+        }
+
         const session = this.getSession(sessionId);
         if (!session) {
             return false; // Indicate session not found
@@ -41,6 +46,10 @@ class SessionManager {
     }
 
     encryptSessionData(sessionId, data) {
+        if (!sessionId || typeof data !== 'object' || data === null) {
+            return null;
+        }
+
         const session = this.getSession(sessionId);
         if (!session) {
             return null;
@@ -56,6 +65,10 @@ class SessionManager {
     }
 
     decryptSessionData(sessionId, encryptedData) {
+        if (!sessionId || typeof encryptedData !== 'string' || encryptedData.length === 0) {
+            return null;
+        }
+
         const session = this.getSession(sessionId);
         if (!session) {
             return null;
@@ -63,6 +76,9 @@ class SessionManager {
         try {
             const key = session.encryptionKey;
             const decryptedData = decryptData(encryptedData, key);
+            if (decryptedData === null) {
+                return null; // Handle decryption failure gracefully
+            }
             return JSON.parse(decryptedData);
         } catch (error) {
             console.error("Decryption error:", error);
@@ -71,6 +87,10 @@ class SessionManager {
     }
 
     destroySession(sessionId) {
+        if (!sessionId) {
+            return false;
+        }
+
         if (this.sessions[sessionId]) {
             delete this.sessions[sessionId];
             return true;
