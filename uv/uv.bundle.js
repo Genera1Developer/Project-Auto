@@ -404,7 +404,8 @@
         const saltB64 = n.encodeBase64(String.fromCharCode(...salt));
         const ivB64 = n.encodeBase64(String.fromCharCode(...iv));
         const cipherB64 = n.encodeBase64(String.fromCharCode(...Array.from(new Uint8Array(cipher))));
-        return `${saltB64}.${ivB64}.${cipherB64}`;
+        const aadB64 = additionalData ? n.encodeBase64(JSON.stringify(additionalData)) : "";
+        return `${saltB64}.${ivB64}.${cipherB64}.${aadB64}`;
       } catch (error) {
         console.error("Authenticated encryption error:", error);
         throw new Error(`Authenticated encryption failed: ${error.message}`);
@@ -423,15 +424,16 @@
         throw new Error("Missing shared secret for authenticated decryption.");
       }
       try {
-        const [saltB64, ivB64, cipherB64] = encryptedData.split(".");
+        const [saltB64, ivB64, cipherB64, aadB64] = encryptedData.split(".");
         if (!saltB64 || !ivB64 || !cipherB64) {
           throw new Error("Invalid encrypted data format.");
         }
         const salt = new Uint8Array(Array.from(n.decodeBase64(saltB64), (char) => char.charCodeAt(0)));
         const iv = new Uint8Array(Array.from(n.decodeBase64(ivB64), (char) => char.charCodeAt(0)));
         const cipher = new Uint8Array(Array.from(n.decodeBase64(cipherB64), (char) => char.charCodeAt(0))).buffer;
+        const parsedAdditionalData = aadB64 ? JSON.parse(n.decodeBase64(aadB64)) : null;
         const key = await n.deriveKey(sharedSecret, salt);
-        return await n.decrypt(cipher, key, iv, additionalData);
+        return await n.decrypt(cipher, key, iv, parsedAdditionalData || additionalData);
       } catch (error) {
         console.error("Authenticated decryption error:", error);
         throw new Error(`Authenticated decryption failed: ${error.message}`);
