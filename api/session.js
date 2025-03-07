@@ -1,87 +1,61 @@
-const { generateSecureKey, encryptAES, decryptAES } = require('./security');
+// api/session.js
+const { generateSecureKey, encryptData, decryptData } = require('./security');
 
-// Session storage (in-memory for simplicity, replace with a database in production)
-const sessions = {};
+class SessionManager {
+    constructor() {
+        this.sessions = {};
+        this.sessionKeyLength = 32; // Key length for AES encryption (32 bytes = 256 bits)
+    }
 
-// Function to create a new session
-function createSession(userData) {
-    const sessionId = generateSecureKey(32); // 32 bytes = 64 hex characters
-    const sessionKey = generateSecureKey(16); // AES key (16 bytes = 32 hex characters)
-    const encryptedUserData = encryptAES(JSON.stringify(userData), sessionKey);
+    createSession() {
+        const sessionId = generateSecureKey(16); // Generate a 16-byte session ID
+        const encryptionKey = generateSecureKey(this.sessionKeyLength); // Generate a session-specific encryption key
+        this.sessions[sessionId] = {
+            encryptionKey: encryptionKey,
+            data: {}
+        };
+        return { sessionId: sessionId, encryptionKey: encryptionKey }; // Return both session ID and encryptionKey
+    }
 
-    sessions[sessionId] = {
-        key: sessionKey,
-        data: encryptedUserData,
-        createdAt: Date.now()
-    };
+    getSession(sessionId) {
+        return this.sessions[sessionId];
+    }
 
-    return sessionId;
-}
+    updateSessionData(sessionId, data) {
+      if (this.sessions[sessionId]) {
+        const session = this.sessions[sessionId];
+        session.data = { ...session.data, ...data };
+      }
+    }
 
-// Function to retrieve session data
-function getSessionData(sessionId) {
-    const session = sessions[sessionId];
-    if (session) {
+    encryptSessionData(sessionId, data) {
+        const session = this.getSession(sessionId);
+        if (!session) {
+            return null; // Or throw an error
+        }
+        const key = session.encryptionKey;
+        const stringifiedData = JSON.stringify(data);
+        return encryptData(stringifiedData, key);
+    }
+
+    decryptSessionData(sessionId, encryptedData) {
+        const session = this.getSession(sessionId);
+        if (!session) {
+            return null; // Or throw an error
+        }
+        const key = session.encryptionKey;
         try {
-            const decryptedData = decryptAES(session.data, session.key);
+            const decryptedData = decryptData(encryptedData, key);
             return JSON.parse(decryptedData);
         } catch (error) {
-            console.error("Error decrypting session data:", error);
-            deleteSession(sessionId); // Invalidate corrupted session
-            return null;
+            console.error("Decryption error:", error);
+            return null; // Or throw an error
         }
     }
-    return null;
-}
 
-// Function to update session data
-function updateSessionData(sessionId, newData) {
-    const session = sessions[sessionId];
-    if (session) {
-        try {
-            const encryptedData = encryptAES(JSON.stringify(newData), session.key);
-            session.data = encryptedData;
-            return true;
-        } catch (error) {
-            console.error("Error encrypting session data:", error);
-            return false;
-        }
-    }
-    return false;
-}
-
-
-// Function to delete a session
-function deleteSession(sessionId) {
-    delete sessions[sessionId];
-}
-
-// Function to check if a session is expired (e.g., after 30 minutes)
-function isSessionExpired(sessionId, maxAge = 30 * 60 * 1000) {
-    const session = sessions[sessionId];
-    if (session) {
-        return (Date.now() - session.createdAt) > maxAge;
-    }
-    return true; // Treat non-existent session as expired
-}
-
-// Session cleanup function to remove expired sessions
-function cleanupSessions() {
-    for (const sessionId in sessions) {
-        if (isSessionExpired(sessionId)) {
-            deleteSession(sessionId);
-        }
+    destroySession(sessionId) {
+        delete this.sessions[sessionId];
     }
 }
 
-// Periodically cleanup sessions (every 10 minutes)
-setInterval(cleanupSessions, 10 * 60 * 1000);
-
-
-module.exports = {
-    createSession,
-    getSessionData,
-    updateSessionData,
-    deleteSession,
-    isSessionExpired
-};
+module.exports = new SessionManager();
