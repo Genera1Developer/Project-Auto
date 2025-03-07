@@ -58,6 +58,7 @@
         const errorMessage = urlParams.get('message');
         const encodedURL = urlParams.get('url');
         const errorType = urlParams.get('type');
+        const errorStack = urlParams.get('stack');
 
         if (errorMessage) {
             // Sanitize the error message to prevent XSS attacks
@@ -96,15 +97,39 @@
             console.error(`Error Type: ${errorType}`);
             // Log the error type to the server or perform other actions based on the error type
             // For example, you could send the error type to a logging service.
+        }
 
-            // Send error type to server (example - needs to be adapted to actual server-side code)
+        if (errorStack) {
+            console.error(`Error Stack: ${errorStack}`);
+            // Sanitize error stack before displaying or sending to the server
+            const sanitizedErrorStack = DOMPurify.sanitize(errorStack);
+
+            // Send error details to server (example - needs to be adapted to actual server-side code)
             fetch('/log-error', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ errorType: errorType })
-            }).catch(error => console.error('Error sending error type to server:', error));
+                body: JSON.stringify({
+                    errorType: errorType,
+                    errorMessage: errorMessage,
+                    errorURL: encodedURL,
+                    errorStack: sanitizedErrorStack // Send sanitized stack
+                })
+            }).catch(error => console.error('Error sending error details to server:', error));
+        } else {
+            // Send minimal error data if stack is unavailable
+            fetch('/log-error', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    errorType: errorType,
+                    errorMessage: errorMessage,
+                    errorURL: encodedURL
+                })
+            }).catch(error => console.error('Error sending error details to server:', error));
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
