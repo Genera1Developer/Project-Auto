@@ -1,28 +1,9 @@
-const crypto = require('crypto');
-
-const algorithm = 'aes-256-gcm';
-const key = crypto.randomBytes(32);
-const salt = crypto.randomBytes(16); // Add salt
-
-function encrypt(text) {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    return Buffer.concat([salt, iv, authTag, encrypted]).toString('hex');
+export function addSecurityHeaders(res) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Feature-Policy', "microphone 'none'; geolocation 'none'; camera 'none'");
+    res.setHeader('Permissions-Policy', "microphone=(), geolocation=(), camera=()");
 }
-
-function decrypt(encryptedHex) {
-    const encryptedBuffer = Buffer.from(encryptedHex, 'hex');
-    const salt = encryptedBuffer.slice(0, 16);
-    const iv = encryptedBuffer.slice(16, 32);
-    const authTag = encryptedBuffer.slice(32, 48);
-    const encrypted = encryptedBuffer.slice(48);
-
-    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-    decipher.setAuthTag(authTag);
-    const decrypted = decipher.update(encrypted, 'binary', 'utf8') + decipher.final('utf8');
-    return decrypted;
-}
-
-module.exports = { encrypt, decrypt };
