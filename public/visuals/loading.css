@@ -5,7 +5,11 @@
     border-radius: 50%;
     border-left-color: #09f;
     animation: spin 1s linear infinite;
-    position: relative; /* Add relative positioning for potential future overlays */
+    position: absolute; /* Changed to absolute positioning */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    margin-top: -18px; /* Half of the height */
+    margin-left: -18px; /* Half of the width */
     z-index: 10; /* Ensure it's above other elements if needed */
 }
 
