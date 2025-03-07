@@ -5,6 +5,8 @@ class URLInput extends HTMLElement {
         this.onSubmit = this.onSubmit.bind(this);
         this.handleKeyDown = this.handleKeyDown.bind(this);
         this.validateURL = this.validateURL.bind(this);
+        this.inputElement = null;
+        this.buttonElement = null;
     }
 
     connectedCallback() {
@@ -45,7 +47,7 @@ class URLInput extends HTMLElement {
             if (this.isValidURL(url)) {
                 this.dispatchEvent(new CustomEvent('urlSubmit', { detail: url }));
             } else {
-                alert('Invalid URL');
+                this.displayError('Invalid URL');
             }
         }
     }
@@ -59,12 +61,17 @@ class URLInput extends HTMLElement {
         }
     }
 
+    displayError(message) {
+        alert(message); // Replace with a more user-friendly error display if desired
+    }
+
     render() {
         this.shadow.innerHTML = `
             <style>
                 .container {
                     display: flex;
                     gap: 5px;
+                    width: 100%; /* Added width for better responsiveness */
                 }
 
                 input[type="text"] {
@@ -93,6 +100,17 @@ class URLInput extends HTMLElement {
                     border-radius: 4px;
                     cursor: pointer;
                     transition: background-color 0.3s ease, color 0.3s ease;
+                }
+
+                /* Add responsive styling */
+                @media (max-width: 600px) {
+                    .container {
+                        flex-direction: column; /* Stack input and button on smaller screens */
+                    }
+
+                    button {
+                        width: 100%; /* Make the button full-width */
+                    }
                 }
             </style>
             <div class="container">
