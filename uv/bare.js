@@ -10,8 +10,8 @@ class Bare {
         try {
             const response = await fetch(fetchUrl, options);
             if (!response.ok) {
-                console.error(`Bare fetch error: HTTP error! status: ${response.status} - ${response.url}`);
-                throw new Error(`Bare fetch error: HTTP error! status: ${response.status} - ${response.url}`);
+                console.error(`Bare fetch error: HTTP error! status: ${response.status} - ${fetchUrl}`);
+                throw new Error(`Bare fetch error: HTTP error! status: ${response.status} - ${fetchUrl}`);
             }
             return response;
         } catch (error) {
@@ -25,8 +25,8 @@ class Bare {
         try {
             const response = await fetch(fetchUrl, options);
             if (!response.ok) {
-                console.error(`Bare request error: HTTP error! status: ${response.status} - ${response.url}`);
-                throw new Error(`Bare request error: HTTP error! status: ${response.status} - ${response.url}`);
+                console.error(`Bare request error: HTTP error! status: ${response.status} - ${fetchUrl}`);
+                throw new Error(`Bare request error: HTTP error! status: ${response.status} - ${fetchUrl}`);
             }
             return await response.json();
         } catch (error) {
@@ -48,7 +48,7 @@ class Bare {
 		try {
 			return new URL(url, this.origin).href;
 		} catch (error) {
-			console.error("Bare resolve error:", error);
+			console.warn("Bare resolve error:", error);
 			return undefined;
 		}
 	}
