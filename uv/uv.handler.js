@@ -97,9 +97,13 @@ async function handleRequest(req, res) {
           }
         } else if (Array.isArray(resHeaders[header])) {
           resHeaders[header] = resHeaders[header].map(item => {
-            if (typeof item === 'string' && (item.includes('\n') || item.includes('\r'))) {
-              console.warn(`Sanitized array header ${header} due to newline/carriage return character.`);
-              return item.replace(/[\r\n]/g, ''); // Remove newline/carriage return
+            if (typeof item === 'string') {
+              // Sanitize array header values
+              let sanitizedItem = item.replace(/[\r\n]/g, '');
+              if (sanitizedItem !== item) {
+                console.warn(`Sanitized array header ${header} due to newline/carriage return character.`);
+              }
+              return sanitizedItem;
             }
             return item;
           });
@@ -122,6 +126,7 @@ async function handleRequest(req, res) {
                     // Basic certificate logging (can expand)
                     console.log(`Connected to ${target} with certificate subject: ${tlsInfo.subject.CN}`);
                 }
+                // Optionally, verify certificate validity and revocation status here for added security
             }
         });
     });
@@ -134,7 +139,9 @@ async function handleRequest(req, res) {
       } else {
         // Attempt to close the response gracefully
         try {
-          res.socket.destroy();
+          if (res.socket) {
+            res.socket.destroy();
+          }
         } catch (e) {
           console.error("Error destroying socket after proxy error:", e);
         }
@@ -152,7 +159,9 @@ async function handleRequest(req, res) {
       } else {
         // Attempt to close the response gracefully
         try {
-          res.socket.destroy();
+          if (res.socket) {
+            res.socket.destroy();
+          }
         } catch (e) {
           console.error("Error destroying socket after request error:", e);
         }
@@ -176,7 +185,9 @@ async function handleRequest(req, res) {
     } else {
       // Attempt to close the response gracefully
       try {
-        res.socket.destroy();
+        if (res.socket) {
+          res.socket.destroy();
+        }
       } catch (e) {
         console.error("Error destroying socket after unexpected error:", e);
       }
