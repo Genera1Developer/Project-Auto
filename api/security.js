@@ -1,29 +1,38 @@
 const crypto = require('crypto');
 
-const algorithm = 'aes-256-gcm';
-const key = crypto.randomBytes(32);
-//const iv = crypto.randomBytes(16); //Using a fixed IV is insecure!
-
-function encrypt(text) {
-    const iv = crypto.randomBytes(16); // Generate a unique IV for each encryption
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    return iv.toString('hex') + ':' + encrypted.toString('hex') + ':' + authTag.toString('hex');
+// Function to generate a secure random key
+function generateSecureKey(length = 32) {
+  return crypto.randomBytes(length).toString('hex');
 }
 
-function decrypt(text) {
-    const textParts = text.split(':');
-    const iv = Buffer.from(textParts.shift(), 'hex');
-    const encryptedText = Buffer.from(textParts.shift(), 'hex');
-    const authTag = Buffer.from(textParts.shift(), 'hex');
-    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-    decipher.setAuthTag(authTag);
-    const decrypted = Buffer.concat([decipher.update(encryptedText, 'binary'), decipher.final()]);
-    return decrypted.toString('utf8');
+// Function to encrypt data using AES
+function encrypt(data, key) {
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+  let encrypted = cipher.update(data);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return iv.toString('hex') + ':' + encrypted.toString('hex');
+}
+
+// Function to decrypt data using AES
+function decrypt(data, key) {
+  const textParts = data.split(':');
+  const iv = Buffer.from(textParts.shift(), 'hex');
+  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+  let decrypted = decipher.update(encryptedText);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted.toString();
+}
+
+// Function to hash data using SHA256
+function hashData(data) {
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
 
 module.exports = {
-    encrypt,
-    decrypt
+  generateSecureKey,
+  encrypt,
+  decrypt,
+  hashData,
 };
