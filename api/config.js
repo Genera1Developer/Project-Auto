@@ -13,6 +13,7 @@ const config = {
   allowServiceWorkers: process.env.ALLOW_SERVICE_WORKERS === 'true',
   blockAll: process.env.BLOCK_ALL === 'true',
   xForwardedFor: process.env.X_FORWARDED_FOR === 'true',
+  __dirname: process.env.__dirname || process.cwd(),
 };
 
 module.exports = config;
