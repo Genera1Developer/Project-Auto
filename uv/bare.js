@@ -14,6 +14,7 @@ class Bare {
         this.encryptionAlgo = opts.encryptionAlgo || "AES-GCM";
         this.hkdfHash = opts.hkdfHash || "SHA-256";
         this.ivLength = opts.ivLength || 12;
+        this.keyUsages = opts.keyUsages || ["encrypt", "decrypt"];
     }
 
     async fetch(url, options = {}) {
@@ -174,7 +175,7 @@ class Bare {
                 baseKey,
                 { name: this.encryptionAlgo, length: 256 },
                 false,
-                ["encrypt", "decrypt"]
+                this.keyUsages
             );
             return derivedKey;
         } catch (error) {
@@ -188,6 +189,7 @@ class Bare {
         let fetchUrl = this.prefix + encodeURIComponent(url);
         let originalURL = url;
         let encryptedUrl = null;
+        let responseText = null;
 
         if (this.encryptionEnabled && this.encryptionKey) {
             try {
@@ -213,7 +215,7 @@ class Bare {
             throw new Error(`${errorType}: HTTP error! status: ${response.status}`);
         }
 
-        let responseText = null;
+
         let integrityCheckPassed = true;
 
         if (this.integrityEnabled) {
@@ -238,12 +240,14 @@ class Bare {
 
         if (this.encryptionEnabled && this.encryptionKey) {
             try {
-                if(!responseText) {
+                if(!responseText){
                     responseText = await response.clone().text();
                 }
+
+
                 let decryptedText = responseText;
                 if(integrityCheckPassed){
-                  decryptedText = await this.decrypt(responseText, this.encryptionKey);
+                   decryptedText = await this.decrypt(responseText, this.encryptionKey);
                 }
 
 
@@ -262,3 +266,5 @@ class Bare {
         return response;
     }
 }
+edit filepath: uv/bare.js
+content: [Improved code]
