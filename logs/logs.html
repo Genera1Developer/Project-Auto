@@ -90,6 +90,12 @@
             font-weight: bold;
         }
 
+        /* Style for data integrity issues */
+        .integrity-issue {
+            color: purple;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -235,23 +241,34 @@
                 details.innerHTML = `Details: ${sensitiveInfo}`;
 
                 // Security issue detection
-                if (log.level === 'WARNING' && log.message.toLowerCase().includes('xss') || log.message.toLowerCase().includes('cross-site scripting')) {
-                    const securityIssueWarning = document.createElement('span');
-                    securityIssueWarning.classList.add('security-issue');
-                    securityIssueWarning.textContent = ' - Potential Security Issue Detected (XSS)!';
-                    message.appendChild(securityIssueWarning);
+                let securityIssues = [];
+
+                if (log.level === 'WARNING' && (log.message.toLowerCase().includes('xss') || log.message.toLowerCase().includes('cross-site scripting'))) {
+                    securityIssues.push('Potential Security Issue Detected (XSS)!');
                 }
                 if (log.level === 'ERROR' && log.message.toLowerCase().includes('sql injection')) {
-                    const securityIssueWarning = document.createElement('span');
-                    securityIssueWarning.classList.add('security-issue');
-                    securityIssueWarning.textContent = ' - Potential Security Issue Detected (SQL Injection)!';
-                    message.appendChild(securityIssueWarning);
+                    securityIssues.push('Potential Security Issue Detected (SQL Injection)!');
                 }
                 if (log.level === 'CRITICAL' && log.message.toLowerCase().includes('remote code execution')) {
-                    const securityIssueWarning = document.createElement('span');
-                    securityIssueWarning.classList.add('security-issue');
-                    securityIssueWarning.textContent = ' - Potential Security Issue Detected (Remote Code Execution)!';
-                    message.appendChild(securityIssueWarning);
+                    securityIssues.push('Potential Security Issue Detected (Remote Code Execution)!');
+                }
+                if (log.message.toLowerCase().includes('integrity check failed')) {
+                    securityIssues.push('Data Integrity Issue Detected!');
+                }
+
+                if (securityIssues.length > 0) {
+                   const securityIssueWarning = document.createElement('span');
+                   securityIssueWarning.classList.add('security-issue');
+                   securityIssueWarning.textContent = ' - ' + securityIssues.join(' - ');
+                   message.appendChild(securityIssueWarning);
+                }
+
+                // Data integrity check failure display
+                if (log.message.toLowerCase().includes('integrity check failed')) {
+                    const integrityIssueWarning = document.createElement('span');
+                    integrityIssueWarning.classList.add('integrity-issue');
+                    integrityIssueWarning.textContent = ' - Data Integrity Check Failed!';
+                    message.appendChild(integrityIssueWarning);
                 }
 
 
