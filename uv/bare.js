@@ -8,127 +8,24 @@ class Bare {
         this.integrityEnabled = opts.integrityEnabled || false;
         this.integrityType = opts.integrityType || 'SHA-256';
         this.integrityHeaderName = opts.integrityHeaderName || 'X-Content-Integrity';
+        this.integrityCheckFailed = false;
     }
 
     async fetch(url, options = {}) {
-        let fetchUrl = this.prefix + encodeURIComponent(url);
-
-        if (this.encryptionEnabled && this.encryptionKey) {
-            try {
-                const encryptedUrl = await this.encrypt(url, this.encryptionKey);
-                fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
-            } catch (error) {
-                console.error("Encryption failed:", error);
-                throw new Error("Failed to encrypt URL.");
-            }
-        }
-
-        try {
-            const response = await fetch(fetchUrl, options);
-            if (!response.ok) {
-                console.error(`Bare fetch error: HTTP error! status: ${response.status} - ${fetchUrl}`);
-                throw new Error(`Bare fetch error: HTTP error! status: ${response.status}`);
-            }
-
-            if (this.integrityEnabled) {
-                const expectedIntegrity = response.headers.get(this.integrityHeaderName);
-                if (expectedIntegrity) {
-                    const text = await response.clone().text();
-                    const integrity = await this.calculateIntegrity(text, this.integrityType);
-
-                    if (integrity !== expectedIntegrity) {
-                        console.error("Bare fetch error: Content integrity check failed.");
-                        throw new Error("Bare fetch error: Content integrity check failed.");
-                    }
-                    return response;
-                } else {
-                    console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
-                }
-            }
-
-            return response;
-        } catch (error) {
-            console.error("Bare fetch error:", error);
-            throw error;
-        }
+        return this.#handleRequest(url, options, 'fetch');
     }
 
     async route(url, options = {}) {
-        let fetchUrl = this.prefix + encodeURIComponent(url);
-        if (this.encryptionEnabled && this.encryptionKey) {
-            try {
-                const encryptedUrl = await this.encrypt(url, this.encryptionKey);
-                fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
-            } catch (error) {
-                console.error("Encryption failed:", error);
-                throw new Error("Failed to encrypt URL.");
-            }
-        }
-        try {
-            const response = await fetch(fetchUrl, options);
-            if (!response.ok) {
-                console.error(`Bare route error: HTTP error! status: ${response.status} - ${fetchUrl}`);
-                throw new Error(`Bare route error: HTTP error! status: ${response.status}`);
-            }
-
-            if (this.integrityEnabled) {
-                const expectedIntegrity = response.headers.get(this.integrityHeaderName);
-                if (expectedIntegrity) {
-                    const text = await response.clone().text();
-                    const integrity = await this.calculateIntegrity(text, this.integrityType);
-
-                    if (integrity !== expectedIntegrity) {
-                        console.error("Bare route error: Content integrity check failed.");
-                        throw new Error("Bare route error: Content integrity check failed.");
-                    }
-                    return response;
-                } else {
-                    console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
-                }
-            }
-            return response;
-        } catch (error) {
-            console.error("Bare route error:", error);
-            throw error;
-        }
+        return this.#handleRequest(url, options, 'route');
     }
 
     async request(url, options = {}) {
-        let fetchUrl = this.prefix + encodeURIComponent(url);
-        if (this.encryptionEnabled && this.encryptionKey) {
-            try {
-                const encryptedUrl = await this.encrypt(url, this.encryptionKey);
-                fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
-            } catch (error) {
-                console.error("Encryption failed:", error);
-                throw new Error("Failed to encrypt URL.");
-            }
-        }
+        const response = await this.#handleRequest(url, options, 'request');
         try {
-            const response = await fetch(fetchUrl, options);
-            if (!response.ok) {
-                console.error(`Bare request error: HTTP error! status: ${response.status} - ${fetchUrl}`);
-                throw new Error(`Bare request error: HTTP error! status: ${response.status}`);
-            }
-
-            if (this.integrityEnabled) {
-                const expectedIntegrity = response.headers.get(this.integrityHeaderName);
-                if (expectedIntegrity) {
-                    const text = await response.clone().text();
-                    const integrity = await this.calculateIntegrity(text, this.integrityType);
-
-                    if (integrity !== expectedIntegrity) {
-                        console.error("Bare request error: Content integrity check failed.");
-                        throw new Error("Bare request error: Content integrity check failed.");
-                    }
-                } else {
-                    console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
-                }
-            }
             return await response.json();
         } catch (error) {
-            console.error("Bare request error:", error);
-            throw error;
+            console.error("Bare request JSON parse error:", error);
+            throw new Error("Failed to parse JSON response.");
         }
     }
 
@@ -263,6 +160,52 @@ class Bare {
         } catch (error) {
             console.error("Integrity calculation error:", error);
             return null;
+        }
+    }
+
+
+    async #handleRequest(url, options = {}, method) {
+        let fetchUrl = this.prefix + encodeURIComponent(url);
+        if (this.encryptionEnabled && this.encryptionKey) {
+            try {
+                const encryptedUrl = await this.encrypt(url, this.encryptionKey);
+                fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
+            } catch (error) {
+                console.error("Encryption failed:", error);
+                throw new Error("Failed to encrypt URL.");
+            }
+        }
+
+        try {
+            const response = await fetch(fetchUrl, options);
+            if (!response.ok) {
+                const errorType = `Bare ${method} error`;
+                console.error(`${errorType}: HTTP error! status: ${response.status} - ${fetchUrl}`);
+                throw new Error(`${errorType}: HTTP error! status: ${response.status}`);
+            }
+
+            if (this.integrityEnabled) {
+                const expectedIntegrity = response.headers.get(this.integrityHeaderName);
+                if (expectedIntegrity) {
+                    const text = await response.clone().text();
+                    const integrity = await this.calculateIntegrity(text, this.integrityType);
+
+                    if (integrity !== expectedIntegrity) {
+                        console.error(`Bare ${method} error: Content integrity check failed.`);
+                        this.integrityCheckFailed = true;
+                        throw new Error(`Bare ${method} error: Content integrity check failed.`);
+                    }
+                    this.integrityCheckFailed = false;
+                    return response;
+                } else {
+                    console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
+                }
+            }
+
+            return response;
+        } catch (error) {
+            console.error(`Bare ${method} error:`, error);
+            throw error;
         }
     }
 }
