@@ -209,11 +209,12 @@ class Bare {
             throw new Error(`${errorType}: HTTP error! status: ${response.status}`);
         }
 
+        let responseText = null;
         if (this.integrityEnabled) {
             const expectedIntegrity = response.headers.get(this.integrityHeaderName);
             if (expectedIntegrity) {
-                const text = await response.clone().text();
-                const integrity = await this.calculateIntegrity(text, this.integrityType);
+                responseText = await response.clone().text();
+                const integrity = await this.calculateIntegrity(responseText, this.integrityType);
 
                 if (integrity !== expectedIntegrity) {
                     console.error(`Bare ${method} error: Content integrity check failed.`);
@@ -228,8 +229,10 @@ class Bare {
 
         if (this.encryptionEnabled && this.encryptionKey) {
             try {
-                const originalResponse = response.clone();
-                const decryptedText = await this.decrypt(await originalResponse.text(), this.encryptionKey);
+                if(!responseText) {
+                    responseText = await response.clone().text();
+                }
+                const decryptedText = await this.decrypt(responseText, this.encryptionKey);
 
                 const decryptedResponse = new Response(decryptedText, {
                     status: response.status,
