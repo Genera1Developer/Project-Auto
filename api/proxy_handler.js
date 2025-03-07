@@ -63,7 +63,7 @@ const proxyHandler = (req, res) => {
         if (!res.headersSent) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
         }
-        res.end('Proxy error.');
+        res.end(`Proxy error: ${err.message}`); // Include error message in response
       }
     });
 
@@ -76,7 +76,7 @@ const proxyHandler = (req, res) => {
         if (!res.headersSent) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
         }
-        res.end('Request aborted.');
+        res.end(`Request aborted: ${err.message}`); // Include error message in response
       }
     });
 
@@ -87,7 +87,7 @@ const proxyHandler = (req, res) => {
   } catch (error) {
     console.error('URL parsing error:', error);
     if (!res.headersSent) {
-        return res.status(400).send('Invalid URL.');
+        return res.status(400).send(`Invalid URL: ${error.message}`); // Include error message in response
     }
   }
 };
