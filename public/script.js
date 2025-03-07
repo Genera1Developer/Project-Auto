@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             const data = await response.json();
-            outputDiv.textContent = data.content; // Display proxied content
+            // Sanitize the content before displaying it to prevent XSS attacks
+            outputDiv.textContent = DOMPurify.sanitize(data.content);
         } catch (error) {
             console.error('Error fetching proxied content:', error);
             outputDiv.textContent = 'An error occurred while fetching the content.';
