@@ -3,6 +3,7 @@ const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
 const tls = require('tls');
+const { brotliDecompressSync, gunzipSync, inflateSync } = require('zlib');
 
 async function handleRequest(req, res) {
   try {
@@ -36,13 +37,9 @@ async function handleRequest(req, res) {
       timeout: 10000,
       followRedirects: false,
       agent: false, // Disable connection pooling
-      // Enable TLS SNI
       servername: target,
-      // Strict SSL/TLS checking.  Can be configurable in future.
       rejectUnauthorized: true,
-      // Secure protocols
       secureProtocol: 'TLSv1_2_method',
-      // Ciphers for enhanced security
       ciphers: [
         'TLS_AES_128_GCM_SHA256',
         'TLS_AES_256_GCM_SHA384',
@@ -51,11 +48,9 @@ async function handleRequest(req, res) {
         'ECDHE-RSA-AES256-GCM-SHA384',
         'ECDHE-RSA-CHACHA20-POLY1305'
       ].join(':'),
-      // Minimum TLS version
       minVersion: 'TLSv1.2'
     };
 
-    // Delete potentially problematic headers
     const hopByHopHeaders = [
       'host',
       'origin',
@@ -72,22 +67,17 @@ async function handleRequest(req, res) {
 
     hopByHopHeaders.forEach(header => delete options.headers[header]);
 
-    // Set 'x-forwarded-for' header, use a random id if IP is unavailable
     options.headers['x-forwarded-for'] = req.socket.remoteAddress || req.connection.remoteAddress || crypto.randomBytes(16).toString('hex');
 
-    // Add a User-Agent header if one is not already present
     if (!options.headers['user-agent']) {
       options.headers['user-agent'] = 'uv-proxy/1.0';
     }
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
-      const resHeaders = { ...proxyRes.headers };
+      let resHeaders = { ...proxyRes.headers };
 
-      // Remove content-encoding to prevent issues with decompression. The client
-      // can handle decompression on its own.
       delete resHeaders['content-encoding'];
 
-      // Mitigate potential header injection vulnerabilities
       Object.keys(resHeaders).forEach(header => {
         if (typeof resHeaders[header] === 'string') {
           const value = resHeaders[header];
@@ -98,7 +88,6 @@ async function handleRequest(req, res) {
         } else if (Array.isArray(resHeaders[header])) {
           resHeaders[header] = resHeaders[header].map(item => {
             if (typeof item === 'string') {
-              // Sanitize array header values
               let sanitizedItem = item.replace(/[\r\n]/g, '');
               if (sanitizedItem !== item) {
                 console.warn(`Sanitized array header ${header} due to newline/carriage return character.`);
@@ -111,7 +100,28 @@ async function handleRequest(req, res) {
       });
 
       res.writeHead(proxyRes.statusCode, resHeaders);
-      proxyRes.pipe(res);
+
+      proxyRes.on('data', (chunk) => {
+          res.write(chunk);
+      });
+
+      proxyRes.on('end', () => {
+          res.end();
+      });
+
+      proxyRes.on('error', (err) => {
+          console.error('Proxy response error:', err);
+          if (!res.headersSent) {
+              res.writeHead(502, { 'Content-Type': 'text/plain' });
+              res.end('Proxy response error: ' + err.message);
+          } else {
+              try {
+                  res.socket.destroy();
+              } catch (e) {
+                  console.error("Error destroying socket after proxy response error:", e);
+              }
+          }
+      });
     });
 
     proxyReq.setTimeout(options.timeout, () => {
@@ -123,11 +133,19 @@ async function handleRequest(req, res) {
             if (url.protocol === 'https:') {
                 const tlsInfo = socket.getPeerCertificate();
                 if (tlsInfo && tlsInfo.subject) {
-                    // Basic certificate logging (can expand)
                     console.log(`Connected to ${target} with certificate subject: ${tlsInfo.subject.CN}`);
                 }
-                // Optionally, verify certificate validity and revocation status here for added security
+                if (tlsInfo && tlsInfo.valid_to) {
+                    const expiryDate = new Date(tlsInfo.valid_to);
+                    if (expiryDate < new Date()) {
+                        console.warn(`Certificate for ${target} has expired.`);
+                    }
+                }
             }
+        });
+
+        socket.on('error', (err) => {
+            console.error('Socket error:', err);
         });
     });
 
@@ -137,7 +155,6 @@ async function handleRequest(req, res) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
       } else {
-        // Attempt to close the response gracefully
         try {
           if (res.socket) {
             res.socket.destroy();
@@ -157,7 +174,6 @@ async function handleRequest(req, res) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error: ' + err.message);
       } else {
-        // Attempt to close the response gracefully
         try {
           if (res.socket) {
             res.socket.destroy();
@@ -183,7 +199,6 @@ async function handleRequest(req, res) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
     } else {
-      // Attempt to close the response gracefully
       try {
         if (res.socket) {
           res.socket.destroy();
