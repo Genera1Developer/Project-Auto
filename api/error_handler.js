@@ -33,6 +33,9 @@ function errorHandler(err, req, res, next) {
   } else if (err.code === 'ECONNREFUSED') {
     statusCode = 503;
     message = 'Service Unavailable';
+  } else if (err.code === 'ETIMEDOUT') {
+    statusCode = 504;
+    message = 'Request Timeout';
   }
 
   const response = {
