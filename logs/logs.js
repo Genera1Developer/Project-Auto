@@ -24,24 +24,29 @@ const readLogs = async () => {
 
 // Route to serve the logs
 router.get('/', async (req, res) => {
-  const logs = await readLogs();
-  res.send(`<pre>${logs}</pre>`); // Serve logs in preformatted text
+  try {
+    const logs = await readLogs();
+    res.send(`<pre>${logs}</pre>`); // Serve logs in preformatted text
+  } catch (error) {
+    console.error("Error serving logs:", error);
+    res.status(500).send("Error serving logs.");
+  }
 });
 
 // Route to append to the logs (example - adjust as needed based on security.js)
 router.post('/append', async (req, res) => {
   const logData = req.body.log;
 
-  if (logData) {
-    try {
-      await appendFile(logFilePath, logData + '\n');
-      res.status(200).send("Log appended successfully.");
-    } catch (err) {
-      console.error("Error appending to logs:", err);
-      return res.status(500).send("Error appending to logs.");
-    }
-  } else {
-    res.status(400).send("No log data provided.");
+  if (!logData) {
+    return res.status(400).send("No log data provided.");
+  }
+
+  try {
+    await appendFile(logFilePath, logData + '\n');
+    res.status(200).send("Log appended successfully.");
+  } catch (err) {
+    console.error("Error appending to logs:", err);
+    return res.status(500).send("Error appending to logs.");
   }
 });
 
