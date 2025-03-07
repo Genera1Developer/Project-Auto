@@ -7,7 +7,7 @@ async function deriveKey(password, salt) {
         enc.encode(password),
         { name: "PBKDF2" },
         false,
-        ["deriveKey", "deriveBits"]
+        ["deriveKey"]
     );
     const key = await subtle.deriveKey(
         {
@@ -31,7 +31,7 @@ export async function encode(str, key = null, salt = null) {
         const encoded = utf8Encode.encode(str);
 
         if (key && salt) {
-            const iv = subtle.getRandomValues(new Uint8Array(12));
+            const iv = crypto.getRandomValues(new Uint8Array(12));
             const cryptoKey = await deriveKey(key, salt);
             const encrypted = await subtle.encrypt(
                 { name: "AES-GCM", iv: iv },
@@ -43,12 +43,12 @@ export async function encode(str, key = null, salt = null) {
             combined.set(iv, 0);
             combined.set(new Uint8Array(encrypted), iv.length);
 
-            return btoa(String.fromCharCode(...combined));
+            return btoa(String.fromCharCode(...Array.from(combined)));
 
         }
 
 
-        return btoa(String.fromCharCode(...encoded));
+        return btoa(String.fromCharCode(...Array.from(encoded)));
     } catch (e) {
         console.error("Encoding error:", e);
         return null;
@@ -97,7 +97,7 @@ function encrypt(data, key) {
     for (let i = 0; i < data.length; i++) {
         encryptedData[i] = data[i] ^ uint8Key[i % uint8Key.length];
     }
-    return encryptedData;
+    return Array.from(encryptedData);
 }
 
 // Consider removing or securing this simplistic XOR cipher
@@ -108,5 +108,5 @@ function decrypt(data, key) {
     for (let i = 0; i < data.length; i++) {
         decryptedData[i] = data[i] ^ uint8Key[i % uint8Key.length];
     }
-    return decryptedData;
+    return Array.from(decryptedData);
 }
