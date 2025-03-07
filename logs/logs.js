@@ -4,6 +4,8 @@ const path = require('path');
 const { access, appendFile, readFile } = require('fs/promises');
 const crypto = require('crypto');
 const helmet = require('helmet'); // Import Helmet for security headers
+const rateLimit = require('express-rate-limit'); // Import rate limiter
+const { body, validationResult } = require('express-validator'); // Import express-validator
 
 const router = express.Router();
 
@@ -100,6 +102,14 @@ const readLogs = async () => {
 };
 
 // Security middleware - add more as necessary
+
+// Rate limiting to prevent abuse
+const logAppendLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute window
+  max: 10, // Max 10 requests per window
+  message: "Too many log requests from this IP, please try again after a minute."
+});
+
 router.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'"],
@@ -124,27 +134,35 @@ router.get('/', async (req, res) => {
 });
 
 // Route to append to the logs
-router.post('/append', async (req, res) => {
-  const logData = req.body.log;
-  const ipAddress = req.ip; // Get IP address of the client
-
-  if (!logData) {
-    return res.status(400).send("No log data provided.");
-  }
-
-  try {
-    const logEntry = `IP: ${ipAddress} - ${logData}`;  // Include IP address in log
-    const encryptedLogData = encrypt(logEntry);
-    if (encryptedLogData === null) {
-      return res.status(500).send("Error encrypting log data.");
+router.post('/append',
+  logAppendLimiter, // Apply rate limiting
+  [
+    // Validate and sanitize the log input
+    body('log').trim().isLength({ min: 1, max: 255 }).withMessage('Log message must be between 1 and 255 characters.')
+      .escape(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-    await appendFile(logFilePath, encryptedLogData + '\n');
-    res.status(200).send("Log appended successfully.");
-  } catch (err) {
-    console.error("Error appending to logs:", err);
-    return res.status(500).send("Error appending to logs.");
-  }
-});
+
+    const logData = req.body.log;
+    const ipAddress = req.ip; // Get IP address of the client
+
+    try {
+      const logEntry = `IP: ${ipAddress} - ${logData}`;  // Include IP address in log
+      const encryptedLogData = encrypt(logEntry);
+      if (encryptedLogData === null) {
+        return res.status(500).send("Error encrypting log data.");
+      }
+      await appendFile(logFilePath, encryptedLogData + '\n');
+      res.status(200).send("Log appended successfully.");
+    } catch (err) {
+      console.error("Error appending to logs:", err);
+      return res.status(500).send("Error appending to logs.");
+    }
+  });
 
 // Helper function to escape HTML
 function escapeHTML(str) {
