@@ -12,9 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
   proxyForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const url = urlInput.value.trim();
+    let url = urlInput.value.trim();
     if (!url) {
       errorMessageDiv.textContent = 'Error: URL cannot be empty.';
+      return;
+    }
+
+    // Basic URL validation
+    try {
+      new URL(url);
+    } catch (e) {
+      errorMessageDiv.textContent = 'Error: Invalid URL.';
       return;
     }
 
@@ -88,7 +96,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (contentDisposition && contentDisposition.includes('attachment') || data instanceof Blob || (typeof data === 'string' && (contentType && (contentType.includes('image') || contentType.includes('video') || contentType.includes('audio'))))) {
-        const blob = data instanceof Blob ? data : (contentType && (contentType.includes('image') || contentType.includes('video') || contentType.includes('audio')) ? await fetch(data).then(res => res.blob()) : await response.blob());
+        let blob;
+        if (data instanceof Blob) {
+          blob = data;
+        } else if (contentType && (contentType.includes('image') || contentType.includes('video') || contentType.includes('audio'))) {
+          try {
+            const res = await fetch(data);
+            blob = await res.blob();
+          } catch (fetchError) {
+            console.error("Error fetching blob:", fetchError);
+            errorMessageDiv.textContent = `Error fetching blob: ${fetchError.message}`;
+            loadingIndicator.style.display = 'none';
+            return;
+          }
+        } else {
+          blob = await response.blob();
+        }
+
         const blobUrl = window.URL.createObjectURL(blob);
         let filename = 'downloaded_file';
 
