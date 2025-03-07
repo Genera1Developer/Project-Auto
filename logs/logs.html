@@ -124,6 +124,7 @@
         const levelFilter = document.getElementById('level-filter');
         const searchInput = document.getElementById('search-input');
         const toggleSensitiveDataButton = document.getElementById('toggle-sensitive-data');
+        const logContainer = document.getElementById('log-container');
 
         levelFilter.addEventListener('change', filterLogs);
         searchInput.addEventListener('input', function() {
@@ -133,14 +134,16 @@
 
         toggleSensitiveDataButton.addEventListener('click', function() {
             sensitiveDataVisible = !sensitiveDataVisible;
-            const sensitiveDataElements = document.querySelectorAll('.sensitive-data');
+            updateSensitiveDataVisibility();
+            toggleSensitiveDataButton.textContent = sensitiveDataVisible ? 'Hide Sensitive Data' : 'Show Sensitive Data';
+        });
 
+        function updateSensitiveDataVisibility() {
+            const sensitiveDataElements = document.querySelectorAll('.sensitive-data');
             sensitiveDataElements.forEach(element => {
                 element.style.display = sensitiveDataVisible ? 'inline' : 'none';
             });
-
-            toggleSensitiveDataButton.textContent = sensitiveDataVisible ? 'Hide Sensitive Data' : 'Show Sensitive Data';
-        });
+        }
 
 
         function fetchLogs() {
@@ -149,7 +152,7 @@
             }
 
             isFetching = true;
-            const logContainer = document.getElementById('log-container');
+
             logContainer.classList.add('loading');
             logContainer.textContent = 'Loading logs...'; // Display loading message
 
@@ -182,7 +185,7 @@
 
         function filterLogs() {
             const selectedLevel = levelFilter.value;
-            const logContainer = document.getElementById('log-container');
+
             logContainer.classList.remove('loading');
             logContainer.innerHTML = ''; // Clear existing logs
 
@@ -232,18 +235,25 @@
                 details.innerHTML = `Details: ${sensitiveInfo}`;
 
                 // Security issue detection
-                if (log.level === 'WARNING' && log.message.includes('Potential XSS')) {
+                if (log.level === 'WARNING' && log.message.toLowerCase().includes('xss') || log.message.toLowerCase().includes('cross-site scripting')) {
                     const securityIssueWarning = document.createElement('span');
                     securityIssueWarning.classList.add('security-issue');
                     securityIssueWarning.textContent = ' - Potential Security Issue Detected (XSS)!';
                     message.appendChild(securityIssueWarning);
                 }
+                if (log.level === 'ERROR' && log.message.toLowerCase().includes('sql injection')) {
+                    const securityIssueWarning = document.createElement('span');
+                    securityIssueWarning.classList.add('security-issue');
+                    securityIssueWarning.textContent = ' - Potential Security Issue Detected (SQL Injection)!';
+                    message.appendChild(securityIssueWarning);
+                }
+                if (log.level === 'CRITICAL' && log.message.toLowerCase().includes('remote code execution')) {
+                    const securityIssueWarning = document.createElement('span');
+                    securityIssueWarning.classList.add('security-issue');
+                    securityIssueWarning.textContent = ' - Potential Security Issue Detected (Remote Code Execution)!';
+                    message.appendChild(securityIssueWarning);
+                }
 
-                // Set initial visibility of sensitive data based on the toggle state
-                const sensitiveDataElements = details.querySelectorAll('.sensitive-data');
-                sensitiveDataElements.forEach(element => {
-                    element.style.display = sensitiveDataVisible ? 'inline' : 'none';
-                });
 
                 logEntry.appendChild(timestamp);
                 logEntry.appendChild(level);
@@ -257,6 +267,7 @@
 
                 logContainer.appendChild(logEntry);
             });
+            updateSensitiveDataVisibility();
         }
 
         // Fetch logs on page load
