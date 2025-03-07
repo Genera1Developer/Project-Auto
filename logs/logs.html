@@ -84,6 +84,12 @@
             margin-bottom: 10px;
         }
 
+        /* Style for potential security issues */
+        .security-issue {
+            color: red;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -224,6 +230,14 @@
                 details.classList.add('log-details');
                 let sensitiveInfo = `Encryption status: <span class="sensitive-data">${log.encryptionStatus || 'N/A'}</span>, User: <span class="sensitive-data">${log.user || 'N/A'}</span>`;
                 details.innerHTML = `Details: ${sensitiveInfo}`;
+
+                // Security issue detection
+                if (log.level === 'WARNING' && log.message.includes('Potential XSS')) {
+                    const securityIssueWarning = document.createElement('span');
+                    securityIssueWarning.classList.add('security-issue');
+                    securityIssueWarning.textContent = ' - Potential Security Issue Detected (XSS)!';
+                    message.appendChild(securityIssueWarning);
+                }
 
                 // Set initial visibility of sensitive data based on the toggle state
                 const sensitiveDataElements = details.querySelectorAll('.sensitive-data');
