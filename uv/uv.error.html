@@ -57,6 +57,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const errorMessage = urlParams.get('message');
         const encodedURL = urlParams.get('url');
+        const errorType = urlParams.get('type');
 
         if (errorMessage) {
             document.getElementById('error-message').textContent = errorMessage;
@@ -85,6 +86,12 @@
                 urlDisplay.textContent = `An error occurred while decoding the URL.`;
                 document.getElementById('error-url-container').appendChild(urlDisplay);
             }
+        }
+
+        if (errorType) {
+            console.error(`Error Type: ${errorType}`);
+            // Log the error type to the server or perform other actions based on the error type
+            // For example, you could send the error type to a logging service.
         }
     </script>
 </body>
