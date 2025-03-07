@@ -1,18 +1,17 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Load settings from localStorage when the page loads
     loadSettings();
 
     document.getElementById('encryptionType').addEventListener('change', function() {
         var encryptionType = this.value;
         document.getElementById('certificatePath').disabled = (encryptionType !== 'ssl');
         document.getElementById('customEncryptionAlgo').disabled = (encryptionType !== 'custom');
+        document.getElementById('aesKey').disabled = (encryptionType !== 'aes');
 
-        // Clear error messages when encryption type changes
         document.getElementById('certificatePathError').textContent = '';
         document.getElementById('customEncryptionAlgoError').textContent = '';
+        document.getElementById('aesKeyError').textContent = '';
     });
 });
-
 
 function saveSettings() {
     var proxyHost = document.getElementById('proxyHost').value;
@@ -20,15 +19,15 @@ function saveSettings() {
     var encryptionType = document.getElementById('encryptionType').value;
     var certificatePath = document.getElementById('certificatePath').value;
     var customEncryptionAlgo = document.getElementById('customEncryptionAlgo').value;
+    var aesKey = document.getElementById('aesKey').value;
 
-    // Clear all error messages
     document.getElementById('generalError').textContent = '';
     document.getElementById('certificatePathError').textContent = '';
     document.getElementById('customEncryptionAlgoError').textContent = '';
+    document.getElementById('aesKeyError').textContent = '';
 
     let hasErrors = false;
 
-    // Basic validation (can be improved)
     if (!proxyHost || !proxyPort) {
         document.getElementById('generalError').textContent = 'Proxy Host and Port are required.';
         hasErrors = true;
@@ -44,8 +43,19 @@ function saveSettings() {
         hasErrors = true;
     }
 
+    if (encryptionType === 'aes' && !aesKey) {
+        document.getElementById('aesKeyError').textContent = 'AES Key is required for AES encryption.';
+        hasErrors = true;
+    }
+
     if (hasErrors) {
-        return; // Stop saving if there are errors
+        return;
+    }
+
+    if (encryptionType === 'aes' && aesKey.length !== 32) {
+        document.getElementById('aesKeyError').textContent = 'AES Key must be 32 characters long (256-bit).';
+         hasErrors = true;
+         return;
     }
 
 
@@ -54,16 +64,20 @@ function saveSettings() {
         proxyPort: proxyPort,
         encryptionType: encryptionType,
         certificatePath: certificatePath,
-        customEncryptionAlgo: customEncryptionAlgo
+        customEncryptionAlgo: customEncryptionAlgo,
+        aesKey: aesKey
     };
 
-    // Convert settings to JSON
     var settingsJSON = JSON.stringify(settings);
 
-    // Store the settings (e.g., localStorage, cookies, or send to server)
     localStorage.setItem('proxySettings', settingsJSON);
 
     alert('Settings saved!');
+
+     // Store AES key securely if AES encryption is enabled
+     if (encryptionType === 'aes') {
+        storeAesKeySecurely(aesKey);
+    }
 }
 
 function loadSettings() {
@@ -74,98 +88,23 @@ function loadSettings() {
         document.getElementById('proxyPort').value = settings.proxyPort || '8080';
         document.getElementById('encryptionType').value = settings.encryptionType || 'none';
 
-        // Trigger the change event to update the disabled states
         var encryptionTypeSelect = document.getElementById('encryptionType');
         encryptionTypeSelect.dispatchEvent(new Event('change'));
 
         document.getElementById('certificatePath').value = settings.certificatePath || '';
         document.getElementById('customEncryptionAlgo').value = settings.customEncryptionAlgo || '';
+        document.getElementById('aesKey').value = settings.aesKey || ''; // Load the AES key
     }
 }
 
-edit filepath: public/settings.html
-content: 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Proxy Settings</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"], input[type="number"], select {
-            width: 250px;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Important for consistent sizing */
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #3e8e41;
-        }
-        .settings-group {
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .settings-group h2 {
-            margin-top: 0;
-            font-size: 1.2em;
-        }
-        .error-message {
-            color: red;
-            margin-top: 5px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Proxy Settings</h1>
+function storeAesKeySecurely(aesKey) {
+    // In a real application, you would use a more secure method to store the AES key, such as:
+    // 1. Encrypting the key using a user-specific key derived from their password.
+    // 2. Using a secure enclave or hardware security module (HSM).
+    // 3. Storing the key on a secure server and retrieving it when needed.
 
-    <div class="settings-group">
-        <h2>General Settings</h2>
-        <label for="proxyHost">Proxy Host:</label>
-        <input type="text" id="proxyHost" name="proxyHost" value="localhost">
+    // For demonstration purposes, we'll just store it in localStorage, but this is NOT secure.
+    localStorage.setItem('aesKey', aesKey);
 
-        <label for="proxyPort">Proxy Port:</label>
-        <input type="number" id="proxyPort" name="proxyPort" value="8080">
-    </div>
-
-    <div class="settings-group">
-        <h2>Encryption Settings</h2>
-        <label for="encryptionType">Encryption Type:</label>
-        <select id="encryptionType" name="encryptionType">
-            <option value="none">None</option>
-            <option value="ssl">SSL/TLS</option>
-            <option value="custom">Custom</option>
-        </select>
-
-        <label for="certificatePath">Certificate Path (for SSL/TLS):</label>
-        <input type="text" id="certificatePath" name="certificatePath" placeholder="Path to certificate" disabled>
-        <div id="certificatePathError" class="error-message"></div>
-
-        <label for="customEncryptionAlgo">Custom Encryption Algorithm:</label>
-        <input type="text" id="customEncryptionAlgo" name="customEncryptionAlgo" placeholder="Algorithm name" disabled>
-         <div id="customEncryptionAlgoError" class="error-message"></div>
-    </div>
-
-    <button onclick="saveSettings()">Save Settings</button>
-    <div id="generalError" class="error-message"></div>
-
-    <script src="settings.js"></script>
-</body>
-</html>
+    console.warn('AES key stored insecurely in localStorage. This is for demonstration purposes only.');
+}
