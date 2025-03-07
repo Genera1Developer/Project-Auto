@@ -3,6 +3,7 @@ import datetime
 import socket
 import structlog
 import os
+import json
 
 # Configure structlog
 structlog.configure(
@@ -11,7 +12,7 @@ structlog.configure(
         structlog.processors.add_log_level,
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
-        structlog.processors.JSONRenderer()
+        structlog.processors.JSONRenderer(sort_keys=True)
     ],
     logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,
@@ -22,18 +23,16 @@ logger = structlog.get_logger()
 
 def log_request(method, url, status_code, response_time, client_ip, content_length=None):
     """Logs proxy requests with detailed information using structlog."""
-    event_dict = {
-        "event": "proxy_request",
-        "method": method,
-        "url": url,
-        "status_code": status_code,
-        "response_time": response_time,
-        "client_ip": client_ip,
-        "content_length": content_length,
-        "hostname": get_hostname()
-    }
-
-    logger.info("Proxy request details", **event_dict)
+    logger.info(
+        "proxy_request",
+        method=method,
+        url=url,
+        status_code=status_code,
+        response_time=response_time,
+        client_ip=client_ip,
+        content_length=content_length,
+        hostname=get_hostname()
+    )
 
 def setup_logging():
     """Sets up structlog logging."""
