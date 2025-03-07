@@ -19,7 +19,7 @@ async function ensureLogDirectoryExists() {
         if (err.code === 'ENOENT') {
             try {
                 await fsPromises.mkdir(logDirectory, { recursive: true });
-                console.log('Log directory created:', logDirectory); // Optional: Log directory creation
+                console.log('Log directory created:', logDirectory);
             } catch (mkdirErr) {
                 console.error('Failed to create log directory:', mkdirErr);
                 process.exit(1);
@@ -31,8 +31,14 @@ async function ensureLogDirectoryExists() {
     }
 }
 
+let loggingInitialized = false;
 
 const log = async (message) => {
+    if (!loggingInitialized) {
+        console.warn('Logging not initialized. Message:', message);
+        return;
+    }
+
     if (!message) {
         console.warn('Attempted to log an empty message.');
         return;
@@ -52,32 +58,33 @@ const log = async (message) => {
 (async () => {
     try {
         await ensureLogDirectoryExists();
+        loggingInitialized = true;
     } catch (error) {
         console.error('Failed to initialize logging:', error);
         process.exit(1); // Exit if logging initialization fails.
     }
 })();
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', async (err) => {
     console.error('Uncaught Exception:', err);
-    // Attempt to log the error to a file, if possible
-    fs.appendFile(logFile, `Uncaught Exception: ${err.stack}\n`, (fileErr) => {
-        if (fileErr) {
-            console.error('Failed to write uncaught exception to log file:', fileErr);
-        }
-        process.exit(1); // Exit the process after logging the error
-    });
+    try {
+        await fsPromises.appendFile(logFile, `Uncaught Exception: ${err.stack}\n`);
+    } catch (fileErr) {
+        console.error('Failed to write uncaught exception to log file:', fileErr);
+    } finally {
+        process.exit(1);
+    }
 });
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', async (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-    // Attempt to log the error to a file, if possible
-    fs.appendFile(logFile, `Unhandled Rejection: ${reason}\n`, (fileErr) => {
-        if (fileErr) {
-            console.error('Failed to write unhandled rejection to log file:', fileErr);
-        }
-        process.exit(1); // Exit the process after logging the error
-    });
+    try {
+        await fsPromises.appendFile(logFile, `Unhandled Rejection: ${reason}\n`);
+    } catch (fileErr) {
+        console.error('Failed to write unhandled rejection to log file:', fileErr);
+    } finally {
+        process.exit(1);
+    }
 });
 
 module.exports = { log };
