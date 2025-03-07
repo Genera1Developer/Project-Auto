@@ -41,19 +41,35 @@ const handler = {
 
 (() => {
     const applyProxy = (obj, handler) => {
-        for (const prop in obj) {
-            try {
-                if (typeof obj[prop] === 'object' && obj[prop] !== null) {
-                    obj[prop] = new Proxy(obj[prop], handler);
-                } else if (typeof obj[prop] === 'function') {
-                    // functions can be proxied, but it might break things
-                }
-            } catch (e) {
-                // ignore errors, some properties are read-only or not configurable
-            }
+        if (typeof obj !== 'object' || obj === null) {
+            return obj;
         }
-        return new Proxy(obj, handler);
+
+        const seen = new WeakSet();
+
+        function deepProxy(obj) {
+            if (typeof obj !== 'object' || obj === null || seen.has(obj)) {
+                return obj;
+            }
+
+            seen.add(obj);
+
+            for (const prop in obj) {
+                if (Object.hasOwn(obj, prop)) {
+                    try {
+                        obj[prop] = deepProxy(obj[prop]);
+                    } catch (e) {
+                        // ignore errors, some properties are read-only or not configurable
+                    }
+                }
+            }
+
+            return new Proxy(obj, handler);
+        }
+
+        return deepProxy(obj);
     }
+
     if (window.XMLHttpRequest) {
         window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, handler);
     }
