@@ -2,6 +2,7 @@ const { URL } = require('url');
 const http = require('http');
 const https = require('https');
 const crypto = require('crypto');
+const tls = require('tls');
 
 async function handleRequest(req, res) {
   try {
@@ -38,7 +39,20 @@ async function handleRequest(req, res) {
       // Enable TLS SNI
       servername: target,
       // Strict SSL/TLS checking.  Can be configurable in future.
-      rejectUnauthorized: true
+      rejectUnauthorized: true,
+      // Secure protocols
+      secureProtocol: 'TLSv1_2_method',
+      // Ciphers for enhanced security
+      ciphers: [
+        'TLS_AES_128_GCM_SHA256',
+        'TLS_AES_256_GCM_SHA384',
+        'TLS_CHACHA20_POLY1305_SHA256',
+        'ECDHE-RSA-AES128-GCM-SHA256',
+        'ECDHE-RSA-AES256-GCM-SHA384',
+        'ECDHE-RSA-CHACHA20-POLY1305'
+      ].join(':'),
+      // Minimum TLS version
+      minVersion: 'TLSv1.2'
     };
 
     // Delete potentially problematic headers
@@ -98,6 +112,18 @@ async function handleRequest(req, res) {
 
     proxyReq.setTimeout(options.timeout, () => {
       proxyReq.destroy(new Error('Proxy request timeout.'));
+    });
+
+    proxyReq.on('socket', (socket) => {
+        socket.on('secureConnect', () => {
+            if (url.protocol === 'https:') {
+                const tlsInfo = socket.getPeerCertificate();
+                if (tlsInfo && tlsInfo.subject) {
+                    // Basic certificate logging (can expand)
+                    console.log(`Connected to ${target} with certificate subject: ${tlsInfo.subject.CN}`);
+                }
+            }
+        });
     });
 
     proxyReq.on('error', (err) => {
