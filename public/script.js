@@ -11,8 +11,8 @@ async function encryptAndSend(data, publicKey) {
       encodedData
     );
 
-    // Convert the ArrayBuffer to a Base64 string
-    const encryptedBase64 = btoa(new Uint8Array(encrypted).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+    // Convert the ArrayBuffer to a Base64 string using a more modern and efficient method
+    const encryptedBase64 = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
     return encryptedBase64;
 
   } catch (error) {
@@ -24,7 +24,8 @@ async function encryptAndSend(data, publicKey) {
 
 async function decryptData(encryptedBase64, privateKey) {
   try {
-    const encryptedData = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
+    // Use a more modern and efficient method to convert Base64 to ArrayBuffer
+    const encryptedData = new Uint8Array(atob(encryptedBase64).split("").map(char => char.charCodeAt(0)));
 
     const decrypted = await window.crypto.subtle.decrypt(
       {
