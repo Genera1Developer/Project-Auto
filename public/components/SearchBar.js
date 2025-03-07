@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import debounce from 'lodash.debounce';
 
 function SearchBar({ onSearch }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -7,39 +8,50 @@ function SearchBar({ onSearch }) {
     const [suggestions, setSuggestions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
+    const fetchSuggestions = useCallback(async (term) => {
+        setIsLoading(true);
+        try {
+            // Placeholder for suggestion fetching logic.  Replace with actual API endpoint.
+            // Simulate network latency
+            await new Promise(resolve => setTimeout(resolve, 250));
+            const suggestionList = [
+                `https://www.${term}.com`,
+                `https://${term}.org`,
+                `https://search.example.com/?q=${term}`,
+                `https://${term}.net`,
+            ];
+            const filteredSuggestions = suggestionList.filter(s => s.includes(term)).slice(0, 5); // Limit to 5 suggestions
+            setSuggestions(filteredSuggestions);
+        } catch (error) {
+            console.error('Error fetching suggestions:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    const debouncedFetchSuggestions = useCallback(
+        debounce((term) => {
+            fetchSuggestions(term);
+        }, 250),
+        [fetchSuggestions]
+    );
+
+
     useEffect(() => {
         const storedAutoComplete = localStorage.getItem('autoComplete');
         const autoCompleteEnabled = storedAutoComplete === null || storedAutoComplete === 'true';
 
         if (autoCompleteEnabled && searchTerm.length > 2) {
-            setIsLoading(true);
-            fetchSuggestions(searchTerm)
-                .then(data => {
-                    setSuggestions(data);
-                    setIsLoading(false);
-                })
-                .catch(error => {
-                    console.error('Error fetching suggestions:', error);
-                    setIsLoading(false);
-                });
+            debouncedFetchSuggestions(searchTerm);
         } else {
             setSuggestions([]);
             setIsLoading(false);
         }
-    }, [searchTerm]);
 
-    const fetchSuggestions = async (term) => {
-        // Placeholder for suggestion fetching logic.  Replace with actual API endpoint.
-        // Simulate network latency
-        await new Promise(resolve => setTimeout(resolve, 250));
-        const suggestionList = [
-            `https://www.${term}.com`,
-            `https://${term}.org`,
-            `https://search.example.com/?q=${term}`,
-            `https://${term}.net`,
-        ];
-        return suggestionList.filter(s => s.includes(term)).slice(0, 5); // Limit to 5 suggestions
-    };
+        return () => {
+            debouncedFetchSuggestions.cancel(); // Cancel any pending debounced calls on unmount
+        };
+    }, [searchTerm, debouncedFetchSuggestions]);
 
     const handleChange = (event) => {
         setSearchTerm(event.target.value);
@@ -95,4 +107,3 @@ SearchBar.propTypes = {
 };
 
 export default SearchBar;
-content:
