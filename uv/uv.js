@@ -30,7 +30,8 @@ const passthroughHeaders = new Set([
   'x-xss-protection',
   'cross-origin-resource-policy',
   'content-security-policy', // Add Content Security Policy
-  'strict-transport-security' // Add HSTS
+  'strict-transport-security', // Add HSTS
+  'permissions-policy', // Add Permissions Policy
 ]);
 
 async function handleRequest(event) {
@@ -49,6 +50,9 @@ async function handleRequest(event) {
     requestHeaders.delete('host');
     requestHeaders.delete('origin');
     requestHeaders.delete('referer'); // Remove referer header
+
+    // Add a user agent header to mimic a real browser
+    requestHeaders.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
 
     const fetchOptions = {
       method: event.request.method,
