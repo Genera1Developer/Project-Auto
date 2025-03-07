@@ -73,13 +73,13 @@ self.addEventListener('fetch', (event) => {
 
           let responseBody;
           try {
-              responseBody = await response.blob();
+            responseBody = await response.blob();
           } catch (error) {
-              console.error('Failed to read response body:', error);
-              return new Response(`<h1>Error: Could not read response body from target</h1><p>${error}</p>`, {
-                  status: 502,
-                  headers: { 'Content-Type': 'text/html; charset=utf-8' },
-              });
+            console.error('Failed to read response body:', error);
+            return new Response(`<h1>Error: Could not read response body from target</h1><p>${error}</p>`, {
+              status: 502,
+              headers: { 'Content-Type': 'text/html; charset=utf-8' },
+            });
           }
 
           return new Response(responseBody, {
@@ -100,12 +100,17 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    fetch(event.request).catch(error => {
-      console.error('Fetch error for original request:', error);
-      return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
-        status: 500,
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-      });
-    })
+    (async () => {
+      try {
+        const response = await fetch(event.request);
+        return response;
+      } catch (error) {
+        console.error('Fetch error for original request:', error);
+        return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
+          status: 500,
+          headers: { 'Content-Type': 'text/html; charset=utf-8' },
+        });
+      }
+    })()
   );
 });
