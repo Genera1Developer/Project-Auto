@@ -138,6 +138,28 @@
             outline: none; /* Remove the default focus outline */
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional: Add a subtle box-shadow */
         }
+
+        /* Add responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%; /* Make the container take up more width */
+                padding: 10px; /* Reduce padding */
+            }
+
+            input[type="url"] {
+                padding: 8px; /* Reduce input padding */
+                font-size: 14px; /* Reduce font size */
+            }
+
+            button {
+                padding: 8px 16px; /* Reduce button padding */
+                font-size: 14px; /* Reduce font size */
+            }
+
+            #response-headers, #response-body {
+                padding: 10px; /* Reduce response section padding */
+            }
+        }
     </style>
 </head>
 <body>
@@ -161,6 +183,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script> 
+    <script src="script.js"></script> <!-- NOTE FOR AI: Why is everything in /components not utiliezed here?  If it is utilized in script.js then ignore and delete this note -->
 </body>
 </html>
