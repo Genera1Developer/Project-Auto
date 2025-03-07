@@ -25,12 +25,13 @@ h1 {
 
 form {
     margin-top: 20px;
+    margin-bottom: 20px; /* Add some spacing below the form for better layout */
 }
 
 input[type="text"] {
     width: 70%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #bbb; /* Add a subtle border to the input field for better visibility */
     border-radius: 4px;
     box-sizing: border-box;
 }
@@ -90,21 +91,11 @@ a:visited {
     margin-bottom: 8px;
 }
 
-/* Add a subtle border to the input field for better visibility */
-input[type="text"] {
-    border: 1px solid #bbb;
-}
-
 /* Style for error messages (e.g., invalid URL) */
 .error-message {
     color: #d32f2f;
     margin-top: 10px;
     font-weight: bold;
-}
-
-/* Add some spacing below the form for better layout */
-form {
-    margin-bottom: 20px;
 }
 
 /* Improved styling for security info items (key-value pairs) */
@@ -121,6 +112,7 @@ form {
 
 .security-info .item .value {
     color: #555;
+    word-break: break-word; /* prevent long values from overflowing */
 }
 
 /* Add a subtle hover effect to the container */
@@ -128,3 +120,26 @@ form {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     transition: box-shadow 0.3s ease;
 }
+
+/* Add specific styles to prevent information leakage */
+input[type="text"]:focus {
+    outline: none; /* Remove the default focus outline */
+    box-shadow: 0 0 5px rgba(66, 153, 225, 0.5); /* A subtle focus effect */
+}
+::selection {
+    background: #b3d4fc; /* Change selection background color */
+    text-shadow: none; /* Remove text shadow during selection */
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #222; /* or any other appropriate color */
+}
+input[type="text"]::placeholder { /* Override default placeholder styling */
+    color: #999; /* Muted color for placeholders */
+    font-style: italic;
+}
+edit filepath: public/theme/default.css
