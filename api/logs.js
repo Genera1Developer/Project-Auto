@@ -7,35 +7,59 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const logFilePath = path.join(__dirname, '../logs/proxy.log');
-const encryptionKey = process.env.LOG_ENCRYPTION_KEY || 'default_encryption_key'; // Store securely!
-const algorithm = 'aes-256-cbc';
-const iv = crypto.randomBytes(16);
+const encryptionKey = process.env.LOG_ENCRYPTION_KEY; // Store securely!
+const algorithm = 'aes-256-gcm';
+const keyLength = 32;
+
+if (!encryptionKey) {
+    console.warn("LOG_ENCRYPTION_KEY is not set. Logs will not be encrypted.");
+} else if (Buffer.from(encryptionKey, 'utf8').length !== keyLength) {
+    console.warn("LOG_ENCRYPTION_KEY should be 32 bytes (256 bits).");
+}
 
 function encrypt(text) {
+    if (!encryptionKey) {
+        return text; // Don't encrypt if key is missing.
+    }
+
+    const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey), iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString('hex') + ':' + encrypted.toString('hex');
+    const authTag = cipher.getAuthTag();
+    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
 }
 
 function decrypt(text) {
+    if (!encryptionKey) {
+        return text; // Return original text if key is missing.
+    }
+
     try {
         const textParts = text.split(':');
-        const iv = Buffer.from(textParts.shift(), 'hex');
-        const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+        if (textParts.length !== 3) {
+            console.error("Invalid log format: Incorrect number of parts.");
+            return "Decryption Failed: Invalid Log Format";
+        }
+        const iv = Buffer.from(textParts[0], 'hex');
+        const authTag = Buffer.from(textParts[1], 'hex');
+        const encryptedText = Buffer.from(textParts[2], 'hex');
+
         const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey), iv);
+        decipher.setAuthTag(authTag);
         let decrypted = decipher.update(encryptedText);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         return decrypted.toString();
     } catch (error) {
         console.error("Decryption error:", error);
-        return null;
+        return "Decryption Failed";
     }
 }
 
 
 export function logRequest(req, res, url) {
-    const logMessage = `${new Date().toISOString()} - ${req.method} ${url} - ${res.statusCode} - ${req.ip || req.socket?.remoteAddress}\n`;
+    const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
+    const logMessage = `${new Date().toISOString()} - ${req.method} ${url} - ${res.statusCode} - ${ip}\n`;
     const encryptedLogMessage = encrypt(logMessage);
 
     fs.appendFile(logFilePath, encryptedLogMessage, err => {
@@ -52,7 +76,7 @@ export function getLogs() {
             .filter(log => log.trim() !== '')
             .map(log => {
                 const decryptedLog = decrypt(log);
-                return decryptedLog !== null ? decryptedLog : "Decryption Failed";
+                return decryptedLog;
             })
             .reverse();
     } catch (err) {
