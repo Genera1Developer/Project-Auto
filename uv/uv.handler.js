@@ -67,6 +67,8 @@ const secureCiphers = [
   'ECDHE-RSA-CHACHA20-POLY1305'
 ].join(':');
 
+const secureProtocols = ['TLSv1.2', 'TLSv1.3'];
+
 async function handleRequest(req, res) {
   try {
     const urlString = req.url.slice(1);
@@ -104,7 +106,7 @@ async function handleRequest(req, res) {
       secureProtocol: 'TLSv1_2_method',
       ciphers: secureCiphers,
       minVersion: 'TLSv1.2',
-      maxVersion: 'TLSv1.3'
+      maxVersion: 'TLSv1.3',
     };
 
     options.headers['x-forwarded-for'] = req.socket.remoteAddress || req.connection.remoteAddress || crypto.randomBytes(16).toString('hex');
