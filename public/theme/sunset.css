@@ -376,3 +376,127 @@ input[type="file"].dangerous-file-type {
   border-radius: 4px;
   margin-bottom: 5px;
 }
+
+/* Prevent information leakage in error messages */
+.error-message {
+    color: #a94442;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    word-break: break-word;
+}
+
+/* Indicate untrusted input fields */
+input.untrusted {
+  border-color: #ff9800; /* Orange */
+}
+
+/* More explicit styling for insecure forms */
+.insecure-form {
+  border: 2px solid #d32f2f;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #fef2f2;
+}
+
+/* Style for audit logs */
+.audit-log {
+  font-family: monospace;
+  font-size: 0.8em;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Style for session IDs */
+.session-id {
+  font-family: monospace;
+  background-color: #e8f5e9; /* Light green */
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+/* Style for user roles/permissions */
+.user-role {
+    font-weight: bold;
+    color: #1565c0; /* Dark blue */
+}
+
+/* Add visual cues for potential command injection */
+.command-injection {
+  background-color: #ffe0b2; /* Light orange */
+  border: 1px solid #ffb300; /* Orange */
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+/* Add styles for rate limiting messages */
+.rate-limit-exceeded {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+/* Style to indicate when autofill is disabled */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #000 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #fff inset !important;
+  border: 1px solid #ccc; /* Maintain border */
+  border-radius: 4px;
+}
+
+/* Style for CAPTCHA input */
+.captcha-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-family: monospace;
+}
+
+/* Style to visualize redirects */
+.redirect-url {
+  font-family: monospace;
+  color: #0288d1; /* A shade of blue */
+  text-decoration: underline;
+}
+
+/* Indicate potentially sensitive API endpoints */
+.sensitive-api-endpoint {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+/* Style to highlight unusual user agents */
+.unusual-user-agent {
+    font-style: italic;
+    color: #795548; /* Brownish */
+}
+
+/* Style for reporting successful security events */
+.security-success {
+    color: #2e7d32; /* A shade of green */
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
