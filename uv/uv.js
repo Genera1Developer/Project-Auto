@@ -28,7 +28,9 @@ const passthroughHeaders = new Set([
   'x-content-type-options',
   'x-frame-options',
   'x-xss-protection',
-  'cross-origin-resource-policy'
+  'cross-origin-resource-policy',
+  'content-security-policy', // Add Content Security Policy
+  'strict-transport-security' // Add HSTS
 ]);
 
 async function handleRequest(event) {
@@ -97,6 +99,16 @@ async function handleRequest(event) {
       if (passthroughHeaders.has(key.toLowerCase())) {
         headers.set(key, value);
       }
+    }
+
+    // Mitigate potential MIME type sniffing issues
+    if (!headers.has('Content-Type')) {
+        const contentType = response.headers.get('Content-Type');
+        if (contentType) {
+            headers.set('Content-Type', contentType);
+        } else {
+            headers.set('Content-Type', 'text/plain; charset=utf-8'); // Default to text/plain
+        }
     }
 
     const body = await response.blob();
