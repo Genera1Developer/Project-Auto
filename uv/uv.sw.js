@@ -23,6 +23,28 @@ function generateNonce() {
   return Array.from(array, dec => dec.toString(16).padStart(8, "0")).join("");
 }
 
+// Function to sanitize headers by removing potentially harmful ones
+function sanitizeHeaders(headers) {
+  headers.delete('content-security-policy');
+  headers.delete('content-security-policy-report-only');
+  headers.delete('clear-site-data');
+  headers.delete('feature-policy');
+  headers.delete('permissions-policy');
+  headers.delete('x-frame-options');
+  headers.delete('x-xss-protection');
+  headers.delete('x-content-type-options');
+  headers.delete('strict-transport-security');
+  headers.delete('upgrade-insecure-requests');
+  headers.delete('public-key-pins');
+  headers.delete('public-key-pins-report-only');
+  headers.delete('x-powered-by');
+  headers.delete('server');
+  headers.delete('X-AspNet-Version');
+  headers.delete('X-AspNetMvc-Version');
+  headers.delete('Referrer-Policy');
+  return headers;
+}
+
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
@@ -83,25 +105,7 @@ self.addEventListener('fetch', (event) => {
           const headers = new Headers(response.headers);
           headers.set('Access-Control-Allow-Origin', '*');
 
-          // Remove potentially harmful headers
-          headers.delete('content-security-policy');
-          headers.delete('content-security-policy-report-only');
-          headers.delete('clear-site-data');
-          headers.delete('feature-policy');
-          headers.delete('permissions-policy');
-          headers.delete('x-frame-options');
-          headers.delete('x-xss-protection');
-          headers.delete('x-content-type-options');
-          headers.delete('strict-transport-security');
-          headers.delete('upgrade-insecure-requests');
-	        headers.delete('public-key-pins');
-          headers.delete('public-key-pins-report-only');
-	        headers.delete('x-powered-by');
-	        headers.delete('server');
-          headers.delete('X-AspNet-Version');
-          headers.delete('X-AspNetMvc-Version');
-          headers.delete('Referrer-Policy');
-
+          const sanitizedHeaders = sanitizeHeaders(headers);
 
           let responseBody;
           try {
@@ -117,7 +121,7 @@ self.addEventListener('fetch', (event) => {
           return new Response(responseBody, {
             status: response.status,
             statusText: response.statusText,
-            headers: headers
+            headers: sanitizedHeaders
           });
         } catch (error) {
           console.error('Unexpected error:', error);
@@ -146,6 +150,7 @@ self.addEventListener('fetch', (event) => {
 
         const headers = new Headers(response.headers);
         const contentType = headers.get('Content-Type');
+        const sanitizedHeaders = sanitizeHeaders(headers);
 
         if (contentType && (contentType.includes('text/html') || contentType.includes('application/xhtml+xml'))) {
           let responseText = await response.text();
@@ -165,19 +170,19 @@ self.addEventListener('fetch', (event) => {
           } catch (error) {
             console.error('TrustedTypes error:', error);
           }
-          headers.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'nonce-${nonce}'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
-          headers.set('X-Content-Type-Options', 'nosniff');
-          headers.set('X-Frame-Options', 'DENY');
-          headers.set('X-XSS-Protection', '1; mode=block');
+
+          sanitizedHeaders.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'nonce-${nonce}'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+          sanitizedHeaders.set('X-Content-Type-Options', 'nosniff');
+          sanitizedHeaders.set('X-Frame-Options', 'DENY');
+          sanitizedHeaders.set('X-XSS-Protection', '1; mode=block');
            // Mitigate MIME confusion attack
-           headers.set('Content-Type', 'text/html; charset=utf-8');
-           headers.delete('Content-Length');
-           headers.delete('Referrer-Policy');
+           sanitizedHeaders.set('Content-Type', 'text/html; charset=utf-8');
+           sanitizedHeaders.delete('Content-Length');
 
           return new Response(responseText, {
             status: response.status,
             statusText: response.statusText,
-            headers: headers
+            headers: sanitizedHeaders
           });
         }
 	else if (contentType && (contentType.includes('text/javascript') || contentType.includes('application/javascript'))) {
@@ -192,22 +197,25 @@ self.addEventListener('fetch', (event) => {
 		} catch (error) {
 			console.error('TrustedTypes error', error);
 		}
-		headers.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
-		headers.set('X-Content-Type-Options', 'nosniff');
-		headers.set('X-Frame-Options', 'DENY');
-		headers.set('X-XSS-Protection', '1; mode=block');
-		headers.set('Content-Type', 'application/javascript; charset=utf-8');
-		headers.delete('Content-Length');
-    headers.delete('Referrer-Policy');
+		sanitizedHeaders.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+		sanitizedHeaders.set('X-Content-Type-Options', 'nosniff');
+		sanitizedHeaders.set('X-Frame-Options', 'DENY');
+		sanitizedHeaders.set('X-XSS-Protection', '1; mode=block');
+		sanitizedHeaders.set('Content-Type', 'application/javascript; charset=utf-8');
+		sanitizedHeaders.delete('Content-Length');
 
 		return new Response(responseText, {
 			status: response.status,
 			statusText: response.statusText,
-			headers: headers
+			headers: sanitizedHeaders
 		});
 	}
 
-        return response;
+        return new Response(await response.blob(), {
+          status: response.status,
+          statusText: response.statusText,
+          headers: sanitizedHeaders
+        });
       } catch (error) {
         console.error('Fetch error for original request:', error);
           const errorResponse = `<h1>Error: Fetch failed for original request</h1><p>${error}</p>`;
