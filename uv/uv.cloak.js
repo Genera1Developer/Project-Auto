@@ -359,4 +359,38 @@ const handler = {
             }
         });
     }
+
+    // Prevent abuse of postMessage for cross-origin communication
+    const originalPostMessage = window.postMessage;
+    window.postMessage = new Proxy(originalPostMessage, {
+        apply: function(target, thisArg, argArray) {
+            const message = argArray[0];
+            const targetOrigin = argArray[1];
+
+            // Check if the message is intended for the current origin or a specific origin
+            if (targetOrigin !== '*' && targetOrigin !== window.location.origin) {
+                console.warn('postMessage blocked due to origin mismatch:', targetOrigin);
+                return; // Block the message
+            }
+
+            try {
+                return Reflect.apply(target, thisArg, argArray);
+            } catch (e) {
+                console.warn('Error applying postMessage:', e);
+            }
+        }
+    });
+
+    // Override console methods to prevent logging
+    const consoleMethods = ['log', 'debug', 'info', 'warn', 'error', 'trace'];
+    consoleMethods.forEach(method => {
+        console[method] = new Proxy(console[method], {
+            apply: function(target, thisArg, argArray) {
+                // Suppress logging or modify the output as needed
+                // console.warn('console.' + method + ' blocked'); // Optionally, show a warning about blocking
+                return undefined; // Block the logging
+            }
+        });
+    });
+
 })();
