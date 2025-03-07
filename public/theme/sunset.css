@@ -1,1 +1,90 @@
+/* Improved Sunset Theme CSS - Added Security-Related Styles */
 
+/* General Styles (unchanged for brevity, but should be reviewed for security best practices like avoiding external fonts, etc.) */
+body {
+    background-color: #f2f2f2;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Styles for Alerts and Notifications (important for security events) */
+.alert {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+/* Styles for Encrypted Content Display (example placeholder) */
+.encrypted-content {
+    background-color: #e0e0e0;
+    padding: 10px;
+    border: 1px dashed #999;
+    font-family: monospace; /* Makes it clear it's encoded */
+    overflow-x: auto; /* Handle long encrypted strings */
+}
+
+/* Styles for security headers (if displaying headers) */
+.security-header {
+    font-weight: bold;
+    color: #555;
+}
+
+.header-value {
+    font-family: monospace;
+}
+
+/* Input fields hardening - placeholders to illustrate possible ideas */
+input[type="text"], input[type="password"] {
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box; /* Prevents padding from affecting width */
+
+}
+
+/* Buttons */
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.8;
+}
