@@ -27,6 +27,9 @@ function errorHandler(err, req, res, next) {
   } else if (err.status) {
     statusCode = err.status;
     message = err.message;
+  } else if (err.code === 'ENOENT') {
+        statusCode = 404;
+        message = 'Resource not found';
   }
 
   const response = {
