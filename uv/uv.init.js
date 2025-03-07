@@ -12,9 +12,21 @@ const UV_CONFIG = {
     blacklist: [],
     loglevel: 'info',
     learnMore: 'https://github.com/titaniumnetwork-dev/Ultraviolet',
-    domain: location.origin, // Sets the domain for secure cookie handling
-    cookieScope: '/', // Cookie scope set to root for broad access
-    ws: true, // Enable WebSocket proxying
-    version: '1.3.0', // Version of Ultraviolet
-    // Add more configuration options as needed
+    domain: location.origin,
+    cookieScope: '/',
+    ws: true,
+    version: '1.3.0',
+    insertCSS: [],
+    insertJS: [],
+    requestInterceptor: null,
+    responseInterceptor: null,
+    disableServiceWorker: false,
+    cdn: null,
+    forwardHeaders: true,
+    rewriteOrigin: true,
+    XORKey: 'change-this-key',
+    advanced: {
+        bypass: false,
+        injections: true
+    }
 };
