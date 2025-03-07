@@ -1,30 +1,31 @@
 const crypto = require('crypto');
 
-const algorithm = 'aes-256-gcm'; // Use GCM for authentication
-const key = crypto.randomBytes(32); // Generate a secure key
-// No IV needed for key generation.  IV is dynamically generated for each encryption.
+const algorithm = 'aes-256-cbc';
+const key = crypto.randomBytes(32);
+const iv = crypto.randomBytes(16);
 
 function encrypt(text) {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    return iv.toString('hex') + ':' + encrypted.toString('hex') + ':' + authTag.toString('hex');
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
 function decrypt(text) {
-    const textParts = text.split(':');
-    const iv = Buffer.from(textParts.shift(), 'hex');
-    const encryptedText = Buffer.from(textParts.shift(), 'hex');
-    const authTag = Buffer.from(textParts.shift(), 'hex');
+    try {
+        let textParts = text.split(':');
+        let iv = Buffer.from(textParts.shift(), 'hex');
+        let encryptedText = Buffer.from(textParts.join(':'), 'hex');
+        let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+        let decrypted = decipher.update(encryptedText);
 
-    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-    decipher.setAuthTag(authTag);
-    const decrypted = Buffer.concat([decipher.update(encryptedText), decipher.final()]);
-    return decrypted.toString();
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+        return decrypted.toString();
+    } catch (error) {
+        console.error("Decryption failed:", error);
+        return null;
+    }
 }
 
-module.exports = {
-    encrypt,
-    decrypt
-};
+module.exports = { encrypt, decrypt };
