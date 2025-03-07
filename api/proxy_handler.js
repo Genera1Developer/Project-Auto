@@ -17,7 +17,8 @@ const proxyHandler = (req, res) => {
       followRedirects: false,
       timeout: 15000,
       agent: false,
-      rejectUnauthorized: false // Disable SSL certificate verification
+      rejectUnauthorized: false, // Disable SSL certificate verification
+      // Add support for explicitly setting a custom HTTP agent if needed
     };
 
     const hopByHopHeaders = [
@@ -53,7 +54,7 @@ const proxyHandler = (req, res) => {
         res.writeHead(504, { 'Content-Type': 'text/plain' });
         res.end('Proxy request timed out.');
       } else {
-        res.socket.destroy(); // Ensure socket is destroyed if headers are already sent
+        res.destroy(); // Destroy the response
       }
     });
 
@@ -63,7 +64,7 @@ const proxyHandler = (req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Proxy error.');
       } else {
-        res.socket.destroy(); // Ensure socket is destroyed if headers are already sent
+        res.destroy(); // Destroy the response
       }
     });
 
@@ -76,7 +77,7 @@ const proxyHandler = (req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request aborted.');
       } else {
-        res.socket.destroy(); // Ensure socket is destroyed if headers are already sent
+        res.destroy(); // Destroy the response
       }
     });
 
