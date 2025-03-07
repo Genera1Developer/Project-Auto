@@ -71,6 +71,11 @@ async function handleRequest(event) {
       method: event.request.method,
       headers: requestHeaders,
       redirect: 'manual',
+      integrity: event.request.integrity,
+      cache: event.request.cache,
+      credentials: event.request.credentials,
+      mode: event.request.mode,
+      referrerPolicy: event.request.referrerPolicy,
     };
 
     if (event.request.body) {
@@ -95,7 +100,12 @@ async function handleRequest(event) {
         method: event.request.method,
         headers: requestHeaders,
         redirect: 'manual',
-        body: fetchOptions.body
+        body: fetchOptions.body,
+        integrity: event.request.integrity,
+        cache: event.request.cache,
+        credentials: event.request.credentials,
+        mode: event.request.mode,
+        referrerPolicy: event.request.referrerPolicy,
       });
       redirectCount++;
     }
@@ -144,11 +154,13 @@ async function handleRequest(event) {
     headers.set('X-Robots-Tag', 'noindex, nofollow');
 
     const body = await response.blob();
-    return new Response(body, {
+    const init = {
       status: response.status,
       statusText: response.statusText,
       headers
-    });
+    };
+
+    return new Response(body, init);
   } catch (err) {
     console.error('Fetch error:', err);
     return new Response('Service Worker Error: ' + err.message, {
