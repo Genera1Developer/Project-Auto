@@ -60,6 +60,10 @@
             color: #388e3c;
             font-weight: bold;
         }
+        #tlsStatus {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -71,6 +75,7 @@
         </form>
         <div id="securityInfo">
             <p>All traffic is encrypted and proxied securely.</p>
+            <div id="tlsStatus"></div>
         </div>
     </div>
 
@@ -90,6 +95,18 @@
             // Redirect to proxy endpoint - ADJUST THIS TO YOUR ACTUAL ENDPOINT
             window.location.href = `/proxy?url=${encodeURIComponent(url)}`;
         });
+
+        // Check if the page is served over HTTPS
+        function checkTLS() {
+            if (window.location.protocol === "https:") {
+                document.getElementById('tlsStatus').innerHTML = '<p style="color: green;">Connection is secured with TLS.</p>';
+            } else {
+                document.getElementById('tlsStatus').innerHTML = '<p style="color: red;">Warning: Connection is NOT secured with TLS. Do not enter sensitive information.</p>';
+            }
+        }
+
+        // Call checkTLS on page load
+        window.onload = checkTLS;
     </script>
 </body>
 </html>
