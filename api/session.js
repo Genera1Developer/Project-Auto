@@ -1,64 +1,30 @@
+const session = require('express-session');
+const crypto = require('crypto');
 const security = require('./security');
 
-const sessionStore = {}; // In-memory session store (replace with DB in production)
-const SESSION_TIMEOUT = 3600; // Session timeout in seconds (1 hour)
-
-function createSession() {
-    const sessionId = security.generateSessionId();
-    const sessionKey = security.generateRandomKey(32); // AES key for encrypting session data
-    const iv = security.generateRandomIV(); // Initialization Vector for added security
-    sessionStore[sessionId] = {
-        key: sessionKey,
-        iv: iv,
-        data: {},
-        expiry: Date.now() + SESSION_TIMEOUT * 1000 // Set session expiry
-    };
-    return { sessionId, sessionKey, iv };
+// Function to generate a session secret
+function generateSessionSecret() {
+  return crypto.randomBytes(64).toString('hex');
 }
 
-function getSession(sessionId) {
-    const session = sessionStore[sessionId];
-    if (session && session.expiry > Date.now()) {
-        // Extend the session expiry on each access
-        session.expiry = Date.now() + SESSION_TIMEOUT * 1000;
-        return session;
-    } else {
-        deleteSession(sessionId); // Remove expired session
-        return null;
-    }
-}
+const sessionSecret = generateSessionSecret(); // Generate a strong session secret
 
-function updateSessionData(sessionId, data) {
-    const session = getSession(sessionId);
-    if (session) {
-        session.data = { ...session.data, ...data };
-    }
-}
-
-function encryptSessionData(data, key, iv) {
-    const dataString = JSON.stringify(data);
-    return security.encrypt(dataString, key, iv);
-}
-
-function decryptSessionData(encryptedData, key, iv) {
-    try {
-        const decryptedString = security.decrypt(encryptedData, key, iv);
-        return JSON.parse(decryptedString);
-    } catch (error) {
-        console.error("Decryption error:", error);
-        deleteSession(sessionId); // Invalidate session on decryption failure
-        return null; // Or handle the error as needed
-    }
-}
-
-function deleteSession(sessionId) {
-    delete sessionStore[sessionId];
+// Configure session middleware with encryption
+function configureSession(app) {
+  app.use(session({
+    secret: sessionSecret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: true, // Only send cookies over HTTPS
+      httpOnly: true, // Prevent client-side JavaScript access
+      sameSite: 'strict', // Help prevent CSRF attacks
+      maxAge: 60 * 60 * 1000, // Session duration (e.g., 1 hour)
+    },
+    store: new session.MemoryStore(), // Use a proper session store in production
+  }));
 }
 
 module.exports = {
-    createSession,
-    getSession,
-    updateSessionData,
-    encryptSessionData,
-    decryptSessionData
+  configureSession,
 };
