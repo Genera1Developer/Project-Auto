@@ -58,9 +58,16 @@
             margin-top: 5px;
         }
         .error-details-pre {
-            white-space: pre-wrap; /* or pre-line */
+            white-space: pre-wrap;
             word-break: break-all;
             text-align: left;
+        }
+
+        .error-code {
+            font-family: monospace;
+            background-color: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
         }
     </style>
 </head>
@@ -141,29 +148,29 @@
                     const parsedURL = new URL(sanitizedDecodedURL);
 
                     if (parsedURL.protocol !== "https:" ) {
-                        securityWarnings.push("URL does not use HTTPS, which is less secure.");
+                        securityWarnings.push("URL does not use HTTPS, which is less secure. Consider using HTTPS for enhanced security. Contact the website owner to enable HTTPS.");
                     }
                     else {
                         const recommendationElement = document.createElement('p');
                         recommendationElement.classList.add('security-recommendation');
-                        recommendationElement.textContent = "HTTPS connection established.";
+                        recommendationElement.textContent = "HTTPS connection established. Your connection to the website is encrypted.";
                         document.getElementById('security-warnings-container').appendChild(recommendationElement);
                     }
 
 
                     if (!["https:", "http:"].includes(parsedURL.protocol)) {
-                         securityWarnings.push("URL uses an invalid protocol.");
+                         securityWarnings.push(`URL uses an invalid protocol: <span class="error-code">${parsedURL.protocol}</span>. Only HTTPS and HTTP protocols are supported.`);
                          sanitizedDecodedURL = "#invalid-protocol";
                     }
 
                     if (parsedURL.hostname.includes("javascript:") || parsedURL.pathname.includes("javascript:")) {
-                        securityWarnings.push("URL contains potentially malicious patterns (javascript:).");
+                        securityWarnings.push("URL contains potentially malicious patterns (javascript:). Accessing this URL may compromise your security.");
                         sanitizedDecodedURL = "#potential-xss";
                     }
 
                     const blockedSchemes = ['ftp:', 'file:', 'data:', 'javascript:'];
                     if (blockedSchemes.some(scheme => sanitizedDecodedURL.startsWith(scheme))) {
-                        securityWarnings.push("URL uses a potentially dangerous scheme.");
+                        securityWarnings.push(`URL uses a potentially dangerous scheme: <span class="error-code">${sanitizedDecodedURL.substring(0, sanitizedDecodedURL.indexOf(':') + 1)}</span>. Access to this scheme is blocked for security reasons.`);
                         sanitizedDecodedURL = "#blocked-scheme";
                     }
 
@@ -171,7 +178,7 @@
                 } catch (e) {
                     console.error("URL parsing error:", e);
                     sanitizedDecodedURL = "#invalid-url";
-                    securityWarnings.push("URL is invalid.");
+                    securityWarnings.push("URL is invalid and could not be parsed.");
                 }
 
                 urlLink.href = sanitizedDecodedURL;
@@ -188,7 +195,7 @@
                 securityWarnings.forEach(warning => {
                     const warningElement = document.createElement('p');
                     warningElement.classList.add('security-warning');
-                    warningElement.textContent = `Security Warning: ${warning}`;
+                    warningElement.innerHTML = `Security Warning: ${warning}`;
                     securityWarningsContainer.appendChild(warningElement);
                 });
 
@@ -234,7 +241,7 @@
             } catch (e) {
                 console.error("Error parsing error context:", e);
                 errorData.errorContext = { message: "Failed to parse context", raw: errorContext };
-                document.getElementById('error-context').textContent = "Failed to parse context";
+                document.getElementById('error-context').textContent = "Failed to parse context. Raw context: " + errorContext;
             }
         }
 
