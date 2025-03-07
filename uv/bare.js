@@ -9,6 +9,7 @@ class Bare {
         this.integrityType = opts.integrityType || 'SHA-256';
         this.integrityHeaderName = opts.integrityHeaderName || 'X-Content-Integrity';
         this.integrityCheckFailed = false;
+        this.hkdfSalt = opts.hkdfSalt || 'salt';
     }
 
     async fetch(url, options = {}) {
@@ -32,7 +33,7 @@ class Bare {
     createProxy(url) {
         if (this.encryptionEnabled && this.encryptionKey) {
             try {
-                const encryptedUrl = this.encrypt(url, this.encryptionKey); //Don't await
+                const encryptedUrl = this.encrypt(url, this.encryptionKey);
                 return this.prefix + encodeURIComponent(encryptedUrl);
             } catch (error) {
                 console.error("Encryption failed:", error);
@@ -73,17 +74,12 @@ class Bare {
             const data = encoder.encode(plainText);
             const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Recommended IV length for AES-GCM
 
-            const importedKey = await window.crypto.subtle.importKey(
-                "raw",
-                encoder.encode(key),
-                { name: "AES-GCM", length: 256 }, // Specify key length
-                false,
-                ["encrypt", "decrypt"]
-            );
+            // Derive encryption key using HKDF
+            const derivedKey = await this.#deriveKey(key);
 
             const cipherTextBuffer = await window.crypto.subtle.encrypt(
                 { name: "AES-GCM", iv: iv },
-                importedKey,
+                derivedKey,
                 data
             );
 
@@ -118,19 +114,12 @@ class Bare {
             const iv = combined.slice(0, 12);
             const cipherTextBytes = combined.slice(12);
 
-
-            const encoder = new TextEncoder();
-            const importedKey = await window.crypto.subtle.importKey(
-                "raw",
-                encoder.encode(key),
-                { name: "AES-GCM", length: 256 }, // Specify key length
-                false,
-                ["encrypt", "decrypt"]
-            );
+            // Derive decryption key using HKDF
+            const derivedKey = await this.#deriveKey(key);
 
             const plainTextBuffer = await window.crypto.subtle.decrypt(
                 { name: "AES-GCM", iv: iv },
-                importedKey,
+                derivedKey,
                 cipherTextBytes
             );
 
@@ -161,6 +150,27 @@ class Bare {
             console.error("Integrity calculation error:", error);
             return null;
         }
+    }
+
+    async #deriveKey(key) {
+        const encoder = new TextEncoder();
+        const salt = encoder.encode(this.hkdfSalt);
+        const baseKey = await window.crypto.subtle.importKey(
+            "raw",
+            encoder.encode(key),
+            { name: "HKDF" },
+            false,
+            ["deriveKey", "deriveBits"]
+        );
+
+        const derivedKey = await window.crypto.subtle.deriveKey(
+            { name: "HKDF", hash: "SHA-256", salt: salt, info: new ArrayBuffer(0) },
+            baseKey,
+            { name: "AES-GCM", length: 256 },
+            false,
+            ["encrypt", "decrypt"]
+        );
+        return derivedKey;
     }
 
 
@@ -209,3 +219,4 @@ class Bare {
         }
     }
 }
+content:
