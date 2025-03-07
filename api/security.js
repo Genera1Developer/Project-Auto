@@ -1,27 +1,34 @@
 const crypto = require('crypto');
 
-const algorithm = 'aes-256-gcm';
-const key = crypto.randomBytes(32); // 256 bits
-//const iv = crypto.randomBytes(16); // Initialization vector - GCM handles this
+const algorithm = 'aes-256-cbc'; // Use a strong encryption algorithm
+const key = crypto.randomBytes(32); // Generate a secure, random key
+const iv = crypto.randomBytes(16); // Generate a secure, random IV
 
+// Function to encrypt data
 function encrypt(text) {
-  const iv = crypto.randomBytes(16); //GCM IV
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(text);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  const authTag = cipher.getAuthTag();
-  return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex'), authTag: authTag.toString('hex') };
+    const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
+// Function to decrypt data
 function decrypt(text) {
-  const iv = Buffer.from(text.iv, 'hex');
-  const encryptedText = Buffer.from(text.encryptedData, 'hex');
-  const authTag = Buffer.from(text.authTag, 'hex');
-  const decipher = crypto.createDecipheriv(algorithm, key, iv);
-  decipher.setAuthTag(authTag);
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
+    let iv = Buffer.from(text.iv, 'hex');
+    let encryptedText = Buffer.from(text.encryptedData, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
-module.exports = { encrypt, decrypt };
+// Function to generate a secure random token
+function generateToken(length = 64) {
+    return crypto.randomBytes(length).toString('hex');
+}
+
+module.exports = {
+    encrypt,
+    decrypt,
+    generateToken
+};
