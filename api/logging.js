@@ -3,7 +3,7 @@ const path = require('path');
 const { promisify } = require('util');
 
 const logDirectory = path.join(__dirname, '../logs');
-const logFile = path.join(logDirectory, 'proxy.js');
+const logFile = path.join(logDirectory, 'proxy.log'); // Changed to .log extension for clarity.
 
 // Use fs.promises for asynchronous file operations
 const fsPromises = {
