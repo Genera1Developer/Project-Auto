@@ -60,16 +60,22 @@
         const encodedURL = urlParams.get('url');
         const errorType = urlParams.get('type');
         const errorStack = urlParams.get('stack');
+        const errorContext = urlParams.get('context');
 
         const logError = (errorData) => {
             // Consider using a more robust error reporting mechanism in production.
             // Ensure the /log-error endpoint is properly secured and rate-limited.
+            // Implement a retry mechanism with exponential backoff.
             fetch('/log-error', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(errorData)
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Failed to send error log:', response.status);
+                }
             }).catch(error => console.error('Error sending error details to server:', error));
         }
 
@@ -86,7 +92,14 @@
                 urlDisplay.classList.add('error-url');
 
                 const urlLink = document.createElement('a');
-                const sanitizedDecodedURL = DOMPurify.sanitize(decodedURL, { USE_PROFILES: { html: true } });
+                let sanitizedDecodedURL = DOMPurify.sanitize(decodedURL, { USE_PROFILES: { html: true } });
+
+                try {
+                  new URL(sanitizedDecodedURL);
+                } catch (_) {
+                  sanitizedDecodedURL = "#invalid-url";
+                }
+
                 urlLink.href = sanitizedDecodedURL;
                 urlLink.textContent = decodedURL;
                 urlLink.target = "_blank";
@@ -122,6 +135,16 @@
             console.error(`Error Stack: ${errorStack}`);
             const sanitizedErrorStack = DOMPurify.sanitize(errorStack);
             errorData.errorStack = sanitizedErrorStack;
+        }
+        
+        if (errorContext) {
+          try {
+            const parsedContext = JSON.parse(errorContext);
+            errorData.errorContext = parsedContext;
+          } catch (e) {
+            console.error("Error parsing error context:", e);
+            errorData.errorContext = { message: "Failed to parse context", raw: errorContext };
+          }
         }
 
         // Send error data to the server
