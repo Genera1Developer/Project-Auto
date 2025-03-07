@@ -81,33 +81,33 @@ document.addEventListener('DOMContentLoaded', () => {
         let filenameMatch;
 
         // Attempt to extract filename from filename*
-        filenameMatch = contentDisposition.match(/filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/i);
+        filenameMatch = contentDisposition.match(/filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?/i);
         if (filenameMatch && filenameMatch[1]) {
-            try {
-                filename = decodeURIComponent(filenameMatch[1].replace(/['"]/g, ''));
-            } catch (e) {
-                console.warn("Failed to decode filename: ", e);
-                filename = filenameMatch[1];
-            }
+          try {
+            filename = decodeURIComponent(filenameMatch[1].replace(/['"]/g, ''));
+          } catch (e) {
+            console.warn("Failed to decode filename: ", e);
+            filename = filenameMatch[1];
+          }
         } else {
-            // Attempt to extract filename from filename=
-            filenameMatch = contentDisposition.match(/filename=(["']?)([^"';\r\n]*)\1?/i);
-            if (filenameMatch && filenameMatch[2]) {
-                filename = filenameMatch[2];
-            }
+          // Attempt to extract filename from filename=
+          filenameMatch = contentDisposition.match(/filename=(["']?)([^"';\r\n]*)\1?/i);
+          if (filenameMatch && filenameMatch[2]) {
+            filename = filenameMatch[2];
+          }
         }
-        
+
 
         downloadLink.href = blobUrl;
         downloadLink.download = filename;
         downloadLink.style.display = 'block';
         downloadButton.style.display = 'block';
 
-        downloadLink.onclick = () => {
+        downloadLink.addEventListener('click', () => {
           setTimeout(() => {
             window.URL.revokeObjectURL(blobUrl);
           }, 100);
-        };
+        });
       }
     } catch (error) {
       console.error('Error fetching data:', error);
