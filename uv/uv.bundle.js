@@ -405,7 +405,7 @@
         const ivB64 = n.encodeBase64(String.fromCharCode(...iv));
         const cipherB64 = n.encodeBase64(String.fromCharCode(...Array.from(new Uint8Array(cipher))));
         const aadB64 = additionalData ? n.encodeBase64(JSON.stringify(additionalData)) : "";
-        return `${saltB64}.${ivB64}.${cipherB64}.${aadB64}`;
+        return `${saltB64}.${ivB64}.${cipherB64}${aadB64 ? `.${aadB64}` : ""}`;
       } catch (error) {
         console.error("Authenticated encryption error:", error);
         throw new Error(`Authenticated encryption failed: ${error.message}`);
@@ -424,7 +424,11 @@
         throw new Error("Missing shared secret for authenticated decryption.");
       }
       try {
-        const [saltB64, ivB64, cipherB64, aadB64] = encryptedData.split(".");
+        const parts = encryptedData.split(".");
+        const saltB64 = parts[0];
+        const ivB64 = parts[1];
+        const cipherB64 = parts[2];
+        const aadB64 = parts.length > 3 ? parts[3] : "";
         if (!saltB64 || !ivB64 || !cipherB64) {
           throw new Error("Invalid encrypted data format.");
         }
