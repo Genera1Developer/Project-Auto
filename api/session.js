@@ -1,51 +1,91 @@
-const security = require('./security');
-const crypto = require('crypto');
+const { generateSecureKey, encryptData, decryptData } = require('./security');
 
-const sessionKeys = {}; // In-memory session key storage (DO NOT USE IN PRODUCTION)
+// Session storage (in-memory for simplicity, replace with a database in production)
+const sessions = {};
 
-function createSession(userId) {
-  const sessionId = crypto.randomBytes(16).toString('hex'); // Generate a random session ID
-  const sessionKey = security.generateSecureKey(32); // 32 bytes = 64 hex chars
-  const sessionExpiry = new Date(Date.now() + 3600000); // Session expires in 1 hour (1 hour = 3600000 ms)
-  sessionKeys[sessionId] = { userId, key: sessionKey, expiry: sessionExpiry };
-  return { sessionId, sessionKey };
+// Function to create a new session
+function createSession() {
+  const sessionId = generateSecureKey(32); // 32 bytes = 64 hex characters
+  const encryptionKey = generateSecureKey(32); // Generate encryption key for session
+  sessions[sessionId] = {
+    encryptionKey: encryptionKey,
+    data: {},
+    createdAt: Date.now(),
+  };
+  return { sessionId, encryptionKey };
 }
 
-function getSession(sessionId) {
-  const session = sessionKeys[sessionId];
-  if (session && session.expiry > new Date()) {
-    return session;
-  } else {
-    deleteSession(sessionId); // Remove expired session
+// Function to get session data
+function getSessionData(sessionId, encryptionKey) {
+  const session = sessions[sessionId];
+  if (!session) {
     return null;
   }
-}
 
-function deleteSession(sessionId) {
-  delete sessionKeys[sessionId];
-}
-
-function protectRoute(req, res, next) {
-  const sessionId = req.headers['x-session-id']; // Get session ID from header
-  const sessionKey = req.headers['x-session-key']; // Get session key from header
-
-  if (!sessionId || !sessionKey) {
-    return res.status(401).json({ error: 'Unauthorized: Missing session credentials' });
+  if (!encryptionKey) {
+        console.warn("Encryption key missing for session: ", sessionId);
+        return null;
   }
 
-  const session = getSession(sessionId);
+  try {
+        const decryptedData = {};
+        for (const key in session.data) {
+            decryptedData[key] = decryptData(session.data[key], encryptionKey);
+        }
+        return decryptedData;
+    } catch (error) {
+        console.error("Decryption error: ", error);
+        return null;
+    }
+}
 
-  if (!session || session.key !== sessionKey) {
-    return res.status(401).json({ error: 'Unauthorized: Invalid session credentials' });
+// Function to update session data
+function updateSessionData(sessionId, encryptionKey, newData) {
+  const session = sessions[sessionId];
+  if (!session) {
+    return false;
   }
 
-  req.userId = session.userId; // Attach user ID to the request object
-  next();
+   if (!encryptionKey) {
+        console.warn("Encryption key missing for session: ", sessionId);
+        return false;
+  }
+
+
+  try {
+        for (const key in newData) {
+            session.data[key] = encryptData(newData[key], encryptionKey);
+        }
+        return true;
+    } catch (error) {
+        console.error("Encryption error: ", error);
+        return false;
+    }
 }
+
+// Function to destroy a session
+function destroySession(sessionId) {
+  delete sessions[sessionId];
+}
+
+// Session timeout mechanism (example: 1 hour)
+const SESSION_TIMEOUT = 3600000;
+
+function cleanUpSessions() {
+  const now = Date.now();
+  for (const sessionId in sessions) {
+    if (now - sessions[sessionId].createdAt > SESSION_TIMEOUT) {
+      destroySession(sessionId);
+    }
+  }
+}
+
+// Clean up sessions periodically (every 30 minutes)
+setInterval(cleanUpSessions, 1800000);
 
 module.exports = {
   createSession,
-  getSession,
-  deleteSession,
-  protectRoute,
+  getSessionData,
+  updateSessionData,
+  destroySession,
 };
