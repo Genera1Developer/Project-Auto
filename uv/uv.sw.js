@@ -100,17 +100,13 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    (async () => {
-      try {
-        const response = await fetch(event.request);
-        return response;
-      } catch (error) {
+    fetch(event.request)
+      .catch(error => {
         console.error('Fetch error for original request:', error);
         return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
           status: 500,
           headers: { 'Content-Type': 'text/html; charset=utf-8' },
         });
-      }
-    })()
+      })
   );
 });
