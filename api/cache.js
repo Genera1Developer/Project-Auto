@@ -14,13 +14,13 @@ const isValidURL = (url) => {
     }
 };
 
-const getCache = async (url) => {
+const getCache = (url) => {
     if (!isValidURL(url)) {
         console.warn(`Attempted to get cache with invalid URL: ${url}`);
         return null;
     }
     try {
-        const value = cache.get(url); // Remove await for synchronous operation
+        const value = cache.get(url);
         return value === undefined ? null : value;
     } catch (error) {
         console.error(`Cache get operation failed for URL: ${url}: ${error.message}`);
@@ -28,7 +28,7 @@ const getCache = async (url) => {
     }
 };
 
-const setCache = async (url, data, ttl = 3600) => {
+const setCache = (url, data, ttl = 3600) => {
     if (!isValidURL(url)) {
         console.warn(`Attempted to set cache with invalid URL: ${url}`);
         return false;
@@ -38,7 +38,7 @@ const setCache = async (url, data, ttl = 3600) => {
         return false;
     }
     try {
-        cache.set(url, data, ttl); // Remove await for synchronous operation
+        cache.set(url, data, ttl);
         return true;
     } catch (error) {
         console.error(`Cache set operation failed for URL: ${url}: ${error.message}`);
@@ -46,13 +46,13 @@ const setCache = async (url, data, ttl = 3600) => {
     }
 };
 
-const clearCache = async (url) => {
+const clearCache = (url) => {
     if (!isValidURL(url)) {
         console.warn(`Attempted to clear cache with invalid URL: ${url}`);
         return false;
     }
     try {
-        const deleted = cache.del(url); // Remove await for synchronous operation
+        const deleted = cache.del(url);
         return deleted > 0;
     } catch (error) {
         console.error(`Cache clear operation failed for URL: ${url}: ${error.message}`);
@@ -60,9 +60,9 @@ const clearCache = async (url) => {
     }
 };
 
-const flushCache = async () => {
+const flushCache = () => {
     try {
-        cache.flushAll(); // Remove await for synchronous operation
+        cache.flushAll();
         return true;
     } catch (error) {
         console.error(`Error flushing cache: ${error.message}`);
@@ -70,18 +70,18 @@ const flushCache = async () => {
     }
 };
 
-const getCacheStats = async () => {
+const getCacheStats = () => {
     try {
-        return cache.getStats(); // Remove await for synchronous operation
+        return cache.getStats();
     } catch (error) {
         console.error(`Error getting cache stats: ${error.message}`);
         return null;
     }
 };
 
-const getCacheKeys = async () => {
+const getCacheKeys = () => {
     try {
-        return cache.keys(); // Remove await for synchronous operation
+        return cache.keys();
     } catch (error) {
         console.error(`Error getting cache keys: ${error.message}`);
         return null;
