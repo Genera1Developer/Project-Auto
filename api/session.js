@@ -7,8 +7,10 @@ const sessionStore = {};
 // Session timeout in milliseconds (e.g., 30 minutes)
 const SESSION_TIMEOUT = 30 * 60 * 1000;
 
+// Consider using httpOnly and secure flags for cookies
+
 function createSession(userId) {
-  const sessionId = generateSecureKey(32); // Generate a unique session ID, consider UUID
+  const sessionId = crypto.randomUUID(); // Generate a UUID session ID
   const encryptionKey = generateSecureKey(16); // AES key
   const sessionData = {
     userId: userId,
@@ -38,6 +40,11 @@ function getSession(sessionId) {
 
   try {
     const decryptedData = decryptData(session.encryptedData, session.encryptionKey);
+    if (!decryptedData) {
+        console.warn("Decrypted data is empty. Possible tampering.");
+        destroySession(sessionId);
+        return null;
+    }
     const sessionData = JSON.parse(decryptedData);
     // Update last active timestamp on access
     session.lastActive = Date.now();
