@@ -1,39 +1,56 @@
-import { v4 as uuidv4 } from 'uuid';
-import { encrypt, decrypt } from '../encryption/key_management.js';
+const { generateSecureKey } = require('./security');
 
-const SESSION_COOKIE_NAME = 'proxy_session';
-const sessionStore = {};
+// Session storage (in-memory for simplicity, use a database in production)
+const sessions = {};
 
-function createSession(res) {
-    const sessionId = uuidv4();
-    const encryptedSessionId = encrypt(sessionId);
-    res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict'
-    });
-    sessionStore[sessionId] = {};
+// Session timeout (in milliseconds)
+const SESSION_TIMEOUT = 3600000; // 1 hour
+
+// Function to create a new session
+function createSession() {
+    const sessionId = generateSecureKey(32); // 32 bytes = 256 bits
+    const session = {
+        id: sessionId,
+        createdAt: Date.now(),
+        data: {}
+    };
+    sessions[sessionId] = session;
     return sessionId;
 }
 
-export function attachSession(req, res, next) {
-    let sessionId;
-    const encryptedSessionId = req.cookies[SESSION_COOKIE_NAME];
-
-    if (!encryptedSessionId) {
-        sessionId = createSession(res);
-    } else {
-        try {
-            sessionId = decrypt(encryptedSessionId);
-            if (!sessionStore[sessionId]) {
-                sessionStore[sessionId] = {};
-            }
-        } catch (error) {
-            console.error("Session decryption error:", error);
-            sessionId = createSession(res);
+// Function to get a session by ID
+function getSession(sessionId) {
+    const session = sessions[sessionId];
+    if (session) {
+        // Check if the session has expired
+        if (Date.now() - session.createdAt > SESSION_TIMEOUT) {
+            deleteSession(sessionId);
+            return null;
         }
+        return session;
     }
-
-    req.session = sessionStore[sessionId];
-    next();
+    return null;
 }
+
+// Function to update session data
+function updateSessionData(sessionId, data) {
+    const session = getSession(sessionId);
+    if (session) {
+        session.data = { ...session.data, ...data };
+        session.createdAt = Date.now(); // Reset the timeout
+        return true;
+    }
+    return false;
+}
+
+// Function to delete a session
+function deleteSession(sessionId) {
+    delete sessions[sessionId];
+}
+
+module.exports = {
+    createSession,
+    getSession,
+    updateSessionData,
+    deleteSession
+};
