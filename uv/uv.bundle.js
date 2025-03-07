@@ -118,14 +118,15 @@
       try {
         const encoder = new TextEncoder();
         const encodedData = encoder.encode(data);
-        return await crypto.subtle.encrypt(
+        const cipher = await crypto.subtle.encrypt(
           {
             name: "AES-GCM",
-            iv: iv
+            iv
           },
           key,
           encodedData
         );
+        return cipher;
       } catch (error) {
         console.error("Encryption error:", error);
         throw new Error(`Encryption failed: ${error.message}`);
@@ -143,16 +144,16 @@
         throw new Error("Missing data, key, or IV for decryption.");
       }
       try {
-        const decryptedData = await crypto.subtle.decrypt(
+        const decipher = await crypto.subtle.decrypt(
           {
             name: "AES-GCM",
-            iv: iv
+            iv
           },
           key,
           data
         );
         const decoder = new TextDecoder();
-        return decoder.decode(decryptedData);
+        return decoder.decode(decipher);
       } catch (error) {
         console.error("Decryption error:", error);
         throw new Error(`Decryption failed: ${error.message}`);
@@ -207,8 +208,7 @@
           "jwk",
           jwk,
           {
-            name: "AES-GCM",
-            length: 256
+            name: "AES-GCM"
           },
           true,
           keyUsages
@@ -225,6 +225,57 @@
      * @returns {Uint8Array} The generated IV.
      */
     generateIV: (length = 12) => {
+      return crypto.getRandomValues(new Uint8Array(length));
+    },
+
+    /**
+     * Derives a key from a password using PBKDF2.
+     * @param {string} password The password to derive the key from.
+     * @param {ArrayBuffer} salt The salt.
+     * @param {number} iterations The number of iterations.
+     * @returns {Promise<CryptoKey>} The derived key.
+     */
+    deriveKey: async (password, salt, iterations = 100000) => {
+      if (!password || !salt) {
+        throw new Error("Missing password or salt for key derivation.");
+      }
+
+      try {
+        const encoder = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey(
+          "raw",
+          encoder.encode(password),
+          "PBKDF2",
+          false,
+          ["deriveKey"]
+        );
+
+        return await crypto.subtle.deriveKey(
+          {
+            name: "PBKDF2",
+            salt: salt,
+            iterations: iterations,
+            hash: "SHA-256"
+          },
+          keyMaterial,
+          {
+            name: "AES-GCM",
+            length: 256
+          },
+          true,
+          ["encrypt", "decrypt"]
+        );
+      } catch (error) {
+        console.error("Key derivation error:", error);
+        throw new Error(`Key derivation failed: ${error.message}`);
+      }
+    },
+    /**
+     * Generates a salt.
+     * @param {number} length The length of the salt. Defaults to 16.
+     * @returns {Uint8Array} The generated salt.
+     */
+    generateSalt: (length = 16) => {
       return crypto.getRandomValues(new Uint8Array(length));
     }
   };
