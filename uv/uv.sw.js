@@ -94,6 +94,10 @@ self.addEventListener('fetch', (event) => {
           headers.delete('x-content-type-options');
           headers.delete('strict-transport-security');
           headers.delete('upgrade-insecure-requests');
+	  headers.delete('public-key-pins');
+          headers.delete('public-key-pins-report-only');
+	  headers.delete('x-powered-by');
+	  headers.delete('server');
 
           let responseBody;
           try {
@@ -152,11 +156,12 @@ self.addEventListener('fetch', (event) => {
 
               // Inject the nonce into script tags in the response
               responseText = responseText.replace(/<script(?=[^>]*(?:src=['"]))?/g, (match) => `${match} nonce="${nonce}"`);
+	      responseText = responseText.replace(/<style(?=[^>]*(?:src=['"]))?/g, (match) => `${match} nonce="${nonce}"`);
 
           } catch (error) {
             console.error('TrustedTypes error:', error);
           }
-          headers.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+          headers.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'nonce-${nonce}' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
           headers.set('X-Content-Type-Options', 'nosniff');
           headers.set('X-Frame-Options', 'DENY');
           headers.set('X-XSS-Protection', '1; mode=block');
