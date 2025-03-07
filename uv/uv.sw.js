@@ -178,6 +178,9 @@ self.addEventListener('fetch', (event) => {
            // Mitigate MIME confusion attack
            sanitizedHeaders.set('Content-Type', 'text/html; charset=utf-8');
            sanitizedHeaders.delete('Content-Length');
+	   sanitizedHeaders.delete('ETag');
+	   sanitizedHeaders.set('Cache-Control', 'no-store');
+	   sanitizedHeaders.set('Pragma', 'no-cache');
 
           return new Response(responseText, {
             status: response.status,
@@ -203,6 +206,9 @@ self.addEventListener('fetch', (event) => {
 		sanitizedHeaders.set('X-XSS-Protection', '1; mode=block');
 		sanitizedHeaders.set('Content-Type', 'application/javascript; charset=utf-8');
 		sanitizedHeaders.delete('Content-Length');
+		sanitizedHeaders.delete('ETag');
+		sanitizedHeaders.set('Cache-Control', 'no-store');
+		sanitizedHeaders.set('Pragma', 'no-cache');
 
 		return new Response(responseText, {
 			status: response.status,
