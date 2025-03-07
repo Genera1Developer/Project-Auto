@@ -21,18 +21,22 @@ structlog.configure(
 
 logger = structlog.get_logger()
 
-def log_request(method, url, status_code, response_time, client_ip, content_length=None):
+def log_request(method, url, status_code, response_time, client_ip, content_length=None, error=None):
     """Logs proxy requests with detailed information using structlog."""
-    logger.info(
-        "proxy_request",
-        method=method,
-        url=url,
-        status_code=status_code,
-        response_time=response_time,
-        client_ip=client_ip,
-        content_length=content_length,
-        hostname=get_hostname()
-    )
+    log_data = {
+        "method": method,
+        "url": url,
+        "status_code": status_code,
+        "response_time": response_time,
+        "client_ip": client_ip,
+        "hostname": get_hostname()
+    }
+    if content_length is not None:
+        log_data["content_length"] = content_length
+    if error is not None:
+        log_data["error"] = str(error)  # Ensure error is serializable
+
+    logger.info("proxy_request", **log_data)
 
 def setup_logging():
     """Sets up structlog logging."""
@@ -51,6 +55,10 @@ if __name__ == '__main__':
     setup_logging()
     hostname = get_hostname()
     log_request("GET", "https://www.example.com", 200, 0.15, "192.168.1.1", 1234)
-    log_request("POST", "https://api.example.com/data", 500, 1.23, "10.0.0.5", 56789)
+    log_request("POST", "https://api.example.com/data", 500, 1.23, "10.0.0.5", 56789, error="Failed to process data")
     log_request("PUT", "https://api.example.com/resource", 201, 0.50, "172.16.0.10", 1024)
+    try:
+        raise ValueError("Simulated error")
+    except ValueError as e:
+        log_request("GET", "https://error.example.com", 500, 0.05, "127.0.0.1", error=e)
     logger.info("Application started", hostname=hostname, environment=get_environment())
