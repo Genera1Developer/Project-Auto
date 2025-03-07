@@ -58,6 +58,15 @@ const sanitizedHeaders = (headers) => {
 
 const tlsRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '0';
 
+const secureCiphers = [
+  'TLS_AES_128_GCM_SHA256',
+  'TLS_AES_256_GCM_SHA384',
+  'TLS_CHACHA20_POLY1305_SHA256',
+  'ECDHE-RSA-AES128-GCM-SHA256',
+  'ECDHE-RSA-AES256-GCM-SHA384',
+  'ECDHE-RSA-CHACHA20-POLY1305'
+].join(':');
+
 async function handleRequest(req, res) {
   try {
     const urlString = req.url.slice(1);
@@ -93,15 +102,9 @@ async function handleRequest(req, res) {
       servername: target,
       rejectUnauthorized: tlsRejectUnauthorized,
       secureProtocol: 'TLSv1_2_method',
-      ciphers: [
-        'TLS_AES_128_GCM_SHA256',
-        'TLS_AES_256_GCM_SHA384',
-        'TLS_CHACHA20_POLY1305_SHA256',
-        'ECDHE-RSA-AES128-GCM-SHA256',
-        'ECDHE-RSA-AES256-GCM-SHA384',
-        'ECDHE-RSA-CHACHA20-POLY1305'
-      ].join(':'),
-      minVersion: 'TLSv1.2'
+      ciphers: secureCiphers,
+      minVersion: 'TLSv1.2',
+      maxVersion: 'TLSv1.3'
     };
 
     options.headers['x-forwarded-for'] = req.socket.remoteAddress || req.connection.remoteAddress || crypto.randomBytes(16).toString('hex');
@@ -156,6 +159,10 @@ async function handleRequest(req, res) {
             if (expiryDate < new Date()) {
               console.warn(`Certificate for ${target} has expired.`);
             }
+          }
+
+          if (socket.authorized === false) {
+              console.error(`TLS handshake failed for ${target}: ${socket.authorizationError}`);
           }
         }
       });
