@@ -1,6 +1,12 @@
 export function encode(str) {
   try {
-    return btoa(String.fromCharCode.apply(null, new TextEncoder().encode(str)));
+    const utf8Encode = new TextEncoder();
+    const encoded = utf8Encode.encode(str);
+    let binaryString = '';
+    encoded.forEach((byte) => {
+      binaryString += String.fromCharCode(byte);
+    });
+    return btoa(binaryString);
   } catch (e) {
     console.error("Encoding error:", e);
     return null;
@@ -9,7 +15,13 @@ export function encode(str) {
 
 export function decode(str) {
   try {
-    return new TextDecoder().decode(new Uint8Array(Array.from(atob(str), c => c.charCodeAt(0))));
+    const binaryString = atob(str);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const utf8Decode = new TextDecoder();
+    return utf8Decode.decode(bytes);
   } catch (e) {
     console.error("Decoding error:", e);
     return null;
