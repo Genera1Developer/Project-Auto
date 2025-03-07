@@ -125,7 +125,7 @@
         };
 
         if (additionalData) {
-          cipherOptions.additionalData = new TextEncoder().encode(JSON.stringify(additionalData));
+          cipherOptions.additionalData = encoder.encode(JSON.stringify(additionalData));
         }
 
         const cipher = await crypto.subtle.encrypt(
@@ -227,7 +227,7 @@
           {
             name: "AES-GCM"
           },
-          true,
+          false,
           keyUsages
         );
       } catch (error) {
@@ -279,7 +279,7 @@
             name: "AES-GCM",
             length: 256
           },
-          true,
+          false,
           ["encrypt", "decrypt"]
         );
       } catch (error) {
@@ -441,6 +441,14 @@
       const randomBytes = crypto.getRandomValues(new Uint8Array(length));
       return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
     },
+
+    /**
+     * Generates a secure and unique session ID.
+     * @returns {string} The generated session ID.
+     */
+    generateSessionId: () => {
+      return n.generateRandomId(32);
+    }
   };
   class i extends EventTarget {
     constructor() {
