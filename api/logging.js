@@ -68,7 +68,12 @@ async function initializeLogging() {
 
 // Call initializeLogging function immediately
 (async () => {
-    await initializeLogging();
+    try {
+        await initializeLogging();
+    } catch (error) {
+        console.error('Failed to initialize logging during startup:', error);
+        process.exit(1);
+    }
 })();
 
 process.on('uncaughtException', async (err) => {
