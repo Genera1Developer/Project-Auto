@@ -5,13 +5,15 @@ async function generateRandomToken(length = 32) {
     throw new TypeError('Length must be a positive integer.');
   }
 
-  try {
-    const buffer = await crypto.randomBytes(length);
-    return buffer.toString('hex');
-  } catch (err) {
-    console.error('Error generating random token:', err);
-    throw new Error('Failed to generate random token.');
-  }
+  return new Promise((resolve, reject) => {
+    crypto.randomBytes(length, (err, buffer) => {
+      if (err) {
+        console.error('Error generating random token:', err);
+        return reject(new Error('Failed to generate random token.'));
+      }
+      resolve(buffer.toString('hex'));
+    });
+  });
 }
 
 function hashString(string, salt) {
@@ -32,12 +34,13 @@ function hashString(string, salt) {
 }
 
 function verifyHash(string, hash, salt) {
-  if (!string || typeof string !== 'string' || !hash || typeof hash !== 'string' || !salt || typeof salt !== 'string') {
+  if (typeof string !== 'string' || !string || typeof hash !== 'string' || !hash || typeof salt !== 'string' || !salt) {
     return false;
   }
 
   try {
     const computedHash = hashString(string, salt);
+    if (computedHash.length !== hash.length) return false;
     return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(computedHash, 'hex'));
 
   } catch (error) {
