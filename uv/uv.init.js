@@ -11,4 +11,5 @@ const UV_CONFIG = {
     cloak: '/uv/uv.cloak.js',
     blacklist: [],
     loglevel: 'info',
+    // Add more configuration options as needed
 };
