@@ -49,21 +49,21 @@ const proxyHandler = (req, res) => {
     proxyReq.setTimeout(options.timeout, () => {
       console.error('Proxy request timed out.');
       proxyReq.destroy(new Error('Proxy request timed out.'));
-      if (!res.headersSent) {
-        res.writeHead(504, { 'Content-Type': 'text/plain' });
+      if (!res.writableEnded) {
+        if (!res.headersSent) {
+          res.writeHead(504, { 'Content-Type': 'text/plain' });
+        }
         res.end('Proxy request timed out.');
-      } else {
-        res.socket.destroy();
       }
     });
 
     proxyReq.on('error', (err) => {
       console.error('Proxy request error:', err);
-      if (!res.headersSent) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
+      if (!res.writableEnded) {
+        if (!res.headersSent) {
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
+        }
         res.end('Proxy error.');
-      } else {
-        res.socket.destroy();
       }
     });
 
@@ -72,11 +72,11 @@ const proxyHandler = (req, res) => {
     req.on('error', (err) => {
       console.error('Request pipe error:', err);
       proxyReq.destroy(err);
-      if (!res.headersSent) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
+      if (!res.writableEnded) {
+        if (!res.headersSent) {
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
+        }
         res.end('Request aborted.');
-      } else {
-        res.socket.destroy();
       }
     });
 
@@ -86,7 +86,9 @@ const proxyHandler = (req, res) => {
 
   } catch (error) {
     console.error('URL parsing error:', error);
-    return res.status(400).send('Invalid URL.');
+    if (!res.headersSent) {
+        return res.status(400).send('Invalid URL.');
+    }
   }
 };
 
