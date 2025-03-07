@@ -8,5 +8,5 @@ self.__uv$config = {
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
     injectedScripts: '/uv/uv.injected.js',
-    xorKey: 'your-secret-xor-key', // Replace with a strong, randomly generated key
+    xorKey: 'PLEASE_REPLACE_WITH_SECURE_KEY',
 };
