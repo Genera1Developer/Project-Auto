@@ -122,6 +122,7 @@ async function handleRequest(req, res) {
       delete resHeaders['content-security-policy'];
       delete resHeaders['x-frame-options'];
       delete resHeaders['x-xss-protection'];
+      delete resHeaders['content-length']; // Remove content-length to prevent HTTP smuggling
 
       res.writeHead(proxyRes.statusCode, resHeaders);
 
