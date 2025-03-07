@@ -76,6 +76,10 @@ input[type="text"], input[type="password"] {
   width: 100%;
   box-sizing: border-box; /* Prevents padding from affecting width */
   font-family: monospace; /* makes input clearly monospace */
+  /* Prevent autocomplete for sensitive fields */
+  autocomplete: off;
+  /* Disable spellcheck which could leak data */
+  spellcheck: false;
 }
 
 input:invalid {
@@ -112,4 +116,20 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 4px;
 }
-content:
+
+/* Styles for error messages */
+.error-message {
+    color: #a94442;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+/* Focus state for improved accessibility and security */
+input:focus,
+button:focus {
+    outline: 2px solid #007bff; /* Add a visible focus ring */
+    outline-offset: 2px;
+}
