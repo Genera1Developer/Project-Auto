@@ -53,7 +53,7 @@ const proxyHandler = (req, res) => {
         res.writeHead(504, { 'Content-Type': 'text/plain' });
         res.end('Proxy request timed out.');
       } else {
-        res.end(); // Ensure response is closed if headers are already sent
+        res.socket.destroy(); // Ensure socket is destroyed if headers are already sent
       }
     });
 
@@ -63,7 +63,7 @@ const proxyHandler = (req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Proxy error.');
       } else {
-        res.end(); // Ensure response is closed if headers are already sent
+        res.socket.destroy(); // Ensure socket is destroyed if headers are already sent
       }
     });
 
@@ -76,7 +76,7 @@ const proxyHandler = (req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request aborted.');
       } else {
-        res.end(); // Ensure response is closed if headers are already sent
+        res.socket.destroy(); // Ensure socket is destroyed if headers are already sent
       }
     });
 
