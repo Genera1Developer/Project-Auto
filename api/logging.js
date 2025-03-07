@@ -5,7 +5,6 @@ const { promisify } = require('util');
 const logDirectory = path.join(__dirname, '../logs');
 const logFile = path.join(logDirectory, 'proxy.log');
 
-// Use fs.promises for asynchronous file operations
 const fsPromises = {
     appendFile: promisify(fs.appendFile),
     mkdir: promisify(fs.mkdir),
@@ -54,7 +53,6 @@ const log = async (message) => {
     }
 };
 
-// Initialize logging
 async function initializeLogging() {
     try {
         await ensureLogDirectoryExists();
@@ -62,11 +60,10 @@ async function initializeLogging() {
         console.log('Logging initialized');
     } catch (error) {
         console.error('Failed to initialize logging:', error);
-        process.exit(1); // Exit if logging initialization fails.
+        process.exit(1);
     }
 }
 
-// Call initializeLogging function immediately
 (async () => {
     try {
         await initializeLogging();
@@ -97,5 +94,14 @@ process.on('unhandledRejection', async (reason, promise) => {
         process.exit(1);
     }
 });
+
+const shutdownHandler = async (signal) => {
+    console.log(`Received ${signal}.  Closing log stream and exiting.`);
+    await log(`Process terminated with signal ${signal}`);
+    process.exit(1);
+};
+
+process.on('SIGINT', shutdownHandler);
+process.on('SIGTERM', shutdownHandler);
 
 module.exports = { log };
