@@ -32,36 +32,29 @@ self.addEventListener('fetch', event => {
           return response;
         }
 
-        // Clone the request since it can only be consumed once
         const fetchRequest = event.request.clone();
 
         return fetch(fetchRequest)
           .then(response => {
-            // Check if we received a valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
               console.log('ServiceWorker: Invalid response:', response ? response.status : 'No response');
               return response;
             }
 
-            // Clone the response to save it into the cache
             const responseToCache = response.clone();
 
             return caches.open(CACHE_NAME)
               .then(cache => {
-                // Put the response in the cache
-                return cache.put(event.request, responseToCache);
-              })
-              .then(() => {
+                cache.put(event.request, responseToCache);
                 console.log('ServiceWorker: Caching new resource:', event.request.url);
                 return response;
               })
               .catch(err => {
                 console.warn('ServiceWorker: Cache PUT failed.', err);
-                return response; // Return the original response even if caching fails
+                return response;
               });
           })
           .catch(() => {
-            // If the network is unavailable, get the cached offline page
             console.log('ServiceWorker: Network request failed, serving offline page');
             return caches.match('/offline.html');
           });
@@ -75,15 +68,11 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            if (cacheName.startsWith('my-site-cache')) {
-              console.log('ServiceWorker: Deleting old cache:', cacheName);
-              return caches.delete(cacheName);
-            }
-          }
-          return undefined;
-        }).filter(promise => promise !== undefined)
+        cacheNames.filter(cacheName => cacheName.startsWith('my-site-cache') && cacheName !== CACHE_NAME)
+          .map(cacheName => {
+            console.log('ServiceWorker: Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          })
       );
     }).then(() => {
       console.log('ServiceWorker: Activated and ready to handle fetches!');
