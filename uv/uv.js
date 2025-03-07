@@ -22,16 +22,28 @@ const passthroughHeaders = new Set([
   'connection',
   'transfer-encoding',
   'pragma',
-  'age'
+  'age',
+  'location'
 ]);
 
 async function handleRequest(event) {
   try {
-    const response = await fetch(event.request);
+    let url = event.request.url;
+    // Remove the /service/ prefix if it exists
+    if (new URL(event.request.url).pathname.startsWith('/service/')) {
+      url = url.replace('/service/', '/');
+    }
 
-    if (!response.ok) {
-      console.error('Fetch failed:', response.status, response.statusText, event.request.url);
-      return new Response(`Service Worker Error: ${response.status} ${response.statusText} - ${event.request.url}`, {
+    const response = await fetch(url, {
+      method: event.request.method,
+      headers: event.request.headers,
+      body: event.request.body,
+      redirect: 'manual' // Important to handle redirects manually
+    });
+
+    if (!response.ok && response.status !== 301 && response.status !== 302 && response.status !== 307 && response.status !== 308) {
+      console.error('Fetch failed:', response.status, response.statusText, url);
+      return new Response(`Service Worker Error: ${response.status} ${response.statusText} - ${url}`, {
         status: response.status,
         statusText: 'Service Worker Error',
         headers: { 'Content-Type': 'text/plain' }
@@ -42,6 +54,14 @@ async function handleRequest(event) {
     for (const [key, value] of response.headers.entries()) {
       if (passthroughHeaders.has(key.toLowerCase())) {
         headers.set(key, value);
+      }
+    }
+
+    // Handle redirects manually
+    if (response.status === 301 || response.status === 302 || response.status === 307 || response.status === 308) {
+      const redirectURL = response.headers.get('location');
+      if (redirectURL) {
+        headers.set('location', redirectURL); // Modify the location header to point to the correct URL
       }
     }
 
@@ -61,11 +81,5 @@ async function handleRequest(event) {
 }
 
 self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-
-  if (url.pathname.startsWith('/service/')) {
-    event.respondWith(handleRequest(event));
-  } else {
-    event.respondWith(handleRequest(event));
-  }
+  event.respondWith(handleRequest(event));
 });
