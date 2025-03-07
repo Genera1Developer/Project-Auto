@@ -98,21 +98,26 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    fetch(event.request).then(response => {
-      // Check if the response is an Opaque response
-      if (response.type === 'opaque') {
-        return new Response('<h1>Error: Blocked Opaque Response</h1><p>The server returned an opaque response, which is likely due to CORS restrictions.  The requested resource may not be accessible from this proxy.</p>', {
-          status: 502,
+    (async () => {
+      try {
+        const response = await fetch(event.request);
+
+        // Check if the response is an Opaque response
+        if (response.type === 'opaque') {
+          return new Response('<h1>Error: Blocked Opaque Response</h1><p>The server returned an opaque response, which is likely due to CORS restrictions.  The requested resource may not be accessible from this proxy.</p>', {
+            status: 502,
+            headers: { 'Content-Type': 'text/html; charset=utf-8' },
+          });
+        }
+
+        return response;
+      } catch (error) {
+        console.error('Fetch error for original request:', error);
+        return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
+          status: 500,
           headers: { 'Content-Type': 'text/html; charset=utf-8' },
         });
       }
-      return response;
-    }).catch(error => {
-      console.error('Fetch error for original request:', error);
-      return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
-        status: 500,
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
-      });
-    })
+    })()
   );
 });
