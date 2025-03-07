@@ -23,6 +23,5 @@ function decrypt(text) {
 
 module.exports = {
     encrypt,
-    decrypt,
-    key // Expose the key for secure storage/management (handle with caution!)
+    decrypt
 };
