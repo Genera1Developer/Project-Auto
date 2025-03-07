@@ -15,6 +15,8 @@ const config = {
   xForwardedFor: process.env.X_FORWARDED_FOR === 'true',
   __dirname: process.env.__dirname || process.cwd(),
   cdnURL: process.env.CDN_URL || '/',
+  // Add a default value for the health check path
+  healthCheckPath: process.env.HEALTH_CHECK_PATH || '/healthcheck',
 };
 
 module.exports = config;
