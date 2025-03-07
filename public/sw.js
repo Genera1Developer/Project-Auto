@@ -27,44 +27,59 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Handle HTTPS requests explicitly to prevent mixed content issues.
+  // Intercept and potentially encrypt the response for HTTPS requests.
   if (event.request.url.startsWith('https://')) {
-      event.respondWith(
-          caches.match(event.request).then((response) => {
-              if (response) {
-                  return response;
-              }
+    event.respondWith(
+      caches.match(event.request).then(response => {
+        if (response) {
+          return response;
+        }
 
-              const fetchRequest = event.request.clone();
+        const fetchRequest = event.request.clone();
 
-              return fetch(fetchRequest).then(
-                  (response) => {
-                      if (!response || response.status !== 200 || response.type !== 'basic') {
-                          return response;
-                      }
+        return fetch(fetchRequest)
+          .then(response => {
+            // Check if the response is valid.
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
 
-                      const responseToCache = response.clone();
+            // Clone the response for caching.
+            const responseToCache = response.clone();
 
-                      caches.open('my-cache')
-                          .then((cache) => {
-                              cache.put(event.request, responseToCache);
-                          });
+            // Read the response body as text for potential encryption.
+            return response.text().then(body => {
+              // TODO: Implement actual encryption logic here.
+              // Example: const encryptedBody = encrypt(body);
+              const encryptedBody = body; // No encryption for now.
 
-                      return response;
-                  }
-              ).catch(err => {
-                  console.error('Network error fetching (HTTPS):', err);
-                  return new Response('<h1>Service Unavailable</h1>', {
-                      status: 503,
-                      statusText: 'Service Unavailable',
-                      headers: { 'Content-Type': 'text/html' }
-                  });
+              // Create a new response with the encrypted body.
+              const encryptedResponse = new Response(encryptedBody, {
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers
               });
-          })
-      );
-      return;
-  }
 
+              // Store the encrypted response in the cache.
+              caches.open('my-cache').then(cache => {
+                cache.put(event.request, encryptedResponse.clone());
+              });
+
+              return encryptedResponse;
+            });
+          })
+          .catch(err => {
+            console.error('Network error fetching (HTTPS):', err);
+            return new Response('<h1>Service Unavailable</h1>', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: { 'Content-Type': 'text/html' }
+            });
+          });
+      })
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((response) => {
