@@ -231,7 +231,7 @@ const handler = {
             }
             try {
                 // Check if the context ('this') is the global object or window
-                if (thisArg === window || thisArg === null || thisArg === undefined) {
+                if (thisArg === window || thisArg === globalThis || thisArg === null || thisArg === undefined) {
                     console.warn('Function.prototype.apply called with global context, blocking.');
                     return undefined; // Or throw an error
                 }
@@ -251,7 +251,7 @@ const handler = {
             }
             try {
                 // Check if the context ('this') is the global object or window
-                if (thisArg === window || thisArg === null || thisArg === undefined) {
+                if (thisArg === window || thisArg === globalThis || thisArg === null || thisArg === undefined) {
                     console.warn('Function.prototype.call called with global context, blocking.');
                     return undefined; // Or throw an error
                 }
@@ -316,4 +316,16 @@ const handler = {
         }
     });
 
+    // Disable setting/getting cookies
+    Object.defineProperty(document, 'cookie', {
+        get: function() {
+            console.warn('Access to document.cookie blocked');
+            return '';
+        },
+        set: function(value) {
+            console.warn('Setting document.cookie blocked');
+        }
+    });
+
 })();
+content:
