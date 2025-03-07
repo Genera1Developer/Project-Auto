@@ -1,185 +1,61 @@
 function loadSettings() {
     let settings = localStorage.getItem('proxySettings');
     if (settings) {
-        settings = JSON.parse(settings);
-        document.getElementById('proxyHost').value = settings.proxyHost || 'localhost';
-        document.getElementById('proxyPort').value = settings.proxyPort || '8080';
-        document.getElementById('encryptionType').value = settings.encryptionType || 'none';
+        try {
+            settings = JSON.parse(settings);
+            document.getElementById('proxyHost').value = settings.proxyHost || 'localhost';
+            document.getElementById('proxyPort').value = settings.proxyPort || '8080';
+            document.getElementById('encryptionType').value = settings.encryptionType || 'none';
 
-        // Trigger change event to update disabled state of certificate and algo fields
-        let encryptionTypeSelect = document.getElementById('encryptionType');
-        encryptionTypeSelect.dispatchEvent(new Event('change'));
+            // Trigger change event to update disabled state of certificate and algo fields
+            let encryptionTypeSelect = document.getElementById('encryptionType');
+            encryptionTypeSelect.dispatchEvent(new Event('change'));
 
-
-        document.getElementById('certificatePath').value = settings.certificatePath || '';
-        document.getElementById('customEncryptionAlgo').value = settings.customEncryptionAlgo || '';
+            document.getElementById('certificatePath').value = settings.certificatePath || '';
+            document.getElementById('aesKey').value = settings.aesKey || '';
+            document.getElementById('customEncryptionAlgo').value = settings.customEncryptionAlgo || '';
+        } catch (e) {
+            console.error("Error parsing settings from localStorage:", e);
+            localStorage.removeItem('proxySettings');
+            alert("Error loading settings. Settings have been reset.");
+        }
     }
 }
 
 // Load settings when the page loads
 window.addEventListener('load', loadSettings);
 
-edit filepath: public/settings.html
+edit filepath: api/security.js
 content: 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Proxy Settings</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        input[type="text"], input[type="number"], select {
-            width: 250px;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Important for consistent sizing */
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #3e8e41;
-        }
-        .settings-group {
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .settings-group h2 {
-            margin-top: 0;
-            font-size: 1.2em;
-        }
-        .error-message {
-            color: red;
-            margin-top: 5px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Proxy Settings</h1>
+const crypto = require('crypto');
 
-    <div class="settings-group">
-        <h2>General Settings</h2>
-        <label for="proxyHost">Proxy Host:</label>
-        <input type="text" id="proxyHost" name="proxyHost" value="localhost">
+// Function to generate a secure random key
+function generateSecureKey(length) {
+    return crypto.randomBytes(length).toString('hex');
+}
 
-        <label for="proxyPort">Proxy Port:</label>
-        <input type="number" id="proxyPort" name="proxyPort" value="8080">
-    </div>
+// Function to encrypt data using AES
+function encryptAES(data, key) {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+    let encrypted = cipher.update(data);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
+}
 
-    <div class="settings-group">
-        <h2>Encryption Settings</h2>
-        <label for="encryptionType">Encryption Type:</label>
-        <select id="encryptionType" name="encryptionType">
-            <option value="none">None</option>
-            <option value="ssl">SSL/TLS</option>
-            <option value="aes">AES</option>
-            <option value="custom">Custom</option>
-        </select>
+// Function to decrypt data using AES
+function decryptAES(data, key) {
+    const textParts = data.split(':');
+    const iv = Buffer.from(textParts.shift(), 'hex');
+    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+}
 
-        <label for="certificatePath">Certificate Path (for SSL/TLS):</label>
-        <input type="text" id="certificatePath" name="certificatePath" placeholder="Path to certificate" disabled>
-        <div id="certificatePathError" class="error-message"></div>
-
-        <label for="aesKey">AES Key (for AES Encryption):</label>
-        <input type="text" id="aesKey" name="aesKey" placeholder="AES Key" disabled>
-        <div id="aesKeyError" class="error-message"></div>
-
-        <label for="customEncryptionAlgo">Custom Encryption Algorithm:</label>
-        <input type="text" id="customEncryptionAlgo" name="customEncryptionAlgo" placeholder="Algorithm name" disabled>
-         <div id="customEncryptionAlgoError" class="error-message"></div>
-    </div>
-
-    <button onclick="saveSettings()">Save Settings</button>
-    <div id="generalError" class="error-message"></div>
-
-    <script src="settings.js"></script>
-    <script>
-        document.getElementById('encryptionType').addEventListener('change', function() {
-            var encryptionType = this.value;
-            document.getElementById('certificatePath').disabled = (encryptionType !== 'ssl');
-            document.getElementById('aesKey').disabled = (encryptionType !== 'aes');
-            document.getElementById('customEncryptionAlgo').disabled = (encryptionType !== 'custom');
-
-            // Clear error messages when encryption type changes
-            document.getElementById('certificatePathError').textContent = '';
-            document.getElementById('aesKeyError').textContent = '';
-            document.getElementById('customEncryptionAlgoError').textContent = '';
-        });
-
-        function saveSettings() {
-            var proxyHost = document.getElementById('proxyHost').value;
-            var proxyPort = document.getElementById('proxyPort').value;
-            var encryptionType = document.getElementById('encryptionType').value;
-            var certificatePath = document.getElementById('certificatePath').value;
-            var aesKey = document.getElementById('aesKey').value;
-            var customEncryptionAlgo = document.getElementById('customEncryptionAlgo').value;
-
-            // Clear all error messages
-            document.getElementById('generalError').textContent = '';
-            document.getElementById('certificatePathError').textContent = '';
-            document.getElementById('aesKeyError').textContent = '';
-            document.getElementById('customEncryptionAlgoError').textContent = '';
-
-            let hasErrors = false;
-
-            // Basic validation (can be improved)
-            if (!proxyHost || !proxyPort) {
-                document.getElementById('generalError').textContent = 'Proxy Host and Port are required.';
-                hasErrors = true;
-            }
-
-            if (encryptionType === 'ssl' && !certificatePath) {
-                document.getElementById('certificatePathError').textContent = 'Certificate path is required for SSL/TLS encryption.';
-                hasErrors = true;
-            }
-
-            if (encryptionType === 'aes' && !aesKey) {
-                document.getElementById('aesKeyError').textContent = 'AES Key is required for AES encryption.';
-                hasErrors = true;
-            }
-
-            if (encryptionType === 'custom' && !customEncryptionAlgo) {
-                document.getElementById('customEncryptionAlgoError').textContent = 'Custom encryption algorithm is required.';
-                hasErrors = true;
-            }
-
-            if (hasErrors) {
-                return; // Stop saving if there are errors
-            }
-
-
-            var settings = {
-                proxyHost: proxyHost,
-                proxyPort: proxyPort,
-                encryptionType: encryptionType,
-                certificatePath: certificatePath,
-                aesKey: aesKey,
-                customEncryptionAlgo: customEncryptionAlgo
-            };
-
-            // Convert settings to JSON
-            var settingsJSON = JSON.stringify(settings);
-
-            // Store the settings (e.g., localStorage, cookies, or send to server)
-            localStorage.setItem('proxySettings', settingsJSON);
-
-            alert('Settings saved!');
-        }
-    </script>
-</body>
-</html>
+module.exports = {
+    generateSecureKey,
+    encryptAES,
+    decryptAES
+};
