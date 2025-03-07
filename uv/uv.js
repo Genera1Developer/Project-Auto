@@ -24,7 +24,10 @@ const passthroughHeaders = new Set([
   'pragma',
   'age',
   'location',
-  'content-disposition'
+  'content-disposition',
+  'x-content-type-options',
+  'x-frame-options',
+  'x-xss-protection'
 ]);
 
 async function handleRequest(event) {
@@ -43,7 +46,6 @@ async function handleRequest(event) {
     requestHeaders.delete('host');
     requestHeaders.delete('origin');
     requestHeaders.delete('referer'); // Remove referer header
-    
 
     const fetchOptions = {
       method: event.request.method,
@@ -55,7 +57,28 @@ async function handleRequest(event) {
       fetchOptions.body = event.request.body;
     }
 
-    const response = await fetch(url, fetchOptions);
+    let response = await fetch(url, fetchOptions);
+
+    // Handle redirects manually
+    let redirectCount = 0;
+    while ((response.status === 301 || response.status === 302 || response.status === 307 || response.status === 308) && redirectCount < 5) {
+      const redirectURL = response.headers.get('location');
+      if (!redirectURL) {
+        break;
+      }
+
+      const absoluteRedirectURL = new URL(redirectURL, url).href;
+      url = absoluteRedirectURL;
+      requestHeaders.delete('origin'); // Remove origin header for redirects
+      requestHeaders.delete('referer'); // Remove referer header for redirects
+      response = await fetch(url, {
+        method: event.request.method,
+        headers: requestHeaders,
+        redirect: 'manual',
+        body: fetchOptions.body
+      });
+      redirectCount++;
+    }
 
     if (!response.ok && response.status !== 301 && response.status !== 302 && response.status !== 307 && response.status !== 308) {
       console.error('Fetch failed:', response.status, response.statusText, url);
@@ -70,16 +93,6 @@ async function handleRequest(event) {
     for (const [key, value] of response.headers.entries()) {
       if (passthroughHeaders.has(key.toLowerCase())) {
         headers.set(key, value);
-      }
-    }
-
-    // Handle redirects manually
-    if (response.status === 301 || response.status === 302 || response.status === 307 || response.status === 308) {
-      const redirectURL = response.headers.get('location');
-      if (redirectURL) {
-        // Resolve relative URLs
-        const absoluteRedirectURL = new URL(redirectURL, url).href;
-        headers.set('location', absoluteRedirectURL); // Modify the location header to point to the correct URL
       }
     }
 
