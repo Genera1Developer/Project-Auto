@@ -68,6 +68,10 @@
             margin-top: 10px;
             font-size: 0.9em;
         }
+        #hstsStatus {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -81,6 +85,7 @@
             <p>All traffic is encrypted and proxied securely.</p>
             <div id="tlsStatus"></div>
             <div id="cspStatus"></div>
+            <div id="hstsStatus"></div>
         </div>
     </div>
 
@@ -119,10 +124,36 @@
             }
         }
 
+        // Check HTTP Strict Transport Security (HSTS)
+        function checkHSTS() {
+            // This is a client-side check and can be bypassed. Server-side HSTS enforcement is crucial.
+            // We're just providing information to the user here.
+            if (window.location.protocol === "https:") {
+                // Attempt to read HSTS header (This might not work due to browser security restrictions)
+                // A more robust server-side check is recommended.
+                fetch(window.location.href, { method: 'HEAD' })
+                    .then(response => {
+                        if (response.headers.has('Strict-Transport-Security')) {
+                            document.getElementById('hstsStatus').innerHTML = '<p style="color: green;">HTTP Strict Transport Security (HSTS) is enabled.</p>';
+                        } else {
+                            document.getElementById('hstsStatus').innerHTML = '<p style="color: orange;">HTTP Strict Transport Security (HSTS) is NOT enabled. Consider enabling it for enhanced security.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error checking HSTS:", error);
+                        document.getElementById('hstsStatus').innerHTML = '<p style="color: gray;">Unable to determine HSTS status. Check server configuration.</p>';
+                    });
+            } else {
+                document.getElementById('hstsStatus').innerHTML = '<p style="color: gray;">HSTS is only relevant for HTTPS connections.</p>';
+            }
+        }
+
+
         // Call checkTLS on page load
         window.onload = () => {
             checkTLS();
             checkCSP();
+            checkHSTS();
         };
     </script>
 </body>
