@@ -6,6 +6,12 @@ const handler = {
         if (prop === Symbol.toStringTag) {
             return 'Object';
         }
+
+        // Secure property access by checking if the property exists and is accessible.
+        if (!(prop in target)) {
+            return undefined;
+        }
+
         try {
             return Reflect.get(target, prop);
         } catch (e) {
@@ -118,4 +124,7 @@ const handler = {
         }
         return element;
     };
+
+    // Proxy window object itself.
+    applyProxy(window, handler);
 })();
