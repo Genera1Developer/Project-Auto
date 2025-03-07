@@ -1,1 +1,12 @@
+/* Improved Security: Added Content Security Policy (CSP) directives */
+header {
+  /* Example CSP - Adjust as needed for your specific application */
+  content-security-policy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';";
+}
 
+/* Existing styles - these are just placeholders */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
