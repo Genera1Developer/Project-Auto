@@ -54,6 +54,62 @@ const handler = {
             console.warn('Error defining property:', property, 'on', target, 'with descriptor', descriptor, e);
             return false;
         }
+    },
+    deleteProperty(target, property) {
+        try {
+            return Reflect.deleteProperty(target, property);
+        } catch (e) {
+            console.warn('Error deleting property:', property, 'on', target, e);
+            return false;
+        }
+    },
+    getPrototypeOf(target) {
+        try {
+            return Reflect.getPrototypeOf(target);
+        } catch (e) {
+            console.warn('Error getting prototype of:', target, e);
+            return null;
+        }
+    },
+    setPrototypeOf(target, prototype) {
+        try {
+            return Reflect.setPrototypeOf(target, prototype);
+        } catch (e) {
+            console.warn('Error setting prototype of:', target, 'to', prototype, e);
+            return false;
+        }
+    },
+    isExtensible(target) {
+        try {
+            return Reflect.isExtensible(target);
+        } catch (e) {
+            console.warn('Error checking if extensible:', target, e);
+            return false;
+        }
+    },
+    preventExtensions(target) {
+        try {
+            return Reflect.preventExtensions(target);
+        } catch (e) {
+            console.warn('Error preventing extensions of:', target, e);
+            return false;
+        }
+    },
+    getOwnPropertyDescriptor(target, property) {
+        try {
+            return Reflect.getOwnPropertyDescriptor(target, property);
+        } catch (e) {
+            console.warn('Error getting own property descriptor of:', property, 'on', target, e);
+            return undefined;
+        }
+    },
+    ownKeys(target) {
+        try {
+            return Reflect.ownKeys(target);
+        } catch (e) {
+            console.warn('Error getting own keys of:', target, e);
+            return [];
+        }
     }
 };
 
@@ -132,6 +188,12 @@ const handler = {
     if (window.location) {
         window.location = safeProxy(window.location, handler);
     }
+    if (window.localStorage) {
+        window.localStorage = safeProxy(window.localStorage, handler);
+    }
+    if (window.sessionStorage) {
+        window.sessionStorage = safeProxy(window.sessionStorage, handler);
+    }
 
     //Hook iframe element creation to proxy their content windows if possible.
     const originalCreateElement = document.createElement;
@@ -180,6 +242,21 @@ const handler = {
                 console.warn('Error applying Function.prototype.call:', e);
                 return undefined;
             }
+        }
+    });
+
+    // Override setTimeout and setInterval to prevent code execution
+    window.setTimeout = new Proxy(window.setTimeout, {
+        apply(target, thisArg, argArray) {
+            console.warn('setTimeout blocked');
+            return -1; // Or any value that isn't a valid timer ID
+        }
+    });
+
+    window.setInterval = new Proxy(window.setInterval, {
+        apply(target, thisArg, argArray) {
+            console.warn('setInterval blocked');
+            return -1; // Or any value that isn't a valid timer ID
         }
     });
 
