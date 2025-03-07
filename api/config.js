@@ -14,6 +14,7 @@ const config = {
   blockAll: process.env.BLOCK_ALL === 'true',
   xForwardedFor: process.env.X_FORWARDED_FOR === 'true',
   __dirname: process.env.__dirname || process.cwd(),
+  cdnURL: process.env.CDN_URL || '/',
 };
 
 module.exports = config;
