@@ -83,6 +83,9 @@ self.addEventListener('fetch', (event) => {
           headers.delete('feature-policy');
           headers.delete('permissions-policy');
           headers.delete('x-frame-options');
+          headers.delete('x-xss-protection');
+          headers.delete('x-content-type-options');
+          headers.delete('strict-transport-security');
 
           let responseBody;
           try {
@@ -139,14 +142,14 @@ self.addEventListener('fetch', (event) => {
           } catch (error) {
             console.error('TrustedTypes error:', error);
           }
-          
+
           return new Response(responseText, {
             status: response.status,
             statusText: response.statusText,
             headers: headers
           });
         }
-        
+
         return response;
       } catch (error) {
         console.error('Fetch error for original request:', error);
