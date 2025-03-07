@@ -20,7 +20,7 @@ const getCache = async (url) => {
         return null;
     }
     try {
-        const value = await cache.get(url);
+        const value = cache.get(url); // Remove await for synchronous operation
         return value === undefined ? null : value;
     } catch (error) {
         console.error(`Cache get operation failed for URL: ${url}: ${error.message}`);
@@ -38,7 +38,7 @@ const setCache = async (url, data, ttl = 3600) => {
         return false;
     }
     try {
-        await cache.set(url, data, ttl);
+        cache.set(url, data, ttl); // Remove await for synchronous operation
         return true;
     } catch (error) {
         console.error(`Cache set operation failed for URL: ${url}: ${error.message}`);
@@ -52,7 +52,7 @@ const clearCache = async (url) => {
         return false;
     }
     try {
-        const deleted = await cache.del(url);
+        const deleted = cache.del(url); // Remove await for synchronous operation
         return deleted > 0;
     } catch (error) {
         console.error(`Cache clear operation failed for URL: ${url}: ${error.message}`);
@@ -62,7 +62,7 @@ const clearCache = async (url) => {
 
 const flushCache = async () => {
     try {
-        cache.flushAll();
+        cache.flushAll(); // Remove await for synchronous operation
         return true;
     } catch (error) {
         console.error(`Error flushing cache: ${error.message}`);
@@ -72,7 +72,7 @@ const flushCache = async () => {
 
 const getCacheStats = async () => {
     try {
-        return cache.getStats();
+        return cache.getStats(); // Remove await for synchronous operation
     } catch (error) {
         console.error(`Error getting cache stats: ${error.message}`);
         return null;
@@ -81,7 +81,7 @@ const getCacheStats = async () => {
 
 const getCacheKeys = async () => {
     try {
-        return cache.keys();
+        return cache.keys(); // Remove await for synchronous operation
     } catch (error) {
         console.error(`Error getting cache keys: ${error.message}`);
         return null;
