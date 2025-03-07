@@ -1,5 +1,4 @@
 a:link { color: blue; }
-a:visited { color: purple; }
 
 body {
     margin: 0;
@@ -7,6 +6,7 @@ body {
     font-family: sans-serif;
     background-color: #f0f0f0;
     overflow-wrap: break-word;
+    color: #222; /* Improved text color for better readability */
 }
 
 .container {
@@ -67,6 +67,7 @@ a:visited {
     border-radius: 4px;
     font-family: monospace;
     overflow-x: auto; /* Handle potentially long encrypted strings */
+    word-break: break-all; /* Prevent overflow of long, unbroken strings */
 }
 
 /* Style for displaying security information */
@@ -87,4 +88,43 @@ a:visited {
 
 .security-info p {
     margin-bottom: 8px;
+}
+
+/* Add a subtle border to the input field for better visibility */
+input[type="text"] {
+    border: 1px solid #bbb;
+}
+
+/* Style for error messages (e.g., invalid URL) */
+.error-message {
+    color: #d32f2f;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Add some spacing below the form for better layout */
+form {
+    margin-bottom: 20px;
+}
+
+/* Improved styling for security info items (key-value pairs) */
+.security-info .item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.security-info .item .label {
+    font-weight: bold;
+    color: #333;
+}
+
+.security-info .item .value {
+    color: #555;
+}
+
+/* Add a subtle hover effect to the container */
+.container:hover {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
 }
