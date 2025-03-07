@@ -24,7 +24,7 @@ const UV_CONFIG = {
     cdn: null,
     forwardHeaders: true,
     rewriteOrigin: true,
-    XORKey: 'PLACEHOLDER-SECURE-KEY-GEN-ON-SERVER',
+    XORKey: '',
     advanced: {
         bypass: false,
         injections: true
