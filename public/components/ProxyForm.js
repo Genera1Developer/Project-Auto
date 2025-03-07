@@ -43,6 +43,7 @@ function ProxyForm() {
         } finally {
             setIsLoading(false);
             if (responseRef.current) {
+                responseRef.current.scrollIntoView({ behavior: 'smooth' });
                 responseRef.current.focus();
             }
         }
@@ -61,6 +62,7 @@ function ProxyForm() {
                         placeholder="Enter URL"
                         disabled={isLoading}
                         required
+                        style={{ width: '300px' }}
                     />
                 </div>
                 <button type="submit" disabled={isLoading}>
@@ -69,9 +71,20 @@ function ProxyForm() {
                 {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
             </form>
             {responseText && (
-                <div>
+                <div style={{ marginTop: '20px' }}>
                     <h3>Response:</h3>
-                    <pre ref={responseRef} tabIndex="0">{responseText}</pre>
+                    <pre
+                        ref={responseRef}
+                        tabIndex="0"
+                        style={{
+                            whiteSpace: 'pre-wrap',
+                            wordWrap: 'break-word',
+                            overflow: 'auto',
+                            maxHeight: '300px',
+                            border: '1px solid #ccc',
+                            padding: '10px',
+                        }}
+                    >{responseText}</pre>
                 </div>
             )}
         </div>
