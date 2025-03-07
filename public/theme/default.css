@@ -50,3 +50,39 @@ input:-webkit-autofill {
     font-weight: bold;
     margin-top: 10px;
 }
+.csp-header-missing {
+    color: #856404;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+.csp-header-present {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+.referrer-policy-strict {
+    color: #28a745;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.referrer-policy- Lax-or-Missing {
+    color: #dc3545;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.xss-protection-enabled {
+    color: #00a000;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.xss-protection-disabled {
+    color: #ff0000;
+    font-weight: bold;
+    margin-top: 10px;
+}
