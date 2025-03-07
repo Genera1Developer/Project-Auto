@@ -35,3 +35,18 @@ input:-webkit-autofill {
 .certificate-info p {
     margin: 5px 0;
 }
+.tls-version-warning {
+    color: #ffa500; /* Orange */
+    font-weight: bold;
+    margin-top: 10px;
+}
+.hsts-enabled {
+    color: #007bff;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.hsts-warning {
+    color: #ff4500; /* OrangeRed */
+    font-weight: bold;
+    margin-top: 10px;
+}
