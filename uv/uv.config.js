@@ -1,4 +1,4 @@
-export default {
+self.__uv$config = {
   prefix: '/service/',
   bare: '/bare/',
   encodeUrl: Ultraviolet.codec.xor.encode,
@@ -7,5 +7,4 @@ export default {
   bundle: '/uv/uv.bundle.js',
   config: '/uv/uv.config.js',
   sw: '/uv/uv.sw.js',
-  error: '/uv/uv.error.js',
 };
