@@ -13,13 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 function saveSettings() {
     var proxyHost = document.getElementById('proxyHost').value;
     var proxyPort = document.getElementById('proxyPort').value;
     var encryptionType = document.getElementById('encryptionType').value;
     var certificatePath = document.getElementById('certificatePath').value;
     var customEncryptionAlgo = document.getElementById('customEncryptionAlgo').value;
+    var sessionEncryption = document.getElementById('sessionEncryption').checked; // New setting
 
     // Clear all error messages
     document.getElementById('generalError').textContent = '';
@@ -54,503 +54,358 @@ function saveSettings() {
         proxyPort: proxyPort,
         encryptionType: encryptionType,
         certificatePath: certificatePath,
-        customEncryptionAlgo: customEncryptionAlgo
+        customEncryptionAlgo: customEncryptionAlgo,
+        sessionEncryption: sessionEncryption // Include the new setting
     };
 
     // Convert settings to JSON
     var settingsJSON = JSON.stringify(settings);
 
-    // Store the settings securely (e.g., using encryption) before storing in localStorage
-    encryptAndStoreSettings(settingsJSON);
-
+    // Store the settings (e.g., localStorage, cookies, or send to server)
+    localStorage.setItem('proxySettings', settingsJSON);
 
     alert('Settings saved!');
 }
 
-
 function loadSettings() {
-    // Retrieve settings, decrypt if necessary
-    const encryptedSettings = localStorage.getItem('proxySettings');
+    var settingsJSON = localStorage.getItem('proxySettings');
 
-    if (encryptedSettings) {
-        // Decrypt settings before using
-        const settingsJSON = decryptSettings(encryptedSettings);
+    if (settingsJSON) {
+        var settings = JSON.parse(settingsJSON);
 
-        if(settingsJSON){
-          try {
-              const settings = JSON.parse(settingsJSON);
+        document.getElementById('proxyHost').value = settings.proxyHost || 'localhost';
+        document.getElementById('proxyPort').value = settings.proxyPort || '8080';
+        document.getElementById('encryptionType').value = settings.encryptionType || 'none';
+        document.getElementById('certificatePath').value = settings.certificatePath || '';
+        document.getElementById('customEncryptionAlgo').value = settings.customEncryptionAlgo || '';
+        document.getElementById('sessionEncryption').checked = settings.sessionEncryption === true; // Load boolean
 
-              document.getElementById('proxyHost').value = settings.proxyHost || 'localhost';
-              document.getElementById('proxyPort').value = settings.proxyPort || '8080';
-              document.getElementById('encryptionType').value = settings.encryptionType || 'none';
-
-              // Trigger the change event to update disabled states
-              let encryptionTypeSelect = document.getElementById('encryptionType');
-              encryptionTypeSelect.dispatchEvent(new Event('change'));
-
-              document.getElementById('certificatePath').value = settings.certificatePath || '';
-              document.getElementById('customEncryptionAlgo').value = settings.customEncryptionAlgo || '';
-          } catch (error) {
-              console.error('Error parsing settings JSON:', error);
-              alert('Error loading settings.');
-          }
-        } else {
-          console.error("Failed to decrypt settings")
-          alert('Failed to load settings: Decryption error')
-        }
+        // Trigger the change event to update disabled states
+        var encryptionTypeSelect = document.getElementById('encryptionType');
+        encryptionTypeSelect.dispatchEvent(new Event('change'));
     }
 }
 
-// Placeholder functions for encryption/decryption
-function encryptAndStoreSettings(settingsJSON) {
-    // In a real application, use a secure encryption method like AES
-    // and store the initialization vector (IV) securely as well.
-    const key = "YOUR_ENCRYPTION_KEY"; // Replace with a real key management system
-    const encryptedSettings = CryptoJS.AES.encrypt(settingsJSON, key).toString();
-    localStorage.setItem('proxySettings', encryptedSettings);
-}
-
-function decryptSettings(encryptedSettings) {
-    // Use the same encryption key and method to decrypt
-    const key = "YOUR_ENCRYPTION_KEY"; // Replace with a real key management system
-    try {
-        const decrypted = CryptoJS.AES.decrypt(encryptedSettings, key).toString(CryptoJS.enc.Utf8);
-        return decrypted;
-    } catch (error) {
-        console.error("Decryption error:", error);
-        return null;
-    }
-
-}
-
-edit filepath: public/index.html
+edit filepath: public/settings.html
 content: 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="theme/default.css">
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 20px;
-        }
-        #urlInput {
-            width: 70%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        #proxyButton {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        #proxyButton:hover {
-            background-color: #3e8e41;
-        }
-        #outputFrame {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #ccc;
-        }
-        .error-message {
-            color: red;
-            margin-top: 5px;
-        }
-    </style>
+    <title>Proxy Settings</title>
+    <link rel="stylesheet" href="theme/settings.css">
 </head>
 <body>
-    <h1>Web Proxy</h1>
-    <input type="text" id="urlInput" placeholder="Enter URL">
-    <button id="proxyButton">Go</button>
-    <div id="urlError" class="error-message"></div>
-    <iframe id="outputFrame"></iframe>
+    <h1>Proxy Settings</h1>
 
-    <script>
-        document.getElementById('proxyButton').addEventListener('click', function() {
-            var url = document.getElementById('urlInput').value;
-            document.getElementById('urlError').textContent = ''; // Clear previous errors
+    <div class="settings-group">
+        <h2>General Settings</h2>
+        <label for="proxyHost">Proxy Host:</label>
+        <input type="text" id="proxyHost" name="proxyHost" value="localhost">
 
-            if (!url) {
-                document.getElementById('urlError').textContent = 'Please enter a URL.';
-                return;
-            }
+        <label for="proxyPort">Proxy Port:</label>
+        <input type="number" id="proxyPort" name="proxyPort" value="8080">
+    </div>
 
-            // Validate URL format (basic check)
-            if (!isValidURL(url)) {
-                document.getElementById('urlError').textContent = 'Please enter a valid URL (e.g., https://www.example.com).';
-                return;
-            }
+    <div class="settings-group">
+        <h2>Encryption Settings</h2>
+        <label for="encryptionType">Encryption Type:</label>
+        <select id="encryptionType" name="encryptionType">
+            <option value="none">None</option>
+            <option value="ssl">SSL/TLS</option>
+            <option value="custom">Custom</option>
+        </select>
 
-            // Load proxy settings from localStorage
-            let settings = getProxySettings();
+        <label for="certificatePath">Certificate Path (for SSL/TLS):</label>
+        <input type="text" id="certificatePath" name="certificatePath" placeholder="Path to certificate" disabled>
+        <div id="certificatePathError" class="error-message"></div>
 
-            if (!settings) {
-                document.getElementById('urlError').textContent = 'Proxy settings not found. Please configure them in settings page.';
-                return;
-            }
+        <label for="customEncryptionAlgo">Custom Encryption Algorithm:</label>
+        <input type="text" id="customEncryptionAlgo" name="customEncryptionAlgo" placeholder="Algorithm name" disabled>
+         <div id="customEncryptionAlgoError" class="error-message"></div>
 
-            // Construct the proxy URL based on settings
-            let proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`; // Adjust the endpoint as needed
+         <label for="sessionEncryption">Enable Session Encryption:</label>
+         <input type="checkbox" id="sessionEncryption" name="sessionEncryption">
+    </div>
 
-            // Load the URL in the iframe
-            document.getElementById('outputFrame').src = proxyUrl;
-        });
+    <button onclick="saveSettings()">Save Settings</button>
+    <div id="generalError" class="error-message"></div>
 
-        function isValidURL(url) {
-            try {
-                new URL(url);
-                return true;
-            } catch (_) {
-                return false;
-            }
-        }
-
-        function getProxySettings() {
-          let encryptedSettings = localStorage.getItem('proxySettings');
-          if (encryptedSettings) {
-            const settingsJSON = decryptSettings(encryptedSettings);
-            try {
-              return JSON.parse(settingsJSON);
-            } catch (error) {
-              console.error("Error parsing settings:", error)
-              return null;
-            }
-          }
-          return null;
-        }
-
-        function decryptSettings(encryptedSettings) {
-            // Use the same encryption key and method to decrypt
-            const key = "YOUR_ENCRYPTION_KEY"; // Replace with a real key management system
-            try {
-                const decrypted = CryptoJS.AES.decrypt(encryptedSettings, key).toString(CryptoJS.enc.Utf8);
-                return decrypted;
-            } catch (error) {
-                console.error("Decryption error:", error);
-                return null;
-            }
-
-        }
-    </script>
-    <script src="script.js"></script>
+    <script src="settings.js"></script>
 </body>
 </html>
 
-edit filepath: public/script.js
+edit filepath: public/theme/settings.css
 content: 
-// Placeholder for global scripts, if any.  Can be used for general UI enhancements.
-console.log("Script loaded");
+body {
+    font-family: sans-serif;
+    margin: 20px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+input[type="text"], input[type="number"], select {
+    width: 250px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Important for consistent sizing */
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #3e8e41;
+}
+.settings-group {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+.settings-group h2 {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+.error-message {
+    color: red;
+    margin-top: 5px;
+}
 
 edit filepath: api/security.js
 content: 
 const crypto = require('crypto');
 
 // Function to generate a secure random key
-function generateSecretKey(length = 32) {
-  return crypto.randomBytes(length).toString('hex');
+function generateRandomKey(length) {
+    return crypto.randomBytes(length).toString('hex');
 }
 
-// Function to encrypt data using AES-256-CBC
+// Function to encrypt data using AES
 function encrypt(data, key) {
-  const iv = crypto.randomBytes(16); // Initialization vector
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
-  let encrypted = cipher.update(data);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+    const iv = crypto.randomBytes(16); // Initialization vector
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+    let encrypted = cipher.update(data);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-// Function to decrypt data using AES-256-CBC
+// Function to decrypt data using AES
 function decrypt(data, key, iv) {
-  const ivBuffer = Buffer.from(iv, 'hex');
-  const encryptedDataBuffer = Buffer.from(data, 'hex');
-  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), ivBuffer);
-  let decrypted = decipher.update(encryptedDataBuffer);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+    let decrypted = decipher.update(Buffer.from(data, 'hex'));
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
-// Function to hash data using SHA-256
-function hashData(data) {
-  return crypto.createHash('sha256').update(data).digest('hex');
+// Function to hash data using SHA256
+function hash(data) {
+    return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+// Function to generate a secure session ID
+function generateSessionId() {
+    return generateRandomKey(32); // 32 bytes = 256 bits
 }
 
 module.exports = {
-  generateSecretKey,
-  encrypt,
-  decrypt,
-  hashData,
+    generateRandomKey,
+    encrypt,
+    decrypt,
+    hash,
+    generateSessionId
 };
 
 edit filepath: api/proxy.js
 content: 
-const express = require('express');
-const router = express.Router();
 const https = require('https');
 const http = require('http');
-const { encrypt, decrypt, generateSecretKey } = require('./security');
+const { URL } = require('url');
+const security = require('./security'); // Import security functions
 
-// Generate a unique encryption key for this session.  In a real
-// application, you'd want to manage these keys more carefully.
-const encryptionKey = generateSecretKey();
+async function handleProxyRequest(req, res, settings) {
+    try {
+        const targetURL = req.url.slice(1); // Remove the leading slash
+        if (!targetURL) {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            res.end('Target URL is missing.');
+            return;
+        }
 
-// Proxy endpoint
-router.get('/proxy', (req, res) => {
-    const url = req.query.url;
+        const parsedURL = new URL(targetURL);
+        const options = {
+            hostname: parsedURL.hostname,
+            path: parsedURL.pathname + parsedURL.search,
+            method: req.method,
+            headers: req.headers,
+        };
 
-    if (!url) {
-        return res.status(400).send('URL parameter is required');
-    }
+        // Choose http or https agent based on the target protocol
+        const protocol = parsedURL.protocol === 'https:' ? https : http;
 
-    // Determine whether to use http or https
-    const protocol = url.startsWith('https') ? https : http;
+        const proxyReq = protocol.request(options, (proxyRes) => {
+            let responseData = [];
 
-    protocol.get(url, (proxyRes) => {
-        let data = '';
+            proxyRes.on('data', (chunk) => {
+                responseData.push(chunk);
+            });
 
-        proxyRes.on('data', (chunk) => {
-            data += chunk;
-        });
+            proxyRes.on('end', async () => {
+                let buffer = Buffer.concat(responseData);
+                let responseBody = buffer.toString();
 
-        proxyRes.on('end', () => {
-            // Encrypt the data before sending it to the client
-            const encryptedData = encrypt(data, encryptionKey);
+                // Apply encryption if enabled in settings
+                if (settings && settings.encryptionType === 'custom') {
+                    const encryptionKey = 'your_encryption_key'; // Replace with secure key management
+                    const encryptedData = security.encrypt(responseBody, encryptionKey);
+                    responseBody = JSON.stringify(encryptedData); // Send encrypted data as JSON
+                    proxyRes.headers['content-type'] = 'application/json'; // Update content type
+                }
 
-            // Send the encrypted data and the IV to the client
-            res.json({
-                iv: encryptedData.iv,
-                data: encryptedData.encryptedData
+                res.writeHead(proxyRes.statusCode, proxyRes.headers);
+                res.end(responseBody);
             });
         });
 
-    }).on('error', (err) => {
-        console.error('Proxy error:', err);
-        res.status(500).send('Proxy error');
-    });
-});
+        proxyReq.on('error', (err) => {
+            console.error('Proxy request error:', err);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Proxy request failed.');
+        });
 
-module.exports = router;
+        req.on('data', (chunk) => {
+            proxyReq.write(chunk);
+        });
+
+        req.on('end', () => {
+            proxyReq.end();
+        });
+
+        req.on('error', (err) => {
+            console.error('Client request error:', err);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Client request failed.');
+        });
+
+    } catch (error) {
+        console.error('Error handling proxy request:', error);
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal server error.');
+    }
+}
+
+module.exports = { handleProxyRequest };
 
 edit filepath: server.js
 content: 
-const express = require('express');
-const app = express();
-const proxyRoute = require('./api/proxy');
-const securityRoute = require('./api/security');
-const path = require('path');
+const http = require('http');
+const { handleProxyRequest } = require('./api/proxy');
+const security = require('./api/security');
+const fs = require('fs');
 
+const hostname = '127.0.0.1';
 const port = 3000;
 
-// Middleware to serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Load settings from a file (or use defaults)
+let settings = {
+    proxyHost: 'localhost',
+    proxyPort: 8080,
+    encryptionType: 'none',
+    certificatePath: '',
+    customEncryptionAlgo: '',
+    sessionEncryption: false
+};
 
-// API route for proxy functionality
-app.use('/api', proxyRoute);
-
-// API route for security utilities
-app.use('/api', securityRoute);
-
-// Route to serve settings.html
-app.get('/settings', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'settings.html'));
-});
-
-app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-});
-
-edit filepath: public/aes-encryption.js
-content: 
-// aes-encryption.js
-// Client-side AES encryption and decryption functions using CryptoJS
-
-function aesEncrypt(message, secretKey) {
-    try {
-        const key = CryptoJS.enc.Utf8.parse(secretKey);
-        const iv = CryptoJS.lib.WordArray.random(16); // Generate a random IV
-        const encrypted = CryptoJS.AES.encrypt(message, key, {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-
-        // Combine IV and ciphertext for transmission
-        const ivString = CryptoJS.enc.Base64.stringify(iv);
-        const ciphertextString = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
-        return ivString + ":" + ciphertextString;  // Return IV and Ciphertext
-
-    } catch (error) {
-        console.error("Encryption error:", error);
-        return null;
-    }
+try {
+    const settingsData = fs.readFileSync('settings.json');
+    settings = JSON.parse(settingsData);
+} catch (err) {
+    console.log('No settings.json file found or invalid format, using default settings.');
 }
 
-function aesDecrypt(encryptedMessage, secretKey) {
-    try {
-        const key = CryptoJS.enc.Utf8.parse(secretKey);
-        const parts = encryptedMessage.split(':');
-        const ivString = parts[0];
-        const ciphertextString = parts[1];
+const server = http.createServer((req, res) => {
+    // Basic request logging
+    console.log(`Received request for: ${req.url}`);
 
-        const iv = CryptoJS.enc.Base64.parse(ivString);
-        const ciphertext = CryptoJS.enc.Base64.parse(ciphertextString);
+    // Add security headers (example)
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains'); // HTTPS only
 
-        const decrypted = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, key, {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
+    // Handle the proxy request
+    handleProxyRequest(req, res, settings);
+});
 
-        return decrypted.toString(CryptoJS.enc.Utf8);
-    } catch (error) {
-        console.error("Decryption error:", error);
-        return null;
-    }
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
+
+// Example usage of security functions (for testing/demo purposes)
+const randomKey = security.generateRandomKey(32);
+console.log('Generated Random Key:', randomKey);
+
+edit filepath: settings.json
+content: 
+{
+    "proxyHost": "localhost",
+    "proxyPort": 8080,
+    "encryptionType": "ssl",
+    "certificatePath": "/path/to/your/certificate.pem",
+    "customEncryptionAlgo": "AES-256-CBC",
+    "sessionEncryption": true
 }
 
-edit filepath: public/index.html
+edit filepath: public/script.js
 content: 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="theme/default.css">
-    <style>
-        body {
-            font-family: sans-serif;
-            margin: 20px;
-        }
-        #urlInput {
-            width: 70%;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        #proxyButton {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        #proxyButton:hover {
-            background-color: #3e8e41;
-        }
-        #outputFrame {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #ccc;
-        }
-        .error-message {
-            color: red;
-            margin-top: 5px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Web Proxy</h1>
-    <input type="text" id="urlInput" placeholder="Enter URL">
-    <button id="proxyButton">Go</button>
-    <div id="urlError" class="error-message"></div>
-    <iframe id="outputFrame"></iframe>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('proxyForm');
+    const urlInput = document.getElementById('url');
+    const goButton = document.getElementById('goButton');
+    const settingsButton = document.getElementById('settingsButton');
+    const outputDiv = document.getElementById('output');
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="aes-encryption.js"></script>
-    <script>
-        document.getElementById('proxyButton').addEventListener('click', function() {
-            var url = document.getElementById('urlInput').value;
-            document.getElementById('urlError').textContent = ''; // Clear previous errors
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
 
-            if (!url) {
-                document.getElementById('urlError').textContent = 'Please enter a URL.';
-                return;
-            }
-
-            // Validate URL format (basic check)
-            if (!isValidURL(url)) {
-                document.getElementById('urlError').textContent = 'Please enter a valid URL (e.g., https://www.example.com).';
-                return;
-            }
-
-            // Load proxy settings from localStorage
-            let settings = getProxySettings();
-
-            if (!settings) {
-                document.getElementById('urlError').textContent = 'Proxy settings not found. Please configure them in settings page.';
-                return;
-            }
-
-            // Construct the proxy URL based on settings
-            let proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`; // Adjust the endpoint as needed
-
-            // Fetch the encrypted content from the server
-            fetch(proxyUrl)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.iv && data.data) {
-                        // Decrypt the data using client-side AES decryption
-                        const secretKey = "YOUR_ENCRYPTION_KEY"; // Replace with a key from settings, or a derived key
-                        const decryptedContent = aesDecrypt(data.iv + ":" + data.data, secretKey);
-
-                        if (decryptedContent) {
-                            // Set the content of the iframe
-                            document.getElementById('outputFrame').srcdoc = decryptedContent;
-                        } else {
-                            document.getElementById('urlError').textContent = 'Failed to decrypt content.';
-                        }
-                    } else {
-                        document.getElementById('urlError').textContent = 'Invalid response from proxy server.';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching proxy content:', error);
-                    document.getElementById('urlError').textContent = 'Error fetching proxy content.';
-                });
-        });
-
-        function isValidURL(url) {
-            try {
-                new URL(url);
-                return true;
-            } catch (_) {
-                return false;
-            }
+        const url = urlInput.value;
+        if (!url) {
+            outputDiv.textContent = 'Please enter a URL.';
+            return;
         }
 
-        function getProxySettings() {
-          let encryptedSettings = localStorage.getItem('proxySettings');
-          if (encryptedSettings) {
-            const settingsJSON = decryptSettings(encryptedSettings);
-            try {
-              return JSON.parse(settingsJSON);
-            } catch (error) {
-              console.error("Error parsing settings:", error)
-              return null;
-            }
-          }
-          return null;
+        // Sanitize URL (basic check, more robust validation needed for production)
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            outputDiv.textContent = 'Invalid URL. Must start with http:// or https://';
+            return;
         }
 
-        function decryptSettings(encryptedSettings) {
-            // Use the same encryption key and method to decrypt
-            const key = "YOUR_ENCRYPTION_KEY"; // Replace with a real key management system
-            try {
-                const decrypted = CryptoJS.AES.decrypt(encryptedSettings, key).toString(CryptoJS.enc.Utf8);
-                return decrypted;
-            } catch (error) {
-                console.error("Decryption error:", error);
-                return null;
-            }
+        // Construct the proxy URL (assuming your proxy runs on the same domain)
+        const proxyUrl = '/' + url; // Prepend slash
 
-        }
-    </script>
-    <script src="script.js"></script>
-</body>
-</html>
+        // Fetch content through the proxy
+        fetch(proxyUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.text(); // Get the response as text
+            })
+            .then(data => {
+                outputDiv.textContent = data; // Display the fetched content
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                outputDiv.textContent = 'Failed to load content. Check the console for errors.';
+            });
+    });
+
+    settingsButton.addEventListener('click', function() {
+        window.location.href = 'settings.html'; // Navigate to settings page
+    });
+});
