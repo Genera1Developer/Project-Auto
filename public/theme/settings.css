@@ -23,17 +23,19 @@
     margin-bottom: 5px;
 }
 
+.setting-item input[type="text"],
 .setting-item select,
 .setting-item input[type="checkbox"] {
     margin-top: 5px;
-}
-
-.setting-item select {
-    width: 100%;
+    width: 100%; /* Full width for text inputs and selects */
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+}
+
+.setting-item input[type="checkbox"] {
+    width: auto; /* Reset width for checkboxes */
 }
 
 @media (max-width: 768px) {
