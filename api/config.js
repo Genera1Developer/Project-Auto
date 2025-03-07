@@ -9,10 +9,10 @@ const config = {
   cacheAge: parseInt(process.env.CACHE_AGE, 10) || 86400,
   logLevel: process.env.LOG_LEVEL || 'info',
   domain: process.env.DOMAIN || 'http://localhost:3000',
-  forceCodec: process.env.FORCE_CODEC === 'true' || false,
-  allowServiceWorkers: process.env.ALLOW_SERVICE_WORKERS === 'true' || false,
-  blockAll: process.env.BLOCK_ALL === 'true' || false,
-  xForwardedFor: process.env.X_FORWARDED_FOR === 'true' || false,
+  forceCodec: process.env.FORCE_CODEC === 'true',
+  allowServiceWorkers: process.env.ALLOW_SERVICE_WORKERS === 'true',
+  blockAll: process.env.BLOCK_ALL === 'true',
+  xForwardedFor: process.env.X_FORWARDED_FOR === 'true',
 };
 
 module.exports = config;
