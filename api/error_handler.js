@@ -26,15 +26,23 @@ function errorHandler(err, req, res, next) {
     message = 'Invalid JSON payload';
   } else if (err.status) {
     statusCode = err.status;
-    message = err.message; // Use the error message provided by the status code, if available
+    message = err.message;
   }
 
-  res.status(statusCode).json({
+  const response = {
     success: false,
     message: message,
-    errors: errors.length > 0 ? errors : undefined,
-    stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
-  });
+  };
+
+  if (errors.length > 0) {
+    response.errors = errors;
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    response.stack = err.stack;
+  }
+
+  res.status(statusCode).json(response);
 }
 
 module.exports = errorHandler;
