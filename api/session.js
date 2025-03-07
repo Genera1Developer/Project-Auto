@@ -1,76 +1,90 @@
+// api/session.js
 const { generateSecureKey, encryptData, decryptData } = require('./security');
-const crypto = require('crypto');
 
-// Session management using encrypted cookies
-const sessionStore = {};
+// Session storage (in-memory for simplicity, replace with DB for production)
+const sessions = {};
 
-// Session timeout in milliseconds (e.g., 30 minutes)
-const SESSION_TIMEOUT = 30 * 60 * 1000;
-const KEY_LENGTH = 32; // AES-256 key length
-
-// Consider using httpOnly and secure flags for cookies
-
-function createSession(userId) {
-  const sessionId = crypto.randomUUID(); // Generate a UUID session ID
-  const encryptionKey = generateSecureKey(KEY_LENGTH); // AES-256 key
-  const sessionData = {
-    userId: userId,
+// Function to create a new session
+function createSession() {
+  const sessionId = generateSecureKey(16); // 16 bytes = 32 hex chars
+  const encryptionKey = generateSecureKey(32); // AES-256 key
+  sessions[sessionId] = {
+    encryptionKey: encryptionKey,
+    data: {},
     createdAt: Date.now(),
   };
-
-  const encryptedSessionData = encryptData(JSON.stringify(sessionData), encryptionKey);
-  sessionStore[sessionId] = {
-    encryptedData: encryptedSessionData,
-    encryptionKey: encryptionKey,
-    lastActive: Date.now(), // Track last activity for timeout
-  };
-  return sessionId;
+  return { sessionId, encryptionKey };
 }
 
-function getSession(sessionId) {
-  const session = sessionStore[sessionId];
+// Function to get session data (decrypts data)
+function getSessionData(sessionId, encryptionKey) {
+  const session = sessions[sessionId];
   if (!session) {
     return null;
   }
 
-  // Check for session timeout
-  if (Date.now() - session.lastActive > SESSION_TIMEOUT) {
-    destroySession(sessionId);
-    return null;
+  // Decrypt session data
+  let decryptedData = {};
+  for (const key in session.data) {
+    if (session.data.hasOwnProperty(key)) {
+      try {
+        decryptedData[key] = decryptData(session.data[key], encryptionKey);
+      } catch (error) {
+        console.error('Decryption error:', error);
+        // Handle decryption errors appropriately (e.g., remove corrupted data)
+        delete session.data[key];
+      }
+    }
   }
 
-  try {
-    let decryptedData;
-    try {
-      decryptedData = decryptData(session.encryptedData, session.encryptionKey);
-    } catch (decryptError) {
-      console.error('Session decryption error:', decryptError);
-      destroySession(sessionId); // Invalidate corrupted session
-      return null;
-    }
-
-    if (!decryptedData) {
-        console.warn("Decrypted data is empty. Possible tampering.");
-        destroySession(sessionId);
-        return null;
-    }
-    const sessionData = JSON.parse(decryptedData);
-    // Update last active timestamp on access
-    session.lastActive = Date.now();
-    return sessionData;
-  } catch (error) {
-    console.error('Session parsing error:', error);
-    destroySession(sessionId); // Invalidate corrupted session
-    return null;
-  }
+  return decryptedData;
 }
 
+// Function to update session data (encrypts data)
+function updateSessionData(sessionId, encryptionKey, newData) {
+  const session = sessions[sessionId];
+  if (!session) {
+    return false;
+  }
+
+  // Encrypt new data before storing
+  for (const key in newData) {
+    if (newData.hasOwnProperty(key)) {
+      session.data[key] = encryptData(newData[key], encryptionKey);
+    }
+  }
+  return true;
+}
+
+// Function to destroy a session
 function destroySession(sessionId) {
-  delete sessionStore[sessionId];
+  delete sessions[sessionId];
+}
+
+// Session timeout middleware (example)
+function sessionTimeoutMiddleware(req, res, next) {
+  const sessionId = req.cookies.sessionId; // Assuming you're using cookies
+  if (sessionId && sessions[sessionId]) {
+    const session = sessions[sessionId];
+    const now = Date.now();
+    const sessionAge = now - session.createdAt;
+    const timeout = 3600000; // 1 hour (in milliseconds)
+
+    if (sessionAge > timeout) {
+      destroySession(sessionId);
+      res.clearCookie('sessionId');
+      return res.status(401).send('Session timed out. Please log in again.');
+    } else {
+      session.createdAt = now; // Reset session timer
+    }
+  }
+  next();
 }
 
 module.exports = {
   createSession,
-  getSession,
+  getSessionData,
+  updateSessionData,
   destroySession,
+  sessionTimeoutMiddleware,
 };
