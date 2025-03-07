@@ -22,6 +22,18 @@
         .log-message {
             margin-top: 5px;
         }
+        .log-level {
+            font-weight: bold;
+        }
+        .log-level.ERROR {
+            color: red;
+        }
+        .log-level.WARNING {
+            color: orange;
+        }
+        .log-level.INFO {
+            color: green;
+        }
     </style>
 </head>
 <body>
@@ -33,7 +45,12 @@
     <script>
         function fetchLogs() {
             fetch('/api/security/logs') // Endpoint to fetch logs
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(logs => {
                     const logContainer = document.getElementById('log-container');
                     logContainer.innerHTML = ''; // Clear existing logs
@@ -46,11 +63,16 @@
                         timestamp.classList.add('log-timestamp');
                         timestamp.textContent = new Date(log.timestamp).toLocaleString(); // Format timestamp
 
+                        const level = document.createElement('span');
+                        level.classList.add('log-level', log.level); // Add log level and class
+                        level.textContent = `[${log.level}] `;
+
                         const message = document.createElement('div');
                         message.classList.add('log-message');
                         message.textContent = log.message;
 
                         logEntry.appendChild(timestamp);
+                        logEntry.appendChild(level);
                         logEntry.appendChild(message);
                         logContainer.appendChild(logEntry);
                     });
@@ -58,7 +80,7 @@
                 .catch(error => {
                     console.error('Error fetching logs:', error);
                     const logContainer = document.getElementById('log-container');
-                    logContainer.innerHTML = '<p>Error loading logs.</p>';
+                    logContainer.innerHTML = '<p>Error loading logs: ' + error + '</p>';
                 });
         }
 
@@ -66,7 +88,7 @@
         fetchLogs();
 
         // Optionally, refresh logs periodically (e.g., every 5 seconds)
-        // setInterval(fetchLogs, 5000);
+        setInterval(fetchLogs, 5000);
     </script>
 </body>
 </html>
