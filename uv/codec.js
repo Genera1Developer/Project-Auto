@@ -2,11 +2,7 @@ export function encode(str) {
   try {
     const utf8Encode = new TextEncoder();
     const encoded = utf8Encode.encode(str);
-    let binaryString = '';
-    encoded.forEach((byte) => {
-      binaryString += String.fromCharCode(byte);
-    });
-    return btoa(binaryString);
+    return btoa(String.fromCharCode(...new Uint8Array(encoded)));
   } catch (e) {
     console.error("Encoding error:", e);
     return null;
