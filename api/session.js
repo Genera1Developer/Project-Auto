@@ -12,16 +12,18 @@ function generateSessionSecret() {
 // Configure session middleware with encryption
 function configureSession(app) {
   const sessionSecret = generateSessionSecret();
+  const isProduction = process.env.NODE_ENV === 'production';
 
   app.use(session({
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false, // Only save when modified
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Only send cookies over HTTPS in production
+      secure: isProduction, // Only send cookies over HTTPS in production
       httpOnly: true, // Prevent client-side access to cookies
       maxAge: 3600000, // Session duration (e.g., 1 hour)
-      sameSite: 'strict' // Help prevent CSRF attacks
+      sameSite: 'strict' ,// Help prevent CSRF attacks
+	  domain: isProduction ? '.yourdomain.com' : undefined // Specify domain for production
     },
     store: new (require('connect-pg-simple')(session))({ // Example using PostgreSQL for session storage
       conString: process.env.DATABASE_URL, // Connection string from environment variables
@@ -34,15 +36,18 @@ function configureSession(app) {
     if (req.session) {
       for (const key in req.session) {
         if (key !== 'cookie' && req.session.hasOwnProperty(key)) {
-          try {
-            const stringifiedData = JSON.stringify(req.session[key]);
-            req.session[key] = security.encryptData(stringifiedData, sessionSecret);
-          } catch (error) {
-            console.error('Failed to encrypt session data:', error);
-            return next(error); // Pass the error to the error handler
+          if (typeof req.session[key] !== 'string') {
+            try {
+              const stringifiedData = JSON.stringify(req.session[key]);
+              req.session[key] = security.encryptData(stringifiedData, sessionSecret);
+            } catch (error) {
+              console.error('Failed to encrypt session data:', error);
+              return next(error); // Pass the error to the error handler
+            }
           }
         }
       }
+
       req.session.save(function (err) {
         if (err) {
           console.error('Failed to save encrypted session data:', err);
@@ -50,6 +55,7 @@ function configureSession(app) {
         }
         next();
       });
+
     } else {
       next();
     }
@@ -69,7 +75,8 @@ function configureSession(app) {
             // Handle decryption error appropriately, maybe destroy session
             req.session.destroy((err) => {
               if (err) console.error("Error destroying session:", err);
-              return res.redirect('/error'); // Redirect to error page or login
+              res.clearCookie('connect.sid');
+              return res.status(500).send('Session decryption failed.');
             });
             return;
           }
