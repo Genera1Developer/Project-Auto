@@ -6,6 +6,7 @@ function ProxyForm() {
     const [errorMessage, setErrorMessage] = useState('');
     const [responseText, setResponseText] = useState('');
     const responseRef = useRef(null);
+    const inputRef = useRef(null);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -49,6 +50,15 @@ function ProxyForm() {
         }
     };
 
+    const handleClear = () => {
+        setUrl('');
+        setResponseText('');
+        setErrorMessage('');
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+
     return (
         <div>
             <form onSubmit={handleSubmit}>
@@ -63,10 +73,14 @@ function ProxyForm() {
                         disabled={isLoading}
                         required
                         style={{ width: '300px' }}
+                        ref={inputRef}
                     />
                 </div>
                 <button type="submit" disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Go'}
+                </button>
+                <button type="button" onClick={handleClear} disabled={isLoading}>
+                    Clear
                 </button>
                 {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
             </form>
