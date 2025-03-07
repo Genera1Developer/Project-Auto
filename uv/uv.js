@@ -28,7 +28,7 @@ const passthroughHeaders = new Set([
   'x-robots-tag',
   'report-to',
   'nel',
-  'alt-svc' // Added alt-svc for h3 support
+  'alt-svc'
 ]);
 
 const disallowedResponseHeaders = new Set([
@@ -58,14 +58,16 @@ async function handleRequest(event) {
     requestHeaders.delete('referer');
     requestHeaders.delete('x-forwarded-for');
     requestHeaders.delete('x-real-ip');
-    requestHeaders.delete('if-modified-since'); // Remove caching headers
-    requestHeaders.delete('if-none-match');     // Remove caching headers
+    requestHeaders.delete('if-modified-since');
+    requestHeaders.delete('if-none-match');
     requestHeaders.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
 
     const fetchOptions = {
       method: event.request.method,
       headers: requestHeaders,
-      redirect: 'manual'
+      redirect: 'manual',
+      // integrity: 'sha384-EXAMPLE_INTEGRITY_HASH', // Example Subresource Integrity
+      // keepalive: true,
     };
 
     if (event.request.body) {
@@ -126,10 +128,12 @@ async function handleRequest(event) {
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('Referrer-Policy', 'no-referrer');
     headers.set('Feature-Policy', "microphone 'none'; camera 'none'; geolocation 'none'");
-    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self';"); // Added more CSP directives
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;");
     headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-    headers.set('Cache-Control', 'no-store'); //Ensure no caching
-    headers.set('Pragma', 'no-cache'); // Ensure no caching
+    headers.set('Cache-Control', 'no-store, must-revalidate');
+    headers.set('Pragma', 'no-cache');
+    headers.set('Expires', '0');
+    headers.set('Permissions-Policy', 'interest-cohort=()');
 
     const body = await response.blob();
     return new Response(body, {
