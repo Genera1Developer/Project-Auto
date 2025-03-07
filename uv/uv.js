@@ -28,7 +28,10 @@ const passthroughHeaders = new Set([
   'x-robots-tag',
   'report-to',
   'nel',
-  'alt-svc'
+  'alt-svc',
+  'content-security-policy-report-only',
+  'x-permitted-cross-domain-policies',
+  'x-download-options',
 ]);
 
 const disallowedResponseHeaders = new Set([
@@ -41,6 +44,8 @@ const disallowedResponseHeaders = new Set([
     'x-drupal-cache',
     'x-generator',
 ]);
+
+const HSTS_MAX_AGE = 31536000;
 
 async function handleRequest(event) {
   try {
@@ -108,7 +113,11 @@ async function handleRequest(event) {
     for (const [key, value] of response.headers.entries()) {
       const lowerKey = key.toLowerCase();
       if (passthroughHeaders.has(lowerKey) && !disallowedResponseHeaders.has(lowerKey)) {
-        headers.set(key, value);
+        try {
+          headers.set(key, value);
+        } catch (e) {
+          console.warn(`Failed to set header ${key}: ${e}`);
+        }
       }
     }
 
@@ -127,11 +136,12 @@ async function handleRequest(event) {
     headers.set('Referrer-Policy', 'no-referrer');
     headers.set('Feature-Policy', "microphone 'none'; camera 'none'; geolocation 'none'");
     headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;");
-    headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    headers.set('Strict-Transport-Security', `max-age=${HSTS_MAX_AGE}; includeSubDomains; preload`);
     headers.set('Cache-Control', 'no-store, must-revalidate');
     headers.set('Pragma', 'no-cache');
     headers.set('Expires', '0');
     headers.set('Permissions-Policy', 'interest-cohort=()');
+    headers.set('X-Robots-Tag', 'noindex, nofollow');
 
     const body = await response.blob();
     return new Response(body, {
