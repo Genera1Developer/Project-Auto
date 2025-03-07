@@ -14,6 +14,7 @@
             padding: 10px;
             margin-bottom: 10px;
             background-color: #f9f9f9;
+            cursor: pointer; /* Indicate log entry is clickable */
         }
         .log-timestamp {
             font-size: 0.8em;
@@ -69,10 +70,26 @@
             display: block; /* Show details when log entry is expanded */
         }
 
+        /* Style for sensitive data (initially hidden) */
+        .sensitive-data {
+            display: none;
+            color: darkred; /* Emphasize sensitive data */
+        }
+        .log-entry.expanded .sensitive-data {
+            display: inline; /* Show sensitive data when expanded */
+        }
+
+        /* Style for show/hide sensitive data button */
+        #toggle-sensitive-data {
+            margin-bottom: 10px;
+        }
+
     </style>
 </head>
 <body>
     <h1>Security Logs</h1>
+
+    <button id="toggle-sensitive-data">Show Sensitive Data</button>
 
     <div id="log-filter">
         <label for="level-filter">Filter by Level:</label>
@@ -96,14 +113,27 @@
         let isFetching = false; // Prevent multiple simultaneous fetches
         let allLogs = []; // Store all logs for filtering
         let searchTerm = ''; // Store search term
+        let sensitiveDataVisible = false; // Track visibility of sensitive data
 
         const levelFilter = document.getElementById('level-filter');
         const searchInput = document.getElementById('search-input');
+        const toggleSensitiveDataButton = document.getElementById('toggle-sensitive-data');
 
         levelFilter.addEventListener('change', filterLogs);
         searchInput.addEventListener('input', function() {
             searchTerm = this.value.toLowerCase();
             filterLogs();
+        });
+
+        toggleSensitiveDataButton.addEventListener('click', function() {
+            sensitiveDataVisible = !sensitiveDataVisible;
+            const sensitiveDataElements = document.querySelectorAll('.sensitive-data');
+
+            sensitiveDataElements.forEach(element => {
+                element.style.display = sensitiveDataVisible ? 'inline' : 'none';
+            });
+
+            toggleSensitiveDataButton.textContent = sensitiveDataVisible ? 'Hide Sensitive Data' : 'Show Sensitive Data';
         });
 
 
@@ -192,7 +222,14 @@
 
                 const details = document.createElement('div');
                 details.classList.add('log-details');
-                details.textContent = `Details: Encryption status: ${log.encryptionStatus || 'N/A'}, User: ${log.user || 'N/A'}`;
+                let sensitiveInfo = `Encryption status: <span class="sensitive-data">${log.encryptionStatus || 'N/A'}</span>, User: <span class="sensitive-data">${log.user || 'N/A'}</span>`;
+                details.innerHTML = `Details: ${sensitiveInfo}`;
+
+                // Set initial visibility of sensitive data based on the toggle state
+                const sensitiveDataElements = details.querySelectorAll('.sensitive-data');
+                sensitiveDataElements.forEach(element => {
+                    element.style.display = sensitiveDataVisible ? 'inline' : 'none';
+                });
 
                 logEntry.appendChild(timestamp);
                 logEntry.appendChild(level);
