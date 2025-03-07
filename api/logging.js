@@ -19,19 +19,27 @@ async function ensureLogDirectoryExists() {
         if (err.code === 'ENOENT') {
             try {
                 await fsPromises.mkdir(logDirectory, { recursive: true });
+                console.log('Log directory created:', logDirectory); // Optional: Log directory creation
             } catch (mkdirErr) {
                 console.error('Failed to create log directory:', mkdirErr);
                 // Consider throwing the error or exiting the process if logging is critical
+                throw mkdirErr; // Re-throw the error to prevent the application from running without logging.
             }
         } else {
             console.error('Failed to access log directory:', err);
             // Consider throwing the error or exiting the process if logging is critical
+            throw err; // Re-throw the error to prevent the application from running without logging.
         }
     }
 }
 
 
 const log = async (message) => {
+    if (!message) {
+        console.warn('Attempted to log an empty message.');
+        return;
+    }
+
     const timestamp = new Date().toISOString();
     const logMessage = `[${timestamp}] ${message}\n`;
 
@@ -43,6 +51,13 @@ const log = async (message) => {
 };
 
 // Ensure the log directory exists on startup
-ensureLogDirectoryExists();
+(async () => {
+    try {
+        await ensureLogDirectoryExists();
+    } catch (error) {
+        console.error('Failed to initialize logging:', error);
+        process.exit(1); // Exit if logging initialization fails.
+    }
+})();
 
 module.exports = { log };
