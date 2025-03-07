@@ -39,7 +39,7 @@ export async function encode(str, key = null, salt = null) {
                 encoded
             );
 
-            const combined = new Uint8Array(iv.length + new Uint8Array(encrypted).length);
+            const combined = new Uint8Array(iv.length + encrypted.byteLength);
             combined.set(iv, 0);
             combined.set(new Uint8Array(encrypted), iv.length);
 
@@ -89,6 +89,8 @@ export async function decode(str, key = null, salt = null) {
     }
 }
 
+// Consider removing or securing this simplistic XOR cipher
+// XOR is vulnerable to known-plaintext attacks.  It's included only for demonstration and should not be used in production.
 function encrypt(data, key) {
   const uint8Key = new TextEncoder().encode(key);
     let encryptedData = new Uint8Array(data.length);
@@ -98,6 +100,8 @@ function encrypt(data, key) {
     return encryptedData;
 }
 
+// Consider removing or securing this simplistic XOR cipher
+// XOR is vulnerable to known-plaintext attacks. It's included only for demonstration and should not be used in production.
 function decrypt(data, key) {
   const uint8Key = new TextEncoder().encode(key);
     let decryptedData = new Uint8Array(data.length);
