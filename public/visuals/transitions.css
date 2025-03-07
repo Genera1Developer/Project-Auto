@@ -42,6 +42,22 @@
   .fade-in,
   .slide-up,
   .slide-down {
-    transition: none;
+    transition: none !important;
   }
+}
+
+/* Subtle box-shadow on hover for interactive elements */
+a:hover,
+button:hover,
+input[type="submit"]:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+/* Add transition to background-color changes on hover or focus */
+a:hover, a:focus,
+button:hover, button:focus,
+input[type="submit"]:hover, input[type="submit"]:focus {
+    background-color: rgba(0, 123, 255, 0.1); /* Light blue, adjust as needed */
+    transition: background-color 0.2s ease-in-out;
 }
