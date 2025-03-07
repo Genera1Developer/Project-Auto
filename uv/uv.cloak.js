@@ -70,14 +70,23 @@ const handler = {
         return deepProxy(obj);
     }
 
+    const safeProxy = (obj, handler) => {
+        try {
+            return new Proxy(obj, handler);
+        } catch (e) {
+            console.warn('Failed to create proxy for', obj, e);
+            return obj;
+        }
+    }
+
     if (window.XMLHttpRequest) {
-        window.XMLHttpRequest = new Proxy(window.XMLHttpRequest, handler);
+        window.XMLHttpRequest = safeProxy(window.XMLHttpRequest, handler);
     }
     if (window.WebSocket) {
-        window.WebSocket = new Proxy(window.WebSocket, handler);
+        window.WebSocket = safeProxy(window.WebSocket, handler);
     }
     if (window.fetch) {
-        window.fetch = new Proxy(window.fetch, handler);
+        window.fetch = safeProxy(window.fetch, handler);
     }
     if (window.navigator) {
         window.navigator = applyProxy(window.navigator, handler);
@@ -86,9 +95,27 @@ const handler = {
         window.document = applyProxy(window.document, handler);
     }
     if (window.history) {
-        window.history = new Proxy(window.history, handler);
+        window.history = safeProxy(window.history, handler);
     }
     if (window.location) {
-        window.location = new Proxy(window.location, handler);
+        window.location = safeProxy(window.location, handler);
     }
+
+    //Hook iframe element creation to proxy their content windows if possible.
+    const originalCreateElement = document.createElement;
+    document.createElement = function(tagName) {
+        const element = originalCreateElement.call(document, tagName);
+        if (tagName.toLowerCase() === 'iframe') {
+            element.addEventListener('load', () => {
+                try {
+                    if (element.contentWindow) {
+                         applyProxy(element.contentWindow, handler);
+                    }
+                } catch (e) {
+                    console.warn('Failed to proxy iframe contentWindow', e);
+                }
+            });
+        }
+        return element;
+    };
 })();
