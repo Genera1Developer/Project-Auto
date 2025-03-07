@@ -230,6 +230,11 @@ const handler = {
                 return undefined;
             }
             try {
+                // Check if the context ('this') is the global object or window
+                if (thisArg === window) {
+                    console.warn('Function.prototype.apply called with global context, blocking.');
+                    return undefined; // Or throw an error
+                }
                 return Reflect.apply(target, thisArg, argArray);
             } catch (e) {
                 console.warn('Error applying Function.prototype.apply:', e);
@@ -245,6 +250,11 @@ const handler = {
                 return undefined;
             }
             try {
+                // Check if the context ('this') is the global object or window
+                if (thisArg === window) {
+                    console.warn('Function.prototype.call called with global context, blocking.');
+                    return undefined; // Or throw an error
+                }
                 return Reflect.apply(target, thisArg, argArray);
             } catch (e) {
                 console.warn('Error applying Function.prototype.call:', e);
@@ -279,6 +289,21 @@ const handler = {
     window.Function = new Proxy(window.Function, {
         construct: function(target, argArray) {
             console.warn('Function constructor blocked');
+            return undefined;
+        }
+    });
+
+    // Override document.write and document.writeln to prevent injection attacks
+    document.write = new Proxy(document.write, {
+        apply: function(target, thisArg, argArray) {
+            console.warn('document.write blocked');
+            return undefined;
+        }
+    });
+
+    document.writeln = new Proxy(document.writeln, {
+        apply: function(target, thisArg, argArray) {
+            console.warn('document.writeln blocked');
             return undefined;
         }
     });
