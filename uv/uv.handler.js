@@ -5,6 +5,59 @@ const crypto = require('crypto');
 const tls = require('tls');
 const { brotliDecompressSync, gunzipSync, inflateSync } = require('zlib');
 
+const sanitizedHeaders = (headers) => {
+  const hopByHopHeaders = [
+    'host',
+    'origin',
+    'connection',
+    'upgrade',
+    'accept-encoding',
+    'proxy-connection',
+    'if-none-match',
+    'if-modified-since',
+    'pragma',
+    'cache-control',
+    'transfer-encoding',
+    'te',
+    'trailer',
+    'keep-alive',
+    'proxy-authenticate',
+    'proxy-authorization',
+    'content-length'
+  ];
+
+  const cleanedHeaders = {};
+  for (const header in headers) {
+    if (!hopByHopHeaders.includes(header.toLowerCase())) {
+      if (typeof headers[header] === 'string') {
+        let value = headers[header];
+        if (value && (value.includes('\n') || value.includes('\r'))) {
+          console.warn(`Removed header ${header} due to newline/carriage return character.`);
+        } else {
+          cleanedHeaders[header] = value;
+        }
+      } else if (Array.isArray(headers[header])) {
+        const sanitizedArray = headers[header].map(item => {
+          if (typeof item === 'string') {
+            let sanitizedItem = item.replace(/[\r\n]/g, '');
+            if (sanitizedItem !== item) {
+              console.warn(`Sanitized array header ${header} due to newline/carriage return character.`);
+            }
+            return sanitizedItem;
+          }
+          return item;
+        });
+        cleanedHeaders[header] = sanitizedArray;
+      } else {
+        cleanedHeaders[header] = headers[header];
+      }
+    }
+  }
+  return cleanedHeaders;
+};
+
+const tlsRejectUnauthorized = process.env.NODE_TLS_REJECT_UNAUTHORIZED !== '0';
+
 async function handleRequest(req, res) {
   try {
     const urlString = req.url.slice(1);
@@ -33,12 +86,12 @@ async function handleRequest(req, res) {
       port: port,
       path: path,
       method: req.method,
-      headers: { ...req.headers },
-      timeout: 10000,
+      headers: sanitizedHeaders(req.headers),
+      timeout: 30000,
       followRedirects: false,
-      agent: false, // Disable connection pooling
+      agent: false,
       servername: target,
-      rejectUnauthorized: true,
+      rejectUnauthorized: tlsRejectUnauthorized,
       secureProtocol: 'TLSv1_2_method',
       ciphers: [
         'TLS_AES_128_GCM_SHA256',
@@ -51,22 +104,6 @@ async function handleRequest(req, res) {
       minVersion: 'TLSv1.2'
     };
 
-    const hopByHopHeaders = [
-      'host',
-      'origin',
-      'connection',
-      'upgrade',
-      'accept-encoding',
-      'proxy-connection',
-      'if-none-match',
-      'if-modified-since',
-      'pragma',
-      'cache-control',
-      'transfer-encoding'
-    ];
-
-    hopByHopHeaders.forEach(header => delete options.headers[header]);
-
     options.headers['x-forwarded-for'] = req.socket.remoteAddress || req.connection.remoteAddress || crypto.randomBytes(16).toString('hex');
 
     if (!options.headers['user-agent']) {
@@ -74,53 +111,32 @@ async function handleRequest(req, res) {
     }
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
-      let resHeaders = { ...proxyRes.headers };
-
-      delete resHeaders['content-encoding'];
-
-      Object.keys(resHeaders).forEach(header => {
-        if (typeof resHeaders[header] === 'string') {
-          const value = resHeaders[header];
-          if (value.includes('\n') || value.includes('\r')) {
-            delete resHeaders[header];
-            console.warn(`Removed header ${header} due to newline/carriage return character.`);
-          }
-        } else if (Array.isArray(resHeaders[header])) {
-          resHeaders[header] = resHeaders[header].map(item => {
-            if (typeof item === 'string') {
-              let sanitizedItem = item.replace(/[\r\n]/g, '');
-              if (sanitizedItem !== item) {
-                console.warn(`Sanitized array header ${header} due to newline/carriage return character.`);
-              }
-              return sanitizedItem;
-            }
-            return item;
-          });
-        }
-      });
+      let resHeaders = sanitizedHeaders(proxyRes.headers);
 
       res.writeHead(proxyRes.statusCode, resHeaders);
 
       proxyRes.on('data', (chunk) => {
-          res.write(chunk);
+        res.write(chunk);
       });
 
       proxyRes.on('end', () => {
-          res.end();
+        res.end();
       });
 
       proxyRes.on('error', (err) => {
-          console.error('Proxy response error:', err);
-          if (!res.headersSent) {
-              res.writeHead(502, { 'Content-Type': 'text/plain' });
-              res.end('Proxy response error: ' + err.message);
-          } else {
-              try {
-                  res.socket.destroy();
-              } catch (e) {
-                  console.error("Error destroying socket after proxy response error:", e);
-              }
+        console.error('Proxy response error:', err);
+        if (!res.headersSent) {
+          res.writeHead(502, { 'Content-Type': 'text/plain' });
+          res.end('Proxy response error: ' + err.message);
+        } else {
+          try {
+            if (res.socket) {
+              res.socket.destroy();
+            }
+          } catch (e) {
+            console.error("Error destroying socket after proxy response error:", e);
           }
+        }
       });
     });
 
@@ -129,24 +145,24 @@ async function handleRequest(req, res) {
     });
 
     proxyReq.on('socket', (socket) => {
-        socket.on('secureConnect', () => {
-            if (url.protocol === 'https:') {
-                const tlsInfo = socket.getPeerCertificate();
-                if (tlsInfo && tlsInfo.subject) {
-                    console.log(`Connected to ${target} with certificate subject: ${tlsInfo.subject.CN}`);
-                }
-                if (tlsInfo && tlsInfo.valid_to) {
-                    const expiryDate = new Date(tlsInfo.valid_to);
-                    if (expiryDate < new Date()) {
-                        console.warn(`Certificate for ${target} has expired.`);
-                    }
-                }
+      socket.on('secureConnect', () => {
+        if (url.protocol === 'https:') {
+          const tlsInfo = socket.getPeerCertificate();
+          if (tlsInfo && tlsInfo.subject) {
+            console.log(`Connected to ${target} with certificate subject: ${tlsInfo.subject.CN}`);
+          }
+          if (tlsInfo && tlsInfo.valid_to) {
+            const expiryDate = new Date(tlsInfo.valid_to);
+            if (expiryDate < new Date()) {
+              console.warn(`Certificate for ${target} has expired.`);
             }
-        });
+          }
+        }
+      });
 
-        socket.on('error', (err) => {
-            console.error('Socket error:', err);
-        });
+      socket.on('error', (err) => {
+        console.error('Socket error:', err);
+      });
     });
 
     proxyReq.on('error', (err) => {
