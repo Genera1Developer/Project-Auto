@@ -1,11 +1,11 @@
 const crypto = require('crypto');
 
-const algorithm = 'aes-256-cbc'; // Use a strong algorithm
-const key = crypto.randomBytes(32); // Generate a secure key
-const iv = crypto.randomBytes(16); // Generate a secure Initialization Vector
+const algorithm = 'aes-256-cbc';
+const key = crypto.randomBytes(32);
+const iv = crypto.randomBytes(16);
 
 function encrypt(text) {
-    const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
@@ -14,10 +14,13 @@ function encrypt(text) {
 function decrypt(text) {
     let iv = Buffer.from(text.iv, 'hex');
     let encryptedText = Buffer.from(text.encryptedData, 'hex');
-    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
 }
 
-module.exports = { encrypt, decrypt };
+module.exports = {
+    encrypt,
+    decrypt
+};
