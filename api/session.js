@@ -16,9 +16,9 @@ function configureSession(app) {
   app.use(session({
     secret: sessionSecret,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // Only save when modified
     cookie: {
-      secure: true, // Only send cookies over HTTPS
+      secure: process.env.NODE_ENV === 'production', // Only send cookies over HTTPS in production
       httpOnly: true, // Prevent client-side access to cookies
       maxAge: 3600000, // Session duration (e.g., 1 hour)
       sameSite: 'strict' // Help prevent CSRF attacks
@@ -29,40 +29,50 @@ function configureSession(app) {
     })
   }));
 
-  // Middleware to encrypt/decrypt session data
+  // Middleware to encrypt session data
   app.use((req, res, next) => {
-    const originalSession = req.session.toJSON();
-
-    req.session.regenerate(function(err) {
-      if (err) next(err);
-      for (const key in originalSession) {
-        if(key !== 'cookie') {
-          const encryptedData = security.encryptData(JSON.stringify(originalSession[key]), sessionSecret);
-          req.session[key] = encryptedData
+    if (req.session) {
+      for (const key in req.session) {
+        if (key !== 'cookie' && req.session.hasOwnProperty(key)) {
+          try {
+            const stringifiedData = JSON.stringify(req.session[key]);
+            req.session[key] = security.encryptData(stringifiedData, sessionSecret);
+          } catch (error) {
+            console.error('Failed to encrypt session data:', error);
+            return next(error); // Pass the error to the error handler
+          }
         }
       }
-      req.session.save(function(err) {
-        if (err) next(err);
+      req.session.save(function (err) {
+        if (err) {
+          console.error('Failed to save encrypted session data:', err);
+          return next(err);
+        }
         next();
-      })
-    })
+      });
+    } else {
+      next();
+    }
   });
 
+
+  // Middleware to decrypt session data
   app.use((req, res, next) => {
-    const sessionSecret = generateSessionSecret();
-    for (const key in req.session) {
-      if(key !== 'cookie' && typeof req.session[key] === 'string'){
-        try {
-          const decryptedData = security.decryptData(req.session[key], sessionSecret);
-          req.session[key] = JSON.parse(decryptedData);
-        } catch (error) {
-          console.error('Failed to decrypt session data:', error);
-          // Handle decryption error appropriately, maybe destroy session
-          req.session.destroy((err) => {
-            if(err) console.error("Error destroying session:", err);
-            res.redirect('/error'); // Redirect to error page or login
-          });
-          return;
+    if (req.session) {
+      for (const key in req.session) {
+        if (key !== 'cookie' && req.session.hasOwnProperty(key) && typeof req.session[key] === 'string') {
+          try {
+            const decryptedData = security.decryptData(req.session[key], sessionSecret);
+            req.session[key] = JSON.parse(decryptedData);
+          } catch (error) {
+            console.error('Failed to decrypt session data:', error);
+            // Handle decryption error appropriately, maybe destroy session
+            req.session.destroy((err) => {
+              if (err) console.error("Error destroying session:", err);
+              return res.redirect('/error'); // Redirect to error page or login
+            });
+            return;
+          }
         }
       }
     }
