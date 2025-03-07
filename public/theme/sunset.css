@@ -279,3 +279,100 @@ input[type="number"] {
   color: #d32f2f; /* A shade of red */
   font-weight: bold;
 }
+
+/* Add styles for disabled state to prevent accidental clicks */
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+button:disabled:hover {
+  opacity: 0.6;
+  background-color: #ccc;
+}
+
+/* Style for masked input fields (e.g., credit card numbers) */
+.masked-input {
+  font-family: monospace;
+  letter-spacing: 2px; /* Adjust spacing for better readability */
+}
+
+/* Style for showing SSL/TLS protocol information */
+.tls-info {
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #2e7d32; /* A shade of green */
+}
+
+/* Style for nonce values in CSP */
+.csp-nonce {
+    font-family: monospace;
+    background-color: #f0f4c4; /* Light yellow */
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+/* Styles for indicating mixed content warnings */
+.mixed-content-warning {
+    color: #ff9800; /* Orange */
+    font-weight: bold;
+}
+
+/* Style to indicate when cookies are being blocked */
+.cookie-blocked {
+    color: #d32f2f; /* Red */
+    font-style: italic;
+}
+
+/* Improve contrast for accessibility */
+a:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+/* Style for file upload fields, discouraging certain file types */
+input[type="file"] {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type="file"].dangerous-file-type {
+  border-color: #d32f2f;
+}
+
+/* Style for user activity logs */
+.user-activity-log {
+  font-family: monospace;
+  font-size: 0.8em;
+  background-color: #f5f5f5;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+/* Style for indicating that a feature is running in debug mode */
+.debug-mode {
+    color: #e64a19; /* A shade of orange/red */
+    font-weight: bold;
+    font-style: italic;
+}
+
+/* Styles to highlight deprecated features */
+.deprecated-feature {
+    color: #757575; /* Grey */
+    text-decoration: line-through;
+}
+
+/* Style for reporting client-side errors */
+.client-error {
+  color: #d32f2f;
+  font-family: monospace;
+  padding: 5px;
+  border: 1px solid #ebccd1;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
