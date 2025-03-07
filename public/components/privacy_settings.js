@@ -8,17 +8,22 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    settingsButton.addEventListener('click', function() {
+    settingsButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default button behavior
         settingsPanel.style.display = 'flex';
+        settingsPanel.focus(); // Set focus for accessibility
     });
 
-    closeButton.addEventListener('click', function() {
+    closeButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default button behavior
         settingsPanel.style.display = 'none';
+        settingsButton.focus(); // Return focus to the settings button
     });
 
     settingsPanel.addEventListener('click', function(event) {
         if (event.target === settingsPanel) {
             settingsPanel.style.display = 'none';
+            settingsButton.focus(); // Return focus to the settings button
         }
     });
 
@@ -26,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && settingsPanel.style.display === 'flex') {
             settingsPanel.style.display = 'none';
+            settingsButton.focus(); // Return focus to the settings button
         }
     });
 });
