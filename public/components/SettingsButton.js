@@ -8,17 +8,17 @@ function SettingsButton() {
     const [showSettings, setShowSettings] = useState(false);
 
     const toggleSettings = useCallback(() => {
-        setShowSettings((prevShowSettings) => !prevShowSettings);
+        setShowSettings(prevShowSettings => !prevShowSettings);
     }, []);
 
     return (
-        <div className="settings-button-container">
+        <>
             <button className="settings-button" onClick={toggleSettings}>
                 <FontAwesomeIcon icon={faCog} className="settings-icon" />
-                {showSettings ? 'Hide Settings' : 'Show Settings'}
+                Settings
             </button>
             {showSettings && <Settings />}
-        </div>
+        </>
     );
 }
 
