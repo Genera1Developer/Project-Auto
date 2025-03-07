@@ -12,6 +12,45 @@
         .insecure {
             color: red;
         }
+        .security-info {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 5px;
+            background-color: #ffebee;
+        }
+        #urlInput {
+            width: 80%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #proxyButton {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #proxyButton:hover {
+            background-color: #3e8e41;
+        }
     </style>
 </head>
 <body>
@@ -22,8 +61,10 @@
         <button id="proxyButton">Access via Proxy</button>
 
         <div id="securityInfo" class="security-info">
+            <h3>Security Information</h3>
             <p>Connection Security: <span id="connectionStatus">Unknown</span></p>
             <p>Encryption Protocol: <span id="encryptionProtocol">Unknown</span></p>
+            <p>Certificate Authority: <span id="certificateAuthority">Unknown</span></p>
         </div>
 
         <div id="result" class="result">
