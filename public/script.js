@@ -11,8 +11,8 @@ async function encryptAndSend(data, publicKey) {
       encodedData
     );
 
-    // Use TextEncoder to convert the ArrayBuffer to a Base64 string
-    const encryptedBase64 = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+    // Convert the ArrayBuffer to a Base64 string
+    const encryptedBase64 = btoa(new Uint8Array(encrypted).reduce((data, byte) => data + String.fromCharCode(byte), ''));
     return encryptedBase64;
 
   } catch (error) {
@@ -24,7 +24,7 @@ async function encryptAndSend(data, publicKey) {
 
 async function decryptData(encryptedBase64, privateKey) {
   try {
-    const encryptedData = new Uint8Array(atob(encryptedBase64).split('').map(char => char.charCodeAt(0)));
+    const encryptedData = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
 
     const decrypted = await window.crypto.subtle.decrypt(
       {
@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const importedPublicKeyInput = document.getElementById('importedPublicKey');
   const clearTextButton = document.getElementById('clearText');
   const copyEncryptedButton = document.getElementById('copyEncrypted');
+  const copyDecryptedButton = document.getElementById('copyDecrypted');
 
   let publicKey = null;
   let privateKey = null;
@@ -176,8 +177,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const decrypted = await decryptData(encrypted, privateKey);
       decryptedText.value = decrypted;
+      copyDecryptedButton.disabled = false;
     } catch (error) {
       console.error("Decryption failed:", error);
+      copyDecryptedButton.disabled = true;
     }
   });
 
@@ -233,12 +236,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     originalText.value = '';
     encryptedText.value = '';
     decryptedText.value = '';
-    decryptedText.focus();
   });
 
   copyEncryptedButton.addEventListener('click', () => {
     encryptedText.select();
-    document.execCommand('copy');
+    navigator.clipboard.writeText(encryptedText.value);
     alert('Encrypted text copied to clipboard!');
+  });
+
+  copyDecryptedButton.addEventListener('click', () => {
+    decryptedText.select();
+    navigator.clipboard.writeText(decryptedText.value);
+    alert('Decrypted text copied to clipboard!');
   });
 });
