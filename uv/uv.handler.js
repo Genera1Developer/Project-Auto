@@ -126,6 +126,7 @@ async function handleRequest(req, res) {
       delete resHeaders['content-security-policy'];
       delete resHeaders['x-frame-options'];
       delete resHeaders['x-xss-protection'];
+      delete resHeaders['content-encoding']; // Prevent content encoding issues
 
       // Strip potentially problematic headers
       delete resHeaders['transfer-encoding'];
