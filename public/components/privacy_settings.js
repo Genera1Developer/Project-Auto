@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     settingsButton.addEventListener('click', function() {
-        settingsPanel.style.display = 'block';
+        settingsPanel.style.display = 'flex';
     });
 
     closeButton.addEventListener('click', function() {
@@ -18,6 +18,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     settingsPanel.addEventListener('click', function(event) {
         if (event.target === settingsPanel) {
+            settingsPanel.style.display = 'none';
+        }
+    });
+
+    // Accessibility: Close panel on Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && settingsPanel.style.display === 'flex') {
             settingsPanel.style.display = 'none';
         }
     });
