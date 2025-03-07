@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="theme/default.css">
     <link rel="stylesheet" href="visuals/animations.css">
     <link rel="manifest" href="manifest.json">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';">
 </head>
 <body>
     <header>
@@ -29,6 +30,7 @@
 
          <section id="rsa-encryption">
             <h2>RSA Encryption Demo</h2>
+            <p>This is a demonstration of RSA encryption in the browser.  <b>Do not use this for real security.</b></p>
             <button id="generateKeys">Generate Keys</button>
             <button id="downloadPublicKey" disabled>Download Public Key</button>
             <label for="importedPublicKey">Import Public Key (JWK):</label>
