@@ -10,17 +10,26 @@ class URLInput extends HTMLElement {
         this.buttonElement = this.shadow.querySelector('button');
 
         this.buttonElement.addEventListener('click', this.onSubmit.bind(this));
-        this.inputElement.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                this.onSubmit();
-            }
-        });
+        this.inputElement.addEventListener('keydown', this.handleKeyDown.bind(this));
+    }
+
+    handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent form submission if inside a form
+            this.onSubmit();
+        }
     }
 
     onSubmit() {
         const url = this.inputElement.value;
         if (url) {
-            this.dispatchEvent(new CustomEvent('urlSubmit', { detail: url }));
+            try {
+                new URL(url); // Basic URL validation
+                this.dispatchEvent(new CustomEvent('urlSubmit', { detail: url }));
+            } catch (error) {
+                alert('Invalid URL'); // Simple error handling
+            }
+
         }
     }
 
