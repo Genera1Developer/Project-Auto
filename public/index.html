@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Web Proxy</title>
     <link rel="stylesheet" href="theme/default.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'">
 </head>
 <body>
     <div class="container">
         <h1>Secure Web Proxy</h1>
-        <input type="url" id="url" placeholder="Enter URL">
+        <input type="url" id="url" placeholder="Enter URL" autocomplete="off">
         <button id="proxyButton">Go</button>
         <div class="result" id="result"></div>
         <div class="error" id="error"></div>
