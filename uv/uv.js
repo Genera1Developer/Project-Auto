@@ -1,11 +1,3 @@
-self.addEventListener('install', event => {
-  event.waitUntil(self.skipWaiting());
-});
-
-self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
-});
-
 const passthroughHeaders = new Set([
   'content-encoding',
   'content-length',
@@ -29,10 +21,13 @@ const passthroughHeaders = new Set([
   'x-frame-options',
   'x-xss-protection',
   'cross-origin-resource-policy',
-  'content-security-policy', // Add Content Security Policy
-  'strict-transport-security', // Add HSTS
-  'permissions-policy', // Add Permissions Policy
-  'link', // Add Link header
+  'content-security-policy',
+  'strict-transport-security',
+  'permissions-policy',
+  'link',
+  'x-robots-tag', // Add X-Robots-Tag
+  'report-to', //Add Report-To
+  'nel' // Add NEL
 ]);
 
 async function handleRequest(event) {
@@ -40,27 +35,24 @@ async function handleRequest(event) {
     let url = event.request.url;
     const urlObj = new URL(event.request.url);
 
-    // Remove the /service/ prefix if it exists
     if (urlObj.pathname.startsWith('/service/')) {
       url = url.replace('/service/', '/');
     }
 
     const requestHeaders = new Headers(event.request.headers);
-    // Remove potentially problematic headers
     requestHeaders.delete('service-worker');
     requestHeaders.delete('host');
     requestHeaders.delete('origin');
-    requestHeaders.delete('referer'); // Remove referer header
-    requestHeaders.delete('x-forwarded-for'); // Remove X-Forwarded-For
-    requestHeaders.delete('x-real-ip');      // Remove X-Real-IP
+    requestHeaders.delete('referer');
+    requestHeaders.delete('x-forwarded-for');
+    requestHeaders.delete('x-real-ip');
 
-    // Add a user agent header to mimic a real browser
     requestHeaders.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
 
     const fetchOptions = {
       method: event.request.method,
       headers: requestHeaders,
-      redirect: 'manual' // Important to handle redirects manually
+      redirect: 'manual'
     };
 
     if (event.request.body) {
@@ -69,7 +61,6 @@ async function handleRequest(event) {
 
     let response = await fetch(url, fetchOptions);
 
-    // Handle redirects manually
     let redirectCount = 0;
     while ((response.status === 301 || response.status === 302 || response.status === 307 || response.status === 308) && redirectCount < 5) {
       const redirectURL = response.headers.get('location');
@@ -79,9 +70,8 @@ async function handleRequest(event) {
 
       const absoluteRedirectURL = new URL(redirectURL, url).href;
       url = absoluteRedirectURL;
-      requestHeaders.delete('origin'); // Remove origin header for redirects
-      requestHeaders.delete('referer'); // Remove referer header for redirects
-      // Re-apply the original request body if it exists
+      requestHeaders.delete('origin');
+      requestHeaders.delete('referer');
       fetchOptions.body = event.request.body;
       response = await fetch(url, {
         method: event.request.method,
@@ -108,22 +98,22 @@ async function handleRequest(event) {
       }
     }
 
-    // Mitigate potential MIME type sniffing issues
     if (!headers.has('Content-Type')) {
         const contentType = response.headers.get('Content-Type');
         if (contentType) {
             headers.set('Content-Type', contentType);
         } else {
-            headers.set('Content-Type', 'text/plain; charset=utf-8'); // Default to text/plain
+            headers.set('Content-Type', 'text/plain; charset=utf-8');
         }
     }
 
-    // Enforce security headers.  These should ideally be configurable.
     headers.set('X-Frame-Options', 'DENY');
     headers.set('X-XSS-Protection', '1; mode=block');
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('Referrer-Policy', 'no-referrer');
     headers.set('Feature-Policy', "microphone 'none'; camera 'none'; geolocation 'none'");
+    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self';");
+    headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
 
     const body = await response.blob();
     return new Response(body, {
@@ -140,6 +130,14 @@ async function handleRequest(event) {
     });
   }
 }
+
+self.addEventListener('install', event => {
+  event.waitUntil(self.skipWaiting());
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(self.clients.claim());
+});
 
 self.addEventListener('fetch', event => {
   event.respondWith(handleRequest(event));
