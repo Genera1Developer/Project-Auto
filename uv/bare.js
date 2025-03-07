@@ -157,22 +157,27 @@ class Bare {
         const encoder = new TextEncoder();
         const salt = encoder.encode(this.hkdfSalt);
         const info = encoder.encode(this.hkdfInfo);
-        const baseKey = await window.crypto.subtle.importKey(
-            "raw",
-            encoder.encode(key),
-            { name: "HKDF" },
-            false,
-            ["deriveKey", "deriveBits"]
-        );
+        try {
+            const baseKey = await window.crypto.subtle.importKey(
+                "raw",
+                encoder.encode(key),
+                { name: "HKDF" },
+                false,
+                ["deriveKey", "deriveBits"]
+            );
 
-        const derivedKey = await window.crypto.subtle.deriveKey(
-            { name: "HKDF", hash: "SHA-256", salt: salt, info: info },
-            baseKey,
-            { name: "AES-GCM", length: 256 },
-            false,
-            ["encrypt", "decrypt"]
-        );
-        return derivedKey;
+            const derivedKey = await window.crypto.subtle.deriveKey(
+                { name: "HKDF", hash: "SHA-256", salt: salt, info: info },
+                baseKey,
+                { name: "AES-GCM", length: 256 },
+                false,
+                ["encrypt", "decrypt"]
+            );
+            return derivedKey;
+        } catch (error) {
+            console.error("HKDF key derivation error:", error);
+            throw new Error("HKDF Key Derivation Failed");
+        }
     }
 
 
@@ -190,35 +195,39 @@ class Bare {
             }
         }
 
+        let response = null;
         try {
-            const response = await fetch(fetchUrl, options);
-            if (!response.ok) {
-                const errorType = `Bare ${method} error`;
-                console.error(`${errorType}: HTTP error! status: ${response.status} - ${fetchUrl}`);
-                throw new Error(`${errorType}: HTTP error! status: ${response.status}`);
-            }
+            response = await fetch(fetchUrl, options);
+        } catch (error) {
+            console.error(`Bare ${method} fetch error:`, error);
+            throw new Error(`Bare ${method} fetch error: ${error.message}`);
+        }
 
-            if (this.integrityEnabled) {
-                const expectedIntegrity = response.headers.get(this.integrityHeaderName);
-                if (expectedIntegrity) {
-                    const text = await response.clone().text();
-                    const integrity = await this.calculateIntegrity(text, this.integrityType);
+        if (!response.ok) {
+            const errorType = `Bare ${method} error`;
+            console.error(`${errorType}: HTTP error! status: ${response.status} - ${fetchUrl}`);
+            throw new Error(`${errorType}: HTTP error! status: ${response.status}`);
+        }
 
-                    if (integrity !== expectedIntegrity) {
-                        console.error(`Bare ${method} error: Content integrity check failed.`);
-                        this.integrityCheckFailed = true;
-                        throw new Error(`Bare ${method} error: Content integrity check failed.`);
-                    }
-                    this.integrityCheckFailed = false;
-                    return response;
-                } else {
-                    console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
+        if (this.integrityEnabled) {
+            const expectedIntegrity = response.headers.get(this.integrityHeaderName);
+            if (expectedIntegrity) {
+                const text = await response.clone().text();
+                const integrity = await this.calculateIntegrity(text, this.integrityType);
+
+                if (integrity !== expectedIntegrity) {
+                    console.error(`Bare ${method} error: Content integrity check failed.`);
+                    this.integrityCheckFailed = true;
+                    throw new Error(`Bare ${method} error: Content integrity check failed.`);
                 }
+                this.integrityCheckFailed = false;
+            } else {
+                console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
             }
+        }
 
-            let res = response;
-
-            if (this.encryptionEnabled && this.encryptionKey) {
+        if (this.encryptionEnabled && this.encryptionKey) {
+            try {
                 const originalResponse = response.clone();
                 const decryptedText = await this.decrypt(await originalResponse.text(), this.encryptionKey);
 
@@ -227,13 +236,13 @@ class Bare {
                     statusText: response.statusText,
                     headers: response.headers
                 });
-                res = decryptedResponse;
+                return decryptedResponse;
+            } catch (error) {
+                console.error("Decryption of response failed:", error);
+                throw new Error("Failed to decrypt response.");
             }
-
-            return res;
-        } catch (error) {
-            console.error(`Bare ${method} error:`, error);
-            throw error;
         }
+
+        return response;
     }
 }
