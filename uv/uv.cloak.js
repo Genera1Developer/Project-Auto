@@ -68,17 +68,31 @@ const handler = {
 
             seen.add(obj);
 
-            for (const prop in obj) {
-                if (Object.hasOwn(obj, prop)) {
+            let proxiedObj;
+
+            if (Array.isArray(obj)) {
+                proxiedObj = [];
+                for (let i = 0; i < obj.length; i++) {
                     try {
-                        obj[prop] = deepProxy(obj[prop]);
+                        proxiedObj[i] = deepProxy(obj[i]);
                     } catch (e) {
-                        // ignore errors, some properties are read-only or not configurable
+                        proxiedObj[i] = obj[i];
+                    }
+                }
+            } else {
+                proxiedObj = {};
+                for (const prop in obj) {
+                    if (Object.hasOwn(obj, prop)) {
+                        try {
+                            proxiedObj[prop] = deepProxy(obj[prop]);
+                        } catch (e) {
+                            proxiedObj[prop] = obj[prop];
+                        }
                     }
                 }
             }
 
-            return new Proxy(obj, handler);
+            return new Proxy(proxiedObj, handler);
         }
 
         return deepProxy(obj);
