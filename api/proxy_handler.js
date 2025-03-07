@@ -17,7 +17,7 @@ const proxyHandler = (req, res) => {
       followRedirects: false,
       timeout: 15000,
       agent: false,
-      rejectUnauthorized: false, // Disable SSL certificate verification
+      rejectUnauthorized: false,
     };
 
     const hopByHopHeaders = [
@@ -37,7 +37,7 @@ const proxyHandler = (req, res) => {
     });
 
     const proxyReq = (parsedURL.protocol === 'https:' ? https : http).request(parsedURL.href, options, (proxyRes) => {
-      const proxyResHeaders = { ...proxyRes.headers }; // Copy headers to avoid modifying the original object.
+      const proxyResHeaders = { ...proxyRes.headers };
       hopByHopHeaders.forEach(header => {
         delete proxyResHeaders[header];
       });
@@ -63,7 +63,7 @@ const proxyHandler = (req, res) => {
         if (!res.headersSent) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
         }
-        res.end(`Proxy error: ${err.message}`); // Include error message in response
+        res.end(`Proxy error: ${err.message}`);
       }
     });
 
@@ -76,7 +76,7 @@ const proxyHandler = (req, res) => {
         if (!res.headersSent) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
         }
-        res.end(`Request aborted: ${err.message}`); // Include error message in response
+        res.end(`Request aborted: ${err.message}`);
       }
     });
 
@@ -87,7 +87,7 @@ const proxyHandler = (req, res) => {
   } catch (error) {
     console.error('URL parsing error:', error);
     if (!res.headersSent) {
-        return res.status(400).send(`Invalid URL: ${error.message}`); // Include error message in response
+      res.status(400).send(`Invalid URL: ${error.message}`);
     }
   }
 };
