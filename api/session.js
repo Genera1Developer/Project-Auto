@@ -9,7 +9,13 @@ function generateSessionSecret() {
   return crypto.randomBytes(64).toString('hex');
 }
 
-const sessionSecret = generateSessionSecret(); // Generate a strong session secret
+// Rotate session secret periodically
+let sessionSecret = generateSessionSecret();
+
+setInterval(() => {
+  sessionSecret = generateSessionSecret();
+  console.log('Session secret rotated.');
+}, 24 * 60 * 60 * 1000); // Rotate every 24 hours
 
 // Configure session middleware with encryption
 function configureSession(app) {
