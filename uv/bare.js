@@ -65,7 +65,7 @@ class Bare {
 			return new URL(url, base || this.origin).href;
 		} catch (error) {
 			console.warn("Bare resolve error:", error, url, base);
-			return undefined;
+			return;
 		}
 	}
 }
