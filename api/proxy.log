@@ -1,20 +1,41 @@
 import logging
 import datetime
 import socket
+import structlog
+
+# Configure structlog
+structlog.configure(
+    processors=[
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.add_log_level,
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.format_exc_info,
+        structlog.processors.JSONRenderer()
+    ],
+    logger_factory=structlog.stdlib.LoggerFactory(),
+    wrapper_class=structlog.stdlib.BoundLogger,
+    cache_logger_on_first_use=True,
+)
+
+logger = structlog.get_logger()
 
 def log_request(method, url, status_code, response_time, client_ip, content_length=None):
-    """Logs proxy requests with detailed information."""
-    timestamp = datetime.datetime.now().isoformat()
-    log_message = f"{timestamp} - {client_ip} - {method} {url} - Status: {status_code} - Time: {response_time:.2f}s"
-    if content_length is not None:
-        log_message += f" - Length: {content_length} bytes"
-    logging.info(log_message)
+    """Logs proxy requests with detailed information using structlog."""
+    event_dict = {
+        "event": "proxy_request",
+        "method": method,
+        "url": url,
+        "status_code": status_code,
+        "response_time": response_time,
+        "client_ip": client_ip,
+        "content_length": content_length,
+    }
 
-def setup_logging(log_file="proxy.log", level=logging.INFO):
-    """Sets up basic logging configuration."""
-    logging.basicConfig(filename=log_file, level=level,
-                        format='%(asctime)s - %(levelname)s - %(message)s',
-                        datefmt='%Y-%m-%d %H:%M:%S')
+    logger.info("Proxy request details", **event_dict)
+
+def setup_logging():
+    """Sets up structlog logging."""
+    pass # structlog configuration is handled globally
 
 def get_hostname():
     """Gets the hostname of the machine."""
