@@ -21,13 +21,7 @@ function decrypt(text) {
     return decrypted.toString();
 }
 
-function generateSecureToken() {
-    return crypto.randomBytes(64).toString('hex');
-}
-
 module.exports = {
     encrypt,
-    decrypt,
-    generateSecureToken,
-    key // Export the key (for demonstration purposes only - NEVER DO THIS IN PRODUCTION)
+    decrypt
 };
