@@ -34,6 +34,14 @@
         .log-level.INFO {
             color: green;
         }
+        .log-level.CRITICAL {
+            color: darkred;
+        }
+        .log-source {
+            font-style: italic;
+            font-size: 0.9em;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -44,44 +52,55 @@
 
     <script>
         function fetchLogs() {
-            fetch('/api/security/logs') // Endpoint to fetch logs
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(logs => {
-                    const logContainer = document.getElementById('log-container');
-                    logContainer.innerHTML = ''; // Clear existing logs
+            fetch('/api/security/logs', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Log fetch failed with status:', response.status);
+                    return Promise.reject(new Error(`HTTP error! Status: ${response.status}`));
+                }
+                return response.json();
+            })
+            .then(logs => {
+                const logContainer = document.getElementById('log-container');
+                logContainer.innerHTML = ''; // Clear existing logs
 
-                    logs.forEach(log => {
-                        const logEntry = document.createElement('div');
-                        logEntry.classList.add('log-entry');
+                logs.forEach(log => {
+                    const logEntry = document.createElement('div');
+                    logEntry.classList.add('log-entry');
 
-                        const timestamp = document.createElement('div');
-                        timestamp.classList.add('log-timestamp');
-                        timestamp.textContent = new Date(log.timestamp).toLocaleString(); // Format timestamp
+                    const timestamp = document.createElement('div');
+                    timestamp.classList.add('log-timestamp');
+                    timestamp.textContent = new Date(log.timestamp).toLocaleString(); // Format timestamp
 
-                        const level = document.createElement('span');
-                        level.classList.add('log-level', log.level); // Add log level and class
-                        level.textContent = `[${log.level}] `;
+                    const level = document.createElement('span');
+                    level.classList.add('log-level', log.level); // Add log level and class
+                    level.textContent = `[${log.level}] `;
 
-                        const message = document.createElement('div');
-                        message.classList.add('log-message');
-                        message.textContent = log.message;
+                    const message = document.createElement('div');
+                    message.classList.add('log-message');
+                    message.textContent = log.message;
 
-                        logEntry.appendChild(timestamp);
-                        logEntry.appendChild(level);
-                        logEntry.appendChild(message);
-                        logContainer.appendChild(logEntry);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching logs:', error);
-                    const logContainer = document.getElementById('log-container');
-                    logContainer.innerHTML = '<p>Error loading logs: ' + error + '</p>';
+                    const source = document.createElement('div');
+                    source.classList.add('log-source');
+                    source.textContent = `Source: ${log.source || 'N/A'}`;
+
+                    logEntry.appendChild(timestamp);
+                    logEntry.appendChild(level);
+                    logEntry.appendChild(message);
+                    logEntry.appendChild(source);
+                    logContainer.appendChild(logEntry);
                 });
+            })
+            .catch(error => {
+                console.error('Error fetching logs:', error);
+                const logContainer = document.getElementById('log-container');
+                logContainer.innerHTML = '<p>Error loading logs: ' + error + '</p>';
+            });
         }
 
         // Fetch logs on page load
