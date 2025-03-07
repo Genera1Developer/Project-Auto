@@ -13,4 +13,5 @@ self.__uv$config = {
     // For enhanced security, use a CSP nonce or SRI hash for injected scripts.
     // Consider rotating the XOR key regularly for enhanced security.
     // Service worker scope depends on prefix. It is highly recommended to customize the prefix. Consider using a UUID for added randomness.
-    };
+    cloak: '/cloak.html',
+};
