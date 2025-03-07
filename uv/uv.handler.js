@@ -36,7 +36,9 @@ async function handleRequest(req, res) {
       followRedirects: false,
       agent: false, // Disable connection pooling
       // Enable TLS SNI
-      servername: target
+      servername: target,
+      // Strict SSL/TLS checking.  Can be configurable in future.
+      rejectUnauthorized: true
     };
 
     // Delete potentially problematic headers
@@ -59,6 +61,11 @@ async function handleRequest(req, res) {
     // Set 'x-forwarded-for' header, use a random id if IP is unavailable
     options.headers['x-forwarded-for'] = req.socket.remoteAddress || req.connection.remoteAddress || crypto.randomBytes(16).toString('hex');
 
+    // Add a User-Agent header if one is not already present
+    if (!options.headers['user-agent']) {
+      options.headers['user-agent'] = 'uv-proxy/1.0';
+    }
+
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       const resHeaders = { ...proxyRes.headers };
 
@@ -68,10 +75,20 @@ async function handleRequest(req, res) {
 
       // Mitigate potential header injection vulnerabilities
       Object.keys(resHeaders).forEach(header => {
-        const value = resHeaders[header];
-        if (typeof value === 'string' && value.includes('\n')) {
-          delete resHeaders[header];
-          console.warn(`Removed header ${header} due to newline character.`);
+        if (typeof resHeaders[header] === 'string') {
+          const value = resHeaders[header];
+          if (value.includes('\n') || value.includes('\r')) {
+            delete resHeaders[header];
+            console.warn(`Removed header ${header} due to newline/carriage return character.`);
+          }
+        } else if (Array.isArray(resHeaders[header])) {
+          resHeaders[header] = resHeaders[header].map(item => {
+            if (typeof item === 'string' && (item.includes('\n') || item.includes('\r'))) {
+              console.warn(`Sanitized array header ${header} due to newline/carriage return character.`);
+              return item.replace(/[\r\n]/g, ''); // Remove newline/carriage return
+            }
+            return item;
+          });
         }
       });
 
