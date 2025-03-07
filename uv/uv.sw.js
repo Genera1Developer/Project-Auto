@@ -14,6 +14,8 @@ const TRUSTED_TYPES_POLICY = trustedTypes && trustedTypes.createPolicy('ultravio
 
 const isTrustedTypesSupported = typeof trustedTypes !== 'undefined' && trustedTypes.createPolicy;
 
+const encoder = new TextEncoder();
+
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
@@ -80,6 +82,7 @@ self.addEventListener('fetch', (event) => {
           headers.delete('clear-site-data');
           headers.delete('feature-policy');
           headers.delete('permissions-policy');
+          headers.delete('x-frame-options');
 
           let responseBody;
           try {
@@ -128,8 +131,13 @@ self.addEventListener('fetch', (event) => {
         if (contentType && (contentType.includes('text/html') || contentType.includes('application/xhtml+xml'))) {
           let responseText = await response.text();
 
-          if (isTrustedTypesSupported) {
-             responseText = TRUSTED_TYPES_POLICY.createHTML(responseText);
+          try {
+            if (isTrustedTypesSupported) {
+              responseText = TRUSTED_TYPES_POLICY.createHTML(responseText);
+            }
+
+          } catch (error) {
+            console.error('TrustedTypes error:', error);
           }
           
           return new Response(responseText, {
@@ -142,9 +150,10 @@ self.addEventListener('fetch', (event) => {
         return response;
       } catch (error) {
         console.error('Fetch error for original request:', error);
-        return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
-          status: 500,
-          headers: { 'Content-Type': 'text/html; charset=utf-8' },
+          const errorResponse = `<h1>Error: Fetch failed for original request</h1><p>${error}</p>`;
+          return new Response(errorResponse, {
+            status: 500,
+            headers: { 'Content-Type': 'text/html; charset=utf-8' },
         });
       }
     })()
