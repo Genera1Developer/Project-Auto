@@ -1,56 +1,43 @@
 const security = require('./security');
-const crypto = require('crypto');
 
-const sessionStore = {}; // In-memory session store (replace with DB in production)
-const SESSION_TIMEOUT = 60 * 60 * 1000; // 1 hour in milliseconds
-const SESSION_ID_LENGTH = 64;
+const sessionKeys = {}; // In-memory session key storage (DO NOT USE IN PRODUCTION)
 
-function createSession() {
-    let sessionId;
-    do {
-        sessionId = security.generateSessionId(SESSION_ID_LENGTH);
-    } while (sessionStore[sessionId]); // Ensure uniqueness
-    const sessionKey = security.generateRandomKey(32); // AES-256 key
-    const expiry = Date.now() + SESSION_TIMEOUT;
-
-    // Store the session data with added security: Initialization Vector (IV)
-    const iv = crypto.randomBytes(16); // Initialization Vector for AES
-    sessionStore[sessionId] = {
-        key: sessionKey,
-        iv: iv.toString('hex'),
-        data: {}, // Session data
-        expiry: expiry
-    };
-    return { sessionId, sessionKey, expiry, iv: iv.toString('hex') };
+function createSession(userId) {
+  const sessionId = security.generateSecureKey(16); // 16 bytes = 32 hex chars
+  const sessionKey = security.generateSecureKey(32); // 32 bytes = 64 hex chars
+  sessionKeys[sessionId] = { userId, key: sessionKey };
+  return { sessionId, sessionKey };
 }
 
 function getSession(sessionId) {
-    const session = sessionStore[sessionId];
-    if (session && session.expiry > Date.now()) {
-        // Extend session expiry
-        session.expiry = Date.now() + SESSION_TIMEOUT;
-        return session;
-    } else {
-        destroySession(sessionId);
-        return null;
-    }
+  return sessionKeys[sessionId] || null;
 }
 
-function updateSessionData(sessionId, data) {
-    const session = sessionStore[sessionId];
-    if (session && session.expiry > Date.now()) {
-        sessionStore[sessionId].data = { ...sessionStore[sessionId].data, ...data };
-        sessionStore[sessionId].expiry = Date.now() + SESSION_TIMEOUT; //Extend session expiry
-    }
+function deleteSession(sessionId) {
+  delete sessionKeys[sessionId];
 }
 
-function destroySession(sessionId) {
-    delete sessionStore[sessionId];
+function protectRoute(req, res, next) {
+  const sessionId = req.headers['x-session-id']; // Get session ID from header
+  const sessionKey = req.headers['x-session-key']; // Get session key from header
+
+  if (!sessionId || !sessionKey) {
+    return res.status(401).json({ error: 'Unauthorized: Missing session credentials' });
+  }
+
+  const session = getSession(sessionId);
+
+  if (!session || session.key !== sessionKey) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid session credentials' });
+  }
+
+  req.userId = session.userId; // Attach user ID to the request object
+  next();
 }
 
 module.exports = {
-    createSession,
-    getSession,
-    updateSessionData,
-    destroySession
+  createSession,
+  getSession,
+  deleteSession,
+  protectRoute,
 };
