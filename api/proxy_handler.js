@@ -17,6 +17,7 @@ const proxyHandler = (req, res) => {
       followRedirects: false,
       timeout: 15000,
       agent: false,
+      rejectUnauthorized: false // Disable SSL certificate verification
     };
 
     const hopByHopHeaders = [
@@ -51,6 +52,8 @@ const proxyHandler = (req, res) => {
       if (!res.headersSent) {
         res.writeHead(504, { 'Content-Type': 'text/plain' });
         res.end('Proxy request timed out.');
+      } else {
+        res.end(); // Ensure response is closed if headers are already sent
       }
     });
 
@@ -59,6 +62,8 @@ const proxyHandler = (req, res) => {
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Proxy error.');
+      } else {
+        res.end(); // Ensure response is closed if headers are already sent
       }
     });
 
@@ -70,6 +75,8 @@ const proxyHandler = (req, res) => {
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request aborted.');
+      } else {
+        res.end(); // Ensure response is closed if headers are already sent
       }
     });
 
