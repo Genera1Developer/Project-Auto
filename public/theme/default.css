@@ -71,7 +71,7 @@ input:-webkit-autofill {
     font-weight: bold;
     margin-top: 10px;
 }
-.referrer-policy- Lax-or-Missing {
+.referrer-policy-lax-or-missing {
     color: #dc3545;
     font-weight: bold;
     margin-top: 10px;
@@ -85,4 +85,39 @@ input:-webkit-autofill {
     color: #ff0000;
     font-weight: bold;
     margin-top: 10px;
+}
+.hpkp-header-present {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.hpkp-header-missing {
+    color: #856404;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.sri-present {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
+}
+
+.sri-missing {
+    color: #856404;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    padding: 8px;
+    margin-top: 10px;
+    border-radius: 4px;
 }
