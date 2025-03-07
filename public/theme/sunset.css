@@ -133,3 +133,32 @@ button:focus {
     outline: 2px solid #007bff; /* Add a visible focus ring */
     outline-offset: 2px;
 }
+
+/* Add specific styles for CSP reporting */
+.csp-report {
+  font-family: monospace;
+  background-color: #fcf8e3;
+  border: 1px solid #faebcc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #8a6d3b;
+}
+
+/* Styles for indicating insecure connections */
+.insecure-connection {
+    color: #a94442;
+    font-weight: bold;
+}
+
+/* Add a subtle background to visually separate sections */
+.section {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
