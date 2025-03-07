@@ -3,13 +3,14 @@ header {
   /* Stricter CSP - Remove 'unsafe-inline' and 'unsafe-eval' if possible. Consider nonces or hashes for inline styles/scripts. This is an example only and needs tailoring. */
   content-security-policy: "default-src 'self'; script-src 'self' 'strict-dynamic' 'nonce-{csp_nonce}'; style-src 'self' 'nonce-{csp_nonce}'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://example.com wss://example.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; block-all-mixed-content; upgrade-insecure-requests;";
   /* Feature Policy (now Permissions Policy) - disable features not required to further reduce attack surface */
-  permissions-policy: "geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=()";
+  permissions-policy: "geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=(), document-domain=()";
   /* HTTP Strict Transport Security (HSTS) - Enforce HTTPS */
-  strict-transport-security: max-age=31536000; /* one year */ includeSubDomains; preload;
+  strict-transport-security: max-age=31536000; includeSubDomains; preload;
   x-content-type-options: nosniff;
   x-frame-options: DENY;
   referrer-policy: no-referrer;
   x-xss-protection: 1; mode=block;
+  clear-site-data: "cache", "cookies", "storage";
 }
 
 /* Existing styles - these are just placeholders */
