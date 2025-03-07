@@ -24,12 +24,13 @@ const UV_CONFIG = {
     cdn: null,
     forwardHeaders: true,
     rewriteOrigin: true,
-    XORKey: 'PLEASE-CHANGE-THIS-KEY-TO-A-STRONG-RANDOM-VALUE',
+    XORKey: 'CHANGE-ME-NOW-TO-A-SECURE-RANDOM-KEY',
     advanced: {
         bypass: false,
         injections: true
     },
     encryption: true,
     injectWS: true,
-    nativeProtocol: false
+    nativeProtocol: false,
+    impersonate: true
 };
