@@ -403,8 +403,7 @@
         const cipher = await n.encrypt(data, key, iv, additionalData);
         const saltB64 = n.encodeBase64(String.fromCharCode(...salt));
         const ivB64 = n.encodeBase64(String.fromCharCode(...iv));
-        const cipherArray = new Uint8Array(cipher);
-        const cipherB64 = n.encodeBase64(String.fromCharCode(...Array.from(cipherArray)));
+        const cipherB64 = n.encodeBase64(String.fromCharCode(...Array.from(new Uint8Array(cipher))));
         return `${saltB64}.${ivB64}.${cipherB64}`;
       } catch (error) {
         console.error("Authenticated encryption error:", error);
@@ -428,9 +427,9 @@
         if (!saltB64 || !ivB64 || !cipherB64) {
           throw new Error("Invalid encrypted data format.");
         }
-        const salt = new Uint8Array(n.decodeBase64(saltB64).split("").map((char) => char.charCodeAt(0)));
-        const iv = new Uint8Array(n.decodeBase64(ivB64).split("").map((char) => char.charCodeAt(0)));
-        const cipher = new Uint8Array(n.decodeBase64(cipherB64).split("").map((char) => char.charCodeAt(0))).buffer;
+        const salt = new Uint8Array(Array.from(n.decodeBase64(saltB64), (char) => char.charCodeAt(0)));
+        const iv = new Uint8Array(Array.from(n.decodeBase64(ivB64), (char) => char.charCodeAt(0)));
+        const cipher = new Uint8Array(Array.from(n.decodeBase64(cipherB64), (char) => char.charCodeAt(0))).buffer;
         const key = await n.deriveKey(sharedSecret, salt);
         return await n.decrypt(cipher, key, iv, additionalData);
       } catch (error) {
