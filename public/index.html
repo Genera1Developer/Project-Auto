@@ -64,6 +64,10 @@
             margin-top: 10px;
             font-size: 0.9em;
         }
+        #cspStatus {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +80,7 @@
         <div id="securityInfo">
             <p>All traffic is encrypted and proxied securely.</p>
             <div id="tlsStatus"></div>
+            <div id="cspStatus"></div>
         </div>
     </div>
 
@@ -105,8 +110,20 @@
             }
         }
 
+        // Check Content Security Policy (CSP) - basic check
+        function checkCSP() {
+            if (document.querySelector("meta[http-equiv='Content-Security-Policy']")) {
+                document.getElementById('cspStatus').innerHTML = '<p style="color: green;">Content Security Policy (CSP) is implemented.</p>';
+            } else {
+                document.getElementById('cspStatus').innerHTML = '<p style="color: orange;">Content Security Policy (CSP) is NOT explicitly set. Consider adding it for enhanced security.</p>';
+            }
+        }
+
         // Call checkTLS on page load
-        window.onload = checkTLS;
+        window.onload = () => {
+            checkTLS();
+            checkCSP();
+        };
     </script>
 </body>
 </html>
