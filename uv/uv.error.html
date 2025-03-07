@@ -57,6 +57,11 @@
             font-weight: normal;
             margin-top: 5px;
         }
+        .error-details-pre {
+            white-space: pre-wrap; /* or pre-line */
+            word-break: break-all;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -72,8 +77,8 @@
             <p><b>Type:</b> <span id="error-type"></span></p>
             <p><b>Message:</b> <span id="error-message-detail"></span></p>
             <p><b>URL:</b> <span id="error-url-detail"></span></p>
-            <p><b>Stack:</b> <span id="error-stack"></span></p>
-            <p><b>Context:</b> <span id="error-context"></span></p>
+            <p><b>Stack:</b> <pre class="error-details-pre"><span id="error-stack"></span></pre></p>
+            <p><b>Context:</b> <pre class="error-details-pre"><span id="error-context"></span></pre></p>
         </div>
         <button id="toggle-details">Show Error Details</button>
     </div>
@@ -155,6 +160,13 @@
                         securityWarnings.push("URL contains potentially malicious patterns (javascript:).");
                         sanitizedDecodedURL = "#potential-xss";
                     }
+
+                    const blockedSchemes = ['ftp:', 'file:', 'data:', 'javascript:'];
+                    if (blockedSchemes.some(scheme => sanitizedDecodedURL.startsWith(scheme))) {
+                        securityWarnings.push("URL uses a potentially dangerous scheme.");
+                        sanitizedDecodedURL = "#blocked-scheme";
+                    }
+
 
                 } catch (e) {
                     console.error("URL parsing error:", e);
