@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encrypted Web Proxy</title>
     <link rel="stylesheet" href="theme/default.css">
+    <style>
+        .secure {
+            color: green;
+        }
+        .insecure {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -14,7 +22,8 @@
         <button id="proxyButton">Access via Proxy</button>
 
         <div id="securityInfo" class="security-info">
-            <!-- Security information will be displayed here -->
+            <p>Connection Security: <span id="connectionStatus">Unknown</span></p>
+            <p>Encryption Protocol: <span id="encryptionProtocol">Unknown</span></p>
         </div>
 
         <div id="result" class="result">
