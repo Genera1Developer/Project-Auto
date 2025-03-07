@@ -1,14 +1,16 @@
 export function addSecurityHeaders(res) {
-    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
     res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 }
 edit filepath: api/session.js
 content: import { v4 as uuidv4 } from 'uuid';
 import { encrypt, decrypt } from '../encryption/key_management.js';
 
+const sessionMap = new Map();
 const SESSION_COOKIE_NAME = 'proxy_session';
 
 export function attachSession(req, res) {
@@ -16,136 +18,117 @@ export function attachSession(req, res) {
 
     if (!sessionId) {
         sessionId = uuidv4();
-        const encryptedSessionId = encrypt(sessionId);
-        res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
+        res.cookie(SESSION_COOKIE_NAME, encrypt(sessionId), {
             httpOnly: true,
             secure: true,
-            sameSite: 'Strict'
+            sameSite: 'strict'
         });
-        req.sessionId = sessionId;
     } else {
         try {
-            const decryptedSessionId = decrypt(sessionId);
-            req.sessionId = decryptedSessionId;
+            sessionId = decrypt(sessionId);
         } catch (error) {
             console.error('Error decrypting session ID:', error);
-            res.clearCookie(SESSION_COOKIE_NAME);
-            req.sessionId = uuidv4();
-            const encryptedSessionId = encrypt(req.sessionId);
-             res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
+            sessionId = uuidv4();
+            res.cookie(SESSION_COOKIE_NAME, encrypt(sessionId), {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'Strict'
+                sameSite: 'strict'
             });
         }
     }
-}
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const urlForm = document.getElementById('urlForm');
 
-    urlForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const url = document.getElementById('url').value;
-        window.location.href = '/proxy/' + url;
-    });
+    if (!sessionMap.has(sessionId)) {
+        sessionMap.set(sessionId, {});
+    }
+    req.session = sessionMap.get(sessionId);
+}
+edit filepath: encryption/encryptionMiddleware.js
+content: import { encrypt, decrypt } from './key_management.js';
+
+export function encryptResponse(req, res, next) {
+    const originalSend = res.send;
+
+    res.send = function(body) {
+        if (typeof body === 'string') {
+            try {
+                const encryptedBody = encrypt(body);
+                arguments[0] = encryptedBody;
+            } catch (error) {
+                console.error('Encryption error:', error);
+            }
+        }
+        originalSend.apply(this, arguments);
+    };
+    next();
+}
+
+export function decryptRequest(req, res, next) {
+    if (req.method === 'POST' || req.method === 'PUT') {
+        try {
+            if (req.body) {
+                for (const key in req.body) {
+                    if (typeof req.body[key] === 'string') {
+                        req.body[key] = decrypt(req.body[key]);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Decryption error:', error);
+        }
+    }
+    next();
+}
+edit filepath: api/errorHandling.js
+content: export function handleErrors(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('An unexpected error occurred.');
+}
+edit filepath: server.js
+content: import express from 'express';
+import cookieParser from 'cookie-parser';
+import { createProxy } from './api/proxy.js';
+import { logRequest, getLogs } from './api/logs.js';
+import { attachSession } from './api/session.js';
+import { addSecurityHeaders } from './api/security.js';
+import { handleErrors } from './api/errorHandling.js';
+import { encryptResponse, decryptRequest } from './encryption/encryptionMiddleware.js';
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cookieParser());
+app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(decryptRequest);
+app.use(encryptResponse);
+
+app.use((req, res, next) => {
+    attachSession(req, res);
+    addSecurityHeaders(res);
+    next();
 });
-edit filepath: logs/logs.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    fetch('/api/logs')
-        .then(response => response.json())
-        .then(logs => {
-            const logsContainer = document.getElementById('logs');
-            logs.forEach(log => {
-                const logEntry = document.createElement('p');
-                logEntry.textContent = log;
-                logsContainer.appendChild(logEntry);
-            });
-        })
-        .catch(error => console.error('Error fetching logs:', error));
+
+app.get('/api/logs', (req, res) => {
+    const logs = getLogs();
+    res.json(logs);
 });
-edit filepath: public/settings.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proxy Settings</title>
-    <link rel="stylesheet" href="/theme/default.css">
-    <link rel="stylesheet" href="/theme/forest.css" disabled>
-    <link rel="stylesheet" href="/theme/sunset.css" disabled>
-    <link rel="stylesheet" href="/public/theme/settings.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Settings</h1>
-        <div>
-            <label for="theme">Theme:</label>
-            <select id="theme">
-                <option value="default">Default</option>
-                <option value="forest">Forest</option>
-                <option value="sunset">Sunset</option>
-            </select>
-        </div>
-        <a href="/">Home</a>
-    </div>
-    <script src="/settings.js"></script>
-</body>
-</html>
-edit filepath: public/theme/settings.css
-content: .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
 
-h1 {
-    text-align: center;
-    color: #333;
-}
+app.get('/proxy/*', (req, res) => {
+    const targetUrl = req.url.slice(7);
+    createProxy(targetUrl)(req, res);
+});
 
-label {
-    display: block;
-    margin-bottom: 5px;
-    color: #555;
-}
+app.use(handleErrors);
 
-select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-a {
-    display: block;
-    text-align: center;
-    color: #007bff;
-    text-decoration: none;
-    margin-top: 10px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-edit filepath: api/error_handler.js
-content: export function handleProxyError(err, req, res, target) {
-    console.error(`Proxy error for ${target}:`, err);
-    res.status(500).json({
-        error: 'Proxy Error',
-        message: err.message,
-    });
-}
+app.listen(port, () => {
+    console.log(`Proxy server listening on port ${port}`);
+});
 edit filepath: api/proxy.js
 content: import { createProxyMiddleware } from 'http-proxy-middleware';
 import { logRequest } from './logs.js';
 import { addSecurityHeaders } from './security.js';
-import { handleProxyError } from './error_handler.js';
 
 export function createProxy(target) {
     return createProxyMiddleware({
@@ -157,7 +140,37 @@ export function createProxy(target) {
             logRequest(req, res, target);
         },
         onError: (err, req, res) => {
-            handleProxyError(err, req, res, target);
+            console.error('Proxy error:', err);
+            res.status(500).send('Proxy Error: ' + err);
+        },
+        selfHandleResponse: true,
+        on: {
+            proxyRes: (proxyRes, req, res) => {
+                let body = [];
+                proxyRes.on('data', (chunk) => {
+                    body.push(chunk);
+                });
+                proxyRes.on('end', () => {
+                    body = Buffer.concat(body).toString();
+                    res.status(proxyRes.statusCode);
+                    res.set(proxyRes.headers);
+                    res.send(body);
+                });
+            },
+            error: (err, req, res) => {
+                console.error('Proxy error:', err);
+                res.status(500).send('Proxy Error');
+            }
         }
     });
 }
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    const urlForm = document.getElementById('urlForm');
+
+    urlForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const url = document.getElementById('url').value;
+        window.location.href = '/proxy/' + encodeURIComponent(url);
+    });
+});
