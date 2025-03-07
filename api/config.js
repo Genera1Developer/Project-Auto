@@ -18,6 +18,7 @@ const config = {
   healthCheckPath: process.env.HEALTH_CHECK_PATH || '/healthcheck',
   bypassBypass: process.env.BYPASS_BYPASS || 'bypass',
   requestTimeout: parseInt(process.env.REQUEST_TIMEOUT, 10) || 30000,
+  basePath: process.env.BASE_PATH || '/',
 };
 
 module.exports = config;
