@@ -109,20 +109,27 @@
      * @param {string} data The data to encrypt.
      * @param {CryptoKey} key The encryption key.
      * @param {Uint8Array} iv The initialization vector.
+     * @param {object} additionalData Optional additional authenticated data.
      * @returns {Promise<ArrayBuffer>} The encrypted data.
      */
-    encrypt: async (data, key, iv) => {
+    encrypt: async (data, key, iv, additionalData) => {
       if (!data || !key || !iv) {
         throw new Error("Missing data, key, or IV for encryption.");
       }
       try {
         const encoder = new TextEncoder();
         const encodedData = encoder.encode(data);
+        const cipherOptions = {
+          name: "AES-GCM",
+          iv
+        };
+
+        if (additionalData) {
+          cipherOptions.additionalData = new TextEncoder().encode(JSON.stringify(additionalData));
+        }
+
         const cipher = await crypto.subtle.encrypt(
-          {
-            name: "AES-GCM",
-            iv
-          },
+          cipherOptions,
           key,
           encodedData
         );
@@ -137,18 +144,25 @@
      * @param {ArrayBuffer} data The data to decrypt.
      * @param {CryptoKey} key The encryption key.
      * @param {Uint8Array} iv The initialization vector.
+     * @param {object} additionalData Optional additional authenticated data.
      * @returns {Promise<string>} The decrypted data.
      */
-    decrypt: async (data, key, iv) => {
+    decrypt: async (data, key, iv, additionalData) => {
       if (!data || !key || !iv) {
         throw new Error("Missing data, key, or IV for decryption.");
       }
       try {
+        const decipherOptions = {
+          name: "AES-GCM",
+          iv
+        };
+
+        if (additionalData) {
+          decipherOptions.additionalData = new TextEncoder().encode(JSON.stringify(additionalData));
+        }
+
         const decipher = await crypto.subtle.decrypt(
-          {
-            name: "AES-GCM",
-            iv
-          },
+          decipherOptions,
           key,
           data
         );
@@ -327,6 +341,23 @@
       }
 
       return result === 0;
+    },
+
+    /**
+     * Hashes data using SHA-256.
+     * @param {string} data The data to hash.
+     * @returns {Promise<ArrayBuffer>} The hashed data.
+     */
+    hashSHA256: async (data) => {
+      try {
+        const encoder = new TextEncoder();
+        const encodedData = encoder.encode(data);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', encodedData);
+        return hashBuffer;
+      } catch (error) {
+        console.error("SHA-256 hash error:", error);
+        throw new Error(`SHA-256 hash failed: ${error.message}`);
+      }
     }
   };
   class i extends EventTarget {
