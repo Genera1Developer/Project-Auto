@@ -22,12 +22,18 @@ function encrypt(text) {
         return text; // Don't encrypt if key is missing.
     }
 
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
+    try {
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
+        let encrypted = cipher.update(text);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
+    } catch (error) {
+        console.error("Encryption error:", error);
+        return "Encryption Failed";
+    }
+
 }
 
 function decrypt(text) {
@@ -45,7 +51,7 @@ function decrypt(text) {
         const authTag = Buffer.from(textParts[1], 'hex');
         const encryptedText = Buffer.from(textParts[2], 'hex');
 
-        const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey), iv);
+        const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
         decipher.setAuthTag(authTag);
         let decrypted = decipher.update(encryptedText);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -62,6 +68,11 @@ export function logRequest(req, res, url) {
     const logMessage = `${new Date().toISOString()} - ${req.method} ${url} - ${res.statusCode} - ${ip}\n`;
     const encryptedLogMessage = encrypt(logMessage);
 
+    if (typeof encryptedLogMessage === 'string' && encryptedLogMessage.startsWith("Encryption Failed")) {
+        console.error("Failed to encrypt log message. Skipping log entry.");
+        return;
+    }
+
     fs.appendFile(logFilePath, encryptedLogMessage, err => {
         if (err) {
             console.error('Error writing to log file:', err);
@@ -76,12 +87,15 @@ export function getLogs() {
             .filter(log => log.trim() !== '')
             .map(log => {
                 const decryptedLog = decrypt(log);
+                if (typeof decryptedLog === 'string' && decryptedLog.startsWith("Decryption Failed")) {
+                    return "Decryption Failed: Log entry may be corrupted or the encryption key is incorrect.";
+                }
                 return decryptedLog;
             })
             .reverse();
     } catch (err) {
         console.error('Error reading log file:', err);
-        return [];
+        return ["Error reading log file."];
     }
 }
 
