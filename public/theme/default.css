@@ -7,6 +7,7 @@ body {
     padding: 0;
     font-family: sans-serif;
     background-color: #f0f0f0;
+    overflow-wrap: break-word; /* Prevent long strings from breaking layout */
 }
 
 .container {
@@ -52,3 +53,12 @@ button:hover {
 a:visited {
   color: purple !important;
 }
+
+/* Mitigate timing attacks via CSS */
+* {
+  animation-duration: 0.0001ms !important;
+  animation-delay: 0.0001ms !important;
+  transition-duration: 0.0001ms !important;
+  transition-delay: 0.0001ms !important;
+}
+content:
