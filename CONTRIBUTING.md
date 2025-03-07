@@ -145,5 +145,3 @@
     * Create a pull request on GitHub.
 
     * Ensure all tests pass and the code adheres to the project's coding style.
-edit filepath: CONTRIBUTING.md
-content: Added code blocks around shell commands for improved readability.
