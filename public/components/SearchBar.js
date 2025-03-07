@@ -6,6 +6,7 @@ function SearchBar({ onSearch, autoComplete }) {
     const searchInputRef = useRef(null);
 
     const updateSearchHistory = useCallback((term) => {
+        if (!term.trim()) return; // Prevent adding empty searches
         let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
         if (!searchHistory.includes(term)) {
             searchHistory = [term, ...searchHistory].slice(0, 10); // Limit to 10 items
@@ -42,7 +43,7 @@ function SearchBar({ onSearch, autoComplete }) {
         setSearchTerm(suggestion);
         onSearch(suggestion);
         setSuggestions([]);
-        searchInputRef.current.blur();
+        searchInputRef.current?.blur(); // Use optional chaining
     };
 
     return (
@@ -68,6 +69,7 @@ function SearchBar({ onSearch, autoComplete }) {
                             onKeyDown={(e) => { // Handle keyboard navigation
                                 if (e.key === 'Enter' || e.key === ' ') {
                                     handleSuggestionClick(suggestion);
+                                    e.preventDefault(); // Prevent form submission on Enter
                                 }
                             }}
                         >
