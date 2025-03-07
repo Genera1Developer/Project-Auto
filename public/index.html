@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encrypted Web Proxy</title>
     <link rel="stylesheet" href="theme/default.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';">
 </head>
 <body>
     <div class="container">
@@ -18,6 +19,7 @@
             <p>Connection Security: <span id="connectionStatus">Unknown</span></p>
             <p>Encryption Protocol: <span id="encryptionProtocol">Unknown</span></p>
             <p>Certificate Authority: <span id="certificateAuthority">Unknown</span></p>
+            <p>Proxy Server Location: <span id="proxyLocation">Unknown</span></p>
         </div>
 
         <div id="result" class="result">
