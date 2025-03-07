@@ -28,11 +28,11 @@ function errorHandler(err, req, res, next) {
     statusCode = err.status;
     message = err.message;
   } else if (err.code === 'ENOENT') {
-        statusCode = 404;
-        message = 'Resource not found';
+    statusCode = 404;
+    message = 'Resource not found';
   } else if (err.code === 'ECONNREFUSED') {
-        statusCode = 503;
-        message = 'Service Unavailable';
+    statusCode = 503;
+    message = 'Service Unavailable';
   }
 
   const response = {
@@ -44,7 +44,7 @@ function errorHandler(err, req, res, next) {
     response.errors = errors;
   }
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV === 'development') {
     response.stack = err.stack;
   }
 
