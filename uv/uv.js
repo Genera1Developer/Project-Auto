@@ -13,12 +13,16 @@ const passthroughHeaders = new Set([
   'content-language',
   'etag',
   'last-modified',
-  'accept-ranges', // Add accept-ranges for proper range requests
-  'content-range', // Add content-range for proper range requests
-  'date', // Add date for correct caching
-  'expires', // Add expires header
-  'cache-control', // Add cache-control header
-  'vary' //Add vary header
+  'accept-ranges',
+  'content-range',
+  'date',
+  'expires',
+  'cache-control',
+  'vary',
+  'connection', // Prevent connection issues
+  'transfer-encoding', // Prevent transfer encoding issues
+  'pragma', // Add pragma header
+  'age' // Add age header for caching
 ]);
 
 self.addEventListener('fetch', event => {
@@ -64,7 +68,12 @@ self.addEventListener('fetch', event => {
       fetch(event.request)
         .then(response => {
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            console.error('Original request fetch failed:', response.status, response.statusText, event.request.url);
+            return new Response(`Service Worker Error: ${response.status} ${response.statusText} - ${event.request.url}`, {
+              status: response.status,
+              statusText: 'Service Worker Error',
+              headers: { 'Content-Type': 'text/plain' }
+            });
           }
           const headers = new Headers();
           for (const [key, value] of response.headers.entries()) {
