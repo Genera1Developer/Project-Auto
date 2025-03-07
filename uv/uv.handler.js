@@ -76,10 +76,8 @@ async function handleRequest(req, res) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
       } else {
-        try {
+        if (res.socket) {
           res.socket.destroy();
-        } catch (socketErr) {
-          console.error("Error destroying socket:", socketErr);
         }
       }
     });
@@ -93,10 +91,8 @@ async function handleRequest(req, res) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error: ' + err.message);
       } else {
-        try {
+        if (res.socket) {
           res.socket.destroy();
-        } catch (socketErr) {
-          console.error("Error destroying socket:", socketErr);
         }
       }
     });
@@ -116,10 +112,8 @@ async function handleRequest(req, res) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
     } else {
-      try {
+      if (res.socket) {
         res.socket.destroy();
-      } catch (socketErr) {
-        console.error("Error destroying socket:", socketErr);
       }
     }
   }
