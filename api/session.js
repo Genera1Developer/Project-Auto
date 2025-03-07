@@ -21,9 +21,11 @@ setInterval(() => {
 function configureSession(app) {
   // Configure Redis client
   const redisClient = redis.createClient({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379,
-    // Add password if needed: password: process.env.REDIS_PASSWORD,
+    socket: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: process.env.REDIS_PORT || 6379,
+    },
+    password: process.env.REDIS_PASSWORD, // Add password if needed
   });
 
   redisClient.on('error', function (err) {
