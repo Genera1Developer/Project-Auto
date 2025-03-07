@@ -72,6 +72,10 @@
             margin-top: 10px;
             font-size: 0.9em;
         }
+        #referrerPolicyStatus {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -86,6 +90,7 @@
             <div id="tlsStatus"></div>
             <div id="cspStatus"></div>
             <div id="hstsStatus"></div>
+            <div id="referrerPolicyStatus"></div>
         </div>
     </div>
 
@@ -148,12 +153,22 @@
             }
         }
 
+         // Check Referrer Policy
+         function checkReferrerPolicy() {
+            if (document.querySelector("meta[name='referrer']") || document.querySelector("meta[http-equiv='Referrer-Policy']")) {
+                document.getElementById('referrerPolicyStatus').innerHTML = '<p style="color: green;">Referrer Policy is explicitly set.</p>';
+            } else {
+                document.getElementById('referrerPolicyStatus').innerHTML = '<p style="color: orange;">Referrer Policy is NOT explicitly set. Consider setting it for enhanced privacy.</p>';
+            }
+        }
+
 
         // Call checkTLS on page load
         window.onload = () => {
             checkTLS();
             checkCSP();
             checkHSTS();
+            checkReferrerPolicy();
         };
     </script>
 </body>
