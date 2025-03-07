@@ -1,80 +1,59 @@
-import { randomBytes } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { encrypt, decrypt } from '../encryption/key_management.js';
 
-const sessionMap = new Map();
 const SESSION_COOKIE_NAME = 'proxy_session';
+const sessionStore = {};
 
-function generateSessionId() {
-    return randomBytes(16).toString('hex');
-}
-
-export function attachSession(req, res) {
+export function attachSession(req, res, next) {
     let sessionId = req.cookies[SESSION_COOKIE_NAME];
 
     if (!sessionId) {
-        sessionId = generateSessionId();
-        const encryptedSessionId = encrypt(sessionId);
-        res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
+        sessionId = uuidv4();
+        res.cookie(SESSION_COOKIE_NAME, sessionId, {
             httpOnly: true,
             secure: true,
-            sameSite: 'Strict'
+            sameSite: 'strict'
         });
-        sessionMap.set(sessionId, {});
+        sessionStore[sessionId] = {};
     } else {
         try {
             sessionId = decrypt(sessionId);
-            if (!sessionMap.has(sessionId)) {
-                sessionId = generateSessionId();
-                const encryptedSessionId = encrypt(sessionId);
-                res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'Strict'
-                });
-                sessionMap.set(sessionId, {});
+            if (!sessionStore[sessionId]) {
+                sessionStore[sessionId] = {};
             }
         } catch (error) {
-            console.error('Error decrypting session ID:', error);
-            // Regenerate session if decryption fails
-            sessionId = generateSessionId();
-            const encryptedSessionId = encrypt(sessionId);
-            res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
+            console.error("Session decryption error:", error);
+            sessionId = uuidv4();
+            res.cookie(SESSION_COOKIE_NAME, sessionId, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'Strict'
+                sameSite: 'strict'
             });
-            sessionMap.set(sessionId, {});
+            sessionStore[sessionId] = {};
         }
     }
 
-    req.session = sessionMap.get(sessionId);
+    req.session = sessionStore[sessionId];
+    next();
 }
 edit filepath: api/security.js
 content: export function addSecurityHeaders(res) {
-    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';");
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
     res.setHeader('X-XSS-Protection', '1; mode=block');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 }
-edit filepath: public/script.js
-content: document.getElementById('urlForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const url = document.getElementById('url').value;
-    window.location.href = '/proxy/' + url;
-});
 edit filepath: api/logs.js
 content: import fs from 'fs';
 import path from 'path';
-import { encrypt, decrypt } from '../encryption/key_management.js';
+import { encrypt } from '../encryption/key_management.js';
 
 const logFilePath = path.join(process.cwd(), 'proxy.log');
 
 export function logRequest(req, res, url) {
     const logMessage = `[${new Date().toISOString()}] ${req.method} ${url} - ${res.statusCode}\n`;
     const encryptedLogMessage = encrypt(logMessage);
-
     fs.appendFile(logFilePath, encryptedLogMessage + '\n', (err) => {
         if (err) {
             console.error('Error writing to log file:', err);
@@ -85,21 +64,116 @@ export function logRequest(req, res, url) {
 export function getLogs() {
     try {
         const data = fs.readFileSync(logFilePath, 'utf8');
-        return data.split('\n')
-            .filter(line => line.trim() !== '')
-            .map(encryptedLine => {
-                try {
-                    return decrypt(encryptedLine);
-                } catch (error) {
-                    console.error('Error decrypting log entry:', error);
-                    return 'Failed to decrypt log entry';
-                }
-            })
-            .reverse();
+        return data.split('\n').filter(line => line.trim() !== '').map(line => {
+            try {
+                return JSON.stringify(line);
+            } catch (error) {
+                console.error("Error decrypting log line:", error);
+                return "Decryption Error";
+            }
+        }).reverse();
     } catch (err) {
         console.error('Error reading log file:', err);
         return [];
     }
+}
+edit filepath: public/script.js
+content: document.getElementById('urlForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const url = document.getElementById('url').value;
+    window.location.href = '/proxy/' + encodeURIComponent(url);
+});
+edit filepath: encryption/tls.js
+content: import https from 'https';
+import fs from 'fs';
+import path from 'path';
+
+const keyPath = path.join(process.cwd(), 'ssl/key.pem');
+const certPath = path.join(process.cwd(), 'ssl/cert.pem');
+
+let httpsOptions = {};
+
+try {
+    httpsOptions = {
+        key: fs.readFileSync(keyPath),
+        cert: fs.readFileSync(certPath)
+    };
+} catch (error) {
+    console.error("Error reading SSL certificates:", error);
+    console.warn("Generating self-signed certificates is recommended for production.");
+}
+
+export { httpsOptions };
+edit filepath: ssl/generate_ssl.js
+content: import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+
+const sslDir = path.join(process.cwd(), 'ssl');
+const keyPath = path.join(sslDir, 'key.pem');
+const certPath = path.join(sslDir, 'cert.pem');
+
+function generateSelfSignedCerts() {
+    if (!fs.existsSync(sslDir)) {
+        fs.mkdirSync(sslDir);
+    }
+
+    try {
+        execSync(`openssl genrsa -out ${keyPath} 2048`);
+        execSync(`openssl req -new -key ${keyPath} -out ${sslDir}/csr.pem -subj "/CN=localhost"`);
+        execSync(`openssl x509 -req -in ${sslDir}/csr.pem -signkey ${keyPath} -out ${certPath}`);
+
+        console.log('Self-signed SSL certificates generated successfully.');
+    } catch (error) {
+        console.error('Error generating self-signed certificates:', error.message);
+    } finally {
+        if (fs.existsSync(path.join(sslDir, 'csr.pem'))) {
+            fs.unlinkSync(path.join(sslDir, 'csr.pem'));
+        }
+    }
+}
+
+generateSelfSignedCerts();
+edit filepath: server.js
+content: import express from 'express';
+import cookieParser from 'cookie-parser';
+import { createProxy } from './api/proxy.js';
+import { logRequest, getLogs } from './api/logs.js';
+import { attachSession } from './api/session.js';
+import { addSecurityHeaders } from './api/security.js';
+import { httpsOptions } from './encryption/tls.js';
+import https from 'https';
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cookieParser());
+app.use(express.static('public'));
+
+app.use((req, res, next) => {
+    attachSession(req, res, next);
+    addSecurityHeaders(res);
+    next();
+});
+
+app.get('/api/logs', (req, res) => {
+    const logs = getLogs();
+    res.json(logs);
+});
+
+app.get('/proxy/*', (req, res) => {
+    const targetUrl = decodeURIComponent(req.url.slice(7));
+    createProxy(targetUrl)(req, res);
+});
+
+if (httpsOptions.key && httpsOptions.cert) {
+    https.createServer(httpsOptions, app).listen(port, () => {
+        console.log(`Secure proxy server listening on port ${port}`);
+    });
+} else {
+    app.listen(port, () => {
+        console.log(`Proxy server listening on port ${port}`);
+    });
 }
 edit filepath: public/settings.html
 content: <!DOCTYPE html>
@@ -115,43 +189,16 @@ content: <!DOCTYPE html>
 
 </head>
 <body>
-    <div class="settings-container">
+    <div class="container">
         <h1>Settings</h1>
-        <div class="setting">
-            <label for="theme">Theme:</label>
-            <select id="theme">
-                <option value="default">Default</option>
-                <option value="forest">Forest</option>
-                <option value="sunset">Sunset</option>
-            </select>
-        </div>
-        <a href="/">Back to Proxy</a>
+        <label for="theme">Theme:</label>
+        <select id="theme">
+            <option value="default">Default</option>
+            <option value="forest">Forest</option>
+            <option value="sunset">Sunset</option>
+        </select>
+        <a href="/">Home</a>
     </div>
     <script src="/settings.js"></script>
 </body>
 </html>
-edit filepath: api/error_handling.js
-content: export function handleProxyError(err, req, res) {
-    console.error('Proxy error:', err);
-    res.status(500).json({ error: 'Proxy Error: ' + err.message });
-}
-edit filepath: api/proxy.js
-content: import { createProxyMiddleware } from 'http-proxy-middleware';
-import { logRequest } from './logs.js';
-import { addSecurityHeaders } from './security.js';
-import { handleProxyError } from './error_handling.js';
-
-export function createProxy(target) {
-    return createProxyMiddleware({
-        target: target,
-        secure: true,
-        changeOrigin: true,
-        onProxyRes: (proxyRes, req, res) => {
-            addSecurityHeaders(res);
-            logRequest(req, res, target);
-        },
-        onError: (err, req, res) => {
-            handleProxyError(err, req, res);
-        }
-    });
-}
