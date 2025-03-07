@@ -13,6 +13,12 @@ const passthroughHeaders = new Set([
   'content-language',
   'etag',
   'last-modified',
+  'accept-ranges', // Add accept-ranges for proper range requests
+  'content-range', // Add content-range for proper range requests
+  'date', // Add date for correct caching
+  'expires', // Add expires header
+  'cache-control', // Add cache-control header
+  'vary' //Add vary header
 ]);
 
 self.addEventListener('fetch', event => {
@@ -57,6 +63,9 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(event.request)
         .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
           const headers = new Headers();
           for (const [key, value] of response.headers.entries()) {
             if (passthroughHeaders.has(key.toLowerCase())) {
