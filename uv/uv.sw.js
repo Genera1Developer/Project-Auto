@@ -42,6 +42,10 @@ function sanitizeHeaders(headers) {
   headers.delete('X-AspNet-Version');
   headers.delete('X-AspNetMvc-Version');
   headers.delete('Referrer-Policy');
+  headers.delete('Origin');
+  headers.delete('Timing-Allow-Origin');
+  headers.delete('Report-To');
+  headers.delete('NEL');
   return headers;
 }
 
