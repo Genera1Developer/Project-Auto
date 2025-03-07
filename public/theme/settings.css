@@ -11,6 +11,8 @@ header {
   referrer-policy: no-referrer;
   x-xss-protection: 1; mode=block;
   clear-site-data: "cache", "cookies", "storage";
+  /* Expect-CT - Enforce Certificate Transparency */
+  expect-ct: max-age=604800, enforce;
 }
 
 /* Existing styles - these are just placeholders */
