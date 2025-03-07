@@ -1,74 +1,166 @@
-const crypto = require('crypto');
+export function addSecurityHeaders(res) {
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+}
+edit filepath: api/session.js
+content: import { v4 as uuidv4 } from 'uuid';
+import { encrypt, decrypt } from '../encryption/key_management.js';
 
-// Function to generate a secure random key
-function generateSecretKey(length = 32) {
-    if (length <= 0) {
-        throw new Error("Key length must be a positive integer.");
+const sessionData = {};
+
+export function attachSession(req, res) {
+    let sessionId = req.cookies.sessionId;
+
+    if (!sessionId) {
+        sessionId = uuidv4();
+        res.cookie('sessionId', sessionId, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict'
+        });
+        sessionData[sessionId] = {};
+    } else {
+        try {
+            const decryptedSessionId = decrypt(sessionId);
+            if (!sessionData[decryptedSessionId]) {
+                sessionData[decryptedSessionId] = {};
+            }
+        } catch (error) {
+            console.error("Session decryption error:", error);
+            const newSessionId = uuidv4();
+            res.cookie('sessionId', newSessionId, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'Strict'
+            });
+            sessionData[newSessionId] = {};
+            sessionId = newSessionId;
+        }
     }
-    return crypto.randomBytes(length).toString('hex');
+    req.session = sessionData[sessionId];
+}
+edit filepath: logs/logs.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/logs')
+        .then(response => response.json())
+        .then(logs => {
+            const logsContainer = document.getElementById('logs');
+            logs.forEach(log => {
+                const logElement = document.createElement('div');
+                logElement.textContent = log;
+                logsContainer.appendChild(logElement);
+            });
+        })
+        .catch(error => console.error('Error fetching logs:', error));
+});
+edit filepath: public/script.js
+content: document.getElementById('urlForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const url = document.getElementById('url').value;
+    window.location.href = '/proxy/' + encodeURIComponent(url);
+});
+edit filepath: encryption/encryptionMiddleware.js
+content: import { encrypt, decrypt } from './key_management.js';
+
+export function encryptResponse(req, res, next) {
+    const originalSend = res.send;
+
+    res.send = function(body) {
+        try {
+            if (typeof body === 'string') {
+                const encryptedBody = encrypt(body);
+                res.setHeader('Content-Type', 'application/octet-stream');
+                originalSend.call(this, encryptedBody);
+            } else {
+                originalSend.call(this, body);
+            }
+        } catch (error) {
+            console.error("Encryption error:", error);
+            res.status(500).send("Encryption Error");
+        }
+    };
+    next();
 }
 
-// AES encryption function with authenticated encryption (GCM)
-function encrypt(text, key) {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(key, 'hex'), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
-}
-
-// AES decryption function with authenticated decryption (GCM)
-function decrypt(text, key) {
-    const textParts = text.split(':');
-    if (textParts.length !== 3) {
-        throw new Error("Invalid ciphertext format.");
+export function decryptRequest(req, res, next) {
+    if (req.headers['content-type'] === 'application/octet-stream') {
+        let encryptedData = '';
+        req.on('data', chunk => {
+            encryptedData += chunk;
+        });
+        req.on('end', () => {
+            try {
+                const decryptedData = decrypt(encryptedData);
+                req.body = JSON.parse(decryptedData);
+                next();
+            } catch (error) {
+                console.error("Decryption error:", error);
+                res.status(400).send("Decryption Error");
+            }
+        });
+    } else {
+        next();
     }
-    const iv = Buffer.from(textParts[0], 'hex');
-    const authTag = Buffer.from(textParts[1], 'hex');
-    const encryptedText = Buffer.from(textParts[2], 'hex');
-
-    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(key, 'hex'), iv);
-    decipher.setAuthTag(authTag);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
 }
+edit filepath: api/proxy.js
+content: import { createProxyMiddleware } from 'http-proxy-middleware';
+import { logRequest } from './logs.js';
+import { addSecurityHeaders } from './security.js';
+import { encryptResponse } from '../encryption/encryptionMiddleware.js';
 
-// Function to hash data using SHA-256
-function hashData(data) {
-    if (typeof data !== 'string') {
-        data = JSON.stringify(data); // Ensure data is a string
-    }
-    return crypto.createHash('sha256').update(data).digest('hex');
+export function createProxy(target) {
+    return createProxyMiddleware({
+        target: target,
+        secure: true,
+        changeOrigin: true,
+        onProxyRes: (proxyRes, req, res) => {
+            addSecurityHeaders(res);
+            encryptResponse(req, res, () => {}); // Encrypt the response
+            logRequest(req, res, target);
+        },
+        onError: (err, req, res) => {
+            console.error('Proxy error:', err);
+            res.status(500).send('Proxy Error');
+        }
+    });
 }
+edit filepath: server.js
+content: import express from 'express';
+import cookieParser from 'cookie-parser';
+import { createProxy } from './api/proxy.js';
+import { logRequest, getLogs } from './api/logs.js';
+import { attachSession } from './api/session.js';
+import { addSecurityHeaders } from './api/security.js';
+import { decryptRequest } from './encryption/encryptionMiddleware.js';
 
-// Function to generate a secure token
-function generateToken() {
-    return crypto.randomBytes(64).toString('hex');
-}
+const app = express();
+const port = process.env.PORT || 3000;
 
-// Function to generate a secure random salt
-function generateSalt(length = 16) {
-    return crypto.randomBytes(length).toString('hex');
-}
+app.use(cookieParser());
+app.use(express.static('public'));
+app.use(express.json()); // For parsing application/json
+app.use(decryptRequest);
 
-// Function to hash password with salt using PBKDF2
-function hashPassword(password, salt) {
-    const iterations = 10000;
-    const keyLength = 64;
-    const digest = 'sha512';
-    const hashedPassword = crypto.pbkdf2Sync(password, salt, iterations, keyLength, digest).toString('hex');
-    return hashedPassword;
-}
+app.use((req, res, next) => {
+    attachSession(req, res);
+    addSecurityHeaders(res);
+    next();
+});
 
-// Export the functions
-module.exports = {
-    generateSecretKey,
-    encrypt,
-    decrypt,
-    hashData,
-    generateToken,
-    generateSalt,
-    hashPassword
-};
+app.get('/api/logs', (req, res) => {
+    const logs = getLogs();
+    res.json(logs);
+});
+
+app.get('/proxy/*', (req, res) => {
+    const targetUrl = req.url.slice(7);
+    createProxy(targetUrl)(req, res);
+});
+
+app.listen(port, () => {
+    console.log(`Proxy server listening on port ${port}`);
+});
