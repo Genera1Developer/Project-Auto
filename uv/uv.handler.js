@@ -135,7 +135,9 @@ async function handleRequest(req, res) {
           res.end('Proxy response error: ' + err.message);
         } else {
           try {
-            res.socket?.destroy();
+            if (res.socket && !res.socket.destroyed) {
+              res.socket.destroy();
+            }
           } catch (e) {
             console.error("Error destroying socket after proxy response error:", e);
           }
@@ -179,7 +181,9 @@ async function handleRequest(req, res) {
         res.end('Proxy error: ' + err.message);
       } else {
         try {
-          res.socket?.destroy();
+          if (res.socket && !res.socket.destroyed) {
+            res.socket.destroy();
+          }
         } catch (e) {
           console.error("Error destroying socket after proxy error:", e);
         }
@@ -196,7 +200,9 @@ async function handleRequest(req, res) {
         res.end('Request error: ' + err.message);
       } else {
         try {
-          res.socket?.destroy();
+          if (res.socket && !res.socket.destroyed) {
+            res.socket.destroy();
+          }
         } catch (e) {
           console.error("Error destroying socket after request error:", e);
         }
@@ -219,7 +225,9 @@ async function handleRequest(req, res) {
       res.end('Internal server error: ' + error.message);
     } else {
       try {
-        res.socket?.destroy();
+        if (res.socket && !res.socket.destroyed) {
+          res.socket.destroy();
+        }
       } catch (e) {
         console.error("Error destroying socket after unexpected error:", e);
       }
