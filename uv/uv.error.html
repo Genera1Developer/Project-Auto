@@ -52,6 +52,11 @@
         .hidden {
             display: none;
         }
+        .security-recommendation {
+            color: darkgreen;
+            font-weight: normal;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -87,13 +92,8 @@
                     console.error('Failed to send error log:', response.status, response.statusText);
                     return response.text().then(text => {
                         console.error('Response body:', text);
-                        throw new Error(`Error logging failed: ${response.status} - ${text}`);
                     });
                 }
-                return response.json(); // Or response.text() if the server returns plain text.
-            })
-            .then(data => {
-                console.log('Error log sent successfully', data); // Log success. Remove in production if sensitive.
             })
             .catch(error => {
                 console.error('Error sending error details to server:', error);
@@ -128,6 +128,13 @@
                     if (parsedURL.protocol !== "https:" ) {
                         securityWarnings.push("URL does not use HTTPS, which is less secure.");
                     }
+                    else {
+                        const recommendationElement = document.createElement('p');
+                        recommendationElement.classList.add('security-recommendation');
+                        recommendationElement.textContent = "HTTPS connection established.";
+                        securityWarningsContainer.appendChild(recommendationElement);
+                    }
+
 
                     if (!["https:", "http:"].includes(parsedURL.protocol)) {
                          securityWarnings.push("URL uses an invalid protocol.");
