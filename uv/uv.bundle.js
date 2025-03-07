@@ -358,7 +358,76 @@
         console.error("SHA-256 hash error:", error);
         throw new Error(`SHA-256 hash failed: ${error.message}`);
       }
-    }
+    },
+
+    /**
+     * Generates a HMAC key.
+     * @param {boolean} extractable Whether the key is extractable. Defaults to false.
+     * @param {Array<string>} keyUsages The usages for the key. Defaults to ["sign", "verify"].
+     * @returns {Promise<CryptoKey>} The generated key.
+     */
+    generateHMACKey: async (extractable = false, keyUsages = ["sign", "verify"]) => {
+      try {
+        return await crypto.subtle.generateKey(
+          {
+            name: "HMAC",
+            hash: "SHA-256",
+            length: 256,
+          },
+          extractable,
+          keyUsages
+        );
+      } catch (error) {
+        console.error("HMAC key generation error:", error);
+        throw new Error(`HMAC key generation failed: ${error.message}`);
+      }
+    },
+
+    /**
+     * Signs data using HMAC-SHA256.
+     * @param {CryptoKey} key The HMAC key.
+     * @param {string} data The data to sign.
+     * @returns {Promise<ArrayBuffer>} The signature.
+     */
+    signHMACSHA256: async (key, data) => {
+      try {
+        const encoder = new TextEncoder();
+        const encodedData = encoder.encode(data);
+        const signature = await crypto.subtle.sign(
+          "HMAC",
+          key,
+          encodedData
+        );
+        return signature;
+      } catch (error) {
+        console.error("HMAC sign error:", error);
+        throw new Error(`HMAC sign failed: ${error.message}`);
+      }
+    },
+
+    /**
+     * Verifies data using HMAC-SHA256.
+     * @param {CryptoKey} key The HMAC key.
+     * @param {string} data The data to verify.
+     * @param {ArrayBuffer} signature The signature to verify.
+     * @returns {Promise<boolean>} True if the signature is valid, false otherwise.
+     */
+    verifyHMACSHA256: async (key, data, signature) => {
+      try {
+        const encoder = new TextEncoder();
+        const encodedData = encoder.encode(data);
+        const isValid = await crypto.subtle.verify(
+          "HMAC",
+          key,
+          signature,
+          encodedData
+        );
+        return isValid;
+      } catch (error) {
+        console.error("HMAC verify error:", error);
+        throw new Error(`HMAC verify failed: ${error.message}`);
+      }
+    },
   };
   class i extends EventTarget {
     constructor() {
