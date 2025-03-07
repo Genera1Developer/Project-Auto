@@ -1,1 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Web Proxy</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="url"] {
+            width: 70%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #3e8e41;
+        }
+        #securityInfo {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 4px;
+            text-align: center;
+        }
 
+        #securityInfo p {
+            color: #388e3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Secure Web Proxy</h1>
+        <form id="proxyForm">
+            <input type="url" id="url" name="url" placeholder="Enter URL" required>
+            <button type="submit">Go</button>
+        </form>
+        <div id="securityInfo">
+            <p>All traffic is encrypted and proxied securely.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('proxyForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const url = document.getElementById('url').value;
+            // Basic URL validation (can be improved)
+            try {
+                new URL(url); // Will throw an error if invalid URL
+            } catch (_) {
+                alert('Please enter a valid URL.');
+                return;
+            }
+
+            // Redirect to proxy endpoint - ADJUST THIS TO YOUR ACTUAL ENDPOINT
+            window.location.href = `/proxy?url=${encodeURIComponent(url)}`;
+        });
+    </script>
+</body>
+</html>
