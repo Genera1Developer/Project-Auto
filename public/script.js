@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (jsonError) {
           console.error('Error parsing JSON:', jsonError);
           errorMessageDiv.textContent = `Error parsing JSON: ${jsonError.message}`;
+          responseDiv.textContent = `Raw response: ${await response.text()}`; // Display raw response on JSON parse failure
           data = null;
         }
       } else {
@@ -77,23 +78,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const blobUrl = window.URL.createObjectURL(blob);
         let filename = 'downloaded_file';
 
-        const filenameRegex = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/i;
-        let filenameMatch = contentDisposition.match(filenameRegex);
+        let filenameMatch;
 
+        // Attempt to extract filename from filename*
+        filenameMatch = contentDisposition.match(/filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/i);
         if (filenameMatch && filenameMatch[1]) {
-          try {
-            filename = decodeURIComponent(filenameMatch[1]);
-          } catch (e) {
-            console.warn("Failed to decode filename: ", e);
-            filename = filenameMatch[1];
-          }
+            try {
+                filename = decodeURIComponent(filenameMatch[1].replace(/['"]/g, ''));
+            } catch (e) {
+                console.warn("Failed to decode filename: ", e);
+                filename = filenameMatch[1];
+            }
         } else {
-          const filenameEqualsRegex = /filename=(["']?)([^"';\r\n]*)\1?/i;
-          filenameMatch = contentDisposition.match(filenameEqualsRegex);
-          if (filenameMatch && filenameMatch[2]) {
-            filename = filenameMatch[2];
-          }
+            // Attempt to extract filename from filename=
+            filenameMatch = contentDisposition.match(/filename=(["']?)([^"';\r\n]*)\1?/i);
+            if (filenameMatch && filenameMatch[2]) {
+                filename = filenameMatch[2];
+            }
         }
+        
 
         downloadLink.href = blobUrl;
         downloadLink.download = filename;
