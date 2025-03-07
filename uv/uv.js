@@ -32,6 +32,7 @@ const passthroughHeaders = new Set([
   'content-security-policy', // Add Content Security Policy
   'strict-transport-security', // Add HSTS
   'permissions-policy', // Add Permissions Policy
+  'link', // Add Link header
 ]);
 
 async function handleRequest(event) {
@@ -50,6 +51,8 @@ async function handleRequest(event) {
     requestHeaders.delete('host');
     requestHeaders.delete('origin');
     requestHeaders.delete('referer'); // Remove referer header
+    requestHeaders.delete('x-forwarded-for'); // Remove X-Forwarded-For
+    requestHeaders.delete('x-real-ip');      // Remove X-Real-IP
 
     // Add a user agent header to mimic a real browser
     requestHeaders.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
@@ -114,6 +117,13 @@ async function handleRequest(event) {
             headers.set('Content-Type', 'text/plain; charset=utf-8'); // Default to text/plain
         }
     }
+
+    // Enforce security headers.  These should ideally be configurable.
+    headers.set('X-Frame-Options', 'DENY');
+    headers.set('X-XSS-Protection', '1; mode=block');
+    headers.set('X-Content-Type-Options', 'nosniff');
+    headers.set('Referrer-Policy', 'no-referrer');
+    headers.set('Feature-Policy', "microphone 'none'; camera 'none'; geolocation 'none'");
 
     const body = await response.blob();
     return new Response(body, {
