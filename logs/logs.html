@@ -57,6 +57,18 @@
         #log-search {
             margin-bottom: 10px;
         }
+        /* Style for log details (hidden by default) */
+        .log-details {
+            display: none;
+            margin-top: 5px;
+            padding: 5px;
+            border: 1px solid #eee;
+            background-color: #fefefe;
+        }
+        .log-entry.expanded .log-details {
+            display: block; /* Show details when log entry is expanded */
+        }
+
     </style>
 </head>
 <body>
@@ -178,10 +190,20 @@
                 source.classList.add('log-source');
                 source.textContent = `Source: ${log.source || 'N/A'}`;
 
+                const details = document.createElement('div');
+                details.classList.add('log-details');
+                details.textContent = `Details: Encryption status: ${log.encryptionStatus || 'N/A'}, User: ${log.user || 'N/A'}`;
+
                 logEntry.appendChild(timestamp);
                 logEntry.appendChild(level);
                 logEntry.appendChild(message);
                 logEntry.appendChild(source);
+                logEntry.appendChild(details);
+
+                logEntry.addEventListener('click', function() {
+                   this.classList.toggle('expanded');
+                });
+
                 logContainer.appendChild(logEntry);
             });
         }
