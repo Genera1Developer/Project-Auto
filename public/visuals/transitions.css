@@ -1,0 +1,25 @@
+/* Improved transitions for smoother user experience */
+
+.fade-transition {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.slide-transition {
+    transition: transform 0.4s cubic-bezier(0.2, 0.6, 0.5, 1);
+}
+
+.scale-transition {
+    transition: transform 0.2s ease-out;
+}
+
+.background-transition {
+    transition: background-color 0.5s ease;
+}
+
+.color-transition {
+    transition: color 0.5s ease;
+}
+
+/* Example usage:  Add these classes to elements you want to animate */
+/* <div class="fade-transition">Fades</div> */
+/* <div class="slide-transition">Slides</div> */
