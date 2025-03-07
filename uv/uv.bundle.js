@@ -393,6 +393,9 @@
      * @returns {Promise<string>} The encrypted and authenticated data as a Base64 string.
      */
     authenticatedEncrypt: async (data, sharedSecret, additionalData) => {
+      if (!sharedSecret) {
+        throw new Error("Missing shared secret for authenticated encryption.");
+      }
       try {
         const salt = n.generateSalt();
         const iv = n.generateIV();
@@ -417,6 +420,9 @@
      * @returns {Promise<string>} The decrypted data.
      */
     authenticatedDecrypt: async (encryptedData, sharedSecret, additionalData) => {
+      if (!sharedSecret) {
+        throw new Error("Missing shared secret for authenticated decryption.");
+      }
       try {
         const [saltB64, ivB64, cipherB64] = encryptedData.split(".");
         if (!saltB64 || !ivB64 || !cipherB64) {
