@@ -103,5 +103,6 @@ const shutdownHandler = async (signal) => {
 
 process.on('SIGINT', shutdownHandler);
 process.on('SIGTERM', shutdownHandler);
+process.on('SIGHUP', shutdownHandler); //Catch SIGHUP
 
 module.exports = { log };
