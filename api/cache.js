@@ -17,10 +17,10 @@ const getCache = async (url) => {
         return null;
     }
     try {
-        const value = cache.get(url);
+        const value = await cache.get(url);
         return value === undefined ? null : value;
     } catch (error) {
-        console.error(`Cache get operation failed for URL: ${url}: ${error.message}`);
+        console.error(`Cache get operation failed for URL: ${url}: ${error}`);
         return null;
     }
 };
@@ -35,10 +35,10 @@ const setCache = async (url, data, ttl = 3600) => {
         return false;
     }
     try {
-        cache.set(url, data, ttl);
+        await cache.set(url, data, ttl);
         return true;
     } catch (error) {
-        console.error(`Cache set operation failed for URL: ${url}: ${error.message}`);
+        console.error(`Cache set operation failed for URL: ${url}: ${error}`);
         return false;
     }
 };
@@ -49,38 +49,38 @@ const clearCache = async (url) => {
         return false;
     }
     try {
-        const deleted = cache.del(url);
+        const deleted = await cache.del(url);
         return deleted > 0;
     } catch (error) {
-        console.error(`Cache clear operation failed for URL: ${url}: ${error.message}`);
+        console.error(`Cache clear operation failed for URL: ${url}: ${error}`);
         return false;
     }
 };
 
 const flushCache = async () => {
     try {
-        cache.flushAll();
+        await cache.flushAll();
         return true;
     } catch (error) {
-        console.error(`Error flushing cache: ${error.message}`);
+        console.error(`Error flushing cache: ${error}`);
         return false;
     }
 };
 
 const getCacheStats = async () => {
     try {
-        return cache.getStats();
+        return await cache.getStats();
     } catch (error) {
-        console.error(`Error getting cache stats: ${error.message}`);
+        console.error(`Error getting cache stats: ${error}`);
         return null;
     }
 };
 
 const getCacheKeys = async () => {
     try {
-        return cache.keys();
+        return await cache.keys();
     } catch (error) {
-        console.error(`Error getting cache keys: ${error.message}`);
+        console.error(`Error getting cache keys: ${error}`);
         return null;
     }
 };
