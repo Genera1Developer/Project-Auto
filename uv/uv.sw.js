@@ -33,9 +33,7 @@ self.addEventListener('fetch', (event) => {
           let body = null;
           if (event.request.method !== 'GET' && event.request.method !== 'HEAD') {
             try {
-              if (event.request.body) {
-                body = await event.request.blob();
-              }
+              body = await event.request.blob();
             } catch (e) {
               console.error("Failed to read request body:", e);
               return new Response(`<h1>Error: Could not read request body</h1><p>${e}</p>`, {
@@ -100,13 +98,16 @@ self.addEventListener('fetch', (event) => {
   }
 
   event.respondWith(
-    fetch(event.request)
-      .catch(error => {
+    (async () => {
+      try {
+        return await fetch(event.request);
+      } catch (error) {
         console.error('Fetch error for original request:', error);
         return new Response(`<h1>Error: Fetch failed for original request</h1><p>${error}</p>`, {
           status: 500,
           headers: { 'Content-Type': 'text/html; charset=utf-8' },
         });
-      })
+      }
+    })()
   );
 });
