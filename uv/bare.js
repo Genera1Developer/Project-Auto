@@ -6,14 +6,20 @@ class Bare {
         this.encryptionEnabled = opts.encryptionEnabled || false;
         this.encryptionKey = opts.encryptionKey || null;
         this.integrityEnabled = opts.integrityEnabled || false;
+        this.integrityType = opts.integrityType || 'SHA-256';
     }
 
     async fetch(url, options = {}) {
         let fetchUrl = this.prefix + encodeURIComponent(url);
 
         if (this.encryptionEnabled && this.encryptionKey) {
-            const encryptedUrl = await this.encrypt(url, this.encryptionKey);
-            fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
+            try {
+                const encryptedUrl = await this.encrypt(url, this.encryptionKey);
+                fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
+            } catch (error) {
+                console.error("Encryption failed:", error);
+                throw new Error("Failed to encrypt URL.");
+            }
         }
 
         try {
@@ -27,7 +33,7 @@ class Bare {
                 const expectedIntegrity = response.headers.get('X-Content-Integrity');
                 if (expectedIntegrity) {
                     const text = await response.clone().text();
-                    const integrity = await this.calculateIntegrity(text);
+                    const integrity = await this.calculateIntegrity(text, this.integrityType);
 
                     if (integrity !== expectedIntegrity) {
                         console.error("Bare fetch error: Content integrity check failed.");
@@ -47,8 +53,13 @@ class Bare {
     async route(url, options = {}) {
         let fetchUrl = this.prefix + encodeURIComponent(url);
         if (this.encryptionEnabled && this.encryptionKey) {
-            const encryptedUrl = await this.encrypt(url, this.encryptionKey);
-            fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
+            try {
+                const encryptedUrl = await this.encrypt(url, this.encryptionKey);
+                fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
+            } catch (error) {
+                console.error("Encryption failed:", error);
+                throw new Error("Failed to encrypt URL.");
+            }
         }
         try {
             const response = await fetch(fetchUrl, options);
@@ -61,7 +72,7 @@ class Bare {
                 const expectedIntegrity = response.headers.get('X-Content-Integrity');
                 if (expectedIntegrity) {
                     const text = await response.clone().text();
-                    const integrity = await this.calculateIntegrity(text);
+                    const integrity = await this.calculateIntegrity(text, this.integrityType);
 
                     if (integrity !== expectedIntegrity) {
                         console.error("Bare route error: Content integrity check failed.");
@@ -80,8 +91,13 @@ class Bare {
     async request(url, options = {}) {
         let fetchUrl = this.prefix + encodeURIComponent(url);
         if (this.encryptionEnabled && this.encryptionKey) {
-            const encryptedUrl = await this.encrypt(url, this.encryptionKey);
-            fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
+            try {
+                const encryptedUrl = await this.encrypt(url, this.encryptionKey);
+                fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
+            } catch (error) {
+                console.error("Encryption failed:", error);
+                throw new Error("Failed to encrypt URL.");
+            }
         }
         try {
             const response = await fetch(fetchUrl, options);
@@ -94,7 +110,7 @@ class Bare {
                 const expectedIntegrity = response.headers.get('X-Content-Integrity');
                 if (expectedIntegrity) {
                     const text = await response.clone().text();
-                    const integrity = await this.calculateIntegrity(text);
+                    const integrity = await this.calculateIntegrity(text, this.integrityType);
 
                     if (integrity !== expectedIntegrity) {
                         console.error("Bare request error: Content integrity check failed.");
@@ -111,8 +127,13 @@ class Bare {
 
     createProxy(url) {
         if (this.encryptionEnabled && this.encryptionKey) {
-            const encryptedUrl = this.encrypt(url, this.encryptionKey); //Don't await
-            return this.prefix + encodeURIComponent(encryptedUrl);
+            try {
+                const encryptedUrl = this.encrypt(url, this.encryptionKey); //Don't await
+                return this.prefix + encodeURIComponent(encryptedUrl);
+            } catch (error) {
+                console.error("Encryption failed:", error);
+                return this.prefix + encodeURIComponent(url); // Return unencrypted URL if encryption fails.
+            }
         }
         return this.prefix + encodeURIComponent(url);
     }
@@ -135,6 +156,11 @@ class Bare {
     async encrypt(plainText, key) {
         if (!window.crypto || !window.crypto.subtle) {
             console.warn("Web Crypto API is not supported in this browser. Encryption will not be enabled.");
+            return plainText;
+        }
+
+        if (!key) {
+            console.warn("Encryption key is not provided. Encryption will not be enabled.");
             return plainText;
         }
 
@@ -167,13 +193,18 @@ class Bare {
 
         } catch (error) {
             console.error("Encryption error:", error);
-            return plainText;
+            throw error;
         }
     }
 
     async decrypt(cipherText, key) {
         if (!window.crypto || !window.crypto.subtle) {
             console.warn("Web Crypto API is not supported in this browser. Decryption will not be enabled.");
+            return cipherText;
+        }
+
+        if (!key) {
+             console.warn("Decryption key is not provided. Decryption will not be enabled.");
             return cipherText;
         }
 
@@ -209,7 +240,7 @@ class Bare {
         }
     }
 
-    async calculateIntegrity(data) {
+    async calculateIntegrity(data, type = 'SHA-256') {
         if (!window.crypto || !window.crypto.subtle) {
             console.warn("Web Crypto API is not supported in this browser. Integrity checks will not be enabled.");
             return null;
@@ -219,7 +250,7 @@ class Bare {
         const buffer = encoder.encode(data);
 
         try {
-            const hashBuffer = await window.crypto.subtle.digest('SHA-256', buffer);
+            const hashBuffer = await window.crypto.subtle.digest(type, buffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
             return hashHex;
