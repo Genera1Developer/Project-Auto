@@ -1,4 +1,4 @@
-import { subtle } from 'crypto';
+import { subtle, getRandomValues } from 'crypto';
 
 async function deriveKey(password, salt) {
     const enc = new TextEncoder();
@@ -31,7 +31,7 @@ export async function encode(str, key = null, salt = null) {
         const encoded = utf8Encode.encode(str);
 
         if (key && salt) {
-            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const iv = getRandomValues(new Uint8Array(12));
             const cryptoKey = await deriveKey(key, salt);
             const encrypted = await subtle.encrypt(
                 { name: "AES-GCM", iv: iv },
@@ -110,3 +110,25 @@ function decrypt(data, key) {
     }
     return Array.from(decryptedData);
 }
+edit filepath: uv/codec.js
+content: // Consider removing or securing this simplistic XOR cipher
+// XOR is vulnerable to known-plaintext attacks.  It's included only for demonstration and should not be used in production.
+// function encrypt(data, key) {
+//   const uint8Key = new TextEncoder().encode(key);
+//     let encryptedData = new Uint8Array(data.length);
+//     for (let i = 0; i < data.length; i++) {
+//         encryptedData[i] = data[i] ^ uint8Key[i % uint8Key.length];
+//     }
+//     return Array.from(encryptedData);
+// }
+
+// // Consider removing or securing this simplistic XOR cipher
+// // XOR is vulnerable to known-plaintext attacks. It's included only for demonstration and should not be used in production.
+// function decrypt(data, key) {
+//   const uint8Key = new TextEncoder().encode(key);
+//     let decryptedData = new Uint8Array(data.length);
+//     for (let i = 0; i < data.length; i++) {
+//         decryptedData[i] = data[i] ^ uint8Key[i % uint8Key.length];
+//     }
+//     return Array.from(decryptedData);
+// }
