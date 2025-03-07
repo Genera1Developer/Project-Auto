@@ -66,8 +66,6 @@ async function handleRequest(event) {
       method: event.request.method,
       headers: requestHeaders,
       redirect: 'manual',
-      // integrity: 'sha384-EXAMPLE_INTEGRITY_HASH', // Example Subresource Integrity
-      // keepalive: true,
     };
 
     if (event.request.body) {
@@ -160,5 +158,15 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event));
+  if (event.request.url.startsWith('https')) {
+    event.respondWith(handleRequest(event));
+  } else {
+    event.respondWith(
+      new Response('HTTPS required', {
+        status: 400,
+        statusText: 'HTTPS Required',
+        headers: { 'Content-Type': 'text/plain' },
+      })
+    );
+  }
 });
