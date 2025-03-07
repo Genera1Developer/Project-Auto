@@ -76,9 +76,11 @@ self.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME && cacheName.startsWith('my-site-cache')) {
-            console.log('ServiceWorker: Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
+          if (cacheName !== CACHE_NAME) {
+            if (cacheName.startsWith('my-site-cache')) {
+              console.log('ServiceWorker: Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
           }
           return undefined;
         }).filter(promise => promise !== undefined)
