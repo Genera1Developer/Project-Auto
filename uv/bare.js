@@ -187,10 +187,11 @@ class Bare {
     async #handleRequest(url, options = {}, method) {
         let fetchUrl = this.prefix + encodeURIComponent(url);
         let originalURL = url;
+        let encryptedUrl = null;
 
         if (this.encryptionEnabled && this.encryptionKey) {
             try {
-                const encryptedUrl = await this.encrypt(url, this.encryptionKey);
+                encryptedUrl = await this.encrypt(url, this.encryptionKey);
                 fetchUrl = this.prefix + encodeURIComponent(encryptedUrl);
             } catch (error) {
                 console.error("Encryption failed:", error);
@@ -213,6 +214,8 @@ class Bare {
         }
 
         let responseText = null;
+        let integrityCheckPassed = true;
+
         if (this.integrityEnabled) {
             const expectedIntegrity = response.headers.get(this.integrityHeaderName);
             if (expectedIntegrity) {
@@ -222,9 +225,12 @@ class Bare {
                 if (integrity !== expectedIntegrity) {
                     console.error(`Bare ${method} error: Content integrity check failed.`);
                     this.integrityCheckFailed = true;
+                    integrityCheckPassed = false;
                     throw new Error(`Bare ${method} error: Content integrity check failed.`);
+                } else {
+                     this.integrityCheckFailed = false;
                 }
-                this.integrityCheckFailed = false;
+
             } else {
                 console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
             }
@@ -235,7 +241,11 @@ class Bare {
                 if(!responseText) {
                     responseText = await response.clone().text();
                 }
-                const decryptedText = await this.decrypt(responseText, this.encryptionKey);
+                let decryptedText = responseText;
+                if(integrityCheckPassed){
+                  decryptedText = await this.decrypt(responseText, this.encryptionKey);
+                }
+
 
                 const decryptedResponse = new Response(decryptedText, {
                     status: response.status,
