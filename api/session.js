@@ -1,8 +1,9 @@
-// api/session.js
 const { generateSecureKey, encryptData, decryptData } = require('./security');
 
 // Session management using encrypted cookies
 const sessions = {};
+
+const SESSION_TIMEOUT = 3600000; // 1 hour in milliseconds
 
 function createSession(userId) {
   const sessionId = generateSecureKey(16); // 16 bytes for a 32-character hex string
@@ -11,27 +12,47 @@ function createSession(userId) {
     userId: userId,
     createdAt: Date.now(),
     encryptionKey: encryptionKey,
+    data: {} // Initialize data as an empty object
   };
   sessions[sessionId] = sessionData;
   return { sessionId: sessionId, encryptionKey: encryptionKey };
 }
 
 function getSession(sessionId) {
-  return sessions[sessionId];
+  const session = sessions[sessionId];
+  if (session && Date.now() - session.createdAt > SESSION_TIMEOUT) {
+    destroySession(sessionId);
+    return null;
+  }
+  return session;
 }
 
 function updateSession(sessionId, data) {
-  if (sessions[sessionId]) {
-    // Encrypt the session data before storing
-    const encryptionKey = sessions[sessionId].encryptionKey;
-    const encryptedData = encryptData(JSON.stringify(data), encryptionKey);
-    sessions[sessionId].data = encryptedData; // Store encrypted data
+  const session = getSession(sessionId);
+  if (!session) {
+    return false; // Session not found or expired
+  }
+
+  try {
+    const encryptionKey = session.encryptionKey;
+    const mergedData = { ...session.data, ...data }; // Merge existing data with new data
+    const encryptedData = encryptData(JSON.stringify(mergedData), encryptionKey);
+    session.data = encryptedData; // Store encrypted data
+    session.createdAt = Date.now(); // Reset session timeout
+    return true;
+  } catch (error) {
+    console.error('Error updating session:', error);
+    return false;
   }
 }
 
 function getSessionData(sessionId) {
   const session = getSession(sessionId);
-  if (session && session.data) {
+  if (!session) {
+    return null; // Session not found or expired
+  }
+
+  if (session.data) {
     try {
       const encryptionKey = session.encryptionKey;
       const decryptedData = decryptData(session.data, encryptionKey);
@@ -41,7 +62,7 @@ function getSessionData(sessionId) {
       return null; // Or handle the error appropriately
     }
   }
-  return null;
+  return {}; // Return empty object if no data
 }
 
 function destroySession(sessionId) {
