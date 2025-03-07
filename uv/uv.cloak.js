@@ -7,7 +7,25 @@
       if (prop === Symbol.toStringTag) {
         return 'Object';
       }
-      return target[prop];
+      try {
+        return target[prop];
+      } catch (e) {
+        return undefined;
+      }
+    },
+    apply: function(target, thisArg, argumentsList) {
+        try {
+            return target.apply(thisArg, argumentsList);
+        } catch (e) {
+            return undefined;
+        }
+    },
+    construct: function(target, argumentsList, newTarget) {
+        try {
+            return Reflect.construct(target, argumentsList, newTarget);
+        } catch (e) {
+            return undefined;
+        }
     }
   };
 
