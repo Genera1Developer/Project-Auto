@@ -23,7 +23,6 @@ const sanitizedHeaders = (headers) => {
     'keep-alive',
     'proxy-authenticate',
     'proxy-authorization',
-    'content-length'
   ];
 
   const cleanedHeaders = {};
@@ -115,6 +114,11 @@ async function handleRequest(req, res) {
       options.headers['user-agent'] = 'uv-proxy/1.0';
     }
 
+    // Mitigate HTTP Request Smuggling by always setting `content-length` to '0' when there is no request body.
+    if (req.method === 'GET' || req.method === 'HEAD') {
+      options.headers['content-length'] = '0';
+    }
+
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       let resHeaders = sanitizedHeaders(proxyRes.headers);
 
@@ -122,7 +126,9 @@ async function handleRequest(req, res) {
       delete resHeaders['content-security-policy'];
       delete resHeaders['x-frame-options'];
       delete resHeaders['x-xss-protection'];
-      delete resHeaders['content-length']; // Remove content-length to prevent HTTP smuggling
+
+      // Strip potentially problematic headers
+      delete resHeaders['transfer-encoding'];
 
       res.writeHead(proxyRes.statusCode, resHeaders);
 
