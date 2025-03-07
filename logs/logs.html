@@ -21,6 +21,7 @@
         }
         .log-message {
             margin-top: 5px;
+            word-break: break-word; /* Prevent long messages from overflowing */
         }
         .log-level {
             font-weight: bold;
@@ -42,16 +43,31 @@
             font-size: 0.9em;
             color: #555;
         }
+        /* Style for loading indicator */
+        .loading {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
     </style>
 </head>
 <body>
     <h1>Security Logs</h1>
-    <div id="log-container">
-        <!-- Logs will be dynamically inserted here -->
-    </div>
+    <div id="log-container" class="loading">Loading logs...</div>
 
     <script>
+        let isFetching = false; // Prevent multiple simultaneous fetches
+
         function fetchLogs() {
+            if (isFetching) {
+                return; // Prevent overlapping fetches
+            }
+
+            isFetching = true;
+            const logContainer = document.getElementById('log-container');
+            logContainer.classList.add('loading');
+            logContainer.textContent = 'Loading logs...'; // Display loading message
+
             fetch('/api/security/logs', {
                 method: 'GET',
                 headers: {
@@ -66,8 +82,13 @@
                 return response.json();
             })
             .then(logs => {
-                const logContainer = document.getElementById('log-container');
+                logContainer.classList.remove('loading');
                 logContainer.innerHTML = ''; // Clear existing logs
+
+                if (!logs || logs.length === 0) {
+                    logContainer.textContent = 'No logs found.';
+                    return;
+                }
 
                 logs.forEach(log => {
                     const logEntry = document.createElement('div');
@@ -98,8 +119,11 @@
             })
             .catch(error => {
                 console.error('Error fetching logs:', error);
-                const logContainer = document.getElementById('log-container');
+                logContainer.classList.remove('loading');
                 logContainer.innerHTML = '<p>Error loading logs: ' + error + '</p>';
+            })
+            .finally(() => {
+                isFetching = false; // Allow future fetches
             });
         }
 
