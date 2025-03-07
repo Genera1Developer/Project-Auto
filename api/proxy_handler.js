@@ -47,9 +47,9 @@ const proxyHandler = (req, res) => {
 
     proxyReq.setTimeout(options.timeout, () => {
       console.error('Proxy request timed out.');
-      proxyReq.destroy();
+      proxyReq.destroy(new Error('Proxy request timed out.')); // Pass an error object to destroy
       if (!res.headersSent) {
-        res.writeHead(504, { 'Content-Type': 'text/plain' }); // Set headers before sending the response
+        res.writeHead(504, { 'Content-Type': 'text/plain' });
         return res.end('Proxy request timed out.');
       } else {
         res.end();
@@ -59,7 +59,7 @@ const proxyHandler = (req, res) => {
     proxyReq.on('error', (err) => {
       console.error('Proxy request error:', err);
       if (!res.headersSent) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' }); // Set headers before sending the response
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
         return res.end('Proxy error.');
       } else {
         res.end();
@@ -71,6 +71,12 @@ const proxyHandler = (req, res) => {
     req.on('error', (err) => {
       console.error('Request pipe error:', err);
       proxyReq.destroy(err);
+      if (!res.headersSent) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        return res.end('Request aborted.');
+      } else {
+        res.end();
+      }
     });
 
     proxyReq.on('close', () => {
