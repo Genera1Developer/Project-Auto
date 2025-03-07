@@ -25,9 +25,20 @@ const passthroughHeaders = new Set([
   'strict-transport-security',
   'permissions-policy',
   'link',
-  'x-robots-tag', // Add X-Robots-Tag
-  'report-to', //Add Report-To
-  'nel' // Add NEL
+  'x-robots-tag',
+  'report-to',
+  'nel',
+]);
+
+const disallowedResponseHeaders = new Set([
+    'public-key-pins',
+    'public-key-pins-report-only',
+    'clear-site-data',
+    'server',
+    'x-powered-by',
+    'x-aspnet-version',
+    'x-drupal-cache',
+    'x-generator',
 ]);
 
 async function handleRequest(event) {
@@ -93,7 +104,8 @@ async function handleRequest(event) {
 
     const headers = new Headers();
     for (const [key, value] of response.headers.entries()) {
-      if (passthroughHeaders.has(key.toLowerCase())) {
+      const lowerKey = key.toLowerCase();
+      if (passthroughHeaders.has(lowerKey) && !disallowedResponseHeaders.has(lowerKey)) {
         headers.set(key, value);
       }
     }
