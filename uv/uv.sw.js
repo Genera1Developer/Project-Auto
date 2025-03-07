@@ -46,6 +46,7 @@ function sanitizeHeaders(headers) {
   headers.delete('Timing-Allow-Origin');
   headers.delete('Report-To');
   headers.delete('NEL');
+  headers.delete('Transfer-Encoding');
   return headers;
 }
 
@@ -188,6 +189,7 @@ self.addEventListener('fetch', (event) => {
 	   sanitizedHeaders.delete('Cross-Origin-Resource-Policy');
 	   sanitizedHeaders.delete('Cross-Origin-Opener-Policy');
 	   sanitizedHeaders.delete('Cross-Origin-Embedder-Policy');
+	   sanitizedHeaders.delete('content-encoding');
 
 
           return new Response(responseText, {
@@ -220,6 +222,7 @@ self.addEventListener('fetch', (event) => {
 		sanitizedHeaders.delete('Cross-Origin-Resource-Policy');
 		sanitizedHeaders.delete('Cross-Origin-Opener-Policy');
 		sanitizedHeaders.delete('Cross-Origin-Embedder-Policy');
+		sanitizedHeaders.delete('content-encoding');
 
 
 		return new Response(responseText, {
