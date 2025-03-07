@@ -21,6 +21,9 @@ function errorHandler(err, req, res, next) {
   } else if (err.message && err.message.includes('jwt expired')) {
     statusCode = 401;
     message = 'Unauthorized: Token expired';
+  } else if (err instanceof SyntaxError && err.message.includes('JSON')) {
+        statusCode = 400;
+        message = 'Invalid JSON payload';
   } else if (err.status) {
     statusCode = err.status;
     message = err.message; // Use the error message provided by the status code, if available
