@@ -20,6 +20,10 @@ if (!encryptionKey) {
 // Function to encrypt data
 function encrypt(text) {
   try {
+    if (!text || typeof text !== 'string') {
+      console.warn("Invalid input for encryption.");
+      return null;
+    }
     const iv = crypto.randomBytes(IV_LENGTH); // Generate initialization vector
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
     let encrypted = cipher.update(text);
@@ -36,7 +40,8 @@ function encrypt(text) {
 // Function to decrypt data
 function decrypt(text) {
   try {
-    if (!text) {
+    if (!text || typeof text !== 'string') {
+      console.warn("Invalid input for decryption.");
       return null; // or throw an error/log a warning, handle empty/null input gracefully
     }
 
@@ -59,11 +64,11 @@ function decrypt(text) {
         return null;
     }
 
-    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
+    const decipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
     decipher.setAuthTag(authTag);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
+    return decrypted.toString('utf8');
   } catch (error) {
     console.error("Decryption error:", error);
     return null; // Handle decryption errors gracefully. Do not reveal sensitive information.
@@ -97,7 +102,8 @@ const readLogs = async () => {
 router.get('/', async (req, res) => {
   try {
     const logs = await readLogs();
-    res.send(`<pre>${logs}</pre>`); // Serve logs in preformatted text
+    res.setHeader('Content-Type', 'text/html'); // Set content type to HTML
+    res.send(`<pre>${escapeHTML(logs)}</pre>`); // Serve logs in preformatted text, escape HTML
   } catch (error) {
     console.error("Error serving logs:", error);
     res.status(500).send("Error serving logs.");
@@ -124,5 +130,26 @@ router.post('/append', async (req, res) => {
     return res.status(500).send("Error appending to logs.");
   }
 });
+
+// Helper function to escape HTML
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/[&<>"']/g, function(m) {
+    switch (m) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      case "'":
+        return '&#039;';
+      default:
+        return m;
+    }
+  });
+}
 
 module.exports = router;
