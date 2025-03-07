@@ -115,16 +115,21 @@
       if (!data || !key || !iv) {
         throw new Error("Missing data, key, or IV for encryption.");
       }
-      const encoder = new TextEncoder();
-      const encodedData = encoder.encode(data);
-      return crypto.subtle.encrypt(
-        {
-          name: "AES-GCM",
-          iv: iv
-        },
-        key,
-        encodedData
-      );
+      try {
+        const encoder = new TextEncoder();
+        const encodedData = encoder.encode(data);
+        return await crypto.subtle.encrypt(
+          {
+            name: "AES-GCM",
+            iv: iv
+          },
+          key,
+          encodedData
+        );
+      } catch (error) {
+        console.error("Encryption error:", error);
+        throw new Error(`Encryption failed: ${error.message}`);
+      }
     },
     /**
      * Decrypts data using AES-GCM.
@@ -150,7 +155,7 @@
         return decoder.decode(decryptedData);
       } catch (error) {
         console.error("Decryption error:", error);
-        throw new Error(`Decryption failed: ${error.message}`); // Re-throw the error for handling in the calling function
+        throw new Error(`Decryption failed: ${error.message}`);
       }
     },
 
@@ -161,14 +166,19 @@
      * @returns {Promise<CryptoKey>} The generated key.
      */
     generateKey: async (extractable = false, keyUsages = ["encrypt", "decrypt"]) => {
-      return crypto.subtle.generateKey(
-        {
-          name: "AES-GCM",
-          length: 256
-        },
-        extractable,
-        keyUsages
-      );
+      try {
+        return await crypto.subtle.generateKey(
+          {
+            name: "AES-GCM",
+            length: 256
+          },
+          extractable,
+          keyUsages
+        );
+      } catch (error) {
+        console.error("Key generation error:", error);
+        throw new Error(`Key generation failed: ${error.message}`);
+      }
     },
 
     /**
@@ -177,7 +187,12 @@
      * @returns {Promise<JsonWebKey>} The exported key in JWK format.
      */
     exportKey: async (key) => {
-      return crypto.subtle.exportKey("jwk", key);
+      try {
+        return await crypto.subtle.exportKey("jwk", key);
+      } catch (error) {
+        console.error("Key export error:", error);
+        throw new Error(`Key export failed: ${error.message}`);
+      }
     },
 
     /**
@@ -187,16 +202,21 @@
      * @returns {Promise<CryptoKey>} The imported key.
      */
     importKey: async (jwk, keyUsages = ["encrypt", "decrypt"]) => {
-      return crypto.subtle.importKey(
-        "jwk",
-        jwk,
-        {
-          name: "AES-GCM",
-          length: 256
-        },
-        true,
-        keyUsages
-      );
+      try {
+        return await crypto.subtle.importKey(
+          "jwk",
+          jwk,
+          {
+            name: "AES-GCM",
+            length: 256
+          },
+          true,
+          keyUsages
+        );
+      } catch (error) {
+        console.error("Key import error:", error);
+        throw new Error(`Key import failed: ${error.message}`);
+      }
     },
 
     /**
@@ -277,18 +297,23 @@
         throw new Error("Invalid origin.");
     }
     async request(s) {
-      const p = await fetch(this.prefix, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(s)
-      });
-      if (!p.ok) {
-        const f = await p.text();
-        throw new Error(`HTTP error! status: ${p.status}, body: ${f}`);
+      try {
+        const p = await fetch(this.prefix, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(s)
+        });
+        if (!p.ok) {
+          const f = await p.text();
+          throw new Error(`HTTP error! status: ${p.status}, body: ${f}`);
+        }
+        return await p.json();
+      } catch (error) {
+        console.error("Request error:", error);
+        throw new Error(`Request failed: ${error.message}`);
       }
-      return await p.json();
     }
     async ws(s) {
       const p = new u(this.url.href);
