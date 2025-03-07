@@ -3,7 +3,7 @@ const path = require('path');
 const { promisify } = require('util');
 
 const logDirectory = path.join(__dirname, '../logs');
-const logFile = path.join(logDirectory, 'proxy.log'); // Changed to .log extension for clarity.
+const logFile = path.join(logDirectory, 'proxy.log');
 
 // Use fs.promises for asynchronous file operations
 const fsPromises = {
@@ -54,16 +54,20 @@ const log = async (message) => {
     }
 };
 
-// Ensure the log directory exists on startup
-(async () => {
+// Initialize logging
+async function initializeLogging() {
     try {
         await ensureLogDirectoryExists();
         loggingInitialized = true;
+        console.log('Logging initialized');
     } catch (error) {
         console.error('Failed to initialize logging:', error);
         process.exit(1); // Exit if logging initialization fails.
     }
-})();
+}
+
+// Call initializeLogging function
+initializeLogging();
 
 process.on('uncaughtException', async (err) => {
     console.error('Uncaught Exception:', err);
