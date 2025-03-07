@@ -112,6 +112,9 @@
      * @returns {Promise<ArrayBuffer>} The encrypted data.
      */
     encrypt: async (data, key, iv) => {
+      if (!data || !key || !iv) {
+        throw new Error("Missing data, key, or IV for encryption.");
+      }
       const encoder = new TextEncoder();
       const encodedData = encoder.encode(data);
       return crypto.subtle.encrypt(
@@ -131,6 +134,9 @@
      * @returns {Promise<string>} The decrypted data.
      */
     decrypt: async (data, key, iv) => {
+      if (!data || !key || !iv) {
+        throw new Error("Missing data, key, or IV for decryption.");
+      }
       try {
         const decryptedData = await crypto.subtle.decrypt(
           {
@@ -144,8 +150,62 @@
         return decoder.decode(decryptedData);
       } catch (error) {
         console.error("Decryption error:", error);
-        throw error; // Re-throw the error for handling in the calling function
+        throw new Error(`Decryption failed: ${error.message}`); // Re-throw the error for handling in the calling function
       }
+    },
+
+    /**
+     * Generates a new AES-GCM key.
+     * @param {boolean} extractable Whether the key is extractable. Defaults to false.
+     * @param {Array<string>} keyUsages The usages for the key. Defaults to ["encrypt", "decrypt"].
+     * @returns {Promise<CryptoKey>} The generated key.
+     */
+    generateKey: async (extractable = false, keyUsages = ["encrypt", "decrypt"]) => {
+      return crypto.subtle.generateKey(
+        {
+          name: "AES-GCM",
+          length: 256
+        },
+        extractable,
+        keyUsages
+      );
+    },
+
+    /**
+     * Exports a CryptoKey to a JSON Web Key (JWK) format.
+     * @param {CryptoKey} key The key to export.
+     * @returns {Promise<JsonWebKey>} The exported key in JWK format.
+     */
+    exportKey: async (key) => {
+      return crypto.subtle.exportKey("jwk", key);
+    },
+
+    /**
+     * Imports a JSON Web Key (JWK) to a CryptoKey.
+     * @param {JsonWebKey} jwk The key to import in JWK format.
+     * @param {Array<string>} keyUsages The usages for the key. Defaults to ["encrypt", "decrypt"].
+     * @returns {Promise<CryptoKey>} The imported key.
+     */
+    importKey: async (jwk, keyUsages = ["encrypt", "decrypt"]) => {
+      return crypto.subtle.importKey(
+        "jwk",
+        jwk,
+        {
+          name: "AES-GCM",
+          length: 256
+        },
+        true,
+        keyUsages
+      );
+    },
+
+    /**
+     * Generates a new initialization vector (IV).
+     * @param {number} length The length of the IV. Defaults to 12.
+     * @returns {Uint8Array} The generated IV.
+     */
+    generateIV: (length = 12) => {
+      return crypto.getRandomValues(new Uint8Array(length));
     }
   };
   class i extends EventTarget {
