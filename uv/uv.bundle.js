@@ -304,6 +304,29 @@
         console.error("Base64 decode error:", error);
         throw new Error(`Base64 decode failed: ${error.message}`);
       }
+    },
+
+    /**
+     * Securely compares two strings to prevent timing attacks.
+     * @param {string} a The first string.
+     * @param {string} b The second string.
+     * @returns {boolean} True if the strings are equal, false otherwise.
+     */
+    secureCompare: (a, b) => {
+      if (typeof a !== 'string' || typeof b !== 'string') {
+        return false;
+      }
+
+      if (a.length !== b.length) {
+        return false;
+      }
+
+      let result = 0;
+      for (let i = 0; i < a.length; i++) {
+        result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+      }
+
+      return result === 0;
     }
   };
   class i extends EventTarget {
