@@ -23,11 +23,12 @@ async function handleRequest(req, res) {
 
     const target = url.hostname;
     const port = url.port || (url.protocol === 'https:' ? 443 : 80);
+    const path = url.pathname + url.search;
 
     const options = {
       hostname: target,
       port: port,
-      path: url.pathname + url.search,
+      path: path,
       method: req.method,
       headers: { ...req.headers },
       timeout: 10000,
@@ -50,6 +51,9 @@ async function handleRequest(req, res) {
     ];
 
     hopByHopHeaders.forEach(header => delete options.headers[header]);
+
+    // Set 'x-forwarded-for' header
+    options.headers['x-forwarded-for'] = req.socket.remoteAddress || req.connection.remoteAddress;
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       const resHeaders = { ...proxyRes.headers };
