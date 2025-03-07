@@ -22,8 +22,8 @@ function errorHandler(err, req, res, next) {
     statusCode = 401;
     message = 'Unauthorized: Token expired';
   } else if (err instanceof SyntaxError && err.message.includes('JSON')) {
-        statusCode = 400;
-        message = 'Invalid JSON payload';
+    statusCode = 400;
+    message = 'Invalid JSON payload';
   } else if (err.status) {
     statusCode = err.status;
     message = err.message; // Use the error message provided by the status code, if available
@@ -32,7 +32,7 @@ function errorHandler(err, req, res, next) {
   res.status(statusCode).json({
     success: false,
     message: message,
-    errors: errors,
+    errors: errors.length > 0 ? errors : undefined,
     stack: process.env.NODE_ENV === 'production' ? undefined : err.stack,
   });
 }
