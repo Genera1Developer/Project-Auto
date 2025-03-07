@@ -1,4 +1,5 @@
 const { generateSecureKey } = require('./security');
+const crypto = require('crypto');
 
 // Session storage (in-memory for simplicity, use a database in production)
 const sessions = {};
@@ -8,7 +9,11 @@ const SESSION_TIMEOUT = 3600000; // 1 hour
 
 // Function to create a new session
 function createSession() {
-    const sessionId = generateSecureKey(32); // 32 bytes = 256 bits
+    let sessionId;
+    do {
+        sessionId = generateSecureKey(32); // 32 bytes = 256 bits
+    } while (sessions[sessionId]); // Ensure uniqueness
+
     const session = {
         id: sessionId,
         createdAt: Date.now(),
@@ -27,6 +32,7 @@ function getSession(sessionId) {
             deleteSession(sessionId);
             return null;
         }
+        session.createdAt = Date.now(); //Extend session life if accessed
         return session;
     }
     return null;
@@ -36,7 +42,15 @@ function getSession(sessionId) {
 function updateSessionData(sessionId, data) {
     const session = getSession(sessionId);
     if (session) {
-        session.data = { ...session.data, ...data };
+        const newData = { ...session.data, ...data };
+
+        // Sanitize data to prevent injection
+        for (const key in newData) {
+            if (typeof newData[key] === 'string') {
+                newData[key] = sanitizeString(newData[key]);
+            }
+        }
+        session.data = newData;
         session.createdAt = Date.now(); // Reset the timeout
         return true;
     }
@@ -46,6 +60,11 @@ function updateSessionData(sessionId, data) {
 // Function to delete a session
 function deleteSession(sessionId) {
     delete sessions[sessionId];
+}
+
+// Basic string sanitization function (improve this for production)
+function sanitizeString(str) {
+    return str.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
 module.exports = {
