@@ -34,7 +34,7 @@ function hashString(string, salt) {
 }
 
 function verifyHash(string, hash, salt) {
-  if (typeof string !== 'string' || !string || typeof hash !== 'string' || !hash || typeof salt !== 'string' || !salt) {
+  if (!string || typeof string !== 'string' || !hash || typeof hash !== 'string' || !salt || typeof salt !== 'string') {
     return false;
   }
 
