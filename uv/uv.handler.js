@@ -76,7 +76,8 @@ async function handleRequest(req, res) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
       } else {
-        res.destroy();
+        // Attempt to close the response gracefully
+        res.socket.destroy();
       }
     });
 
@@ -89,7 +90,8 @@ async function handleRequest(req, res) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error: ' + err.message);
       } else {
-        res.destroy();
+        // Attempt to close the response gracefully
+        res.socket.destroy();
       }
     });
 
@@ -108,7 +110,8 @@ async function handleRequest(req, res) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
     } else {
-      res.destroy();
+      // Attempt to close the response gracefully
+      res.socket.destroy();
     }
   }
 }
