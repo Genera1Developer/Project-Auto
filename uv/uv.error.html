@@ -79,7 +79,10 @@
                     // Log the response body for debugging
                     response.text().then(text => console.error('Response body:', text));
                 }
-            }).catch(error => console.error('Error sending error details to server:', error));
+            }).catch(error => {
+                console.error('Error sending error details to server:', error);
+                // Consider queuing the error for later retry if the server is unavailable.
+            });
         }
 
         if (errorMessage) {
@@ -98,7 +101,11 @@
                 let sanitizedDecodedURL = DOMPurify.sanitize(decodedURL, { USE_PROFILES: { html: true } });
 
                 try {
-                    new URL(sanitizedDecodedURL);
+                    const parsedURL = new URL(sanitizedDecodedURL);
+                    // Check if the protocol is secure (HTTPS)
+                    if (parsedURL.protocol !== "https:" && parsedURL.protocol !== "http:") {
+                        sanitizedDecodedURL = "#invalid-protocol";
+                    }
                 } catch (_) {
                     sanitizedDecodedURL = "#invalid-url";
                 }
