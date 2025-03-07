@@ -5,6 +5,7 @@ class Bare {
         this.prefix = this.origin + this.pathname;
         this.encryptionEnabled = opts.encryptionEnabled || false;
         this.encryptionKey = opts.encryptionKey || null;
+        this.integrityEnabled = opts.integrityEnabled || false;
     }
 
     async fetch(url, options = {}) {
@@ -21,6 +22,21 @@ class Bare {
                 console.error(`Bare fetch error: HTTP error! status: ${response.status} - ${fetchUrl}`);
                 throw new Error(`Bare fetch error: HTTP error! status: ${response.status}`);
             }
+
+            if (this.integrityEnabled) {
+                const expectedIntegrity = response.headers.get('X-Content-Integrity');
+                if (expectedIntegrity) {
+                    const text = await response.clone().text();
+                    const integrity = await this.calculateIntegrity(text);
+
+                    if (integrity !== expectedIntegrity) {
+                        console.error("Bare fetch error: Content integrity check failed.");
+                        throw new Error("Bare fetch error: Content integrity check failed.");
+                    }
+                    return response;
+                }
+            }
+
             return response;
         } catch (error) {
             console.error("Bare fetch error:", error);
@@ -40,6 +56,20 @@ class Bare {
                 console.error(`Bare route error: HTTP error! status: ${response.status} - ${fetchUrl}`);
                 throw new Error(`Bare route error: HTTP error! status: ${response.status}`);
             }
+
+            if (this.integrityEnabled) {
+                const expectedIntegrity = response.headers.get('X-Content-Integrity');
+                if (expectedIntegrity) {
+                    const text = await response.clone().text();
+                    const integrity = await this.calculateIntegrity(text);
+
+                    if (integrity !== expectedIntegrity) {
+                        console.error("Bare route error: Content integrity check failed.");
+                        throw new Error("Bare route error: Content integrity check failed.");
+                    }
+                    return response;
+                }
+            }
             return response;
         } catch (error) {
             console.error("Bare route error:", error);
@@ -58,6 +88,19 @@ class Bare {
             if (!response.ok) {
                 console.error(`Bare request error: HTTP error! status: ${response.status} - ${fetchUrl}`);
                 throw new Error(`Bare request error: HTTP error! status: ${response.status}`);
+            }
+
+            if (this.integrityEnabled) {
+                const expectedIntegrity = response.headers.get('X-Content-Integrity');
+                if (expectedIntegrity) {
+                    const text = await response.clone().text();
+                    const integrity = await this.calculateIntegrity(text);
+
+                    if (integrity !== expectedIntegrity) {
+                        console.error("Bare request error: Content integrity check failed.");
+                        throw new Error("Bare request error: Content integrity check failed.");
+                    }
+                }
             }
             return await response.json();
         } catch (error) {
@@ -163,6 +206,26 @@ class Bare {
         } catch (error) {
             console.error("Decryption error:", error);
             return cipherText;
+        }
+    }
+
+    async calculateIntegrity(data) {
+        if (!window.crypto || !window.crypto.subtle) {
+            console.warn("Web Crypto API is not supported in this browser. Integrity checks will not be enabled.");
+            return null;
+        }
+
+        const encoder = new TextEncoder();
+        const buffer = encoder.encode(data);
+
+        try {
+            const hashBuffer = await window.crypto.subtle.digest('SHA-256', buffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        } catch (error) {
+            console.error("Integrity calculation error:", error);
+            return null;
         }
     }
 }
