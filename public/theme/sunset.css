@@ -6,6 +6,7 @@ body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
+    overflow-wrap: break-word; /* Prevent long strings from overflowing */
 }
 
 .container {
@@ -53,6 +54,7 @@ body {
     border: 1px dashed #999;
     font-family: monospace; /* Makes it clear it's encoded */
     overflow-x: auto; /* Handle long encrypted strings */
+    word-break: break-all; /* Force line breaks to prevent overflow */
 }
 
 /* Styles for security headers (if displaying headers) */
@@ -63,6 +65,7 @@ body {
 
 .header-value {
     font-family: monospace;
+    word-break: break-all; /* Prevent long header values from overflowing */
 }
 
 /* Input fields hardening - placeholders to illustrate possible ideas */
@@ -72,7 +75,11 @@ input[type="text"], input[type="password"] {
   border-radius: 4px;
   width: 100%;
   box-sizing: border-box; /* Prevents padding from affecting width */
+  font-family: monospace; /* makes input clearly monospace */
+}
 
+input:invalid {
+    border-color: #a94442; /* highlight invalid input */
 }
 
 /* Buttons */
@@ -88,3 +95,21 @@ button {
 button:hover {
     opacity: 0.8;
 }
+
+/* Style for potential XSS prevention */
+.xss-safe {
+  white-space: pre-wrap; /* preserve formatting */
+  word-break: break-all; /* prevent overflow */
+}
+
+/* Style for displaying certificates */
+.certificate {
+    font-family: monospace;
+    white-space: pre-wrap; /* Preserves formatting for certificate display */
+    overflow-x: auto;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+content:
