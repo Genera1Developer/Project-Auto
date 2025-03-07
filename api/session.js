@@ -23,20 +23,25 @@ function getSessionData(sessionId, encryptionKey) {
   }
 
   if (!encryptionKey) {
-        console.warn("Encryption key missing for session: ", sessionId);
-        return null;
+    console.warn("Encryption key missing for session: ", sessionId);
+    return null;
+  }
+
+  if (session.encryptionKey !== encryptionKey) {
+    console.warn("Invalid encryption key for session: ", sessionId);
+    return null;
   }
 
   try {
-        const decryptedData = {};
-        for (const key in session.data) {
-            decryptedData[key] = decryptData(session.data[key], encryptionKey);
-        }
-        return decryptedData;
-    } catch (error) {
-        console.error("Decryption error: ", error);
-        return null;
+    const decryptedData = {};
+    for (const key in session.data) {
+      decryptedData[key] = decryptData(session.data[key], encryptionKey);
     }
+    return decryptedData;
+  } catch (error) {
+    console.error("Decryption error: ", error);
+    return null;
+  }
 }
 
 // Function to update session data
@@ -46,21 +51,29 @@ function updateSessionData(sessionId, encryptionKey, newData) {
     return false;
   }
 
-   if (!encryptionKey) {
-        console.warn("Encryption key missing for session: ", sessionId);
-        return false;
+  if (!encryptionKey) {
+    console.warn("Encryption key missing for session: ", sessionId);
+    return false;
+  }
+
+  if (session.encryptionKey !== encryptionKey) {
+    console.warn("Invalid encryption key for session: ", sessionId);
+    return false;
   }
 
 
   try {
-        for (const key in newData) {
-            session.data[key] = encryptData(newData[key], encryptionKey);
-        }
-        return true;
-    } catch (error) {
-        console.error("Encryption error: ", error);
-        return false;
+    const encryptedData = {};
+    for (const key in newData) {
+      encryptedData[key] = encryptData(newData[key], encryptionKey);
     }
+    session.data = { ...session.data, ...encryptedData }; // Update all at once to prevent race conditions
+
+    return true;
+  } catch (error) {
+    console.error("Encryption error: ", error);
+    return false;
+  }
 }
 
 // Function to destroy a session
@@ -74,8 +87,10 @@ const SESSION_TIMEOUT = 3600000;
 function cleanUpSessions() {
   const now = Date.now();
   for (const sessionId in sessions) {
-    if (now - sessions[sessionId].createdAt > SESSION_TIMEOUT) {
-      destroySession(sessionId);
+    if (Object.hasOwn(sessions, sessionId)) { // Check if the property is directly in the object
+        if (now - sessions[sessionId].createdAt > SESSION_TIMEOUT) {
+          destroySession(sessionId);
+        }
     }
   }
 }
