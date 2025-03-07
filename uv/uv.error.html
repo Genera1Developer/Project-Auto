@@ -53,6 +53,7 @@
         <a href="/">Go back to the homepage</a>
         <div id="error-url-container"></div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const errorMessage = urlParams.get('message');
@@ -60,8 +61,19 @@
         const errorType = urlParams.get('type');
         const errorStack = urlParams.get('stack');
 
+        const logError = (errorData) => {
+            // Consider using a more robust error reporting mechanism in production.
+            // Ensure the /log-error endpoint is properly secured and rate-limited.
+            fetch('/log-error', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(errorData)
+            }).catch(error => console.error('Error sending error details to server:', error));
+        }
+
         if (errorMessage) {
-            // Sanitize the error message to prevent XSS attacks
             const sanitizedErrorMessage = DOMPurify.sanitize(errorMessage);
             document.getElementById('error-message').textContent = sanitizedErrorMessage;
         }
@@ -74,15 +86,13 @@
                 urlDisplay.classList.add('error-url');
 
                 const urlLink = document.createElement('a');
-                // Sanitize the URL before using it in href to prevent XSS
                 const sanitizedDecodedURL = DOMPurify.sanitize(decodedURL, { USE_PROFILES: { html: true } });
                 urlLink.href = sanitizedDecodedURL;
                 urlLink.textContent = decodedURL;
-                urlLink.target = "_blank"; // Open in a new tab
-                urlLink.rel = "noopener noreferrer"; // Security best practice
+                urlLink.target = "_blank";
+                urlLink.rel = "noopener noreferrer";
 
                 urlDisplay.appendChild(urlLink);
-
                 document.getElementById('error-url-container').appendChild(urlDisplay);
 
             } catch (e) {
@@ -93,45 +103,32 @@
             }
         }
 
+        let errorData = {};
+
         if (errorType) {
             console.error(`Error Type: ${errorType}`);
-            // Log the error type to the server or perform other actions based on the error type
-            // For example, you could send the error type to a logging service.
+            errorData.errorType = errorType;
+        }
+
+        if (errorMessage) {
+            errorData.errorMessage = errorMessage;
+        }
+
+        if (encodedURL) {
+            errorData.errorURL = encodedURL;
         }
 
         if (errorStack) {
             console.error(`Error Stack: ${errorStack}`);
-            // Sanitize error stack before displaying or sending to the server
             const sanitizedErrorStack = DOMPurify.sanitize(errorStack);
-
-            // Send error details to server (example - needs to be adapted to actual server-side code)
-            fetch('/log-error', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    errorType: errorType,
-                    errorMessage: errorMessage,
-                    errorURL: encodedURL,
-                    errorStack: sanitizedErrorStack // Send sanitized stack
-                })
-            }).catch(error => console.error('Error sending error details to server:', error));
-        } else {
-            // Send minimal error data if stack is unavailable
-            fetch('/log-error', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    errorType: errorType,
-                    errorMessage: errorMessage,
-                    errorURL: encodedURL
-                })
-            }).catch(error => console.error('Error sending error details to server:', error));
+            errorData.errorStack = sanitizedErrorStack;
         }
+
+        // Send error data to the server
+        if (Object.keys(errorData).length > 0) {
+            logError(errorData);
+        }
+
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
 </body>
 </html>
