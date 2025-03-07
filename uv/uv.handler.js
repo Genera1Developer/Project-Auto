@@ -131,6 +131,11 @@ async function handleRequest(req, res) {
       // Strip potentially problematic headers
       delete resHeaders['transfer-encoding'];
 
+      // Set HSTS header for HTTPS responses
+      if (url.protocol === 'https:') {
+        resHeaders['strict-transport-security'] = 'max-age=31536000; includeSubDomains; preload';
+      }
+
       res.writeHead(proxyRes.statusCode, resHeaders);
 
       proxyRes.on('data', (chunk) => {
