@@ -11,6 +11,8 @@ const fsPromises = {
     access: promisify(fs.access),
 };
 
+let loggingInitialized = false;
+
 async function ensureLogDirectoryExists() {
     try {
         await fsPromises.access(logDirectory);
@@ -28,8 +30,6 @@ async function ensureLogDirectoryExists() {
         }
     }
 }
-
-let loggingInitialized = false;
 
 const log = async (message) => {
     if (!loggingInitialized) {
@@ -77,6 +77,7 @@ process.on('uncaughtException', async (err) => {
     } catch (fileErr) {
         console.error('Failed to write uncaught exception to log file:', fileErr);
     } finally {
+        // Ensure the process exits, even if logging fails
         process.exit(1);
     }
 });
@@ -104,5 +105,9 @@ const shutdownHandler = async (signal) => {
 process.on('SIGINT', shutdownHandler);
 process.on('SIGTERM', shutdownHandler);
 process.on('SIGHUP', shutdownHandler); //Catch SIGHUP
+
+process.on('exit', (code) => {
+    console.log(`Process exiting with code: ${code}`);
+});
 
 module.exports = { log };
