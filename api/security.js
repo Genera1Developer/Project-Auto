@@ -1,27 +1,8 @@
-const crypto = require('crypto');
-
-function generateRandomKey(length = 32) {
-  return crypto.randomBytes(length).toString('hex');
+export function addSecurityHeaders(res) {
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 }
-
-function hashPassword(password, salt) {
-  const hash = crypto.createHmac('sha512', salt);
-  hash.update(password);
-  return {
-    salt: salt,
-    passwordHash: hash.digest('hex')
-  };
-}
-
-function verifyPassword(password, salt, passwordHash) {
-  const hash = crypto.createHmac('sha512', salt);
-  hash.update(password);
-  const computedHash = hash.digest('hex');
-  return computedHash === passwordHash;
-}
-
-module.exports = {
-  generateRandomKey,
-  hashPassword,
-  verifyPassword
-};
