@@ -49,9 +49,9 @@ self.addEventListener('fetch', (event) => {
 
             // Read the response body as text for potential encryption.
             return response.text().then(body => {
-              // TODO: Implement actual encryption logic here.
-              // Example: const encryptedBody = encrypt(body);
-              const encryptedBody = body; // No encryption for now.
+              // TODO: Implement actual encryption logic here. Replace with a real encryption algorithm.
+              const key = 'secret key'; // Store this securely in a real implementation
+              const encryptedBody = CryptoJS.AES.encrypt(body, key).toString();
 
               // Create a new response with the encrypted body.
               const encryptedResponse = new Response(encryptedBody, {
@@ -131,3 +131,5 @@ self.addEventListener('activate', (event) => {
     })
   );
 });
+
+importScripts('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js');
