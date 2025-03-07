@@ -73,38 +73,47 @@
         const errorContext = urlParams.get('context');
 
         const logError = (errorData) => {
-            // Consider using a more robust error reporting mechanism in production.
-            // Ensure the /log-error endpoint is properly secured and rate-limited.
-            // Implement a retry mechanism with exponential backoff.
-            const errorLogUrl = '/log-error'; // Define the URL
+            const errorLogUrl = '/log-error';
             fetch(errorLogUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Request-ID': crypto.randomUUID() // Add a request ID for tracing
+                    'X-Request-ID': crypto.randomUUID()
                 },
                 body: JSON.stringify(errorData)
-            }).then(response => {
+            })
+            .then(response => {
                 if (!response.ok) {
                     console.error('Failed to send error log:', response.status, response.statusText);
-                    // Log the response body for debugging
-                    response.text().then(text => console.error('Response body:', text));
+                    return response.text().then(text => {
+                        console.error('Response body:', text);
+                        throw new Error(`Error logging failed: ${response.status} - ${text}`);
+                    });
                 }
-            }).catch(error => {
+                return response.json(); // Or response.text() if the server returns plain text.
+            })
+            .then(data => {
+                console.log('Error log sent successfully', data); // Log success. Remove in production if sensitive.
+            })
+            .catch(error => {
                 console.error('Error sending error details to server:', error);
-                // Consider queuing the error for later retry if the server is unavailable.
+                // Retry logic (Exponential Backoff):
+                const retryDelay = Math.min(5000, (Math.random() * 2000) + 1000); // Randomize delay up to 5s
+                console.warn(`Retrying in ${retryDelay}ms...`);
+                setTimeout(() => logError(errorData), retryDelay);
             });
         }
+
 
         if (errorMessage) {
             const sanitizedErrorMessage = DOMPurify.sanitize(errorMessage);
             document.getElementById('error-message').textContent = sanitizedErrorMessage;
         }
 
-        let decodedURL = null; // Declare decodedURL outside the try block
+        let decodedURL = null;
         if (encodedURL) {
             try {
-                decodedURL = decodeURIComponent(encodedURL); // Assign decodedURL here
+                decodedURL = decodeURIComponent(encodedURL);
                 const urlDisplay = document.createElement('p');
                 urlDisplay.textContent = `The following URL caused the error: `;
                 urlDisplay.classList.add('error-url');
@@ -115,24 +124,23 @@
 
                 try {
                     const parsedURL = new URL(sanitizedDecodedURL);
-                    // Check if the protocol is secure (HTTPS)
+
                     if (parsedURL.protocol !== "https:" ) {
                         securityWarnings.push("URL does not use HTTPS, which is less secure.");
                     }
 
-                    if (parsedURL.protocol !== "https:" && parsedURL.protocol !== "http:") {
-                        sanitizedDecodedURL = "#invalid-protocol";
-                        securityWarnings.push("URL uses an invalid protocol.");
+                    if (!["https:", "http:"].includes(parsedURL.protocol)) {
+                         securityWarnings.push("URL uses an invalid protocol.");
+                         sanitizedDecodedURL = "#invalid-protocol";
                     }
 
-
-                    // Check for potentially malicious patterns in the hostname or path
                     if (parsedURL.hostname.includes("javascript:") || parsedURL.pathname.includes("javascript:")) {
                         securityWarnings.push("URL contains potentially malicious patterns (javascript:).");
                         sanitizedDecodedURL = "#potential-xss";
                     }
 
-                } catch (_) {
+                } catch (e) {
+                    console.error("URL parsing error:", e);
                     sanitizedDecodedURL = "#invalid-url";
                     securityWarnings.push("URL is invalid.");
                 }
@@ -194,12 +202,11 @@
             }
         }
 
-        // Send error data to the server
         if (Object.keys(errorData).length > 0) {
             try {
                 logError(errorData);
             } catch (e) {
-                console.error("Failed to log error:", e);
+                console.error("Failed to log error:", e); // This should rarely happen now.
             }
         }
 
