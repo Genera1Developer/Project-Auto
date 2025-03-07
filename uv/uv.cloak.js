@@ -156,4 +156,31 @@ const handler = {
 
     // Attempt to prevent prototype pollution
     Object.prototype.__proto__ = null;
+
+    // Securely override Function.prototype.apply and call to prevent potential exploits
+    const originalFunctionApply = Function.prototype.apply;
+    const originalFunctionCall = Function.prototype.call;
+
+    Function.prototype.apply = new Proxy(originalFunctionApply, {
+        apply(target, thisArg, argArray) {
+            try {
+                return Reflect.apply(target, thisArg, argArray);
+            } catch (e) {
+                console.warn('Error applying Function.prototype.apply:', e);
+                return undefined;
+            }
+        }
+    });
+
+    Function.prototype.call = new Proxy(originalFunctionCall, {
+        apply(target, thisArg, argArray) {
+            try {
+                return Reflect.apply(target, thisArg, argArray);
+            } catch (e) {
+                console.warn('Error applying Function.prototype.call:', e);
+                return undefined;
+            }
+        }
+    });
+
 })();
