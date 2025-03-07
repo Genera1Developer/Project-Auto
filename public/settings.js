@@ -1,6 +1,6 @@
 const settings = {
   httpsEnabled: true,
-  encryptionKey: 'YOUR_SECURE_KEY_HERE',
+  encryptionKey: 'GENERATE_A_STRONG_RANDOM_KEY',
   port: 8080,
   proxyServerAddress: 'http://default.proxy.server:3128',
   allowedDomains: ['*.example.com', 'example.org'],
@@ -16,7 +16,7 @@ const settings = {
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';"
+    'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self';"
   }
 };
 
