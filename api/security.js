@@ -1,7 +1,33 @@
-export function addSecurityHeaders(res) {
-    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-    res.setHeader('X-Frame-Options', 'DENY');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+const crypto = require('crypto');
+
+function generateRandomKey(length = 32) {
+  return crypto.randomBytes(length).toString('hex');
 }
+
+function hashPassword(password, salt) {
+  const hash = crypto.createHmac('sha512', salt);
+  hash.update(password);
+  const value = hash.digest('hex');
+  return {
+    salt: salt,
+    passwordHash: value
+  };
+}
+
+function generateSalt() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
+function verifyPassword(enteredPassword, passwordHash, salt) {
+  const newHash = crypto.createHmac('sha512', salt);
+  newHash.update(enteredPassword);
+  const value = newHash.digest('hex');
+  return passwordHash === value;
+}
+
+module.exports = {
+  generateRandomKey,
+  hashPassword,
+  generateSalt,
+  verifyPassword
+};
