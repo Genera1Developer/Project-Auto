@@ -5,56 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encrypted Web Proxy</title>
     <link rel="stylesheet" href="theme/default.css">
-    <link rel="stylesheet" href="visuals/animations.css">
-    <link rel="manifest" href="manifest.json">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';">
 </head>
 <body>
-    <header>
+    <div class="container">
         <h1>Encrypted Web Proxy</h1>
-        <nav>
-            <a href="settings.html">Settings</a> |
-            <a href="logs/logs.html">Logs</a>
-        </nav>
-    </header>
+        <p>Enter the URL you want to access securely:</p>
+        <input type="url" id="urlInput" placeholder="https://example.com">
+        <button id="proxyButton">Access via Proxy</button>
 
-    <main>
-        <section id="proxy-section">
-            <h2>Enter URL</h2>
-            <form id="proxy-form">
-                <input type="url" id="url-input" placeholder="https://example.com" required>
-                <button type="submit">Go</button>
-            </form>
-            <iframe id="proxy-iframe" title="Proxied Content"></iframe>
-        </section>
+        <div id="securityInfo" class="security-info">
+            <!-- Security information will be displayed here -->
+        </div>
 
-         <section id="rsa-encryption">
-            <h2>RSA Encryption Demo</h2>
-            <p>This is a demonstration of RSA encryption in the browser.  <b>Do not use this for real security.</b></p>
-            <button id="generateKeys">Generate Keys</button>
-            <button id="downloadPublicKey" disabled>Download Public Key</button>
-            <label for="importedPublicKey">Import Public Key (JWK):</label>
-            <textarea id="importedPublicKey" rows="4" cols="50"></textarea>
-            <button id="importPublicKey">Import Key</button>
-            <p>Public Key (JWK):</p>
-            <pre id="publicKey"></pre>
-
-            <label for="originalText">Original Text:</label>
-            <textarea id="originalText" rows="4" cols="50"></textarea>
-            <button id="encrypt" disabled>Encrypt</button>
-            <label for="encryptedText">Encrypted Text:</label>
-            <textarea id="encryptedText" rows="4" cols="50" readonly></textarea>
-            <button id="decrypt" disabled>Decrypt</button>
-            <label for="decryptedText">Decrypted Text:</label>
-            <textarea id="decryptedText" rows="4" cols="50" readonly></textarea>
-            <button id="clearText">Clear Text</button>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 Encrypted Web Proxy</p>
-    </footer>
+        <div id="result" class="result">
+            <!-- Website content will be displayed here -->
+        </div>
+        <div id="error" class="error"></div>
+    </div>
     <script src="script.js"></script>
-    <script src="sw.js"></script>
 </body>
 </html>
