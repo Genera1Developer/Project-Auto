@@ -18,7 +18,6 @@ const proxyHandler = (req, res) => {
       timeout: 15000,
       agent: false,
       rejectUnauthorized: false, // Disable SSL certificate verification
-      // Add support for explicitly setting a custom HTTP agent if needed
     };
 
     const hopByHopHeaders = [
@@ -49,12 +48,12 @@ const proxyHandler = (req, res) => {
 
     proxyReq.setTimeout(options.timeout, () => {
       console.error('Proxy request timed out.');
-      proxyReq.destroy(new Error('Proxy request timed out.')); // Pass an error object to destroy
+      proxyReq.destroy(new Error('Proxy request timed out.'));
       if (!res.headersSent) {
         res.writeHead(504, { 'Content-Type': 'text/plain' });
         res.end('Proxy request timed out.');
       } else {
-        res.destroy(); // Destroy the response
+        res.socket.destroy();
       }
     });
 
@@ -64,7 +63,7 @@ const proxyHandler = (req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Proxy error.');
       } else {
-        res.destroy(); // Destroy the response
+        res.socket.destroy();
       }
     });
 
@@ -77,7 +76,7 @@ const proxyHandler = (req, res) => {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request aborted.');
       } else {
-        res.destroy(); // Destroy the response
+        res.socket.destroy();
       }
     });
 
