@@ -1,18 +1,27 @@
 const security = require('./security');
+const crypto = require('crypto');
 
 const sessionStore = {}; // In-memory session store (replace with DB in production)
 const SESSION_TIMEOUT = 60 * 60 * 1000; // 1 hour in milliseconds
+const SESSION_ID_LENGTH = 64;
 
 function createSession() {
-    const sessionId = security.generateSessionId();
+    let sessionId;
+    do {
+        sessionId = security.generateSessionId(SESSION_ID_LENGTH);
+    } while (sessionStore[sessionId]); // Ensure uniqueness
     const sessionKey = security.generateRandomKey(32); // AES-256 key
     const expiry = Date.now() + SESSION_TIMEOUT;
+
+    // Store the session data with added security: Initialization Vector (IV)
+    const iv = crypto.randomBytes(16); // Initialization Vector for AES
     sessionStore[sessionId] = {
         key: sessionKey,
+        iv: iv.toString('hex'),
         data: {}, // Session data
         expiry: expiry
     };
-    return { sessionId, sessionKey, expiry };
+    return { sessionId, sessionKey, expiry, iv: iv.toString('hex') };
 }
 
 function getSession(sessionId) {
