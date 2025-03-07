@@ -258,3 +258,174 @@
         transform: scale(1.03);
     }
 }
+
+/* Animations for potential vulnerabilities */
+
+.vulnerable-library {
+    animation: vulnerableLibraryWarning 2s ease-in-out infinite alternate;
+}
+
+@keyframes vulnerableLibraryWarning {
+    0% {
+        border: 2px solid rgba(255, 105, 180, 0.5); /* Pink border */
+    }
+    100% {
+        border: 2px solid rgba(255, 105, 180, 0.8); /* Darker Pink */
+    }
+}
+
+.known-exploit {
+    animation: knownExploitAlert 1.5s steps(5, start) infinite;
+    color: black;
+}
+
+@keyframes knownExploitAlert {
+    0% { background-color: rgba(255, 0, 0, 0.8); color: white; } /* Strong Red */
+    100% { background-color: transparent; color: inherit; }
+}
+
+.zero-day-exploit {
+    animation: zeroDayExploitPulse 1.7s linear infinite;
+}
+
+@keyframes zeroDayExploitPulse {
+    0% {
+        background-color: rgba(255, 0, 0, 0.2); /* Light Red */
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+        background-color: rgba(255, 0, 0, 0.5); /* Red */
+        box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    }
+    100% {
+        background-color: rgba(255, 0, 0, 0.2); /* Light Red */
+        box-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+    }
+}
+
+.dns-spoofing {
+    animation: dnsSpoofingWarning 1.9s ease-in-out infinite alternate;
+}
+
+@keyframes dnsSpoofingWarning {
+    0% {
+        transform: skewX(-5deg);
+        background-color: rgba(255, 165, 0, 0.1);
+    }
+    100% {
+        transform: skewX(5deg);
+        background-color: rgba(255, 165, 0, 0.3);
+    }
+}
+
+.xss-attack {
+    animation: xssAttackWarning 1.6s linear infinite;
+}
+
+@keyframes xssAttackWarning {
+    0% {
+        text-shadow: 0 0 5px rgba(255, 255, 0, 0.5); /* Yellow */
+        color: black; /* Ensure text is visible */
+    }
+    50% {
+        text-shadow: none;
+        color: inherit; /* Revert to default text color */
+    }
+    100% {
+        text-shadow: 0 0 5px rgba(255, 255, 0, 0.5); /* Yellow */
+        color: black;
+    }
+}
+
+.sql-injection {
+    animation: sqlInjectionAlert 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes sqlInjectionAlert {
+    0% {
+        border-left: 5px solid rgba(255, 0, 0, 0.5);
+        border-right: 5px solid rgba(255, 0, 0, 0.5);
+    }
+    100% {
+        border-left: 5px solid rgba(255, 0, 0, 0.8);
+        border-right: 5px solid rgba(255, 0, 0, 0.8);
+    }
+}
+
+.csrf-attack {
+    animation: csrfAttackWarning 2s linear infinite;
+}
+
+@keyframes csrfAttackWarning {
+    0% {
+        outline: 2px dashed rgba(255, 165, 0, 0.5);
+    }
+    50% {
+        outline: none;
+    }
+    100% {
+        outline: 2px dashed rgba(255, 165, 0, 0.5);
+    }
+}
+
+/* Enhanced security status animations */
+
+.strong-encryption {
+    animation: strongEncryptionPulse 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes strongEncryptionPulse {
+    0% {
+        background-color: rgba(0, 128, 0, 0.1); /* Dark Green */
+        border-color: rgba(0, 128, 0, 0.3);
+    }
+    100% {
+        background-color: rgba(0, 128, 0, 0.3); /* Darker Green */
+        border-color: rgba(0, 128, 0, 0.7);
+    }
+}
+
+.perfect-forward-secrecy {
+    animation: perfectForwardSecrecyGlow 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes perfectForwardSecrecyGlow {
+    0% {
+        box-shadow: 0 0 7px rgba(0, 191, 255, 0.4); /* Deep Sky Blue */
+    }
+    100% {
+        box-shadow: 0 0 14px rgba(0, 191, 255, 0.7); /* Brighter Deep Sky Blue */
+    }
+}
+
+.certificate-pinned {
+    animation: certificatePinnedPulse 2.1s linear infinite;
+}
+
+@keyframes certificatePinnedPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.03);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+}
+
+.hsts-enforced {
+    animation: hstsEnforcedGlow 2.3s ease-in-out infinite alternate;
+}
+
+@keyframes hstsEnforcedGlow {
+    0% {
+        outline: 2px solid rgba(70, 130, 180, 0.4); /* Steel Blue */
+    }
+    100% {
+        outline: 2px solid rgba(70, 130, 180, 0.7); /* Darker Steel Blue */
+    }
+}
