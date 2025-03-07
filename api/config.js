@@ -17,6 +17,7 @@ const config = {
   cdnURL: process.env.CDN_URL || '/',
   healthCheckPath: process.env.HEALTH_CHECK_PATH || '/healthcheck',
   bypassBypass: process.env.BYPASS_BYPASS || 'bypass',
+  requestTimeout: parseInt(process.env.REQUEST_TIMEOUT, 10) || 30000,
 };
 
 module.exports = config;
