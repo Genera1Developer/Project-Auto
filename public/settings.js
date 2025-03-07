@@ -1,79 +1,80 @@
-function loadSettings() {
-    try {
-        const settingsJSON = localStorage.getItem('proxySettings');
-        let settings = settingsJSON ? JSON.parse(settingsJSON) : {};
+document.addEventListener('DOMContentLoaded', function() {
+    const encryptionTypeSelect = document.getElementById('encryptionType');
+    const certificatePathInput = document.getElementById('certificatePath');
+    const customEncryptionAlgoInput = document.getElementById('customEncryptionAlgo');
 
-        // Default values
-        const defaultSettings = {
-            proxyHost: 'localhost',
-            proxyPort: '8080',
-            encryptionType: 'none',
-            certificatePath: '',
-            customEncryptionAlgo: ''
+    function updateInputStates() {
+        const encryptionType = encryptionTypeSelect.value;
+        certificatePathInput.disabled = (encryptionType !== 'ssl');
+        customEncryptionAlgoInput.disabled = (encryptionType !== 'custom');
+    }
+
+    encryptionTypeSelect.addEventListener('change', updateInputStates);
+
+    // Load saved settings on page load
+    loadSettings();
+
+    function loadSettings() {
+        const savedSettings = localStorage.getItem('proxySettings');
+        if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+            document.getElementById('proxyHost').value = settings.proxyHost || 'localhost';
+            document.getElementById('proxyPort').value = settings.proxyPort || '8080';
+            encryptionTypeSelect.value = settings.encryptionType || 'none';
+            certificatePathInput.value = settings.certificatePath || '';
+            customEncryptionAlgoInput.value = settings.customEncryptionAlgo || '';
+            updateInputStates(); // Ensure correct input states after loading
+        }
+    }
+
+    window.saveSettings = function() {
+        const proxyHost = document.getElementById('proxyHost').value;
+        const proxyPort = document.getElementById('proxyPort').value;
+        const encryptionType = encryptionTypeSelect.value;
+        const certificatePath = certificatePathInput.value;
+        const customEncryptionAlgo = customEncryptionAlgoInput.value;
+
+        // Clear all error messages
+        document.getElementById('generalError').textContent = '';
+        document.getElementById('certificatePathError').textContent = '';
+        document.getElementById('customEncryptionAlgoError').textContent = '';
+
+        let hasErrors = false;
+
+        // Basic validation (can be improved)
+        if (!proxyHost || !proxyPort) {
+            document.getElementById('generalError').textContent = 'Proxy Host and Port are required.';
+            hasErrors = true;
+        }
+
+        if (encryptionType === 'ssl' && !certificatePath) {
+            document.getElementById('certificatePathError').textContent = 'Certificate path is required for SSL/TLS encryption.';
+            hasErrors = true;
+        }
+
+        if (encryptionType === 'custom' && !customEncryptionAlgo) {
+            document.getElementById('customEncryptionAlgoError').textContent = 'Custom encryption algorithm is required.';
+            hasErrors = true;
+        }
+
+        if (hasErrors) {
+            return; // Stop saving if there are errors
+        }
+
+        const settings = {
+            proxyHost: proxyHost,
+            proxyPort: proxyPort,
+            encryptionType: encryptionType,
+            certificatePath: certificatePath,
+            customEncryptionAlgo: customEncryptionAlgo
         };
 
-        // Merge stored settings with defaults
-        settings = { ...defaultSettings, ...settings };
+        // Convert settings to JSON
+        const settingsJSON = JSON.stringify(settings);
 
-        // Sanitize and validate proxyHost
-        settings.proxyHost = String(settings.proxyHost).trim();
+        // Store the settings (e.g., localStorage, cookies, or send to server)
+        localStorage.setItem('proxySettings', settingsJSON);
 
-        // Validate proxyPort (must be a number within a valid range)
-        const port = parseInt(settings.proxyPort, 10);
-        settings.proxyPort = (Number.isInteger(port) && port > 0 && port <= 65535) ? port.toString() : defaultSettings.proxyPort;
-
-        // Validate encryptionType (only allow predefined values)
-        const allowedEncryptionTypes = ['none', 'tls', 'custom'];
-        settings.encryptionType = allowedEncryptionTypes.includes(settings.encryptionType) ? settings.encryptionType : defaultSettings.encryptionType;
-
-        // Sanitize certificatePath
-        settings.certificatePath = String(settings.certificatePath).trim();
-
-        // Sanitize customEncryptionAlgo
-        settings.customEncryptionAlgo = String(settings.customEncryptionAlgo).trim();
-
-        document.getElementById('proxyHost').value = settings.proxyHost;
-        document.getElementById('proxyPort').value = settings.proxyPort;
-        document.getElementById('encryptionType').value = settings.encryptionType;
-        document.getElementById('certificatePath').value = settings.certificatePath;
-        document.getElementById('customEncryptionAlgo').value = settings.customEncryptionAlgo;
-
-        // Trigger the change event to update disabled states
-        const encryptionTypeSelect = document.getElementById('encryptionType');
-        encryptionTypeSelect.dispatchEvent(new Event('change'));
-
-
-    } catch (error) {
-        console.error('Error loading settings:', error);
-        alert('Error loading settings. Please check your browser console for details.');
-        // Optionally, reset settings to default values here
-        resetSettingsToDefault(); // Call reset function if parsing fails.
-    }
-}
-
-function resetSettingsToDefault() {
-    const defaultSettings = {
-        proxyHost: 'localhost',
-        proxyPort: '8080',
-        encryptionType: 'none',
-        certificatePath: '',
-        customEncryptionAlgo: ''
+        alert('Settings saved!');
     };
-
-    document.getElementById('proxyHost').value = defaultSettings.proxyHost;
-    document.getElementById('proxyPort').value = defaultSettings.proxyPort;
-    document.getElementById('encryptionType').value = defaultSettings.encryptionType;
-    document.getElementById('certificatePath').value = defaultSettings.certificatePath;
-    document.getElementById('customEncryptionAlgo').value = defaultSettings.customEncryptionAlgo;
-
-    // Trigger the change event to update disabled states
-    const encryptionTypeSelect = document.getElementById('encryptionType');
-    encryptionTypeSelect.dispatchEvent(new Event('change'));
-
-    localStorage.setItem('proxySettings', JSON.stringify(defaultSettings));
-
-}
-
-// Call loadSettings when the page loads
-window.addEventListener('DOMContentLoaded', loadSettings);
-content: [brief description of edits]
+});
