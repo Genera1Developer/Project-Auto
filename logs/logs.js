@@ -15,7 +15,7 @@ const readLogs = async () => {
     return logs;
   } catch (err) {
     if (err.code === 'ENOENT') {
-      return "Log file not found.";
+      return ""; // Return empty string if log file doesn't exist. Avoids error message on first run.
     }
     console.error("Error reading logs:", err);
     return "Error reading logs.";
