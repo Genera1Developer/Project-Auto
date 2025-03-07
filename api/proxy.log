@@ -1,1 +1,31 @@
-
+import logging
+            
+            logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+            
+            def log_request(method, url, headers=None, data=None):
+            log_message = f"Request: {method} {url}"
+            if headers:
+            log_message += f"\nHeaders: {headers}"
+            if data:
+            log_message += f"\nData: {data}"
+            logging.info(log_message)
+            
+            def log_response(status_code, headers=None, data=None):
+            log_message = f"Response: Status Code {status_code}"
+            if headers:
+            log_message += f"\nHeaders: {headers}"
+            if data:
+            log_message += f"\nData: {data}"
+            logging.info(log_message)
+            
+            def log_error(message, exc_info=True):
+            logging.error(message, exc_info=exc_info)
+            
+            def log_debug(message):
+            logging.debug(message)
+            
+            if __name__ == '__main__':
+            log_request("GET", "https://www.example.com", headers={"User-Agent": "Test"})
+            log_response(200, data="Example data")
+            log_error("An example error occurred")
+            log_debug("Debugging message")
