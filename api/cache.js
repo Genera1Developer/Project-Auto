@@ -17,7 +17,8 @@ const getCache = async (url) => {
         return null;
     }
     try {
-        return await cache.get(url);
+        const value = await cache.get(url);
+        return value === undefined ? null : value;
     } catch (error) {
         console.error(`Cache get operation failed for URL: ${url}`, error);
         return null;
@@ -34,7 +35,7 @@ const setCache = async (url, data, ttl = 3600) => {
         return false;
     }
     try {
-        await cache.set(url, data, ttl);
+        cache.set(url, data, ttl);
         return true;
     } catch (error) {
         console.error(`Cache set operation failed for URL: ${url}`, error);
@@ -48,8 +49,7 @@ const clearCache = async (url) => {
         return false;
     }
     try {
-        const result = cache.del(url);
-        return result > 0; // Indicate success if at least one key was deleted
+        return cache.del(url) > 0;
     } catch (error) {
         console.error(`Cache clear operation failed for URL: ${url}`, error);
         return false;
