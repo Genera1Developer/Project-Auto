@@ -33,6 +33,7 @@ async function handleRequest(req, res) {
       headers: { ...req.headers },
       timeout: 10000,
       followRedirects: false,
+      agent: false, // Disable connection pooling
     };
 
     // Delete potentially problematic headers
@@ -77,7 +78,11 @@ async function handleRequest(req, res) {
         res.end('Proxy error: ' + err.message);
       } else {
         // Attempt to close the response gracefully
-        res.socket.destroy();
+        try {
+          res.socket.destroy();
+        } catch (e) {
+          console.error("Error destroying socket after proxy error:", e);
+        }
       }
     });
 
@@ -91,7 +96,11 @@ async function handleRequest(req, res) {
         res.end('Request error: ' + err.message);
       } else {
         // Attempt to close the response gracefully
-        res.socket.destroy();
+        try {
+          res.socket.destroy();
+        } catch (e) {
+          console.error("Error destroying socket after request error:", e);
+        }
       }
     });
 
@@ -111,7 +120,11 @@ async function handleRequest(req, res) {
       res.end('Internal server error: ' + error.message);
     } else {
       // Attempt to close the response gracefully
-      res.socket.destroy();
+      try {
+        res.socket.destroy();
+      } catch (e) {
+        console.error("Error destroying socket after unexpected error:", e);
+      }
     }
   }
 }
