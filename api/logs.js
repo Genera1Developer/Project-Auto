@@ -7,11 +7,9 @@ const __dirname = path.dirname(__filename);
 
 const logFilePath = path.join(__dirname, '../logs/proxy.log');
 
-export function log(message) {
-    const timestamp = new Date().toISOString();
-    const logMessage = `[${timestamp}] ${message}\n`;
-
-    fs.appendFile(logFilePath, logMessage, (err) => {
+export function logRequest(req, res, url) {
+    const logMessage = `${new Date().toISOString()} - ${req.method} ${url} - ${res.statusCode}\n`;
+    fs.appendFile(logFilePath, logMessage, err => {
         if (err) {
             console.error('Error writing to log file:', err);
         }
@@ -20,8 +18,8 @@ export function log(message) {
 
 export function getLogs() {
     try {
-        const data = fs.readFileSync(logFilePath, 'utf8');
-        return data.split('\n').filter(line => line.trim() !== '').reverse();
+        const logs = fs.readFileSync(logFilePath, 'utf8');
+        return logs.split('\n').filter(log => log.trim() !== '').reverse();
     } catch (err) {
         console.error('Error reading log file:', err);
         return [];
@@ -29,102 +27,138 @@ export function getLogs() {
 }
 
 export function clearLogs() {
-    fs.writeFile(logFilePath, '', (err) => {
-        if (err) {
-            console.error('Error clearing log file:', err);
-        }
-    });
+  try {
+    fs.writeFileSync(logFilePath, '', 'utf8');
+    console.log('Logs cleared successfully.');
+  } catch (error) {
+    console.error('Error clearing logs:', error);
+  }
 }
 edit filepath: api/proxy.js
-content: import https from 'https';
-import http from 'http';
-import { URL } from 'url';
+content: import { createProxyMiddleware } from 'http-proxy-middleware';
+import { logRequest } from './logs.js';
 import { addSecurityHeaders } from './security.js';
-import { log } from './logs.js';
+import { encode, decode } from '../uv/codec.js';
 
-export async function proxyRequest(req, res) {
-    try {
-        const targetUrl = req.query.url;
+export function createSecureProxy(target, encryptionKey, encryptionSalt) {
+    return createProxyMiddleware({
+        target: target,
+        secure: true,
+        changeOrigin: true,
+        onProxyRes: async (proxyRes, req, res) => {
+            addSecurityHeaders(res);
+            logRequest(req, res, target);
 
-        if (!targetUrl) {
-            res.writeHead(400, { 'Content-Type': 'text/plain' });
-            return res.end('Target URL is missing.');
+            const originalWrite = res.write.bind(res);
+            const chunks = [];
+
+            res.write = (chunk) => {
+                chunks.push(chunk);
+                return true;
+            };
+
+            const originalEnd = res.end.bind(res);
+
+            res.end = async () => {
+                let body = Buffer.concat(chunks).toString('utf8');
+
+                if (encryptionKey && encryptionSalt) {
+                    try {
+                        body = await encode(body, encryptionKey, encryptionSalt);
+                        res.setHeader('Content-Encoding', 'encrypted');
+
+                        const encryptedBuffer = Buffer.from(body, 'utf8');
+                        originalWrite(encryptedBuffer);
+                    } catch (error) {
+                        console.error('Encryption error:', error);
+                        originalWrite(Buffer.from('Encryption failed'));
+                        res.statusCode = 500;
+                    }
+                } else {
+                    originalWrite(body);
+                }
+
+                originalEnd();
+            };
+        },
+        onProxyReq: async (proxyReq, req) => {
+            if (req.body && encryptionKey && encryptionSalt) {
+                let body = JSON.stringify(req.body);
+                try {
+                    body = await encode(body, encryptionKey, encryptionSalt);
+                    proxyReq.setHeader('Content-Encoding', 'encrypted');
+                    proxyReq.setHeader('Content-Length', Buffer.byteLength(body));
+                    proxyReq.write(body);
+                } catch (error) {
+                    console.error('Encryption error:', error);
+                }
+            }
+        },
+        onError: (err, req, res) => {
+            console.error('Proxy error:', err);
+            res.writeHead(500, {
+                'Content-Type': 'text/plain'
+            });
+            res.end('Proxy error occurred.');
         }
-
-        let parsedUrl;
-        try {
-            parsedUrl = new URL(targetUrl);
-        } catch (error) {
-            res.writeHead(400, { 'Content-Type': 'text/plain' });
-            return res.end('Invalid target URL.');
-        }
-
-        const options = {
-            method: req.method,
-            headers: req.headers,
-            rejectUnauthorized: false // For testing purposes only! Remove in production.
-        };
-
-        const proxyReq = (parsedUrl.protocol === 'https:' ? https : http).request(targetUrl, options, (proxyRes) => {
-            addSecurityHeaders(proxyRes);
-            res.writeHead(proxyRes.statusCode, proxyRes.headers);
-            proxyRes.pipe(res, { end: true });
-        });
-
-        proxyReq.on('error', (error) => {
-            log(`Proxy request error: ${error.message}`);
-            res.writeHead(500, { 'Content-Type': 'text/plain' });
-            res.end(`Proxy error: ${error.message}`);
-        });
-
-        req.pipe(proxyReq, { end: true });
-        log(`Proxy request to: ${targetUrl}`);
-
-    } catch (error) {
-        log(`Unexpected error: ${error.message}`);
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end(`Internal server error: ${error.message}`);
-    }
+    });
 }
 edit filepath: public/settings.js
 content: document.addEventListener('DOMContentLoaded', function() {
-    const clearLogsButton = document.getElementById('clearLogs');
-    const logsStatus = document.getElementById('logsStatus');
+    const saveSettingsButton = document.getElementById('saveSettings');
+    const encryptionKeyInput = document.getElementById('encryptionKey');
+    const encryptionSaltInput = document.getElementById('encryptionSalt');
+    const clearLogsButton = document.getElementById('clearLogsButton');
+
+    // Load settings from localStorage
+    encryptionKeyInput.value = localStorage.getItem('encryptionKey') || '';
+    encryptionSaltInput.value = localStorage.getItem('encryptionSalt') || '';
+
+    saveSettingsButton.addEventListener('click', function() {
+        const encryptionKey = encryptionKeyInput.value;
+        const encryptionSalt = encryptionSaltInput.value;
+
+        localStorage.setItem('encryptionKey', encryptionKey);
+        localStorage.setItem('encryptionSalt', encryptionSalt);
+
+        alert('Settings saved!');
+    });
 
     clearLogsButton.addEventListener('click', function() {
-        fetch('/api/logs/clear', {
-            method: 'POST'
-        })
-        .then(response => {
-            if (response.ok) {
-                logsStatus.textContent = 'Logs cleared successfully!';
-                setTimeout(() => {
-                    logsStatus.textContent = '';
-                }, 3000);
-            } else {
-                logsStatus.textContent = 'Failed to clear logs.';
-            }
-        })
-        .catch(error => {
-            console.error('Error clearing logs:', error);
-            logsStatus.textContent = 'Error clearing logs.';
-        });
+        fetch('/api/clearLogs', { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    alert('Logs cleared!');
+                } else {
+                    alert('Failed to clear logs.');
+                }
+            })
+            .catch(error => console.error('Error clearing logs:', error));
     });
 });
+edit filepath: api/config.js
+content: export const config = {
+    port: process.env.PORT || 3000,
+    host: process.env.HOST || 'localhost',
+    encryptionEnabled: process.env.ENCRYPTION_ENABLED === 'true',
+};
 edit filepath: server.js
 content: import express from 'express';
 import cookieParser from 'cookie-parser';
-import { proxyRequest } from './api/proxy.js';
-import { addSecurityHeaders } from './api/security.js';
+import { createSecureProxy } from './api/proxy.js';
 import { attachSession } from './api/session.js';
-import { log, getLogs, clearLogs } from './api/logs.js';
+import { logRequest, getLogs, clearLogs } from './api/logs.js';
+import { addSecurityHeaders } from './api/security.js';
+import { config } from './api/config.js';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = config.port;
+const host = config.host;
 
 app.use(cookieParser());
-app.use(express.static('public'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 app.use((req, res, next) => {
     attachSession(req, res);
@@ -132,200 +166,232 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/', (req, res) => {
-    res.sendFile('public/index.html', { root: '.' });
+app.post('/api/clearLogs', (req, res) => {
+    clearLogs();
+    res.sendStatus(200);
 });
-
-app.get('/proxy', proxyRequest);
 
 app.get('/api/logs', (req, res) => {
     const logs = getLogs();
     res.json(logs);
 });
 
-app.post('/api/logs/clear', (req, res) => {
-    clearLogs();
-    res.status(200).send({ message: 'Logs cleared' });
+app.get('/proxy/*', async (req, res) => {
+    const targetUrl = req.params[0];
+    const encryptionKey = req.session.encryptionKey || req.cookies.encryptionKey || process.env.ENCRYPTION_KEY;
+    const encryptionSalt = req.session.encryptionSalt || req.cookies.encryptionSalt || process.env.ENCRYPTION_SALT;
+
+    if (!targetUrl) {
+        return res.status(400).send('Target URL is required.');
+    }
+
+    const proxy = createSecureProxy(targetUrl, encryptionKey, encryptionSalt);
+    proxy(req, res, (err) => {
+        console.error('Proxy error:', err);
+        res.status(500).send('Proxy error');
+    });
 });
 
-app.get('/settings', (req, res) => {
-    res.sendFile('public/settings.html', {root: '.'});
+app.listen(port, host, () => {
+    console.log(`Server listening on http://${host}:${port}`);
 });
-
-app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
-});
-edit filepath: encryption/key-management.js
-content: import { subtle, getRandomValues } from 'crypto';
-
-async function generateKey() {
-    return await subtle.generateKey(
-        {
-            name: "AES-GCM",
-            length: 256,
-        },
-        true,
-        ["encrypt", "decrypt"]
-    );
-}
-
-async function exportKey(key) {
-    return await subtle.exportKey("jwk", key);
-}
-
-async function importKey(jwk) {
-    return await subtle.importKey(
-        "jwk",
-        jwk,
-        {
-            name: "AES-GCM",
-            length: 256,
-        },
-        true,
-        ["encrypt", "decrypt"]
-    );
-}
-
-let currentKey = null;
-
-async function initializeKey() {
-    // In a real application, this would load the key from secure storage
-    try {
-        const storedKey = localStorage.getItem('encryptionKey');
-        if (storedKey) {
-            currentKey = await importKey(JSON.parse(storedKey));
-        } else {
-            currentKey = await generateKey();
-            const jwk = await exportKey(currentKey);
-            localStorage.setItem('encryptionKey', JSON.stringify(jwk));
-        }
-    } catch (error) {
-        console.error("Key initialization error:", error);
-        currentKey = await generateKey();
-        const jwk = await exportKey(currentKey);
-        localStorage.setItem('encryptionKey', JSON.stringify(jwk));
-    }
-}
-
-async function getKey() {
-    if (!currentKey) {
-        await initializeKey();
-    }
-    return currentKey;
-}
-
-export { getKey, generateKey, exportKey, importKey };
-edit filepath: uv/codec.js
-content: import { subtle, getRandomValues } from 'crypto';
-import { getKey } from '../encryption/key-management.js';
-
-async function deriveKey(password, salt) {
-    const enc = new TextEncoder();
-    const keyMaterial = await subtle.importKey(
-        "raw",
-        enc.encode(password),
-        { name: "PBKDF2" },
-        false,
-        ["deriveKey"]
-    );
-    const key = await subtle.deriveKey(
-        {
-            "name": "PBKDF2",
-            salt: enc.encode(salt),
-            iterations: 10000,
-            hash: "SHA-256"
-        },
-        keyMaterial,
-        { "name": "AES-GCM", "length": 256 },
-        true,
-        ["encrypt", "decrypt"]
-    );
-    return key;
-}
-
-
-export async function encode(str, key = null, salt = null) {
-    try {
-        const utf8Encode = new TextEncoder();
-        const encoded = utf8Encode.encode(str);
-
-        if (key && salt) {
-            const iv = getRandomValues(new Uint8Array(12));
-            //const cryptoKey = await deriveKey(key, salt);
-            const cryptoKey = await getKey();
-            const encrypted = await subtle.encrypt(
-                { name: "AES-GCM", iv: iv },
-                cryptoKey,
-                encoded
-            );
-
-            const combined = new Uint8Array(iv.length + encrypted.byteLength);
-            combined.set(iv, 0);
-            combined.set(new Uint8Array(encrypted), iv.length);
-
-            return btoa(String.fromCharCode(...Array.from(combined)));
-
-        }
-
-
-        return btoa(String.fromCharCode(...Array.from(encoded)));
-    } catch (e) {
-        console.error("Encoding error:", e);
-        return null;
-    }
-}
-
-export async function decode(str, key = null, salt = null) {
-    try {
-        const binaryString = atob(str);
-        let bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-
-        if (key && salt) {
-            const iv = bytes.slice(0, 12);
-            const encrypted = bytes.slice(12);
-
-            //const cryptoKey = await deriveKey(key, salt);
-            const cryptoKey = await getKey();
-
-            const decrypted = await subtle.decrypt(
-                { name: "AES-GCM", iv: iv },
-                cryptoKey,
-                encrypted
-            );
-
-            const utf8Decode = new TextDecoder();
-            return utf8Decode.decode(decrypted);
-        }
-
-
-        const utf8Decode = new TextDecoder();
-        return utf8Decode.decode(bytes);
-
-    } catch (e) {
-        console.error("Decoding error:", e);
-        return null;
-    }
-}
 edit filepath: public/index.html
 content: <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
+    <title>Secure Web Proxy</title>
     <link rel="stylesheet" href="/theme/default.css">
+    <link rel="stylesheet" href="/visuals/animations.css">
+    <link rel="icon" href="/visuals/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <h1>Web Proxy</h1>
-    <form id="urlForm">
-        <label for="url">Enter URL:</label>
-        <input type="text" id="url" name="url" placeholder="https://example.com" required>
-        <button type="submit">Go</button>
-    </form>
-    <a href="/settings">Settings</a>
-    <script src="/script.js"></script>
+    <header>
+        <h1>Secure Web Proxy</h1>
+        <nav>
+            <a href="/">Home</a> |
+            <a href="/settings.html">Settings</a> |
+            <a href="/logs/logs.html">Logs</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="proxyForm">
+            <h2>Enter URL to Access</h2>
+            <form id="urlForm">
+                <input type="url" id="url" placeholder="Enter URL" required>
+                <button type="submit">Go</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Secure Web Proxy</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
+edit filepath: public/settings.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Settings</title>
+    <link rel="stylesheet" href="/theme/settings.css">
+    <link rel="stylesheet" href="/visuals/animations.css">
+    <link rel="icon" href="/visuals/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <h1>Proxy Settings</h1>
+        <nav>
+            <a href="/">Home</a> |
+            <a href="/settings.html">Settings</a> |
+            <a href="/logs/logs.html">Logs</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="settingsForm">
+            <h2>Encryption Settings</h2>
+            <label for="encryptionKey">Encryption Key:</label>
+            <input type="text" id="encryptionKey" placeholder="Enter Encryption Key">
+
+            <label for="encryptionSalt">Encryption Salt:</label>
+            <input type="text" id="encryptionSalt" placeholder="Enter Encryption Salt">
+
+            <button id="saveSettings">Save Settings</button>
+        </section>
+
+        <section id="logManagement">
+            <h2>Log Management</h2>
+            <button id="clearLogsButton">Clear Logs</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Secure Web Proxy</p>
+    </footer>
+    <script src="settings.js"></script>
+</body>
+</html>
+edit filepath: public/theme/settings.css
+content: body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
+    width: 100%;
+}
+
+nav {
+    margin-top: 10px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    background-color: #555;
+}
+
+main {
+    width: 80%;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="url"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #3e8e41;
+}
+
+footer {
+    text-align: center;
+    padding: 1em 0;
+    background-color: #333;
+    color: white;
+    width: 100%;
+    margin-top: 20px;
+}
+edit filepath: uv/uv.config.js
+content: self.__uv$config = {
+    prefix: '/service/',
+    bare: '/uv/bare.js',
+    encodeUrl: Ultraviolet.codec.encode,
+    decodeUrl: Ultraviolet.codec.decode,
+    handler: '/uv/uv.handler.js',
+    bundle: '/uv/uv.bundle.js',
+    config: '/uv/uv.config.js',
+    sw: '/uv/uv.sw.js',
+};
+edit filepath: uv/uv.handler.js
+content: importScripts('./uv.bundle.js');
+importScripts('./uv.config.js');
+
+const uv = new Ultraviolet();
+
+self.addEventListener('fetch', event => {
+  try {
+    event.respondWith(uv.fetch(event));
+  } catch (e) {
+    event.respondWith(new Response(e.stack, { status: 500 }));
+  }
+});
+edit filepath: uv/bare.js
+content: // This is a placeholder for the bare server.
+// In a real deployment, this would be a separate server
+// responsible for handling requests that the service worker cannot.
+edit filepath: api/middleware.js
+content: export function checkEncryptionSettings(req, res, next) {
+    if (process.env.ENCRYPTION_REQUIRED === 'true' && (!req.session.encryptionKey || !req.session.encryptionSalt)) {
+        return res.status(403).send('Encryption key and salt are required.');
+    }
+    next();
+}
