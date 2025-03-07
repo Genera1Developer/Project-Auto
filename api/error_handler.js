@@ -30,6 +30,9 @@ function errorHandler(err, req, res, next) {
   } else if (err.code === 'ENOENT') {
         statusCode = 404;
         message = 'Resource not found';
+  } else if (err.code === 'ECONNREFUSED') {
+        statusCode = 503;
+        message = 'Service Unavailable';
   }
 
   const response = {
