@@ -1,188 +1,209 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
-    <link rel="stylesheet" href="/themes/default.css">
-    <style>
-        #loading { display: none; text-align: center; }
-        #error { color: red; }
-        .response-header { font-weight: bold; margin-top: 10px; }
-        .response-body { margin-top: 5px; }
-        body { font-family: sans-serif; }
-        .container { width: 80%; margin: 0 auto; padding: 20px; }
-        input[type="url"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
-        button:hover { background-color: #3e8e41; }
-        #response-headers pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: monospace;
-        }
-        #response-body pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: monospace;
-        }
-        #response-headers { margin-top: 20px; }
-        #response-body { margin-top: 20px; }
-        #response-headers, #response-body {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border: 1px solid #eee;
-        }
-        #response { display: none; }
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Web Proxy</title>
+     <link rel="stylesheet" href="/themes/default.css">
+     <style>
+         #loading { display: none; text-align: center; }
+         #error { color: red; }
+         .response-header { font-weight: bold; margin-top: 10px; }
+         .response-body { margin-top: 5px; }
+         body { font-family: sans-serif; }
+         .container { width: 80%; margin: 0 auto; padding: 20px; }
+         input[type="url"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; box-sizing: border-box; }
+         button { background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+         button:hover { background-color: #3e8e41; }
+         #response-headers pre {
+             white-space: pre-wrap;
+             word-wrap: break-word;
+             font-family: monospace;
+         }
+         #response-body pre {
+             white-space: pre-wrap;
+             word-wrap: break-word;
+             font-family: monospace;
+         }
+         #response-headers { margin-top: 20px; }
+         #response-body { margin-top: 20px; }
+         #response-headers, #response-body {
+             background-color: #f9f9f9;
+             padding: 10px;
+             border: 1px solid #eee;
+         }
+         #response { display: none; }
+ 
 
-        /* Accessibility improvements */
-        label {
-            display: block; /* Make labels block-level for better spacing */
-            margin-bottom: 5px;
-            font-weight: bold; /* Make label text bold */
-        }
+         /* Accessibility improvements */
+         label {
+             display: block; /* Make labels block-level for better spacing */
+             margin-bottom: 5px;
+             font-weight: bold; /* Make label text bold */
+         }
+ 
 
-        input[type="url"]:focus, button:focus {
-            outline: 2px solid #4CAF50; /* Add focus outline for accessibility */
-        }
+         input[type="url"]:focus, button:focus {
+             outline: 2px solid #4CAF50; /* Add focus outline for accessibility */
+         }
+ 
 
-        /* Improve error message appearance */
-        #error {
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px solid red;
-            background-color: #ffe6e6;
-        }
+         /* Improve error message appearance */
+         #error {
+             margin-top: 10px;
+             padding: 10px;
+             border: 1px solid red;
+             background-color: #ffe6e6;
+         }
+ 
 
-        /* Add a subtle background color to the body for better readability */
-        body {
-            background-color: #f4f4f4;
-        }
+         /* Add a subtle background color to the body for better readability */
+         body {
+             background-color: #f4f4f4;
+         }
+ 
 
-        /* Improve the container's appearance */
-        .container {
-            background-color: #fff;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+         /* Improve the container's appearance */
+         .container {
+             background-color: #fff;
+             border-radius: 5px;
+             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+         }
+ 
 
-        /* Style the loading indicator */
-        #loading {
-            text-align: center;
-            margin-top: 20px;
-        }
+         /* Style the loading indicator */
+         #loading {
+             text-align: center;
+             margin-top: 20px;
+         }
+ 
 
-        #loading img {
-            width: 50px; /* Adjust the size as needed */
-        }
+         #loading img {
+             width: 50px; /* Adjust the size as needed */
+         }
+ 
 
-        /* Improve button appearance */
-        button {
-            background-color: #007bff; /* A more modern blue */
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px; /* Slightly larger font size */
-            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-        }
+         /* Improve button appearance */
+         button {
+             background-color: #007bff; /* A more modern blue */
+             color: white;
+             padding: 12px 24px;
+             border: none;
+             border-radius: 5px;
+             cursor: pointer;
+             font-size: 16px; /* Slightly larger font size */
+             transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+         }
+ 
 
-        button:hover {
-            background-color: #0056b3; /* Darker shade of blue on hover */
-        }
+         button:hover {
+             background-color: #0056b3; /* Darker shade of blue on hover */
+         }
+ 
 
-        /* Add some spacing between elements */
-        label {
-            margin-top: 15px;
-        }
+         /* Add some spacing between elements */
+         label {
+             margin-top: 15px;
+         }
+ 
 
-        /* Improve the appearance of the response sections */
-        #response-headers, #response-body {
-            background-color: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            margin-top: 20px;
-        }
+         /* Improve the appearance of the response sections */
+         #response-headers, #response-body {
+             background-color: #f5f5f5;
+             border: 1px solid #ddd;
+             border-radius: 5px;
+             padding: 15px;
+             margin-top: 20px;
+         }
+ 
 
-        /* visually distinguish headers from body */
-        .response-header {
-            background-color: #e9ecef;
-            padding: 8px;
-            border-radius: 5px;
-            margin-bottom: 5px;
-        }
+         /* visually distinguish headers from body */
+         .response-header {
+             background-color: #e9ecef;
+             padding: 8px;
+             border-radius: 5px;
+             margin-bottom: 5px;
+         }
+ 
 
-        /* Add a subtle animation to the loading indicator */
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+         /* Add a subtle animation to the loading indicator */
+         @keyframes spin {
+             0% { transform: rotate(0deg); }
+             100% { transform: rotate(360deg); }
+         }
+ 
 
-        #loading img {
-            animation: spin 2s linear infinite;
-        }
+         #loading img {
+             animation: spin 2s linear infinite;
+         }
+ 
 
-        /* Add a more modern look to the form input */
-        input[type="url"] {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            color: #333;
-            transition: border-color 0.3s ease;
-        }
+         /* Add a more modern look to the form input */
+         input[type="url"] {
+             padding: 12px;
+             border: 1px solid #ddd;
+             border-radius: 5px;
+             font-size: 16px;
+             color: #333;
+             transition: border-color 0.3s ease;
+         }
+ 
 
-        input[type="url"]:focus {
-            border-color: #007bff;
-            outline: none; /* Remove the default focus outline */
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional: Add a subtle box-shadow */
-        }
+         input[type="url"]:focus {
+             border-color: #007bff;
+             outline: none; /* Remove the default focus outline */
+             box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional: Add a subtle box-shadow */
+         }
+ 
 
-        /* Add responsive design for smaller screens */
-        @media (max-width: 768px) {
-            .container {
-                width: 95%; /* Make the container take up more width */
-                padding: 10px; /* Reduce padding */
-            }
+         /* Add responsive design for smaller screens */
+         @media (max-width: 768px) {
+             .container {
+                 width: 95%; /* Make the container take up more width */
+                 padding: 10px; /* Reduce padding */
+             }
+ 
 
-            input[type="url"] {
-                padding: 8px; /* Reduce input padding */
-                font-size: 14px; /* Reduce font size */
-            }
+             input[type="url"] {
+                 padding: 8px; /* Reduce input padding */
+                 font-size: 14px; /* Reduce font size */
+             }
+ 
 
-            button {
-                padding: 8px 16px; /* Reduce button padding */
-                font-size: 14px; /* Reduce font size */
-            }
+             button {
+                 padding: 8px 16px; /* Reduce button padding */
+                 font-size: 14px; /* Reduce font size */
+             }
+ 
 
-            #response-headers, #response-body {
-                padding: 10px; /* Reduce response section padding */
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Web Proxy</h1>
-        <form id="proxyForm">
-            <label for="url">Enter URL:</label>
-            <input type="url" id="url" name="url" placeholder="https://example.com" required>
-            <button type="submit">Fetch Content</button>
-        </form>
-        <div id="loading">
-            <img src="/loading.gif" alt="Loading...">
-            <p>Loading...</p>
-        </div>
-        <div id="error"></div>
-        <div id="response">
-            <div class="response-header">Response Headers:</div>
-            <div id="response-headers"><pre></pre></div>
-            <div class="response-header">Response Body:</div>
-            <div id="response-body"><pre></pre></div>
-        </div>
-    </div>
+             #response-headers, #response-body {
+                 padding: 10px; /* Reduce response section padding */
+             }
+         }
+     </style>
+ </head>
+ <body>
+     <div class="container">
+         <h1>Web Proxy</h1>
+         <form id="proxyForm">
+             <label for="url">Enter URL:</label>
+             <input type="url" id="url" name="url" placeholder="https://example.com" required>
+             <button type="submit">Fetch Content</button>
+         </form>
+         <div id="loading">
+             <img src="/loading.gif" alt="Loading...">
+             <p>Loading...</p>
+         </div>
+         <div id="error"></div>
+         <div id="response">
+             <div class="response-header">Response Headers:</div>
+             <div id="response-headers"><pre></pre></div>
+             <div class="response-header">Response Body:</div>
+             <div id="response-body"><pre></pre></div>
+         </div>
+     </div>
+ 
 
-    <script src="script.js"></script> <!-- NOTE FOR AI: Why is everything in /components not utiliezed here?  If it is utilized in script.js then ignore and delete this note -->
-</body>
-</html>
+     <script src="script.js"></script> <!-- NOTE FOR AI: Why is everything in /components not utiliezed here?  If it is utilized in script.js then ignore and delete this note -->
+ </body>
+ </html>
