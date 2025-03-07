@@ -1,1 +1,20 @@
+import logging
+import datetime
 
+def log_request(method, url, status_code, response_time, client_ip):
+    """Logs proxy requests with detailed information."""
+    timestamp = datetime.datetime.now().isoformat()
+    log_message = f"{timestamp} - {client_ip} - {method} {url} - Status: {status_code} - Time: {response_time:.2f}s"
+    logging.info(log_message)
+
+def setup_logging(log_file="proxy.log", level=logging.INFO):
+    """Sets up basic logging configuration."""
+    logging.basicConfig(filename=log_file, level=level, 
+                        format='%(asctime)s - %(levelname)s - %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
+if __name__ == '__main__':
+    # Example usage (for testing purposes)
+    setup_logging()
+    log_request("GET", "https://www.example.com", 200, 0.15, "192.168.1.1")
+    log_request("POST", "https://api.example.com/data", 500, 1.23, "10.0.0.5")
