@@ -277,6 +277,33 @@
      */
     generateSalt: (length = 16) => {
       return crypto.getRandomValues(new Uint8Array(length));
+    },
+    /**
+     * Encodes a string to Base64.
+     * @param {string} str The string to encode.
+     * @returns {string} The Base64 encoded string.
+     */
+    encodeBase64: (str) => {
+      try {
+        return btoa(unescape(encodeURIComponent(str)));
+      } catch (error) {
+        console.error("Base64 encode error:", error);
+        throw new Error(`Base64 encode failed: ${error.message}`);
+      }
+    },
+
+    /**
+     * Decodes a Base64 string.
+     * @param {string} str The Base64 string to decode.
+     * @returns {string} The decoded string.
+     */
+    decodeBase64: (str) => {
+      try {
+        return decodeURIComponent(escape(atob(str)));
+      } catch (error) {
+        console.error("Base64 decode error:", error);
+        throw new Error(`Base64 decode failed: ${error.message}`);
+      }
     }
   };
   class i extends EventTarget {
