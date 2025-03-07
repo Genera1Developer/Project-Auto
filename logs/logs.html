@@ -103,6 +103,12 @@
             cursor: pointer;
         }
 
+        /* Style for masking */
+        .masked {
+            -webkit-text-security: disc;
+            text-security: disc;
+        }
+
     </style>
 </head>
 <body>
@@ -155,6 +161,7 @@
             const sensitiveDataElements = document.querySelectorAll('.sensitive-data');
             sensitiveDataElements.forEach(element => {
                 element.style.display = sensitiveDataVisible ? 'inline' : 'none';
+                element.classList.toggle('masked', !sensitiveDataVisible);
             });
         }
 
@@ -244,7 +251,13 @@
 
                 const details = document.createElement('div');
                 details.classList.add('log-details');
-                let sensitiveInfo = `Encryption status: <span class="sensitive-data">${log.encryptionStatus || 'N/A'}</span>, User: <span class="sensitive-data">${log.user || 'N/A'}</span>, IP Address: <span class="sensitive-data">${log.ipAddress || 'N/A'}</span>`;
+                let encryptionStatus = log.encryptionStatus || 'N/A';
+                let user = log.user || 'N/A';
+                let ipAddress = log.ipAddress || 'N/A';
+
+                // Conditionally mask sensitive data if not visible
+                let sensitiveInfo = `Encryption status: <span class="sensitive-data masked">${encryptionStatus}</span>, User: <span class="sensitive-data masked">${user}</span>, IP Address: <span class="sensitive-data masked">${ipAddress}</span>`;
+
                 details.innerHTML = `Details: ${sensitiveInfo}`;
 
                 // Security issue detection
