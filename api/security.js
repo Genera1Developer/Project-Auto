@@ -5,15 +5,13 @@ async function generateRandomToken(length = 32) {
     throw new TypeError('Length must be a positive integer.');
   }
 
-  return new Promise((resolve, reject) => {
-    crypto.randomBytes(length, (err, buffer) => {
-      if (err) {
-        console.error('Error generating random token:', err);
-        return reject(new Error('Failed to generate random token.'));
-      }
-      resolve(buffer.toString('hex'));
-    });
-  });
+  try {
+    const buffer = crypto.randomBytes(length);
+    return buffer.toString('hex');
+  } catch (err) {
+    console.error('Error generating random token:', err);
+    throw new Error('Failed to generate random token.');
+  }
 }
 
 async function hashString(string, salt) {
@@ -24,15 +22,13 @@ async function hashString(string, salt) {
     throw new TypeError('Salt must be a non-empty string.');
   }
 
-  return new Promise((resolve, reject) => {
-    crypto.pbkdf2(string, salt, 100000, 64, 'sha512', (err, derivedKey) => {
-      if (err) {
-        console.error('Error during hashing:', err);
-        return reject(new Error('Hashing failed.'));
-      }
-      resolve(derivedKey.toString('hex'));
-    });
-  });
+  try {
+    const derivedKey = crypto.pbkdf2Sync(string, salt, 100000, 64, 'sha512');
+    return derivedKey.toString('hex');
+  } catch (err) {
+    console.error('Error during hashing:', err);
+    throw new Error('Hashing failed.');
+  }
 }
 
 async function verifyHash(string, hash, salt) {
@@ -49,7 +45,7 @@ async function verifyHash(string, hash, salt) {
   try {
     const computedHash = await hashString(string, salt);
     if (typeof computedHash !== 'string') {
-        return false;
+      return false;
     }
     return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(computedHash, 'hex'));
 
