@@ -33,13 +33,13 @@ function hashString(string, salt) {
 
 function verifyHash(string, hash, salt) {
   if (typeof string !== 'string' || string.length === 0) {
-    throw new TypeError('String must be a non-empty string.');
+    return false;
   }
   if (typeof hash !== 'string' || hash.length === 0) {
-    throw new TypeError('Hash must be a non-empty string.');
+    return false;
   }
   if (typeof salt !== 'string' || salt.length === 0) {
-    throw new TypeError('Salt must be a non-empty string.');
+    return false;
   }
 
   try {
