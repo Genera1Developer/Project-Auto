@@ -26,7 +26,7 @@ function encrypt(text) {
     }
     const iv = crypto.randomBytes(IV_LENGTH); // Generate initialization vector
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
-    let encrypted = cipher.update(text);
+    let encrypted = cipher.update(text, 'utf8'); // Explicitly specify UTF-8 encoding
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     const authTag = cipher.getAuthTag();
     const ciphertext = iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
@@ -64,9 +64,9 @@ function decrypt(text) {
         return null;
     }
 
-    const decipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
+    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
     decipher.setAuthTag(authTag);
-    let decrypted = decipher.update(encryptedText);
+    let decrypted = decipher.update(encryptedText, 'hex'); // Explicitly specify 'hex' encoding for input
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString('utf8');
   } catch (error) {
