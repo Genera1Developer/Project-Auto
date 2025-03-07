@@ -47,7 +47,7 @@ async function handleRequest(req, res) {
       'if-modified-since',
       'pragma',
       'cache-control',
-      'transfer-encoding' // Important to remove for proper handling
+      'transfer-encoding'
     ];
 
     hopByHopHeaders.forEach(header => delete options.headers[header]);
@@ -63,7 +63,7 @@ async function handleRequest(req, res) {
       delete resHeaders['content-encoding'];
 
       res.writeHead(proxyRes.statusCode, resHeaders);
-      proxyRes.pipe(res, { end: true });
+      proxyRes.pipe(res);
     });
 
     proxyReq.setTimeout(options.timeout, () => {
@@ -76,13 +76,11 @@ async function handleRequest(req, res) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
       } else {
-        if (res.socket) {
-          res.socket.destroy();
-        }
+        res.destroy();
       }
     });
 
-    req.pipe(proxyReq, { end: true });
+    req.pipe(proxyReq);
 
     req.on('error', (err) => {
       console.error('Request pipe error:', err);
@@ -91,9 +89,7 @@ async function handleRequest(req, res) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error: ' + err.message);
       } else {
-        if (res.socket) {
-          res.socket.destroy();
-        }
+        res.destroy();
       }
     });
 
@@ -112,9 +108,7 @@ async function handleRequest(req, res) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
     } else {
-      if (res.socket) {
-        res.socket.destroy();
-      }
+      res.destroy();
     }
   }
 }
