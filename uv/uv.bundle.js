@@ -123,16 +123,10 @@
           name: "AES-GCM",
           iv
         };
-
         if (additionalData) {
           cipherOptions.additionalData = encoder.encode(JSON.stringify(additionalData));
         }
-
-        const cipher = await crypto.subtle.encrypt(
-          cipherOptions,
-          key,
-          encodedData
-        );
+        const cipher = await crypto.subtle.encrypt(cipherOptions, key, encodedData);
         return cipher;
       } catch (error) {
         console.error("Encryption error:", error);
@@ -156,16 +150,10 @@
           name: "AES-GCM",
           iv
         };
-
         if (additionalData) {
           decipherOptions.additionalData = new TextEncoder().encode(JSON.stringify(additionalData));
         }
-
-        const decipher = await crypto.subtle.decrypt(
-          decipherOptions,
-          key,
-          data
-        );
+        const decipher = await crypto.subtle.decrypt(decipherOptions, key, data);
         const decoder = new TextDecoder();
         return decoder.decode(decipher);
       } catch (error) {
@@ -173,7 +161,6 @@
         throw new Error(`Decryption failed: ${error.message}`);
       }
     },
-
     /**
      * Generates a new AES-GCM key.
      * @param {boolean} extractable Whether the key is extractable. Defaults to false.
@@ -182,20 +169,15 @@
      */
     generateKey: async (extractable = false, keyUsages = ["encrypt", "decrypt"]) => {
       try {
-        return await crypto.subtle.generateKey(
-          {
-            name: "AES-GCM",
-            length: 256
-          },
-          extractable,
-          keyUsages
-        );
+        return await crypto.subtle.generateKey({
+          name: "AES-GCM",
+          length: 256
+        }, extractable, keyUsages);
       } catch (error) {
         console.error("Key generation error:", error);
         throw new Error(`Key generation failed: ${error.message}`);
       }
     },
-
     /**
      * Exports a CryptoKey to a JSON Web Key (JWK) format.
      * @param {CryptoKey} key The key to export.
@@ -209,7 +191,6 @@
         throw new Error(`Key export failed: ${error.message}`);
       }
     },
-
     /**
      * Imports a JSON Web Key (JWK) to a CryptoKey.
      * @param {JsonWebKey} jwk The key to import in JWK format.
@@ -221,21 +202,14 @@
         throw new Error("Missing JWK for key import.");
       }
       try {
-        return await crypto.subtle.importKey(
-          "jwk",
-          jwk,
-          {
-            name: "AES-GCM"
-          },
-          false,
-          keyUsages
-        );
+        return await crypto.subtle.importKey("jwk", jwk, {
+          name: "AES-GCM"
+        }, false, keyUsages);
       } catch (error) {
         console.error("Key import error:", error);
         throw new Error(`Key import failed: ${error.message}`);
       }
     },
-
     /**
      * Generates a new initialization vector (IV).
      * @param {number} length The length of the IV. Defaults to 12.
@@ -244,7 +218,6 @@
     generateIV: (length = 12) => {
       return crypto.getRandomValues(new Uint8Array(length));
     },
-
     /**
      * Derives a key from a password using PBKDF2.
      * @param {string} password The password to derive the key from.
@@ -256,32 +229,18 @@
       if (!password || !salt) {
         throw new Error("Missing password or salt for key derivation.");
       }
-
       try {
         const encoder = new TextEncoder();
-        const keyMaterial = await crypto.subtle.importKey(
-          "raw",
-          encoder.encode(password),
-          "PBKDF2",
-          false,
-          ["deriveKey"]
-        );
-
-        return await crypto.subtle.deriveKey(
-          {
-            name: "PBKDF2",
-            salt: salt,
-            iterations: iterations,
-            hash: "SHA-256"
-          },
-          keyMaterial,
-          {
-            name: "AES-GCM",
-            length: 256
-          },
-          false,
-          ["encrypt", "decrypt"]
-        );
+        const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveKey"]);
+        return await crypto.subtle.deriveKey({
+          name: "PBKDF2",
+          salt,
+          iterations,
+          hash: "SHA-256"
+        }, keyMaterial, {
+          name: "AES-GCM",
+          length: 256
+        }, false, ["encrypt", "decrypt"]);
       } catch (error) {
         console.error("Key derivation error:", error);
         throw new Error(`Key derivation failed: ${error.message}`);
@@ -308,7 +267,6 @@
         throw new Error(`Base64 encode failed: ${error.message}`);
       }
     },
-
     /**
      * Decodes a Base64 string.
      * @param {string} str The Base64 string to decode.
@@ -322,7 +280,6 @@
         throw new Error(`Base64 decode failed: ${error.message}`);
       }
     },
-
     /**
      * Securely compares two strings to prevent timing attacks.
      * @param {string} a The first string.
@@ -330,22 +287,18 @@
      * @returns {boolean} True if the strings are equal, false otherwise.
      */
     secureCompare: (a, b) => {
-      if (typeof a !== 'string' || typeof b !== 'string') {
+      if (typeof a !== "string" || typeof b !== "string") {
         return false;
       }
-
       if (a.length !== b.length) {
         return false;
       }
-
       let result = 0;
       for (let i = 0; i < a.length; i++) {
         result |= a.charCodeAt(i) ^ b.charCodeAt(i);
       }
-
       return result === 0;
     },
-
     /**
      * Hashes data using SHA-256.
      * @param {string} data The data to hash.
@@ -355,14 +308,13 @@
       try {
         const encoder = new TextEncoder();
         const encodedData = encoder.encode(data);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', encodedData);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", encodedData);
         return hashBuffer;
       } catch (error) {
         console.error("SHA-256 hash error:", error);
         throw new Error(`SHA-256 hash failed: ${error.message}`);
       }
     },
-
     /**
      * Generates a HMAC key.
      * @param {boolean} extractable Whether the key is extractable. Defaults to false.
@@ -371,21 +323,16 @@
      */
     generateHMACKey: async (extractable = false, keyUsages = ["sign", "verify"]) => {
       try {
-        return await crypto.subtle.generateKey(
-          {
-            name: "HMAC",
-            hash: "SHA-256",
-            length: 256,
-          },
-          extractable,
-          keyUsages
-        );
+        return await crypto.subtle.generateKey({
+          name: "HMAC",
+          hash: "SHA-256",
+          length: 256
+        }, extractable, keyUsages);
       } catch (error) {
         console.error("HMAC key generation error:", error);
         throw new Error(`HMAC key generation failed: ${error.message}`);
       }
     },
-
     /**
      * Signs data using HMAC-SHA256.
      * @param {CryptoKey} key The HMAC key.
@@ -396,18 +343,13 @@
       try {
         const encoder = new TextEncoder();
         const encodedData = encoder.encode(data);
-        const signature = await crypto.subtle.sign(
-          "HMAC",
-          key,
-          encodedData
-        );
+        const signature = await crypto.subtle.sign("HMAC", key, encodedData);
         return signature;
       } catch (error) {
         console.error("HMAC sign error:", error);
         throw new Error(`HMAC sign failed: ${error.message}`);
       }
     },
-
     /**
      * Verifies data using HMAC-SHA256.
      * @param {CryptoKey} key The HMAC key.
@@ -419,19 +361,13 @@
       try {
         const encoder = new TextEncoder();
         const encodedData = encoder.encode(data);
-        const isValid = await crypto.subtle.verify(
-          "HMAC",
-          key,
-          signature,
-          encodedData
-        );
+        const isValid = await crypto.subtle.verify("HMAC", key, signature, encodedData);
         return isValid;
       } catch (error) {
         console.error("HMAC verify error:", error);
         throw new Error(`HMAC verify failed: ${error.message}`);
       }
     },
-
     /**
      * Generates a secure token.
      * @param {number} length The length of the token. Defaults to 32.
@@ -439,15 +375,62 @@
      */
     generateToken: (length = 32) => {
       const randomBytes = crypto.getRandomValues(new Uint8Array(length));
-      return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
+      return Array.from(randomBytes, (byte) => byte.toString(16).padStart(2, "0")).join("");
     },
-
     /**
      * Generates a secure and unique session ID.
      * @returns {string} The generated session ID.
      */
     generateSessionId: () => {
       return n.generateRandomId(32);
+    },
+    /**
+     * Performs authenticated encryption using AES-GCM with a shared secret.
+     *
+     * @param {string} data The data to encrypt.
+     * @param {string} sharedSecret The shared secret key.
+     * @param {object} additionalData Optional additional authenticated data.
+     * @returns {Promise<string>} The encrypted and authenticated data as a Base64 string.
+     */
+    authenticatedEncrypt: async (data, sharedSecret, additionalData) => {
+      try {
+        const salt = n.generateSalt();
+        const iv = n.generateIV();
+        const key = await n.deriveKey(sharedSecret, salt);
+        const cipher = await n.encrypt(data, key, iv, additionalData);
+        const saltB64 = n.encodeBase64(String.fromCharCode(...salt));
+        const ivB64 = n.encodeBase64(String.fromCharCode(...iv));
+        const cipherArray = new Uint8Array(cipher);
+        const cipherB64 = n.encodeBase64(String.fromCharCode(...Array.from(cipherArray)));
+        return `${saltB64}.${ivB64}.${cipherB64}`;
+      } catch (error) {
+        console.error("Authenticated encryption error:", error);
+        throw new Error(`Authenticated encryption failed: ${error.message}`);
+      }
+    },
+    /**
+     * Performs authenticated decryption using AES-GCM with a shared secret.
+     *
+     * @param {string} encryptedData The encrypted and authenticated data as a Base64 string.
+     * @param {string} sharedSecret The shared secret key.
+     * @param {object} additionalData Optional additional authenticated data.
+     * @returns {Promise<string>} The decrypted data.
+     */
+    authenticatedDecrypt: async (encryptedData, sharedSecret, additionalData) => {
+      try {
+        const [saltB64, ivB64, cipherB64] = encryptedData.split(".");
+        if (!saltB64 || !ivB64 || !cipherB64) {
+          throw new Error("Invalid encrypted data format.");
+        }
+        const salt = new Uint8Array(n.decodeBase64(saltB64).split("").map((char) => char.charCodeAt(0)));
+        const iv = new Uint8Array(n.decodeBase64(ivB64).split("").map((char) => char.charCodeAt(0)));
+        const cipher = new Uint8Array(n.decodeBase64(cipherB64).split("").map((char) => char.charCodeAt(0))).buffer;
+        const key = await n.deriveKey(sharedSecret, salt);
+        return await n.decrypt(cipher, key, iv, additionalData);
+      } catch (error) {
+        console.error("Authenticated decryption error:", error);
+        throw new Error(`Authenticated decryption failed: ${error.message}`);
+      }
     }
   };
   class i extends EventTarget {
