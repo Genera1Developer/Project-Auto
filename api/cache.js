@@ -49,7 +49,8 @@ const clearCache = async (url) => {
         return false;
     }
     try {
-        return cache.del(url) > 0;
+        const deleted = cache.del(url);
+        return deleted > 0;
     } catch (error) {
         console.error(`Cache clear operation failed for URL: ${url}`, error);
         return false;
@@ -85,10 +86,10 @@ const getCacheKeys = async () => {
 };
 
 module.exports = {
-    get: getCache,
-    set: setCache,
-    clear: clearCache,
-    flush: flushCache,
-    stats: getCacheStats,
-    keys: getCacheKeys
+    getCache,
+    setCache,
+    clearCache,
+    flushCache,
+    getCacheStats,
+    getCacheKeys
 };
