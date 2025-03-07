@@ -145,7 +145,13 @@ async function handleRequest(event) {
     headers.set('X-Content-Type-Options', 'nosniff');
     headers.set('Referrer-Policy', 'no-referrer');
     headers.set('Feature-Policy', "microphone 'none'; camera 'none'; geolocation 'none'");
-    headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;");
+    
+    let csp = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content;";
+    if (urlObj.protocol === 'https:') {
+        csp += " require-trusted-types-for 'script'; trusted-types default;";
+    }
+    headers.set('Content-Security-Policy', csp);
+
     headers.set('Strict-Transport-Security', `max-age=${HSTS_MAX_AGE}; includeSubDomains; preload`);
     headers.set('Cache-Control', 'no-store, must-revalidate');
     headers.set('Pragma', 'no-cache');
