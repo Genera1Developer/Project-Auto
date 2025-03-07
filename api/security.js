@@ -1,26 +1,23 @@
 const crypto = require('crypto');
 
 const algorithm = 'aes-256-cbc';
-const key = crypto.randomBytes(32); // Generate a secure key
-const iv = crypto.randomBytes(16); // Generate a secure Initialization Vector
+const key = crypto.randomBytes(32); // Generate a 256-bit key
+const iv = crypto.randomBytes(16); // Generate a 16-byte IV
 
 function encrypt(text) {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-function decrypt(text, ivHex) {
-    let iv = Buffer.from(ivHex, 'hex');
-    let encryptedText = Buffer.from(text, 'hex');
-    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+function decrypt(text) {
+    let iv = Buffer.from(text.iv, 'hex');
+    let encryptedText = Buffer.from(text.encryptedData, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
 }
 
-module.exports = {
-    encrypt,
-    decrypt
-};
+module.exports = { encrypt, decrypt };
