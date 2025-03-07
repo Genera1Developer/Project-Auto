@@ -25,7 +25,6 @@ async function ensureLogDirectoryExists() {
             }
         } else {
             console.error('Failed to access log directory:', err);
-            process.exit(1);
         }
     }
 }
@@ -60,7 +59,6 @@ async function initializeLogging() {
         console.log('Logging initialized');
     } catch (error) {
         console.error('Failed to initialize logging:', error);
-        process.exit(1);
     }
 }
 
@@ -69,7 +67,6 @@ async function initializeLogging() {
         await initializeLogging();
     } catch (error) {
         console.error('Failed to initialize logging during startup:', error);
-        process.exit(1);
     }
 })();
 
@@ -90,15 +87,18 @@ process.on('unhandledRejection', async (reason, promise) => {
         await log(`Unhandled Rejection: ${reason}`);
     } catch (fileErr) {
         console.error('Failed to write unhandled rejection to log file:', fileErr);
-    } finally {
-        process.exit(1);
     }
 });
 
 const shutdownHandler = async (signal) => {
     console.log(`Received ${signal}.  Closing log stream and exiting.`);
-    await log(`Process terminated with signal ${signal}`);
-    process.exit(1);
+    try {
+        await log(`Process terminated with signal ${signal}`);
+    } catch (err) {
+        console.error('Failed to log shutdown signal:', err);
+    } finally {
+        process.exit(0);
+    }
 };
 
 process.on('SIGINT', shutdownHandler);
