@@ -4,45 +4,40 @@ import { encrypt, decrypt } from '../encryption/key_management.js';
 const SESSION_COOKIE_NAME = 'proxy_session';
 const sessionStore = {};
 
+function createSession(res) {
+    const sessionId = uuidv4();
+    sessionStore[sessionId] = {};
+    res.cookie(SESSION_COOKIE_NAME, encrypt(sessionId), {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Strict'
+    });
+    return sessionId;
+}
+
 export function attachSession(req, res, next) {
     let sessionId = req.cookies[SESSION_COOKIE_NAME];
 
     if (!sessionId) {
-        sessionId = uuidv4();
-        res.cookie(SESSION_COOKIE_NAME, sessionId, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'Strict'
-        });
-        sessionStore[sessionId] = {};
+        sessionId = createSession(res);
     } else {
         try {
             sessionId = decrypt(sessionId);
+            if (!sessionStore[sessionId]) {
+                sessionId = createSession(res);
+            }
         } catch (error) {
             console.error('Error decrypting session ID:', error);
-            sessionId = uuidv4();
+            sessionId = createSession(res);
             res.clearCookie(SESSION_COOKIE_NAME);
-            res.cookie(SESSION_COOKIE_NAME, sessionId, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'Strict'
-            });
-            sessionStore[sessionId] = {};
         }
     }
 
     req.session = sessionStore[sessionId];
-    res.on('finish', () => {
-        try {
-            const encryptedSessionId = encrypt(sessionId);
-            res.cookie(SESSION_COOKIE_NAME, encryptedSessionId, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'Strict'
-            });
 
-        } catch (error) {
-            console.error('Error encrypting session ID:', error);
-        }
+    res.on('finish', () => {
+        // Session ID should already be encrypted and set, avoid re-setting on every request
     });
+
+    next();
 }
