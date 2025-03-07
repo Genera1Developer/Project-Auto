@@ -343,7 +343,7 @@ const handler = {
 
     // Disable navigator properties that can be fingerprinted easily
     if (window.navigator) {
-        const blockedNavigatorProperties = ['webdriver', 'plugins', 'mimeTypes', 'languages'];
+        const blockedNavigatorProperties = ['webdriver', 'plugins', 'mimeTypes', 'languages', 'userAgent', 'platform', 'appVersion', 'appName', 'productSub', 'vendor', 'vendorSub'];
         blockedNavigatorProperties.forEach(property => {
             if (property in window.navigator) {
                 Object.defineProperty(window.navigator, property, {
@@ -391,6 +391,21 @@ const handler = {
                 return undefined; // Block the logging
             }
         });
+    });
+
+     // Block access to Date constructor for timestamp manipulation
+     window.Date = new Proxy(window.Date, {
+        construct: function(target, argArray) {
+            console.warn('Date constructor blocked');
+            return undefined;
+        },
+        get: function(target, prop) {
+            if (prop === 'now') {
+                console.warn('Date.now blocked');
+                return undefined;
+            }
+            return target[prop];
+        }
     });
 
 })();
