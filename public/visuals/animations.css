@@ -95,3 +95,26 @@
     50% { background-color: transparent; }
     100% { background-color: rgba(255, 0, 0, 0.3); }
 }
+
+.certificate-warning {
+  animation: certificateWarning 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes certificateWarning {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 255, 0, 0.5); /* Yellow glow */
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(255, 255, 0, 0.8); /* Brighter Yellow glow */
+  }
+}
+
+.data-leak-alert {
+    animation: dataLeakAlert 1s steps(5, start) infinite;
+    color: black;
+}
+
+@keyframes dataLeakAlert {
+    0% { background-color: rgba(255, 0, 0, 0.7); }
+    100% { background-color: transparent; }
+}
