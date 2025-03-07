@@ -7,6 +7,7 @@ class Bare {
         this.encryptionKey = opts.encryptionKey || null;
         this.integrityEnabled = opts.integrityEnabled || false;
         this.integrityType = opts.integrityType || 'SHA-256';
+        this.integrityHeaderName = opts.integrityHeaderName || 'X-Content-Integrity';
     }
 
     async fetch(url, options = {}) {
@@ -30,7 +31,7 @@ class Bare {
             }
 
             if (this.integrityEnabled) {
-                const expectedIntegrity = response.headers.get('X-Content-Integrity');
+                const expectedIntegrity = response.headers.get(this.integrityHeaderName);
                 if (expectedIntegrity) {
                     const text = await response.clone().text();
                     const integrity = await this.calculateIntegrity(text, this.integrityType);
@@ -40,6 +41,8 @@ class Bare {
                         throw new Error("Bare fetch error: Content integrity check failed.");
                     }
                     return response;
+                } else {
+                    console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
                 }
             }
 
@@ -69,7 +72,7 @@ class Bare {
             }
 
             if (this.integrityEnabled) {
-                const expectedIntegrity = response.headers.get('X-Content-Integrity');
+                const expectedIntegrity = response.headers.get(this.integrityHeaderName);
                 if (expectedIntegrity) {
                     const text = await response.clone().text();
                     const integrity = await this.calculateIntegrity(text, this.integrityType);
@@ -79,6 +82,8 @@ class Bare {
                         throw new Error("Bare route error: Content integrity check failed.");
                     }
                     return response;
+                } else {
+                    console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
                 }
             }
             return response;
@@ -107,7 +112,7 @@ class Bare {
             }
 
             if (this.integrityEnabled) {
-                const expectedIntegrity = response.headers.get('X-Content-Integrity');
+                const expectedIntegrity = response.headers.get(this.integrityHeaderName);
                 if (expectedIntegrity) {
                     const text = await response.clone().text();
                     const integrity = await this.calculateIntegrity(text, this.integrityType);
@@ -116,6 +121,8 @@ class Bare {
                         console.error("Bare request error: Content integrity check failed.");
                         throw new Error("Bare request error: Content integrity check failed.");
                     }
+                } else {
+                    console.warn(`Integrity check enabled but ${this.integrityHeaderName} header not found.`);
                 }
             }
             return await response.json();
@@ -164,11 +171,11 @@ class Bare {
             return plainText;
         }
 
-        const encoder = new TextEncoder();
-        const data = encoder.encode(plainText);
-        const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Recommended IV length for AES-GCM
-
         try {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(plainText);
+            const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Recommended IV length for AES-GCM
+
             const importedKey = await window.crypto.subtle.importKey(
                 "raw",
                 encoder.encode(key),
@@ -193,7 +200,7 @@ class Bare {
 
         } catch (error) {
             console.error("Encryption error:", error);
-            throw error;
+            throw new Error("Encryption Failed");
         }
     }
 
@@ -207,15 +214,14 @@ class Bare {
              console.warn("Decryption key is not provided. Decryption will not be enabled.");
             return cipherText;
         }
-
-        const decoder = new TextDecoder();
-        const decodedData = atob(cipherText);
-        const combined = new Uint8Array(decodedData.length).map(x => decodedData.charCodeAt(x));
-        const iv = combined.slice(0, 12);
-        const cipherTextBytes = combined.slice(12);
-
-
         try {
+            const decoder = new TextDecoder();
+            const decodedData = atob(cipherText);
+            const combined = new Uint8Array(decodedData.length).map(x => decodedData.charCodeAt(x));
+            const iv = combined.slice(0, 12);
+            const cipherTextBytes = combined.slice(12);
+
+
             const encoder = new TextEncoder();
             const importedKey = await window.crypto.subtle.importKey(
                 "raw",
@@ -236,7 +242,7 @@ class Bare {
 
         } catch (error) {
             console.error("Decryption error:", error);
-            return cipherText;
+            throw new Error("Decryption Failed");
         }
     }
 
