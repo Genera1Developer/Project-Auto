@@ -32,19 +32,23 @@ self.addEventListener('fetch', event => {
           return response;
         }
 
+        // Clone the request since it can only be consumed once
         const fetchRequest = event.request.clone();
 
         return fetch(fetchRequest)
           .then(response => {
+            // Check if we received a valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {
               console.log('ServiceWorker: Invalid response:', response ? response.status : 'No response');
               return response;
             }
 
+            // Clone the response to save it into the cache
             const responseToCache = response.clone();
 
             return caches.open(CACHE_NAME)
               .then(cache => {
+                // Put the response in the cache
                 return cache.put(event.request, responseToCache);
               })
               .then(() => {
@@ -57,6 +61,7 @@ self.addEventListener('fetch', event => {
               });
           })
           .catch(() => {
+            // If the network is unavailable, get the cached offline page
             console.log('ServiceWorker: Network request failed, serving offline page');
             return caches.match('/offline.html');
           });
@@ -75,8 +80,8 @@ self.addEventListener('activate', event => {
             console.log('ServiceWorker: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
-          return Promise.resolve(); // Add a resolved promise for caches that don't need deleting
-        })
+          return undefined;
+        }).filter(promise => promise !== undefined)
       );
     }).then(() => {
       console.log('ServiceWorker: Activated and ready to handle fetches!');
