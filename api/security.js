@@ -14,7 +14,7 @@ async function generateRandomToken(length = 32) {
   }
 }
 
-async function hashString(string, salt) {
+function hashString(string, salt) {
   if (typeof string !== 'string' || string.length === 0) {
     throw new TypeError('String must be a non-empty string.');
   }
@@ -31,7 +31,7 @@ async function hashString(string, salt) {
   }
 }
 
-async function verifyHash(string, hash, salt) {
+function verifyHash(string, hash, salt) {
   if (typeof string !== 'string' || string.length === 0) {
     throw new TypeError('String must be a non-empty string.');
   }
@@ -43,10 +43,7 @@ async function verifyHash(string, hash, salt) {
   }
 
   try {
-    const computedHash = await hashString(string, salt);
-    if (typeof computedHash !== 'string') {
-      return false;
-    }
+    const computedHash = hashString(string, salt);
     return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(computedHash, 'hex'));
 
   } catch (error) {
