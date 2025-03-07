@@ -327,5 +327,36 @@ const handler = {
         }
     });
 
+     // Block access to process
+     if (typeof window.process !== 'undefined') {
+        window.process = new Proxy(window.process, {
+            get: function(target, prop) {
+                console.warn('Access to window.process.' + prop + ' blocked');
+                return undefined;
+            },
+            set: function(target, prop, value) {
+                console.warn('Setting window.process.' + prop + ' blocked');
+                return false;
+            }
+        });
+    }
+
+    // Disable navigator properties that can be fingerprinted easily
+    if (window.navigator) {
+        const blockedNavigatorProperties = ['webdriver', 'plugins', 'mimeTypes', 'languages'];
+        blockedNavigatorProperties.forEach(property => {
+            if (property in window.navigator) {
+                Object.defineProperty(window.navigator, property, {
+                    get: function() {
+                        console.warn('Access to navigator.' + property + ' blocked');
+                        return undefined;
+                    },
+                    set: function(value) {
+                        console.warn('Setting navigator.' + property + ' blocked');
+                        return false;
+                    }
+                });
+            }
+        });
+    }
 })();
-content:
