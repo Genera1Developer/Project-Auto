@@ -5,6 +5,9 @@ const { generateSecureKey, encryptData, decryptData } = require('./security');
 // Session storage (in-memory for simplicity, consider using a database in production)
 const sessions = {};
 
+// Session timeout in milliseconds (e.g., 30 minutes)
+const SESSION_TIMEOUT = 30 * 60 * 1000;
+
 // Function to create a new session
 function createSession() {
   const sessionId = generateSecureKey(16); // 16 bytes = 32 hex chars
@@ -12,7 +15,7 @@ function createSession() {
 
   sessions[sessionId] = {
     encryptionKey: encryptionKey,
-    data: {},
+    encryptedData: encryptData('{}', encryptionKey), // Store data as encrypted JSON string
     createdAt: Date.now(),
     lastAccessed: Date.now(),
   };
@@ -21,26 +24,54 @@ function createSession() {
 }
 
 // Function to get session data
-function getSessionData(sessionId) {
+function getSessionData(sessionId, encryptionKey) {
   const session = sessions[sessionId];
   if (!session) {
     return null;
   }
 
+  if (Date.now() - session.lastAccessed > SESSION_TIMEOUT) {
+    destroySession(sessionId);
+    return null;
+  }
+
   session.lastAccessed = Date.now();
-  return session.data;
+  try {
+    const decryptedData = decryptData(session.encryptedData, encryptionKey);
+    return JSON.parse(decryptedData);
+  } catch (error) {
+    console.error("Error decrypting session data:", error);
+    destroySession(sessionId); // Destroy potentially corrupted session.
+    return null;
+  }
 }
 
 // Function to update session data
-function updateSessionData(sessionId, newData) {
+function updateSessionData(sessionId, encryptionKey, newData) {
   const session = sessions[sessionId];
   if (!session) {
     return false;
   }
 
-  session.data = { ...session.data, ...newData };
+  if (Date.now() - session.lastAccessed > SESSION_TIMEOUT) {
+    destroySession(sessionId);
+    return false;
+  }
+
   session.lastAccessed = Date.now();
-  return true;
+
+  try {
+    const decryptedData = decryptData(session.encryptedData, encryptionKey);
+    const existingData = JSON.parse(decryptedData);
+    const mergedData = { ...existingData, ...newData };
+    const encryptedData = encryptData(JSON.stringify(mergedData), encryptionKey);
+    session.encryptedData = encryptedData;
+    return true;
+  } catch (error) {
+    console.error("Error updating session data:", error);
+    destroySession(sessionId); // Destroy potentially corrupted session.
+    return false;
+  }
 }
 
 // Function to destroy a session
@@ -61,20 +92,29 @@ function sessionMiddleware(req, res, next) {
       httpOnly: true,
       secure: true, // Only send over HTTPS
       sameSite: 'Strict', // Recommended for security
+      maxAge: SESSION_TIMEOUT,
     });
 
     req.session = {
       sessionId: sessionId,
       encryptionKey: newSession.encryptionKey,
-      data: {},
     };
   } else {
+    const session = sessions[sessionId];
+    if (Date.now() - session.lastAccessed > SESSION_TIMEOUT) {
+      destroySession(sessionId);
+      res.clearCookie('sessionId');
+      return res.status(401).send('Session expired. Please refresh the page.'); // Or redirect to login
+    }
     req.session = {
       sessionId: sessionId,
-      encryptionKey: sessions[sessionId].encryptionKey,
-      data: getSessionData(sessionId),
+      encryptionKey: session.encryptionKey,
     };
   }
+
+  // Attach session data to req object after session creation or validation
+  req.session.data = getSessionData(req.session.sessionId, req.session.encryptionKey) || {};
+  req.updateSessionData = (newData) => updateSessionData(req.session.sessionId, req.session.encryptionKey, newData);
 
   next();
 }
