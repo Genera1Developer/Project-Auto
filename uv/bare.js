@@ -11,6 +11,9 @@ class Bare {
         this.integrityCheckFailed = false;
         this.hkdfSalt = opts.hkdfSalt || 'salt';
         this.hkdfInfo = opts.hkdfInfo || '';
+        this.encryptionAlgo = opts.encryptionAlgo || "AES-GCM";
+        this.hkdfHash = opts.hkdfHash || "SHA-256";
+        this.ivLength = opts.ivLength || 12;
     }
 
     async fetch(url, options = {}) {
@@ -73,13 +76,13 @@ class Bare {
         try {
             const encoder = new TextEncoder();
             const data = encoder.encode(plainText);
-            const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Recommended IV length for AES-GCM
+            const iv = window.crypto.getRandomValues(new Uint8Array(this.ivLength)); // Recommended IV length for AES-GCM
 
             // Derive encryption key using HKDF
             const derivedKey = await this.#deriveKey(key);
 
             const cipherTextBuffer = await window.crypto.subtle.encrypt(
-                { name: "AES-GCM", iv: iv },
+                { name: this.encryptionAlgo, iv: iv },
                 derivedKey,
                 data
             );
@@ -112,14 +115,14 @@ class Bare {
             const decoder = new TextDecoder();
             const decodedData = atob(cipherText);
             const combined = new Uint8Array(decodedData.length).map(x => decodedData.charCodeAt(x));
-            const iv = combined.slice(0, 12);
-            const cipherTextBytes = combined.slice(12);
+            const iv = combined.slice(0, this.ivLength);
+            const cipherTextBytes = combined.slice(this.ivLength);
 
             // Derive decryption key using HKDF
             const derivedKey = await this.#deriveKey(key);
 
             const plainTextBuffer = await window.crypto.subtle.decrypt(
-                { name: "AES-GCM", iv: iv },
+                { name: this.encryptionAlgo, iv: iv },
                 derivedKey,
                 cipherTextBytes
             );
@@ -167,9 +170,9 @@ class Bare {
             );
 
             const derivedKey = await window.crypto.subtle.deriveKey(
-                { name: "HKDF", hash: "SHA-256", salt: salt, info: info },
+                { name: "HKDF", hash: this.hkdfHash, salt: salt, info: info },
                 baseKey,
-                { name: "AES-GCM", length: 256 },
+                { name: this.encryptionAlgo, length: 256 },
                 false,
                 ["encrypt", "decrypt"]
             );
