@@ -61,3 +61,15 @@ input[type="submit"]:hover, input[type="submit"]:focus {
     background-color: rgba(0, 123, 255, 0.1); /* Light blue, adjust as needed */
     transition: background-color 0.2s ease-in-out;
 }
+
+/* Improve contrast for accessibility */
+a:focus, button:focus, input[type="submit"]:focus {
+    outline-color: #0056b3;
+}
+
+/* Ensure transitions are hardware-accelerated */
+.fade-in, .slide-up, .slide-down, a, button, input[type="submit"] {
+    transform: translateZ(0); /* Forces hardware acceleration */
+    backface-visibility: hidden; /* Improves rendering performance */
+    perspective: 1000px; /* Helps with 3D transformations */
+}
