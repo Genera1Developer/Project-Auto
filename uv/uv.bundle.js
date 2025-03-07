@@ -217,6 +217,9 @@
      * @returns {Promise<CryptoKey>} The imported key.
      */
     importKey: async (jwk, keyUsages = ["encrypt", "decrypt"]) => {
+      if (!jwk) {
+        throw new Error("Missing JWK for key import.");
+      }
       try {
         return await crypto.subtle.importKey(
           "jwk",
@@ -427,6 +430,16 @@
         console.error("HMAC verify error:", error);
         throw new Error(`HMAC verify failed: ${error.message}`);
       }
+    },
+
+    /**
+     * Generates a secure token.
+     * @param {number} length The length of the token. Defaults to 32.
+     * @returns {string} The generated token.
+     */
+    generateToken: (length = 32) => {
+      const randomBytes = crypto.getRandomValues(new Uint8Array(length));
+      return Array.from(randomBytes, byte => byte.toString(16).padStart(2, '0')).join('');
     },
   };
   class i extends EventTarget {
