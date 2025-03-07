@@ -98,6 +98,8 @@ self.addEventListener('fetch', (event) => {
           headers.delete('public-key-pins-report-only');
 	  headers.delete('x-powered-by');
 	  headers.delete('server');
+          headers.delete('X-AspNet-Version');
+          headers.delete('X-AspNetMvc-Version');
 
           let responseBody;
           try {
@@ -155,8 +157,8 @@ self.addEventListener('fetch', (event) => {
             }
 
               // Inject the nonce into script tags in the response
-              responseText = responseText.replace(/<script(?=[^>]*(?:src=['"]))?/g, (match) => `${match} nonce="${nonce}"`);
-	      responseText = responseText.replace(/<style(?=[^>]*(?:src=['"]))?/g, (match) => `${match} nonce="${nonce}"`);
+              responseText = responseText.replace(/<script(?=[^>]*(?:src=['"]))?/gi, (match) => `${match} nonce="${nonce}"`);
+	      responseText = responseText.replace(/<style(?=[^>]*(?:src=['"]))?/gi, (match) => `${match} nonce="${nonce}"`);
 
           } catch (error) {
             console.error('TrustedTypes error:', error);
