@@ -27,7 +27,8 @@ const passthroughHeaders = new Set([
   'content-disposition',
   'x-content-type-options',
   'x-frame-options',
-  'x-xss-protection'
+  'x-xss-protection',
+  'cross-origin-resource-policy'
 ]);
 
 async function handleRequest(event) {
@@ -71,6 +72,7 @@ async function handleRequest(event) {
       url = absoluteRedirectURL;
       requestHeaders.delete('origin'); // Remove origin header for redirects
       requestHeaders.delete('referer'); // Remove referer header for redirects
+      // Re-apply the original request body if it exists
       response = await fetch(url, {
         method: event.request.method,
         headers: requestHeaders,
@@ -115,3 +117,5 @@ async function handleRequest(event) {
 self.addEventListener('fetch', event => {
   event.respondWith(handleRequest(event));
 });
+edit filepath: uv/uv.js
+content: Added 'cross-origin-resource-policy' to the passthroughHeaders and re-applied the original request body during redirects.
