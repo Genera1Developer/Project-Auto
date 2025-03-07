@@ -23,9 +23,9 @@ function encrypt(text) {
     }
 
     try {
-        const iv = crypto.randomBytes(16);
+        const iv = crypto.randomBytes(12); // Using 12 bytes for GCM
         const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
-        let encrypted = cipher.update(text);
+        let encrypted = cipher.update(text, 'utf8'); // Explicitly specify input encoding
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
         return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
@@ -55,7 +55,7 @@ function decrypt(text) {
         decipher.setAuthTag(authTag);
         let decrypted = decipher.update(encryptedText);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
-        return decrypted.toString();
+        return decrypted.toString('utf8'); // Explicitly specify output encoding
     } catch (error) {
         console.error("Decryption error:", error);
         return "Decryption Failed";
@@ -73,7 +73,7 @@ export function logRequest(req, res, url) {
         return;
     }
 
-    fs.appendFile(logFilePath, encryptedLogMessage, err => {
+    fs.appendFile(logFilePath, encryptedLogMessage + '\n', err => { // Append a newline character
         if (err) {
             console.error('Error writing to log file:', err);
         }
@@ -83,7 +83,7 @@ export function logRequest(req, res, url) {
 export function getLogs() {
     try {
         const logs = fs.readFileSync(logFilePath, 'utf8');
-        return logs.split('\n')
+        return logs.trim().split('\n') // Trim to remove trailing newline
             .filter(log => log.trim() !== '')
             .map(log => {
                 const decryptedLog = decrypt(log);
