@@ -69,12 +69,15 @@
             fetch('/log-error', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-Request-ID': crypto.randomUUID() // Add a request ID for tracing
                 },
                 body: JSON.stringify(errorData)
             }).then(response => {
                 if (!response.ok) {
-                    console.error('Failed to send error log:', response.status);
+                    console.error('Failed to send error log:', response.status, response.statusText);
+                    // Log the response body for debugging
+                    response.text().then(text => console.error('Response body:', text));
                 }
             }).catch(error => console.error('Error sending error details to server:', error));
         }
@@ -95,9 +98,9 @@
                 let sanitizedDecodedURL = DOMPurify.sanitize(decodedURL, { USE_PROFILES: { html: true } });
 
                 try {
-                  new URL(sanitizedDecodedURL);
+                    new URL(sanitizedDecodedURL);
                 } catch (_) {
-                  sanitizedDecodedURL = "#invalid-url";
+                    sanitizedDecodedURL = "#invalid-url";
                 }
 
                 urlLink.href = sanitizedDecodedURL;
@@ -136,20 +139,24 @@
             const sanitizedErrorStack = DOMPurify.sanitize(errorStack);
             errorData.errorStack = sanitizedErrorStack;
         }
-        
+
         if (errorContext) {
-          try {
-            const parsedContext = JSON.parse(errorContext);
-            errorData.errorContext = parsedContext;
-          } catch (e) {
-            console.error("Error parsing error context:", e);
-            errorData.errorContext = { message: "Failed to parse context", raw: errorContext };
-          }
+            try {
+                const parsedContext = JSON.parse(errorContext);
+                errorData.errorContext = parsedContext;
+            } catch (e) {
+                console.error("Error parsing error context:", e);
+                errorData.errorContext = { message: "Failed to parse context", raw: errorContext };
+            }
         }
 
         // Send error data to the server
         if (Object.keys(errorData).length > 0) {
-            logError(errorData);
+            try {
+                logError(errorData);
+            } catch (e) {
+                console.error("Failed to log error:", e);
+            }
         }
 
     </script>
