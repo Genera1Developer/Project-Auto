@@ -22,13 +22,11 @@ async function ensureLogDirectoryExists() {
                 console.log('Log directory created:', logDirectory); // Optional: Log directory creation
             } catch (mkdirErr) {
                 console.error('Failed to create log directory:', mkdirErr);
-                // Consider throwing the error or exiting the process if logging is critical
-                throw mkdirErr; // Re-throw the error to prevent the application from running without logging.
+                process.exit(1);
             }
         } else {
             console.error('Failed to access log directory:', err);
-            // Consider throwing the error or exiting the process if logging is critical
-            throw err; // Re-throw the error to prevent the application from running without logging.
+            process.exit(1);
         }
     }
 }
@@ -59,5 +57,27 @@ const log = async (message) => {
         process.exit(1); // Exit if logging initialization fails.
     }
 })();
+
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    // Attempt to log the error to a file, if possible
+    fs.appendFile(logFile, `Uncaught Exception: ${err.stack}\n`, (fileErr) => {
+        if (fileErr) {
+            console.error('Failed to write uncaught exception to log file:', fileErr);
+        }
+        process.exit(1); // Exit the process after logging the error
+    });
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Attempt to log the error to a file, if possible
+    fs.appendFile(logFile, `Unhandled Rejection: ${reason}\n`, (fileErr) => {
+        if (fileErr) {
+            console.error('Failed to write unhandled rejection to log file:', fileErr);
+        }
+        process.exit(1); // Exit the process after logging the error
+    });
+});
 
 module.exports = { log };
