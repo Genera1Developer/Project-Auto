@@ -4,6 +4,7 @@ body {
     margin: 0;
     padding: 0;
     color: #333;
+    -webkit-font-smoothing: antialiased; /* Improve font rendering for smoother text */
 }
 
 .container {
@@ -14,12 +15,14 @@ body {
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    overflow: hidden; /* Prevent content overflow issues */
 }
 
 h1 {
     color: #2c3e50;
     text-align: center;
     margin-bottom: 30px;
+    font-weight: 600; /* Slightly bolder heading */
 }
 
 input[type="text"],
@@ -32,7 +35,7 @@ textarea {
     border-radius: 6px;
     box-sizing: border-box;
     font-size: 16px;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Added box-shadow transition */
 }
 
 input[type="text"]:focus,
@@ -40,6 +43,7 @@ input[type="url"]:focus,
 textarea:focus {
     border-color: #3498db;
     outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Subtle glow effect on focus */
 }
 
 button {
@@ -50,11 +54,18 @@ button {
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform transition */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Added a subtle shadow */
 }
 
 button:hover {
     background-color: #2980b9;
+    transform: translateY(-2px); /* Slightly lift the button on hover */
+}
+
+button:active {
+    transform: translateY(0); /* Reset transform when button is pressed */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); /* Reduce shadow when pressed */
 }
 
 .result {
@@ -64,23 +75,165 @@ button:hover {
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 16px;
+    word-break: break-word; /* Prevents long words from overflowing */
 }
 
 pre {
     white-space: pre-wrap;
     word-wrap: break-word;
     font-family: 'Courier New', monospace;
+    overflow-x: auto; /* Add horizontal scrolling if content overflows */
 }
 
 .error {
     color: #e74c3c;
     margin-top: 10px;
     font-size: 16px;
+    font-weight: 500; /* Make error message slightly bolder */
 }
 
 @media (max-width: 768px) {
     .container {
         width: 95%;
         padding: 20px;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    textarea {
+        font-size: 14px; /* Slightly smaller font size on smaller screens */
+    }
+
+    button {
+        font-size: 14px;
+    }
+
+    .result {
+        font-size: 14px;
+    }
+}
+edit filepath: public/theme/forest.css
+content: body {
+    background-color: #f0f0f0;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: 80%;
+    max-width: 960px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="url"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.result {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    word-break: break-word;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Courier New', monospace;
+    overflow-x: auto;
+}
+
+.error {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.security-warning {
+    color: #ff9800; /* Amber color for warnings */
+    background-color: #fff3e0; /* Light amber background */
+    padding: 10px;
+    border: 1px solid #ffe082; /* Light amber border */
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    textarea {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+
+    .result {
+        font-size: 14px;
     }
 }
