@@ -67,6 +67,15 @@
         <a href="/">Go back to the homepage</a>
         <div id="error-url-container"></div>
         <div id="security-warnings-container"></div>
+        <div id="error-details-container" class="hidden">
+            <h2>Error Details</h2>
+            <p><b>Type:</b> <span id="error-type"></span></p>
+            <p><b>Message:</b> <span id="error-message-detail"></span></p>
+            <p><b>URL:</b> <span id="error-url-detail"></span></p>
+            <p><b>Stack:</b> <span id="error-stack"></span></p>
+            <p><b>Context:</b> <span id="error-context"></span></p>
+        </div>
+        <button id="toggle-details">Show Error Details</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
     <script>
@@ -108,6 +117,7 @@
         if (errorMessage) {
             const sanitizedErrorMessage = DOMPurify.sanitize(errorMessage);
             document.getElementById('error-message').textContent = sanitizedErrorMessage;
+            document.getElementById('error-message-detail').textContent = sanitizedErrorMessage;
         }
 
         let decodedURL = null;
@@ -132,7 +142,7 @@
                         const recommendationElement = document.createElement('p');
                         recommendationElement.classList.add('security-recommendation');
                         recommendationElement.textContent = "HTTPS connection established.";
-                        securityWarningsContainer.appendChild(recommendationElement);
+                        document.getElementById('security-warnings-container').appendChild(recommendationElement);
                     }
 
 
@@ -159,6 +169,8 @@
 
                 urlDisplay.appendChild(urlLink);
                 document.getElementById('error-url-container').appendChild(urlDisplay);
+                document.getElementById('error-url-detail').textContent = decodedURL;
+
 
                 const securityWarningsContainer = document.getElementById('security-warnings-container');
                 securityWarnings.forEach(warning => {
@@ -174,6 +186,7 @@
                 const urlDisplay = document.createElement('p');
                 urlDisplay.textContent = `An error occurred while decoding the URL.`;
                 document.getElementById('error-url-container').appendChild(urlDisplay);
+                document.getElementById('error-url-detail').textContent = 'Error decoding URL';
             }
         }
 
@@ -182,6 +195,7 @@
         if (errorType) {
             console.error(`Error Type: ${errorType}`);
             errorData.errorType = errorType;
+            document.getElementById('error-type').textContent = errorType;
         }
 
         if (errorMessage) {
@@ -197,15 +211,18 @@
             console.error(`Error Stack: ${errorStack}`);
             const sanitizedErrorStack = DOMPurify.sanitize(errorStack);
             errorData.errorStack = sanitizedErrorStack;
+            document.getElementById('error-stack').textContent = sanitizedErrorStack;
         }
 
         if (errorContext) {
             try {
                 const parsedContext = JSON.parse(errorContext);
                 errorData.errorContext = parsedContext;
+                document.getElementById('error-context').textContent = JSON.stringify(parsedContext, null, 2);
             } catch (e) {
                 console.error("Error parsing error context:", e);
                 errorData.errorContext = { message: "Failed to parse context", raw: errorContext };
+                document.getElementById('error-context').textContent = "Failed to parse context";
             }
         }
 
@@ -216,6 +233,12 @@
                 console.error("Failed to log error:", e); // This should rarely happen now.
             }
         }
+
+        document.getElementById('toggle-details').addEventListener('click', function() {
+            const detailsContainer = document.getElementById('error-details-container');
+            detailsContainer.classList.toggle('hidden');
+            this.textContent = detailsContainer.classList.contains('hidden') ? 'Show Error Details' : 'Hide Error Details';
+        });
 
     </script>
 </body>
