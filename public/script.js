@@ -11,11 +11,13 @@ async function encryptAndSend(data, publicKey) {
       encodedData
     );
 
+    // Convert the ArrayBuffer to a Uint8Array, then map to a string of char codes, and finally base64 encode.
     const encryptedBase64 = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
     return encryptedBase64;
 
   } catch (error) {
     console.error("Encryption error:", error);
+    alert("Encryption failed. Check console for details."); // Notify user
     throw error; // Re-throw to handle it upstream
   }
 }
@@ -38,6 +40,7 @@ async function decryptData(encryptedBase64, privateKey) {
 
     } catch (error) {
         console.error("Decryption error:", error);
+        alert("Decryption failed. Check console for details."); // Notify user
         throw error; // Re-throw to handle it upstream
     }
 }
@@ -57,6 +60,7 @@ async function generateKeyPairs() {
     return keyPair;
   } catch (error) {
     console.error("Key generation error:", error);
+     alert("Key generation failed. Check console for details."); // Notify user
     throw error; // Re-throw to handle it upstream
   }
 }
@@ -70,6 +74,7 @@ async function exportPublicKey(publicKey) {
     return exported;
   } catch (error) {
     console.error("Public key export error:", error);
+    alert("Public key export failed. Check console for details."); // Notify user
     throw error; // Re-throw to handle it upstream
   }
 }
@@ -89,6 +94,7 @@ async function importPublicKey(jwkData) {
     return publicKey;
   } catch (error) {
     console.error("Public key import error:", error);
+    alert("Public key import failed. Check console for details."); // Notify user
     throw error; // Re-throw to handle it upstream
   }
 }
@@ -102,6 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const originalText = document.getElementById('originalText');
     const encryptedText = document.getElementById('encryptedText');
     const decryptedText = document.getElementById('decryptedText');
+    const downloadPublicKeyButton = document.getElementById('downloadPublicKey'); // Added download button
 
     let publicKey = null;
     let privateKey = null;
@@ -118,9 +125,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             encryptButton.disabled = false;
             decryptButton.disabled = false;
+            downloadPublicKeyButton.disabled = false; // Enable download button
         } catch (error) {
             console.error("Key generation failed:", error);
             alert("Key generation failed. Check console for details.");
+            encryptButton.disabled = true;  // Disable encrypt button
+            decryptButton.disabled = true; // Disable decrypt button
+            downloadPublicKeyButton.disabled = true; // Disable download button
         }
     });
 
@@ -142,7 +153,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             decryptButton.disabled = false; // Enable decrypt after successful encryption
         } catch (error) {
             console.error("Encryption failed:", error);
-            alert("Encryption failed. Check console for details.");
+            //alert("Encryption failed. Check console for details."); // Handled in encryptAndSend
+            decryptButton.disabled = true; // Disable decrypt button
         }
     });
 
@@ -163,7 +175,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             decryptedText.value = decrypted;
         } catch (error) {
             console.error("Decryption failed:", error);
-            alert("Decryption failed. Check console for details.");
+            //alert("Decryption failed. Check console for details."); // Handled in decryptData
+        }
+    });
+
+    downloadPublicKeyButton.addEventListener('click', async () => {
+        if (!publicKey) {
+            alert('Please generate keys first.');
+            return;
+        }
+
+        try {
+            const exportedPublicKey = await exportPublicKey(publicKey);
+            const publicKeyString = JSON.stringify(exportedPublicKey, null, 2);
+            const blob = new Blob([publicKeyString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'public_key.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error downloading public key:", error);
+            alert("Error downloading public key. Check console for details.");
         }
     });
 });
