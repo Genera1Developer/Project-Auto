@@ -6,12 +6,13 @@ const sessionStore = {};
 
 // Session timeout in milliseconds (e.g., 30 minutes)
 const SESSION_TIMEOUT = 30 * 60 * 1000;
+const KEY_LENGTH = 32; // AES-256 key length
 
 // Consider using httpOnly and secure flags for cookies
 
 function createSession(userId) {
   const sessionId = crypto.randomUUID(); // Generate a UUID session ID
-  const encryptionKey = generateSecureKey(16); // AES key
+  const encryptionKey = generateSecureKey(KEY_LENGTH); // AES-256 key
   const sessionData = {
     userId: userId,
     createdAt: Date.now(),
@@ -39,7 +40,15 @@ function getSession(sessionId) {
   }
 
   try {
-    const decryptedData = decryptData(session.encryptedData, session.encryptionKey);
+    let decryptedData;
+    try {
+      decryptedData = decryptData(session.encryptedData, session.encryptionKey);
+    } catch (decryptError) {
+      console.error('Session decryption error:', decryptError);
+      destroySession(sessionId); // Invalidate corrupted session
+      return null;
+    }
+
     if (!decryptedData) {
         console.warn("Decrypted data is empty. Possible tampering.");
         destroySession(sessionId);
@@ -50,7 +59,7 @@ function getSession(sessionId) {
     session.lastActive = Date.now();
     return sessionData;
   } catch (error) {
-    console.error('Session decryption error:', error);
+    console.error('Session parsing error:', error);
     destroySession(sessionId); // Invalidate corrupted session
     return null;
   }
