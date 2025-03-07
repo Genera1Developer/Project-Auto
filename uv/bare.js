@@ -42,11 +42,12 @@ class Bare {
 	/**
 	 * Resolves a URL to an absolute URL.
 	 * @param {string} url The URL to resolve.
+	 * @param {string} base The base URL to resolve against.
 	 * @returns {string} The absolute URL.
 	 */
-	resolve(url) {
+	resolve(url, base) {
 		try {
-			return new URL(url, this.origin).href;
+			return new URL(url, base || this.origin).href;
 		} catch (error) {
 			console.warn("Bare resolve error:", error);
 			return undefined;
