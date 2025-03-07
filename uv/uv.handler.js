@@ -1,6 +1,7 @@
 const { URL } = require('url');
 const http = require('http');
 const https = require('https');
+const crypto = require('crypto');
 
 async function handleRequest(req, res) {
   try {
@@ -34,6 +35,8 @@ async function handleRequest(req, res) {
       timeout: 10000,
       followRedirects: false,
       agent: false, // Disable connection pooling
+      // Enable TLS SNI
+      servername: target
     };
 
     // Delete potentially problematic headers
@@ -53,8 +56,8 @@ async function handleRequest(req, res) {
 
     hopByHopHeaders.forEach(header => delete options.headers[header]);
 
-    // Set 'x-forwarded-for' header
-    options.headers['x-forwarded-for'] = req.socket.remoteAddress || req.connection.remoteAddress;
+    // Set 'x-forwarded-for' header, use a random id if IP is unavailable
+    options.headers['x-forwarded-for'] = req.socket.remoteAddress || req.connection.remoteAddress || crypto.randomBytes(16).toString('hex');
 
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       const resHeaders = { ...proxyRes.headers };
@@ -62,6 +65,15 @@ async function handleRequest(req, res) {
       // Remove content-encoding to prevent issues with decompression. The client
       // can handle decompression on its own.
       delete resHeaders['content-encoding'];
+
+      // Mitigate potential header injection vulnerabilities
+      Object.keys(resHeaders).forEach(header => {
+        const value = resHeaders[header];
+        if (typeof value === 'string' && value.includes('\n')) {
+          delete resHeaders[header];
+          console.warn(`Removed header ${header} due to newline character.`);
+        }
+      });
 
       res.writeHead(proxyRes.statusCode, resHeaders);
       proxyRes.pipe(res);
