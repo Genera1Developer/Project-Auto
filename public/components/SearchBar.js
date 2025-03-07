@@ -1,9 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 function SearchBar({ onSearch, autoComplete }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const searchInputRef = useRef(null);
+
+    const updateSearchHistory = useCallback((term) => {
+        let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+        if (!searchHistory.includes(term)) {
+            searchHistory = [term, ...searchHistory].slice(0, 10); // Limit to 10 items
+            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+        }
+    }, []);
 
     useEffect(() => {
         if (autoComplete) {
@@ -23,17 +31,10 @@ function SearchBar({ onSearch, autoComplete }) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (searchTerm.trim()) {
-            onSearch(searchTerm);
-            updateSearchHistory(searchTerm);
-        }
-    };
-
-    const updateSearchHistory = (term) => {
-        let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-        if (!searchHistory.includes(term)) {
-            searchHistory = [term, ...searchHistory].slice(0, 10); // Limit to 10 items
-            localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+        const trimmedSearchTerm = searchTerm.trim();
+        if (trimmedSearchTerm) {
+            onSearch(trimmedSearchTerm);
+            updateSearchHistory(trimmedSearchTerm);
         }
     };
 
@@ -60,7 +61,16 @@ function SearchBar({ onSearch, autoComplete }) {
             {suggestions.length > 0 && (
                 <ul className="suggestions">
                     {suggestions.map((suggestion, index) => (
-                        <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                        <li
+                            key={index}
+                            onClick={() => handleSuggestionClick(suggestion)}
+                            tabIndex="0" // Make the li focusable
+                            onKeyDown={(e) => { // Handle keyboard navigation
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleSuggestionClick(suggestion);
+                                }
+                            }}
+                        >
                             {suggestion}
                         </li>
                     ))}
