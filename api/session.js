@@ -7,11 +7,12 @@ const sessions = {};
 function createSession() {
   const sessionId = generateSecureKey(32); // 32 bytes = 64 hex characters
   const encryptionKey = generateSecureKey(32); // Generate encryption key for session
-  sessions[sessionId] = {
+  const session = {
     encryptionKey: encryptionKey,
     data: {},
     createdAt: Date.now(),
   };
+  sessions[sessionId] = session;
   return { sessionId, encryptionKey };
 }
 
@@ -35,7 +36,9 @@ function getSessionData(sessionId, encryptionKey) {
   try {
     const decryptedData = {};
     for (const key in session.data) {
-      decryptedData[key] = decryptData(session.data[key], encryptionKey);
+      if (Object.hasOwn(session.data, key)) {
+        decryptedData[key] = decryptData(session.data[key], encryptionKey);
+      }
     }
     return decryptedData;
   } catch (error) {
@@ -61,13 +64,17 @@ function updateSessionData(sessionId, encryptionKey, newData) {
     return false;
   }
 
-
   try {
     const encryptedData = {};
     for (const key in newData) {
-      encryptedData[key] = encryptData(newData[key], encryptionKey);
+      if (Object.hasOwn(newData, key)) {
+        encryptedData[key] = encryptData(newData[key], encryptionKey);
+      }
     }
-    session.data = { ...session.data, ...encryptedData }; // Update all at once to prevent race conditions
+
+    // Atomic update using a new object
+    const updatedSessionData = { ...session.data, ...encryptedData };
+    sessions[sessionId] = { ...session, data: updatedSessionData }; // Create new session object
 
     return true;
   } catch (error) {
@@ -75,6 +82,7 @@ function updateSessionData(sessionId, encryptionKey, newData) {
     return false;
   }
 }
+
 
 // Function to destroy a session
 function destroySession(sessionId) {
@@ -89,18 +97,19 @@ function cleanUpSessions() {
   for (const sessionId in sessions) {
     if (Object.hasOwn(sessions, sessionId)) { // Check if the property is directly in the object
         if (now - sessions[sessionId].createdAt > SESSION_TIMEOUT) {
-          destroySession(sessionId);
+          delete sessions[sessionId]; // Directly delete for thread safety.
         }
     }
   }
 }
 
 // Clean up sessions periodically (every 30 minutes)
-setInterval(cleanUpSessions, 1800000);
+const cleanupInterval = setInterval(cleanUpSessions, 1800000);
 
 module.exports = {
   createSession,
   getSessionData,
   updateSessionData,
   destroySession,
+  cleanupInterval, // Export the interval to allow stopping it if needed.
 };
