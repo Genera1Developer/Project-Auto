@@ -42,6 +42,14 @@ const handler = {
             console.warn('Error constructing:', target, 'with args', argumentsList, 'and newTarget', newTarget, e);
             return undefined;
         }
+    },
+    defineProperty(target, property, descriptor) {
+        try {
+            return Reflect.defineProperty(target, property, descriptor);
+        } catch (e) {
+            console.warn('Error defining property:', property, 'on', target, 'with descriptor', descriptor, e);
+            return false;
+        }
     }
 };
 
