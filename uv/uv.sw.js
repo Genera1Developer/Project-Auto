@@ -161,12 +161,13 @@ self.addEventListener('fetch', (event) => {
           } catch (error) {
             console.error('TrustedTypes error:', error);
           }
-          headers.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'nonce-${nonce}' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+          headers.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'nonce-${nonce}'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
           headers.set('X-Content-Type-Options', 'nosniff');
           headers.set('X-Frame-Options', 'DENY');
           headers.set('X-XSS-Protection', '1; mode=block');
            // Mitigate MIME confusion attack
            headers.set('Content-Type', 'text/html; charset=utf-8');
+           headers.delete('Content-Length');
 
           return new Response(responseText, {
             status: response.status,
