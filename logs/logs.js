@@ -9,6 +9,7 @@ const router = express.Router();
 const logFilePath = path.join(__dirname, 'logs.txt'); // Define log file path
 const encryptionKey = process.env.LOG_ENCRYPTION_KEY; // Store key securely. Use environment variable.
 const algorithm = 'aes-256-cbc'; // Choose strong encryption algorithm
+const IV_LENGTH = 16; // Constant IV length
 
 if (!encryptionKey) {
   console.error("FATAL: LOG_ENCRYPTION_KEY is not set. Exiting.");
@@ -18,7 +19,7 @@ if (!encryptionKey) {
 // Function to encrypt data
 function encrypt(text) {
   try {
-    const iv = crypto.randomBytes(16); // Generate initialization vector
+    const iv = crypto.randomBytes(IV_LENGTH); // Generate initialization vector
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
@@ -33,9 +34,22 @@ function encrypt(text) {
 // Function to decrypt data
 function decrypt(text) {
   try {
+    if (!text) {
+      return null; // or throw an error/log a warning, handle empty/null input gracefully
+    }
+
     const textParts = text.split(':');
+    if (textParts.length < 2) {
+      console.warn("Invalid ciphertext format.");
+      return null;
+    }
+
     const iv = Buffer.from(textParts.shift(), 'hex');
     const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    if (iv.length !== IV_LENGTH) {
+        console.warn("Invalid IV length.");
+        return null;
+    }
     const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -54,6 +68,8 @@ const readLogs = async () => {
     const encryptedLogs = await readFile(logFilePath, 'utf8');
     const encryptedLogArray = encryptedLogs.trim().split('\n'); // Split into lines
     const decryptedLogs = encryptedLogArray.map(log => {
+      if (!log) return ""; // Handle empty logs.
+
       const decrypted = decrypt(log);
       return decrypted === null ? "Decryption Error" : decrypted;
     }).join('\n'); // Decrypt each line
