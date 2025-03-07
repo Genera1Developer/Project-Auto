@@ -3,29 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
+    <title>Secure Web Proxy</title>
     <link rel="stylesheet" href="theme/default.css">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';">
+    <link id="theme-stylesheet" rel="stylesheet" href="">
+    <link rel="icon" href="visuals/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <p>Enter the URL you want to access securely:</p>
-        <input type="url" id="urlInput" placeholder="https://example.com">
-        <button id="proxyButton">Access via Proxy</button>
+        <h1>Secure Web Proxy</h1>
+        <div class="security-warning" id="security-warning">
+            This proxy is for educational purposes only. Use at your own risk. Ensure you understand the security implications before proceeding. Data transmitted through this proxy may not be fully secure.
+        </div>
+        <label for="url">Enter URL:</label>
+        <input type="url" id="url" name="url" placeholder="https://example.com" required>
 
-        <div id="securityInfo" class="security-info">
-            <h3>Security Information</h3>
-            <p>Connection Security: <span id="connectionStatus">Unknown</span></p>
-            <p>Encryption Protocol: <span id="encryptionProtocol">Unknown</span></p>
-            <p>Certificate Authority: <span id="certificateAuthority">Unknown</span></p>
-            <p>Proxy Server Location: <span id="proxyLocation">Unknown</span></p>
+        <button id="proxyButton">Go</button>
+
+        <div class="result" id="result">
+            <p>Response will appear here.</p>
         </div>
 
-        <div id="result" class="result">
-            <!-- Website content will be displayed here -->
-        </div>
-        <div id="error" class="error"></div>
+        <div class="error" id="error"></div>
     </div>
     <script src="script.js"></script>
 </body>
