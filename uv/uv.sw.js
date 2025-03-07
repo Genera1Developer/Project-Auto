@@ -16,6 +16,13 @@ const isTrustedTypesSupported = typeof trustedTypes !== 'undefined' && trustedTy
 
 const encoder = new TextEncoder();
 
+// Function to generate a secure, random nonce
+function generateNonce() {
+  const array = new Uint32Array(8);
+  crypto.getRandomValues(array);
+  return Array.from(array, dec => dec.toString(16).padStart(8, "0")).join("");
+}
+
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
@@ -134,14 +141,24 @@ self.addEventListener('fetch', (event) => {
         if (contentType && (contentType.includes('text/html') || contentType.includes('application/xhtml+xml'))) {
           let responseText = await response.text();
 
+          // Generate a nonce for CSP
+          const nonce = generateNonce();
+
           try {
             if (isTrustedTypesSupported) {
               responseText = TRUSTED_TYPES_POLICY.createHTML(responseText);
             }
 
+              // Inject the nonce into script tags in the response
+              responseText = responseText.replace(/<script/g, `<script nonce="${nonce}"`);
+
           } catch (error) {
             console.error('TrustedTypes error:', error);
           }
+          headers.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+          headers.set('X-Content-Type-Options', 'nosniff');
+          headers.set('X-Frame-Options', 'DENY');
+          headers.set('X-XSS-Protection', '1; mode=block');
 
           return new Response(responseText, {
             status: response.status,
