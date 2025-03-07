@@ -8,7 +8,16 @@ self.__uv$config = {
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
     injectedScripts: '/uv/uv.injected.js',
-    xorKey: 'PLEASE_REPLACE_THIS_WITH_A_STRONG_RANDOM_KEY',
+    xorKey: 'AAAAAAAAAAAAAAAA',
     cloak: '/cloak.html',
     ws: true,
+    requestInterceptor: (url, headers) => {
+        return {
+            url: url,
+            headers: headers
+        }
+    },
+    responseInterceptor: (response) => {
+        return response
+    }
 };
