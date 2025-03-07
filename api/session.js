@@ -11,6 +11,7 @@ function createSession() {
     encryptionKey: encryptionKey,
     data: {},
     createdAt: Date.now(),
+    lastAccessed: Date.now(), // Add lastAccessed timestamp
   };
   sessions[sessionId] = session;
   return { sessionId, encryptionKey };
@@ -40,6 +41,7 @@ function getSessionData(sessionId, encryptionKey) {
         decryptedData[key] = decryptData(session.data[key], encryptionKey);
       }
     }
+    session.lastAccessed = Date.now(); // Update lastAccessed on access
     return decryptedData;
   } catch (error) {
     console.error("Decryption error: ", error);
@@ -74,7 +76,7 @@ function updateSessionData(sessionId, encryptionKey, newData) {
 
     // Atomic update using a new object
     const updatedSessionData = { ...session.data, ...encryptedData };
-    sessions[sessionId] = { ...session, data: updatedSessionData }; // Create new session object
+    sessions[sessionId] = { ...session, data: updatedSessionData, lastAccessed: Date.now() }; // Create new session object and update lastAccessed
 
     return true;
   } catch (error) {
@@ -96,7 +98,7 @@ function cleanUpSessions() {
   const now = Date.now();
   for (const sessionId in sessions) {
     if (Object.hasOwn(sessions, sessionId)) { // Check if the property is directly in the object
-        if (now - sessions[sessionId].createdAt > SESSION_TIMEOUT) {
+        if (now - sessions[sessionId].lastAccessed > SESSION_TIMEOUT) { // Use lastAccessed for timeout
           delete sessions[sessionId]; // Directly delete for thread safety.
         }
     }
