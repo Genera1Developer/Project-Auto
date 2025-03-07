@@ -11,6 +11,10 @@ const UV_CONFIG = {
     cloak: '/uv/uv.cloak.js',
     blacklist: [],
     loglevel: 'info',
-    learnMore: 'https://github.com/titaniumnetwork-dev/Ultraviolet', // Link to documentation
+    learnMore: 'https://github.com/titaniumnetwork-dev/Ultraviolet',
+    domain: location.origin, // Sets the domain for secure cookie handling
+    cookieScope: '/', // Cookie scope set to root for broad access
+    ws: true, // Enable WebSocket proxying
+    version: '1.3.0', // Version of Ultraviolet
     // Add more configuration options as needed
 };
