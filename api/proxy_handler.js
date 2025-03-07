@@ -44,6 +44,17 @@ const proxyHandler = (req, res) => {
 
       res.writeHead(proxyRes.statusCode, proxyResHeaders);
       proxyRes.pipe(res);
+
+      proxyRes.on('error', (err) => {
+          console.error('Proxy response error:', err);
+          if (!res.writableEnded) {
+              if (!res.headersSent) {
+                  res.writeHead(500, { 'Content-Type': 'text/plain' });
+              }
+              res.end(`Proxy response error: ${err.message}`);
+          }
+      });
+
     });
 
     proxyReq.setTimeout(options.timeout, () => {
