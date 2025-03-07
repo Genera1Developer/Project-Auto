@@ -34,7 +34,13 @@ function ProxyForm() {
 
             }
 
-            const responseData = await response.text();
+            const contentType = response.headers.get("content-type");
+            let responseData;
+            if (contentType && contentType.includes("application/json")) {
+                responseData = JSON.stringify(await response.json(), null, 2); // Pretty print JSON
+            } else {
+                responseData = await response.text();
+            }
             setResponseText(responseData);
 
 
@@ -45,7 +51,6 @@ function ProxyForm() {
             setIsLoading(false);
             if (responseRef.current) {
                 responseRef.current.scrollIntoView({ behavior: 'smooth' });
-                responseRef.current.focus();
             }
         }
     };
@@ -89,7 +94,6 @@ function ProxyForm() {
                     <h3>Response:</h3>
                     <pre
                         ref={responseRef}
-                        tabIndex="0"
                         style={{
                             whiteSpace: 'pre-wrap',
                             wordWrap: 'break-word',
