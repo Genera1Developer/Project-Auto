@@ -79,3 +79,13 @@ a:focus, button:focus, input[type="submit"]:focus {
 a, button, input[type="submit"] {
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
+
+/* Enhanced security: Prevent clickjacking via iframe busting */
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+    position: relative; /* Required for iframe busting script to work */
+}
+edit filepath: public/visuals/transitions.css
