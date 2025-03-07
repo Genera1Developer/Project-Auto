@@ -1,1 +1,149 @@
+body {
+    background-color: #f0f0f0;
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
+.container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+input[type="text"],
+input[type="url"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #3e8e41;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+}
+content: body {
+    background-color: #f0f0f0;
+    font-family: 'Arial', sans-serif; /* Updated font */
+    margin: 0;
+    padding: 0;
+    color: #333; /* Added default text color */
+}
+
+.container {
+    width: 80%;
+    max-width: 960px; /* Added max-width for responsiveness */
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 30px; /* Increased padding */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+h1 {
+    color: #2c3e50; /* Darker header color */
+    text-align: center;
+    margin-bottom: 30px; /* Increased spacing */
+}
+
+input[type="text"],
+input[type="url"],
+textarea {
+    width: 100%;
+    padding: 12px; /* Increased padding */
+    margin-bottom: 20px; /* Increased spacing */
+    border: 1px solid #bdc3c7; /* Softer border color */
+    border-radius: 6px; /* Rounded corners */
+    box-sizing: border-box;
+    font-size: 16px; /* Increased font size */
+    transition: border-color 0.3s ease; /* Smooth transition */
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+    border-color: #3498db; /* Highlight on focus */
+    outline: none; /* Remove default outline */
+}
+
+button {
+    background-color: #3498db; /* Updated button color */
+    color: white;
+    padding: 14px 24px; /* Increased padding */
+    border: none;
+    border-radius: 6px; /* Rounded corners */
+    cursor: pointer;
+    font-size: 16px; /* Increased font size */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #2980b9; /* Darker hover color */
+}
+
+.result {
+    margin-top: 30px; /* Increased spacing */
+    padding: 20px; /* Increased padding */
+    background-color: #f5f5f5; /* Lighter background color */
+    border: 1px solid #ddd; /* Lighter border */
+    border-radius: 6px; /* Rounded corners */
+    font-size: 16px; /* Increased font size */
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: 'Courier New', monospace; /* Monospace font for code */
+}
+
+.error {
+    color: #e74c3c; /* Red error color */
+    margin-top: 10px;
+    font-size: 16px; /* Increased font size */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+}
