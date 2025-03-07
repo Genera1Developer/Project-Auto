@@ -10,6 +10,7 @@ class Bare {
         this.integrityHeaderName = opts.integrityHeaderName || 'X-Content-Integrity';
         this.integrityCheckFailed = false;
         this.hkdfSalt = opts.hkdfSalt || 'salt';
+        this.hkdfInfo = opts.hkdfInfo || '';
     }
 
     async fetch(url, options = {}) {
@@ -155,6 +156,7 @@ class Bare {
     async #deriveKey(key) {
         const encoder = new TextEncoder();
         const salt = encoder.encode(this.hkdfSalt);
+        const info = encoder.encode(this.hkdfInfo);
         const baseKey = await window.crypto.subtle.importKey(
             "raw",
             encoder.encode(key),
@@ -164,7 +166,7 @@ class Bare {
         );
 
         const derivedKey = await window.crypto.subtle.deriveKey(
-            { name: "HKDF", hash: "SHA-256", salt: salt, info: new ArrayBuffer(0) },
+            { name: "HKDF", hash: "SHA-256", salt: salt, info: info },
             baseKey,
             { name: "AES-GCM", length: 256 },
             false,
@@ -176,6 +178,8 @@ class Bare {
 
     async #handleRequest(url, options = {}, method) {
         let fetchUrl = this.prefix + encodeURIComponent(url);
+        let originalURL = url;
+
         if (this.encryptionEnabled && this.encryptionKey) {
             try {
                 const encryptedUrl = await this.encrypt(url, this.encryptionKey);
@@ -212,11 +216,24 @@ class Bare {
                 }
             }
 
-            return response;
+            let res = response;
+
+            if (this.encryptionEnabled && this.encryptionKey) {
+                const originalResponse = response.clone();
+                const decryptedText = await this.decrypt(await originalResponse.text(), this.encryptionKey);
+
+                const decryptedResponse = new Response(decryptedText, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: response.headers
+                });
+                res = decryptedResponse;
+            }
+
+            return res;
         } catch (error) {
             console.error(`Bare ${method} error:`, error);
             throw error;
         }
     }
 }
-content:
