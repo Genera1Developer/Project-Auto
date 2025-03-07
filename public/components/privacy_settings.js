@@ -8,30 +8,39 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    settingsButton.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent default button behavior
+    const openSettings = () => {
         settingsPanel.style.display = 'flex';
-        settingsPanel.focus(); // Set focus for accessibility
+        settingsPanel.setAttribute('aria-hidden', 'false');
+        settingsButton.setAttribute('aria-expanded', 'true');
+        settingsPanel.focus();
+    };
+
+    const closeSettings = () => {
+        settingsPanel.style.display = 'none';
+        settingsPanel.setAttribute('aria-hidden', 'true');
+        settingsButton.setAttribute('aria-expanded', 'false');
+        settingsButton.focus();
+    };
+
+    settingsButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        openSettings();
     });
 
     closeButton.addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent default button behavior
-        settingsPanel.style.display = 'none';
-        settingsButton.focus(); // Return focus to the settings button
+        event.preventDefault();
+        closeSettings();
     });
 
     settingsPanel.addEventListener('click', function(event) {
         if (event.target === settingsPanel) {
-            settingsPanel.style.display = 'none';
-            settingsButton.focus(); // Return focus to the settings button
+            closeSettings();
         }
     });
 
-    // Accessibility: Close panel on Escape key
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && settingsPanel.style.display === 'flex') {
-            settingsPanel.style.display = 'none';
-            settingsButton.focus(); // Return focus to the settings button
+            closeSettings();
         }
     });
 });
