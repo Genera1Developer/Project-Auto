@@ -41,7 +41,7 @@
         }
 
         .error-url {
-            word-break: break-all; /* prevent overflow */
+            word-break: break-all;
         }
     </style>
 </head>
@@ -51,7 +51,7 @@
         <p id="error-message">An unexpected error occurred.</p>
         <p>Please try again later.</p>
         <a href="/">Go back to the homepage</a>
-        <p id="error-url-container"></p>
+        <div id="error-url-container"></div>
     </div>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -69,9 +69,13 @@
                 urlDisplay.textContent = `The following URL caused the error: `;
                 urlDisplay.classList.add('error-url');
 
-                const urlSpan = document.createElement('span');
-                urlSpan.textContent = decodedURL;
-                urlDisplay.appendChild(urlSpan);
+                const urlLink = document.createElement('a');
+                urlLink.href = decodedURL;
+                urlLink.textContent = decodedURL;
+                urlLink.target = "_blank"; // Open in a new tab
+                urlLink.rel = "noopener noreferrer"; // Security best practice
+
+                urlDisplay.appendChild(urlLink);
 
                 document.getElementById('error-url-container').appendChild(urlDisplay);
 
@@ -79,7 +83,7 @@
                 console.error("Error decoding URL:", e);
                 const urlDisplay = document.createElement('p');
                 urlDisplay.textContent = `An error occurred while decoding the URL.`;
-                 document.getElementById('error-url-container').appendChild(urlDisplay);
+                document.getElementById('error-url-container').appendChild(urlDisplay);
             }
         }
     </script>
