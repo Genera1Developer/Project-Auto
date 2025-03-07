@@ -189,3 +189,25 @@
         border-color: rgba(139, 0, 139, 0.7);
     }
 }
+
+.weak-cipher-suite {
+    animation: weakCipherSuiteWarning 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes weakCipherSuiteWarning {
+    0% {
+        border: 2px dotted rgba(255, 69, 0, 0.5); /* OrangeRed dotted border */
+    }
+    100% {
+        border: 2px dotted rgba(255, 69, 0, 0.8); /* Darker OrangeRed dotted border */
+    }
+}
+
+.forward-secrecy-disabled {
+    animation: forwardSecrecyDisabled 2.1s steps(2, start) infinite;
+}
+
+@keyframes forwardSecrecyDisabled {
+    0% { outline: 3px dashed rgba(255, 0, 0, 0.6); }
+    100% { outline: none; }
+}
