@@ -49,14 +49,35 @@
             font-style: italic;
             color: #888;
         }
+        /* Style for log filtering */
+        #log-filter {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <h1>Security Logs</h1>
+
+    <div id="log-filter">
+        <label for="level-filter">Filter by Level:</label>
+        <select id="level-filter">
+            <option value="">All</option>
+            <option value="INFO">INFO</option>
+            <option value="WARNING">WARNING</option>
+            <option value="ERROR">ERROR</option>
+            <option value="CRITICAL">CRITICAL</option>
+        </select>
+    </div>
+
     <div id="log-container" class="loading">Loading logs...</div>
 
     <script>
         let isFetching = false; // Prevent multiple simultaneous fetches
+        let allLogs = []; // Store all logs for filtering
+
+        const levelFilter = document.getElementById('level-filter');
+        levelFilter.addEventListener('change', filterLogs);
+
 
         function fetchLogs() {
             if (isFetching) {
@@ -82,40 +103,8 @@
                 return response.json();
             })
             .then(logs => {
-                logContainer.classList.remove('loading');
-                logContainer.innerHTML = ''; // Clear existing logs
-
-                if (!logs || logs.length === 0) {
-                    logContainer.textContent = 'No logs found.';
-                    return;
-                }
-
-                logs.forEach(log => {
-                    const logEntry = document.createElement('div');
-                    logEntry.classList.add('log-entry');
-
-                    const timestamp = document.createElement('div');
-                    timestamp.classList.add('log-timestamp');
-                    timestamp.textContent = new Date(log.timestamp).toLocaleString(); // Format timestamp
-
-                    const level = document.createElement('span');
-                    level.classList.add('log-level', log.level); // Add log level and class
-                    level.textContent = `[${log.level}] `;
-
-                    const message = document.createElement('div');
-                    message.classList.add('log-message');
-                    message.textContent = log.message;
-
-                    const source = document.createElement('div');
-                    source.classList.add('log-source');
-                    source.textContent = `Source: ${log.source || 'N/A'}`;
-
-                    logEntry.appendChild(timestamp);
-                    logEntry.appendChild(level);
-                    logEntry.appendChild(message);
-                    logEntry.appendChild(source);
-                    logContainer.appendChild(logEntry);
-                });
+                allLogs = logs; // Store all logs
+                filterLogs(); // Initial filtering after loading
             })
             .catch(error => {
                 console.error('Error fetching logs:', error);
@@ -124,6 +113,51 @@
             })
             .finally(() => {
                 isFetching = false; // Allow future fetches
+            });
+        }
+
+        function filterLogs() {
+            const selectedLevel = levelFilter.value;
+            const logContainer = document.getElementById('log-container');
+            logContainer.classList.remove('loading');
+            logContainer.innerHTML = ''; // Clear existing logs
+
+            let filteredLogs = allLogs;
+
+            if (selectedLevel) {
+                filteredLogs = allLogs.filter(log => log.level === selectedLevel);
+            }
+
+            if (!filteredLogs || filteredLogs.length === 0) {
+                logContainer.textContent = 'No logs found.';
+                return;
+            }
+
+            filteredLogs.forEach(log => {
+                const logEntry = document.createElement('div');
+                logEntry.classList.add('log-entry');
+
+                const timestamp = document.createElement('div');
+                timestamp.classList.add('log-timestamp');
+                timestamp.textContent = new Date(log.timestamp).toLocaleString(); // Format timestamp
+
+                const level = document.createElement('span');
+                level.classList.add('log-level', log.level); // Add log level and class
+                level.textContent = `[${log.level}] `;
+
+                const message = document.createElement('div');
+                message.classList.add('log-message');
+                message.textContent = log.message;
+
+                const source = document.createElement('div');
+                source.classList.add('log-source');
+                source.textContent = `Source: ${log.source || 'N/A'}`;
+
+                logEntry.appendChild(timestamp);
+                logEntry.appendChild(level);
+                logEntry.appendChild(message);
+                logEntry.appendChild(source);
+                logContainer.appendChild(logEntry);
             });
         }
 
