@@ -177,6 +177,31 @@ self.addEventListener('fetch', (event) => {
             headers: headers
           });
         }
+	else if (contentType && (contentType.includes('text/javascript') || contentType.includes('application/javascript'))) {
+		let responseText = await response.text();
+
+		const nonce = generateNonce();
+
+		try {
+			if(isTrustedTypesSupported) {
+				responseText = TRUSTED_TYPES_POLICY.createScript(responseText);
+			}
+		} catch (error) {
+			console.error('TrustedTypes error', error);
+		}
+		headers.set('Content-Security-Policy', `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+		headers.set('X-Content-Type-Options', 'nosniff');
+		headers.set('X-Frame-Options', 'DENY');
+		headers.set('X-XSS-Protection', '1; mode=block');
+		headers.set('Content-Type', 'application/javascript; charset=utf-8');
+		headers.delete('Content-Length');
+
+		return new Response(responseText, {
+			status: response.status,
+			statusText: response.statusText,
+			headers: headers
+		});
+	}
 
         return response;
       } catch (error) {
