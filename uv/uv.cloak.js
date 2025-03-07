@@ -224,7 +224,11 @@ const handler = {
     const originalFunctionCall = Function.prototype.call;
 
     Function.prototype.apply = new Proxy(originalFunctionApply, {
-        apply(target, thisArg, argArray) {
+        apply: function(target, thisArg, argArray) {
+            if (typeof target !== 'function') {
+                console.warn('Invalid target for Function.prototype.apply');
+                return undefined;
+            }
             try {
                 return Reflect.apply(target, thisArg, argArray);
             } catch (e) {
@@ -235,7 +239,11 @@ const handler = {
     });
 
     Function.prototype.call = new Proxy(originalFunctionCall, {
-        apply(target, thisArg, argArray) {
+        apply: function(target, thisArg, argArray) {
+            if (typeof target !== 'function') {
+                console.warn('Invalid target for Function.prototype.call');
+                return undefined;
+            }
             try {
                 return Reflect.apply(target, thisArg, argArray);
             } catch (e) {
@@ -257,6 +265,21 @@ const handler = {
         apply(target, thisArg, argArray) {
             console.warn('setInterval blocked');
             return -1; // Or any value that isn't a valid timer ID
+        }
+    });
+
+    // Prevent access to eval and Function constructor for enhanced security
+    window.eval = new Proxy(window.eval, {
+        apply: function(target, thisArg, argArray) {
+            console.warn('eval blocked');
+            return undefined;
+        }
+    });
+
+    window.Function = new Proxy(window.Function, {
+        construct: function(target, argArray) {
+            console.warn('Function constructor blocked');
+            return undefined;
         }
     });
 
