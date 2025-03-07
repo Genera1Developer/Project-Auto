@@ -96,6 +96,13 @@
             font-weight: bold;
         }
 
+        /* Style for log correlation links */
+        .correlation-link {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -237,7 +244,7 @@
 
                 const details = document.createElement('div');
                 details.classList.add('log-details');
-                let sensitiveInfo = `Encryption status: <span class="sensitive-data">${log.encryptionStatus || 'N/A'}</span>, User: <span class="sensitive-data">${log.user || 'N/A'}</span>`;
+                let sensitiveInfo = `Encryption status: <span class="sensitive-data">${log.encryptionStatus || 'N/A'}</span>, User: <span class="sensitive-data">${log.user || 'N/A'}</span>, IP Address: <span class="sensitive-data">${log.ipAddress || 'N/A'}</span>`;
                 details.innerHTML = `Details: ${sensitiveInfo}`;
 
                 // Security issue detection
@@ -271,6 +278,15 @@
                     message.appendChild(integrityIssueWarning);
                 }
 
+                // Log Correlation - Example: look for similar log messages within a time window
+                const correlationLink = document.createElement('span');
+                correlationLink.classList.add('correlation-link');
+                correlationLink.textContent = 'Find Similar Logs';
+                correlationLink.addEventListener('click', () => correlateLogs(log));
+                details.appendChild(document.createElement('br')); // Add a line break
+                details.appendChild(correlationLink);
+
+
 
                 logEntry.appendChild(timestamp);
                 logEntry.appendChild(level);
@@ -285,6 +301,22 @@
                 logContainer.appendChild(logEntry);
             });
             updateSensitiveDataVisibility();
+        }
+
+        function correlateLogs(log) {
+            const timeWindow = 60000; // 1 minute window
+            const similarLogs = allLogs.filter(otherLog =>
+                otherLog !== log && // exclude current log
+                otherLog.message === log.message && // same message
+                Math.abs(new Date(otherLog.timestamp) - new Date(log.timestamp)) <= timeWindow // within time window
+            );
+
+            if (similarLogs.length > 0) {
+                alert(`Found ${similarLogs.length} similar logs within 1 minute! Check console for details.`);
+                console.log('Similar Logs:', similarLogs);
+            } else {
+                alert('No similar logs found within 1 minute.');
+            }
         }
 
         // Fetch logs on page load
