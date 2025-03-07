@@ -8,6 +8,7 @@ self.__uv$config = {
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
     injectedScripts: '/uv/uv.injected.js',
-    xorKey: 'aVeryLongAndRandomlyGeneratedSecureKeyWithSufficientEntropy',
-    // Ensure XOR key is long and complex
+    xorKey: 'aVeryLongAndRandomlyGeneratedSecureKeyWithSufficientEntropyAndMoreCharacters',
+    // Ensure XOR key is long and complex.  Minimum 64 characters recommended.
+    // Service worker scope depends on prefix.  It is highly recommended to customize the prefix.
 };
