@@ -23,8 +23,12 @@ function ProxyForm() {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to fetch URL');
+                try {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to fetch URL');
+                } catch (jsonError) {
+                    throw new Error(`Failed to fetch URL: ${response.status} ${response.statusText}`);
+                }
             }
 
             const responseData = await response.text();
@@ -47,12 +51,13 @@ function ProxyForm() {
             <form onSubmit={handleSubmit}>
                 <label htmlFor="url">URL:</label>
                 <input
-                    type="text"
+                    type="url"
                     id="url"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     placeholder="Enter URL"
                     disabled={isLoading}
+                    required
                 />
                 <button type="submit" disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Go'}
