@@ -72,4 +72,10 @@ a:focus, button:focus, input[type="submit"]:focus {
     transform: translateZ(0); /* Forces hardware acceleration */
     backface-visibility: hidden; /* Improves rendering performance */
     perspective: 1000px; /* Helps with 3D transformations */
+    will-change: transform, opacity, box-shadow, background-color; /* Performance optimization */
+}
+
+/* Animate background color more smoothly */
+a, button, input[type="submit"] {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
