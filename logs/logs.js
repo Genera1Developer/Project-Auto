@@ -8,8 +8,9 @@ const router = express.Router();
 
 const logFilePath = path.join(__dirname, 'logs.txt'); // Define log file path
 const encryptionKey = process.env.LOG_ENCRYPTION_KEY; // Store key securely. Use environment variable.
-const algorithm = 'aes-256-cbc'; // Choose strong encryption algorithm
-const IV_LENGTH = 16; // Constant IV length
+const algorithm = 'aes-256-gcm'; // Choose strong encryption algorithm
+const IV_LENGTH = 12; // Constant IV length
+const AUTH_TAG_LENGTH = 16;
 
 if (!encryptionKey) {
   console.error("FATAL: LOG_ENCRYPTION_KEY is not set. Exiting.");
@@ -23,7 +24,8 @@ function encrypt(text) {
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-    const ciphertext = iv.toString('hex') + ':' + encrypted.toString('hex');
+    const authTag = cipher.getAuthTag();
+    const ciphertext = iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
     return ciphertext;
   } catch (error) {
     console.error("Encryption error:", error);
@@ -39,18 +41,26 @@ function decrypt(text) {
     }
 
     const textParts = text.split(':');
-    if (textParts.length < 2) {
+    if (textParts.length < 3) {
       console.warn("Invalid ciphertext format.");
       return null;
     }
 
     const iv = Buffer.from(textParts.shift(), 'hex');
+    const authTag = Buffer.from(textParts.shift(), 'hex');
     const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+
     if (iv.length !== IV_LENGTH) {
         console.warn("Invalid IV length.");
         return null;
     }
+    if (authTag.length !== AUTH_TAG_LENGTH) {
+        console.warn("Invalid authentication tag length.");
+        return null;
+    }
+
     const decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey, 'utf8'), iv);
+    decipher.setAuthTag(authTag);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
