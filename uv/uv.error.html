@@ -20,6 +20,7 @@
             padding: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
+            max-width: 500px; /* Added max-width for better readability on larger screens */
         }
 
         h1 {
@@ -48,14 +49,27 @@
         <a href="/">Go back to the homepage</a>
     </div>
     <script>
-        // You can use JavaScript to dynamically set the error message.
-        // For example, if you pass the error message in the URL:
-        // uv.error.html?message=Your%20custom%20error%20message
         const urlParams = new URLSearchParams(window.location.search);
         const errorMessage = urlParams.get('message');
+        const encodedURL = urlParams.get('url'); // Get the encoded URL
 
         if (errorMessage) {
             document.getElementById('error-message').textContent = errorMessage;
+        }
+
+        // Optionally display the URL that caused the error
+        if (encodedURL) {
+            try {
+                const decodedURL = decodeURIComponent(encodedURL);
+                const urlDisplay = document.createElement('p');
+                urlDisplay.textContent = `The following URL caused the error: ${decodedURL}`;
+                document.querySelector('.container').appendChild(urlDisplay);
+            } catch (e) {
+                console.error("Error decoding URL:", e);
+                const urlDisplay = document.createElement('p');
+                urlDisplay.textContent = `An error occurred while decoding the URL.`;
+                document.querySelector('.container').appendChild(urlDisplay);
+            }
         }
     </script>
 </body>
