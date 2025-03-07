@@ -23,7 +23,8 @@ const passthroughHeaders = new Set([
   'transfer-encoding',
   'pragma',
   'age',
-  'location'
+  'location',
+  'content-disposition' // Added content-disposition
 ]);
 
 async function handleRequest(event) {
@@ -34,9 +35,15 @@ async function handleRequest(event) {
       url = url.replace('/service/', '/');
     }
 
+    const requestHeaders = new Headers(event.request.headers);
+    // Remove potentially problematic headers
+    requestHeaders.delete('service-worker');
+    requestHeaders.delete('host');
+    requestHeaders.delete('origin');
+    
     const response = await fetch(url, {
       method: event.request.method,
-      headers: event.request.headers,
+      headers: requestHeaders,
       body: event.request.body,
       redirect: 'manual' // Important to handle redirects manually
     });
@@ -61,7 +68,9 @@ async function handleRequest(event) {
     if (response.status === 301 || response.status === 302 || response.status === 307 || response.status === 308) {
       const redirectURL = response.headers.get('location');
       if (redirectURL) {
-        headers.set('location', redirectURL); // Modify the location header to point to the correct URL
+        // Resolve relative URLs
+        const absoluteRedirectURL = new URL(redirectURL, url).href;
+        headers.set('location', absoluteRedirectURL); // Modify the location header to point to the correct URL
       }
     }
 
