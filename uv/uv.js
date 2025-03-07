@@ -24,14 +24,16 @@ const passthroughHeaders = new Set([
   'pragma',
   'age',
   'location',
-  'content-disposition' // Added content-disposition
+  'content-disposition'
 ]);
 
 async function handleRequest(event) {
   try {
     let url = event.request.url;
+    const urlObj = new URL(event.request.url);
+
     // Remove the /service/ prefix if it exists
-    if (new URL(event.request.url).pathname.startsWith('/service/')) {
+    if (urlObj.pathname.startsWith('/service/')) {
       url = url.replace('/service/', '/');
     }
 
@@ -40,13 +42,20 @@ async function handleRequest(event) {
     requestHeaders.delete('service-worker');
     requestHeaders.delete('host');
     requestHeaders.delete('origin');
+    requestHeaders.delete('referer'); // Remove referer header
     
-    const response = await fetch(url, {
+
+    const fetchOptions = {
       method: event.request.method,
       headers: requestHeaders,
-      body: event.request.body,
       redirect: 'manual' // Important to handle redirects manually
-    });
+    };
+
+    if (event.request.body) {
+      fetchOptions.body = event.request.body;
+    }
+
+    const response = await fetch(url, fetchOptions);
 
     if (!response.ok && response.status !== 301 && response.status !== 302 && response.status !== 307 && response.status !== 308) {
       console.error('Fetch failed:', response.status, response.statusText, url);
@@ -74,7 +83,8 @@ async function handleRequest(event) {
       }
     }
 
-    return new Response(response.body, {
+    const body = await response.blob();
+    return new Response(body, {
       status: response.status,
       statusText: response.statusText,
       headers
