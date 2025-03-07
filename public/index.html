@@ -5,24 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Web Proxy</title>
     <link rel="stylesheet" href="theme/default.css">
-    <link id="theme-stylesheet" rel="stylesheet" href="">
-    <link rel="icon" href="visuals/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div class="container">
         <h1>Secure Web Proxy</h1>
-        <div class="security-warning" id="security-warning">
-            This proxy is for educational purposes only. Use at your own risk. Ensure you understand the security implications before proceeding. Data transmitted through this proxy may not be fully secure.
-        </div>
-        <label for="url">Enter URL:</label>
-        <input type="url" id="url" name="url" placeholder="https://example.com" required>
-
+        <input type="url" id="url" placeholder="Enter URL">
         <button id="proxyButton">Go</button>
-
-        <div class="result" id="result">
-            <p>Response will appear here.</p>
-        </div>
-
+        <div class="result" id="result"></div>
         <div class="error" id="error"></div>
     </div>
     <script src="script.js"></script>
