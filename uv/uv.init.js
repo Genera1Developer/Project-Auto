@@ -24,7 +24,7 @@ const UV_CONFIG = {
     cdn: null,
     forwardHeaders: true,
     rewriteOrigin: true,
-    XORKey: 'CHANGE-ME-NOW-TO-A-SECURE-RANDOM-KEY',
+    XORKey: 'PLACEHOLDER-SECURE-KEY-GEN-ON-SERVER',
     advanced: {
         bypass: false,
         injections: true
@@ -32,5 +32,7 @@ const UV_CONFIG = {
     encryption: true,
     injectWS: true,
     nativeProtocol: false,
-    impersonate: true
+    impersonate: true,
+    verifyConfig: true,
+    dynamicConfig: false
 };
