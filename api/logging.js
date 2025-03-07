@@ -66,13 +66,15 @@ async function initializeLogging() {
     }
 }
 
-// Call initializeLogging function
-initializeLogging();
+// Call initializeLogging function immediately
+(async () => {
+    await initializeLogging();
+})();
 
 process.on('uncaughtException', async (err) => {
     console.error('Uncaught Exception:', err);
     try {
-        await fsPromises.appendFile(logFile, `Uncaught Exception: ${err.stack}\n`);
+        await log(`Uncaught Exception: ${err.stack}`);
     } catch (fileErr) {
         console.error('Failed to write uncaught exception to log file:', fileErr);
     } finally {
@@ -83,7 +85,7 @@ process.on('uncaughtException', async (err) => {
 process.on('unhandledRejection', async (reason, promise) => {
     console.error('Unhandled Rejection at:', promise, 'reason:', reason);
     try {
-        await fsPromises.appendFile(logFile, `Unhandled Rejection: ${reason}\n`);
+        await log(`Unhandled Rejection: ${reason}`);
     } catch (fileErr) {
         console.error('Failed to write unhandled rejection to log file:', fileErr);
     } finally {
