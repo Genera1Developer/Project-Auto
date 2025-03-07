@@ -68,20 +68,34 @@ document.addEventListener('DOMContentLoaded', () => {
           responseDiv.textContent = `Raw response: ${await response.text()}`; // Display raw response on JSON parse failure
           data = null;
         }
-      } else {
+      } else if (contentType && (contentType.includes('image') || contentType.includes('video') || contentType.includes('audio'))) {
+          const blob = await response.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+          const mediaElement = document.createElement(contentType.includes('image') ? 'img' : (contentType.includes('video') ? 'video' : 'audio'));
+          mediaElement.src = blobUrl;
+          if (contentType.includes('video')) {
+              mediaElement.controls = true;
+          } else if (contentType.includes('audio')) {
+              mediaElement.controls = true;
+          }
+          responseDiv.innerHTML = ''; // Clear previous content
+          responseDiv.appendChild(mediaElement);
+          data = blobUrl; // Store blob URL for potential download
+      }
+      else {
         data = await response.text();
         responseDiv.textContent = data;
       }
 
-      if (contentDisposition && contentDisposition.includes('attachment')) {
-        const blob = await response.blob();
+      if (contentDisposition && contentDisposition.includes('attachment') || data instanceof Blob || (typeof data === 'string' && (contentType && (contentType.includes('image') || contentType.includes('video') || contentType.includes('audio'))))) {
+        const blob = data instanceof Blob ? data : (contentType && (contentType.includes('image') || contentType.includes('video') || contentType.includes('audio')) ? await fetch(data).then(res => res.blob()) : await response.blob());
         const blobUrl = window.URL.createObjectURL(blob);
         let filename = 'downloaded_file';
 
         let filenameMatch;
 
         // Attempt to extract filename from filename*
-        filenameMatch = contentDisposition.match(/filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?/i);
+        filenameMatch = contentDisposition?.match(/filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?/i);
         if (filenameMatch && filenameMatch[1]) {
           try {
             filename = decodeURIComponent(filenameMatch[1].replace(/['"]/g, ''));
@@ -91,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         } else {
           // Attempt to extract filename from filename=
-          filenameMatch = contentDisposition.match(/filename=(["']?)([^"';\r\n]*)\1?/i);
+          filenameMatch = contentDisposition?.match(/filename=(["']?)([^"';\r\n]*)\1?/i);
           if (filenameMatch && filenameMatch[2]) {
             filename = filenameMatch[2];
           }
