@@ -72,3 +72,26 @@
     50% { background-color: transparent; }
     100% { background-color: rgba(255, 165, 0, 0.2); }
 }
+
+.encryption-active {
+    animation: encryptionActive 1s ease-in-out infinite alternate;
+}
+
+@keyframes encryptionActive {
+    0% {
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.7); /* Green glow */
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.9); /* Brighter green glow */
+    }
+}
+
+.connection-error {
+    animation: connectionError 1.2s linear infinite;
+}
+
+@keyframes connectionError {
+    0% { background-color: rgba(255, 0, 0, 0.3); } /* Light Red */
+    50% { background-color: transparent; }
+    100% { background-color: rgba(255, 0, 0, 0.3); }
+}
