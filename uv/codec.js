@@ -88,47 +88,89 @@ export async function decode(str, key = null, salt = null) {
         return null;
     }
 }
+edit filepath: api/security.js
+content: export function addSecurityHeaders(res) {
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+}
+edit filepath: api/session.js
+content: import { randomBytes } from 'crypto';
 
-// Consider removing or securing this simplistic XOR cipher
-// XOR is vulnerable to known-plaintext attacks.  It's included only for demonstration and should not be used in production.
-function encrypt(data, key) {
-  const uint8Key = new TextEncoder().encode(key);
-    let encryptedData = new Uint8Array(data.length);
-    for (let i = 0; i < data.length; i++) {
-        encryptedData[i] = data[i] ^ uint8Key[i % uint8Key.length];
-    }
-    return Array.from(encryptedData);
+const sessions = {};
+
+export function createSession() {
+    const sessionId = randomBytes(16).toString('hex');
+    sessions[sessionId] = {
+        createdAt: Date.now()
+    };
+    return sessionId;
 }
 
-// Consider removing or securing this simplistic XOR cipher
-// XOR is vulnerable to known-plaintext attacks. It's included only for demonstration and should not be used in production.
-function decrypt(data, key) {
-  const uint8Key = new TextEncoder().encode(key);
-    let decryptedData = new Uint8Array(data.length);
-    for (let i = 0; i < data.length; i++) {
-        decryptedData[i] = data[i] ^ uint8Key[i % uint8Key.length];
-    }
-    return Array.from(decryptedData);
+export function getSession(sessionId) {
+    return sessions[sessionId];
 }
-edit filepath: uv/codec.js
-content: // Consider removing or securing this simplistic XOR cipher
-// XOR is vulnerable to known-plaintext attacks.  It's included only for demonstration and should not be used in production.
-// function encrypt(data, key) {
-//   const uint8Key = new TextEncoder().encode(key);
-//     let encryptedData = new Uint8Array(data.length);
-//     for (let i = 0; i < data.length; i++) {
-//         encryptedData[i] = data[i] ^ uint8Key[i % uint8Key.length];
-//     }
-//     return Array.from(encryptedData);
-// }
 
-// // Consider removing or securing this simplistic XOR cipher
-// // XOR is vulnerable to known-plaintext attacks. It's included only for demonstration and should not be used in production.
-// function decrypt(data, key) {
-//   const uint8Key = new TextEncoder().encode(key);
-//     let decryptedData = new Uint8Array(data.length);
-//     for (let i = 0; i < data.length; i++) {
-//         decryptedData[i] = data[i] ^ uint8Key[i % uint8Key.length];
-//     }
-//     return Array.from(decryptedData);
-// }
+export function destroySession(sessionId) {
+    delete sessions[sessionId];
+}
+
+export function attachSession(req, res) {
+    let sessionId = req.cookies.sessionId;
+
+    if (!sessionId || !getSession(sessionId)) {
+        sessionId = createSession();
+        res.cookie('sessionId', sessionId, {
+            httpOnly: true,
+            secure: true, // Ensure this is true for HTTPS
+            sameSite: 'strict'
+        });
+    }
+
+    req.session = getSession(sessionId);
+}
+edit filepath: public/script.js
+content: function sanitizeInput(input) {
+    let tempDiv = document.createElement("div");
+    tempDiv.textContent = input;
+    return tempDiv.innerHTML;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const urlForm = document.getElementById('urlForm');
+    const urlInput = document.getElementById('url');
+    const proxyUrl = localStorage.getItem('proxyUrl') || '/';
+
+    urlForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let url = sanitizeInput(urlInput.value);
+        if (url) {
+            window.location.href = proxyUrl + encodeURIComponent(url);
+        }
+    });
+});
+edit filepath: logs/logs.js
+content: function sanitizeLog(log) {
+    let tempDiv = document.createElement("div");
+    tempDiv.textContent = log;
+    return tempDiv.innerHTML;
+}
+
+function displayLogs() {
+    fetch('/api/logs')
+        .then(response => response.json())
+        .then(logs => {
+            const logsContainer = document.getElementById('logs');
+            logsContainer.innerHTML = '';
+            logs.forEach(log => {
+                const logElement = document.createElement('div');
+                logElement.innerHTML = sanitizeLog(log);
+                logsContainer.appendChild(logElement);
+            });
+        })
+        .catch(error => console.error('Error fetching logs:', error));
+}
+
+document.addEventListener('DOMContentLoaded', displayLogs);
