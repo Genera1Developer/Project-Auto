@@ -6,6 +6,14 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
+const TRUSTED_TYPES_POLICY = trustedTypes && trustedTypes.createPolicy('ultraviolet', {
+  createHTML: (string) => string,
+  createScriptURL: (string) => string,
+  createScript: (string) => string,
+});
+
+const isTrustedTypesSupported = typeof trustedTypes !== 'undefined' && trustedTypes.createPolicy;
+
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
@@ -65,9 +73,13 @@ self.addEventListener('fetch', (event) => {
 
           const headers = new Headers(response.headers);
           headers.set('Access-Control-Allow-Origin', '*');
+
+          // Remove potentially harmful headers
           headers.delete('content-security-policy');
           headers.delete('content-security-policy-report-only');
           headers.delete('clear-site-data');
+          headers.delete('feature-policy');
+          headers.delete('permissions-policy');
 
           let responseBody;
           try {
@@ -110,6 +122,23 @@ self.addEventListener('fetch', (event) => {
           });
         }
 
+        const headers = new Headers(response.headers);
+        const contentType = headers.get('Content-Type');
+
+        if (contentType && (contentType.includes('text/html') || contentType.includes('application/xhtml+xml'))) {
+          let responseText = await response.text();
+
+          if (isTrustedTypesSupported) {
+             responseText = TRUSTED_TYPES_POLICY.createHTML(responseText);
+          }
+          
+          return new Response(responseText, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: headers
+          });
+        }
+        
         return response;
       } catch (error) {
         console.error('Fetch error for original request:', error);
