@@ -181,6 +181,10 @@ self.addEventListener('fetch', (event) => {
 	   sanitizedHeaders.delete('ETag');
 	   sanitizedHeaders.set('Cache-Control', 'no-store');
 	   sanitizedHeaders.set('Pragma', 'no-cache');
+	   sanitizedHeaders.delete('Cross-Origin-Resource-Policy');
+	   sanitizedHeaders.delete('Cross-Origin-Opener-Policy');
+	   sanitizedHeaders.delete('Cross-Origin-Embedder-Policy');
+
 
           return new Response(responseText, {
             status: response.status,
@@ -209,6 +213,10 @@ self.addEventListener('fetch', (event) => {
 		sanitizedHeaders.delete('ETag');
 		sanitizedHeaders.set('Cache-Control', 'no-store');
 		sanitizedHeaders.set('Pragma', 'no-cache');
+		sanitizedHeaders.delete('Cross-Origin-Resource-Policy');
+		sanitizedHeaders.delete('Cross-Origin-Opener-Policy');
+		sanitizedHeaders.delete('Cross-Origin-Embedder-Policy');
+
 
 		return new Response(responseText, {
 			status: response.status,
