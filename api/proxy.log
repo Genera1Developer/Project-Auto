@@ -4,21 +4,23 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 def log_request(method, url, headers=None, data=None):
     log_message = f"Request: {method} {url}"
+    logging.info(log_message)
     if headers:
         log_debug(f"Request Headers: {headers}")
     if data:
         log_debug(f"Request Data: {data}")
-    logging.info(log_message)
+
 
 def log_response(status_code, url=None, headers=None, data=None):
     log_message = f"Response: Status Code {status_code}"
     if url:
         log_message += f" URL: {url}"
+    logging.info(log_message)
     if headers:
         log_debug(f"Response Headers: {headers}")
     if data:
         log_debug(f"Response Data: {data}")
-    logging.info(log_message)
+
 
 def log_error(message, exc_info=True):
     logging.error(message, exc_info=exc_info)
