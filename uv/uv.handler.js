@@ -118,6 +118,11 @@ async function handleRequest(req, res) {
     const proxyReq = (url.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
       let resHeaders = sanitizedHeaders(proxyRes.headers);
 
+      // Remove potentially harmful headers
+      delete resHeaders['content-security-policy'];
+      delete resHeaders['x-frame-options'];
+      delete resHeaders['x-xss-protection'];
+
       res.writeHead(proxyRes.statusCode, resHeaders);
 
       proxyRes.on('data', (chunk) => {
