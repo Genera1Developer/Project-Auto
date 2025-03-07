@@ -1,6 +1,5 @@
 .settings-container {
     width: 80%;
-    max-width: 800px;
     margin: 20px auto;
     background-color: #fff;
     padding: 20px;
@@ -10,8 +9,8 @@
 
 .settings-container h2 {
     text-align: center;
-    margin-bottom: 20px;
     color: #333;
+    margin-bottom: 20px;
 }
 
 .setting-item {
@@ -20,48 +19,24 @@
 
 .setting-item label {
     display: block;
-    margin-bottom: 5px;
     font-weight: bold;
-    color: #555;
+    margin-bottom: 5px;
 }
 
 .setting-item select,
-.setting-item input[type="text"],
-.setting-item input[type="number"] {
+.setting-item input[type="checkbox"] {
+    margin-top: 5px;
+}
+
+.setting-item select {
+    width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 14px;
-    width: 100%;
-    margin-top: 5px;
 }
 
-.setting-item input[type="checkbox"] {
-    margin-top: 5px;
-    margin-left: 10px;
-    vertical-align: middle; /* Align checkbox label text */
-}
-
-.setting-item select:focus,
-.setting-item input[type="text"]:focus,
-.setting-item input[type="number"]:focus {
-    outline: none;
-    border-color: #66afe9;
-    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5);
-}
-
-.setting-item input[type="checkbox"]:focus {
-    outline: none;
-}
-
-.setting-item .checkbox-label {
-    display: inline-block;
-    margin-left: 5px; /* Space between checkbox and label */
-    vertical-align: middle; /* Align checkbox label text */
-}
-
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .settings-container {
         width: 95%;
         padding: 15px;
