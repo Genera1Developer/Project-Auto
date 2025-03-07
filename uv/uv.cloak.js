@@ -7,6 +7,10 @@ const handler = {
             return 'Object';
         }
 
+        if (prop === 'then') {
+            return undefined;
+        }
+
         // Secure property access by checking if the property exists and is accessible.
         if (!(prop in target)) {
             return undefined;
@@ -149,4 +153,7 @@ const handler = {
 
     // Proxy window object itself.
     applyProxy(window, handler);
+
+    // Attempt to prevent prototype pollution
+    Object.prototype.__proto__ = null;
 })();
