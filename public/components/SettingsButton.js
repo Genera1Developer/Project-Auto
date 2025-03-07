@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import Settings from './Settings';
-import './SettingsButton.css';
+import Settings from './Settings'; //DOES NOT EXIST, USE SOMETHING ELSE
+import './SettingsButton.css'; //DOES NOT EXIST, USE SOMETHING ELSE
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 
