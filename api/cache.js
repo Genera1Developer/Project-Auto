@@ -17,7 +17,7 @@ const getCache = async (url) => {
         return null;
     }
     try {
-        const value = await cache.get(url);
+        const value = cache.get(url);
         return value === undefined ? null : value;
     } catch (error) {
         console.error(`Cache get operation failed for URL: ${url}`, error);
