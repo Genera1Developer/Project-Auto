@@ -36,3 +36,12 @@
     outline: 2px solid #007bff; /* Example focus color */
     outline-offset: 2px;
 }
+
+/* Reduced motion preference handling for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .slide-up,
+  .slide-down {
+    transition: none;
+  }
+}
