@@ -26,6 +26,16 @@
 .setting-item select,
 .setting-item input[type="checkbox"] {
     margin-left: 10px;
+    vertical-align: middle; /* Align checkboxes and selects vertically */
+}
+
+/* Add some spacing around checkboxes and selects */
+.setting-item select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%; /* Make select boxes fill the available width */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 @media (max-width: 768px) {
