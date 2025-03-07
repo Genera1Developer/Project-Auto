@@ -43,6 +43,12 @@
         .error-url {
             word-break: break-all;
         }
+
+        .security-warning {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -52,6 +58,7 @@
         <p>Please try again later.</p>
         <a href="/">Go back to the homepage</a>
         <div id="error-url-container"></div>
+        <div id="security-warnings-container"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
     <script>
@@ -66,7 +73,8 @@
             // Consider using a more robust error reporting mechanism in production.
             // Ensure the /log-error endpoint is properly secured and rate-limited.
             // Implement a retry mechanism with exponential backoff.
-            fetch('/log-error', {
+            const errorLogUrl = '/log-error'; // Define the URL
+            fetch(errorLogUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -90,24 +98,35 @@
             document.getElementById('error-message').textContent = sanitizedErrorMessage;
         }
 
+        let decodedURL = null; // Declare decodedURL outside the try block
         if (encodedURL) {
             try {
-                const decodedURL = decodeURIComponent(encodedURL);
+                decodedURL = decodeURIComponent(encodedURL); // Assign decodedURL here
                 const urlDisplay = document.createElement('p');
                 urlDisplay.textContent = `The following URL caused the error: `;
                 urlDisplay.classList.add('error-url');
 
                 const urlLink = document.createElement('a');
                 let sanitizedDecodedURL = DOMPurify.sanitize(decodedURL, { USE_PROFILES: { html: true } });
+                let securityWarnings = [];
 
                 try {
                     const parsedURL = new URL(sanitizedDecodedURL);
                     // Check if the protocol is secure (HTTPS)
                     if (parsedURL.protocol !== "https:" && parsedURL.protocol !== "http:") {
                         sanitizedDecodedURL = "#invalid-protocol";
+                        securityWarnings.push("URL uses an invalid protocol.");
                     }
+
+                    // Check for potentially malicious patterns in the hostname or path
+                    if (parsedURL.hostname.includes("javascript:") || parsedURL.pathname.includes("javascript:")) {
+                        securityWarnings.push("URL contains potentially malicious patterns (javascript:).");
+                        sanitizedDecodedURL = "#potential-xss";
+                    }
+
                 } catch (_) {
                     sanitizedDecodedURL = "#invalid-url";
+                    securityWarnings.push("URL is invalid.");
                 }
 
                 urlLink.href = sanitizedDecodedURL;
@@ -117,6 +136,15 @@
 
                 urlDisplay.appendChild(urlLink);
                 document.getElementById('error-url-container').appendChild(urlDisplay);
+
+                const securityWarningsContainer = document.getElementById('security-warnings-container');
+                securityWarnings.forEach(warning => {
+                    const warningElement = document.createElement('p');
+                    warningElement.classList.add('security-warning');
+                    warningElement.textContent = `Security Warning: ${warning}`;
+                    securityWarningsContainer.appendChild(warningElement);
+                });
+
 
             } catch (e) {
                 console.error("Error decoding URL:", e);
@@ -139,6 +167,7 @@
 
         if (encodedURL) {
             errorData.errorURL = encodedURL;
+            errorData.decodedURL = decodedURL;
         }
 
         if (errorStack) {
