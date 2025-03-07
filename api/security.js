@@ -1,38 +1,9 @@
-const crypto = require('crypto');
-
-const algorithm = 'aes-256-gcm'; // Use GCM for authenticated encryption
-const key = crypto.randomBytes(32); // Generate a secure key (32 bytes for AES-256)
-
-function encrypt(text) {
-    const iv = crypto.randomBytes(16); // Generate a unique IV for each encryption
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    const authTag = cipher.generateAuthTag();
-    return {
-        iv: iv.toString('hex'),
-        encryptedData: encrypted,
-        authTag: authTag.toString('hex')
-    };
+export function addSecurityHeaders(res) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none';");
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 }
-
-function decrypt(encryptedData, ivHex, authTagHex) {
-    const iv = Buffer.from(ivHex, 'hex');
-    const authTag = Buffer.from(authTagHex, 'hex');
-    const encryptedText = Buffer.from(encryptedData, 'hex');
-    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-    decipher.setAuthTag(authTag);
-    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-}
-
-function generateSecureToken() {
-    return crypto.randomBytes(64).toString('hex');
-}
-
-module.exports = {
-    encrypt,
-    decrypt,
-    generateSecureToken
-};
