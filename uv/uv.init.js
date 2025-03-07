@@ -11,5 +11,6 @@ const UV_CONFIG = {
     cloak: '/uv/uv.cloak.js',
     blacklist: [],
     loglevel: 'info',
+    learnMore: 'https://github.com/titaniumnetwork-dev/Ultraviolet', // Link to documentation
     // Add more configuration options as needed
 };
