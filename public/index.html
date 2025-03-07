@@ -112,6 +112,32 @@
             border-radius: 5px;
             margin-bottom: 5px;
         }
+
+        /* Add a subtle animation to the loading indicator */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loading img {
+            animation: spin 2s linear infinite;
+        }
+
+        /* Add a more modern look to the form input */
+        input[type="url"] {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="url"]:focus {
+            border-color: #007bff;
+            outline: none; /* Remove the default focus outline */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Optional: Add a subtle box-shadow */
+        }
     </style>
 </head>
 <body>
