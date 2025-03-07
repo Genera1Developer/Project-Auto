@@ -103,7 +103,7 @@ class Bare {
             const importedKey = await window.crypto.subtle.importKey(
                 "raw",
                 encoder.encode(key),
-                { name: "AES-GCM" },
+                { name: "AES-GCM", length: 256 }, // Specify key length
                 false,
                 ["encrypt", "decrypt"]
             );
@@ -146,7 +146,7 @@ class Bare {
             const importedKey = await window.crypto.subtle.importKey(
                 "raw",
                 encoder.encode(key),
-                { name: "AES-GCM" },
+                { name: "AES-GCM", length: 256 }, // Specify key length
                 false,
                 ["encrypt", "decrypt"]
             );
