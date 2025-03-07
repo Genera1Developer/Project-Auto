@@ -75,11 +75,9 @@ async function handleRequest(req, res) {
       if (!res.headersSent) {
         res.writeHead(502, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
-      } else {
-        if (!res.writableEnded) {
+      } else if (!res.writableEnded) {
           res.destroy();
         }
-      }
     });
 
     req.pipe(proxyReq);
@@ -90,11 +88,9 @@ async function handleRequest(req, res) {
       if (!res.headersSent) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Request error: ' + err.message);
-      } else {
-        if (!res.writableEnded) {
+      } else if (!res.writableEnded) {
           res.destroy();
         }
-      }
     });
 
     proxyReq.on('close', () => {
@@ -111,11 +107,9 @@ async function handleRequest(req, res) {
     if (!res.headersSent) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Internal server error: ' + error.message);
-    } else {
-      if (!res.writableEnded) {
+    } else if (!res.writableEnded) {
         res.destroy();
       }
-    }
   }
 }
 
