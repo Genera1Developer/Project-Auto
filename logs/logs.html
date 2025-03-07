@@ -1,1 +1,72 @@
-<!-- SECURITY LOGS FILE FOR /api/security.js -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Logs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .log-entry {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+        .log-timestamp {
+            font-size: 0.8em;
+            color: #777;
+        }
+        .log-message {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Security Logs</h1>
+    <div id="log-container">
+        <!-- Logs will be dynamically inserted here -->
+    </div>
+
+    <script>
+        function fetchLogs() {
+            fetch('/api/security/logs') // Endpoint to fetch logs
+                .then(response => response.json())
+                .then(logs => {
+                    const logContainer = document.getElementById('log-container');
+                    logContainer.innerHTML = ''; // Clear existing logs
+
+                    logs.forEach(log => {
+                        const logEntry = document.createElement('div');
+                        logEntry.classList.add('log-entry');
+
+                        const timestamp = document.createElement('div');
+                        timestamp.classList.add('log-timestamp');
+                        timestamp.textContent = new Date(log.timestamp).toLocaleString(); // Format timestamp
+
+                        const message = document.createElement('div');
+                        message.classList.add('log-message');
+                        message.textContent = log.message;
+
+                        logEntry.appendChild(timestamp);
+                        logEntry.appendChild(message);
+                        logContainer.appendChild(logEntry);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching logs:', error);
+                    const logContainer = document.getElementById('log-container');
+                    logContainer.innerHTML = '<p>Error loading logs.</p>';
+                });
+        }
+
+        // Fetch logs on page load
+        fetchLogs();
+
+        // Optionally, refresh logs periodically (e.g., every 5 seconds)
+        // setInterval(fetchLogs, 5000);
+    </script>
+</body>
+</html>
