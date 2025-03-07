@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import Settings from './Settings'; //DOES NOT EXIST, USE SOMETHING ELSE
-import './SettingsButton.css'; //DOES NOT EXIST, USE SOMETHING ELSE
+import SettingsModal from './SettingsModal';
+import './SettingsButton.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 
@@ -17,7 +17,7 @@ function SettingsButton() {
                 <FontAwesomeIcon icon={faCog} className="settings-icon" />
                 Settings
             </button>
-            {showSettings && <Settings />}
+            {showSettings && <SettingsModal onClose={toggleSettings} /> }
         </>
     );
 }
