@@ -49,7 +49,7 @@ class Bare {
 		try {
 			return new URL(url, base || this.origin).href;
 		} catch (error) {
-			console.warn("Bare resolve error:", error);
+			console.warn("Bare resolve error:", error, url, base);
 			return undefined;
 		}
 	}
