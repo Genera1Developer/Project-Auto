@@ -1,102 +1,88 @@
+// api/session.js
+
 const { generateSecureKey, encryptData, decryptData } = require('./security');
 
-class SessionManager {
-    constructor() {
-        this.sessions = {};
-        this.sessionKeyLength = 32; // Key length for AES encryption (32 bytes = 256 bits)
-    }
+// Session storage (in-memory for simplicity, consider using a database in production)
+const sessions = {};
 
-    createSession() {
-        const sessionId = generateSecureKey(16); // Generate a 16-byte session ID
-        const encryptionKey = generateSecureKey(this.sessionKeyLength); // Generate a session-specific encryption key
-        this.sessions[sessionId] = {
-            encryptionKey: encryptionKey,
-            data: {}
-        };
-        return sessionId; // Return only session ID
-    }
+// Function to create a new session
+function createSession() {
+  const sessionId = generateSecureKey(16); // 16 bytes = 32 hex chars
+  const encryptionKey = generateSecureKey(32); // AES-256 key (32 bytes = 64 hex chars)
 
-    getSession(sessionId) {
-        const session = this.sessions[sessionId];
-        if (!session) {
-            return null;
-        }
-        // Deep copy to prevent modifications to the original session object.
-        return JSON.parse(JSON.stringify(session));
-    }
+  sessions[sessionId] = {
+    encryptionKey: encryptionKey,
+    data: {},
+    createdAt: Date.now(),
+    lastAccessed: Date.now(),
+  };
 
-    updateSessionData(sessionId, data) {
-        if (!sessionId || typeof data !== 'object' || data === null) {
-            return false; // Input validation
-        }
-
-        const session = this.getSession(sessionId);
-        if (!session) {
-            return false; // Indicate session not found
-        }
-
-        try {
-            const currentSession = this.sessions[sessionId];
-            currentSession.data = { ...currentSession.data, ...data };
-            return true; // Indicate success
-        } catch (error) {
-            console.error("Error updating session data:", error);
-            return false; // Indicate failure
-        }
-    }
-
-    encryptSessionData(sessionId, data) {
-        if (!sessionId || typeof data !== 'object' || data === null) {
-            return null;
-        }
-
-        const session = this.getSession(sessionId);
-        if (!session) {
-            return null;
-        }
-        try {
-            const key = session.encryptionKey;
-            const stringifiedData = JSON.stringify(data);
-            return encryptData(stringifiedData, key);
-        } catch (error) {
-            console.error("Encryption error:", error);
-            return null;
-        }
-    }
-
-    decryptSessionData(sessionId, encryptedData) {
-        if (!sessionId || typeof encryptedData !== 'string' || encryptedData.length === 0) {
-            return null;
-        }
-
-        const session = this.getSession(sessionId);
-        if (!session) {
-            return null;
-        }
-        try {
-            const key = session.encryptionKey;
-            const decryptedData = decryptData(encryptedData, key);
-            if (decryptedData === null) {
-                return null; // Handle decryption failure gracefully
-            }
-            return JSON.parse(decryptedData);
-        } catch (error) {
-            console.error("Decryption error:", error);
-            return null;
-        }
-    }
-
-    destroySession(sessionId) {
-        if (!sessionId) {
-            return false;
-        }
-
-        if (this.sessions[sessionId]) {
-            delete this.sessions[sessionId];
-            return true;
-        }
-        return false;
-    }
+  return { sessionId, encryptionKey };
 }
 
-module.exports = new SessionManager();
+// Function to get session data
+function getSessionData(sessionId) {
+  const session = sessions[sessionId];
+  if (!session) {
+    return null;
+  }
+
+  session.lastAccessed = Date.now();
+  return session.data;
+}
+
+// Function to update session data
+function updateSessionData(sessionId, newData) {
+  const session = sessions[sessionId];
+  if (!session) {
+    return false;
+  }
+
+  session.data = { ...session.data, ...newData };
+  session.lastAccessed = Date.now();
+  return true;
+}
+
+// Function to destroy a session
+function destroySession(sessionId) {
+  delete sessions[sessionId];
+}
+
+// Middleware to handle session management
+function sessionMiddleware(req, res, next) {
+  let sessionId = req.cookies.sessionId;
+
+  if (!sessionId || !sessions[sessionId]) {
+    const newSession = createSession();
+    sessionId = newSession.sessionId;
+
+    // Set the session cookie with HttpOnly and Secure flags
+    res.cookie('sessionId', sessionId, {
+      httpOnly: true,
+      secure: true, // Only send over HTTPS
+      sameSite: 'Strict', // Recommended for security
+    });
+
+    req.session = {
+      sessionId: sessionId,
+      encryptionKey: newSession.encryptionKey,
+      data: {},
+    };
+  } else {
+    req.session = {
+      sessionId: sessionId,
+      encryptionKey: sessions[sessionId].encryptionKey,
+      data: getSessionData(sessionId),
+    };
+  }
+
+  next();
+}
+
+module.exports = {
+  createSession,
+  getSessionData,
+  updateSessionData,
+  destroySession,
+  sessionMiddleware,
+};
