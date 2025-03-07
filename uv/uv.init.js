@@ -10,4 +10,5 @@ const UV_CONFIG = {
     error: '/uv/uv.error.html',
     cloak: '/uv/uv.cloak.js',
     blacklist: [],
+    loglevel: 'info',
 };
