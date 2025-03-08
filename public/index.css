@@ -3,7 +3,7 @@ body {
     font-family: sans-serif;
     background-color: #000;
     color: #fff;
-    overflow: hidden;
+    overflow: hidden; /* Hide scrollbars */
 }
 
 #particles-js {
@@ -24,19 +24,27 @@ body {
     text-align: center;
 }
 
+h1 {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+    text-shadow: 0 0 10px #007bff;
+}
+
 input[type="url"] {
-    padding: 10px;
-    border: 2px solid #333;
-    background-color: #222;
-    color: #fff;
+    padding: 0.75em;
+    font-size: 1.2em;
+    border: 2px solid #007bff;
     border-radius: 5px;
     width: 80%;
     max-width: 400px;
-    margin-bottom: 20px;
+    background-color: #222;
+    color: #fff;
+    margin-bottom: 1em;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 0.75em 1.5em;
+    font-size: 1.2em;
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -50,29 +58,6 @@ button:hover {
 }
 
 #error-message {
-    color: #ff0000;
-    margin-top: 10px;
-}
-
-/* Encryption Theme */
-body {
-    background-color: #0a192f; /* Dark blue background */
-    color: #64ffda; /* Teal text color */
-}
-
-input[type="url"] {
-    border-color: #64ffda;
-    background-color: #0b2447; /* Slightly darker blue */
-}
-
-button {
-    background-color: #64ffda;
-    color: #0a192f;
-}
-
-button:hover {
-    background-color: #49c6b3;
-}
-#particles-js {
-    background-image: linear-gradient(to bottom, #0a192f, #0b2447); /* Gradient background */
+    color: #ff4d4d;
+    margin-top: 1em;
 }
