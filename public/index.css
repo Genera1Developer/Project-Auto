@@ -1,85 +1,121 @@
 body {
     font-family: 'Arial', sans-serif;
+    background-color: #000; /* Dark background for encryption theme */
+    color: #0f0; /* Green text, like old encryption terminals */
     margin: 0;
     padding: 0;
-    background-color: #000;
-    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent container */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); /* Glowing shadow */
+    text-align: center;
     width: 80%;
     max-width: 600px;
-    margin: 100px auto;
-    text-align: center;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 200, 200, 0.5);
+    position: relative; /* For particle effect positioning */
+    z-index: 1; /* Ensure content is above particles */
 }
 
 h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #00bcd4;
-    text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+    color: #0f0;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
 }
 
-p {
-    font-size: 1.2em;
-    margin-bottom: 30px;
+#urlInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #0f0;
+    border-radius: 4px;
+    background-color: #111;
+    color: #0f0;
 }
 
-#urlForm {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#urlInput:focus {
+    outline: none;
+    border-color: #00ff00;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
 }
 
-input[type="text"] {
-    padding: 15px;
-    margin-bottom: 20px;
-    width: 100%;
+#proxyButton {
+    padding: 10px 20px;
+    background-color: #0f0;
+    color: #000;
     border: none;
-    border-radius: 5px;
-    font-size: 1em;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    box-shadow: 0 0 10px rgba(0, 200, 200, 0.3);
-}
-
-input[type="text"]::placeholder {
-    color: #ccc;
-}
-
-button[type="submit"] {
-    padding: 15px 30px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    background-color: #00bcd4;
-    color: #fff;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 200, 200, 0.5);
 }
 
-button[type="submit"]:hover {
-    background-color: #008ba7;
+#proxyButton:hover {
+    background-color: #0baf0b;
 }
 
-#error {
-    color: #ff5252;
+#content {
     margin-top: 20px;
-    font-size: 1.1em;
+    text-align: left;
+    border: 1px solid #0f0;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #111;
+    color: #0f0;
+    overflow-wrap: break-word; /* Handle long words */
 }
 
+/* Error messages */
+.error {
+    color: #f00;
+}
+
+/* Particle effect styles */
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: -1;
-    background-color: #000;
+    z-index: 0; /* Behind the content */
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    #urlInput {
+        width: calc(100% - 10px);
+    }
+}
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Encrypted Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Encrypted Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+    </div>
+    <script src="particles.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        particlesJS.load('particles-js', 'particles.json', function() {
+          console.log('particles.json loaded...');
+        });
+    </script>
+</body>
+</html>
