@@ -16,7 +16,7 @@ self.__uv$config = {
         headers['X-Forwarded-Proto'] = window.location.protocol.slice(0, -1);
         headers['X-Forwarded-Host'] = window.location.host;
         headers['X-Forwarded-For'] = window.location.hostname;
-        headers['X-Ultraviolet-Version'] = '1.0.0'; // Example version header
+        headers['X-Ultraviolet-Version'] = '1.0.0';
         return {
             url: url,
             headers: headers
@@ -27,6 +27,7 @@ self.__uv$config = {
         response.headers['Pragma'] = 'no-cache';
         response.headers['Expires'] = '0';
         response.headers['X-Content-Type-Options'] = 'nosniff';
+        response.headers['X-XSS-Protection'] = '1; mode=block';
 
         if (response.headers['Content-Type'] && response.headers['Content-Type'].includes('text/html')) {
             const securityHeaders = {
