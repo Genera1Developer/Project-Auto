@@ -397,15 +397,29 @@ const handler = {
      window.Date = new Proxy(window.Date, {
         construct: function(target, argArray) {
             console.warn('Date constructor blocked');
-            return undefined;
+            return new Date(0);
         },
         get: function(target, prop) {
             if (prop === 'now') {
                 console.warn('Date.now blocked');
-                return undefined;
+                return Date.now(); // Return the actual time
             }
             return target[prop];
         }
     });
+
+    // Block access to performance API to prevent timing attacks and fingerprinting
+    if (window.performance) {
+        window.performance = new Proxy(window.performance, {
+            get: function(target, prop) {
+                console.warn('Access to performance.' + prop + ' blocked');
+                return undefined;
+            },
+            apply: function(target, thisArg, argArray) {
+                 console.warn('Access to performance function blocked');
+                return undefined;
+            }
+        });
+    }
 
 })();
