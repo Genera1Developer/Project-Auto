@@ -1,35 +1,75 @@
-const crypto = require('crypto');
+class Security {
+    static generateSecureRandomString(length = 32) {
+        const validChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += validChars[Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / (0xFFFFFFFF + 1) * validChars.length)];
+        }
+        return result;
+    }
 
-const algorithm = 'aes-256-gcm'; // Use GCM for authenticated encryption
-const key = crypto.randomBytes(32); // 256 bits - DO NOT STORE IN CODE. Use environment variables or a secure key management system.
+    static async hashString(message, salt) {
+        const msgBuffer = new TextEncoder().encode(message + salt);
+        const hashBuffer = await crypto.subtle.digest('SHA-512', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
 
-function encrypt(text) {
-    const iv = crypto.randomBytes(16); // Initialization vector - generate per message
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
-    const authTag = cipher.getAuthTag(); // Get the authentication tag
+    static async encryptWithAES(plainText, key) {
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encoder = new TextEncoder();
+        const data = encoder.encode(plainText);
 
-    return {
-        iv: iv.toString('hex'),
-        encryptedData: encrypted.toString('hex'),
-        authTag: authTag.toString('hex') // Include the authentication tag
-    };
+        const encrypted = await crypto.subtle.encrypt(
+            {
+                name: 'AES-GCM',
+                iv: iv
+            },
+            key,
+            data
+        );
+
+        const encryptedArray = new Uint8Array(encrypted);
+        const combinedArray = new Uint8Array(iv.length + encryptedArray.length);
+        combinedArray.set(iv, 0);
+        combinedArray.set(encryptedArray, iv.length);
+
+        return btoa(String.fromCharCode(...combinedArray));
+    }
+
+    static async decryptWithAES(cipherText, key) {
+        const decodedData = atob(cipherText);
+        const combinedArray = new Uint8Array(decodedData.length).map(x => decodedData.charCodeAt(x));
+        const iv = combinedArray.slice(0, 12);
+        const encryptedArray = combinedArray.slice(12);
+
+        const decrypted = await crypto.subtle.decrypt(
+            {
+                name: 'AES-GCM',
+                iv: iv
+            },
+            key,
+            encryptedArray
+        );
+
+        const decoder = new TextDecoder();
+        return decoder.decode(decrypted);
+    }
+
+    static async generateAESKey(keyMaterial) {
+        const keyBytes = new TextEncoder().encode(keyMaterial);
+        return await crypto.subtle.importKey(
+            "raw",
+            keyBytes,
+            {
+                name: "AES-GCM",
+                length: 256
+            },
+            true,
+            ["encrypt", "decrypt"]
+        );
+    }
 }
 
-function decrypt(text) {
-    const iv = Buffer.from(text.iv, 'hex');
-    const encryptedData = Buffer.from(text.encryptedData, 'hex');
-    const authTag = Buffer.from(text.authTag, 'hex'); // Get the authentication tag
-
-    const decipher = crypto.createDecipheriv(algorithm, key, iv);
-    decipher.setAuthTag(authTag); // Set the authentication tag
-
-    const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
-    return decrypted.toString();
-}
-
-function generateRandomKey(length = 32) { // Default to 256 bits
-    return crypto.randomBytes(length).toString('hex');
-}
-
-module.exports = { encrypt, decrypt, generateRandomKey };
+module.exports = Security;
