@@ -1,17 +1,15 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     overflow: hidden; /* Hide scrollbars */
-    background-color: #000;
-    color: #fff;
+    background: #000; /* Black background */
+    color: #00ff00; /* Green text */
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
     z-index: -1; /* Behind all content */
 }
 
@@ -24,197 +22,79 @@ body {
     text-align: center;
 }
 
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ff00; /* Glowing effect */
+}
+
+p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    max-width: 800px;
+    margin-bottom: 30px;
+}
+
+a {
+    color: #00ff00;
+    text-decoration: none;
+    border-bottom: 1px solid #00ff00; /* Underline effect */
+    padding-bottom: 2px;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #fff; /* White on hover */
+}
+
+/* Form styles */
+form {
+    margin-top: 20px;
+}
+
 input[type="text"] {
     padding: 10px;
-    margin: 10px;
-    border: 2px solid #4CAF50;
+    border: 1px solid #00ff00;
+    background-color: #111;
+    color: #00ff00;
     border-radius: 5px;
-    background-color: #222;
-    color: #fff;
+    margin-right: 10px;
+    font-size: 1em;
 }
 
 button {
     padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
+    background-color: #00ff00;
+    color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #367c39;
+    background-color: #00cc00;
 }
 
-#error-message {
-    color: red;
-    margin-top: 10px;
+/* Encryption theme */
+.encryption-text {
+    font-family: monospace;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+    color: #0f0;
 }
-edit filepath: public/app.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    particlesJS.load('particles-js', 'particles.json', function() {
-        console.log('particles.json loaded...');
-    });
 
-    const form = document.querySelector('form');
-    const urlInput = document.getElementById('url-input');
-    const errorMessage = document.getElementById('error-message');
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const url = urlInput.value.trim();
-
-        if (!url) {
-            errorMessage.textContent = 'Please enter a URL.';
-            return;
-        }
-
-        try {
-            new URL(url); // Basic URL validation
-        } catch (error) {
-            errorMessage.textContent = 'Please enter a valid URL.';
-            return;
-        }
-
-        errorMessage.textContent = ''; // Clear previous errors
-
-        // Redirect to proxy URL
-        window.location.href = '/?url=' + encodeURIComponent(url);
-    });
-});
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Secure Web Access</h1>
-        <form>
-            <input type="text" id="url-input" placeholder="Enter URL">
-            <button type="submit">Go</button>
-        </form>
-        <div id="error-message"></div>
-    </div>
-
-    <script src="particles.js"></script>
-    <script src="app.js"></script>
-</body>
-</html>
-edit filepath: particles.json
-content: {
-  "particles": {
-    "number": {
-      "value": 80,
-      "density": {
-        "enable": true,
-        "value_area": 800
-      }
-    },
-    "color": {
-      "value": "#00ff00"
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 0,
-        "color": "#000000"
-      },
-      "polygon": {
-        "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
-      }
-    },
-    "opacity": {
-      "value": 0.7,
-      "random": true,
-      "anim": {
-        "enable": true,
-        "speed": 1,
-        "opacity_min": 0.1,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#00ff00",
-      "opacity": 0.4,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 3,
-      "direction": "none",
-      "random": true,
-      "straight": false,
-      "out_mode": "out",
-      "bounce": false,
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 1200
-      }
+/* Responsive design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2.5em;
     }
-  },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": {
-        "enable": true,
-        "mode": "grab"
-      },
-      "onclick": {
-        "enable": true,
-        "mode": "push"
-      },
-      "resize": true
-    },
-    "modes": {
-      "grab": {
-        "distance": 140,
-        "line_linked": {
-          "opacity": 1
-        }
-      },
-      "bubble": {
-        "distance": 400,
-        "size": 40,
-        "duration": 2,
-        "opacity": 8,
-        "speed": 3
-      },
-      "repulse": {
-        "distance": 200,
-        "duration": 0.4
-      },
-      "push": {
-        "particles_nb": 4
-      },
-      "remove": {
-        "particles_nb": 2
-      }
+    p {
+        font-size: 1.1em;
     }
-  },
-  "retina_detect": true
+    input[type="text"] {
+        width: 70%;
+        margin-bottom: 10px;
+    }
 }
