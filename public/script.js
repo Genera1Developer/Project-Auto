@@ -1,11 +1,9 @@
-const form = document.getElementById('uv-form');
-const address = document.getElementById('uv-address');
-const searchEngine = document.getElementById('search-engine');
-const goButton = document.getElementById('go-button');
-const error = document.getElementById('uv-error');
-const encodedUrl = document.getElementById('encodedUrl');
+const form = document.getElementById('urlForm');
+const urlInput = document.getElementById('urlInput');
+const particlesContainer = document.getElementById('particles-js');
 
-const particlesConfig = {
+// Initialize Particles.js
+particlesJS('particles-js', {
   particles: {
     number: {
       value: 80,
@@ -15,7 +13,7 @@ const particlesConfig = {
       }
     },
     color: {
-      value: '#007bff' // Encryption-themed color
+      value: '#00bcd4'
     },
     shape: {
       type: 'circle',
@@ -33,10 +31,10 @@ const particlesConfig = {
       }
     },
     opacity: {
-      value: 0.7,
-      random: true,
+      value: 0.5,
+      random: false,
       anim: {
-        enable: true,
+        enable: false,
         speed: 1,
         opacity_min: 0.1,
         sync: false
@@ -55,18 +53,17 @@ const particlesConfig = {
     line_linked: {
       enable: true,
       distance: 150,
-      color: '#007bff', // Encryption-themed color
+      color: '#00bcd4',
       opacity: 0.4,
       width: 1
     },
     move: {
       enable: true,
-      speed: 3,
+      speed: 6,
       direction: 'none',
-      random: true,
+      random: false,
       straight: false,
       out_mode: 'out',
-      bounce: false,
       attract: {
         enable: false,
         rotateX: 600,
@@ -102,8 +99,7 @@ const particlesConfig = {
         speed: 3
       },
       repulse: {
-        distance: 200,
-        duration: 0.4
+        distance: 200
       },
       push: {
         particles_nb: 4
@@ -113,39 +109,32 @@ const particlesConfig = {
       }
     }
   },
-  retina_detect: true
-};
+  retina_detect: true,
+  config_demo: {
+    hide_card: false,
+    background_color: '#b61924',
+    background_image: '',
+    background_position: '50% 50%',
+    background_repeat: 'no-repeat',
+    background_size: 'cover'
+  }
+});
 
-particlesJS('particles-js', particlesConfig);
-
-form.addEventListener('submit', async event => {
+form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    go();
-});
+    let url = urlInput.value.trim();
 
-goButton.addEventListener('click', async event => {
-    go();
-});
-
-async function go() {
-    let url = address.value.trim();
-    if (!url)
+    if (!url) {
+        alert('Please enter a URL.');
         return;
-
-    error.textContent = '';
-
-    if (searchEngine.value !== 'default' && !url.includes('.')) {
-        url = searchEngine.value + url;
-    } else if (!url.startsWith('https://') && !url.startsWith('http://')) {
-        url = 'https://' + url;
     }
 
-    try {
-        const encodedURL = Ultraviolet.codec.xor.encode(url);
-        encodedUrl.textContent = encodedURL;
-        window.location.href = __uv$config.prefix + encodedURL;
-    } catch (e) {
-        error.textContent = e.message;
-        console.error(e);
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'http://' + url;
     }
-}
+
+    // Basic encoding (consider more robust encoding if needed)
+    const encodedUrl = btoa(url);
+
+    window.location.href = '/?url=' + encodedUrl;
+});
