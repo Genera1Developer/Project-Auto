@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encrypted Web Proxy</title>
     <link rel="stylesheet" href="public/index.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔒</text></svg>">
+    <link rel="icon" href="public/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
-        <h1>Secure Web Access</h1>
-        <p>Enter the URL to access securely:</p>
-        <input type="text" id="urlInput" placeholder="https://example.com">
-        <button id="accessButton">Access Encrypted</button>
-        <div id="output"></div>
+        <h1>Encrypted Web Proxy</h1>
+        <form id="proxy-form">
+            <input type="text" id="url-input" placeholder="Enter URL">
+            <button type="submit">Go</button>
+        </form>
+        <div id="error-message" class="error"></div>
     </div>
     <script src="public/particles.js"></script>
     <script src="public/script.js"></script>
