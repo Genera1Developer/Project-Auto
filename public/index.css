@@ -1,86 +1,531 @@
 body {
-    margin: 0;
     font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #fff;
-    overflow: hidden;
+    background-color: #000; /* Dark background for encryption theme */
+    color: #fff; /* Light text for contrast */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
-    position: relative;
-    z-index: 1;
-    width: 80%;
-    max-width: 600px;
-    margin: 100px auto;
-    padding: 40px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.05); /* Semi-transparent container */
+    padding: 40px; /* Increased padding */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Stronger shadow */
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 200, 200, 0.5);
+    width: 80%;
+    max-width: 700px; /* Increased max-width */
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
 }
 
 h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #00bcd4;
-    text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
+    color: #00bcd4; /* Encryption blue */
+    margin-bottom: 20px; /* Increased margin */
+    text-shadow: 0 0 10px #00bcd4; /* Glowing text */
 }
 
-p {
-    font-size: 1.1em;
-    margin-bottom: 30px;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
+#urlInput {
+    width: calc(100% - 30px); /* Adjusted width */
+    padding: 15px; /* Increased padding */
+    margin: 15px 0; /* Increased margin */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark input background */
     color: #fff;
-    font-size: 1em;
-    box-shadow: 0 0 10px rgba(0, 200, 200, 0.3);
+    font-size: 16px; /* Increased font size */
+    outline: none; /* Remove outline */
 }
 
-input[type="text"]::placeholder {
-    color: #ddd;
+#urlInput::placeholder {
+    color: rgba(255, 255, 255, 0.5); /* Light placeholder text */
 }
 
-button[type="submit"] {
-    padding: 15px 30px;
+#proxyButton {
+    padding: 15px 30px; /* Increased padding */
+    background-color: #00bcd4; /* Encryption blue */
+    color: white;
     border: none;
-    border-radius: 5px;
-    background-color: #00bcd4;
-    color: #fff;
-    font-size: 1.2em;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+    font-size: 16px; /* Increased font size */
+    box-shadow: 0 0 10px #00bcd4; /* Glowing button */
 }
 
-button[type="submit"]:hover {
-    background-color: #008ba7;
+#proxyButton:hover {
+    background-color: #008ba7; /* Darker blue on hover */
+    box-shadow: 0 0 15px #008ba7; /* Stronger glow on hover */
 }
 
-#error {
-    color: #ff4081;
-    margin-top: 20px;
-    font-size: 1.1em;
+#content {
+    margin-top: 30px; /* Increased margin */
+    text-align: left;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    padding: 20px; /* Increased padding */
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark content background */
+    overflow-x: auto; /* Horizontal scroll for long content */
+    font-size: 14px; /* Adjusted font size */
 }
 
+#content p.error {
+    color: #f44336; /* Error color */
+}
+
+/* Particles.js styles */
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 0;
-    background-color: #000;
+    z-index: -1; /* Behind the content */
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 30px;
+    }
+
+    #urlInput {
+        width: calc(100% - 20px);
+    }
+}
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Encrypted Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+    </div>
+    <script src="particles.js"></script>
+    <script src="script.js"></script>
+    <script>
+        particlesJS.load('particles-js', 'particles.json', function() {
+            console.log('particles.json loaded - callback');
+        });
+    </script>
+</body>
+</html>
+edit filepath: public/particles.json
+content: {
+  "particles": {
+    "number": {
+      "value": 80,
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
+    },
+    "color": {
+      "value": "#00bcd4"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#000000"
+      },
+      "polygon": {
+        "nb_sides": 5
+      },
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100
+      }
+    },
+    "opacity": {
+      "value": 0.5,
+      "random": false,
+      "anim": {
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 5,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 40,
+        "size_min": 0.1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#00bcd4",
+      "opacity": 0.4,
+      "width": 1
+    },
+    "move": {
+      "enable": true,
+      "speed": 6,
+      "direction": "none",
+      "random": false,
+      "straight": false,
+      "out_mode": "out",
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
+    }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "grab"
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "push"
+      },
+      "resize": true
+    },
+    "modes": {
+      "grab": {
+        "distance": 140,
+        "line_linked": {
+          "opacity": 1
+        }
+      },
+      "bubble": {
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 3
+      },
+      "repulse": {
+        "distance": 200
+      },
+      "push": {
+        "particles_nb": 4
+      },
+      "remove": {
+        "particles_nb": 2
+      }
+    }
+  },
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#b61924",
+    "background_image": "",
+    "background_position": "50% 50%",
+    "background_repeat": "no-repeat",
+    "background_size": "cover"
+  }
+}
+edit filepath: public/particles.js
+content: /* -----------------------------------------------
+/* Author : Vincent Garreau  - vincentgarreau.com
+/* MIT license
+/* Demo / documentation : javascriptparticles.com
+/* ----------------------------------------------- */
+
+var pJS = function(tag_id, params){
+
+  var canvas = document.querySelector('#'+tag_id+' > .particles-js-canvas-el');
+
+  this.pJS = {
+    canvas: {
+      el: canvas,
+      w: canvas.offsetWidth,
+      h: canvas.offsetHeight
+    },
+    particles: {
+      number: params.particles.number.value,
+      color: params.particles.color.value,
+      shape: params.particles.shape.type,
+      opacity: {
+        value: params.particles.opacity.value,
+        anim: params.particles.opacity.anim.enable
+      },
+      size: {
+        value: params.particles.size.value,
+        anim: params.particles.size.anim.enable
+      },
+      line_linked: {
+        enable: params.particles.line_linked.enable,
+        distance: params.particles.line_linked.distance,
+        color: params.particles.line_linked.color,
+        opacity: params.particles.line_linked.opacity,
+        width: params.particles.line_linked.width
+      },
+      move: {
+        enable: params.particles.move.enable,
+        speed: params.particles.move.speed,
+        direction: params.particles.move.direction,
+        random: params.particles.move.random,
+        straight: params.particles.move.straight,
+        out_mode: params.particles.move.out_mode
+      },
+      array: []
+    },
+    interactivity: {
+      detect_on: params.interactivity.detect_on,
+      events: {
+        onhover: {
+          enable: params.interactivity.events.onhover.enable,
+          mode: params.interactivity.events.onhover.mode
+        },
+        onclick: {
+          enable: params.interactivity.events.onclick.enable,
+          mode: params.interactivity.events.onclick.mode
+        }
+      },
+      modes: {
+        grab: {
+          distance: params.interactivity.modes.grab.distance
+        },
+        bubble: {
+          distance: params.interactivity.modes.bubble.distance,
+          size: params.interactivity.modes.bubble.size
+        },
+        repulse: {
+          distance: params.interactivity.modes.repulse.distance
+        }
+      }
+    },
+    retina_detect: params.retina_detect
+  };
+
+  /* ---------- pJS functions - canvas ------------ */
+
+  this.pJS.canvas.resize = function(){
+    this.el.width = this.w = this.el.offsetWidth;
+    this.el.height = this.h = this.el.offsetHeight;
+
+    /* repaint canvas on retina devices */
+    if(this.pJS.retina_detect){
+      this.el.width = this.pJS.canvas.w * 2;
+      this.el.height = this.pJS.canvas.h * 2;
+      this.ctx.scale(2, 2);
+    }
+  };
+
+  /* ---------- pJS functions - particles ------------ */
+
+  this.pJS.particles.create = function(){
+
+    for(var i = 0; i < this.pJS.particles.number; i++){
+      this.pJS.particles.array.push(new this.pJS.particle(this.pJS.particles.color, this.pJS.particles.opacity.value, this.pJS.particles.size.value));
+    }
+
+  };
+
+  this.pJS.particles.animate = function(){
+    this.pJS.draw();
+    requestAnimationFrame(this.pJS.particles.animate);
+  };
+
+  this.pJS.particles.update = function(){
+
+    for(var i = 0; i < this.pJS.particles.array.length; i++){
+
+      /* the particle */
+      var p = this.pJS.particles.array[i];
+
+      /* move the particle */
+      if(this.pJS.particles.move.enable){
+        p.y += (p.speed_y / 2);
+        p.x += (p.speed_x / 2);
+
+        /* change particle direction at edges of canvas */
+        if(p.y < 0){ p.speed_y = -p.speed_y; }
+        if(p.x < 0){ p.speed_x = -p.speed_x; }
+        if(p.y > this.pJS.canvas.h){ p.speed_y = -p.speed_y; }
+        if(p.x > this.pJS.canvas.w){ p.speed_x = -p.speed_x; }
+
+        /* out of canvas mode */
+        if(this.pJS.particles.move.out_mode == 'bounce'){
+          var new_pos = {
+            x_left: p.radius,
+            x_right: this.pJS.canvas.w,
+            y_top: p.radius,
+            y_bottom: this.pJS.canvas.h
+          }
+
+          if(p.x - p.radius > this.pJS.canvas.w){ p.x = new_pos.x_left; p.y = Math.random() * this.pJS.canvas.h; }
+          else if(p.x + p.radius < 0){ p.x = new_pos.x_right; p.y = Math.random() * this.pJS.canvas.h; }
+          if(p.y - p.radius > this.pJS.canvas.h){ p.y = new_pos.y_top; p.x = Math.random() * this.pJS.canvas.w; }
+          else if(p.y + p.radius < 0){ p.y = new_pos.y_bottom; p.x = Math.random() * this.pJS.canvas.w; }
+        }
+      }
+
+      /* line (linked particles) */
+      if(this.pJS.particles.line_linked.enable){
+        for(var j = i + 1; j < this.pJS.particles.array.length; j++){
+          var p2 = this.pJS.particles.array[j];
+
+          /* link particles if in range */
+          var dist = Math.sqrt(Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2));
+          if(dist <= this.pJS.particles.line_linked.distance){
+
+            /* draw a line between p and p2 */
+            var ctx = this.pJS.canvas.el.getContext('2d');
+            ctx.beginPath();
+            ctx.strokeStyle = this.pJS.particles.line_linked.color;
+            ctx.lineWidth = this.pJS.particles.line_linked.width;
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+            ctx.closePath();
+          }
+        }
+      }
+    }
+
+  };
+
+  this.pJS.particle = function(color, opacity, size){
+
+    /* particle position */
+    this.x = Math.random() * this.pJS.canvas.w;
+    this.y = Math.random() * this.pJS.canvas.h;
+
+    /* particle parameters */
+    this.radius = (size * Math.random());
+    this.color = color;
+
+    /* particle speed */
+    this.speed_x = +((Math.random()<0.5?-1:1) * Math.random());
+    this.speed_y = +((Math.random()<0.5?-1:1) * Math.random());
+
+    /* particle draw function */
+    this.draw = function(ctx){
+
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      ctx.fill();
+    }
+  };
+
+
+  /* ---------- pJS functions - draw ------------ */
+
+  this.pJS.draw = function(){
+
+    /* clear canvas */
+    var ctx = this.pJS.canvas.el.getContext('2d');
+    ctx.clearRect(0, 0, this.pJS.canvas.w, this.pJS.canvas.h);
+
+    /* update each particles param */
+    this.pJS.particles.update();
+
+    /* draw each particle */
+    for(var i = 0; i < this.pJS.particles.array.length; i++){
+      var p = this.pJS.particles.array[i];
+      p.draw(ctx);
+    }
+  };
+
+  /* ---------- pJS functions - init ------------ */
+
+  this.pJS.init = function(){
+
+    /* init canvas + particles */
+    this.pJS.canvas.resize();
+    this.pJS.canvas.ctx = this.pJS.canvas.el.getContext('2d');
+    this.pJS.particles.create();
+    this.pJS.particles.animate();
+
+    /* retina canvas */
+    window.addEventListener('resize', function(){
+      this.pJS.canvas.resize();
+    }.bind(this));
+  };
+
+  /* ---------- pJS - start ------------ */
+
+  this.pJS.init();
+};
+
+window.particlesJS = function(tag_id, params){
+  return new pJS(tag_id, params);
+};
+
+window.particlesJS.load = function(tag_id, path_json, callback){
+
+  /* load json config */
+  var xobj = new XMLHttpRequest();
+      xobj.overrideMimeType("application/json");
+  xobj.open('GET', path_json, true); // Replace 'my_data' with the path to your JSON file
+  xobj.onreadystatechange = function () {
+        if (xobj.readyState == 4 && xobj.status == "200") {
+          /* Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode */
+          var json_str = xobj.responseText;
+          var config_json = JSON.parse(json_str);
+
+          callback(new pJS(tag_id, config_json));
+        }
+  };
+  xobj.send(null);
+};
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    const proxyButton = document.getElementById('proxyButton');
+    const urlInput = document.getElementById('urlInput');
+    const contentDiv = document.getElementById('content');
+
+    proxyButton.addEventListener('click', function() {
+        const url = urlInput.value;
+
+        if (url) {
+            // Display loading message
+            contentDiv.innerHTML = '<p class="loading">Loading...</p>';
+
+            fetch(`/api/proxy?url=${encodeURIComponent(url)}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.status} - ${response.statusText}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    // Display fetched data
+                    contentDiv.innerHTML = data;
+                })
+                .catch(error => {
+                    // Display error message
+                    contentDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                    console.error('Fetch error:', error); // Log the error for debugging
+                });
+        } else {
+            // Display error message if URL is empty
+            contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
+        }
+    });
+
+    // Optional: Handle URL submission on pressing Enter key
+    urlInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            proxyButton.click(); // Trigger the button click event
+        }
+    });
+});
