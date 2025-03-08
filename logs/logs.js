@@ -7,11 +7,13 @@ const helmet = require('helmet'); // Import Helmet for security headers
 const rateLimit = require('express-rate-limit'); // Import rate limiter
 const { body, validationResult } = require('express-validator'); // Import express-validator
 const { randomUUID } = require('crypto');
+const { createHmac } = require('crypto');
 
 const router = express.Router();
 
 const logFilePath = path.join(__dirname, 'logs.txt');
 const encryptionKey = process.env.LOG_ENCRYPTION_KEY;
+const integrityKey = process.env.LOG_INTEGRITY_KEY;
 const algorithm = 'aes-256-gcm';
 const IV_LENGTH = 12;
 const AUTH_TAG_LENGTH = 16;
@@ -19,6 +21,11 @@ const AUTH_TAG_LENGTH = 16;
 if (!encryptionKey) {
   console.error("FATAL: LOG_ENCRYPTION_KEY is not set. Exiting.");
   process.exit(1);
+}
+
+if (!integrityKey) {
+    console.error("FATAL: LOG_INTEGRITY_KEY is not set. Exiting.");
+    process.exit(1);
 }
 
 // Function to encrypt data
@@ -79,8 +86,31 @@ function decrypt(text) {
   }
 }
 
+// Function to calculate HMAC for data integrity
+function calculateHMAC(data) {
+    try {
+        const hmac = createHmac('sha256', integrityKey);
+        hmac.update(data);
+        return hmac.digest('hex');
+    } catch (error) {
+        console.error("HMAC calculation error:", error);
+        return null;
+    }
+}
 
-// Function to read logs from file, decrypting each entry
+// Function to verify HMAC
+function verifyHMAC(data, hmac) {
+    try {
+        const calculatedHmac = calculateHMAC(data);
+        return calculatedHmac === hmac;
+    } catch (error) {
+        console.error("HMAC verification error:", error);
+        return false;
+    }
+}
+
+
+// Function to read logs from file, decrypting and verifying each entry
 const readLogs = async () => {
   try {
     await access(logFilePath);
@@ -89,8 +119,25 @@ const readLogs = async () => {
     const decryptedLogs = encryptedLogArray.map(log => {
       if (!log) return "";
 
-      const decrypted = decrypt(log);
-      return decrypted === null ? "Decryption Error" : decrypted;
+      const parts = log.split('||HMAC||');
+        if (parts.length !== 2) {
+            console.warn("Log entry missing HMAC.");
+            return "Integrity Check Failed: Missing HMAC";
+        }
+
+        const encryptedData = parts[0];
+        const receivedHMAC = parts[1];
+
+        const decrypted = decrypt(encryptedData);
+        if (decrypted === null) {
+            return "Decryption Error";
+        }
+
+        if (!verifyHMAC(decrypted, receivedHMAC)) {
+            return "Integrity Check Failed: HMAC mismatch";
+        }
+
+        return decrypted;
     }).join('\n');
     return decryptedLogs;
   } catch (err) {
@@ -175,11 +222,17 @@ router.post('/append',
     try {
       const logEntry = `IP: ${ipAddress} - User-Agent: ${userAgent} - ${logData}`;  // Include IP address and User-Agent in log
       const encryptedLogData = encrypt(logEntry);
-      if (encryptedLogData === null) {
-        return res.status(500).send("Error encrypting log data.");
-      }
-      await appendFile(logFilePath, encryptedLogData + '\n');
-      res.status(200).send("Log appended successfully.");
+        if (encryptedLogData === null) {
+            return res.status(500).send("Error encrypting log data.");
+        }
+        const hmac = calculateHMAC(logEntry);
+        if (hmac === null) {
+            return res.status(500).send("Error calculating HMAC.");
+        }
+
+        const logString = encryptedLogData + '||HMAC||' + hmac;
+        await appendFile(logFilePath, logString + '\n');
+        res.status(200).send("Log appended successfully.");
     } catch (err) {
       console.error("Error appending to logs:", err);
       return res.status(500).send("Error appending to logs.");
