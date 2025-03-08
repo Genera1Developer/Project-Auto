@@ -31,7 +31,7 @@ function encrypt(text) {
         return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted.toString('hex')}`;
     } catch (error) {
         console.error("Encryption error:", error);
-        return "Encryption Failed";
+        return null; // Return null on failure for better error handling
     }
 
 }
@@ -45,7 +45,7 @@ function decrypt(text) {
         const textParts = text.split(':');
         if (textParts.length !== 3) {
             console.error("Invalid log format: Incorrect number of parts.");
-            return "Decryption Failed: Invalid Log Format";
+            return null; // Return null on invalid format.
         }
         const [ivHex, authTagHex, encryptedTextHex] = textParts;
         const iv = Buffer.from(ivHex, 'hex');
@@ -59,7 +59,7 @@ function decrypt(text) {
         return decrypted.toString('utf8'); // Explicitly specify output encoding
     } catch (error) {
         console.error("Decryption error:", error);
-        return "Decryption Failed";
+        return null; // Return null on decryption failure
     }
 }
 
@@ -73,10 +73,10 @@ export function logRequest(req, res, url) {
         encryptedLogMessage = encrypt(logMessage);
     } catch (error) {
         console.error("Error during encryption:", error);
-        encryptedLogMessage = "Encryption Failed";
+        encryptedLogMessage = null; // Ensure null if encryption fails
     }
 
-    if (typeof encryptedLogMessage === 'string' && encryptedLogMessage.startsWith("Encryption Failed")) {
+    if (!encryptedLogMessage) { // Check for null instead of string comparison
         console.error("Failed to encrypt log message. Skipping log entry.");
         return;
     }
@@ -96,7 +96,7 @@ export function getLogs() {
             .map(log => {
                 try {
                     const decryptedLog = decrypt(log);
-                    return decryptedLog;
+                    return decryptedLog ? decryptedLog : "Decryption Failed: Log entry may be corrupted or the encryption key is incorrect."; //Handle null case
                 } catch (error) {
                     console.error("Error during decryption:", error);
                     return "Decryption Failed: Log entry may be corrupted or the encryption key is incorrect.";
