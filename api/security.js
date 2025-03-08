@@ -1,22 +1,30 @@
 const crypto = require('crypto');
 
-const algorithm = 'aes-256-cbc';
-const key = crypto.randomBytes(32); // 256 bits
-const iv = crypto.randomBytes(16); // Initialization vector
+const algorithm = 'aes-256-gcm'; // Use GCM for authenticated encryption
+const key = crypto.randomBytes(32); // 256 bits - DO NOT STORE IN CODE. Use environment variables or a secure key management system.
 
 function encrypt(text) {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+    const iv = crypto.randomBytes(16); // Initialization vector - generate per message
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
+    const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
+    const authTag = cipher.getAuthTag(); // Get the authentication tag
+
+    return {
+        iv: iv.toString('hex'),
+        encryptedData: encrypted.toString('hex'),
+        authTag: authTag.toString('hex') // Include the authentication tag
+    };
 }
 
 function decrypt(text) {
-    let iv = Buffer.from(text.iv, 'hex');
-    let encryptedText = Buffer.from(text.encryptedData, 'hex');
-    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    const iv = Buffer.from(text.iv, 'hex');
+    const encryptedData = Buffer.from(text.encryptedData, 'hex');
+    const authTag = Buffer.from(text.authTag, 'hex'); // Get the authentication tag
+
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+    decipher.setAuthTag(authTag); // Set the authentication tag
+
+    const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
     return decrypted.toString();
 }
 
