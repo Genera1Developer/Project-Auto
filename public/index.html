@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
+    <title>Encrypted Tunnel</title>
     <link rel="stylesheet" href="public/index.css">
-    <link rel="icon" href="public/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="public/lock.png">
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
-        <h1>Secure Access</h1>
-        <form id="proxy-form">
-            <input type="url" id="url-input" placeholder="Enter URL" required>
-            <button type="submit">Go Securely</button>
-        </form>
-        <div id="error-message" class="error"></div>
+        <h1>Encrypted Tunnel</h1>
+        <p>Enter the URL you want to access securely:</p>
+        <input type="text" id="url" placeholder="https://example.com">
+        <button id="go">Go</button>
+        <p id="error"></p>
     </div>
+
     <script src="public/particles.js"></script>
     <script src="public/script.js"></script>
+    <script>
+        particlesJS.load('particles-js', 'public/particles.json', function() {
+            console.log('particles.json loaded - callback');
+        });
+    </script>
 </body>
 </html>
