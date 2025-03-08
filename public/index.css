@@ -1,106 +1,94 @@
 body {
     font-family: 'Arial', sans-serif;
+    background-color: #000; /* Dark background for encryption theme */
+    color: #0f0; /* Green text for a "hacker" feel */
     margin: 0;
     padding: 0;
-    background: #000;
-    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     overflow: hidden; /* Hide scrollbars */
 }
 
+.container {
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black container */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); /* Glowing shadow */
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+}
+
+h1 {
+    color: #0f0; /* Green title */
+    margin-bottom: 20px;
+}
+
+#urlInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #0f0; /* Green border */
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #0f0;
+}
+
+#urlInput:focus {
+    outline: none;
+    border-color: #00ff00;
+    box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+#proxyButton {
+    padding: 10px 20px;
+    background-color: #0f0; /* Green button */
+    color: #000; /* Black text */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#proxyButton:hover {
+    background-color: #00ff00; /* Lighter green on hover */
+}
+
+#content {
+    margin-top: 20px;
+    text-align: left;
+    border: 1px solid #0f0; /* Green border */
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #0f0;
+    min-height: 100px;
+}
+
+#content p.error {
+    color: #f00; /* Red error messages */
+}
+
+/* Particles animation */
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 0;
+    z-index: -1;
 }
 
-.container {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 20px;
-    text-align: center;
-}
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
 
-h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-    color: #00bcd4;
-    text-shadow: 0 0 10px #00bcd4;
-}
-
-input[type="text"] {
-    padding: 15px;
-    font-size: 1.2em;
-    border: 2px solid #444;
-    background: #222;
-    color: #fff;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 500px;
-    margin-bottom: 20px;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus {
-    border-color: #00bcd4;
-}
-
-button {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    background: #00bcd4;
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    outline: none;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
-}
-
-button:hover {
-    background-color: #008ba7;
-    color: #fff;
-}
-
-#error-message {
-    color: #ff5252;
-    margin-top: 10px;
-}
-
-#uv-error {
-    color: #ff5252;
-    margin-top: 10px;
-}
-
-#uv-register-sw {
-    color: #fff;
-    margin-top: 10px;
-}
-
-a {
-    color: #00bcd4;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: #008ba7;
-}
-
-.footer {
-    position: absolute;
-    bottom: 20px;
-    width: 100%;
-    text-align: center;
-    color: #777;
-    z-index: 1;
+    #urlInput {
+        width: calc(100% - 10px);
+    }
 }
