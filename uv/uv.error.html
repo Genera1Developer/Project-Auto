@@ -69,6 +69,11 @@
             padding: 2px 5px;
             border-radius: 3px;
         }
+        .security-info {
+            color: darkorange;
+            font-style: italic;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -79,6 +84,7 @@
         <a href="/">Go back to the homepage</a>
         <div id="error-url-container"></div>
         <div id="security-warnings-container"></div>
+        <div id="security-info-container"></div>
         <div id="error-details-container" class="hidden">
             <h2>Error Details</h2>
             <p><b>Type:</b> <span id="error-type"></span></p>
@@ -143,35 +149,52 @@
                 const urlLink = document.createElement('a');
                 let sanitizedDecodedURL = DOMPurify.sanitize(decodedURL, { USE_PROFILES: { html: true } });
                 let securityWarnings = [];
+                let securityInfo = [];
 
                 try {
                     const parsedURL = new URL(sanitizedDecodedURL);
 
                     if (parsedURL.protocol !== "https:" ) {
                         securityWarnings.push("URL does not use HTTPS, which is less secure. Consider using HTTPS for enhanced security. Contact the website owner to enable HTTPS.");
+                        securityInfo.push("HTTPS encrypts data transmitted between your browser and the website, protecting it from eavesdropping.");
                     }
                     else {
                         const recommendationElement = document.createElement('p');
                         recommendationElement.classList.add('security-recommendation');
                         recommendationElement.textContent = "HTTPS connection established. Your connection to the website is encrypted.";
                         document.getElementById('security-warnings-container').appendChild(recommendationElement);
+
+                        securityInfo.push("HTTPS uses Transport Layer Security (TLS) or Secure Sockets Layer (SSL) to encrypt communication.");
                     }
 
 
                     if (!["https:", "http:"].includes(parsedURL.protocol)) {
                          securityWarnings.push(`URL uses an invalid protocol: <span class="error-code">${parsedURL.protocol}</span>. Only HTTPS and HTTP protocols are supported.`);
                          sanitizedDecodedURL = "#invalid-protocol";
+                         securityInfo.push("Valid protocols ensure proper communication and prevent potential exploitation of unsupported protocols.");
                     }
 
                     if (parsedURL.hostname.includes("javascript:") || parsedURL.pathname.includes("javascript:")) {
                         securityWarnings.push("URL contains potentially malicious patterns (javascript:). Accessing this URL may compromise your security.");
                         sanitizedDecodedURL = "#potential-xss";
+                        securityInfo.push("Malicious javascript: URLs can execute arbitrary code in your browser, leading to XSS attacks.");
                     }
 
                     const blockedSchemes = ['ftp:', 'file:', 'data:', 'javascript:'];
                     if (blockedSchemes.some(scheme => sanitizedDecodedURL.startsWith(scheme))) {
                         securityWarnings.push(`URL uses a potentially dangerous scheme: <span class="error-code">${sanitizedDecodedURL.substring(0, sanitizedDecodedURL.indexOf(':') + 1)}</span>. Access to this scheme is blocked for security reasons.`);
                         sanitizedDecodedURL = "#blocked-scheme";
+                        securityInfo.push("Certain schemes, like file:, can expose local files, while others, like data:, can be used for data injection attacks.");
+                    }
+
+                    // Check for suspicious IP addresses (e.g., in private ranges for public URLs)
+                    const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+                    if (ipRegex.test(parsedURL.hostname)) {
+                        //Basic check. More sophisticated checks would involve looking up the IP.
+                        if (parsedURL.hostname.startsWith("192.168.") || parsedURL.hostname.startsWith("10.") || parsedURL.hostname.startsWith("172.16.")) {
+                            securityWarnings.push("URL contains a private IP address, which is unusual for a public website and could indicate a potential security issue.");
+                            securityInfo.push("Private IP addresses are typically used within local networks and should not be directly exposed on the internet.");
+                        }
                     }
 
 
@@ -179,6 +202,7 @@
                     console.error("URL parsing error:", e);
                     sanitizedDecodedURL = "#invalid-url";
                     securityWarnings.push("URL is invalid and could not be parsed.");
+                    securityInfo.push("Invalid URLs can sometimes be crafted to exploit vulnerabilities in URL parsing libraries.");
                 }
 
                 urlLink.href = sanitizedDecodedURL;
@@ -197,6 +221,14 @@
                     warningElement.classList.add('security-warning');
                     warningElement.innerHTML = `Security Warning: ${warning}`;
                     securityWarningsContainer.appendChild(warningElement);
+                });
+
+                const securityInfoContainer = document.getElementById('security-info-container');
+                securityInfo.forEach(info => {
+                    const infoElement = document.createElement('p');
+                    infoElement.classList.add('security-info');
+                    infoElement.textContent = info;
+                    securityInfoContainer.appendChild(infoElement);
                 });
 
 
