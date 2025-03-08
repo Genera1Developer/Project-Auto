@@ -74,6 +74,10 @@
             font-style: italic;
             margin-top: 10px;
         }
+        .error-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -87,11 +91,11 @@
         <div id="security-info-container"></div>
         <div id="error-details-container" class="hidden">
             <h2>Error Details</h2>
-            <p><b>Type:</b> <span id="error-type"></span></p>
-            <p><b>Message:</b> <span id="error-message-detail"></span></p>
-            <p><b>URL:</b> <span id="error-url-detail"></span></p>
-            <p><b>Stack:</b> <pre class="error-details-pre"><span id="error-stack"></span></pre></p>
-            <p><b>Context:</b> <pre class="error-details-pre"><span id="error-context"></span></pre></p>
+            <p><span class="error-header">Type:</span> <span id="error-type"></span></p>
+            <p><span class="error-header">Message:</span> <span id="error-message-detail"></span></p>
+             <p><span class="error-header">URL:</span> <span id="error-url-detail"></span></p>
+            <p><span class="error-header">Stack:</span> <pre class="error-details-pre"><span id="error-stack"></span></pre></p>
+            <p><span class="error-header">Context:</span> <pre class="error-details-pre"><span id="error-context"></span></pre></p>
         </div>
         <button id="toggle-details">Show Error Details</button>
     </div>
@@ -155,8 +159,8 @@
                     const parsedURL = new URL(sanitizedDecodedURL);
 
                     if (parsedURL.protocol !== "https:" ) {
-                        securityWarnings.push("URL does not use HTTPS, which is less secure. Consider using HTTPS for enhanced security. Contact the website owner to enable HTTPS.");
-                        securityInfo.push("HTTPS encrypts data transmitted between your browser and the website, protecting it from eavesdropping.");
+                        securityWarnings.push("URL does not use HTTPS, which is less secure. Consider using HTTPS for enhanced security.");
+                        securityInfo.push("HTTPS encrypts data transmitted between your browser and the website, protecting it from eavesdropping. Contact the website owner to enable HTTPS.");
                     }
                     else {
                         const recommendationElement = document.createElement('p');
@@ -197,6 +201,12 @@
                         }
                     }
 
+                      //Check for URL shortening services. Can be used to hide malicious URLs.
+                      const shorteningServices = ['bit.ly', 'goo.gl', 'tinyurl.com', 'ow.ly', 'is.gd'];
+                      if (shorteningServices.some(service => parsedURL.hostname.includes(service))) {
+                          securityWarnings.push("URL uses a URL shortening service, which can obscure the actual destination and may pose a security risk.");
+                          securityInfo.push("URL shortening services can be used to hide malicious URLs or phish for credentials. Exercise caution when clicking shortened links.");
+                      }
 
                 } catch (e) {
                     console.error("URL parsing error:", e);
