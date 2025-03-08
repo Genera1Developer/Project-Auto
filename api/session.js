@@ -1,6 +1,7 @@
 const { generateSecureKey, encryptData, decryptData } = require('./security');
 
 const sessionKeyLength = 32; // AES-256 key length
+const sessionTimeout = 3600000; // 1 hour in milliseconds
 
 // Session storage (in-memory for simplicity, consider Redis for production)
 const sessions = {};
@@ -12,18 +13,28 @@ function createSession() {
     encryptionKey: encryptionKey,
     data: {}, // Store session data here
     createdAt: Date.now(),
+    lastAccessed: Date.now(),
   };
   return { sessionId, encryptionKey };
 }
 
 function getSession(sessionId) {
-  return sessions[sessionId];
+  const session = sessions[sessionId];
+    if (session && Date.now() - session.lastAccessed > sessionTimeout) {
+        destroySession(sessionId);
+        return null;
+    }
+    if(session){
+        session.lastAccessed = Date.now();
+    }
+  return session;
 }
 
 function updateSessionData(sessionId, data) {
   const session = getSession(sessionId);
   if (session) {
     session.data = { ...session.data, ...data };
+    session.lastAccessed = Date.now();
   }
 }
 
@@ -46,6 +57,7 @@ function decryptSessionData(sessionId, encryptedData) {
     return JSON.parse(plaintext);
   } catch (error) {
     console.error('Decryption error:', error);
+    destroySession(sessionId); // Destroy session on decryption failure
     return null;
   }
 }
