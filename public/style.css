@@ -1,227 +1,72 @@
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: sans-serif;
     margin: 0;
-    padding: 0;
-    background-color: #000; /* Dark background */
-    color: #00FF00; /* Green text for encryption theme */
     overflow: hidden; /* Hide scrollbars */
-}
-
-.container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-}
-
-h1 {
-    color: #00FF00;
-    font-size: 2.5em;
-    margin-bottom: 20px;
-}
-
-p {
-    font-size: 1.2em;
-    line-height: 1.6;
-}
-
-#proxy-form {
-    margin-top: 30px;
-}
-
-input[type="url"] {
-    padding: 10px;
-    width: 70%;
-    border: 1px solid #00FF00;
-    background-color: #333;
-    color: #00FF00;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #00FF00;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #00BB00;
+    background: #000;
+    color: #fff;
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1; /* Behind the content */
-}
-
-/* Add a glowing effect */
-.glowing-text {
-    text-shadow: 0 0 10px #00FF00;
-}
-
-/* Animation for added flair */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    z-index: -1;
 }
 
 .container {
-    animation: fadeIn 1s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
 }
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1 class="glowing-text">Secure Access Proxy</h1>
-        <p>Enter the URL to access securely:</p>
-        <form id="proxy-form">
-            <input type="url" id="url" placeholder="Enter URL here" required>
-            <button type="submit">Go</button>
-        </form>
-    </div>
-    <script src="particles.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'particlesjs-config.json', function() {
-            console.log('particles.js config loaded');
-        });
-        document.getElementById('proxy-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const url = document.getElementById('url').value;
-            // Basic URL validation (can be improved)
-            if (url) {
-                // Redirect to the proxy endpoint (replace with your actual endpoint)
-                window.location.href = '/?url=' + encodeURIComponent(url);
-            } else {
-                alert('Please enter a valid URL.');
-            }
-        });
-    </script>
-</body>
-</html>
-edit filepath: public/particlesjs-config.json
-content: {
-  "particles": {
-    "number": {
-      "value": 80,
-      "density": {
-        "enable": true,
-        "value_area": 800
-      }
-    },
-    "color": {
-      "value": "#00ff00"
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 0,
-        "color": "#000000"
-      },
-      "polygon": {
-        "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
-      }
-    },
-    "opacity": {
-      "value": 0.7,
-      "random": true,
-      "anim": {
-        "enable": true,
-        "speed": 1,
-        "opacity_min": 0.1,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 4,
-        "size_min": 0.3,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#00ff00",
-      "opacity": 0.4,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 2,
-      "direction": "none",
-      "random": true,
-      "straight": false,
-      "out_mode": "out",
-      "bounce": false,
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 600
-      }
-    }
-  },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": {
-        "enable": true,
-        "mode": "grab"
-      },
-      "onclick": {
-        "enable": true,
-        "mode": "push"
-      },
-      "resize": true
-    },
-    "modes": {
-      "grab": {
-        "distance": 140,
-        "line_linked": {
-          "opacity": 1
-        }
-      },
-      "bubble": {
-        "distance": 400,
-        "size": 40,
-        "duration": 2,
-        "opacity": 8,
-        "speed": 3
-      },
-      "repulse": {
-        "distance": 200,
-        "duration": 0.4
-      },
-      "push": {
-        "particles_nb": 4
-      },
-      "remove": {
-        "particles_nb": 2
-      }
-    }
-  },
-  "retina_detect": true
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #333;
+    background-color: #111;
+    color: #fff;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 70%;
+    max-width: 500px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#status {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #aaa;
+}
+
+/* Encryption theme additions */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Dark overlay for emphasis */
+    z-index: -1;
+}
+
+input[type="text"] {
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Glowing effect */
 }
