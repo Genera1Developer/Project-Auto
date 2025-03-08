@@ -1,0 +1,59 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
+    color: #0f0; /* Green text for the 'encryption' feel */
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #0f0;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 1.2em;
+    border: 2px solid #0f0;
+    background-color: #111;
+    color: #0f0;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #0f0;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0a0;
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
