@@ -151,6 +151,7 @@
         let allLogs = []; // Store all logs for filtering
         let searchTerm = ''; // Store search term
         let sensitiveDataVisible = false; // Track visibility of sensitive data
+        let lastFetchTime = null;
 
         const levelFilter = document.getElementById('level-filter');
         const searchInput = document.getElementById('search-input');
@@ -188,7 +189,12 @@
             logContainer.classList.add('loading');
             logContainer.textContent = 'Loading logs...'; // Display loading message
 
-            fetch('/api/security/logs', {
+            let url = '/api/security/logs';
+            if (lastFetchTime) {
+               url += '?since=' + lastFetchTime.toISOString();
+            }
+
+            fetch(url, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json'
@@ -201,9 +207,16 @@
                 }
                 return response.json();
             })
-            .then(logs => {
-                allLogs = logs; // Store all logs
-                filterLogs(); // Initial filtering after loading
+            .then(newLogs => {
+                if (newLogs && newLogs.length > 0) {
+                    allLogs = allLogs.concat(newLogs); // Append new logs
+                    lastFetchTime = new Date(); //Update the last fetch time
+                    filterLogs(); // Re-filter after loading
+                } else {
+                  if (allLogs.length === 0) {
+                      logContainer.textContent = 'No logs found.';
+                  }
+                }
             })
             .catch(error => {
                 console.error('Error fetching logs:', error);
@@ -267,9 +280,10 @@
                 let user = log.user || 'N/A';
                 let ipAddress = log.ipAddress || 'N/A';
                 let sessionId = log.sessionId || 'N/A'; // Capture Session ID
+                let correlationId = log.correlationId || 'N/A';
 
                 // Conditionally mask sensitive data if not visible
-                let sensitiveInfo = `Encryption status: <span class="sensitive-data masked">${encryptionStatus}</span>, User: <span class="sensitive-data masked">${user}</span>, IP Address: <span class="sensitive-data masked">${ipAddress}</span>, Session ID: <span class="sensitive-data masked">${sessionId}</span>`;
+                let sensitiveInfo = `Encryption status: <span class="sensitive-data masked">${encryptionStatus}</span>, User: <span class="sensitive-data masked">${user}</span>, IP Address: <span class="sensitive-data masked">${ipAddress}</span>, Session ID: <span class="sensitive-data masked">${sessionId}</span>, Correlation ID: <span class="sensitive-data masked">${correlationId}</span>`;
 
                 details.innerHTML = `Details: ${sensitiveInfo}`;
 
@@ -346,19 +360,33 @@
         }
 
         function correlateLogs(log) {
-            const timeWindow = 60000; // 1 minute window
-            const similarLogs = allLogs.filter(otherLog =>
-                otherLog !== log && // exclude current log
-                otherLog.message === log.message && // same message
-                Math.abs(new Date(otherLog.timestamp) - new Date(log.timestamp)) <= timeWindow // within time window
-            );
+             if (log.correlationId && log.correlationId !== 'N/A') {
+                const similarLogs = allLogs.filter(otherLog =>
+                    otherLog !== log && // exclude current log
+                    otherLog.correlationId === log.correlationId // same correlation ID
+                );
 
-            if (similarLogs.length > 0) {
-                alert(`Found ${similarLogs.length} similar logs within 1 minute! Check console for details.`);
-                console.log('Similar Logs:', similarLogs);
-            } else {
-                alert('No similar logs found within 1 minute.');
-            }
+                if (similarLogs.length > 0) {
+                    alert(`Found ${similarLogs.length} similar logs with correlation ID ${log.correlationId}! Check console for details.`);
+                    console.log('Similar Logs:', similarLogs);
+                } else {
+                    alert(`No similar logs found with correlation ID ${log.correlationId}.`);
+                }
+             } else {
+                  const timeWindow = 60000; // 1 minute window
+                  const similarLogs = allLogs.filter(otherLog =>
+                      otherLog !== log && // exclude current log
+                      otherLog.message === log.message && // same message
+                      Math.abs(new Date(otherLog.timestamp) - new Date(log.timestamp)) <= timeWindow // within time window
+                  );
+
+                  if (similarLogs.length > 0) {
+                      alert(`Found ${similarLogs.length} similar logs within 1 minute! Check console for details.`);
+                      console.log('Similar Logs:', similarLogs);
+                  } else {
+                      alert('No similar logs found within 1 minute.');
+                  }
+             }
         }
 
         // Fetch logs on page load
