@@ -4,10 +4,10 @@
         transform: rotate(0deg);
     }
     25% {
-        transform: rotate(10deg);
+        transform: rotate(5deg);
     }
     75% {
-        transform: rotate(-10deg);
+        transform: rotate(-5deg);
     }
     100% {
         transform: rotate(0deg);
@@ -20,18 +20,30 @@
     font-size: 1.2em;
     color: #4CAF50; /* Green color for secure */
     animation: secureLock 2s ease-in-out infinite;
+    transition: color 0.3s ease; /* Add transition for color changes */
+}
+
+.secure-icon.warning {
+    color: #ffc107; /* Yellow for warnings */
+}
+
+.secure-icon.error {
+    color: #dc3545; /* Red for errors */
 }
 
 /* Keyframe animation for encryption indicator */
 @keyframes encryptionPulse {
     0% {
         opacity: 0.5;
+        box-shadow: 0 0 5px #007bff;
     }
     50% {
         opacity: 1;
+        box-shadow: 0 0 15px #007bff;
     }
     100% {
         opacity: 0.5;
+        box-shadow: 0 0 5px #007bff;
     }
 }
 
@@ -53,7 +65,7 @@
         opacity: 1;
     }
     100% {
-        transform: scale(1.5);
+        transform: scale(2);
         opacity: 0;
     }
 }
@@ -66,6 +78,17 @@
     background-color: #28a745; /* Green */
     animation: encryptionSuccess 0.5s ease-out forwards;
     margin-left: 5px;
+    position: relative; /* Add relative positioning */
+}
+
+.encryption-success::before { /* Create a checkmark icon */
+    content: '\2713'; /* Unicode character for checkmark */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
 }
 
 /* Animation for failed encryption */
@@ -75,7 +98,7 @@
         opacity: 1;
     }
     100% {
-        transform: scale(1.5);
+        transform: scale(2);
         opacity: 0;
     }
 }
@@ -88,4 +111,15 @@
     background-color: #dc3545; /* Red */
     animation: encryptionFailure 0.5s ease-out forwards;
     margin-left: 5px;
+    position: relative; /* Add relative positioning */
+}
+
+.encryption-failure::before { /* Create an X icon */
+    content: '\2717'; /* Unicode character for X */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
 }
