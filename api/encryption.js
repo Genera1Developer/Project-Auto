@@ -10,6 +10,10 @@ function generateKey() {
 
 function encrypt(text, key) {
   try {
+    if (!text || !key) {
+      console.error("Encryption failed: Missing text or key");
+      return null;
+    }
     const iv = crypto.randomBytes(ivLength);
     const cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text, 'utf8');
@@ -28,6 +32,10 @@ function encrypt(text, key) {
 
 function decrypt(encryptionData, key) {
   try {
+    if (!encryptionData || !key || !encryptionData.iv || !encryptionData.encryptedData || !encryptionData.authTag) {
+      console.error("Decryption failed: Missing encryption data or key");
+      return null;
+    }
     const iv = Buffer.from(encryptionData.iv, 'hex');
     const encryptedText = Buffer.from(encryptionData.encryptedData, 'hex');
     const authTag = Buffer.from(encryptionData.authTag, 'hex');
@@ -46,4 +54,8 @@ function generateSafeKey() {
   return crypto.randomBytes(keyLength).toString('hex');
 }
 
-export { encrypt, decrypt, generateKey, generateSafeKey };
+function generateSecureIV() {
+    return crypto.randomBytes(ivLength).toString('hex');
+}
+
+export { encrypt, decrypt, generateKey, generateSafeKey, generateSecureIV };
