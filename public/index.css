@@ -1,70 +1,73 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background for encryption theme */
-    color: #00FF00; /* Green text for a hacker/encryption vibe */
+    background-color: #000;
+    color: #0f0;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden; /* Hide scrollbars */
+    background-image: url('data:image/svg+xml,%3Csvg width="42" height="44" viewBox="0 0 42 44" xmlns="http://www.w3.org/2000/svg"%3E%3Cg id="Page-1" fill="none" fill-rule="evenodd"%3E%3Cg id="honeycomb" transform="translate(2 1)" fill="%230f0" fill-opacity="0.08" fill-rule="nonzero"%3E%3Cpath d="M21 18.6698729L10.5 11.3301271V3.99038132L21 -3.34936448L31.5 3.99038132V11.3301271L21 18.6698729ZM10.5 25.9903813L21 33.3296187L31.5 25.9903813V33.3296187L21 40.6693645L10.5 33.3296187V25.9903813Z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
 }
 
 .container {
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); /* Glowing shadow */
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
     text-align: center;
     width: 80%;
     max-width: 600px;
-    border: 1px solid #00FF00; /* Green border */
+    border: 1px solid #0f0;
 }
 
 h1 {
-    color: #00FF00;
-    margin-bottom: 20px;
+    color: #0f0;
+    text-shadow: 0 0 10px #0f0;
 }
 
 #urlInput {
     width: calc(100% - 20px);
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #00FF00;
+    border: 1px solid #0f0;
     border-radius: 4px;
     background-color: #111;
-    color: #00FF00;
+    color: #0f0;
 }
 
 #proxyButton {
     padding: 10px 20px;
-    background-color: #00FF00;
+    background-color: #0f0;
     color: #000;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-shadow: 0 0 5px #000;
 }
 
 #proxyButton:hover {
-    background-color: #00CC00;
+    background-color: #0b0;
 }
 
 #content {
     margin-top: 20px;
     text-align: left;
-    border: 1px solid #00FF00;
+    border: 1px solid #0f0;
     padding: 10px;
     border-radius: 4px;
     background-color: #111;
-    color: #00FF00;
+    color: #0f0;
     overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-all;
 }
 
-/* Error message styling */
-#content .error {
-    color: #FF4500; /* Orange-red for error messages */
+.error {
+    color: #f00;
 }
 
 /* Responsive Design */
@@ -78,7 +81,7 @@ h1 {
     }
 }
 
-/* Particle styles */
+/* Particles.js container */
 #particles-js {
     position: fixed;
     width: 100%;
@@ -87,3 +90,170 @@ h1 {
     left: 0;
     z-index: -1;
 }
+edit filepath: public/particles.json
+content: {
+    "particles": {
+        "number": {
+            "value": 80,
+            "density": {
+                "enable": true,
+                "value_area": 800
+            }
+        },
+        "color": {
+            "value": "#0f0"
+        },
+        "shape": {
+            "type": "circle",
+            "stroke": {
+                "width": 0,
+                "color": "#000000"
+            },
+            "polygon": {
+                "nb_sides": 5
+            },
+            "image": {
+                "src": "img/github.svg",
+                "width": 100,
+                "height": 100
+            }
+        },
+        "opacity": {
+            "value": 0.7,
+            "random": true,
+            "anim": {
+                "enable": true,
+                "speed": 1,
+                "opacity_min": 0.1,
+                "sync": false
+            }
+        },
+        "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+                "enable": false,
+                "speed": 4,
+                "size_min": 0.3,
+                "sync": false
+            }
+        },
+        "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#0f0",
+            "opacity": 0.4,
+            "width": 1
+        },
+        "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": true,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+                "enable": false,
+                "rotateX": 600,
+                "rotateY": 600
+            }
+        }
+    },
+    "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+            "onhover": {
+                "enable": true,
+                "mode": "grab"
+            },
+            "onclick": {
+                "enable": true,
+                "mode": "push"
+            },
+            "resize": true
+        },
+        "modes": {
+            "grab": {
+                "distance": 140,
+                "line_linked": {
+                    "opacity": 1
+                }
+            },
+            "bubble": {
+                "distance": 400,
+                "size": 40,
+                "duration": 2,
+                "opacity": 8,
+                "speed": 3
+            },
+            "repulse": {
+                "distance": 200,
+                "duration": 0.4
+            },
+            "push": {
+                "particles_nb": 4
+            },
+            "remove": {
+                "particles_nb": 2
+            }
+        }
+    },
+    "retina_detect": true
+}
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="public/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+    </div>
+    <script src="public/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS.load('particles-js', 'public/particles.json', function() {
+            console.log('particles.js loaded - callback');
+        });
+    </script>
+</body>
+</html>
+edit filepath: public/script.js
+content: document.getElementById('proxyButton').addEventListener('click', function() {
+    var url = document.getElementById('urlInput').value;
+    if (url) {
+        fetch('/api/proxy?url=' + encodeURIComponent(url))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                // Sanitize the HTML content to prevent XSS attacks
+                const cleanData = DOMPurify.sanitize(data);
+                document.getElementById('content').innerHTML = cleanData;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = '<p class="error">Error: ' + error.message + '</p>';
+            });
+    } else {
+        document.getElementById('content').innerHTML = '<p class="error">Please enter a URL.</p>';
+    }
+});
+
+// Load DOMPurify from CDN
+const script = document.createElement('script');
+script.src = 'https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.3/purify.min.js';
+script.onload = function() {
+    console.log('DOMPurify loaded');
+};
+document.head.appendChild(script);
