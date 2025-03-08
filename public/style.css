@@ -2,7 +2,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: #000;
+    background-color: #000;
     color: #fff;
     overflow: hidden; /* Hide scrollbars */
 }
@@ -11,54 +11,109 @@ body {
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    top: 0;
+    left: 0;
+    z-index: 0;
 }
 
 .container {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    min-height: 100vh;
+    padding: 20px;
     text-align: center;
 }
 
 h1 {
     font-size: 3em;
     margin-bottom: 20px;
-    color: #00bcd4;
-    text-shadow: 0 0 10px #00bcd4;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin-bottom: 30px;
 }
 
 input[type="text"] {
-    padding: 10px;
+    padding: 15px;
     font-size: 1.2em;
-    border: none;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    width: 80%;
-    max-width: 400px;
+    border: 2px solid #00ff00;
+    border-radius: 8px;
     background-color: #222;
     color: #fff;
+    width: 80%;
+    max-width: 500px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #00a000;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 15px 30px;
     font-size: 1.2em;
-    background-color: #00bcd4;
-    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    background-color: #00ff00;
+    color: #000;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #008ba7;
+    background-color: #00a000;
 }
 
-/* Add a glowing effect to the input box when focused */
-input[type="text"]:focus {
-    outline: none;
-    box-shadow: 0 0 10px #00bcd4;
+/* Additional styles for a more detailed encryption theme */
+.encryption-element {
+    border: 1px dashed #00ff00;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.glowing-text {
+    text-shadow: 0 0 5px #00ff00;
+}
+
+/* Style adjustments for smaller screens */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2em;
+    }
+    p {
+        font-size: 1em;
+    }
+    input[type="text"] {
+        width: 95%;
+    }
+    button {
+        font-size: 1em;
+    }
+}
+
+/* Keyframe animations for subtle glowing effects */
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 5px #00ff00;
+    }
+    50% {
+        text-shadow: 0 0 15px #00ff00;
+    }
+    100% {
+        text-shadow: 0 0 5px #00ff00;
+    }
+}
+
+.glowing-text {
+    animation: glow 2s infinite;
 }
