@@ -429,3 +429,162 @@
         outline: 2px solid rgba(70, 130, 180, 0.7); /* Darker Steel Blue */
     }
 }
+
+/* Additional Animations for specific security events or states */
+
+.ocsp-stapling-enabled {
+    animation: ocspStaplingEnabledPulse 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes ocspStaplingEnabledPulse {
+    0% {
+        background-color: rgba(144, 238, 144, 0.1); /* LightGreen */
+    }
+    100% {
+        background-color: rgba(144, 238, 144, 0.3); /* Green */
+    }
+}
+
+.content-security-policy {
+    animation: cspEnabledGlow 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes cspEnabledGlow {
+    0% {
+        box-shadow: 0 0 6px rgba(65, 105, 225, 0.4); /* RoyalBlue */
+    }
+    100% {
+        box-shadow: 0 0 12px rgba(65, 105, 225, 0.7); /* Darker RoyalBlue */
+    }
+}
+
+.subresource-integrity {
+    animation: sriEnabledPulse 2.2s linear infinite;
+}
+
+@keyframes sriEnabledPulse {
+    0% {
+        border-color: rgba(255, 215, 0, 0.4); /* Gold */
+    }
+    50% {
+        border-color: rgba(255, 215, 0, 0.7); /* Darker Gold */
+    }
+    100% {
+        border-color: rgba(255, 215, 0, 0.4); /* Gold */
+    }
+}
+
+.server-signature-exposed {
+    animation: serverSignatureExposedWarning 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes serverSignatureExposedWarning {
+    0% {
+        color: rgba(255, 69, 0, 0.6); /* OrangeRed */
+    }
+    100% {
+        color: rgba(255, 69, 0, 0.9); /* Darker OrangeRed */
+    }
+}
+
+.clickjacking-vulnerable {
+    animation: clickjackingWarning 1.9s linear infinite;
+}
+
+@keyframes clickjackingWarning {
+    0% {
+        transform: rotate(1deg);
+        background-color: rgba(255, 0, 0, 0.1);
+    }
+    50% {
+        transform: rotate(-1deg);
+        background-color: transparent;
+    }
+    100% {
+        transform: rotate(1deg);
+        background-color: rgba(255, 0, 0, 0.1);
+    }
+}
+
+.referrer-policy-weak {
+    animation: weakReferrerPolicyWarning 2s ease-in-out infinite alternate;
+}
+
+@keyframes weakReferrerPolicyWarning {
+    0% {
+        text-decoration: underline wavy rgba(255, 165, 0, 0.5);
+    }
+    100% {
+        text-decoration: underline wavy rgba(255, 165, 0, 0.8);
+    }
+}
+
+.feature-policy-missing {
+    animation: featurePolicyMissingAlert 2.3s linear infinite;
+}
+
+@keyframes featurePolicyMissingAlert {
+    0% {
+        border-right: 4px dashed rgba(255, 255, 0, 0.5);
+    }
+    50% {
+        border-right: none;
+    }
+    100% {
+        border-right: 4px dashed rgba(255, 255, 0, 0.5);
+    }
+}
+
+/* Improved visual distinction for critical security alerts */
+
+.critical-security-alert {
+  animation: criticalAlert 1.2s steps(5, start) infinite;
+  color: white;
+  font-weight: bold;
+}
+
+@keyframes criticalAlert {
+  0% {
+    background-color: #FF4136; /* Red - Alert Color */
+  }
+  100% {
+    background-color: transparent;
+    color: inherit;
+  }
+}
+
+.data-breach-detected {
+    animation: dataBreachAnimation 1.5s linear infinite;
+}
+
+@keyframes dataBreachAnimation {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.8); /* Red glow */
+        background-color: rgba(255, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+    50% {
+        box-shadow: none;
+        background-color: transparent;
+        transform: translateY(2px);
+    }
+    100% {
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.8); /* Red glow */
+        background-color: rgba(255, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+}
+
+/* Highlighting configuration errors impacting security */
+.misconfiguration-warning {
+    animation: misconfigurationAnimation 1.7s ease-in-out infinite alternate;
+}
+
+@keyframes misconfigurationAnimation {
+    0% {
+        border: 2px solid rgba(255, 165, 0, 0.7); /* Orange */
+    }
+    100% {
+        border: 2px dashed rgba(255, 165, 0, 0.9); /* Dashed Orange */
+    }
+}
