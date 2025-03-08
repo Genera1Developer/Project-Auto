@@ -42,6 +42,11 @@ function decrypt(text) {
     }
 
     try {
+        if (typeof text !== 'string') {
+            console.error("Invalid log format: Log entry is not a string.");
+            return null;
+        }
+
         const textParts = text.split(':');
         if (textParts.length !== 3) {
             console.error("Invalid log format: Incorrect number of parts.");
@@ -90,7 +95,12 @@ export function logRequest(req, res, url) {
 
 export function getLogs() {
     try {
-        const logs = fs.readFileSync(logFilePath, 'utf8');
+        let logs = fs.readFileSync(logFilePath, 'utf8');
+        // Handle empty logs file
+        if (!logs) {
+            return [];
+        }
+
         return logs.trim().split('\n') // Trim to remove trailing newline
             .filter(log => log.trim() !== '')
             .map(log => {
