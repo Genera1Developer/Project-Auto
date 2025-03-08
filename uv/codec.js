@@ -25,23 +25,17 @@ async function deriveKey(password, salt) {
 }
 
 function arrayBufferToBase64(buffer) {
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)));
 }
 
 function base64ToArrayBuffer(base64) {
-  const binary_string = atob(base64);
-  const len = binary_string.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binary_string.charCodeAt(i);
-  }
-  return bytes.buffer;
+    const binary_string = atob(base64);
+    const len = binary_string.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
 }
 
 
@@ -55,15 +49,16 @@ export async function encode(str, key = null, salt = null) {
         if (key && salt) {
             const iv = getRandomValues(new Uint8Array(12));
             const cryptoKey = await deriveKey(key, salt);
-            const encrypted = await subtle.encrypt(
-                { name: "AES-GCM", iv: iv },
+            const { ciphertext, tag } = await subtle.encrypt(
+                { name: "AES-GCM", iv: iv, tagLength: 128 },
                 cryptoKey,
                 encoded
             );
 
-            const combined = new Uint8Array(iv.length + encrypted.byteLength);
+            const combined = new Uint8Array(iv.length + ciphertext.byteLength + tag.byteLength);
             combined.set(iv, 0);
-            combined.set(new Uint8Array(encrypted), iv.length);
+            combined.set(new Uint8Array(ciphertext), iv.length);
+            combined.set(new Uint8Array(tag), iv.length + ciphertext.byteLength);
 
             return arrayBufferToBase64(combined);
 
@@ -85,14 +80,16 @@ export async function decode(str, key = null, salt = null) {
 
         if (key && salt) {
             const iv = bytes.slice(0, 12);
-            const encrypted = bytes.slice(12);
+            const ciphertext = bytes.slice(12, bytes.length - 16);
+            const tag = bytes.slice(bytes.length - 16);
+
 
             const cryptoKey = await deriveKey(key, salt);
 
             const decrypted = await subtle.decrypt(
-                { name: "AES-GCM", iv: iv },
+                { name: "AES-GCM", iv: iv, tagLength: 128 },
                 cryptoKey,
-                encrypted
+                ciphertext
             );
 
             const utf8Decode = new TextDecoder();
