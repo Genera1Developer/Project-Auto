@@ -4,16 +4,22 @@ const algorithm = 'aes-256-gcm';
 let key = null; // Initialize key as null
 
 function setEncryptionKey(newKey) {
-    if (newKey && newKey.length === 32) {
-        key = Buffer.from(newKey); // Expects a Buffer
-    } else {
-        throw new Error('Invalid encryption key provided. Key must be a 32-byte Buffer.');
+    if (!newKey || typeof newKey !== 'string' || newKey.length !== 32) {
+        throw new Error('Invalid encryption key provided. Key must be a 32-character string.');
+    }
+    try {
+        key = Buffer.from(newKey, 'utf8'); // Ensure key is a Buffer derived from UTF-8 string
+    } catch (error) {
+        throw new Error('Error creating Buffer from key: ' + error.message);
     }
 }
 
 function encrypt(text) {
     if (!key) {
         throw new Error('Encryption key not initialized. Call setEncryptionKey() first.');
+    }
+    if (typeof text !== 'string') {
+        throw new TypeError('Expected text to encrypt to be a string');
     }
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, key, iv);
@@ -31,6 +37,12 @@ function decrypt(encryptedData) {
     if (!key) {
         throw new Error('Encryption key not initialized. Call setEncryptionKey() first.');
     }
+
+    if (!encryptedData || typeof encryptedData !== 'object' || !encryptedData.iv || !encryptedData.encryptedData || !encryptedData.authTag) {
+        console.error("Invalid encrypted data format.");
+        return null;
+    }
+
     try {
         const iv = Buffer.from(encryptedData.iv, 'hex');
         const encryptedText = Buffer.from(encryptedData.encryptedData, 'hex');
