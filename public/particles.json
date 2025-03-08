@@ -1,20 +1,20 @@
 {
   "particles": {
     "number": {
-      "value": 180,
+      "value": 80,
       "density": {
         "enable": true,
-        "value_area": 860
+        "value_area": 800
       }
     },
     "color": {
-      "value": "#00FFFF"
+      "value": "#00ffff"
     },
     "shape": {
       "type": "circle",
       "stroke": {
-        "width": 1,
-        "color": "#00FFFF"
+        "width": 0,
+        "color": "#000000"
       },
       "polygon": {
         "nb_sides": 5
@@ -26,21 +26,21 @@
       }
     },
     "opacity": {
-      "value": 0.7,
-      "random": true,
+      "value": 0.5,
+      "random": false,
       "anim": {
-        "enable": true,
-        "speed": 0.7,
+        "enable": false,
+        "speed": 1,
         "opacity_min": 0.1,
         "sync": false
       }
     },
     "size": {
-      "value": 2.7,
+      "value": 5,
       "random": true,
       "anim": {
         "enable": false,
-        "speed": 35,
+        "speed": 40,
         "size_min": 0.1,
         "sync": false
       }
@@ -48,18 +48,17 @@
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00BFFF",
+      "color": "#00ffff",
       "opacity": 0.4,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 2.5,
+      "speed": 6,
       "direction": "none",
-      "random": true,
+      "random": false,
       "straight": false,
       "out_mode": "out",
-      "bounce": false,
       "attract": {
         "enable": false,
         "rotateX": 600,
@@ -84,27 +83,206 @@
       "grab": {
         "distance": 140,
         "line_linked": {
-          "opacity": 0.8
+          "opacity": 1
         }
       },
       "bubble": {
-        "distance": 380,
-        "size": 38,
-        "duration": 1.8,
-        "opacity": 7,
-        "speed": 2.8
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 3
       },
       "repulse": {
-        "distance": 190,
-        "duration": 0.38
+        "distance": 200
       },
       "push": {
-        "particles_nb": 3
+        "particles_nb": 4
       },
       "remove": {
-        "particles_nb": 1
+        "particles_nb": 2
       }
     }
   },
-  "retina_detect": true
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#b61924",
+    "background_image": "",
+    "background_position": "50% 50%",
+    "background_repeat": "no-repeat",
+    "background_size": "cover"
+  }
 }
+edit filepath: public/index.css
+content: body {
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: #00ffff; /* Cyan text for encryption theme */
+    overflow: hidden; /* Hide scrollbars */
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+    left: 0;
+}
+
+.container {
+    background-color: rgba(0, 0, 0, 0.8); /* Dark translucent background */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Cyan glow */
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    border: 1px solid #00ffff; /* Cyan border */
+}
+
+h1 {
+    color: #00ffff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); /* Glowing text */
+}
+
+#urlInput {
+    width: calc(100% - 30px);
+    padding: 15px;
+    margin: 15px 0;
+    border: 2px solid #00ffff; /* Cyan border */
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #00ffff;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+#urlInput:focus {
+    border-color: #00bfff; /* Lighter cyan on focus */
+}
+
+#proxyButton {
+    padding: 15px 30px;
+    background-color: #00ffff;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#proxyButton:hover {
+    background-color: #00bfff;
+    color: #fff;
+}
+
+#content {
+    margin-top: 30px;
+    text-align: left;
+    border: 2px solid #00ffff;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #00ffff;
+    overflow-wrap: break-word; /* Handle long words */
+}
+
+#content p.error {
+    color: #ff4d4d; /* Red for error messages */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    #urlInput {
+        width: calc(100% - 20px);
+    }
+}
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Encrypted Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Encrypted Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+    </div>
+    <script src="particles.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        particlesJS.load('particles-js', 'particles.json', function() {
+            console.log('particles.json loaded - Encryption Engaged');
+        });
+    </script>
+</body>
+</html>
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    const proxyButton = document.getElementById('proxyButton');
+    const urlInput = document.getElementById('urlInput');
+    const contentDiv = document.getElementById('content');
+
+    proxyButton.addEventListener('click', function() {
+        const url = urlInput.value;
+
+        if (!url) {
+            contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
+            return;
+        }
+
+        // Basic URL validation
+        if (!isValidURL(url)) {
+            contentDiv.innerHTML = '<p class="error">Please enter a valid URL.</p>';
+            return;
+        }
+
+        // Display loading message
+        contentDiv.innerHTML = '<p>Loading...</p>';
+
+        fetch('/api/proxy?url=' + encodeURIComponent(url))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                contentDiv.innerHTML = data;
+            })
+            .catch(error => {
+                contentDiv.innerHTML = '<p class="error">Error: ' + error.message + '</p>';
+            });
+    });
+
+    // Helper function to validate URL
+    function isValidURL(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+});
