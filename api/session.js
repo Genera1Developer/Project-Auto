@@ -25,7 +25,7 @@ function createSession() {
     createdAt: Date.now(),
     lastAccessed: Date.now(),
   };
-  return { sessionId, encryptionKey };
+  return sessionId; // Return only the session ID
 }
 
 function getSession(sessionId) {
@@ -41,17 +41,18 @@ function getSession(sessionId) {
     return null;
   }
 
-  if (Date.now() - session.createdAt > sessionTimeout) {
+  const now = Date.now();
+  if (now - session.createdAt > sessionTimeout) {
     destroySession(sessionId);
     return null;
   }
 
-  if (Date.now() - session.lastAccessed > sessionInactivityTimeout) {
+  if (now - session.lastAccessed > sessionInactivityTimeout) {
     destroySession(sessionId);
     return null;
   }
 
-  session.lastAccessed = Date.now();
+  session.lastAccessed = now;
   return session;
 }
 
@@ -72,9 +73,9 @@ function encryptSessionData(sessionId, data) {
     hmac.update(JSON.stringify(data));
     const calculatedHmac = hmac.digest('hex');
 
-  const plaintext = JSON.stringify({data: data, hmac: calculatedHmac});
+  const payload = {data: data, hmac: calculatedHmac};
 
-  const encryptedData = encryptData(plaintext, session.encryptionKey);
+  const encryptedData = encryptData(JSON.stringify(payload), session.encryptionKey);
     if (!encryptedData) {
         console.error('Encryption failed.');
         return null;
@@ -100,7 +101,14 @@ function decryptSessionData(sessionId, encryptedData) {
         destroySession(sessionId);
         return null;
     }
-    const parsedData = JSON.parse(plaintext);
+    let parsedData;
+    try {
+        parsedData = JSON.parse(plaintext);
+    } catch (parseError) {
+        console.error("JSON parsing error:", parseError);
+        destroySession(sessionId);
+        return null;
+    }
     const receivedHmac = parsedData.hmac;
     const data = parsedData.data;
 
