@@ -24,7 +24,7 @@ const UV_CONFIG = {
     cdn: null,
     forwardHeaders: true,
     rewriteOrigin: true,
-    XORKey: 'YourEncryptionKeyHere',
+    XORKey: 'ChangeMeToARandom32CharacterKey',
     advanced: {
         bypass: false,
         injections: true
