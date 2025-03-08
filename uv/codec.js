@@ -13,7 +13,7 @@ async function deriveKey(password, salt) {
         {
             "name": "PBKDF2",
             salt: enc.encode(salt),
-            iterations: 100000, // Increased iterations for better security
+            iterations: 100000,
             hash: "SHA-256"
         },
         keyMaterial,
@@ -45,18 +45,12 @@ export async function encode(str, key = null, salt = null) {
             combined.set(iv, 0);
             combined.set(new Uint8Array(encrypted), iv.length);
 
-            // Use Uint8Array to directly convert to Base64
-            let binary = '';
-            const len = combined.byteLength;
-            for (let i = 0; i < len; i++) {
-                binary += String.fromCharCode(combined[i]);
-            }
-            return btoa(binary);
+            return btoa(String.fromCharCode(...combined));
 
         }
 
 
-        return btoa(String.fromCharCode(...Array.from(encoded)));
+        return btoa(String.fromCharCode(...encoded));
     } catch (e) {
         console.error("Encoding error:", e);
         return null;
@@ -67,7 +61,6 @@ export async function decode(str, key = null, salt = null) {
     try {
         if (!str) return '';
 
-        // Use atob to decode from Base64, then convert to Uint8Array
         const binaryString = atob(str);
         const bytes = new Uint8Array(binaryString.length);
         for (let i = 0; i < binaryString.length; i++) {
