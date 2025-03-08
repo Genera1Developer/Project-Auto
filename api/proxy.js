@@ -1,81 +1,62 @@
+const express = require('express');
+const router = express.Router();
 const https = require('https');
-const http = require('http');
+const crypto = require('crypto');
 
-module.exports = (req, res) => {
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default_encryption_key'; // Use environment variable for security
+const IV_LENGTH = 16;
+
+function encrypt(text) {
+    let iv = crypto.randomBytes(IV_LENGTH);
+    let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+    let encrypted = cipher.update(text);
+
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
+}
+
+function decrypt(text) {
+    try {
+        let textParts = text.split(':');
+        let iv = Buffer.from(textParts.shift(), 'hex');
+        let encryptedText = Buffer.from(textParts.join(':'), 'hex');
+        let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+        let decrypted = decipher.update(encryptedText);
+
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+        return decrypted.toString();
+    } catch (error) {
+        console.error("Decryption error:", error);
+        return null;
+    }
+}
+
+router.get('/', (req, res) => {
     const url = req.query.url;
 
     if (!url) {
-        res.status(400).send('URL parameter is required.');
-        return;
+        return res.status(400).send('URL parameter is required');
     }
 
-    try {
-        const parsedUrl = new URL(url);
-        const protocol = parsedUrl.protocol === 'https:' ? https : http;
+    https.get(url, (response) => {
+        let data = '';
 
-        protocol.get(url, (proxyRes) => {
-            let data = '';
-
-            proxyRes.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            proxyRes.on('end', () => {
-                res.writeHead(proxyRes.statusCode, proxyRes.headers);
-                res.end(data);
-            });
-
-            proxyRes.on('error', (err) => {
-                console.error('Error on proxy response:', err);
-                res.status(500).send('Proxy error: ' + err.message);
-            });
-        }).on('error', (err) => {
-            console.error('Error on proxy request:', err);
-            res.status(500).send('Proxy request error: ' + err.message);
+        response.on('data', (chunk) => {
+            data += chunk;
         });
 
-    } catch (error) {
-        console.error('URL parsing error:', error);
-        res.status(400).send('Invalid URL: ' + error.message);
-    }
-};
-edit filepath: .netlify/functions/proxy.js
-content: const proxyHandler = require('../../api/proxy');
+        response.on('end', () => {
+            // Encrypt the data before sending it back
+            const encryptedData = encrypt(data);
+            res.send(encryptedData);
+        });
 
-exports.handler = async (event, context) => {
-    // Mock the request and response objects expected by the proxy handler
-    const req = {
-        query: event.queryStringParameters,
-    };
+    }).on('error', (error) => {
+        console.error("Proxy error:", error);
+        res.status(500).send('Proxy error: ' + error.message);
+    });
+});
 
-    const res = {
-        statusCode: 200,
-        headers: {},
-        body: '',
-        status: function(code) {
-            this.statusCode = code;
-            return this;
-        },
-        send: function(content) {
-            this.body = content;
-            return this;
-        },
-        writeHead: function(statusCode, headers) {
-            this.statusCode = statusCode;
-            this.headers = headers;
-        },
-        end: function(content) {
-            this.body = content || this.body;
-        },
-    };
-
-    // Execute the proxy handler
-    proxyHandler(req, res);
-
-    // Return the response in the format Netlify expects
-    return {
-        statusCode: res.statusCode,
-        headers: res.headers,
-        body: res.body,
-    };
-};
+module.exports = router;
