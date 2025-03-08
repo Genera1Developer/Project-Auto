@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const urlForm = document.getElementById('urlForm');
   const urlInput = document.getElementById('urlInput');
   const proxyUrl = '/uv/service/';
-  const encryptionKey = generateEncryptionKey(); // Generate a unique encryption key
 
   urlForm.addEventListener('submit', function(event) {
     event.preventDefault();
@@ -12,31 +11,68 @@ document.addEventListener('DOMContentLoaded', function() {
       url = 'https://' + url;
     }
 
-    // Encrypt the URL before passing it to the proxy
-    const encryptedUrl = encryptURL(url, encryptionKey);
-    const encodedUrl = encodeURIComponent(encryptedUrl);
+    // Generate encryption key for this session
+    const encryptionKey = generateEncryptionKey();
 
-    window.location.href = proxyUrl + encodedUrl;
+    // Encrypt the URL before passing it to the proxy
+    encryptURL(url, encryptionKey)
+      .then(encryptedUrl => {
+        const encodedUrl = encodeURIComponent(encryptedUrl);
+        window.location.href = proxyUrl + encodedUrl;
+      })
+      .catch(error => {
+        console.error("Encryption failed:", error);
+        alert("Failed to encrypt URL. Please try again.");
+      });
   });
 
-  // Function to generate a random encryption key (for demonstration purposes)
+  // Function to generate a cryptographically secure encryption key
   function generateEncryptionKey() {
-    const key = CryptoJS.lib.WordArray.random(16).toString();
-    sessionStorage.setItem('encryptionKey', key);
-    return key;
+    return new Promise((resolve, reject) => {
+      crypto.subtle.generateKey(
+        {
+          name: "AES-CBC",
+          length: 256,
+        },
+        true,
+        ["encrypt", "decrypt"]
+      ).then(key => {
+        crypto.subtle.exportKey("jwk", key).then(exportedKey => {
+          sessionStorage.setItem('encryptionKey', exportedKey.k); // Store only the key material
+          resolve(exportedKey.k);
+        }).catch(reject);
+      }).catch(reject);
+    });
   }
 
-  // Function to encrypt the URL using AES
+  // Function to encrypt the URL using AES-CBC
   function encryptURL(url, key) {
-    const encrypted = CryptoJS.AES.encrypt(url, key).toString();
-    return encrypted;
+    return new Promise((resolve, reject) => {
+      const iv = crypto.getRandomValues(new Uint8Array(16)); // Generate a random IV
+      const encoded = new TextEncoder().encode(url);
+      crypto.subtle.importKey(
+        "jwk",
+        { kty: "oct", k: key, alg: "A256CBC", ext: true },
+        "AES-CBC",
+        true,
+        ["encrypt", "decrypt"]
+      ).then(cryptoKey => {
+        crypto.subtle.encrypt(
+          {
+            name: "AES-CBC",
+            iv: iv
+          },
+          cryptoKey,
+          encoded
+        ).then(encrypted => {
+          const encryptedArray = new Uint8Array(encrypted);
+          const combined = new Uint8Array(iv.length + encryptedArray.length);
+          combined.set(iv, 0);
+          combined.set(encryptedArray, iv.length);
+          const base64 = btoa(String.fromCharCode(...combined));
+          resolve(base64);
+        }).catch(reject);
+      }).catch(reject);
+    });
   }
 });
-
-// Include CryptoJS library
-const script = document.createElement('script');
-script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.js';
-script.onload = function () {
-  console.log('CryptoJS loaded');
-};
-document.head.appendChild(script);
