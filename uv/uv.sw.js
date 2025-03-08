@@ -191,6 +191,8 @@ self.addEventListener('fetch', (event) => {
 	   sanitizedHeaders.delete('Cross-Origin-Embedder-Policy');
 	   sanitizedHeaders.delete('content-encoding');
      sanitizedHeaders.delete('Content-Security-Policy'); // Remove any pre-existing CSP headers
+     sanitizedHeaders.delete('Permissions-Policy'); // Remove any pre-existing Permissions-Policy headers
+     sanitizedHeaders.delete('Feature-Policy'); // Remove any pre-existing Feature-Policy headers
 
 
           return new Response(responseText, {
@@ -225,6 +227,8 @@ self.addEventListener('fetch', (event) => {
 		sanitizedHeaders.delete('Cross-Origin-Embedder-Policy');
 		sanitizedHeaders.delete('content-encoding');
     sanitizedHeaders.delete('Content-Security-Policy'); // Remove any pre-existing CSP headers
+    sanitizedHeaders.delete('Permissions-Policy'); // Remove any pre-existing Permissions-Policy headers
+    sanitizedHeaders.delete('Feature-Policy'); // Remove any pre-existing Feature-Policy headers
 
 
 		return new Response(responseText, {
