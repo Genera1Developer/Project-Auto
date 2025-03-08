@@ -1,9 +1,10 @@
 body {
     font-family: 'Arial', sans-serif;
+    background-color: #000;
+    color: #0F0; /* Encryption green */
     margin: 0;
+    padding: 0;
     overflow: hidden; /* Hide scrollbars */
-    background: #000; /* Black background */
-    color: #00ff00; /* Green text */
 }
 
 #particles-js {
@@ -14,87 +15,63 @@ body {
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    width: 80%;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid #0F0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #0F0;
     text-align: center;
 }
 
 h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px #00ff00; /* Glowing effect */
-}
-
-p {
-    font-size: 1.2em;
-    line-height: 1.6;
-    max-width: 800px;
-    margin-bottom: 30px;
-}
-
-a {
-    color: #00ff00;
-    text-decoration: none;
-    border-bottom: 1px solid #00ff00; /* Underline effect */
-    padding-bottom: 2px;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: #fff; /* White on hover */
-}
-
-/* Form styles */
-form {
-    margin-top: 20px;
+    color: #0F0;
+    text-shadow: 0 0 5px #0F0;
 }
 
 input[type="text"] {
     padding: 10px;
-    border: 1px solid #00ff00;
+    margin: 10px;
+    width: 70%;
     background-color: #111;
-    color: #00ff00;
-    border-radius: 5px;
-    margin-right: 10px;
-    font-size: 1em;
+    color: #0F0;
+    border: 1px solid #0F0;
+    border-radius: 3px;
 }
 
 button {
     padding: 10px 20px;
-    background-color: #00ff00;
+    background-color: #0F0;
     color: #000;
     border: none;
-    border-radius: 5px;
+    border-radius: 3px;
     cursor: pointer;
-    font-size: 1em;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #00cc00;
+    background-color: #0A0;
 }
 
-/* Encryption theme */
-.encryption-text {
+a {
+    color: #0F0;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Terminal Style */
+.terminal {
     font-family: monospace;
-    font-size: 0.9em;
-    letter-spacing: 1px;
-    color: #0f0;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2.5em;
-    }
-    p {
-        font-size: 1.1em;
-    }
-    input[type="text"] {
-        width: 70%;
-        margin-bottom: 10px;
-    }
+    text-align: left;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #000;
+    border: 1px solid #0F0;
+    border-radius: 5px;
+    overflow: auto;
+    white-space: pre-wrap; /* Display line breaks */
 }
