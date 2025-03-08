@@ -24,6 +24,26 @@ async function deriveKey(password, salt) {
     return key;
 }
 
+function arrayBufferToBase64(buffer) {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+function base64ToArrayBuffer(base64) {
+  const binary_string = atob(base64);
+  const len = binary_string.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binary_string.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
 
 export async function encode(str, key = null, salt = null) {
     try {
@@ -45,12 +65,12 @@ export async function encode(str, key = null, salt = null) {
             combined.set(iv, 0);
             combined.set(new Uint8Array(encrypted), iv.length);
 
-            return btoa(String.fromCharCode(...combined));
+            return arrayBufferToBase64(combined);
 
         }
 
 
-        return btoa(String.fromCharCode(...encoded));
+        return arrayBufferToBase64(encoded);
     } catch (e) {
         console.error("Encoding error:", e);
         return null;
@@ -61,11 +81,7 @@ export async function decode(str, key = null, salt = null) {
     try {
         if (!str) return '';
 
-        const binaryString = atob(str);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
+        const bytes = new Uint8Array(base64ToArrayBuffer(str));
 
         if (key && salt) {
             const iv = bytes.slice(0, 12);
