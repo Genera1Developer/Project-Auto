@@ -193,6 +193,8 @@ self.addEventListener('fetch', (event) => {
      sanitizedHeaders.delete('Content-Security-Policy'); // Remove any pre-existing CSP headers
      sanitizedHeaders.delete('Permissions-Policy'); // Remove any pre-existing Permissions-Policy headers
      sanitizedHeaders.delete('Feature-Policy'); // Remove any pre-existing Feature-Policy headers
+		 sanitizedHeaders.delete('Public-Key-Pins'); // Remove HPKP header
+	   sanitizedHeaders.delete('Public-Key-Pins-Report-Only'); // Remove HPKP header
 
 
           return new Response(responseText, {
@@ -229,6 +231,8 @@ self.addEventListener('fetch', (event) => {
     sanitizedHeaders.delete('Content-Security-Policy'); // Remove any pre-existing CSP headers
     sanitizedHeaders.delete('Permissions-Policy'); // Remove any pre-existing Permissions-Policy headers
     sanitizedHeaders.delete('Feature-Policy'); // Remove any pre-existing Feature-Policy headers
+	  sanitizedHeaders.delete('Public-Key-Pins'); // Remove HPKP header
+	  sanitizedHeaders.delete('Public-Key-Pins-Report-Only'); // Remove HPKP header
 
 
 		return new Response(responseText, {
