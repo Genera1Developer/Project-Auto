@@ -109,6 +109,18 @@
             text-security: disc;
         }
 
+        /* Style for parameter tampering */
+        .parameter-tampering {
+            color: orange;
+            font-weight: bold;
+        }
+
+        /* Style for unusual activity */
+        .unusual-activity {
+            color: navy;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -254,9 +266,10 @@
                 let encryptionStatus = log.encryptionStatus || 'N/A';
                 let user = log.user || 'N/A';
                 let ipAddress = log.ipAddress || 'N/A';
+                let sessionId = log.sessionId || 'N/A'; // Capture Session ID
 
                 // Conditionally mask sensitive data if not visible
-                let sensitiveInfo = `Encryption status: <span class="sensitive-data masked">${encryptionStatus}</span>, User: <span class="sensitive-data masked">${user}</span>, IP Address: <span class="sensitive-data masked">${ipAddress}</span>`;
+                let sensitiveInfo = `Encryption status: <span class="sensitive-data masked">${encryptionStatus}</span>, User: <span class="sensitive-data masked">${user}</span>, IP Address: <span class="sensitive-data masked">${ipAddress}</span>, Session ID: <span class="sensitive-data masked">${sessionId}</span>`;
 
                 details.innerHTML = `Details: ${sensitiveInfo}`;
 
@@ -289,6 +302,22 @@
                     integrityIssueWarning.classList.add('integrity-issue');
                     integrityIssueWarning.textContent = ' - Data Integrity Check Failed!';
                     message.appendChild(integrityIssueWarning);
+                }
+
+                 // Parameter Tampering Detection
+                 if (log.level === 'WARNING' && log.message.toLowerCase().includes('parameter') && log.message.toLowerCase().includes('modified')) {
+                    const parameterTamperingWarning = document.createElement('span');
+                    parameterTamperingWarning.classList.add('parameter-tampering');
+                    parameterTamperingWarning.textContent = ' - Possible Parameter Tampering Detected!';
+                    message.appendChild(parameterTamperingWarning);
+                }
+
+                // Unusual Activity Detection - Example: multiple failed login attempts
+                if (log.level === 'WARNING' && log.message.toLowerCase().includes('failed login') && log.message.toLowerCase().includes('multiple attempts')) {
+                    const unusualActivityWarning = document.createElement('span');
+                    unusualActivityWarning.classList.add('unusual-activity');
+                    unusualActivityWarning.textContent = ' - Unusual Activity: Multiple Failed Login Attempts!';
+                    message.appendChild(unusualActivityWarning);
                 }
 
                 // Log Correlation - Example: look for similar log messages within a time window
