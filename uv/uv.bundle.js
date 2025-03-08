@@ -424,7 +424,13 @@
         throw new Error("Missing shared secret for authenticated decryption.");
       }
       try {
+        if (typeof encryptedData !== "string") {
+          throw new Error("Encrypted data must be a string.");
+        }
         const parts = encryptedData.split(".");
+        if (parts.length < 3) {
+          throw new Error("Invalid encrypted data format.");
+        }
         const saltB64 = parts[0];
         const ivB64 = parts[1];
         const cipherB64 = parts[2];
