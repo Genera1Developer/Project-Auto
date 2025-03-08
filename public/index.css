@@ -1,131 +1,108 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background for encryption theme */
-    color: #fff;
+    background-color: #000;
+    color: #0f0;
     margin: 0;
-    padding: 0;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden; /* Hide scrollbars */
 }
 
-.container {
-    background-color: rgba(30, 30, 30, 0.8); /* Semi-transparent dark container */
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    width: 80%;
-    max-width: 600px;
-    z-index: 1; /* Ensure it's above particles */
-    position: relative; /* For positioning loader */
-}
-
-h1 {
-    color: #00bcd4; /* Encryption-themed color */
-    margin-bottom: 20px;
-    text-shadow: 0 0 8px rgba(0, 188, 212, 0.8);
-}
-
-#urlInput {
-    width: calc(100% - 20px);
-    padding: 12px;
-    margin: 15px 0;
-    border: 2px solid #444;
-    border-radius: 6px;
-    background-color: #222;
-    color: #fff;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
-}
-
-#urlInput:focus {
-    border-color: #00bcd4;
-    outline: none;
-}
-
-#proxyButton {
-    padding: 12px 24px;
-    background-color: #00bcd4;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 10px rgba(0, 188, 212, 0.4);
-}
-
-#proxyButton:hover {
-    background-color: #0097a7;
-    transform: translateY(-2px);
-}
-
-#content {
-    margin-top: 30px;
-    text-align: left;
-    border: 1px solid #444;
-    padding: 20px;
-    border-radius: 6px;
-    background-color: #1e1e1e;
-    color: #ddd;
-    font-size: 14px;
-    line-height: 1.6;
-    word-wrap: break-word;
-    overflow: auto;
-    max-height: 300px;
-}
-
-#content p.error {
-    color: #ff6666;
-    font-weight: bold;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 30px;
-    }
-
-    #urlInput {
-        width: calc(100% - 24px);
-    }
-}
-
-/* Loader Styles */
-.loader {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 2s linear infinite;
-    z-index: 2;
-    display: none; /* Hidden by default */
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg) translate(-50%, -50%); }
-    100% { transform: rotate(360deg) translate(-50%, -50%); }
-}
-
-/* Particles.js styles - Moved to separate block */
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 0;
+    z-index: -1;
     background-color: #000;
 }
+
+.container {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #0f0;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 0 20px #0f0;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #0f0;
+}
+
+input[type="text"] {
+    padding: 10px;
+    width: 80%;
+    margin-bottom: 20px;
+    background-color: #222;
+    color: #0f0;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #0f0;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #0a0;
+    box-shadow: 0 0 10px #0f0;
+}
+
+#error-message {
+    color: red;
+    margin-top: 10px;
+}
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    particlesJS.load('particles-js', 'particles.json', function() {
+        console.log('particles.json loaded...');
+    });
+
+    const form = document.querySelector('form');
+    const urlInput = document.getElementById('url');
+    const errorMessage = document.getElementById('error-message');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const url = urlInput.value.trim();
+
+        if (!url) {
+            errorMessage.textContent = 'Please enter a URL.';
+            return;
+        }
+
+        errorMessage.textContent = '';
+
+        // Basic URL validation (you might want to use a more robust solution)
+        if (!isValidURL(url)) {
+            errorMessage.textContent = 'Please enter a valid URL.';
+            return;
+        }
+
+        // Using Ultraviolet's encodeUrl
+        const encodedURL = Ultraviolet.encodeUrl(url);
+        window.location.href = __uv$config.prefix + encodedURL;
+    });
+
+    function isValidURL(str) {
+      try {
+        new URL(str);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+});
 edit filepath: public/particles.json
 content: {
   "particles": {
@@ -137,7 +114,7 @@ content: {
       }
     },
     "color": {
-      "value": "#00bcd4"
+      "value": "#0f0"
     },
     "shape": {
       "type": "circle",
@@ -155,17 +132,17 @@ content: {
       }
     },
     "opacity": {
-      "value": 0.5,
-      "random": false,
+      "value": 0.7,
+      "random": true,
       "anim": {
-        "enable": false,
+        "enable": true,
         "speed": 1,
         "opacity_min": 0.1,
         "sync": false
       }
     },
     "size": {
-      "value": 5,
+      "value": 3,
       "random": true,
       "anim": {
         "enable": false,
@@ -177,17 +154,18 @@ content: {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00bcd4",
+      "color": "#0f0",
       "opacity": 0.4,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 6,
+      "speed": 3,
       "direction": "none",
-      "random": false,
+      "random": true,
       "straight": false,
       "out_mode": "out",
+      "bounce": false,
       "attract": {
         "enable": false,
         "rotateX": 600,
@@ -223,7 +201,8 @@ content: {
         "speed": 3
       },
       "repulse": {
-        "distance": 200
+        "distance": 200,
+        "duration": 0.4
       },
       "push": {
         "particles_nb": 4
@@ -233,85 +212,5 @@ content: {
       }
     }
   },
-  "retina_detect": true,
-  "config_demo": {
-    "hide_card": false,
-    "background_color": "#b61924",
-    "background_image": "",
-    "background_position": "50% 50%",
-    "background_repeat": "no-repeat",
-    "background_size": "cover"
-  }
+  "retina_detect": true
 }
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const proxyButton = document.getElementById('proxyButton');
-    const urlInput = document.getElementById('urlInput');
-    const contentDiv = document.getElementById('content');
-    const loader = document.querySelector('.loader');
-
-    // Initialize particles.js
-    particlesJS.load('particles-js', 'particles.json', function() {
-        console.log('particles.json loaded...');
-    });
-
-    proxyButton.addEventListener('click', function() {
-        const url = urlInput.value;
-
-        if (url) {
-            // Show loader
-            loader.style.display = 'block';
-            contentDiv.innerHTML = ''; // Clear previous content
-
-            fetch('/api/proxy?url=' + encodeURIComponent(url))
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    // Hide loader
-                    loader.style.display = 'none';
-                    contentDiv.innerHTML = data;
-                })
-                .catch(error => {
-                    // Hide loader
-                    loader.style.display = 'none';
-                    contentDiv.innerHTML = '<p class="error">Error: ' + error.message + '</p>';
-                });
-        } else {
-            contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
-        }
-    });
-
-    // URL input focus effect
-    urlInput.addEventListener('focus', function() {
-        urlInput.style.borderColor = '#00bcd4';
-    });
-
-    urlInput.addEventListener('blur', function() {
-        urlInput.style.borderColor = '#444';
-    });
-});
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html>
-<head>
-    <title>Web Proxy - Secure Access</title>
-    <link rel="stylesheet" type="text/css" href="public/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL">
-        <button id="proxyButton">Go</button>
-        <div class="loader"></div>
-        <div id="content"></div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="public/script.js"></script>
-</body>
-</html>
