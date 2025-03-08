@@ -241,6 +241,34 @@ self.addEventListener('fetch', (event) => {
 			headers: sanitizedHeaders
 		});
 	}
+	else if (contentType && (contentType.includes('application/json'))) {
+		let responseText = await response.text();
+
+		sanitizedHeaders.set('Content-Security-Policy', `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+		sanitizedHeaders.set('X-Content-Type-Options', 'nosniff');
+		sanitizedHeaders.set('X-Frame-Options', 'DENY');
+		sanitizedHeaders.set('X-XSS-Protection', '1; mode=block');
+		sanitizedHeaders.set('Content-Type', 'application/json; charset=utf-8');
+		sanitizedHeaders.delete('Content-Length');
+		sanitizedHeaders.delete('ETag');
+		sanitizedHeaders.set('Cache-Control', 'no-store');
+		sanitizedHeaders.set('Pragma', 'no-cache');
+		sanitizedHeaders.delete('Cross-Origin-Resource-Policy');
+		sanitizedHeaders.delete('Cross-Origin-Opener-Policy');
+		sanitizedHeaders.delete('Cross-Origin-Embedder-Policy');
+		sanitizedHeaders.delete('content-encoding');
+    sanitizedHeaders.delete('Content-Security-Policy'); // Remove any pre-existing CSP headers
+    sanitizedHeaders.delete('Permissions-Policy'); // Remove any pre-existing Permissions-Policy headers
+    sanitizedHeaders.delete('Feature-Policy'); // Remove any pre-existing Feature-Policy headers
+	  sanitizedHeaders.delete('Public-Key-Pins'); // Remove HPKP header
+	  sanitizedHeaders.delete('Public-Key-Pins-Report-Only'); // Remove HPKP header
+
+		return new Response(responseText, {
+			status: response.status,
+			statusText: response.statusText,
+			headers: sanitizedHeaders
+		});
+	}
 
         return new Response(await response.blob(), {
           status: response.status,
