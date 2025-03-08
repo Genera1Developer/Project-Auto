@@ -21,6 +21,8 @@ header {
   cross-origin-resource-policy: same-origin;
   /* Subresource Integrity (SRI) */
   /* integrity: 'sha384-EXAMPLE...'; */
+  /* Additional hardening: prevent website from being rendered in frames across domains */
+  cross-origin-window-policy: deny;
 }
 
 /* Existing styles - these are just placeholders */
