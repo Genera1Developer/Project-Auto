@@ -1,1 +1,55 @@
-body {\n font-family: 'Arial', sans-serif;\n margin: 0;\n padding: 0;\n background: #000;\n color: #fff;\n overflow: hidden; /* Hide scrollbars */\n}\n\n.container {\n display: flex;\n flex-direction: column;\n align-items: center;\n justify-content: center;\n height: 100vh;\n}\n\nh1 {\n font-size: 3em;\n margin-bottom: 20px;\n text-shadow: 0 0 10px #0f0;\n}\n\ninput[type=\"text\"] {\n padding: 15px;\n font-size: 1.2em;\n border: 2px solid #0f0;\n background-color: #222;\n color: #fff;\n border-radius: 8px;\n width: 80%;\n max-width: 600px;\n margin-bottom: 20px;\n outline: none;\n transition: border-color 0.3s ease;\n}\n\ninput[type=\"text\"]:focus {\n border-color: #00ff00;\n box-shadow: 0 0 10px #00ff00;\n}\n\nbutton {\n padding: 15px 30px;\n font-size: 1.2em;\n background-color: #0f0;\n color: #000;\n border: none;\n border-radius: 8px;\n cursor: pointer;\n transition: background-color 0.3s ease, color 0.3s ease;\n}\n\nbutton:hover {\n background-color: #00ff00;\n color: #222;\n}\n\n#particles-js {\n position: fixed;\n width: 100%;\n height: 100%;\n top: 0;\n left: 0;\n z-index: -1;\n}\n\n/* Add a subtle glow effect */\n.glow {\n text-shadow: 0 0 20px rgba(0, 255, 0, 0.7);\n}\n\n/* Keyframes for a subtle pulsating animation */\n@keyframes pulsate {\n 0% { transform: scale(1); }\n 50% { transform: scale(1.03); }\n 100% { transform: scale(1); }\n}\n\n/* Apply the pulsating animation to the button */\nbutton {\n animation: pulsate 2s infinite;\n}\n
+body {
+    font-family: sans-serif;
+    background-color: #111;
+    color: #eee;
+    margin: 0;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Behind all content */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+input[type="url"] {
+    padding: 10px;
+    border: 2px solid #333;
+    background-color: #222;
+    color: #eee;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#error-message {
+    color: #ff4136;
+    margin-top: 10px;
+}
