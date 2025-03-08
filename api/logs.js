@@ -76,7 +76,7 @@ function decrypt(text) {
 
 
 export async function logRequest(req, res, url) {
-    const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
+    const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'N/A'; // Handle undefined case
     const logMessage = `${new Date().toISOString()} - ${req.method} ${url} - ${res.statusCode} - ${ip}\n`;
     let encryptedLogMessage;
 
@@ -93,7 +93,7 @@ export async function logRequest(req, res, url) {
     }
 
     try {
-        await fs.promises.appendFile(logFilePath, encryptedLogMessage + '\n'); // Append a newline character and use promises
+        await fs.promises.appendFile(logFilePath, encryptedLogMessage); // Append without extra newline, already in logMessage
     } catch (err) {
         console.error('Error writing to log file:', err);
     }
@@ -111,7 +111,7 @@ export async function getLogs() {
 
         for (const log of logEntries) {
             try {
-                const decryptedLog = await decrypt(log);
+                const decryptedLog = decrypt(log); // Remove await for synchronous decryption
                 if (decryptedLog) {
                     decryptedLogs.push(decryptedLog);
                 } else {
