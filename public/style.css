@@ -1,53 +1,51 @@
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 0;
-    background-color: #000;
+    overflow: hidden; /* Hide scrollbars */
+    background: #000;
     color: #fff;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
     z-index: -1;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    text-align: center;
+    background-color: #000;
 }
 
 h1 {
     font-size: 3em;
-    margin-bottom: 20px;
-    color: #00ff00;
-    text-shadow: 0 0 10px #00ff00;
+    margin-bottom: 0.5em;
+    text-shadow: 0 0 10px #00ff00; /* Glowing effect */
+}
+
+p {
+    font-size: 1.2em;
+    margin-bottom: 1em;
+    text-align: center;
 }
 
 input[type="text"] {
     padding: 10px;
-    font-size: 1.2em;
+    font-size: 1em;
     border: 2px solid #00ff00;
     background-color: #222;
     color: #fff;
     border-radius: 5px;
-    margin-bottom: 20px;
-    width: 80%;
-    max-width: 400px;
+    margin-bottom: 1em;
+    width: 300px;
     outline: none;
 }
 
 button {
-    padding: 12px 24px;
-    font-size: 1.2em;
+    padding: 10px 20px;
+    font-size: 1.1em;
     background-color: #00ff00;
     color: #000;
     border: none;
@@ -62,5 +60,66 @@ button:hover {
 
 #error-message {
     color: #ff0000;
-    margin-top: 10px;
+    margin-top: 1em;
+    font-size: 1.1em;
+}
+
+/* Additional styles for a more thematic look */
+::selection {
+    background: #00ff00;
+    color: #000;
+}
+
+input[type="text"]::placeholder {
+    color: #999;
+}
+
+input[type="text"]:focus {
+    border-color: #00cc00;
+    box-shadow: 0 0 5px #00ff00;
+}
+
+/* Animate the input field border on focus */
+@keyframes pulse {
+    0% {
+        border-color: #00ff00;
+    }
+    50% {
+        border-color: #00cc00;
+    }
+    100% {
+        border-color: #00ff00;
+    }
+}
+
+input[type="text"]:focus {
+    animation: pulse 1s infinite;
+}
+
+/* Keyframe animation for loading icon */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Style for loading icon */
+.loading-icon {
+    display: none;
+    margin-left: 10px;
+    border: 5px solid #f3f3f3; /* Light grey border */
+    border-top: 5px solid #3498db; /* Blue border top */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: rotate 2s linear infinite;
+    vertical-align: middle;
+}
+
+/* Show loading icon when loading class is added */
+.loading .loading-icon {
+    display: inline-block;
 }
