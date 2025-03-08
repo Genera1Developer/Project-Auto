@@ -403,7 +403,7 @@
         const cipher = await n.encrypt(data, key, iv, additionalData);
         const saltB64 = n.encodeBase64(String.fromCharCode(...salt));
         const ivB64 = n.encodeBase64(String.fromCharCode(...iv));
-        const cipherB64 = n.encodeBase64(String.fromCharCode(...Array.from(new Uint8Array(cipher))));
+        const cipherB64 = n.encodeBase64(String.fromCharCode(...new Uint8Array(cipher)));
         const aadB64 = additionalData ? n.encodeBase64(JSON.stringify(additionalData)) : "";
         return `${saltB64}.${ivB64}.${cipherB64}${aadB64 ? `.${aadB64}` : ""}`;
       } catch (error) {
@@ -438,15 +438,65 @@
         if (!saltB64 || !ivB64 || !cipherB64) {
           throw new Error("Invalid encrypted data format.");
         }
-        const salt = new Uint8Array(Array.from(n.decodeBase64(saltB64), (char) => char.charCodeAt(0)));
-        const iv = new Uint8Array(Array.from(n.decodeBase64(ivB64), (char) => char.charCodeAt(0)));
-        const cipher = new Uint8Array(Array.from(n.decodeBase64(cipherB64), (char) => char.charCodeAt(0))).buffer;
+        let salt;
+        try {
+          salt = new Uint8Array(Array.from(n.decodeBase64(saltB64), (char) => char.charCodeAt(0)));
+        } catch (err) {
+          throw new Error("Invalid salt encoding.");
+        }
+        let iv;
+        try {
+          iv = new Uint8Array(Array.from(n.decodeBase64(ivB64), (char) => char.charCodeAt(0)));
+        } catch (err) {
+          throw new Error("Invalid IV encoding.");
+        }
+        let cipher;
+        try {
+          cipher = new Uint8Array(Array.from(n.decodeBase64(cipherB64), (char) => char.charCodeAt(0))).buffer;
+        } catch (err) {
+          throw new Error("Invalid cipher encoding.");
+        }
         const parsedAdditionalData = aadB64 ? JSON.parse(n.decodeBase64(aadB64)) : null;
         const key = await n.deriveKey(sharedSecret, salt);
         return await n.decrypt(cipher, key, iv, parsedAdditionalData || additionalData);
       } catch (error) {
         console.error("Authenticated decryption error:", error);
         throw new Error(`Authenticated decryption failed: ${error.message}`);
+      }
+    },
+
+    /**
+     * Generates a cryptographically secure random string.
+     *
+     * @param {number} length The length of the random string. Defaults to 32.
+     * @returns {string} The generated random string.
+     */
+    generateSecureRandomString: (length = 32) => {
+      const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      const randomValues = crypto.getRandomValues(new Uint8Array(length));
+
+      for (let i = 0; i < length; i++) {
+        result += charset[randomValues[i] % charset.length];
+      }
+
+      return result;
+    },
+    /**
+     * Securely hashes a string using SHA-256 and returns the hash as a hexadecimal string.
+     * @param {string} input The string to hash.
+     * @returns {Promise<string>} The hexadecimal representation of the SHA-256 hash.
+     */
+    secureHash: async (input) => {
+      try {
+        const buffer = new TextEncoder().encode(input);
+        const hash = await crypto.subtle.digest('SHA-256', buffer);
+        return Array.from(new Uint8Array(hash))
+          .map(x => x.toString(16).padStart(2, '0'))
+          .join('');
+      } catch (error) {
+        console.error("Secure hash error:", error);
+        throw new Error(`Secure hash failed: ${error.message}`);
       }
     }
   };
