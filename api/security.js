@@ -8,7 +8,7 @@ function setEncryptionKey(newKey) {
         throw new Error('Invalid encryption key provided. Key must be a 32-character string.');
     }
     try {
-        key = Buffer.from(newKey, 'utf8'); // Ensure key is a Buffer derived from UTF-8 string
+        key = Buffer.from(newKey, 'utf8');
     } catch (error) {
         throw new Error('Error creating Buffer from key: ' + error.message);
     }
@@ -21,11 +21,13 @@ function encrypt(text) {
     if (typeof text !== 'string') {
         throw new TypeError('Expected text to encrypt to be a string');
     }
+
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text, 'utf8');
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     const authTag = cipher.getAuthTag();
+
     return {
         iv: iv.toString('hex'),
         encryptedData: encrypted.toString('hex'),
@@ -61,4 +63,12 @@ function decrypt(encryptedData) {
     }
 }
 
-module.exports = { encrypt, decrypt, setEncryptionKey };
+// Key rotation function - generates a new key and updates the key variable.
+function rotateEncryptionKey() {
+    const newKey = crypto.randomBytes(32).toString('hex'); // Generate a new random key (64 hex characters = 32 bytes)
+    setEncryptionKey(newKey);
+    console.log('Encryption key rotated successfully.');
+    return newKey; //Return the new key.
+}
+
+module.exports = { encrypt, decrypt, setEncryptionKey, rotateEncryptionKey };
