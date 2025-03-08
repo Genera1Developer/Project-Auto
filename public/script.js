@@ -1,140 +1,35 @@
-const form = document.getElementById('urlForm');
-const urlInput = document.getElementById('urlInput');
-const particlesContainer = document.getElementById('particles-js');
+document.addEventListener('DOMContentLoaded', function() {
+  // Particles.js initialization (assuming particles.js is included)
+  particlesJS.load('particles-js', 'particles.json', function() {
+    console.log('particles.json loaded...');
+  });
 
-// Initialize Particles.js
-particlesJS('particles-js', {
-  particles: {
-    number: {
-      value: 80,
-      density: {
-        enable: true,
-        value_area: 800
-      }
-    },
-    color: {
-      value: '#00bcd4'
-    },
-    shape: {
-      type: 'circle',
-      stroke: {
-        width: 0,
-        color: '#000000'
-      },
-      polygon: {
-        nb_sides: 5
-      },
-      image: {
-        src: 'img/github.svg',
-        width: 100,
-        height: 100
-      }
-    },
-    opacity: {
-      value: 0.5,
-      random: false,
-      anim: {
-        enable: false,
-        speed: 1,
-        opacity_min: 0.1,
-        sync: false
-      }
-    },
-    size: {
-      value: 5,
-      random: true,
-      anim: {
-        enable: false,
-        speed: 40,
-        size_min: 0.1,
-        sync: false
-      }
-    },
-    line_linked: {
-      enable: true,
-      distance: 150,
-      color: '#00bcd4',
-      opacity: 0.4,
-      width: 1
-    },
-    move: {
-      enable: true,
-      speed: 6,
-      direction: 'none',
-      random: false,
-      straight: false,
-      out_mode: 'out',
-      attract: {
-        enable: false,
-        rotateX: 600,
-        rotateY: 1200
-      }
-    }
-  },
-  interactivity: {
-    detect_on: 'canvas',
-    events: {
-      onhover: {
-        enable: true,
-        mode: 'grab'
-      },
-      onclick: {
-        enable: true,
-        mode: 'push'
-      },
-      resize: true
-    },
-    modes: {
-      grab: {
-        distance: 140,
-        line_linked: {
-          opacity: 1
-        }
-      },
-      bubble: {
-        distance: 400,
-        size: 40,
-        duration: 2,
-        opacity: 8,
-        speed: 3
-      },
-      repulse: {
-        distance: 200
-      },
-      push: {
-        particles_nb: 4
-      },
-      remove: {
-        particles_nb: 2
-      }
-    }
-  },
-  retina_detect: true,
-  config_demo: {
-    hide_card: false,
-    background_color: '#b61924',
-    background_image: '',
-    background_position: '50% 50%',
-    background_repeat: 'no-repeat',
-    background_size: 'cover'
-  }
-});
+  const form = document.getElementById('proxy-form');
+  const urlInput = document.getElementById('url-input');
+  const frame = document.getElementById('proxy-frame');
 
-form.addEventListener('submit', async (event) => {
+  form.addEventListener('submit', function(event) {
     event.preventDefault();
-    let url = urlInput.value.trim();
+    let url = urlInput.value;
 
-    if (!url) {
-        alert('Please enter a URL.');
-        return;
-    }
-
+    // Basic URL validation (improve this with a more robust check)
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
-        url = 'http://' + url;
+      url = 'http://' + url; // Default to http if no protocol specified
     }
 
-    // Basic encoding (consider more robust encoding if needed)
-    const encodedUrl = btoa(url);
+    // Encryption-themed loading animation (replace with actual encryption logic later)
+    frame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent('<body style="background-color:#000; color:#0F0; font-family: monospace; font-size: 20px; display: flex; justify-content: center; align-items: center; height: 100vh;">Encrypting...</body>');
 
-    window.location.href = '/?url=' + encodedUrl;
+    // Simulate encryption delay (replace with actual encryption process)
+    setTimeout(() => {
+      //frame.src = __uv$config.prefix + __uv$config.encodeUrl(url); //uncomment to use ultraviolet
+      frame.src = '/api/proxy?url=' + encodeURIComponent(url);
+    }, 2000); // Simulate 2 seconds encryption time
+  });
+
+  // Error handling for iframe loading
+  frame.addEventListener('error', function(event) {
+    console.error('Failed to load URL:', event);
+    frame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent('<body style="background-color:#F00; color:#FFF; font-family: sans-serif; padding: 20px;"><h1>Error</h1><p>Failed to load the requested URL.</p></body>');
+  });
 });
