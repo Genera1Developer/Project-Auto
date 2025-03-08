@@ -3,94 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
+    <title>Encrypted Web Access</title>
     <link rel="stylesheet" href="public/index.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #000; /* Dark background for encryption theme */
-            color: #0F0; /* Green text, like old encryption terminals */
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Hide scrollbars */
-        }
-
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: -1; /* Behind all other content */
-        }
-
-        .container {
-            width: 80%;
-            margin: 50px auto;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 3em;
-            margin-bottom: 20px;
-        }
-
-        input[type="url"] {
-            width: 70%;
-            padding: 10px;
-            font-size: 1.2em;
-            background-color: #333;
-            color: #0F0;
-            border: 1px solid #0F0;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 1.2em;
-            background-color: #0F0;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #0B0;
-        }
-
-        #error-message {
-            color: red;
-            margin-top: 10px;
-        }
-
-        footer {
-            text-align: center;
-            position: fixed;
-            bottom: 10px;
-            width: 100%;
-            color: #0F0;
-        }
-    </style>
+    <link rel="icon" href="public/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <input type="url" id="url-input" placeholder="Enter URL">
-        <button id="proxy-button">Access via Proxy</button>
-        <div id="error-message"></div>
+        <h1>SecureSurf</h1>
+        <p>Enter URL to access securely:</p>
+        <input type="text" id="url" placeholder="https://example.com">
+        <button id="go">Go</button>
     </div>
-    <footer>
-        &copy; 2024 Encrypted Proxy Services
-    </footer>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="public/particles.js"></script>
     <script src="public/script.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'public/particles.json', function() {
-            console.log('particles.json loaded...');
-        });
-    </script>
 </body>
 </html>
