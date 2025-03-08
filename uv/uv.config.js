@@ -12,12 +12,18 @@ self.__uv$config = {
     cloak: '/cloak.html',
     ws: true,
     requestInterceptor: (url, headers) => {
+        // Example: Adding a custom header for enhanced security
+        headers['X-Proxy-Agent'] = 'Ultraviolet';
         return {
             url: url,
             headers: headers
         }
     },
     responseInterceptor: (response) => {
+        // Example: Prevent caching of proxied content
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate';
+        response.headers['Pragma'] = 'no-cache';
+        response.headers['Expires'] = '0';
         return response
     }
 };
