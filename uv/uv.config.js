@@ -7,5 +7,5 @@ self.__uv$config = {
     bundle: '/uv/uv.bundle.js',
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
-    xorKey: 'YOUR_XOR_KEY' // Replace with your XOR encryption key
+    xorKey: 'randomly_generated_encryption_key'
 };
