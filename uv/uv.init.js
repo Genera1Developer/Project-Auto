@@ -24,7 +24,7 @@ const UV_CONFIG = {
     cdn: null,
     forwardHeaders: true,
     rewriteOrigin: true,
-    XORKey: 'ChangeMeToARandom32CharacterKey',
+    XORKey: '24CharacterRandomKeyHerePlz!',
     advanced: {
         bypass: false,
         injections: true
@@ -34,5 +34,6 @@ const UV_CONFIG = {
     nativeProtocol: false,
     impersonate: true,
     verifyConfig: true,
-    dynamicConfig: false
+    dynamicConfig: false,
+    reportStats: false
 };
