@@ -7,21 +7,68 @@ function loadSettings() {
             document.getElementById('proxyPort').value = settings.proxyPort || '8080';
             document.getElementById('encryptionType').value = settings.encryptionType || 'none';
 
-            // Trigger the change event to update disabled states
             const encryptionTypeSelect = document.getElementById('encryptionType');
             encryptionTypeSelect.dispatchEvent(new Event('change'));
 
             document.getElementById('certificatePath').value = settings.certificatePath || '';
             document.getElementById('customEncryptionAlgo').value = settings.customEncryptionAlgo || '';
+            document.getElementById('sessionEncryption').checked = settings.sessionEncryption === true; // Handle boolean
         }
     } catch (error) {
         console.error("Error loading settings:", error);
-        // Handle error appropriately, maybe show a message to the user
+        document.getElementById('generalError').textContent = 'Error loading settings. Please check console.';
     }
 }
 
-// Call loadSettings when the page loads
 document.addEventListener('DOMContentLoaded', loadSettings);
+
+function saveSettings() {
+    var proxyHost = document.getElementById('proxyHost').value;
+    var proxyPort = document.getElementById('proxyPort').value;
+    var encryptionType = document.getElementById('encryptionType').value;
+    var certificatePath = document.getElementById('certificatePath').value;
+    var customEncryptionAlgo = document.getElementById('customEncryptionAlgo').value;
+    var sessionEncryption = document.getElementById('sessionEncryption').checked; // Get boolean value
+
+    document.getElementById('generalError').textContent = '';
+    document.getElementById('certificatePathError').textContent = '';
+    document.getElementById('customEncryptionAlgoError').textContent = '';
+
+    let hasErrors = false;
+
+    if (!proxyHost || !proxyPort) {
+        document.getElementById('generalError').textContent = 'Proxy Host and Port are required.';
+        hasErrors = true;
+    }
+
+    if (encryptionType === 'ssl' && !certificatePath) {
+        document.getElementById('certificatePathError').textContent = 'Certificate path is required for SSL/TLS encryption.';
+        hasErrors = true;
+    }
+
+    if (encryptionType === 'custom' && !customEncryptionAlgo) {
+        document.getElementById('customEncryptionAlgoError').textContent = 'Custom encryption algorithm is required.';
+        hasErrors = true;
+    }
+
+    if (hasErrors) {
+        return;
+    }
+
+    var settings = {
+        proxyHost: proxyHost,
+        proxyPort: proxyPort,
+        encryptionType: encryptionType,
+        certificatePath: certificatePath,
+        customEncryptionAlgo: customEncryptionAlgo,
+        sessionEncryption: sessionEncryption // Save boolean
+    };
+
+    var settingsJSON = JSON.stringify(settings);
+    localStorage.setItem('proxySettings', settingsJSON);
+
+    alert('Settings saved!');
+}
 
 edit filepath: public/settings.html
 content: 
@@ -44,7 +91,7 @@ content:
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box; /* Important for consistent sizing */
+            box-sizing: border-box;
         }
         button {
             background-color: #4CAF50;
@@ -101,6 +148,9 @@ content:
         <label for="customEncryptionAlgo">Custom Encryption Algorithm:</label>
         <input type="text" id="customEncryptionAlgo" name="customEncryptionAlgo" placeholder="Algorithm name" disabled>
          <div id="customEncryptionAlgoError" class="error-message"></div>
+
+        <label for="sessionEncryption">Session Encryption:</label>
+        <input type="checkbox" id="sessionEncryption" name="sessionEncryption">
     </div>
 
     <button onclick="saveSettings()">Save Settings</button>
@@ -113,62 +163,47 @@ content:
             document.getElementById('certificatePath').disabled = (encryptionType !== 'ssl');
             document.getElementById('customEncryptionAlgo').disabled = (encryptionType !== 'custom');
 
-            // Clear error messages when encryption type changes
             document.getElementById('certificatePathError').textContent = '';
             document.getElementById('customEncryptionAlgoError').textContent = '';
         });
-
-        function saveSettings() {
-            var proxyHost = document.getElementById('proxyHost').value;
-            var proxyPort = document.getElementById('proxyPort').value;
-            var encryptionType = document.getElementById('encryptionType').value;
-            var certificatePath = document.getElementById('certificatePath').value;
-            var customEncryptionAlgo = document.getElementById('customEncryptionAlgo').value;
-
-            // Clear all error messages
-            document.getElementById('generalError').textContent = '';
-            document.getElementById('certificatePathError').textContent = '';
-            document.getElementById('customEncryptionAlgoError').textContent = '';
-
-            let hasErrors = false;
-
-            // Basic validation (can be improved)
-            if (!proxyHost || !proxyPort) {
-                document.getElementById('generalError').textContent = 'Proxy Host and Port are required.';
-                hasErrors = true;
-            }
-
-            if (encryptionType === 'ssl' && !certificatePath) {
-                document.getElementById('certificatePathError').textContent = 'Certificate path is required for SSL/TLS encryption.';
-                hasErrors = true;
-            }
-
-            if (encryptionType === 'custom' && !customEncryptionAlgo) {
-                document.getElementById('customEncryptionAlgoError').textContent = 'Custom encryption algorithm is required.';
-                hasErrors = true;
-            }
-
-            if (hasErrors) {
-                return; // Stop saving if there are errors
-            }
-
-
-            var settings = {
-                proxyHost: proxyHost,
-                proxyPort: proxyPort,
-                encryptionType: encryptionType,
-                certificatePath: certificatePath,
-                customEncryptionAlgo: customEncryptionAlgo
-            };
-
-            // Convert settings to JSON
-            var settingsJSON = JSON.stringify(settings);
-
-            // Store the settings (e.g., localStorage, cookies, or send to server)
-            localStorage.setItem('proxySettings', settingsJSON);
-
-            alert('Settings saved!');
-        }
     </script>
 </body>
 </html>
+
+edit filepath: api/securityHeaders.js
+content: 
+function addSecurityHeaders(res) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;");
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+}
+
+module.exports = { addSecurityHeaders };
+
+edit filepath: api/encryption.js
+content: 
+const crypto = require('crypto');
+
+const algorithm = 'aes-256-cbc';
+const key = crypto.randomBytes(32); // 256 bits
+const iv = crypto.randomBytes(16); // Initialization vector, 128 bits
+
+function encrypt(text) {
+    const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+}
+
+function decrypt(text) {
+    let iv = Buffer.from(text.iv, 'hex');
+    let encryptedText = Buffer.from(text.encryptedData, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+}
+
+module.exports = { encrypt, decrypt };
