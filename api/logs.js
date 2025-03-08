@@ -96,23 +96,28 @@ export function logRequest(req, res, url) {
 export function getLogs() {
     try {
         let logs = fs.readFileSync(logFilePath, 'utf8');
-        // Handle empty logs file
         if (!logs) {
             return [];
         }
 
-        return logs.trim().split('\n') // Trim to remove trailing newline
-            .filter(log => log.trim() !== '')
-            .map(log => {
-                try {
-                    const decryptedLog = decrypt(log);
-                    return decryptedLog ? decryptedLog : "Decryption Failed: Log entry may be corrupted or the encryption key is incorrect."; //Handle null case
-                } catch (error) {
-                    console.error("Error during decryption:", error);
-                    return "Decryption Failed: Log entry may be corrupted or the encryption key is incorrect.";
+        const logEntries = logs.trim().split('\n').filter(log => log.trim() !== '');
+        const decryptedLogs = [];
+
+        for (const log of logEntries) {
+            try {
+                const decryptedLog = decrypt(log);
+                if (decryptedLog) {
+                    decryptedLogs.push(decryptedLog);
+                } else {
+                    decryptedLogs.push("Decryption Failed: Log entry may be corrupted or the encryption key is incorrect.");
                 }
-            })
-            .reverse();
+            } catch (error) {
+                console.error("Error during decryption:", error);
+                decryptedLogs.push("Decryption Failed: Log entry may be corrupted or the encryption key is incorrect.");
+            }
+        }
+
+        return decryptedLogs.reverse();
     } catch (err) {
         console.error('Error reading log file:', err);
         return ["Error reading log file."];
