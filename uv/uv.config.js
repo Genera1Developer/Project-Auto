@@ -14,6 +14,8 @@ self.__uv$config = {
     requestInterceptor: (url, headers) => {
         headers['X-Proxy-Agent'] = 'Ultraviolet';
         headers['X-Forwarded-Proto'] = window.location.protocol.slice(0, -1);
+        headers['X-Forwarded-Host'] = window.location.host;
+        headers['X-Forwarded-For'] = window.location.hostname;
         return {
             url: url,
             headers: headers
@@ -31,10 +33,13 @@ self.__uv$config = {
                 'X-Content-Type-Options': 'nosniff',
                 'Referrer-Policy': 'no-referrer',
                 'Permissions-Policy': 'interest-cohort=()',
+                'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
             };
 
             for (const header in securityHeaders) {
-                response.headers[header] = securityHeaders[header];
+                if (!response.headers[header]) {
+                  response.headers[header] = securityHeaders[header];
+                }
             }
         }
         return response
