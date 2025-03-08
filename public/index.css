@@ -1,531 +1,86 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #0f0; /* Green text for the encryption theme */
     margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     overflow: hidden; /* Hide scrollbars */
+    background-color: #000; /* Black background for encryption theme */
+    color: #0f0; /* Green text for terminal look */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: -1; /* Behind content */
 }
 
 .container {
-    background-color: rgba(0, 0, 0, 0.8); /* Dark transparent background */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5); /* Glowing green shadow */
     text-align: center;
-    width: 80%;
-    max-width: 600px;
-    border: 1px solid #0f0; /* Green border */
+    padding: 20px;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    box-shadow: 0 0 10px #0f0;
+    background-color: rgba(0, 0, 0, 0.8); /* Slightly transparent background */
 }
 
 h1 {
-    color: #0f0; /* Green text */
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Glowing text shadow */
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 5px #0f0;
 }
 
-#urlInput {
-    width: calc(100% - 20px);
+input[type="text"] {
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #0f0; /* Green border */
-    border-radius: 4px;
-    background-color: #111; /* Dark background */
-    color: #0f0; /* Green text */
+    margin: 10px;
+    border: 1px solid #0f0;
+    border-radius: 5px;
+    background-color: #111;
+    color: #0f0;
+    width: 80%;
+    max-width: 300px;
 }
 
-#proxyButton {
+button {
     padding: 10px 20px;
-    background-color: #0f0; /* Green background */
-    color: #000; /* Black text */
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
+    background-color: #0f0;
+    color: #000;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
 }
 
-#proxyButton:hover {
-    background-color: #0b0; /* Darker green background */
-    color: #fff; /* White text */
+button:hover {
+    background-color: #0a0;
 }
 
-#content {
-    margin-top: 20px;
-    text-align: left;
-    border: 1px solid #0f0; /* Green border */
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #111; /* Dark background */
-    color: #0f0; /* Green text */
-    overflow-wrap: break-word; /* Ensures long words don't break the layout */
+#error-message {
+    color: red;
+    margin-top: 10px;
 }
 
-#content a {
-    color: #0ff; /* Cyan for links */
-}
-
-.error {
-    color: #f00; /* Red for errors */
-}
-
-/* Particle styles */
-#particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
+/* New styles for a more modern, encryption-themed look */
+.encryption-overlay {
+    position: absolute;
     top: 0;
     left: 0;
-    z-index: -1; /* Behind all content */
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); /* Dark overlay */
+    z-index: 0;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-
-    #urlInput {
-        width: calc(100% - 10px);
-    }
+.terminal-text {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2em;
+    letter-spacing: 0.05em;
 }
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html>
-<head>
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL">
-        <button id="proxyButton">Go</button>
-        <div id="content"></div>
-    </div>
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'particles.json', function() {
-            console.log('particles.json loaded...');
-        });
-    </script>
-</body>
-</html>
-edit filepath: public/particles.json
-content: {
-  "particles": {
-    "number": {
-      "value": 80,
-      "density": {
-        "enable": true,
-        "value_area": 800
-      }
-    },
-    "color": {
-      "value": "#0f0"
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 0,
-        "color": "#000000"
-      },
-      "polygon": {
-        "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
-      }
-    },
-    "opacity": {
-      "value": 0.5,
-      "random": false,
-      "anim": {
-        "enable": false,
-        "speed": 1,
-        "opacity_min": 0.1,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#0f0",
-      "opacity": 0.4,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 6,
-      "direction": "none",
-      "random": false,
-      "straight": false,
-      "out_mode": "out",
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 1200
-      }
-    }
-  },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": {
-        "enable": true,
-        "mode": "grab"
-      },
-      "onclick": {
-        "enable": true,
-        "mode": "push"
-      },
-      "resize": true
-    },
-    "modes": {
-      "grab": {
-        "distance": 140,
-        "line_linked": {
-          "opacity": 1
-        }
-      },
-      "bubble": {
-        "distance": 400,
-        "size": 40,
-        "duration": 2,
-        "opacity": 8,
-        "speed": 3
-      },
-      "repulse": {
-        "distance": 200
-      },
-      "push": {
-        "particles_nb": 4
-      },
-      "remove": {
-        "particles_nb": 2
-      }
-    }
-  },
-  "retina_detect": true,
-  "config_demo": {
-    "hide_card": false,
-    "background_color": "#b61924",
-    "background_image": "",
-    "background_position": "50% 50%",
-    "background_repeat": "no-repeat",
-    "background_size": "cover"
-  }
+
+.glowing-border {
+    box-shadow: 0 0 15px #0f0;
 }
-edit filepath: public/script.js
-content: document.getElementById('proxyButton').addEventListener('click', function() {
-    var url = document.getElementById('urlInput').value;
-    if (url) {
-        fetch('/api/proxy?url=' + encodeURIComponent(url))
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('content').innerHTML = data;
-                document.getElementById('content').style.color = '#0f0'; // Set content text color to green
-            })
-            .catch(error => {
-                document.getElementById('content').innerHTML = '<p class="error">Error: ' + error.message + '</p>';
-                document.getElementById('content').style.color = '#f00'; // Set error text color to red
-            });
-    } else {
-        document.getElementById('content').innerHTML = '<p class="error">Please enter a URL.</p>';
-        document.getElementById('content').style.color = '#f00'; // Set error text color to red
-    }
-});
-edit filepath: public/particles.js
-content: /* particlesJS v2.0.0 by Vincent Garreau - vincentgarreau.com/particles.js */
-
-var pJS = function(tag_id, params){
-
-	var canvas = document.querySelector('#'+tag_id+' > .particles-js-canvas-el');
-
-	this.pJS = {
-		canvas: {
-			el: canvas,
-			w: canvas.offsetWidth,
-			h: canvas.offsetHeight
-		},
-		particles: {
-			number: params.particles.number.value,
-			color: params.particles.color.value,
-			shape: params.particles.shape.type,
-			opacity: {
-				value: params.particles.opacity.value,
-				anim: params.particles.opacity.anim.enable
-			},
-			size: {
-				value: params.particles.size.value,
-				anim: params.particles.size.anim.enable
-			},
-			line_linked: {
-				enable: params.particles.line_linked.enable,
-				distance: params.particles.line_linked.distance,
-				color: params.particles.line_linked.color,
-				opacity: params.particles.line_linked.opacity
-			},
-			move: {
-				enable: params.particles.move.enable,
-				speed: params.particles.move.speed,
-				direction: params.particles.move.direction,
-				random: params.particles.move.random,
-				out_mode: params.particles.move.out_mode
-			},
-			array: []
-		},
-		interactivity: {
-			detect_on: params.interactivity.detect_on,
-			events: {
-				onhover: {
-					enable: params.interactivity.events.onhover.enable,
-					mode: params.interactivity.events.onhover.mode
-				},
-				onclick: {
-					enable: params.interactivity.events.onclick.enable,
-					mode: params.interactivity.events.onclick.mode
-				}
-			},
-			modes: {
-				grab: {
-					distance: params.interactivity.modes.grab.distance
-				},
-				bubble: {
-					distance: params.interactivity.modes.bubble.distance,
-					size: params.interactivity.modes.bubble.size
-				},
-				repulse: {
-					distance: params.interactivity.modes.repulse.distance
-				}
-			}
-		},
-		retina_detect: params.retina_detect
-	};
-
-	this.pJS.particles.color_rgb = hexToRgb(this.pJS.particles.color);
-	this.pJS.particles.line_linked.color_rgb_line = hexToRgb(this.pJS.particles.line_linked.color);
-
-	/* ---------- Canvas creation ---------- */
-
-	canvas.width = this.pJS.canvas.w;
-	canvas.height = this.pJS.canvas.h;
-
-	/* ---------- Particles creation ---------- */
-
-	window.addEventListener('resize', function(){
-
-		/* Resize the canvas width and height */
-		pJS.pJS.canvas.w = canvas.offsetWidth;
-		pJS.pJS.canvas.h = canvas.offsetHeight;
-
-		canvas.width = pJS.pJS.canvas.w;
-		canvas.height = pJS.pJS.canvas.h;
-
-		/* If the particles are density adaptable, the number of particles change according to the canvas size */
-		if(pJS.pJS.particles.density.enable){
-			pJS.pJS.particles.number = (canvas.width*canvas.height)/pJS.pJS.particles.density.value_area;
-			density_auto();
-		}
-
-		/* Destroy all the current particles and re-create them */
-		pJS.pJS.particles.array = [];
-		pJS.pJS.vendors.densityAutoParticles();
-		pJS.pJS.vendors.createParticles();
-
-	}, false);
-
-
-	/* ---------- Init particles ---------- */
-
-	this.pJS.vendors = {
-		densityAutoParticles: function(){
-
-			if(pJS.pJS.particles.density.enable){
-
-				/* Calculate the number of particles based on the canvas size */
-				pJS.pJS.particles.number = (canvas.width*canvas.height)/pJS.pJS.particles.density.value_area;
-			}
-		},
-
-		/* Create the particles */
-		createParticles: function(){
-
-			for(var i = 0; i < pJS.pJS.particles.number; i++){
-				pJS.pJS.particles.array.push(new Particle(pJS.pJS.particles.color_rgb, pJS.pJS.particles.opacity.value, pJS.pJS.particles.size.value));
-			}
-		},
-
-		/* Draw the particles */
-		drawParticles: function(){
-
-			/* Clear the canvas */
-			canvas.getContext('2d').clearRect(0, 0, pJS.pJS.canvas.w, pJS.pJS.canvas.h);
-
-			/* Browse all the particles and draw them */
-			for(var i = 0; i < pJS.pJS.particles.array.length; i++){
-				var p = pJS.pJS.particles.array[i];
-				p.draw();
-			}
-
-		}
-	};
-
-	/* ---------- Particle class ---------- */
-
-	var Particle = function(rgb, opacity, size){
-
-		/* Random position */
-		this.x = Math.random() * pJS.pJS.canvas.w;
-		this.y = Math.random() * pJS.pJS.canvas.h;
-
-		/* Random speed */
-		this.vx = ((Math.random() < 0.5) ? -1 : 1) * Math.random() * pJS.pJS.particles.move.speed;
-		this.vy = ((Math.random() < 0.5) ? -1 : 1) * Math.random() * pJS.pJS.particles.move.speed;
-
-		/* Color */
-		this.rgb = rgb;
-
-		/* Opacity */
-		this.opacity = opacity;
-
-		/* Size */
-		this.size = size;
-	};
-
-	Particle.prototype.draw = function(){
-
-		/* Draw the particle */
-		var ctx = canvas.getContext('2d');
-
-		ctx.fillStyle = 'rgba('+this.rgb.r+','+this.rgb.g+','+this.rgb.b+','+this.opacity+')';
-		ctx.beginPath();
-
-		switch(pJS.pJS.particles.shape){
-			case 'circle':
-				ctx.arc(this.x, this.y, this.size, 0, Math.PI*2, false);
-				break;
-		}
-
-		ctx.closePath();
-		ctx.fill();
-
-		/* Change the position of the particle */
-		this.x += this.vx;
-		this.y += this.vy;
-
-		/* If the particle is out of the canvas */
-		if(this.x < 0 || this.x > pJS.pJS.canvas.w){
-			this.vx = -this.vx;
-		}
-
-		if(this.y < 0 || this.y > pJS.pJS.canvas.h){
-			this.vy = -this.vy;
-		}
-	};
-
-	/* ---------- Density auto: adjust particles numbers according to the canvas size ---------- */
-
-	function density_auto(){
-		pJS.pJS.particles.number = (canvas.width*canvas.height)/pJS.pJS.particles.density.value_area;
-	}
-
-	/* ---------- Convert hex color to RGB ---------- */
-
-	function hexToRgb(hex){
-		// By Tim Down - http://stackoverflow.com/a/5624139/3493650
-		// Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
-		var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-		hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-			return r + r + g + g + b + b;
-		});
-
-		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-		return result ? {
-			r: parseInt(result[1], 16),
-			g: parseInt(result[2], 16),
-			b: parseInt(result[3], 16)
-		} : null;
-	};
-
-	/* ---------- Init all ---------- */
-
-	pJS.pJS.vendors.densityAutoParticles();
-
-	pJS.pJS.vendors.createParticles();
-
-	pJS.pJS.vendors.drawParticles();
-
-};
-
-window.particlesJS = function(tag_id, params){
-
-	/* Create the canvas element */
-	var canvas_el = document.createElement('canvas');
-	canvas_el.style.width = "100%";
-	canvas_el.style.height = "100%";
-	canvas_el.className = 'particles-js-canvas-el';
-
-	/* Append the canvas to the tag */
-	var canvas = document.getElementById(tag_id).appendChild(canvas_el);
-
-	/* Launch pJS */
-	return new pJS(tag_id, params);
-
-};
-
-window.particlesJS.load = function(tag_id, path_json, callback){
-
-	/* Create http request */
-	var xhr = new XMLHttpRequest();
-
-	/* Set the callback */
-	xhr.onreadystatechange = function(){
-
-		/* Success */
-		if(xhr.readyState == 4){
-			if(xhr.status == 200){
-				var params = JSON.parse(xhr.responseText);
-
-				window.particlesJS(tag_id, params);
-
-				if(callback){
-					callback();
-				}
-			}
-
-			/* Error */
-			else{
-				console.log('particles.js - Error ajax request');
-			}
-		}
-
-	};
-
-	/* Start the request */
-	xhr.open('GET', path_json, true);
-	xhr.send();
-
-};
