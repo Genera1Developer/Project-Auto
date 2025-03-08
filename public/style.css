@@ -1,119 +1,115 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    color: #fff;
+    background-color: #000; /* Dark background */
+    color: #00FF00; /* Green text for encryption theme */
     overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
-    background-color: rgba(20, 20, 20, 0.8);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 200, 200, 0.5);
-    text-align: center;
     width: 80%;
-    max-width: 600px;
-    backdrop-filter: blur(10px); /* Glassmorphism effect */
-    border: 1px solid rgba(200, 200, 200, 0.1);
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
 }
 
 h1 {
-    color: #00bcd4;
-    text-shadow: 0 0 10px #00bcd4;
+    color: #00FF00;
+    font-size: 2.5em;
+    margin-bottom: 20px;
 }
 
-#urlInput {
-    width: calc(100% - 20px);
+p {
+    font-size: 1.2em;
+    line-height: 1.6;
+}
+
+#proxy-form {
+    margin-top: 30px;
+}
+
+input[type="url"] {
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #444;
-    border-radius: 4px;
-    background-color: #222;
-    color: #fff;
+    width: 70%;
+    border: 1px solid #00FF00;
+    background-color: #333;
+    color: #00FF00;
+    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
-#urlInput:focus {
-    border-color: #00bcd4;
-    outline: none;
-    box-shadow: 0 0 5px #00bcd4;
-}
-
-#proxyButton {
+button {
     padding: 10px 20px;
-    background-color: #00bcd4;
-    color: white;
+    background-color: #00FF00;
+    color: #000;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.7);
+    transition: background-color 0.3s;
 }
 
-#proxyButton:hover {
-    background-color: #00acc1;
+button:hover {
+    background-color: #00BB00;
 }
 
-#content {
-    margin-top: 20px;
-    text-align: left;
-    border: 1px solid #444;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #111;
-    overflow-wrap: break-word;
-}
-
-#content p.error {
-    color: #ff4081;
-}
-
-/* Particle styles */
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: -1;
+    z-index: -1; /* Behind the content */
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
+/* Add a glowing effect */
+.glowing-text {
+    text-shadow: 0 0 10px #00FF00;
+}
 
-    #urlInput {
-        width: calc(100% - 10px);
-    }
+/* Animation for added flair */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.container {
+    animation: fadeIn 1s ease-in-out;
 }
 edit filepath: public/index.html
 content: <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Web Proxy</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL">
-        <button id="proxyButton">Go</button>
-        <div id="content"></div>
+        <h1 class="glowing-text">Secure Access Proxy</h1>
+        <p>Enter the URL to access securely:</p>
+        <form id="proxy-form">
+            <input type="url" id="url" placeholder="Enter URL here" required>
+            <button type="submit">Go</button>
+        </form>
     </div>
-    <script src="script.js"></script>
-    <script src="particles.min.js"></script>
+    <script src="particles.js"></script>
     <script>
         particlesJS.load('particles-js', 'particlesjs-config.json', function() {
             console.log('particles.js config loaded');
+        });
+        document.getElementById('proxy-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const url = document.getElementById('url').value;
+            // Basic URL validation (can be improved)
+            if (url) {
+                // Redirect to the proxy endpoint (replace with your actual endpoint)
+                window.location.href = '/?url=' + encodeURIComponent(url);
+            } else {
+                alert('Please enter a valid URL.');
+            }
         });
     </script>
 </body>
@@ -129,7 +125,7 @@ content: {
       }
     },
     "color": {
-      "value": "#00bcd4"
+      "value": "#00ff00"
     },
     "shape": {
       "type": "circle",
@@ -148,9 +144,9 @@ content: {
     },
     "opacity": {
       "value": 0.7,
-      "random": false,
+      "random": true,
       "anim": {
-        "enable": false,
+        "enable": true,
         "speed": 1,
         "opacity_min": 0.1,
         "sync": false
@@ -161,29 +157,30 @@ content: {
       "random": true,
       "anim": {
         "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
+        "speed": 4,
+        "size_min": 0.3,
         "sync": false
       }
     },
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00bcd4",
+      "color": "#00ff00",
       "opacity": 0.4,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 6,
+      "speed": 2,
       "direction": "none",
-      "random": false,
+      "random": true,
       "straight": false,
       "out_mode": "out",
+      "bounce": false,
       "attract": {
         "enable": false,
         "rotateX": 600,
-        "rotateY": 1200
+        "rotateY": 600
       }
     }
   },
@@ -215,7 +212,8 @@ content: {
         "speed": 3
       },
       "repulse": {
-        "distance": 200
+        "distance": 200,
+        "duration": 0.4
       },
       "push": {
         "particles_nb": 4
@@ -225,13 +223,5 @@ content: {
       }
     }
   },
-  "retina_detect": true,
-  "config_demo": {
-    "hide_card": false,
-    "background_color": "#b61924",
-    "background_image": "",
-    "background_position": "50% 50%",
-    "background_repeat": "no-repeat",
-    "background_size": "cover"
-  }
+  "retina_detect": true
 }
