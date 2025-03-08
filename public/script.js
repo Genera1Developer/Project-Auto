@@ -1,35 +1,105 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Particles.js initialization (assuming particles.js is included)
-  particlesJS.load('particles-js', 'particles.json', function() {
-    console.log('particles.json loaded...');
+document.addEventListener('DOMContentLoaded', () => {
+  // Particleground
+  const particleground = new particleground(document.getElementById('particles'), {
+    dotColor: '#5cbdaa',
+    lineColor: '#5cbdaa',
+    particleRadius: 5,
+    lineWidth: 2,
+    curvedLines: true,
+    proximity: 150,
+    density: 8000,
+    parallax: true,
+    parallaxMultiplier: 5,
+    onInit: function() {},
+    onDestroy: function() {}
   });
 
-  const form = document.getElementById('proxy-form');
-  const urlInput = document.getElementById('url-input');
-  const frame = document.getElementById('proxy-frame');
-
-  form.addEventListener('submit', function(event) {
+  // Form submission (example - adapt to your actual proxy logic)
+  const form = document.getElementById('urlForm');
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    let url = urlInput.value;
+    const url = document.getElementById('urlInput').value;
 
-    // Basic URL validation (improve this with a more robust check)
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'http://' + url; // Default to http if no protocol specified
-    }
+    // Encryption placeholder - replace with actual encryption logic
+    const encryptedUrl = btoa(url); // Base64 "encryption" - replace!
 
-    // Encryption-themed loading animation (replace with actual encryption logic later)
-    frame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent('<body style="background-color:#000; color:#0F0; font-family: monospace; font-size: 20px; display: flex; justify-content: center; align-items: center; height: 100vh;">Encrypting...</body>');
-
-    // Simulate encryption delay (replace with actual encryption process)
-    setTimeout(() => {
-      //frame.src = __uv$config.prefix + __uv$config.encodeUrl(url); //uncomment to use ultraviolet
-      frame.src = '/api/proxy?url=' + encodeURIComponent(url);
-    }, 2000); // Simulate 2 seconds encryption time
-  });
-
-  // Error handling for iframe loading
-  frame.addEventListener('error', function(event) {
-    console.error('Failed to load URL:', event);
-    frame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent('<body style="background-color:#F00; color:#FFF; font-family: sans-serif; padding: 20px;"><h1>Error</h1><p>Failed to load the requested URL.</p></body>');
+    // Redirect to proxy endpoint (adapt to your server setup)
+    window.location.href = '/proxy?url=' + encryptedUrl;
   });
 });
+edit filepath: public/index.css
+content: body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #222;
+    color: #fff;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+#particles {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.container {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 1em;
+    border: 2px solid #5cbdaa;
+    border-radius: 5px;
+    width: 300px;
+    background-color: #333;
+    color: #fff;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #5cbdaa;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4cae96;
+}
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Proxy</title>
+    <link rel="stylesheet" href="public/index.css">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+    <div id="particles"></div>
+    <div class="container">
+        <h1>Encrypted Proxy</h1>
+        <form id="urlForm">
+            <input type="text" id="urlInput" placeholder="Enter URL">
+            <button type="submit">Go</button>
+        </form>
+    </div>
+  <script src="public/script.js"></script>
+</body>
+</html>
