@@ -1,12 +1,86 @@
 body {
     font-family: 'Arial', sans-serif;
+    background-color: #000;
     margin: 0;
     padding: 0;
-    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     color: #fff;
     overflow: hidden; /* Hide scrollbars */
 }
 
+.container {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+#urlInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #00ff00;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+}
+
+#urlInput:focus {
+    outline: none;
+    box-shadow: 0 0 5px #00ff00;
+}
+
+#proxyButton {
+    padding: 10px 20px;
+    background-color: #00ff00;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#proxyButton:hover {
+    background-color: #00bb00;
+    color: #fff;
+}
+
+#content {
+    margin-top: 20px;
+    text-align: left;
+    border: 1px solid #00ff00;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #222;
+    overflow-wrap: break-word;
+}
+
+#content a {
+    color: #00ffff; /* Cyan for links */
+}
+
+#content a:hover {
+    text-decoration: underline;
+}
+
+.error {
+    color: #ff0000;
+}
+
+/* Particles.js styles */
 #particles-js {
     position: fixed;
     width: 100%;
@@ -16,104 +90,13 @@ body {
     z-index: 0;
 }
 
-.container {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-    text-align: center;
-}
-
-h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px #00ff00;
-}
-
-p {
-    font-size: 1.2em;
-    line-height: 1.6;
-    margin-bottom: 30px;
-}
-
-input[type="text"] {
-    padding: 15px;
-    font-size: 1.2em;
-    border: 2px solid #00ff00;
-    border-radius: 8px;
-    background-color: #222;
-    color: #fff;
-    width: 80%;
-    max-width: 500px;
-    margin-bottom: 20px;
-    transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus {
-    outline: none;
-    border-color: #00a000;
-}
-
-button {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 8px;
-    background-color: #00ff00;
-    color: #000;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #00a000;
-}
-
-/* Additional styles for a more detailed encryption theme */
-.encryption-element {
-    border: 1px dashed #00ff00;
-    padding: 10px;
-    margin: 5px;
-    border-radius: 5px;
-}
-
-.glowing-text {
-    text-shadow: 0 0 5px #00ff00;
-}
-
-/* Style adjustments for smaller screens */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 2em;
-    }
-    p {
-        font-size: 1em;
-    }
-    input[type="text"] {
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
         width: 95%;
     }
-    button {
-        font-size: 1em;
-    }
-}
 
-/* Keyframe animations for subtle glowing effects */
-@keyframes glow {
-    0% {
-        text-shadow: 0 0 5px #00ff00;
+    #urlInput {
+        width: calc(100% - 10px);
     }
-    50% {
-        text-shadow: 0 0 15px #00ff00;
-    }
-    100% {
-        text-shadow: 0 0 5px #00ff00;
-    }
-}
-
-.glowing-text {
-    animation: glow 2s infinite;
 }
