@@ -74,7 +74,13 @@ function encryptSessionData(sessionId, data) {
 
   const plaintext = JSON.stringify({data: data, hmac: calculatedHmac});
 
-  return encryptData(plaintext, session.encryptionKey);
+  const encryptedData = encryptData(plaintext, session.encryptionKey);
+    if (!encryptedData) {
+        console.error('Encryption failed.');
+        return null;
+    }
+
+  return encryptedData;
 }
 
 function decryptSessionData(sessionId, encryptedData) {
@@ -82,9 +88,15 @@ function decryptSessionData(sessionId, encryptedData) {
   if (!session) {
     return null;
   }
+  if (!encryptedData) {
+      console.warn('No data to decrypt.');
+      return null;
+  }
+
   try {
     const plaintext = decryptData(encryptedData, session.encryptionKey);
     if (!plaintext) {
+        console.error('Decryption failed.');
         destroySession(sessionId);
         return null;
     }
