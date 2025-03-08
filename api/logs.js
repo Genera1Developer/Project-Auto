@@ -53,6 +53,12 @@ function decrypt(text) {
             return null; // Return null on invalid format.
         }
         const [ivHex, authTagHex, encryptedTextHex] = textParts;
+
+        if (!ivHex || !authTagHex || !encryptedTextHex) {
+            console.error("Invalid log format: Missing parts after split.");
+            return null;
+        }
+
         const iv = Buffer.from(ivHex, 'hex');
         const authTag = Buffer.from(authTagHex, 'hex');
         const encryptedText = Buffer.from(encryptedTextHex, 'hex');
@@ -93,9 +99,9 @@ export function logRequest(req, res, url) {
     });
 }
 
-export function getLogs() {
+export async function getLogs() {
     try {
-        let logs = fs.readFileSync(logFilePath, 'utf8');
+        const logs = await fs.promises.readFile(logFilePath, 'utf8');
         if (!logs) {
             return [];
         }
