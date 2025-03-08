@@ -9,16 +9,21 @@ function generateKey() {
 }
 
 function encrypt(text, key) {
-  const iv = crypto.randomBytes(ivLength);
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(text, 'utf8');
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  const authTag = cipher.getAuthTag();
-  return {
-    iv: iv.toString('hex'),
-    encryptedData: encrypted.toString('hex'),
-    authTag: authTag.toString('hex')
-  };
+  try {
+    const iv = crypto.randomBytes(ivLength);
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
+    let encrypted = cipher.update(text, 'utf8');
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const authTag = cipher.getAuthTag();
+    return {
+      iv: iv.toString('hex'),
+      encryptedData: encrypted.toString('hex'),
+      authTag: authTag.toString('hex')
+    };
+  } catch (error) {
+    console.error("Encryption failed:", error);
+    return null;
+  }
 }
 
 function decrypt(encryptionData, key) {
@@ -37,4 +42,8 @@ function decrypt(encryptionData, key) {
   }
 }
 
-export { encrypt, decrypt, generateKey };
+function generateSafeKey() {
+  return crypto.randomBytes(keyLength).toString('hex');
+}
+
+export { encrypt, decrypt, generateKey, generateSafeKey };
