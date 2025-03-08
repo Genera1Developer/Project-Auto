@@ -75,13 +75,13 @@ function decrypt(text) {
 }
 
 
-export function logRequest(req, res, url) {
+export async function logRequest(req, res, url) {
     const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress;
     const logMessage = `${new Date().toISOString()} - ${req.method} ${url} - ${res.statusCode} - ${ip}\n`;
     let encryptedLogMessage;
 
     try {
-        encryptedLogMessage = encrypt(logMessage);
+        encryptedLogMessage = await encrypt(logMessage); // Await encryption
     } catch (error) {
         console.error("Error during encryption:", error);
         encryptedLogMessage = null; // Ensure null if encryption fails
@@ -92,16 +92,16 @@ export function logRequest(req, res, url) {
         return;
     }
 
-    fs.appendFile(logFilePath, encryptedLogMessage + '\n', err => { // Append a newline character
-        if (err) {
-            console.error('Error writing to log file:', err);
-        }
-    });
+    try {
+        await fs.promises.appendFile(logFilePath, encryptedLogMessage + '\n'); // Append a newline character and use promises
+    } catch (err) {
+        console.error('Error writing to log file:', err);
+    }
 }
 
 export async function getLogs() {
     try {
-        const logs = await fs.promises.readFile(logFilePath, 'utf8');
+        let logs = await fs.promises.readFile(logFilePath, 'utf8');
         if (!logs) {
             return [];
         }
@@ -111,7 +111,7 @@ export async function getLogs() {
 
         for (const log of logEntries) {
             try {
-                const decryptedLog = decrypt(log);
+                const decryptedLog = await decrypt(log);
                 if (decryptedLog) {
                     decryptedLogs.push(decryptedLog);
                 } else {
@@ -130,9 +130,9 @@ export async function getLogs() {
     }
 }
 
-export function clearLogs() {
+export async function clearLogs() {
     try {
-        fs.writeFileSync(logFilePath, '', 'utf8');
+        await fs.promises.writeFile(logFilePath, '', 'utf8');
         console.log('Logs cleared successfully.');
     } catch (error) {
         console.error('Error clearing logs:', error);
