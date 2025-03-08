@@ -1,54 +1,86 @@
 body {
     font-family: 'Arial', sans-serif;
+    background-color: #000; /* Dark background for encryption theme */
+    color: #ddd; /* Light text for contrast */
     margin: 0;
     padding: 0;
-    background: #000;
-    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    background-color: rgba(30, 30, 30, 0.8); /* Dark transparent container */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 150, 136, 0.5); /* Teal shadow for a techy look */
     text-align: center;
+    width: 80%;
+    max-width: 600px;
+    backdrop-filter: blur(5px); /* Apply blur to the background */
 }
 
 h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px #0f0;
+    color: #009688; /* Teal color for headings */
+    text-shadow: 0 0 5px #009688; /* Glowing effect */
 }
 
-input[type="text"] {
+#urlInput {
+    width: calc(100% - 20px);
     padding: 10px;
-    font-size: 1.2em;
-    border: 2px solid #0f0;
-    background: #222;
+    margin: 10px 0;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #222;
     color: #fff;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 400px;
-    margin-bottom: 20px;
 }
 
-button {
+#proxyButton {
     padding: 10px 20px;
-    font-size: 1.2em;
-    background: #0f0;
-    color: #000;
+    background-color: #009688; /* Teal button */
+    color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    box-shadow: 0 0 5px #009688; /* Glowing effect */
 }
 
-button:hover {
-    background-color: #0a0;
+#proxyButton:hover {
+    background-color: #00796b; /* Darker teal on hover */
 }
 
+#content {
+    margin-top: 20px;
+    text-align: left;
+    border: 1px solid #555;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #333;
+    color: #eee;
+    overflow-wrap: break-word; /* Handle long words */
+}
+
+/* Error messages */
+#content .error {
+    color: #ff6666;
+    font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    #urlInput {
+        width: calc(100% - 10px);
+    }
+}
+
+/* Particle background */
 #particles-js {
     position: fixed;
     width: 100%;
@@ -57,3 +89,446 @@ button:hover {
     left: 0;
     z-index: -1;
 }
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Encrypted Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+    </div>
+    <script src="particles.js"></script>
+    <script src="script.js"></script>
+    <script>
+        particlesJS.load('particles-js', 'particles.json', function() {
+          console.log('particles.json loaded - callback');
+        });
+    </script>
+</body>
+</html>
+edit filepath: public/particles.json
+content: {
+  "particles": {
+    "number": {
+      "value": 80,
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
+    },
+    "color": {
+      "value": "#009688"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#000000"
+      },
+      "polygon": {
+        "nb_sides": 5
+      },
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100
+      }
+    },
+    "opacity": {
+      "value": 0.7,
+      "random": false,
+      "anim": {
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 3,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 40,
+        "size_min": 0.1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#009688",
+      "opacity": 0.4,
+      "width": 1
+    },
+    "move": {
+      "enable": true,
+      "speed": 6,
+      "direction": "none",
+      "random": false,
+      "straight": false,
+      "out_mode": "out",
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
+    }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "grab"
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "push"
+      },
+      "resize": true
+    },
+    "modes": {
+      "grab": {
+        "distance": 140,
+        "line_linked": {
+          "opacity": 1
+        }
+      },
+      "bubble": {
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 3
+      },
+      "repulse": {
+        "distance": 200
+      },
+      "push": {
+        "particles_nb": 4
+      },
+      "remove": {
+        "particles_nb": 2
+      }
+    }
+  },
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#b61924",
+    "background_image": "",
+    "background_position": "50% 50%",
+    "background_repeat": "no-repeat",
+    "background_size": "cover"
+  }
+}
+edit filepath: public/particles.js
+content: /* -----------------------------------------------
+/* Author : Vincent Garreau  - vincentgarreau.com
+/* MIT license
+/* Demo / documentation : javascriptninja.fr/wp-content/themes/vuetronic/particles/
+/* ----------------------------------------------- */
+
+var pJS = function(tag_id, params){
+
+	var canvas = document.querySelector('#'+tag_id+' > .particles-js-canvas-el');
+
+	this.pJS = {
+		canvas: {
+			el: canvas,
+			w: canvas.offsetWidth,
+			h: canvas.offsetHeight
+		},
+		particles: {
+			number: params.particles.number.value,
+			color: params.particles.color.value,
+			shape: params.particles.shape.type,
+			opacity: {
+				value: params.particles.opacity.value,
+				anim: params.particles.opacity.anim.enable
+			},
+			size: {
+				value: params.particles.size.value,
+				anim: params.particles.size.anim.enable
+			},
+			line_linked: {
+				enable: params.particles.line_linked.enable,
+				distance: params.particles.line_linked.distance,
+				color: params.particles.line_linked.color,
+				opacity: params.particles.line_linked.opacity
+			},
+			move: {
+				enable: params.particles.move.enable,
+				speed: params.particles.move.speed,
+				direction: params.particles.move.direction,
+				random: params.particles.move.random,
+				straight: params.particles.move.straight,
+				out_mode: params.particles.move.out_mode
+			},
+			array: []
+		},
+		interactivity: {
+			enable: params.interactivity.detect_on,
+			mouse: {},
+			events: {
+				onclick: {
+					enable: params.interactivity.events.onclick.enable,
+					mode: params.interactivity.events.onclick.mode
+				},
+				onhover: {
+					enable: params.interactivity.events.onhover.enable,
+					mode: params.interactivity.events.onhover.mode
+				}
+			},
+			modes: {
+				grab: {
+					distance: params.interactivity.modes.grab.distance
+				},
+				bubble: {
+					distance: params.interactivity.modes.bubble.distance,
+					size: params.interactivity.modes.bubble.size,
+					opacity: params.interactivity.modes.bubble.opacity
+				},
+				repulse: {
+					distance: params.interactivity.modes.repulse.distance
+				}
+			}
+		},
+		retina_detect: params.retina_detect
+	}
+
+	/* ---------- pJS functions - canvas ------------ */
+
+	this.pJS.canvas.ctx = this.pJS.canvas.el.getContext('2d');
+
+	this.pJS.canvas.el.style.width = this.pJS.canvas.w+'px';
+	this.pJS.canvas.el.style.height = this.pJS.canvas.h+'px';
+
+	/* ---------- pJS functions - particles ------------ */
+
+	this.pJS.particles.draw = function(){
+		for(var i = 0; i < _this.pJS.particles.array.length; i++){
+			var p = _this.pJS.particles.array[i];
+
+			if(_this.pJS.particles.shape == 'circle'){
+				_this.pJS.canvas.ctx.beginPath();
+				_this.pJS.canvas.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, false);
+				_this.pJS.canvas.ctx.fillStyle = p.color;
+				_this.pJS.canvas.ctx.fill();
+				_this.pJS.canvas.ctx.closePath();
+			}else if(_this.pJS.particles.shape == 'edge'){
+				_this.pJS.canvas.ctx.beginPath();
+				_this.pJS.canvas.ctx.rect(p.x, p.y, p.radius*2, p.radius*2);
+				_this.pJS.canvas.ctx.fillStyle = p.color;
+				_this.pJS.canvas.ctx.fill();
+				_this.pJS.canvas.ctx.closePath();
+			}
+		}
+	}
+
+	this.pJS.particles.move = function(){
+		for(var i = 0; i < _this.pJS.particles.array.length; i++){
+			var p = _this.pJS.particles.array[i];
+
+			if(_this.pJS.particles.move.enable){
+				p.x += p.vx / 2;
+				p.y += p.vy / 2;
+
+				if(p.x + p.radius > _this.pJS.canvas.w){
+					p.vx = -p.vx;
+				}else if(p.x - p.radius < 0){
+					p.vx = -p.vx;
+				}
+				if(p.y + p.radius > _this.pJS.canvas.h){
+					p.vy = -p.vy;
+				}else if(p.y - p.radius < 0){
+					p.vy = -p.vy;
+				}
+			}
+		}
+	}
+
+	/* ---------- pJS functions - particles interactions ------------ */
+
+	this.pJS.particles.interact = function(){
+		for(var i = 0; i < _this.pJS.particles.array.length; i++){
+			var p = _this.pJS.particles.array[i];
+
+			// Grab interactivity
+			if(_this.pJS.interactivity.events.onhover.enable && _this.pJS.interactivity.modes.grab.distance > 0){
+				var dx = _this.pJS.interactivity.mouse.pos_x - p.x;
+				var dy = _this.pJS.interactivity.mouse.pos_y - p.y;
+				var dist = Math.sqrt(dx*dx + dy*dy);
+
+				if(dist <= _this.pJS.interactivity.modes.grab.distance){
+					_this.pJS.canvas.ctx.strokeStyle = _this.pJS.particles.line_linked.color;
+					_this.pJS.canvas.ctx.lineWidth = _this.pJS.particles.line_linked.width;
+					_this.pJS.canvas.ctx.beginPath();
+					_this.pJS.canvas.ctx.moveTo(p.x, p.y);
+					_this.pJS.canvas.ctx.lineTo(_this.pJS.interactivity.mouse.pos_x, _this.pJS.interactivity.mouse.pos_y);
+					_this.pJS.canvas.ctx.stroke();
+					_this.pJS.canvas.ctx.closePath();
+				}
+			}
+
+			// Bubble interactivity
+			if(_this.pJS.interactivity.events.onhover.enable && _this.pJS.interactivity.modes.bubble.distance > 0){
+				var dx = _this.pJS.interactivity.mouse.pos_x - p.x;
+				var dy = _this.pJS.interactivity.mouse.pos_y - p.y;
+				var dist = Math.sqrt(dx*dx + dy*dy);
+
+				if(dist <= _this.pJS.interactivity.modes.bubble.distance){
+					if(_this.pJS.interactivity.modes.bubble.size){
+						if(p.radius < _this.pJS.interactivity.modes.bubble.size){
+							p.radius += _this.pJS.interactivity.modes.bubble.size/100;
+						}
+					}
+					if(_this.pJS.interactivity.modes.bubble.opacity){
+						if(p.opacity < _this.pJS.interactivity.modes.bubble.opacity){
+							p.opacity += _this.pJS.interactivity.modes.bubble.opacity/100;
+						}
+					}
+				}else{
+					if(p.radius > _this.pJS.particles.size.value){
+						p.radius -= _this.pJS.interactivity.modes.bubble.size/100;
+					}
+					if(p.opacity > _this.pJS.particles.opacity.value){
+						p.opacity -= _this.pJS.interactivity.modes.bubble.opacity/100;
+					}
+				}
+			}
+
+			// Repulse interactivity
+			if(_this.pJS.interactivity.events.onclick.enable && _this.pJS.interactivity.modes.repulse.distance > 0){
+				var dx = _this.pJS.interactivity.mouse.click_pos_x - p.x;
+				var dy = _this.pJS.interactivity.mouse.click_pos_y - p.y;
+				var dist = Math.sqrt(dx*dx + dy*dy);
+
+				if(dist <= _this.pJS.interactivity.modes.repulse.distance){
+					p.vx = dx / dist * _this.pJS.interactivity.modes.repulse.distance;
+					p.vy = dy / dist * _this.pJS.interactivity.modes.repulse.distance;
+				}
+			}
+		}
+	}
+
+	/* ---------- pJS functions - particles creation ------------ */
+
+	this.pJS.particles.create = function(){
+		for(var i = 0; i < _this.pJS.particles.number; i++){
+			_this.pJS.particles.array.push(
+				{
+					x: Math.random() * _this.pJS.canvas.w,
+					y: Math.random() * _this.pJS.canvas.h,
+					vx: Math.random() * 2 - 1,
+					vy: Math.random() * 2 - 1,
+					radius: _this.pJS.particles.size.value,
+					color: _this.pJS.particles.color,
+					opacity: _this.pJS.particles.opacity.value
+				}
+			)
+		}
+	}
+
+	/* ---------- pJS functions - particles animate ------------ */
+
+	this.pJS.particles.animate = function(){
+		_this.pJS.canvas.ctx.clearRect(0, 0, _this.pJS.canvas.w, _this.pJS.canvas.h);
+		_this.pJS.particles.move();
+		_this.pJS.particles.draw();
+		_this.pJS.particles.interact();
+		requestAnimationFrame(_this.pJS.particles.animate);
+	}
+
+	/* ---------- pJS functions - init ------------ */
+
+	this.pJS.init = function(){
+
+		/* init canvas + particles */
+		_this.pJS.canvas.el.width = _this.pJS.canvas.w;
+		_this.pJS.canvas.el.height = _this.pJS.canvas.h;
+
+		/* create particles */
+		_this.pJS.particles.create();
+
+		/* start animation */
+		_this.pJS.particles.animate();
+
+		/* event listeners */
+
+		_this.pJS.canvas.el.addEventListener('mousemove', function(e){
+			_this.pJS.interactivity.mouse.pos_x = e.offsetX || e.clientX;
+			_this.pJS.interactivity.mouse.pos_y = e.offsetY || e.clientY;
+		});
+
+		_this.pJS.canvas.el.addEventListener('mouseleave', function(e){
+			_this.pJS.interactivity.mouse.pos_x = null;
+			_this.pJS.interactivity.mouse.pos_y = null;
+		});
+
+		_this.pJS.canvas.el.addEventListener('click', function(e){
+			_this.pJS.interactivity.mouse.click_pos_x = e.offsetX || e.clientX;
+			_this.pJS.interactivity.mouse.click_pos_y = e.offsetY || e.clientY;
+		});
+
+		window.addEventListener('resize', function(){
+			/* update canvas width and height */
+			_this.pJS.canvas.w = _this.pJS.canvas.el.offsetWidth;
+			_this.pJS.canvas.h = _this.pJS.canvas.el.offsetHeight;
+
+			/* update canvas style width and height */
+			_this.pJS.canvas.el.style.width = _this.pJS.canvas.w+'px';
+			_this.pJS.canvas.el.style.height = _this.pJS.canvas.h+'px';
+
+			/* clear canvas */
+			_this.pJS.canvas.ctx.clearRect(0, 0, _this.pJS.canvas.w, _this.pJS.canvas.h);
+
+			/* update particles positions */
+			for(var i = 0; i < _this.pJS.particles.array.length; i++){
+				_this.pJS.particles.array[i].x = Math.random() * _this.pJS.canvas.w;
+				_this.pJS.particles.array[i].y = Math.random() * _this.pJS.canvas.h;
+			}
+		});
+	}
+
+	/* ---------- pJS - start animation ------------ */
+
+	this.pJS.init();
+
+	var _this = this;
+}
+
+window.particlesJS = function(tag_id, params){
+	return new pJS(tag_id, params);
+};
+
+window.particlesJS.load = function(tag_id, path_json, callback){
+
+	/* load json config */
+	var xobj = new XMLHttpRequest();
+		xobj.overrideMimeType("application/json");
+	xobj.open('GET', path_json, true); // Replace 'my_data' with the path to your JSON file
+	xobj.onreadystatechange = function () {
+		  if (xobj.readyState == 4 && xobj.status == "200") {
+			// Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+			var params = JSON.parse(xobj.responseText);
+
+			window.particlesJS(tag_id, params);
+
+			if(callback){
+				callback();
+			}
+		  }
+	};
+	xobj.send(null);
+};
+edit filepath:
