@@ -2,6 +2,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
+    height: 100vh;
     background: #000;
     color: #fff;
     overflow: hidden; /* Hide scrollbars */
@@ -19,68 +20,69 @@ body {
 .container {
     position: relative;
     z-index: 1;
-    width: 80%;
-    max-width: 600px;
-    margin: 100px auto;
-    padding: 20px;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-}
-
-h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #00FFFF;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-}
-
-p {
-    font-size: 1.1em;
-    margin-bottom: 20px;
-}
-
-form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    text-align: center;
 }
 
-input[type="text"] {
-    padding: 10px;
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #00bcd4; /* Encryption blue */
+    text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+}
+
+p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    color: #eee;
+}
+
+form#urlForm {
+    display: flex;
+    flex-direction: column;
     width: 80%;
-    margin-bottom: 15px;
-    border: 2px solid #00FFFF;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 1em;
-    outline: none;
-    transition: border-color 0.3s ease;
+    max-width: 500px;
 }
 
-input[type="text"]:focus {
-    border-color: #00BFFF;
-}
-
-button {
-    padding: 12px 25px;
+input#urlInput {
+    padding: 15px;
+    margin-bottom: 20px;
     border: none;
     border-radius: 5px;
-    background: #00FFFF;
-    color: #000;
-    font-size: 1.1em;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 1em;
+    background-color: #222;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-button:hover {
-    background-color: #00BFFF;
+input#urlInput:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.7);
+}
+
+button[type="submit"] {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    background-color: #00bcd4;
+    color: #fff;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+}
+
+button[type="submit"]:hover {
+    background-color: #0097a7;
 }
 
 #error {
-    color: #FF4136;
-    margin-top: 15px;
-    font-weight: bold;
+    color: #ff4081;
+    margin-top: 20px;
+    font-size: 1.1em;
 }
