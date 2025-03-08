@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Tunnel</title>
+    <title>Encrypted Web Gateway</title>
     <link rel="stylesheet" href="public/index.css">
     <link rel="icon" type="image/png" href="public/lock.png">
 </head>
 <body>
     <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Tunnel</h1>
-        <p>Enter the URL you want to access securely:</p>
-        <input type="text" id="url" placeholder="https://example.com">
-        <button id="go">Go</button>
-        <p id="error"></p>
-    </div>
-
+    <header>
+        <h1>Secure Access</h1>
+        <p>Enter the URL to access securely:</p>
+    </header>
+    <main>
+        <form id="proxyForm">
+            <input type="url" id="urlInput" placeholder="https://example.com" required>
+            <button type="submit">Go Securely</button>
+        </form>
+        <div id="errorDisplay" style="color: red;"></div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Encrypted Gateway. All rights reserved.</p>
+    </footer>
     <script src="public/particles.js"></script>
     <script src="public/script.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'public/particles.json', function() {
-            console.log('particles.json loaded - callback');
-        });
-    </script>
 </body>
 </html>
