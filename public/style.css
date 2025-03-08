@@ -1,73 +1,79 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background for encryption theme */
-    color: #00ff00; /* Green text for a "digital" look */
+    background-color: #000;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    color: #fff;
     overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent container */
+    background-color: rgba(20, 20, 20, 0.8);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); /* Glowing shadow */
+    box-shadow: 0 0 20px rgba(0, 200, 200, 0.5);
     text-align: center;
     width: 80%;
     max-width: 600px;
-    border: 1px solid #00ff00; /* Green border */
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+    border: 1px solid rgba(200, 200, 200, 0.1);
 }
 
 h1 {
-    color: #00ff00;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5); /* Glowing text */
+    color: #00bcd4;
+    text-shadow: 0 0 10px #00bcd4;
 }
 
 #urlInput {
     width: calc(100% - 20px);
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #00ff00;
+    border: 1px solid #444;
     border-radius: 4px;
-    background-color: #111;
-    color: #00ff00;
+    background-color: #222;
+    color: #fff;
+}
+
+#urlInput:focus {
+    border-color: #00bcd4;
+    outline: none;
+    box-shadow: 0 0 5px #00bcd4;
 }
 
 #proxyButton {
     padding: 10px 20px;
-    background-color: #00ff00;
-    color: #000;
+    background-color: #00bcd4;
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.7);
 }
 
 #proxyButton:hover {
-    background-color: #00aa00;
+    background-color: #00acc1;
 }
 
 #content {
     margin-top: 20px;
     text-align: left;
-    border: 1px solid #00ff00;
+    border: 1px solid #444;
     padding: 10px;
     border-radius: 4px;
     background-color: #111;
-    color: #00ff00;
     overflow-wrap: break-word;
 }
 
-/* Error messages */
-.error {
-    color: #ff0000;
+#content p.error {
+    color: #ff4081;
 }
 
-/* Particles animation */
+/* Particle styles */
 #particles-js {
     position: fixed;
     width: 100%;
@@ -91,20 +97,20 @@ edit filepath: public/index.html
 content: <!DOCTYPE html>
 <html>
 <head>
-    <title>Web Proxy</title>
+    <title>Encrypted Web Proxy</title>
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
-        <h1>Web Proxy</h1>
+        <h1>Encrypted Web Proxy</h1>
         <input type="text" id="urlInput" placeholder="Enter URL">
         <button id="proxyButton">Go</button>
         <div id="content"></div>
     </div>
     <script src="script.js"></script>
-    <script src="particles.js"></script>
+    <script src="particles.min.js"></script>
     <script>
         particlesJS.load('particles-js', 'particlesjs-config.json', function() {
             console.log('particles.js config loaded');
@@ -123,7 +129,7 @@ content: {
       }
     },
     "color": {
-      "value": "#00ff00"
+      "value": "#00bcd4"
     },
     "shape": {
       "type": "circle",
@@ -163,7 +169,7 @@ content: {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00ff00",
+      "color": "#00bcd4",
       "opacity": 0.4,
       "width": 1
     },
