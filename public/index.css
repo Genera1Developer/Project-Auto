@@ -1,1 +1,78 @@
-body {\n font-family: 'Arial', sans-serif;\n margin: 0;\n padding: 0;\n background-color: #000;\n color: #fff;\n overflow: hidden; /* Hide scrollbars */\n}\n\n.container {\n display: flex;\n flex-direction: column;\n align-items: center;\n justify-content: center;\n height: 100vh;\n}\n\n#particles-js {\n position: absolute;\n width: 100%;\n height: 100%;\n top: 0;\n left: 0;\n z-index: -1;\n}\n\nh1 {\n font-size: 2.5em;\n margin-bottom: 20px;\n color: #00bcd4;\n text-shadow: 0 0 10px #00bcd4;\n}\n\ninput[type=\"url\"] {\n padding: 10px;\n width: 80%;\n max-width: 400px;\n margin-bottom: 20px;\n border: 2px solid #00bcd4;\n background-color: #222;\n color: #fff;\n border-radius: 5px;\n font-size: 1em;\n outline: none;\n transition: border-color 0.3s ease;\n}\n\ninput[type=\"url\"]:focus {\n border-color: #0097a7;\n}\n\nbutton {\n padding: 12px 24px;\n background-color: #00bcd4;\n color: #000;\n border: none;\n border-radius: 5px;\n font-size: 1.1em;\n cursor: pointer;\n transition: background-color 0.3s ease, color 0.3s ease;\n}\n\nbutton:hover {\n background-color: #0097a7;\n color: #fff;\n}\n\n/* Additional styles for the encryption theme */\n.encryption-text {\n font-family: monospace;\n font-size: 0.9em;\n color: #4caf50;\n text-shadow: 0 0 5px #4caf50;\n}\n\n/* Cool loading animation */\n.loader {\n border: 8px solid #f3f3f3;\n border-top: 8px solid #3498db;\n border-radius: 50%;\n width: 50px;\n height: 50px;\n animation: spin 2s linear infinite;\n margin: 20px auto;\n display: none; /* Hidden by default */\n}\n\n@keyframes spin {\n 0% { transform: rotate(0deg); }\n 100% { transform: rotate(360deg); }\n}\n\n\n/* For smaller screens */\n@media (max-width: 600px) {\n h1 {\n font-size: 2em;\n }\n input[type=\"url\"] {\n width: 90%;\n }\n button {\n font-size: 1em;\n }\n}\n
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden;
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+input[type="url"] {
+    padding: 10px;
+    border: 2px solid #333;
+    background-color: #222;
+    color: #fff;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#error-message {
+    color: #ff0000;
+    margin-top: 10px;
+}
+
+/* Encryption Theme */
+body {
+    background-color: #0a192f; /* Dark blue background */
+    color: #64ffda; /* Teal text color */
+}
+
+input[type="url"] {
+    border-color: #64ffda;
+    background-color: #0b2447; /* Slightly darker blue */
+}
+
+button {
+    background-color: #64ffda;
+    color: #0a192f;
+}
+
+button:hover {
+    background-color: #49c6b3;
+}
+#particles-js {
+    background-image: linear-gradient(to bottom, #0a192f, #0b2447); /* Gradient background */
+}
