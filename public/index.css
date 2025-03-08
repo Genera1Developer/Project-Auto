@@ -1,505 +1,57 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background */
-    color: #00FF00; /* Green text for "hacker" look */
+    background-color: #000;
+    color: #0F0;
+    font-family: monospace;
+    overflow: hidden; /* Hide scrollbars */
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden; /* Hide scrollbars */
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    z-index: -1;
 }
 
 .container {
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black container */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); /* Green glow */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     text-align: center;
-    width: 80%;
-    max-width: 600px;
-    border: 1px solid #00FF00; /* Green border */
 }
 
-h1 {
-    color: #00FF00;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Glowing text */
-}
-
-#urlInput {
-    width: calc(100% - 20px);
+input[type="text"] {
+    background-color: #333;
+    color: #0F0;
+    border: 1px solid #0F0;
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #00FF00;
-    border-radius: 4px;
-    background-color: #111;
-    color: #00FF00;
+    width: 80%;
+    max-width: 400px;
+    box-sizing: border-box;
+    font-family: monospace;
 }
 
-#proxyButton {
-    padding: 10px 20px;
-    background-color: #00FF00;
+button {
+    background-color: #0F0;
     color: #000;
     border: none;
-    border-radius: 4px;
+    padding: 10px 20px;
+    margin: 10px 0;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-family: monospace;
+    transition: background-color 0.3s;
 }
 
-#proxyButton:hover {
-    background-color: #00BB00;
+button:hover {
+    background-color: #0A0;
 }
 
-#content {
-    margin-top: 20px;
-    text-align: left;
-    border: 1px solid #00FF00;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #111;
-    color: #00FF00;
-    overflow-wrap: break-word;
+#error-message {
+    color: red;
+    margin-top: 10px;
 }
-
-/* Error Message Styling */
-#content p.error {
-    color: #FF0000; /* Red color for errors */
-    font-weight: bold;
-}
-
-/* Particles.js styles */
-#particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1; /* Behind all content */
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-
-    #urlInput {
-        width: calc(100% - 10px);
-    }
-}
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html>
-<head>
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL">
-        <button id="proxyButton">Go</button>
-        <div id="content"></div>
-    </div>
-    <script src="particles.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'particles.json', function() {
-            console.log('particles.json loaded...');
-        });
-    </script>
-    <script src="script.js"></script>
-</body>
-</html>
-edit filepath: public/particles.json
-content: {
-  "particles": {
-    "number": {
-      "value": 80,
-      "density": {
-        "enable": true,
-        "value_area": 800
-      }
-    },
-    "color": {
-      "value": "#00ff00"
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 0,
-        "color": "#000000"
-      },
-      "polygon": {
-        "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
-      }
-    },
-    "opacity": {
-      "value": 0.5,
-      "random": false,
-      "anim": {
-        "enable": false,
-        "speed": 1,
-        "opacity_min": 0.1,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#00ff00",
-      "opacity": 0.4,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 6,
-      "direction": "none",
-      "random": false,
-      "straight": false,
-      "out_mode": "out",
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 1200
-      }
-    }
-  },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": {
-        "enable": true,
-        "mode": "repulse"
-      },
-      "onclick": {
-        "enable": true,
-        "mode": "push"
-      },
-      "resize": true
-    },
-    "modes": {
-      "grab": {
-        "distance": 400,
-        "line_linked": {
-          "opacity": 1
-        }
-      },
-      "bubble": {
-        "distance": 400,
-        "size": 40,
-        "duration": 2,
-        "opacity": 0.8,
-        "speed": 3
-      },
-      "repulse": {
-        "distance": 200
-      },
-      "push": {
-        "particles_nb": 4
-      },
-      "remove": {
-        "particles_nb": 2
-      }
-    }
-  },
-  "retina_detect": true,
-  "config_demo": {
-    "hide_card": false,
-    "background_color": "#b61924",
-    "background_image": "",
-    "background_position": "50% 50%",
-    "background_repeat": "no-repeat",
-    "background_size": "cover"
-  }
-}
-edit filepath: public/particles.js
-content: /* -----------------------------------------------
-/* Author : Vincent Garreau  - vincentgarreau.com
-/* MIT license
-/* Demo / Documentation : codepen.io/VincentGarreau/pen/pnlBR
-/* ----------------------------------------------- */
-
-var pJS = function(tag_id, params){
-
-  var canvas = document.querySelector('#'+tag_id+' > .particles-js-canvas-el');
-
-  this.pJS = {
-    canvas: {
-      el: canvas,
-      w: canvas.offsetWidth,
-      h: canvas.offsetHeight
-    },
-    particles: {
-      number: params.particles.number.value,
-      color: params.particles.color.value,
-      shape: params.particles.shape.type,
-      opacity: {
-        value: params.particles.opacity.value,
-        anim: params.particles.opacity.anim.enable
-      },
-      size: {
-        value: params.particles.size.value,
-        anim: params.particles.size.anim.enable
-      },
-      line_linked: {
-        enable: params.particles.line_linked.enable,
-        distance: params.particles.line_linked.distance,
-        color: params.particles.line_linked.color,
-        opacity: params.particles.line_linked.opacity
-      },
-      move: {
-        speed: params.particles.move.speed
-      },
-      array: []
-    },
-    interactivity: {
-      mouse: {
-        pos_x: 0,
-        pos_y: 0
-      },
-      events: {
-        onclick: {
-          enable: params.interactivity.events.onclick.enable
-        },
-        onhover: {
-          enable: params.interactivity.events.onhover.enable
-        }
-      },
-      modes: {
-        repulse: {
-          distance: params.interactivity.modes.repulse.distance
-        }
-      }
-    },
-    retina_detect: params.retina_detect
-  };
-
-  var pJS = this.pJS;
-
-  // check if canvas exist
-  if(!pJS.canvas.el){
-    console.warn('Particles.js - Canvas not found: #'+tag_id);
-    return;
-  }
-
-  // check if particles.js too old
-  if(!pJS.canvas.el.getContext){
-    console.warn('Particles.js - Your browser doesn\'t support HTML5 canvas API, please update your browser!');
-    return;
-  }
-
-  // Initialise canvas API
-  pJS.context = pJS.canvas.el.getContext('2d');
-
-  // Declare variables
-  var w, h;
-
-  // Resize canvas when the window is resized
-  window.addEventListener('resize', function(){
-    resize_canvas();
-  });
-
-  // Functions
-  function resize_canvas(){
-    pJS.canvas.w = pJS.canvas.el.offsetWidth;
-    pJS.canvas.h = pJS.canvas.el.offsetHeight;
-
-    pJS.canvas.el.width = pJS.canvas.w * density_auto;
-    pJS.canvas.el.height = pJS.canvas.h * density_auto;
-
-    pJS.context.scale(density_auto, density_auto);
-  }
-
-  function init(){
-
-    // Initialize canvas size
-    resize_canvas();
-
-    // Create the particles
-    for(var i = 0; i < pJS.particles.number; i++){
-      pJS.particles.array.push( new Particle() );
-    }
-
-    // Start the animation
-    requestAnimationFrame(draw);
-  }
-
-  function Particle(){
-
-    // Position
-    this.x = Math.random() * pJS.canvas.w;
-    this.y = Math.random() * pJS.canvas.h;
-
-    // Size
-    this.size = Math.random() * pJS.particles.size.value;
-
-    // Color
-    this.color = pJS.particles.color;
-
-    // Speed
-    this.speed_x = Math.random() * pJS.particles.move.speed - (pJS.particles.move.speed/2);
-    this.speed_y = Math.random() * pJS.particles.move.speed - (pJS.particles.move.speed/2);
-  }
-
-  Particle.prototype.draw = function(){
-    pJS.context.fillStyle = this.color;
-    pJS.context.beginPath();
-    pJS.context.arc(this.x, this.y, this.size, 0, Math.PI*2, false);
-    pJS.context.closePath();
-    pJS.context.fill();
-  };
-
-  Particle.prototype.update = function(){
-
-    // Move the particle
-    this.x += this.speed_x;
-    this.y += this.speed_y;
-
-    // If the particle is out of the canvas
-    if(this.x < 0 || this.x > pJS.canvas.w){
-      this.speed_x = -this.speed_x;
-    }
-    if(this.y < 0 || this.y > pJS.canvas.h){
-      this.speed_y = -this.speed_y;
-    }
-
-    // Repulse the particle
-    if(pJS.interactivity.events.onhover.enable){
-
-      // Get the distance between the mouse and the particle
-      var dx = pJS.interactivity.mouse.pos_x - this.x;
-      var dy = pJS.interactivity.mouse.pos_y - this.y;
-      var distance = Math.sqrt(dx*dx + dy*dy);
-
-      if(distance < pJS.interactivity.modes.repulse.distance){
-        this.x += dx/distance * 10;
-        this.y += dy/distance * 10;
-      }
-    }
-
-    // Draw the particle
-    this.draw();
-  };
-
-  function draw(){
-
-    // Clear the canvas
-    pJS.context.clearRect(0, 0, pJS.canvas.w, pJS.canvas.h);
-
-    // Update and draw the particles
-    for(var i = 0; i < pJS.particles.number; i++){
-      pJS.particles.array[i].update();
-    }
-
-    // Draw the lines
-    if(pJS.particles.line_linked.enable){
-      for(var i = 0; i < pJS.particles.number; i++){
-        for(var j = i + 1; j < pJS.particles.number; j++){
-
-          // Get the distance between the particles
-          var dx = pJS.particles.array[i].x - pJS.particles.array[j].x;
-          var dy = pJS.particles.array[i].y - pJS.particles.array[j].y;
-          var distance = Math.sqrt(dx*dx + dy*dy);
-
-          if(distance < pJS.particles.line_linked.distance){
-
-            // Draw the line
-            pJS.context.beginPath();
-            pJS.context.strokeStyle = pJS.particles.line_linked.color;
-            pJS.context.lineWidth = 0.5;
-            pJS.context.moveTo(pJS.particles.array[i].x, pJS.particles.array[i].y);
-            pJS.context.lineTo(pJS.particles.array[j].x, pJS.particles.array[j].y);
-            pJS.context.stroke();
-            pJS.context.closePath();
-          }
-        }
-      }
-    }
-
-    // Request animation frame
-    requestAnimationFrame(draw);
-  }
-
-  // Mouse event listeners
-  pJS.canvas.el.addEventListener('mousemove', function(e){
-    pJS.interactivity.mouse.pos_x = e.offsetX || e.clientX;
-    pJS.interactivity.mouse.pos_y = e.offsetY || e.clientY;
-  });
-
-  // Click event listeners
-  pJS.canvas.el.addEventListener('click', function(e){
-    if(pJS.interactivity.events.onclick.enable){
-      for(var i = 0; i < 10; i++){
-        pJS.particles.array.push( new Particle() );
-      }
-    }
-  });
-
-  // check density retina device
-  if (pJS.retina_detect && window.devicePixelRatio > 1) {
-    density_auto = window.devicePixelRatio;
-  }
-
-  // init
-  init();
-
-};
-
-window.particlesJS = function(tag_id, params){
-  return new pJS(tag_id, params);
-};
-
-window.particlesJS.load = function(tag_id, path_json, callback){
-
-  /* ---------- xhr ---------- */
-
-  var xhr = new XMLHttpRequest();
-
-  xhr.open('GET', path_json);
-
-  xhr.onload = function () {
-    if (xhr.status == 200) {
-      var data = JSON.parse(xhr.responseText);
-
-      window.particlesJS(tag_id, data);
-      if(callback) callback();
-    }
-
-    // error callback
-    else {
-      console.log('Particles.js - Error ajax: '+xhr.status);
-      console.log(xhr);
-    }
-
-  };
-
-  xhr.send();
-
-};
-
-var density_auto = 1;
-edit filepath: init_particles.js
-content: // Initialize particles.js
-document.addEventListener('DOMContentLoaded', function() {
-    particlesJS.load('particles-js', 'particles.json', function() {
-        console.log('Particles.js config loaded');
-    });
-});
