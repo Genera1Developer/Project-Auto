@@ -13,7 +13,7 @@ async function deriveKey(password, salt) {
         {
             "name": "PBKDF2",
             salt: enc.encode(salt),
-            iterations: 10000,
+            iterations: 100000, // Increased iterations for better security
             hash: "SHA-256"
         },
         keyMaterial,
