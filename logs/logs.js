@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const helmet = require('helmet'); // Import Helmet for security headers
 const rateLimit = require('express-rate-limit'); // Import rate limiter
 const { body, validationResult } = require('express-validator'); // Import express-validator
+const { randomUUID } = require('crypto');
 
 const router = express.Router();
 
@@ -110,11 +111,20 @@ const logAppendLimiter = rateLimit({
   message: "Too many log requests from this IP, please try again after a minute."
 });
 
+// CSP nonce generation middleware
+router.use((req, res, next) => {
+  res.locals.cspNonce = crypto.randomBytes(16).toString("hex");
+  next();
+});
+
 router.use(helmet.contentSecurityPolicy({
   directives: {
     defaultSrc: ["'self'"],
-    scriptSrc: ["'self'"], // Consider adding a nonce or hash for inline scripts
+    scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.cspNonce}'`], // Use nonce for inline scripts
     styleSrc: ["'self'", "'unsafe-inline'"], // Be cautious with 'unsafe-inline'
+    imgSrc: ["'self'", "data:"],
+    objectSrc: ["'none'"],
+    upgradeInsecureRequests: [],
   },
 }));
 router.use(helmet.noSniff());
@@ -126,7 +136,18 @@ router.get('/', async (req, res) => {
   try {
     const logs = await readLogs();
     res.setHeader('Content-Type', 'text/html');
-    res.send(`<pre>${escapeHTML(logs)}</pre>`);
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Logs</title>
+        <meta charset="UTF-8">
+      </head>
+      <body>
+        <pre>${escapeHTML(logs)}</pre>
+      </body>
+      </html>
+    `);
   } catch (error) {
     console.error("Error serving logs:", error);
     res.status(500).send("Error serving logs.");
@@ -149,9 +170,10 @@ router.post('/append',
 
     const logData = req.body.log;
     const ipAddress = req.ip; // Get IP address of the client
+    const userAgent = req.get('User-Agent') || 'Unknown'; // Get User-Agent
 
     try {
-      const logEntry = `IP: ${ipAddress} - ${logData}`;  // Include IP address in log
+      const logEntry = `IP: ${ipAddress} - User-Agent: ${userAgent} - ${logData}`;  // Include IP address and User-Agent in log
       const encryptedLogData = encrypt(logEntry);
       if (encryptedLogData === null) {
         return res.status(500).send("Error encrypting log data.");
