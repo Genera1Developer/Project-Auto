@@ -78,6 +78,23 @@
             font-weight: bold;
             margin-bottom: 5px;
         }
+
+        .report-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .report-button:hover {
+            background-color: #3e8e41;
+        }
     </style>
 </head>
 <body>
@@ -98,6 +115,7 @@
             <p><span class="error-header">Context:</span> <pre class="error-details-pre"><span id="error-context"></span></pre></p>
         </div>
         <button id="toggle-details">Show Error Details</button>
+        <button id="report-error" class="report-button">Report Error</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
     <script>
@@ -208,6 +226,14 @@
                           securityInfo.push("URL shortening services can be used to hide malicious URLs or phish for credentials. Exercise caution when clicking shortened links.");
                       }
 
+                        // Check for common phishing patterns
+                      const phishingPatterns = ['/login', '/signin', '/account', '/password', '/verify'];
+                      if (phishingPatterns.some(pattern => parsedURL.pathname.includes(pattern))) {
+                          securityWarnings.push("URL contains common phishing patterns that may indicate a fraudulent website.");
+                          securityInfo.push("Be cautious of websites asking for personal information, especially login credentials, via suspicious URLs.");
+                      }
+
+
                 } catch (e) {
                     console.error("URL parsing error:", e);
                     sanitizedDecodedURL = "#invalid-url";
@@ -299,6 +325,38 @@
             const detailsContainer = document.getElementById('error-details-container');
             detailsContainer.classList.toggle('hidden');
             this.textContent = detailsContainer.classList.contains('hidden') ? 'Show Error Details' : 'Hide Error Details';
+        });
+
+        document.getElementById('report-error').addEventListener('click', function() {
+            const reportData = {
+                errorType: errorType,
+                errorMessage: errorMessage,
+                errorURL: encodedURL,
+                decodedURL: decodedURL,
+                errorStack: errorStack,
+                errorContext: errorContext
+            };
+
+            fetch('/report-error', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Request-ID': crypto.randomUUID()
+                },
+                body: JSON.stringify(reportData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Error reported successfully!');
+                } else {
+                    alert('Failed to report error.');
+                    console.error('Failed to report error:', response.status, response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error reporting error:', error);
+                alert('Error reporting error.');
+            });
         });
 
     </script>
