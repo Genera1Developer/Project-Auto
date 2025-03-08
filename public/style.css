@@ -1,54 +1,10 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #fff;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 20px;
-    text-align: center;
-}
-
-h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px #00bcd4;
-}
-
-input[type="text"] {
-    padding: 10px;
-    font-size: 1.2em;
-    border: 2px solid #00bcd4;
-    border-radius: 5px;
-    background-color: #222;
+    background-color: #000;
     color: #fff;
-    width: 80%;
-    max-width: 500px;
-    margin-bottom: 20px;
-    outline: none;
-}
-
-button {
-    padding: 12px 24px;
-    font-size: 1.2em;
-    background-color: #00bcd4;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #008ba7;
+    overflow: hidden;
 }
 
 #particles-js {
@@ -60,12 +16,51 @@ button:hover {
     z-index: -1;
 }
 
-#urlDisplay {
-    margin-top: 20px;
-    font-size: 1.1em;
-    word-wrap: break-word;
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
 }
 
-.glow {
-    text-shadow: 0 0 20px #00bcd4, 0 0 30px #00bcd4, 0 0 40px #00bcd4;
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+input[type="text"] {
+    padding: 10px;
+    font-size: 1.2em;
+    border: 2px solid #00ff00;
+    background-color: #222;
+    color: #fff;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 80%;
+    max-width: 400px;
+    outline: none;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 1.2em;
+    background-color: #00ff00;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #00cc00;
+}
+
+#error-message {
+    color: #ff0000;
+    margin-top: 10px;
 }
