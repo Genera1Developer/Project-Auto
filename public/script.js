@@ -1,41 +1,34 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('uv-form');
-    const address = document.getElementById('uv-address');
-    const error = document.getElementById('uv-error');
-    const encodedUrl = document.getElementById('encodedUrl');
+    const form = document.getElementById('urlForm');
+    const urlInput = document.getElementById('url');
+    const goButton = document.getElementById('go');
+    const encodedUrlDisplay = document.getElementById('encodedUrl');
 
-    form.addEventListener('submit', async event => {
+    form.addEventListener('submit', function(event) {
         event.preventDefault();
-        try {
-            const url = address.value.trim();
-            if (!url) {
-                throw new Error('Please enter a URL.');
+        let url = urlInput.value.trim();
+
+        if (url) {
+            // Basic URL validation (you can enhance this)
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url; // Default to HTTPS
+                urlInput.value = url; // Update the input field
             }
+            
+            // Encode the URL using xor
+            const encodedURL = __uv$config.encodeUrl(url);
 
-            const encoded = Ultraviolet.codec.xor.encode(url);
-            encodedUrl.textContent = encoded;
-            let urlToLoad = __uv$config.prefix + encoded;
-
-            // Open in new tab/window
-            window.open(urlToLoad, '_blank');
-
-            error.textContent = ''; // Clear any previous errors
-        } catch (e) {
-            error.textContent = e.message;
-            console.error(e);
+            // Update the location with the encoded URL
+            window.location.href = __uv$config.prefix + encodedURL;
         }
     });
 
-    // Dark mode toggle (basic implementation)
-    const darkModeButton = document.getElementById('dark-mode-toggle');
+        // Particles.js initialization (assuming particles.json exists and is configured)
+        particlesJS.load('particles-js', 'particles.json', function() {
+            console.log('Particles.js loaded...');
+        });
 
-    darkModeButton.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        // You might want to save the user's preference in localStorage
-    });
-
-    // Particles.js initialization (assuming it's in public/particles.json)
-    particlesJS.load('particles-js', 'particles.json', function() {
-        console.log('particles.json loaded...');
-    });
+    // Encryption theme tweaks (example)
+    document.body.style.backgroundColor = '#000';
+    document.body.style.color = '#0f0'; // Green text for "encryption" feel
 });
