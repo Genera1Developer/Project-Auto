@@ -16,6 +16,7 @@ self.__uv$config = {
         headers['X-Forwarded-Proto'] = window.location.protocol.slice(0, -1);
         headers['X-Forwarded-Host'] = window.location.host;
         headers['X-Forwarded-For'] = window.location.hostname;
+        headers['X-Ultraviolet-Version'] = '1.0.0'; // Example version header
         return {
             url: url,
             headers: headers
@@ -25,12 +26,12 @@ self.__uv$config = {
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate';
         response.headers['Pragma'] = 'no-cache';
         response.headers['Expires'] = '0';
+        response.headers['X-Content-Type-Options'] = 'nosniff';
 
         if (response.headers['Content-Type'] && response.headers['Content-Type'].includes('text/html')) {
             const securityHeaders = {
                 'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';",
                 'X-Frame-Options': 'DENY',
-                'X-Content-Type-Options': 'nosniff',
                 'Referrer-Policy': 'no-referrer',
                 'Permissions-Policy': 'interest-cohort=()',
                 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
