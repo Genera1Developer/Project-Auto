@@ -1,9 +1,22 @@
 body {
-    font-family: 'Arial', sans-serif;
     margin: 0;
+    font-family: sans-serif;
+    background-color: #111;
+    color: #eee;
     overflow: hidden; /* Hide scrollbars */
-    background: #000;
-    color: #fff;
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #111;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,221 +24,52 @@ body {
     height: 100vh;
 }
 
-#particles-js {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #000;
-    z-index: 0;
-}
-
-.container {
-    text-align: center;
-    z-index: 1;
-}
-
-h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-    color: #00ff00; /* Encryption green */
-    text-shadow: 0 0 10px #00ff00;
-}
-
 input[type="text"] {
-    padding: 15px;
-    font-size: 1.2em;
-    border: 2px solid #00ff00;
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #333;
     background-color: #222;
-    color: #fff;
-    border-radius: 8px;
-    width: 60%;
-    margin-bottom: 20px;
-    outline: none;
+    color: #eee;
+    border-radius: 5px;
+    width: 300px;
+    font-size: 16px;
 }
 
 button {
-    padding: 15px 30px;
-    font-size: 1.2em;
-    background-color: #00ff00;
-    color: #000;
+    padding: 10px 20px;
+    margin: 10px;
     border: none;
-    border-radius: 8px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 16px;
 }
 
 button:hover {
-    background-color: #00cc00;
+    background-color: #0056b3;
 }
 
-#error-message {
-    color: #ff0000;
-    margin-top: 10px;
+/* Add a subtle glow effect */
+input[type="text"]:focus,
+button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    particlesJS.load('particles-js', 'particles.json', function() {
-        console.log('particles.json loaded...');
-    });
 
-    const form = document.querySelector('form');
-    const urlInput = document.getElementById('url-input');
-    const errorMessage = document.getElementById('error-message');
+/* Encryption theme additions */
+.encryption-title {
+    font-size: 3em;
+    font-weight: bold;
+    color: #00ff7f; /* Electric green */
+    text-shadow: 0 0 10px #00ff7f;
+    margin-bottom: 20px;
+}
 
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const url = urlInput.value.trim();
-
-        if (!isValidURL(url)) {
-            errorMessage.textContent = 'Please enter a valid URL.';
-            return;
-        }
-
-        errorMessage.textContent = '';
-        // Replace with your actual proxy URL
-        window.location.href = '/uv/service/' + encodeURIComponent(url);
-    });
-
-    function isValidURL(url) {
-        try {
-            new URL(url);
-            return true;
-        } catch (_) {
-            return false;
-        }
-    }
-});
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Secure Access</h1>
-        <form id="proxy-form">
-            <input type="text" id="url-input" placeholder="Enter URL" autocomplete="off">
-            <button type="submit">Go</button>
-        </form>
-        <div id="error-message"></div>
-    </div>
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
-edit filepath: public/particles.json
-content: {
-  "particles": {
-    "number": {
-      "value": 80,
-      "density": {
-        "enable": true,
-        "value_area": 800
-      }
-    },
-    "color": {
-      "value": "#00ff00"
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 0,
-        "color": "#000000"
-      },
-      "polygon": {
-        "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
-      }
-    },
-    "opacity": {
-      "value": 0.7,
-      "random": true,
-      "anim": {
-        "enable": true,
-        "speed": 1,
-        "opacity_min": 0.1,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#00ff00",
-      "opacity": 0.4,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 3,
-      "direction": "none",
-      "random": true,
-      "straight": false,
-      "out_mode": "out",
-      "bounce": false,
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 1200
-      }
-    }
-  },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": {
-        "enable": true,
-        "mode": "grab"
-      },
-      "onclick": {
-        "enable": true,
-        "mode": "push"
-      },
-      "resize": true
-    },
-    "modes": {
-      "grab": {
-        "distance": 140,
-        "line_linked": {
-          "opacity": 1
-        }
-      },
-      "bubble": {
-        "distance": 400,
-        "size": 40,
-        "duration": 2,
-        "opacity": 8,
-        "speed": 3
-      },
-      "repulse": {
-        "distance": 200,
-        "duration": 0.4
-      },
-      "push": {
-        "particles_nb": 4
-      },
-      "remove": {
-        "particles_nb": 2
-      }
-    }
-  },
-  "retina_detect": true
+.encryption-text {
+    font-size: 1.2em;
+    color: #ccc;
+    text-align: center;
+    max-width: 600px;
+    margin-bottom: 30px;
 }
