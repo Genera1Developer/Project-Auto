@@ -1,88 +1,91 @@
 body {
-    font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 0;
-    height: 100vh;
-    background: #000;
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
     color: #fff;
-    overflow: hidden; /* Hide scrollbars */
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
+    background-color: #000;
     z-index: 0;
-    top: 0;
-    left: 0;
 }
 
 .container {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    padding: 20px;
     text-align: center;
+    z-index: 1;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 184, 255, 0.8);
 }
 
 h1 {
-    font-size: 3em;
+    font-size: 2.5em;
     margin-bottom: 20px;
-    color: #00bcd4; /* Encryption blue */
-    text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+    color: #00b8ff;
+    text-shadow: 0 0 10px #00b8ff;
 }
 
 p {
     font-size: 1.2em;
     margin-bottom: 30px;
-    color: #eee;
 }
 
-form#urlForm {
+#urlForm {
     display: flex;
-    flex-direction: column;
-    width: 80%;
-    max-width: 500px;
+    justify-content: center;
+    align-items: center;
 }
 
-input#urlInput {
-    padding: 15px;
-    margin-bottom: 20px;
+#urlInput {
+    padding: 10px 15px;
+    font-size: 1em;
     border: none;
     border-radius: 5px;
-    font-size: 1em;
+    margin-right: 10px;
+    width: 300px;
     background-color: #222;
     color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 10px rgba(0, 184, 255, 0.5);
 }
 
-input#urlInput:focus {
-    outline: none;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.7);
-}
-
-button[type="submit"] {
-    padding: 15px 30px;
+button {
+    padding: 10px 20px;
+    font-size: 1em;
     border: none;
     border-radius: 5px;
-    background-color: #00bcd4;
+    background-color: #00b8ff;
     color: #fff;
-    font-size: 1.2em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+    box-shadow: 0 0 10px rgba(0, 184, 255, 0.7);
 }
 
-button[type="submit"]:hover {
-    background-color: #0097a7;
+button:hover {
+    background-color: #0077b3;
 }
 
 #error {
-    color: #ff4081;
+    color: #ff4136;
     margin-top: 20px;
     font-size: 1.1em;
+}
+::placeholder {
+    color: #999;
+}
+#urlInput:focus {
+    outline: none;
+    box-shadow: 0 0 15px rgba(0, 184, 255, 0.9);
+}
+button:focus {
+    outline: none;
+    box-shadow: 0 0 15px rgba(0, 184, 255, 0.9);
 }
