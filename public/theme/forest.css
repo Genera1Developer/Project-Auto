@@ -103,13 +103,36 @@ pre {
 }
 
 .encryption-info {
-    color: #27ae60; /* Green color for encryption info */
-    background-color: #e8f5e9; /* Light green background */
+    color: #27ae60;
+    background-color: #e8f5e9;
     padding: 10px;
-    border: 1px solid #c8e6c9; /* Light green border */
+    border: 1px solid #c8e6c9;
     border-radius: 6px;
     margin-top: 20px;
     font-size: 14px;
+}
+
+.https-only {
+    color: #ffffff;
+    background-color: #1e8449;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mixed-content-warning {
+    color: #c62828;
+    background-color: #ffcdd2;
+    padding: 12px;
+    border: 1px solid #ef9a9a;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -130,5 +153,11 @@ pre {
 
     .result {
         font-size: 14px;
+    }
+
+    .https-only,
+    .mixed-content-warning {
+        font-size: 14px;
+        padding: 10px;
     }
 }
