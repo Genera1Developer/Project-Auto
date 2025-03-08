@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
+    <title>Encrypted Web Access</title>
     <link rel="stylesheet" href="public/index.css">
     <link rel="icon" href="public/lock.png" type="image/png">
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
-        <h1>Secure Access</h1>
-        <p>Enter the website URL to access securely:</p>
-        <input type="text" id="urlInput" placeholder="https://example.com">
-        <button id="proxyButton">Go Securely</button>
+        <h1>Encrypted Web Access</h1>
+        <form id="proxy-form">
+            <input type="text" id="url-input" placeholder="Enter URL">
+            <button type="submit">Access Securely</button>
+        </form>
+        <div id="error-message" class="error"></div>
     </div>
     <script src="public/particles.js"></script>
     <script src="public/script.js"></script>
