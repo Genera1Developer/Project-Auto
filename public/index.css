@@ -1,245 +1,73 @@
 body {
     font-family: 'Arial', sans-serif;
+    background-color: #000;
+    color: #fff;
     margin: 0;
-    overflow: hidden; /* Hide scrollbars */
-    background-color: #000; /* Black background */
-    color: #00FF00; /* Green text */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    padding: 0;
     height: 100vh;
-}
-
-#particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container {
     text-align: center;
+    z-index: 1;
     padding: 20px;
-    border: 1px solid #00FF00;
     border-radius: 10px;
-    box-shadow: 0 0 20px #00FF00;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
 }
 
 h1 {
     font-size: 2.5em;
     margin-bottom: 20px;
-    text-shadow: 0 0 10px #00FF00;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
 }
 
-input[type="text"] {
+p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+input[type="url"] {
     padding: 10px;
-    width: 300px;
-    border: 1px solid #00FF00;
+    width: 70%;
+    border: 2px solid #00ffff;
     border-radius: 5px;
-    background-color: #000;
-    color: #00FF00;
+    background-color: #222;
+    color: #fff;
+    font-size: 1em;
     margin-bottom: 20px;
 }
 
 button {
     padding: 10px 20px;
-    background-color: #00FF00;
+    background-color: #00ffff;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
+    font-size: 1.1em;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #00BB00;
+    background-color: #00bfff;
 }
 
-#error-message {
-    color: #FF0000;
+.error {
+    color: #ff4d4d;
     margin-top: 10px;
 }
 
-#disclaimer {
-    font-size: 0.8em;
-    margin-top: 20px;
-    color: #888;
-}
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Access</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Secure Web Gateway</h1>
-        <input type="text" id="url-input" placeholder="Enter URL">
-        <button id="proxy-button">Access Securely</button>
-        <div id="error-message"></div>
-        <p id="disclaimer">Use responsibly. All traffic is potentially logged.</p>
-    </div>
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'particles.json', function() {
-            console.log('particles.json loaded - Encryption Theme Engaged');
-        });
-    </script>
-</body>
-</html>
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('url-input');
-    const proxyButton = document.getElementById('proxy-button');
-    const errorMessage = document.getElementById('error-message');
-
-    proxyButton.addEventListener('click', function() {
-        const url = urlInput.value.trim();
-
-        if (url === '') {
-            errorMessage.textContent = 'Please enter a URL.';
-            return;
-        }
-
-        if (!isValidUrl(url)) {
-            errorMessage.textContent = 'Please enter a valid URL.';
-            return;
-        }
-
-        // Basic URL encoding (more robust encoding might be needed)
-        const encodedURL = encodeURIComponent(url);
-
-        // Redirect to the proxy URL
-        window.location.href = '/uv/service/' + encodedURL;
-    });
-
-    function isValidUrl(url) {
-        try {
-            new URL(url);
-            return true;
-        } catch (_) {
-            return false;
-        }
-    }
-});
-edit filepath: public/particles.json
-content: {
-    "particles": {
-        "number": {
-            "value": 80,
-            "density": {
-                "enable": true,
-                "value_area": 800
-            }
-        },
-        "color": {
-            "value": "#00ff00"
-        },
-        "shape": {
-            "type": "circle",
-            "stroke": {
-                "width": 0,
-                "color": "#000000"
-            },
-            "polygon": {
-                "nb_sides": 5
-            },
-            "image": {
-                "src": "img/github.svg",
-                "width": 100,
-                "height": 100
-            }
-        },
-        "opacity": {
-            "value": 0.7,
-            "random": true,
-            "anim": {
-                "enable": true,
-                "speed": 1,
-                "opacity_min": 0.1,
-                "sync": false
-            }
-        },
-        "size": {
-            "value": 3,
-            "random": true,
-            "anim": {
-                "enable": false,
-                "speed": 40,
-                "size_min": 0.1,
-                "sync": false
-            }
-        },
-        "line_linked": {
-            "enable": true,
-            "distance": 150,
-            "color": "#00ff00",
-            "opacity": 0.4,
-            "width": 1
-        },
-        "move": {
-            "enable": true,
-            "speed": 3,
-            "direction": "none",
-            "random": true,
-            "straight": false,
-            "out_mode": "out",
-            "bounce": false,
-            "attract": {
-                "enable": false,
-                "rotateX": 600,
-                "rotateY": 1200
-            }
-        }
-    },
-    "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-            "onhover": {
-                "enable": true,
-                "mode": "grab"
-            },
-            "onclick": {
-                "enable": true,
-                "mode": "push"
-            },
-            "resize": true
-        },
-        "modes": {
-            "grab": {
-                "distance": 140,
-                "line_linked": {
-                    "opacity": 1
-                }
-            },
-            "bubble": {
-                "distance": 400,
-                "size": 40,
-                "duration": 2,
-                "opacity": 8,
-                "speed": 3
-            },
-            "repulse": {
-                "distance": 200,
-                "duration": 0.4
-            },
-            "push": {
-                "particles_nb": 4
-            },
-            "remove": {
-                "particles_nb": 2
-            }
-        }
-    },
-    "retina_detect": true
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: black;
 }
