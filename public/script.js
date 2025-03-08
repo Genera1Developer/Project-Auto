@@ -1,78 +1,65 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const urlForm = document.getElementById('urlForm');
-  const urlInput = document.getElementById('urlInput');
-  const proxyUrl = '/uv/service/';
+const form = document.querySelector('form');
+const input = document.querySelector('input');
+const proxyUrl = '/'; // Proxied through server
 
-  urlForm.addEventListener('submit', function(event) {
+form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    let url = urlInput.value;
+    const url = input.value;
 
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
+    if (!url) {
+        alert('Please enter a URL.');
+        return;
     }
 
-    // Generate encryption key for this session
-    const encryptionKey = generateEncryptionKey();
+    try {
+        const response = await fetch(proxyUrl + url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.text();
 
-    // Encrypt the URL before passing it to the proxy
-    encryptURL(url, encryptionKey)
-      .then(encryptedUrl => {
-        const encodedUrl = encodeURIComponent(encryptedUrl);
-        window.location.href = proxyUrl + encodedUrl;
-      })
-      .catch(error => {
-        console.error("Encryption failed:", error);
-        alert("Failed to encrypt URL. Please try again.");
-      });
-  });
+        // Encrypt the data before displaying
+        const encryptedData = await encryptData(data);
 
-  // Function to generate a cryptographically secure encryption key
-  function generateEncryptionKey() {
-    return new Promise((resolve, reject) => {
-      crypto.subtle.generateKey(
-        {
-          name: "AES-CBC",
-          length: 256,
-        },
-        true,
-        ["encrypt", "decrypt"]
-      ).then(key => {
-        crypto.subtle.exportKey("jwk", key).then(exportedKey => {
-          sessionStorage.setItem('encryptionKey', exportedKey.k); // Store only the key material
-          resolve(exportedKey.k);
-        }).catch(reject);
-      }).catch(reject);
-    });
-  }
-
-  // Function to encrypt the URL using AES-CBC
-  function encryptURL(url, key) {
-    return new Promise((resolve, reject) => {
-      const iv = crypto.getRandomValues(new Uint8Array(16)); // Generate a random IV
-      const encoded = new TextEncoder().encode(url);
-      crypto.subtle.importKey(
-        "jwk",
-        { kty: "oct", k: key, alg: "A256CBC", ext: true },
-        "AES-CBC",
-        true,
-        ["encrypt", "decrypt"]
-      ).then(cryptoKey => {
-        crypto.subtle.encrypt(
-          {
-            name: "AES-CBC",
-            iv: iv
-          },
-          cryptoKey,
-          encoded
-        ).then(encrypted => {
-          const encryptedArray = new Uint8Array(encrypted);
-          const combined = new Uint8Array(iv.length + encryptedArray.length);
-          combined.set(iv, 0);
-          combined.set(encryptedArray, iv.length);
-          const base64 = btoa(String.fromCharCode(...combined));
-          resolve(base64);
-        }).catch(reject);
-      }).catch(reject);
-    });
-  }
+        displayContent(encryptedData);
+    } catch (error) {
+        console.error('Proxy error:', error);
+        displayError('Failed to load content. Check console for details.');
+    }
 });
+
+async function encryptData(data) {
+    const key = await generateKey();
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const encodedData = new TextEncoder().encode(data);
+
+    const cipher = await window.crypto.subtle.encrypt({
+        name: 'AES-GCM',
+        iv: iv
+    }, key, encodedData);
+
+    const encryptedData = new Uint8Array(cipher);
+    const combinedData = new Uint8Array(iv.length + encryptedData.length);
+    combinedData.set(iv, 0);
+    combinedData.set(encryptedData, iv.length);
+
+    // Return the combined IV and encrypted data as a Base64 string
+    return btoa(String.fromCharCode(...combinedData));
+}
+
+async function generateKey() {
+    return await window.crypto.subtle.generateKey({
+        name: 'AES-GCM',
+        length: 256
+    }, true, ['encrypt', 'decrypt']);
+}
+
+function displayContent(content) {
+    const contentDiv = document.getElementById('content');
+    contentDiv.textContent = 'Encrypted Data: ' + content;
+}
+
+function displayError(message) {
+    const contentDiv = document.getElementById('content');
+    contentDiv.textContent = 'Error: ' + message;
+}
