@@ -1,223 +1,96 @@
 body {
     font-family: 'Arial', sans-serif;
+    background-color: #000; /* Dark background for encryption theme */
+    color: #ddd;
     margin: 0;
-    overflow: hidden;
-    background-color: #000;
-    color: #fff;
+    padding: 0;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    height: 100vh;
-}
-
-#particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    top: 0;
-    left: 0;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Hide scrollbars caused by particles */
 }
 
 .container {
-    text-align: center;
+    background-color: rgba(30, 30, 30, 0.8); /* Darker container with transparency */
     padding: 20px;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 200, 200, 0.3); /* Glowing shadow */
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    z-index: 1; /* Ensure it's above the particles */
+    position: relative;
 }
 
 h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #00bcd4;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #00bcd4; /* Cyan color for headings */
+    text-shadow: 0 0 10px #00bcd4; /* Glowing text */
 }
 
-input[type="text"] {
+#urlInput {
+    width: calc(100% - 20px);
     padding: 10px;
-    font-size: 1em;
-    border: none;
-    border-radius: 5px;
-    margin-right: 10px;
-    width: 60%;
-    background-color: #333;
+    margin: 10px 0;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background-color: #222;
     color: #fff;
 }
 
-button {
+#proxyButton {
     padding: 10px 20px;
-    font-size: 1em;
+    background-color: #00bcd4; /* Cyan button */
+    color: white;
     border: none;
-    border-radius: 5px;
-    background-color: #00bcd4;
-    color: #fff;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #008ba7;
+#proxyButton:hover {
+    background-color: #00acc1; /* Darker cyan on hover */
 }
 
-#error-message {
-    color: #f44336;
-    margin-top: 10px;
+#content {
+    margin-top: 20px;
+    text-align: left;
+    border: 1px solid #555;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
 }
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="url-input" placeholder="Enter URL">
-        <button id="proxy-button">Go</button>
-        <div id="error-message"></div>
-    </div>
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
-edit filepath: public/script.js
-content: particlesJS.load('particles-js', 'particles.json', function() {
-  console.log('callback - particles.js config loaded');
-});
 
-document.getElementById('proxy-button').addEventListener('click', function() {
-    const url = document.getElementById('url-input').value;
-    if (url) {
-        // Basic URL validation (you might want to improve this)
-        if (url.startsWith('http://') || url.startsWith('https://')) {
-            window.location.href = '/uv/service/' + encodeURIComponent(url); // Using Ultraviolet's service
-        } else {
-            document.getElementById('error-message').innerText = 'Invalid URL. Please include http:// or https://';
-        }
-    } else {
-        document.getElementById('error-message').innerText = 'Please enter a URL.';
+#content a {
+    color: #00bcd4; /* Cyan links */
+}
+
+#content a:hover {
+    text-decoration: underline;
+}
+
+.error {
+    color: #ff4081; /* Pink error color */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
     }
-});
-edit filepath: public/particles.json
-content: {
-  "particles": {
-    "number": {
-      "value": 80,
-      "density": {
-        "enable": true,
-        "value_area": 800
-      }
-    },
-    "color": {
-      "value": "#00bcd4"
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 0,
-        "color": "#000000"
-      },
-      "polygon": {
-        "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
-      }
-    },
-    "opacity": {
-      "value": 0.7,
-      "random": false,
-      "anim": {
-        "enable": false,
-        "speed": 1,
-        "opacity_min": 0.1,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#00bcd4",
-      "opacity": 0.4,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 6,
-      "direction": "none",
-      "random": false,
-      "straight": false,
-      "out_mode": "out",
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 1200
-      }
+
+    #urlInput {
+        width: calc(100% - 10px);
     }
-  },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": {
-        "enable": true,
-        "mode": "grab"
-      },
-      "onclick": {
-        "enable": true,
-        "mode": "push"
-      },
-      "resize": true
-    },
-    "modes": {
-      "grab": {
-        "distance": 140,
-        "line_linked": {
-          "opacity": 1
-        }
-      },
-      "bubble": {
-        "distance": 400,
-        "size": 40,
-        "duration": 2,
-        "opacity": 8,
-        "speed": 3
-      },
-      "repulse": {
-        "distance": 200
-      },
-      "push": {
-        "particles_nb": 4
-      },
-      "remove": {
-        "particles_nb": 2
-      }
-    }
-  },
-  "retina_detect": true,
-  "config_demo": {
-    "hide_card": false,
-    "background_color": "#b61924",
-    "background_image": "",
-    "background_position": "50% 50%",
-    "background_repeat": "no-repeat",
-    "background_size": "cover"
-  }
+}
+
+/* Particles.js styles */
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Behind the content */
 }
