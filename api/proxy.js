@@ -1,60 +1,42 @@
+const express = require('express');
+const router = express.Router();
 const https = require('https');
 const http = require('http');
-const crypto = require('crypto');
 
-function encryptData(data, key) {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
-    let encrypted = cipher.update(data);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString('hex') + ':' + encrypted.toString('hex');
-}
-
-function decryptData(encryptedData, key) {
-    const textParts = encryptedData.split(':');
-    const iv = Buffer.from(textParts.shift(), 'hex');
-    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
-
-module.exports = (req, res) => {
-    const { url } = req.query;
+router.get('/proxy', (req, res) => {
+    const url = req.query.url;
 
     if (!url) {
-        res.status(400).send('URL parameter is required');
-        return;
+        return res.status(400).send('URL parameter is required');
     }
 
     try {
-        new URL(url);
-    } catch (err) {
+        const parsedURL = new URL(url);
+        const protocol = parsedURL.protocol === 'https:' ? https : http;
+
+        protocol.get(url, (proxyRes) => {
+            let data = '';
+
+            proxyRes.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            proxyRes.on('end', () => {
+                res.send(data);
+            });
+
+            proxyRes.on('error', (err) => {
+                console.error('Error during data transfer:', err);
+                res.status(500).send('Error during data transfer');
+            });
+        }).on('error', (err) => {
+            console.error('Error during request:', err);
+            res.status(500).send('Error during request');
+        });
+    } catch (error) {
+        console.error('Invalid URL:', error);
         res.status(400).send('Invalid URL');
-        return;
     }
+});
 
-    const protocol = url.startsWith('https') ? https : http;
-
-    protocol.get(url, (proxyRes) => {
-        let data = '';
-
-        proxyRes.on('data', (chunk) => {
-            data += chunk;
-        });
-
-        proxyRes.on('end', () => {
-            const encryptionKey = crypto.randomBytes(32).toString('hex');
-            const encryptedData = encryptData(data, encryptionKey);
-
-            res.setHeader('Content-Type', 'text/plain');
-            res.setHeader('X-Encryption-Key', encryptionKey); // Send encryption key as header
-
-            res.status(200).send(encryptedData);
-        });
-    }).on('error', (err) => {
-        console.error(err);
-        res.status(500).send('Proxy error: ' + err.message);
-    });
-};
+module.exports = router;
