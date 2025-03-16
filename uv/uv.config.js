@@ -13,10 +13,14 @@ self.__uv$config = {
     bundle: '/uv/uv.bundle.js',
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
-    encryptionKey: 'aaaaaaaaaaaaaaaa',
+    encryptionKey: 'YOUR_SECURE_ENCRYPTION_KEY',
     encryptPayloads: true,
     // Secure Context Policy (SCP) enforcement
     scp: true,
     // CSP settings to strengthen security.  Customize as needed.
     csp: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' wss:;",
+    // Enable additional security headers
+    injectHeaders: true,
+    // Log proxy requests for debugging (disable in production)
+    logRequests: false,
 };
