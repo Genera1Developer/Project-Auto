@@ -1,14 +1,14 @@
 const particlesConfig = {
   "particles": {
     "number": {
-      "value": 80,
+      "value": 100,
       "density": {
         "enable": true,
         "value_area": 800
       }
     },
     "color": {
-      "value": "#007bff"
+      "value": "#00FF00" // Encryption green
     },
     "shape": {
       "type": "circle",
@@ -26,17 +26,17 @@ const particlesConfig = {
       }
     },
     "opacity": {
-      "value": 0.5,
-      "random": false,
+      "value": 0.7,
+      "random": true,
       "anim": {
-        "enable": false,
+        "enable": true,
         "speed": 1,
-        "opacity_min": 0.1,
+        "opacity_min": 0.3,
         "sync": false
       }
     },
     "size": {
-      "value": 5,
+      "value": 3,
       "random": true,
       "anim": {
         "enable": false,
@@ -48,15 +48,15 @@ const particlesConfig = {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#007bff",
+      "color": "#00FF00", // Encryption green
       "opacity": 0.4,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 6,
+      "speed": 3,
       "direction": "none",
-      "random": false,
+      "random": true,
       "straight": false,
       "out_mode": "out",
       "attract": {
@@ -71,7 +71,7 @@ const particlesConfig = {
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "repulse"
+        "mode": "grab"
       },
       "onclick": {
         "enable": true,
@@ -94,7 +94,8 @@ const particlesConfig = {
         "speed": 3
       },
       "repulse": {
-        "distance": 200
+        "distance": 200,
+        "duration": 0.4
       },
       "push": {
         "particles_nb": 4
@@ -107,7 +108,7 @@ const particlesConfig = {
   "retina_detect": true,
   "config_demo": {
     "hide_card": false,
-    "background_color": "#b61924",
+    "background_color": "#000000",
     "background_image": "",
     "background_position": "50% 50%",
     "background_repeat": "no-repeat",
