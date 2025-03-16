@@ -1,29 +1,29 @@
-document.getElementById('proxyButton').addEventListener('click', function() {
-    var url = document.getElementById('urlInput').value;
-    var contentDiv = document.getElementById('content');
+document.addEventListener('DOMContentLoaded', function() {
+    const urlInput = document.getElementById('urlInput');
+    const proxyButton = document.getElementById('proxyButton');
+    const contentDiv = document.getElementById('content');
 
-    if (!url) {
-        contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
-        return;
-    }
+    proxyButton.addEventListener('click', async function() {
+        const url = urlInput.value;
 
-    // Show loading message
-    contentDiv.innerHTML = '<p>Loading...</p>';
+        if (!url) {
+            contentDiv.textContent = 'Please enter a URL.';
+            return;
+        }
 
-    // Use Fetch API to get the content from the proxy
-    fetch('/api/proxy?url=' + encodeURIComponent(url))
-        .then(response => {
+        try {
+            const response = await fetch('/api/proxy?url=' + encodeURIComponent(url));
+
             if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.text();
-        })
-        .then(data => {
-            // Display the content in the content div
-            contentDiv.innerHTML = data;
-        })
-        .catch(error => {
-            console.error('There has been a problem with the fetch operation:', error);
-            contentDiv.innerHTML = '<p class="error">Failed to load content. Please check the URL and try again.</p>';
-        });
+
+            const data = await response.text();
+            contentDiv.textContent = data;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            contentDiv.textContent = 'An error occurred while fetching the content. Check the console for details.';
+            contentDiv.classList.add('error');
+        }
+    });
 });
