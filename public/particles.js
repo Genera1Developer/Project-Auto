@@ -114,116 +114,107 @@ particlesJS("particles-js", {
     "background_size": "cover"
   }
 });
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+    </div>
+    <script src="script.js"></script>
+    <script src="particles.js"></script>
+</body>
+</html>
 edit filepath: public/style.css
-content: /* Dark theme with encryption-related styling */
-body {
-    margin: 0;
+content: body {
     font-family: 'Arial', sans-serif;
-    background-color: #000; /* Deep black background */
-    color: #00ff00; /* Green text for matrix-like effect */
-    overflow: hidden; /* Hide scrollbars */
-}
-
-.container {
+    background-color: #000; /* Dark background for encryption theme */
+    margin: 0;
+    padding: 0;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    height: 100vh;
-    text-align: center;
-    position: relative;
-    z-index: 1; /* Ensure content is above particles */
+    align-items: center;
+    min-height: 100vh;
+    color: #fff; /* Light text for contrast */
 }
 
-h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #00ff00; /* Green text */
-    text-shadow: 0 0 5px #00ff00; /* Glowing effect */
-}
-
-input[type="url"] {
-    padding: 10px;
-    width: 300px;
-    border: 1px solid #00ff00; /* Green border */
-    background-color: #111; /* Dark input background */
-    color: #00ff00; /* Green text */
-    border-radius: 5px;
-    margin-bottom: 20px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #00ff00; /* Green button */
-    color: #000; /* Black text */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #00b300; /* Darker green on hover */
-}
-
-/* Particles.js styles */
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 0; /* Behind the content */
+    z-index: -1; /* Place behind other content */
 }
 
-/* Add a subtle "encrypted" text effect */
-.encrypted-text {
-    position: relative;
+.container {
+    background-color: rgba(30, 30, 30, 0.8); /* Darker container with transparency */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Glowing shadow for effect */
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    z-index: 1;
 }
 
-.encrypted-text::before {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    color: #00ff00;
-    overflow: hidden;
-    animation: glitch 2s linear infinite;
+h1 {
+    color: #007bff; /* Encryption blue */
+    text-shadow: 0 0 5px #007bff; /* Glowing text */
 }
 
-@keyframes glitch {
-    0% {
-        clip: rect(auto, auto, auto, auto);
+#urlInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #007bff; /* Blue border */
+    border-radius: 4px;
+    background-color: #222;
+    color: #fff;
+}
+
+#proxyButton {
+    padding: 10px 20px;
+    background-color: #007bff; /* Encryption blue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#proxyButton:hover {
+    background-color: #0056b3;
+}
+
+#content {
+    margin-top: 20px;
+    text-align: left;
+    border: 1px solid #007bff; /* Blue border */
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
     }
-    10%, 30%, 50%, 70%, 90% {
-        clip: rect(0, 999px, 0, 0);
-    }
-    20%, 40%, 60%, 80%, 100% {
-        clip: rect(auto, auto, auto, auto);
+
+    #urlInput {
+        width: calc(100% - 10px);
     }
 }
-
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1 class="encrypted-text" data-text="Encrypted Web Proxy">Encrypted Web Proxy</h1>
-        <form id="url-form">
-            <input type="url" id="url-input" placeholder="Enter URL" required>
-            <button type="submit">Go</button>
-        </form>
-    </div>
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+edit filepath:
