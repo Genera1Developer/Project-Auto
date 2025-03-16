@@ -1,73 +1,70 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #fff;
     margin: 0;
-    padding: 0;
     overflow: hidden; /* Hide scrollbars */
-    height: 100vh;
+    background: #000; /* Dark background */
+    color: #00ff00; /* Green text for "encryption" feel */
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 #particles-js {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
-    background-color: #000;
-    z-index: 0;
+    top: 0;
+    left: 0;
+    z-index: -1; /* Behind all content */
 }
 
 .container {
     text-align: center;
-    z-index: 1;
     padding: 20px;
+    border: 1px solid #00ff00;
     border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    box-shadow: 0 0 20px #00ff00;
+    background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent background */
 }
 
 h1 {
-    color: #00FFFF;
+    color: #00ff00;
     margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-}
-
-p {
-    font-size: 1.2em;
-    margin-bottom: 10px;
 }
 
 input[type="text"] {
     padding: 10px;
-    width: 80%;
-    margin-bottom: 20px;
-    border: none;
+    margin: 10px;
+    border: 1px solid #00ff00;
     border-radius: 5px;
-    background-color: #222;
-    color: #fff;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    background-color: #000;
+    color: #00ff00;
+    width: 300px;
 }
 
 button {
     padding: 10px 20px;
-    background-color: #00FFFF;
+    background-color: #00ff00;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.1em;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 button:hover {
-    background-color: #00BFFF;
+    background-color: #008000; /* Darker green on hover */
 }
 
-#error {
-    color: #FF4500;
+#error-message {
+    color: red;
     margin-top: 10px;
-    font-weight: bold;
+}
+
+/* Add some futuristic styling */
+input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 10px #00ff00;
 }
