@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Gateway</title>
-    <link rel="stylesheet" href="index.css">
-    <link rel="icon" type="image/png" href="/encryption_icon.png">
+    <title>Encrypted Web Proxy</title>
+    <link rel="stylesheet" href="public/index.css">
+    <link rel="icon" href="public/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="container">
-        <h1>Encrypted Gateway</h1>
-        <p>Enter the URL you wish to access securely:</p>
-        <input type="text" id="url" placeholder="https://example.com">
-        <button id="proxy">Access via Proxy</button>
-        <div id="error" class="hidden"></div>
-    </div>
     <div id="particles-js"></div>
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
+    <div class="container">
+        <h1>Secure Web Access</h1>
+        <p>Enter the URL to access securely:</p>
+        <form id="proxyForm">
+            <input type="url" id="url" placeholder="https://example.com" required>
+            <button type="submit">Go</button>
+        </form>
+        <div id="error" class="error-message"></div>
+    </div>
+    <script src="public/particles.js"></script>
+    <script src="public/script.js"></script>
 </body>
 </html>
