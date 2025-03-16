@@ -1,72 +1,77 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #fff;
     margin: 0;
-    padding: 0;
-    height: 100vh;
+    font-family: sans-serif;
+    background-color: #000;
+    color: #00ff00;
     overflow: hidden; /* Hide scrollbars */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+    left: 0;
 }
 
 .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     text-align: center;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    z-index: 1; /* Ensure it's above particles */
 }
 
 h1 {
-    color: #00FFFF;
-    text-shadow: 0 0 10px #00FFFF;
-}
-
-p {
+    font-size: 3em;
     margin-bottom: 20px;
 }
 
 input[type="text"] {
     padding: 10px;
-    border: none;
+    font-size: 1.2em;
+    border: 2px solid #00ff00;
+    background-color: #000;
+    color: #00ff00;
     border-radius: 5px;
-    width: 80%;
     margin-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    width: 80%;
+    max-width: 400px;
 }
 
 button {
     padding: 10px 20px;
+    font-size: 1.2em;
+    background-color: #00ff00;
+    color: #000;
     border: none;
     border-radius: 5px;
-    background-color: #00FFFF;
-    color: #000;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #00BFFF;
+    background-color: #00bb00;
 }
 
-#error {
-    color: #FF4136;
-    margin-top: 10px;
+#encryption-status {
+    margin-top: 20px;
+    font-size: 1.1em;
 }
 
-.hidden {
-    display: none;
+#encryption-status span {
+    font-weight: bold;
 }
 
-#particles-js {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 0; /* Place behind content */
+/* Add a glow effect */
+h1, input[type="text"], button, #encryption-status {
+    text-shadow: 0 0 10px #00ff00;
+}
+
+/* Terminal style input */
+input[type="text"] {
+    font-family: monospace;
+    letter-spacing: 1px;
 }
