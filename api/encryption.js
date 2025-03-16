@@ -1,59 +1,37 @@
 const CryptoJS = require('crypto-js');
 
-const secretKey = process.env.ENCRYPTION_KEY || 'DefaultSecretKey';
-const ivString = process.env.INITIALIZATION_VECTOR || 'DefaultInitVector';
-const iterations = 256; // Further increased iterations
+const secretKey = process.env.ENCRYPTION_KEY || 'DefaultSecretKey'; // Use env variable
+const ivString = process.env.IV_STRING || 'DefaultIVString'; // Use env variable
 
-function encrypt(text) {
+function encrypt(data) {
+  try {
     const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
-    const salt = CryptoJS.lib.WordArray.random(128/8);
-
-    const key = CryptoJS.PBKDF2(secretKey, salt, {
-        keySize: 256/32,
-        iterations: iterations
+    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), CryptoJS.enc.Utf8.parse(secretKey), {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
     });
-
-    const encrypted = CryptoJS.AES.encrypt(text, key, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-
-    const ciphertext = salt.toString() + encrypted.toString();
-    return ciphertext;
+    return encrypted.toString();
+  } catch (error) {
+    console.error("Encryption error:", error);
+    return null;
+  }
 }
 
 function decrypt(ciphertext) {
-    try {
-        const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
-        const salt = CryptoJS.enc.Hex.parse(ciphertext.substring(0, 32));
-        const encrypted = ciphertext.substring(32);
-
-        const key = CryptoJS.PBKDF2(secretKey, salt, {
-            keySize: 256/32,
-            iterations: iterations
-        });
-
-        const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-
-        const plaintext = decrypted.toString(CryptoJS.enc.Utf8);
-        return plaintext;
-    } catch (error) {
-        console.error("Decryption Error:", error);
-        return null;
-    }
+  try {
+    const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
+    const decrypted = CryptoJS.AES.decrypt(ciphertext, CryptoJS.enc.Utf8.parse(secretKey), {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
+    return decryptedData;
+  } catch (error) {
+    console.error("Decryption error:", error);
+    return null;
+  }
 }
 
-function generateSecureKey() {
-    return CryptoJS.lib.WordArray.random(256/8).toString();
-}
-
-function generateSecureIV() {
-    return CryptoJS.lib.WordArray.random(128/8).toString();
-}
-
-module.exports = { encrypt, decrypt, generateSecureKey, generateSecureIV };
+module.exports = { encrypt, decrypt };
