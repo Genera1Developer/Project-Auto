@@ -1,6 +1,4 @@
-particlesJS('particles-js',
-
-{
+particlesJS("particles-js", {
   "particles": {
     "number": {
       "value": 80,
@@ -115,76 +113,117 @@ particlesJS('particles-js',
     "background_repeat": "no-repeat",
     "background_size": "cover"
   }
+});
+edit filepath: public/style.css
+content: /* Dark theme with encryption-related styling */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #000; /* Deep black background */
+    color: #00ff00; /* Green text for matrix-like effect */
+    overflow: hidden; /* Hide scrollbars */
 }
 
-);
-edit filepath: api/encryption.js
-content: class EncryptionHandler {
-    constructor(key) {
-        this.key = key;
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    position: relative;
+    z-index: 1; /* Ensure content is above particles */
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #00ff00; /* Green text */
+    text-shadow: 0 0 5px #00ff00; /* Glowing effect */
+}
+
+input[type="url"] {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #00ff00; /* Green border */
+    background-color: #111; /* Dark input background */
+    color: #00ff00; /* Green text */
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #00ff00; /* Green button */
+    color: #000; /* Black text */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #00b300; /* Darker green on hover */
+}
+
+/* Particles.js styles */
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Behind the content */
+}
+
+/* Add a subtle "encrypted" text effect */
+.encrypted-text {
+    position: relative;
+}
+
+.encrypted-text::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #00ff00;
+    overflow: hidden;
+    animation: glitch 2s linear infinite;
+}
+
+@keyframes glitch {
+    0% {
+        clip: rect(auto, auto, auto, auto);
     }
-
-    async encryptData(data) {
-        if (!data) {
-            throw new Error('Data cannot be empty for encryption.');
-        }
-
-        const encoder = new TextEncoder();
-        const dataArray = encoder.encode(JSON.stringify(data));
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-
-        const algorithm = {
-            name: 'AES-GCM',
-            iv: iv
-        };
-
-        const cryptoKey = await crypto.subtle.importKey(
-            'raw',
-            new TextEncoder().encode(this.key),
-            algorithm,
-            false,
-            ['encrypt']
-        );
-
-        const encryptedData = await crypto.subtle.encrypt(algorithm, cryptoKey, dataArray);
-        const encryptedDataArray = new Uint8Array(encryptedData);
-        const combinedData = new Uint8Array(iv.length + encryptedDataArray.length);
-        combinedData.set(iv, 0);
-        combinedData.set(encryptedDataArray, iv.length);
-
-        return btoa(String.fromCharCode(...combinedData));
+    10%, 30%, 50%, 70%, 90% {
+        clip: rect(0, 999px, 0, 0);
     }
-
-    async decryptData(encryptedBase64) {
-        if (!encryptedBase64) {
-            throw new Error('Encrypted data cannot be empty for decryption.');
-        }
-
-        const combinedData = new Uint8Array(
-            [...atob(encryptedBase64)].map(char => char.charCodeAt(0))
-        );
-        const iv = combinedData.slice(0, 12);
-        const encryptedDataArray = combinedData.slice(12);
-
-        const algorithm = {
-            name: 'AES-GCM',
-            iv: iv
-        };
-
-        const cryptoKey = await crypto.subtle.importKey(
-            'raw',
-            new TextEncoder().encode(this.key),
-            algorithm,
-            false,
-            ['decrypt']
-        );
-
-        const decryptedData = await crypto.subtle.decrypt(algorithm, cryptoKey, encryptedDataArray);
-        const decoder = new TextDecoder();
-        const decryptedString = decoder.decode(decryptedData);
-
-        return JSON.parse(decryptedString);
+    20%, 40%, 60%, 80%, 100% {
+        clip: rect(auto, auto, auto, auto);
     }
 }
 
-module.exports = EncryptionHandler;
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Web Proxy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1 class="encrypted-text" data-text="Encrypted Web Proxy">Encrypted Web Proxy</h1>
+        <form id="url-form">
+            <input type="url" id="url-input" placeholder="Enter URL" required>
+            <button type="submit">Go</button>
+        </form>
+    </div>
+    <script src="particles.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
