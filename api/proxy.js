@@ -2,6 +2,7 @@ const https = require('https');
 const http = require('http');
 const urlModule = require('url');
 const crypto = require('crypto');
+const zlib = require('zlib');
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'); // Generate a random key if not provided
 const IV_LENGTH = 16;
@@ -55,6 +56,7 @@ module.exports = (req, res) => {
                 'Accept-Language': req.headers['accept-language'] || 'en-US,en;q=0.9',
                 'Cache-Control': 'no-cache',
                 'Connection': 'close',
+                'Accept-Encoding': 'gzip, deflate, br', // Accept compressed content
             },
         }, (proxyRes) => {
             let body = [];
@@ -64,7 +66,16 @@ module.exports = (req, res) => {
             });
 
             proxyRes.on('end', () => {
-                let responseData = Buffer.concat(body).toString();
+                let responseData = Buffer.concat(body);
+
+                // Handle compressed content
+                if (proxyRes.headers['content-encoding'] === 'gzip') {
+                    responseData = zlib.gunzipSync(responseData);
+                } else if (proxyRes.headers['content-encoding'] === 'deflate') {
+                    responseData = zlib.inflateSync(responseData);
+                }
+
+                responseData = responseData.toString();
 
                 // Encrypt the response data
                 const encryptedData = encrypt(responseData);
