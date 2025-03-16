@@ -2,24 +2,27 @@ const https = require('https');
 const http = require('http');
 const crypto = require('crypto');
 
+// Generate a more secure random key and IV. Consider using a key derivation function (KDF) in production.
 const AES_KEY = crypto.randomBytes(32); // 256-bit key
 const AES_IV = crypto.randomBytes(16); // 128-bit IV
 
 function encrypt(text) {
   const cipher = crypto.createCipheriv('aes-256-cbc', AES_KEY, AES_IV);
-  let encrypted = cipher.update(text);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return AES_IV.toString('hex') + ':' + encrypted.toString('hex');
+  let encrypted = cipher.update(text, 'utf8', 'hex'); // Specify input and output encoding
+  encrypted += cipher.final('hex'); // Specify output encoding
+  return encrypted;
 }
 
 function decrypt(text) {
-  const textParts = text.split(':');
-  const iv = Buffer.from(textParts.shift(), 'hex');
-  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-  const decipher = crypto.createDecipheriv('aes-256-cbc', AES_KEY, iv);
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
+  try {
+    const decipher = crypto.createDecipheriv('aes-256-cbc', AES_KEY, AES_IV);
+    let decrypted = decipher.update(text, 'hex', 'utf8'); // Specify input and output encoding
+    decrypted += decipher.final('utf8'); // Specify output encoding
+    return decrypted;
+  } catch (error) {
+    console.error('Decryption error:', error);
+    return null; // Or throw the error, depending on your error handling strategy
+  }
 }
 
 function handleRequest(req, res) {
@@ -65,7 +68,13 @@ function handleRequest(req, res) {
   req.on('data', (chunk) => {
     try {
       const decrypted = decrypt(chunk.toString('utf8'));
-      proxyRequest.write(decrypted);
+      if (decrypted !== null) {
+          proxyRequest.write(decrypted);
+      } else {
+          console.error('Decryption failed, not forwarding chunk.');
+          proxyRequest.destroy(); // Abort the request if decryption fails
+          return res.status(500).send('Decryption error.'); // Send error response
+      }
     } catch (error) {
       console.error('Decryption error:', error);
       proxyRequest.write(chunk); // Send unencrypted on error
