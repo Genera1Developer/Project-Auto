@@ -114,26 +114,3 @@ particlesJS("particles-js", {
     "background_size": "cover"
   }
 });
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <form id="url-form">
-            <input type="url" id="url-input" placeholder="Enter URL" required>
-            <button type="submit">Go</button>
-        </form>
-    </div>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
