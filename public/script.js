@@ -1,107 +1,65 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     const urlInput = document.getElementById('urlInput');
     const proxyButton = document.getElementById('proxyButton');
     const contentDiv = document.getElementById('content');
 
-    proxyButton.addEventListener('click', async () => {
+    proxyButton.addEventListener('click', async function() {
         const url = urlInput.value;
-
         if (!url) {
-            contentDiv.textContent = 'Please enter a URL.';
-            contentDiv.classList.add('error');
+            contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
             return;
         }
 
-        contentDiv.classList.remove('error');
-        contentDiv.textContent = 'Loading...';
-
         try {
-            const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
+            const response = await fetch('/api/proxy?url=' + encodeURIComponent(url));
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const encryptedData = await response.text();
-			
-			const decryptionKey = 'defaultEncryptionKey';
-
-			const decryptedData = await decryptData(encryptedData, decryptionKey);
-
-            contentDiv.textContent = decryptedData;
+            const data = await response.text();
+            contentDiv.innerHTML = data;
         } catch (error) {
-            console.error('Error fetching data:', error);
-            contentDiv.textContent = `Error: ${error.message}`;
-            contentDiv.classList.add('error');
+            console.error('Error fetching proxied content:', error);
+            contentDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
         }
     });
+});
+edit filepath: api/proxy.js
+content: const https = require('https');
+const http = require('http');
+const url = require('url');
 
-    async function decryptData(encryptedData, key) {
-        return new Promise((resolve, reject) => {
-            // Simple AES decryption in JavaScript (for demonstration purposes)
-            // **WARNING: This is NOT secure for production use.**
-            // In a real application, use a secure, well-vetted library like CryptoJS.
-            try {
-                const textParts = encryptedData.split(':');
-                const iv = Buffer.from(textParts.shift(), 'hex');
-                const authTag = Buffer.from(textParts.shift(), 'hex');
-                const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+module.exports = async (req, res) => {
+    const targetUrl = req.query.url;
 
-                const keyBuffer = Buffer.from(key);
-                const ivBuffer = Buffer.from(iv);
-                const encryptedTextBuffer = Buffer.from(encryptedText);
-
-                crypto.subtle.importKey(
-                    "raw",
-                    keyBuffer,
-                    { name: "AES-CBC", length: 256 },
-                    false,
-                    ["encrypt", "decrypt"]
-                ).then(key => {
-                    crypto.subtle.decrypt(
-                        { name: "AES-CBC", iv: ivBuffer },
-                        key,
-                        encryptedTextBuffer
-                    ).then(decrypted => {
-                        const decryptedText = new TextDecoder().decode(decrypted);
-                        resolve(decryptedText);
-                    }).catch(err => {
-                        reject(err);
-                    });
-                }).catch(err => {
-                    reject(err);
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
+    if (!targetUrl) {
+        res.status(400).send('URL parameter is required');
+        return;
     }
 
-});
-edit filepath: api/encryption.js
-content: const crypto = require('crypto');
+    try {
+        const parsedUrl = new url.URL(targetUrl);
+        const options = {
+            hostname: parsedUrl.hostname,
+            path: parsedUrl.pathname + parsedUrl.search,
+            method: 'GET',
+            headers: req.headers // Forward original headers, but sanitize if needed
+        };
 
-const algorithm = 'aes-256-cbc'; //Use AES 256 encryption
-const key = crypto.randomBytes(32);
-const iv = crypto.randomBytes(16);
+        const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
-function encrypt(text) {
-    let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
-}
+        const proxyReq = protocol.request(options, (proxyRes) => {
+            res.writeHead(proxyRes.statusCode, proxyRes.headers);
+            proxyRes.pipe(res, { end: true });
+        });
 
-function decrypt(text) {
-    let iv = Buffer.from(text.iv, 'hex');
-    let encryptedText = Buffer.from(text.encryptedData, 'hex');
-    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
+        proxyReq.on('error', (error) => {
+            console.error('Proxy request error:', error);
+            res.status(500).send(`Proxy error: ${error.message}`);
+        });
 
-//Test Functions
-// var hw = encrypt("Testing Encryption");
-// console.log(hw);
-// console.log(decrypt(hw));
-
-module.exports = { encrypt, decrypt };
+        req.pipe(proxyReq, { end: true }); // Pipe the request to the target
+    } catch (error) {
+        console.error('URL parsing or proxy error:', error);
+        res.status(400).send(`Invalid URL or proxy error: ${error.message}`);
+    }
+};
