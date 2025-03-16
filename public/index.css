@@ -1,149 +1,75 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #00FF00;
     margin: 0;
-    padding: 0;
+    overflow: hidden; /* Hide scrollbars */
+    background: #000;
+    color: #fff;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
-.container {
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-    text-align: center;
-    width: 80%;
-    max-width: 600px;
-    position: relative;
-    z-index: 1;
-}
-
-h1 {
-    color: #00FF00;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    animation: glitch 2s infinite;
-}
-
-#urlInput {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #00FF00;
-    border-radius: 4px;
-    background-color: #222;
-    color: #00FF00;
-}
-
-#proxyButton {
-    padding: 10px 20px;
-    background-color: #00FF00;
-    color: #000;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-#proxyButton:hover {
-    background-color: #00BB00;
-    transform: scale(1.1);
-}
-
-#content {
-    margin-top: 20px;
-    text-align: left;
-    border: 1px solid #00FF00;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #111;
-    color: #00FF00;
-    overflow-wrap: break-word;
-}
-
-#content p.error {
-    color: #FF0000;
-    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
-}
-
-@keyframes glitch {
-    0% {
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    }
-    10% {
-        text-shadow: -2px 2px 10px rgba(255, 0, 0, 0.5), 2px -2px 10px rgba(0, 0, 255, 0.5);
-    }
-    20% {
-        text-shadow: 2px -2px 10px rgba(255, 0, 0, 0.5), -2px 2px 10px rgba(0, 0, 255, 0.5);
-    }
-    30% {
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    }
-    40% {
-        text-shadow: -2px 0px 10px rgba(255, 0, 0, 0.5);
-    }
-    50% {
-        text-shadow: 2px 2px 10px rgba(0, 0, 255, 0.5);
-    }
-    60% {
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    }
-    70% {
-        text-shadow: 0px -2px 10px rgba(255, 0, 0, 0.5);
-    }
-    80% {
-        text-shadow: -2px -2px 10px rgba(0, 0, 255, 0.5);
-    }
-    90% {
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    }
-    100% {
-        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-    }
-}
-
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-
-    #urlInput {
-        width: calc(100% - 10px);
-    }
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
     z-index: 0;
+    background-color: #000; /* Dark background for encryption theme */
 }
 
-.encryption-info {
-    margin-top: 20px;
-    padding: 15px;
-    border: 1px dashed #00FF00;
-    border-radius: 4px;
-    background-color: #222;
-    color: #00FF00;
-    text-align: left;
-    font-size: 0.8em;
+.container {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    box-shadow: 0 0 20px rgba(0, 150, 136, 0.8); /* Glowing shadow */
 }
 
-.encryption-info h3 {
-    color: #00FF00;
-    margin-top: 0;
-    margin-bottom: 10px;
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #26a69a; /* Encryption-themed color */
+    text-shadow: 0 0 10px #26a69a;
 }
 
-.encryption-info p {
-    margin-bottom: 5px;
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type="text"] {
+    padding: 10px 15px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 300px;
+    background: #222;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(0, 150, 136, 0.5);
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background: #26a69a;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 150, 136, 0.5);
+}
+
+button:hover {
+    background-color: #00796b;
+}
+
+.error {
+    color: #ff6666;
+    margin-top: 10px;
 }
