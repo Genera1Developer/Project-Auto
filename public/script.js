@@ -2,20 +2,16 @@ document.getElementById('proxyButton').addEventListener('click', function() {
     var url = document.getElementById('urlInput').value;
     var contentDiv = document.getElementById('content');
 
-    // Basic URL validation (improve as needed)
     if (!url) {
         contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
         return;
     }
 
-    // Display loading message
+    // Show loading message
     contentDiv.innerHTML = '<p>Loading...</p>';
 
-    // Use a more robust encoding method to handle special characters in the URL
-    var encodedUrl = encodeURIComponent(url);
-
-    // Fetch content from the proxy endpoint (replace with your actual endpoint)
-    fetch('/api/proxy?url=' + encodedUrl)
+    // Use Fetch API to get the content from the proxy
+    fetch('/api/proxy?url=' + encodeURIComponent(url))
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
@@ -23,11 +19,11 @@ document.getElementById('proxyButton').addEventListener('click', function() {
             return response.text();
         })
         .then(data => {
-            // Display the proxied content
+            // Display the content in the content div
             contentDiv.innerHTML = data;
         })
         .catch(error => {
-            console.error('Error fetching content:', error);
-            contentDiv.innerHTML = '<p class="error">Error: ' + error.message + '</p>';
+            console.error('There has been a problem with the fetch operation:', error);
+            contentDiv.innerHTML = '<p class="error">Failed to load content. Please check the URL and try again.</p>';
         });
 });
