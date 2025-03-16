@@ -94,8 +94,7 @@ particlesJS("particles-js", {
         "speed": 3
       },
       "repulse": {
-        "distance": 200,
-        "duration": 0.4
+        "distance": 200
       },
       "push": {
         "particles_nb": 4
@@ -105,57 +104,37 @@ particlesJS("particles-js", {
       }
     }
   },
-  "retina_detect": true
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#b61924",
+    "background_image": "",
+    "background_position": "50% 50%",
+    "background_repeat": "no-repeat",
+    "background_size": "cover"
+  }
 });
 edit filepath: api/encryption.js
-content: class Encryption {
-    constructor(key) {
-        this.key = key;
-    }
+content: const crypto = require('crypto');
 
-    static generateRandomKey(length = 32) {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let key = '';
-        for (let i = 0; i < length; i++) {
-            key += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        return key;
-    }
+const algorithm = 'aes-256-cbc'; //Using AES encryption
+const key = crypto.randomBytes(32);
+const iv = crypto.randomBytes(16);
 
-    encrypt(text) {
-        let result = '';
-        for (let i = 0; i < text.length; i++) {
-            const charCode = text.charCodeAt(i) ^ this.key.charCodeAt(i % this.key.length);
-            result += String.fromCharCode(charCode);
-        }
-        return btoa(result);
-    }
-
-    decrypt(encryptedText) {
-        const text = atob(encryptedText);
-        let result = '';
-        for (let i = 0; i < text.length; i++) {
-            const charCode = text.charCodeAt(i) ^ this.key.charCodeAt(i % this.key.length);
-            result += String.fromCharCode(charCode);
-        }
-        return result;
-    }
-
-    static stringToByteArray(str) {
-        const byteArray = [];
-        for (let i = 0; i < str.length; i++) {
-            byteArray.push(str.charCodeAt(i));
-        }
-        return byteArray;
-    }
-
-    static byteArrayToString(byteArray) {
-        let str = '';
-        for (let i = 0; i < byteArray.length; i++) {
-            str += String.fromCharCode(byteArray[i]);
-        }
-        return str;
-    }
+function encrypt(text) {
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-module.exports = Encryption;
+function decrypt(text) {
+    let iv = Buffer.from(text.iv, 'hex');
+    let encryptedText = Buffer.from(text.encryptedData, 'hex');
+    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+}
+
+module.exports = { encrypt, decrypt };
