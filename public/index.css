@@ -1,70 +1,72 @@
 body {
     font-family: 'Arial', sans-serif;
+    background-color: #000;
+    color: #fff;
     margin: 0;
-    overflow: hidden; /* Hide scrollbars */
-    background: #000; /* Dark background */
-    color: #00ff00; /* Green text for "encryption" feel */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    padding: 0;
     height: 100vh;
-}
-
-#particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1; /* Behind all content */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .container {
     text-align: center;
     padding: 20px;
-    border: 1px solid #00ff00;
     border-radius: 10px;
-    box-shadow: 0 0 20px #00ff00;
-    background-color: rgba(0, 0, 0, 0.5); /* Slightly transparent background */
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+    z-index: 1;
 }
 
 h1 {
-    color: #00ff00;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff;
+}
+
+p {
+    font-size: 1.1em;
     margin-bottom: 20px;
 }
 
 input[type="text"] {
     padding: 10px;
-    margin: 10px;
-    border: 1px solid #00ff00;
+    width: 80%;
+    border: none;
     border-radius: 5px;
-    background-color: #000;
-    color: #00ff00;
-    width: 300px;
+    background-color: #222;
+    color: #fff;
+    margin-bottom: 20px;
 }
 
 button {
     padding: 10px 20px;
-    background-color: #00ff00;
-    color: #000;
     border: none;
     border-radius: 5px;
+    background-color: #00ffff;
+    color: #000;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #008000; /* Darker green on hover */
+    background-color: #00bfff;
 }
 
-#error-message {
-    color: red;
+#error {
+    color: #ff4d4d;
     margin-top: 10px;
 }
 
-/* Add some futuristic styling */
-input[type="text"]:focus {
-    outline: none;
-    box-shadow: 0 0 10px #00ff00;
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #000;
+    z-index: 0;
 }
