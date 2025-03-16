@@ -1,29 +1,24 @@
-const crypto = require('crypto');
+const CryptoJS = require('crypto-js');
 
-const algorithm = 'aes-256-cbc';
-const key = crypto.randomBytes(32); // Generate a secure key
-const iv = crypto.randomBytes(16); // Generate a secure IV
+const key = CryptoJS.enc.Hex.parse('000102030405060708090a0b0c0d0e0f');
+const iv = CryptoJS.enc.Hex.parse('101112131415161718191a1b1c1d1e1f');
 
-function encrypt(text) {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString('hex') + ':' + encrypted.toString('hex');
+function encrypt(plaintext) {
+  const encrypted = CryptoJS.AES.encrypt(plaintext, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+  return encrypted.toString();
 }
 
-function decrypt(text) {
-    try {
-        let textParts = text.split(':');
-        let iv = Buffer.from(textParts.shift(), 'hex');
-        let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-        let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
-        let decrypted = decipher.update(encryptedText);
-        decrypted = Buffer.concat([decrypted, decipher.final()]);
-        return decrypted.toString();
-    } catch (error) {
-        console.error('Decryption error:', error);
-        return null;
-    }
+function decrypt(ciphertext) {
+  try {
+    const decrypted = CryptoJS.AES.decrypt(ciphertext, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+    return decrypted.toString(CryptoJS.enc.Utf8);
+  } catch (error) {
+    console.error("Decryption failed:", error);
+    return null;
+  }
 }
 
-module.exports = { encrypt, decrypt };
+module.exports = {
+  encrypt,
+  decrypt
+};
