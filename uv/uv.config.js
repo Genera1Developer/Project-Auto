@@ -13,8 +13,10 @@ self.__uv$config = {
     bundle: '/uv/uv.bundle.js',
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
-    // Added support for advanced encryption handling
-    encryptionKey: 'YOUR_ENCRYPTION_KEY', // Replace with a strong, randomly generated key
-    // Enable or disable payload encryption
+    encryptionKey: 'AES_ENCRYPTION_KEY_HERE',
     encryptPayloads: true,
+    // Secure Context Policy (SCP) enforcement
+    scp: true,
+    // CSP settings to strengthen security.  Customize as needed.
+    csp: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' wss:;",
 };
