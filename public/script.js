@@ -8,8 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!url) {
             contentDiv.textContent = 'Please enter a URL.';
+            contentDiv.classList.add('error');
             return;
         }
+
+        contentDiv.classList.remove('error');
+        contentDiv.textContent = 'Loading...';
 
         try {
             const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
@@ -19,128 +23,141 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const encryptedData = await response.text();
+			const encryptionKey = 'defaultEncryptionKey';
 
-            // Decrypt the data in the browser
-            const encryptionKey = 'defaultEncryptionKey'; //TODO: replace with secure key exchange
-            const decryptedData = decrypt(encryptedData, encryptionKey);
+			async function decryptData(encryptedData, encryptionKey) {
+				try {
+					const response = await fetch('/api/encryption/decrypt', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							encryptedData: encryptedData,
+							encryptionKey: encryptionKey
+						})
+					});
 
-            contentDiv.textContent = decryptedData;
+					if (!response.ok) {
+						throw new Error(`HTTP error! status: ${response.status}`);
+					}
 
+					const decryptedData = await response.text();
+					return decryptedData;
+
+				} catch (error) {
+					console.error('Decryption error:', error);
+					contentDiv.textContent = 'Decryption failed.';
+					contentDiv.classList.add('error');
+					return null;
+				}
+			}
+			const decryptedData = await decryptData(encryptedData, encryptionKey);
+
+			if (decryptedData) {
+				contentDiv.textContent = decryptedData;
+			}
         } catch (error) {
-            console.error('Error fetching or decrypting data:', error);
-            contentDiv.textContent = `Error: ${error.message}`;
+            console.error('Error fetching data:', error);
+            contentDiv.textContent = 'Failed to load content.';
+            contentDiv.classList.add('error');
         }
     });
-
-    function decrypt(text, key) {
-        const textParts = text.split(':');
-        const iv = textParts.shift();
-		const authTag = textParts.shift();
-        const encryptedText = textParts.join(':');
-
-        const ivBuffer = Buffer.from(iv, 'hex');
-		const authTagBuffer = Buffer.from(authTag, 'hex');
-        const encryptedTextBuffer = Buffer.from(encryptedText, 'hex');
-		const keyBuffer = Buffer.from(key);
-
-        try {
-            const decipher = crypto.createDecipheriv('aes-256-cbc', keyBuffer, ivBuffer);
-			decipher.setAuthTag(authTagBuffer);
-            let decrypted = decipher.update(encryptedTextBuffer);
-            decrypted = Buffer.concat([decrypted, decipher.final()]);
-            return decrypted.toString();
-        } catch (error) {
-            console.error("Decryption error:", error);
-            return "Decryption failed: " + error.message;
-        }
-    }
-
 });
+edit filepath: api/encryption.js
+content: const crypto = require('crypto');
 
-edit filepath: uv/buffer.js
-content: // buffer.js - Polyfill for Buffer in Ultraviolet
-
-// A simple buffer implementation for demonstration purposes.
-// In a real-world scenario, you'd likely use a more complete
-// and optimized Buffer implementation.
-
-class Buffer {
-  constructor(array) {
-    this.data = new Uint8Array(array);
-    this.length = this.data.length;
-  }
-
-  static from(obj, encoding) {
-    if (typeof obj === 'string') {
-      encoding = encoding || 'utf-8';
-      let array;
-      if (encoding === 'utf-8') {
-        array = new TextEncoder().encode(obj);
-      } else {
-        throw new Error('Unsupported encoding: ' + encoding);
-      }
-      return new Buffer(array);
-    } else if (Array.isArray(obj)) {
-      return new Buffer(obj);
-    } else if (obj instanceof ArrayBuffer) {
-      return new Buffer(new Uint8Array(obj));
-    } else if (obj instanceof Uint8Array) {
-      return new Buffer(obj);
-    }
-    throw new Error('Unsupported argument type for Buffer.from()');
-  }
-
-  toString(encoding) {
-    encoding = encoding || 'utf-8';
-    if (encoding === 'utf-8') {
-      return new TextDecoder().decode(this.data);
-    } else {
-      throw new Error('Unsupported encoding: ' + encoding);
-    }
-  }
-
-  toArray() {
-    return Array.from(this.data);
-  }
-
-  static isBuffer(obj) {
-    return obj instanceof Buffer;
-  }
+function encrypt(text, key) {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const authTag = cipher.getAuthTag();
+    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
 }
 
-// Export the Buffer class
-globalThis.Buffer = Buffer;
-edit filepath: uv/crypto.js
-content: // crypto.js - Placeholder for crypto functionality
+function decrypt(encryptedData, key) {
+    try {
+        const textParts = encryptedData.split(':');
+        const iv = Buffer.from(textParts.shift(), 'hex');
+        const authTag = Buffer.from(textParts.shift(), 'hex');
+        const encryptedText = Buffer.from(textParts.join(':'), 'hex');
 
-// Placeholder implementation for crypto functions used in proxy.js.
-// Replace with a real crypto library or polyfill for production use.
+        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+        decipher.setAuthTag(authTag);
 
-const crypto = {
-    randomBytes: (size) => {
-        const array = new Uint8Array(size);
-        for (let i = 0; i < size; i++) {
-            array[i] = Math.floor(Math.random() * 256); // Simulate random byte generation
-        }
-        return array;
-    },
-    createCipheriv: (algorithm, key, iv) => {
-        // Dummy cipher object
-        return {
-            update: (data) => data,
-            final: () => new Uint8Array(0),
-			getAuthTag: () => crypto.randomBytes(16),
-			setAuthTag: (tag) => {},
-        };
-    },
-    createDecipheriv: (algorithm, key, iv) => {
-        // Dummy decipher object
-        return {
-            update: (data) => data,
-            final: () => new Uint8Array(0),
-			setAuthTag: (tag) => {},
-        };
-    },
+        let decrypted = decipher.update(encryptedText);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+        return decrypted.toString();
+    } catch (error) {
+        console.error('Decryption error:', error);
+        throw new Error('Decryption failed');
+    }
+}
+
+module.exports = { encrypt, decrypt };
+edit filepath: api/proxy.js
+content: const https = require('https');
+const http = require('http');
+const encryption = require('./encryption');
+
+module.exports = (req, res) => {
+    const url = req.query.url;
+
+    if (!url) {
+        res.status(400).send('URL is required');
+        return;
+    }
+
+    try {
+        new URL(url);
+    } catch (err) {
+        res.status(400).send('Invalid URL');
+        return;
+    }
+
+    const protocol = url.startsWith('https') ? https : http;
+
+    protocol.get(url, (proxyRes) => {
+        let data = '';
+
+        proxyRes.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        proxyRes.on('end', () => {
+            const encryptionKey = process.env.ENCRYPTION_KEY || 'defaultEncryptionKey';
+            try {
+                const encryptedData = encryption.encrypt(data, encryptionKey);
+                res.status(200).send(encryptedData);
+            } catch (error) {
+                console.error('Encryption error:', error);
+                res.status(500).send('Encryption error: ' + error.message);
+            }
+        });
+
+    }).on('error', (err) => {
+        console.error(err);
+        res.status(500).send('Proxy error: ' + err.message);
+    });
 };
+edit filepath: api/encryption/decrypt.js
+content: const encryption = require('../encryption');
 
-globalThis.crypto = crypto;
+module.exports = (req, res) => {
+    const encryptedData = req.body.encryptedData;
+    const encryptionKey = req.body.encryptionKey || 'defaultEncryptionKey';
+
+    if (!encryptedData) {
+        return res.status(400).send('Encrypted data is required.');
+    }
+
+    try {
+        const decryptedData = encryption.decrypt(encryptedData, encryptionKey);
+        res.status(200).send(decryptedData);
+    } catch (error) {
+        console.error('Decryption error:', error);
+        res.status(500).send('Decryption failed: ' + error.message);
+    }
+};
