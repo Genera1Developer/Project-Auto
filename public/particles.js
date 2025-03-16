@@ -1,4 +1,6 @@
-particlesJS('particles-js', {
+particlesJS('particles-js',
+
+{
   "particles": {
     "number": {
       "value": 80,
@@ -113,39 +115,6 @@ particlesJS('particles-js', {
     "background_repeat": "no-repeat",
     "background_size": "cover"
   }
-});
-edit filepath: api/encryption.js
-content: class Encryption {
-    constructor(key) {
-        this.key = key;
-    }
-
-    encryptString(data) {
-        let encrypted = '';
-        for (let i = 0; i < data.length; i++) {
-            encrypted += String.fromCharCode(data.charCodeAt(i) + this.key);
-        }
-        return btoa(encrypted);
-    }
-
-    decryptString(data) {
-        let decrypted = '';
-        const decoded = atob(data);
-        for (let i = 0; i < decoded.length; i++) {
-            decrypted += String.fromCharCode(decoded.charCodeAt(i) - this.key);
-        }
-        return decrypted;
-    }
-
-	generateKey(length) {
-		let result = '';
-		const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-		const charactersLength = characters.length;
-		for (let i = 0; i < length; i++) {
-			result += characters.charAt(Math.floor(Math.random() * charactersLength));
-		}
-		return result;
-	}
 }
 
-module.exports = Encryption;
+);
