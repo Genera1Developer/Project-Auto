@@ -1,4 +1,4 @@
-particlesJS("particles-js", {
+const particlesConfig = {
   "particles": {
     "number": {
       "value": 80,
@@ -8,7 +8,7 @@ particlesJS("particles-js", {
       }
     },
     "color": {
-      "value": "#00c698"
+      "value": "#007bff"
     },
     "shape": {
       "type": "circle",
@@ -48,7 +48,7 @@ particlesJS("particles-js", {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00c698",
+      "color": "#007bff",
       "opacity": 0.4,
       "width": 1
     },
@@ -71,7 +71,7 @@ particlesJS("particles-js", {
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "grab"
+        "mode": "repulse"
       },
       "onclick": {
         "enable": true,
@@ -81,7 +81,7 @@ particlesJS("particles-js", {
     },
     "modes": {
       "grab": {
-        "distance": 140,
+        "distance": 400,
         "line_linked": {
           "opacity": 1
         }
@@ -94,8 +94,7 @@ particlesJS("particles-js", {
         "speed": 3
       },
       "repulse": {
-        "distance": 200,
-        "duration": 0.4
+        "distance": 200
       },
       "push": {
         "particles_nb": 4
@@ -105,48 +104,15 @@ particlesJS("particles-js", {
       }
     }
   },
-  "retina_detect": true
-});
-edit filepath: api/proxy.js
-content: const http = require('http');
-const https = require('https');
-const url = require('url');
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#b61924",
+    "background_image": "",
+    "background_position": "50% 50%",
+    "background_repeat": "no-repeat",
+    "background_size": "cover"
+  }
+}
 
-const proxyHandler = (req, res) => {
-    const targetURL = req.url.slice(1);
-
-    if (!targetURL) {
-        res.writeHead(400, { 'Content-Type': 'text/plain' });
-        res.end('Please provide a URL to proxy.');
-        return;
-    }
-
-    try {
-        const parsedURL = new URL(targetURL);
-        const options = {
-            hostname: parsedURL.hostname,
-            path: parsedURL.pathname + parsedURL.search,
-            method: req.method,
-            headers: req.headers
-        };
-
-        const proxyRequest = (parsedURL.protocol === 'https:' ? https : http).request(options, proxyResponse => {
-            res.writeHead(proxyResponse.statusCode, proxyResponse.headers);
-            proxyResponse.pipe(res, { end: true });
-        });
-
-        proxyRequest.on('error', error => {
-            console.error('Proxy request error:', error);
-            res.writeHead(500, { 'Content-Type': 'text/plain' });
-            res.end('Proxy request failed.');
-        });
-
-        req.pipe(proxyRequest, { end: true });
-    } catch (error) {
-        console.error('URL parsing error:', error);
-        res.writeHead(400, { 'Content-Type': 'text/plain' });
-        res.end('Invalid URL.');
-    }
-};
-
-module.exports = proxyHandler;
+particlesJS('particles-js', particlesConfig);
