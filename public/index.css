@@ -1,13 +1,15 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #0f0;
     margin: 0;
-    overflow: hidden; /* Hide scrollbars */
+    font-family: sans-serif;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden; /* Hide scrollbars caused by particles */
 }
 
-#particles-js {
+#particles {
     position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: -1;
@@ -25,37 +27,38 @@ body {
 h1 {
     font-size: 3em;
     margin-bottom: 20px;
-    text-shadow: 0 0 10px #0f0;
+    color: #00ff00; /* Encryption green */
+    text-shadow: 0 0 10px #00ff00;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    max-width: 400px;
 }
 
 input[type="text"] {
     padding: 10px;
-    font-size: 1.2em;
-    border: 2px solid #0f0;
-    background-color: #111;
-    color: #0f0;
+    margin-bottom: 10px;
+    border: 1px solid #00ff00;
+    background-color: #222;
+    color: #fff;
     border-radius: 5px;
-    width: 80%;
-    max-width: 400px;
-    margin-bottom: 20px;
+    font-size: 1em;
 }
 
-button {
-    padding: 12px 24px;
-    font-size: 1.2em;
-    background-color: #0f0;
+button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #00ff00;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1em;
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #0a0;
-}
-
-#error-message {
-    color: red;
-    margin-top: 10px;
+button[type="submit"]:hover {
+    background-color: #00cc00;
 }
