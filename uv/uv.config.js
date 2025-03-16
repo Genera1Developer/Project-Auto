@@ -13,7 +13,7 @@ self.__uv$config = {
     bundle: '/uv/uv.bundle.js',
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
-    encryptionKey: 'AES_ENCRYPTION_KEY_HERE',
+    encryptionKey: 'aaaaaaaaaaaaaaaa',
     encryptPayloads: true,
     // Secure Context Policy (SCP) enforcement
     scp: true,
