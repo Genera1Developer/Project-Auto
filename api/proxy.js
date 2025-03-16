@@ -3,25 +3,30 @@ const http = require('http');
 const url = require('url');
 const crypto = require('crypto');
 
-const algorithm = 'aes-256-cbc'; // Use a strong encryption algorithm
+const algorithm = 'aes-256-gcm'; // Use a strong and authenticated encryption algorithm (GCM)
 const encryptionKey = crypto.randomBytes(32); // Generate a secure encryption key (store securely in production)
-const iv = crypto.randomBytes(16); // Generate a secure initialization vector (store securely in production)
 
 function encrypt(text) {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(encryptionKey), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString('hex') + ':' + encrypted.toString('hex');
+    const iv = crypto.randomBytes(16); // Generate a unique IV for each encryption
+    const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv);
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag().toString('hex'); // Get the authentication tag
+
+    return iv.toString('hex') + ':' + authTag + ':' + encrypted; // Include IV and authTag in the output
 }
 
-function decrypt(text) {
-    let textParts = text.split(':');
-    let iv = Buffer.from(textParts.shift(), 'hex');
-    let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(encryptionKey), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
+function decrypt(encryptedData) {
+    const parts = encryptedData.split(':');
+    const iv = Buffer.from(parts.shift(), 'hex');
+    const authTag = Buffer.from(parts.shift(), 'hex');
+    const encryptedText = parts.join(':');
+
+    const decipher = crypto.createDecipheriv(algorithm, encryptionKey, iv);
+    decipher.setAuthTag(authTag); // Set the authentication tag
+    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
 }
 
 module.exports = (req, res) => {
@@ -107,6 +112,10 @@ module.exports = (req, res) => {
                 'Content-Type': 'text/encrypted',
                 'Content-Encoding': 'identity', // Remove content encoding
                 'Cache-Control': 'no-store', // Disable caching
+                'X-Content-Type-Options': 'nosniff', // Prevent MIME sniffing
+                'X-Frame-Options': 'DENY', // Prevent framing
+                'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
+                'X-XSS-Protection': '1; mode=block', // Enable XSS protection
             });
             res.end(encryptedBody);
         });
