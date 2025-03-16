@@ -176,114 +176,116 @@ self.addEventListener('fetch', event => {
         event.respondWith(sw.fetch(event));
     }
 });
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const encryptionStatusElement = document.getElementById('encryption-status');
-
-    async function checkEncryptionStatus() {
-        try {
-            const response = await fetch('/encryption-status');
-            const data = await response.json();
-
-            if (data.encryptionEnabled) {
-                encryptionStatusElement.textContent = 'Encryption is enabled for this domain.';
-                encryptionStatusElement.style.color = 'green';
-            } else {
-                encryptionStatusElement.textContent = 'Encryption is not enabled for this domain.';
-                encryptionStatusElement.style.color = 'red';
-            }
-        } catch (error) {
-            console.error('Failed to fetch encryption status:', error);
-            encryptionStatusElement.textContent = 'Failed to determine encryption status.';
-            encryptionStatusElement.style.color = 'gray';
+edit filepath: public/particles.json
+content: {
+    "particles": {
+      "number": {
+        "value": 80,
+        "density": {
+          "enable": true,
+          "value_area": 800
         }
+      },
+      "color": {
+        "value": "#00ff00"
+      },
+      "shape": {
+        "type": "circle",
+        "stroke": {
+          "width": 0,
+          "color": "#000000"
+        },
+        "polygon": {
+          "nb_sides": 5
+        },
+        "image": {
+          "src": "img/github.svg",
+          "width": 100,
+          "height": 100
+        }
+      },
+      "opacity": {
+        "value": 0.5,
+        "random": false,
+        "anim": {
+          "enable": false,
+          "speed": 1,
+          "opacity_min": 0.1,
+          "sync": false
+        }
+      },
+      "size": {
+        "value": 5,
+        "random": true,
+        "anim": {
+          "enable": false,
+          "speed": 40,
+          "size_min": 0.1,
+          "sync": false
+        }
+      },
+      "line_linked": {
+        "enable": true,
+        "distance": 150,
+        "color": "#00ff00",
+        "opacity": 0.4,
+        "width": 1
+      },
+      "move": {
+        "enable": true,
+        "speed": 6,
+        "direction": "none",
+        "random": false,
+        "straight": false,
+        "out_mode": "out",
+        "attract": {
+          "enable": false,
+          "rotateX": 600,
+          "rotateY": 1200
+        }
+      }
+    },
+    "interactivity": {
+      "detect_on": "canvas",
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "grab"
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push"
+        },
+        "resize": true
+      },
+      "modes": {
+        "grab": {
+          "distance": 140,
+          "line_linked": {
+            "opacity": 1
+          }
+        },
+        "bubble": {
+          "distance": 400,
+          "size": 40,
+          "duration": 2,
+          "opacity": 8,
+          "speed": 3
+        },
+        "repulse": {
+          "distance": 200
+        },
+        "push": {
+          "particles_nb": 4
+        },
+        "remove": {
+          "particles_nb": 2
+        }
+      }
+    },
+    "retina_detect": true,
+    "config_demo": {
+      "hide_card": false,
+      "background_color": "#000"
     }
-
-    checkEncryptionStatus();
-});
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <h1>Secure Web Access</h1>
-    <p>Enter the website URL to access securely:</p>
-    <input type="text" id="url-input" placeholder="https://www.example.com">
-    <button id="access-button">Access Securely</button>
-    <p id="encryption-status"></p>
-
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'particles.json', function() {
-            console.log('particles.json loaded - Encryption Theme Engaged');
-        });
-    </script>
-</body>
-</html>
-edit filepath: public/index.css
-content: body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #000;
-    color: #fff;
-    text-align: center;
-    overflow: hidden; /* Hide scrollbars */
-}
-
-#particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1;
-}
-
-h1 {
-    margin-top: 50px;
-    color: #00ff00; /* Encryption green */
-    text-shadow: 0 0 10px #00ff00;
-}
-
-p {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-input[type="text"] {
-    padding: 10px;
-    width: 60%;
-    margin-bottom: 20px;
-    border: 2px solid #00ff00;
-    background-color: #222;
-    color: #fff;
-    border-radius: 5px;
-}
-
-button {
-    padding: 12px 24px;
-    background-color: #00ff00;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #00cc00;
-}
-
-#encryption-status {
-    margin-top: 20px;
-    font-weight: bold;
-}
+  }
