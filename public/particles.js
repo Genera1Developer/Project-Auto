@@ -122,7 +122,6 @@ content: <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encrypted Web Proxy</title>
     <link rel="stylesheet" href="index.css">
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -133,6 +132,7 @@ content: <!DOCTYPE html>
             <button type="submit">Go</button>
         </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="particles.js"></script>
     <script src="script.js"></script>
 </body>
