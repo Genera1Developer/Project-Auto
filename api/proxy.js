@@ -2,98 +2,59 @@ const https = require('https');
 const http = require('http');
 const crypto = require('crypto');
 
-// Generate a more secure random key and IV. Consider using a key derivation function (KDF) in production.
-const AES_KEY = crypto.randomBytes(32); // 256-bit key
-const AES_IV = crypto.randomBytes(16); // 128-bit IV
-
-function encrypt(text) {
-  const cipher = crypto.createCipheriv('aes-256-cbc', AES_KEY, AES_IV);
-  let encrypted = cipher.update(text, 'utf8', 'hex'); // Specify input and output encoding
-  encrypted += cipher.final('hex'); // Specify output encoding
-  return encrypted;
+function encryptData(data, key) {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
+    let encrypted = cipher.update(data);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
-function decrypt(text) {
-  try {
-    const decipher = crypto.createDecipheriv('aes-256-cbc', AES_KEY, AES_IV);
-    let decrypted = decipher.update(text, 'hex', 'utf8'); // Specify input and output encoding
-    decrypted += decipher.final('utf8'); // Specify output encoding
-    return decrypted;
-  } catch (error) {
-    console.error('Decryption error:', error);
-    return null; // Or throw the error, depending on your error handling strategy
-  }
+function decryptData(encryptedData, key) {
+    const textParts = encryptedData.split(':');
+    const iv = Buffer.from(textParts.shift(), 'hex');
+    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
-function handleRequest(req, res) {
-  const targetURL = req.headers['x-target-url'];
+module.exports = (req, res) => {
+    const { url } = req.query;
 
-  if (!targetURL) {
-    return res.status(400).send('Target URL is missing.');
-  }
-
-  delete req.headers['x-target-url']; // Remove custom header
-
-  const parsedURL = new URL(targetURL);
-  const options = {
-    hostname: parsedURL.hostname,
-    path: parsedURL.pathname + parsedURL.search,
-    method: req.method,
-    headers: req.headers,
-  };
-
-  const proxyRequest = (parsedURL.protocol === 'https:' ? https : http).request(options, (proxyResponse) => {
-    res.writeHead(proxyResponse.statusCode, proxyResponse.headers);
-
-    proxyResponse.on('data', (chunk) => {
-      try {
-        const encrypted = encrypt(chunk.toString('utf8'));
-        res.write(encrypted);
-      } catch (error) {
-        console.error('Encryption error:', error);
-        res.write(chunk); // Send unencrypted on error
-      }
-    });
-
-    proxyResponse.on('end', () => {
-      res.end();
-    });
-
-    proxyResponse.on('error', (error) => {
-      console.error('Proxy response error:', error);
-      res.status(500).send('Proxy response error.');
-    });
-  });
-
-  req.on('data', (chunk) => {
-    try {
-      const decrypted = decrypt(chunk.toString('utf8'));
-      if (decrypted !== null) {
-          proxyRequest.write(decrypted);
-      } else {
-          console.error('Decryption failed, not forwarding chunk.');
-          proxyRequest.destroy(); // Abort the request if decryption fails
-          return res.status(500).send('Decryption error.'); // Send error response
-      }
-    } catch (error) {
-      console.error('Decryption error:', error);
-      proxyRequest.write(chunk); // Send unencrypted on error
+    if (!url) {
+        res.status(400).send('URL parameter is required');
+        return;
     }
-  });
 
-  req.on('end', () => {
-    proxyRequest.end();
-  });
+    try {
+        new URL(url);
+    } catch (err) {
+        res.status(400).send('Invalid URL');
+        return;
+    }
 
-  req.on('error', (error) => {
-    console.error('Request error:', error);
-    res.status(500).send('Request error.');
-  });
+    const protocol = url.startsWith('https') ? https : http;
 
-  proxyRequest.on('error', (error) => {
-    console.error('Proxy request error:', error);
-    res.status(500).send('Proxy request error.');
-  });
-}
+    protocol.get(url, (proxyRes) => {
+        let data = '';
 
-module.exports = handleRequest;
+        proxyRes.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        proxyRes.on('end', () => {
+            const encryptionKey = crypto.randomBytes(32).toString('hex');
+            const encryptedData = encryptData(data, encryptionKey);
+
+            res.setHeader('Content-Type', 'text/plain');
+            res.setHeader('X-Encryption-Key', encryptionKey); // Send encryption key as header
+
+            res.status(200).send(encryptedData);
+        });
+    }).on('error', (err) => {
+        console.error(err);
+        res.status(500).send('Proxy error: ' + err.message);
+    });
+};
