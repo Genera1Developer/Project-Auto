@@ -1,50 +1,23 @@
-const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 
-const secretPhrase = 'SuperSecretPassphrase';
-const initializationVector = 'MySecureIVector';
+const algorithm = 'aes-256-cbc';
+const key = crypto.randomBytes(32); // Generate a secure random key
+const iv = crypto.randomBytes(16); // Generate a secure random IV
 
-function encryptData(data) {
-    const iv = CryptoJS.enc.Utf8.parse(initializationVector.substring(0, 16));
-    const salt = CryptoJS.lib.WordArray.random(128/8);
-    const key = CryptoJS.PBKDF2(secretPhrase, salt, {
-        keySize: 256/32,
-        iterations: 150 // Increased iterations for better security
-    });
-
-    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, { // Stringify data before encryption
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-    return salt.toString() + encrypted.toString();
+function encrypt(text) {
+    const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-function decryptData(encryptedData) {
-    try {
-        const iv = CryptoJS.enc.Utf8.parse(initializationVector.substring(0, 16));
-        const salt = CryptoJS.enc.Hex.parse(encryptedData.substring(0, 32));
-        const encrypted = encryptedData.substring(32);
-
-        const key = CryptoJS.PBKDF2(secretPhrase, salt, {
-            keySize: 256/32,
-            iterations: 150 // Increased iterations to match encryption
-        });
-
-        const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-
-        const decryptedData = decrypted.toString(CryptoJS.enc.Utf8);
-        return JSON.parse(decryptedData); // Parse JSON after decryption
-    } catch (error) {
-        console.error('Decryption Error:', error);
-        return null;
-    }
+function decrypt(text) {
+    const iv = Buffer.from(text.iv, 'hex');
+    const encryptedText = Buffer.from(text.encryptedData, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
-module.exports = {
-    encrypt: encryptData,
-    decrypt: decryptData
-};
+module.exports = { encrypt, decrypt };
