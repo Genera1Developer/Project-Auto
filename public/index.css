@@ -1,98 +1,106 @@
 body {
-    font-family: 'Courier New', monospace;
-    background-color: #111; /* Deeper dark for encryption theme */
-    color: #00ff00; /* Bright green text */
+    font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 0;
+    overflow: hidden; /* Hide scrollbars */
+    background-color: #111;
+    color: #eee;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
-    overflow: hidden;
-    -webkit-font-smoothing: antialiased; /* Improve font rendering */
-    -moz-osx-font-smoothing: grayscale;
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
     z-index: -1;
-    background-color: #111; /* Match body background */
 }
 
 .container {
     text-align: center;
-    padding: 30px;
-    border: 2px solid #00ff00; /* Thicker green border */
-    border-radius: 8px;
-    box-shadow: 0 0 20px #00ff00; /* Stronger green glow */
-    background-color: rgba(0, 0, 0, 0.3); /* Add a semi-transparent black background */
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(30, 30, 30, 0.8);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
-    color: #00ff00;
-    margin-bottom: 25px;
-    text-shadow: 0 0 5px #00ff00; /* Add a text shadow */
-    font-size: 2.5em;
-    letter-spacing: 1px;
-}
-
-#proxy-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #00bcd4;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 input[type="text"] {
-    padding: 12px;
-    border: 1px solid #00ff00;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #444;
+    border-radius: 8px;
     background-color: #222;
-    color: #00ff00;
-    border-radius: 6px;
-    margin-right: 15px;
-    width: 350px;
-    font-family: 'Courier New', monospace;
-    font-size: 1em;
-    box-shadow: 0 0 5px #00ff00 inset; /* Inner glow */
+    color: #fff;
+    font-size: 1.2em;
+    width: 80%;
+    max-width: 400px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #00bcd4;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
 }
 
 button {
-    padding: 12px 25px;
-    background-color: #00ff00;
-    color: #111; /* Dark text for contrast */
+    background-color: #00bcd4;
+    color: white;
+    padding: 14px 20px;
+    margin: 10px 0;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    font-weight: bold;
-    letter-spacing: 0.5px;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #00aa00; /* Darker green hover */
-    color: #fff; /* White text on hover */
+    background-color: #008ba7;
 }
 
-.error {
-    color: #ff4444; /* More intense red */
-    margin-top: 15px;
-    text-shadow: 0 0 3px #ff4444;
+#error-message {
+    color: #ff5252;
+    margin-top: 10px;
+    font-size: 1.1em;
 }
 
-/* Add a subtle animation to the container */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 20px #00ff00;
-    }
-    50% {
-        box-shadow: 0 0 30px #00ff00;
-    }
-    100% {
-        box-shadow: 0 0 20px #00ff00;
-    }
+/* Encryption Theme Styles */
+.encryption-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 0;
+    pointer-events: none; /* Allow clicks to pass through */
 }
 
-.container {
-    animation: pulse 2s infinite;
+.encryption-pattern {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="5" height="5" fill="rgba(0,188,212,0.1)"/></svg>');
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    animation: movePattern 20s linear infinite;
+    opacity: 0.4;
+}
+
+@keyframes movePattern {
+    0% { background-position: 0 0; }
+    100% { background-position: 100% 100%; }
 }
