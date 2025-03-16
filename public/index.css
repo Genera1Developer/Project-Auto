@@ -1,190 +1,174 @@
 body {
     margin: 0;
-    font-family: 'Courier New', monospace;
+    font-family: 'Arial', sans-serif;
     background-color: #000;
-    color: #00ff00; /* Bright green for encryption theme */
-    overflow: hidden;
+    color: #fff;
+    overflow: hidden; /* Prevent scrollbars during particle animation */
+}
+
+.container {
+    position: relative;
+    z-index: 1; /* Place container above particles */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh; /* Ensure full viewport height */
-}
-
-#particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
-
-.container {
+    height: 100vh;
     text-align: center;
-    padding: 20px;
-    border: 1px solid #00ff00;
-    border-radius: 10px;
-    box-shadow: 0 0 20px #00ff00;
-    background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background */
 }
 
 h1 {
     font-size: 3em;
-    margin-bottom: 0.5em;
-    text-shadow: 0 0 10px #00ff00; /* Stronger neon glow */
-    letter-spacing: 2px; /* Add letter spacing for a tech look */
+    margin-bottom: 20px;
+    color: #00c698; /* Encryption-themed color */
 }
 
-input[type="text"] {
+#url-form {
+    display: flex;
+    gap: 10px;
+}
+
+#url-input {
     padding: 10px;
-    font-size: 1.2em;
-    border: 2px solid #00ff00; /* Bright green border */
-    background-color: #111; /* Darker background */
-    color: #00ff00;
+    border: 2px solid #00c698;
     border-radius: 5px;
-    width: 80%;
-    max-width: 400px;
-    margin-bottom: 1em;
-    font-family: 'Courier New', monospace;
-    transition: box-shadow 0.3s ease; /* Smooth transition for focus effect */
+    font-size: 1em;
+    width: 300px;
+    background-color: #111;
+    color: #fff;
 }
 
 button {
     padding: 10px 20px;
-    font-size: 1.2em;
-    background-color: #00ff00; /* Bright green button */
-    color: #000;
     border: none;
     border-radius: 5px;
+    background-color: #00c698;
+    color: #000;
+    font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease; /* Smooth transition for hover effect */
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #008000; /* Darker green on hover */
-    color: #fff; /* White text on hover */
-    transform: scale(1.1); /* Slightly enlarge button on hover */
+    background-color: #00a37d;
 }
 
-#error-message {
-    color: #ff4500; /* Orange-red for errors */
-    margin-top: 10px;
-    font-family: 'Courier New', monospace;
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #000;
 }
-
-/* Add a subtle animation for the input */
-input[type="text"]:focus {
-    box-shadow: 0 0 15px #00ff00; /* Glowing effect on focus */
-    outline: none;
-}
-
-/* Add some responsive design */
-@media (max-width: 600px) {
-    h1 {
-        font-size: 2em;
+edit filepath: public/particles.js
+content: particlesJS("particles-js", {
+  "particles": {
+    "number": {
+      "value": 100,
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
+    },
+    "color": {
+      "value": "#00c698"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#000000"
+      },
+      "polygon": {
+        "nb_sides": 5
+      },
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100
+      }
+    },
+    "opacity": {
+      "value": 0.7,
+      "random": true,
+      "anim": {
+        "enable": true,
+        "speed": 0.5,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 3,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 40,
+        "size_min": 0.1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#00c698",
+      "opacity": 0.4,
+      "width": 1
+    },
+    "move": {
+      "enable": true,
+      "speed": 3,
+      "direction": "none",
+      "random": true,
+      "straight": false,
+      "out_mode": "out",
+      "bounce": false,
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
     }
-    input[type="text"], button {
-        font-size: 1em;
-    }
-}
-
-/* Keyframes for a subtle pulsating effect */
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 10px #00ff00;
-    }
-    50% {
-        box-shadow: 0 0 20px #00ff00;
-    }
-    100% {
-        box-shadow: 0 0 10px #00ff00;
-    }
-}
-
-/* Apply the pulse animation to the container */
-.container {
-    animation: pulse 5s infinite;
-}
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('proxy-form');
-    const urlInput = document.getElementById('url-input');
-    const errorMessage = document.getElementById('error-message');
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const url = urlInput.value.trim();
-
-        if (!url) {
-            errorMessage.textContent = 'Please enter a URL.';
-            return;
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "grab"
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "push"
+      },
+      "resize": true
+    },
+    "modes": {
+      "grab": {
+        "distance": 140,
+        "line_linked": {
+          "opacity": 1
         }
-
-        errorMessage.textContent = ''; // Clear any previous error messages
-
-        // Simple URL validation (you might want to use a more robust method)
-        if (!isValidURL(url)) {
-            errorMessage.textContent = 'Please enter a valid URL.';
-            return;
-        }
-
-        // Use localStorage to store the URL
-        localStorage.setItem('proxyUrl', url);
-
-        // Redirect to the proxy page (replace 'proxy.html' with your actual proxy page)
-        window.location.href = 'proxy.html';
-    });
-
-    // Function to validate URL format
-    function isValidURL(url) {
-        try {
-            new URL(url);
-            return true;
-        } catch (e) {
-            return false;
-        }
+      },
+      "bubble": {
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 3
+      },
+      "repulse": {
+        "distance": 200,
+        "duration": 0.4
+      },
+      "push": {
+        "particles_nb": 4
+      },
+      "remove": {
+        "particles_nb": 2
+      }
     }
+  },
+  "retina_detect": true
 });
-edit filepath: public/proxy.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Proxy</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Courier New', monospace;
-            background-color: #000;
-            color: #00ff00;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        #proxy-frame {
-            width: 80%;
-            height: 80%;
-            border: 2px solid #00ff00;
-        }
-    </style>
-</head>
-<body>
-    <iframe id="proxy-frame" src=""></iframe>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const proxyFrame = document.getElementById('proxy-frame');
-            const url = localStorage.getItem('proxyUrl'); // Retrieve the URL
-
-            if (url) {
-                proxyFrame.src = url; // Set the URL to the iframe
-            } else {
-                proxyFrame.src = 'https://www.google.com'; // Default URL
-            }
-        });
-    </script>
-</body>
-</html>
