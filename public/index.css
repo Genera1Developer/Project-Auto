@@ -1,14 +1,81 @@
 body {
-    font-family: 'Arial', sans-serif;
     margin: 0;
+    font-family: sans-serif;
+    background-color: #000;
+    color: #fff;
     overflow: hidden; /* Hide scrollbars */
-    background-color: #111;
-    color: #eee;
+}
+
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
+    text-align: center;
+    padding: 20px;
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.header i {
+    color: #00bcd4; /* Encryption-themed color */
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 2.5em;
+    font-weight: lighter;
+    color: #eee;
+}
+
+.input-area {
+    display: flex;
+    width: 80%;
+    max-width: 500px;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    font-size: 1em;
+    background-color: #222;
+    color: #fff;
+}
+
+input[type="text"]::placeholder {
+    color: #888;
+}
+
+button {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    background-color: #00bcd4; /* Encryption-themed color */
+    color: #fff;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #008ba7; /* Darker shade for hover */
+}
+
+.content-area {
+    margin-top: 30px;
+    width: 80%;
+    max-width: 800px;
+    padding: 20px;
+    border: 1px solid #333;
+    border-radius: 5px;
+    text-align: left;
+    overflow-wrap: break-word;
+    background-color: #111;
 }
 
 #particles-js {
@@ -17,90 +84,27 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    z-index: -1;
+    z-index: -1; /* Behind all content */
 }
 
-.container {
-    text-align: center;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: rgba(30, 30, 30, 0.8);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
+/* Media Queries for responsiveness */
+@media (max-width: 600px) {
+    .input-area {
+        width: 95%;
+    }
 
-h1 {
-    font-size: 3em;
-    margin-bottom: 20px;
-    color: #00bcd4;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-}
+    input[type="text"] {
+        padding: 10px;
+        font-size: 0.9em;
+    }
 
-input[type="text"] {
-    padding: 12px 20px;
-    margin: 8px 0;
-    box-sizing: border-box;
-    border: 2px solid #444;
-    border-radius: 8px;
-    background-color: #222;
-    color: #fff;
-    font-size: 1.2em;
-    width: 80%;
-    max-width: 400px;
-    transition: border-color 0.3s ease;
-}
+    button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
 
-input[type="text"]:focus {
-    border-color: #00bcd4;
-    outline: none;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
-}
-
-button {
-    background-color: #00bcd4;
-    color: white;
-    padding: 14px 20px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1.2em;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #008ba7;
-}
-
-#error-message {
-    color: #ff5252;
-    margin-top: 10px;
-    font-size: 1.1em;
-}
-
-/* Encryption Theme Styles */
-.encryption-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 0;
-    pointer-events: none; /* Allow clicks to pass through */
-}
-
-.encryption-pattern {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect width="5" height="5" fill="rgba(0,188,212,0.1)"/></svg>');
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 200%;
-    height: 200%;
-    animation: movePattern 20s linear infinite;
-    opacity: 0.4;
-}
-
-@keyframes movePattern {
-    0% { background-position: 0 0; }
-    100% { background-position: 100% 100%; }
+    .content-area {
+        width: 95%;
+        padding: 10px;
+    }
 }
