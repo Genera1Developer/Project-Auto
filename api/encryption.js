@@ -1,36 +1,31 @@
-class Encryption {
-    constructor(key) {
-        if (!key || key.length !== 32) {
-            throw new Error('Encryption key must be 32 bytes (256 bits).');
-        }
-        this.key = key;
-        this.algorithm = 'aes-256-cbc';
-    }
+const crypto = require('crypto');
 
-    async encrypt(text) {
-        const crypto = await import('crypto');
-        const iv = crypto.randomBytes(16);
-        const cipher = crypto.createCipheriv(this.algorithm, Buffer.from(this.key), iv);
-        let encrypted = cipher.update(text);
-        encrypted = Buffer.concat([encrypted, cipher.final()]);
-        return iv.toString('hex') + ':' + encrypted.toString('hex');
-    }
+const algorithm = 'aes-256-cbc'; // Use a strong encryption algorithm
+const key = crypto.randomBytes(32); // Generate a secure key (32 bytes for AES-256)
+const iv = crypto.randomBytes(16); // Generate a secure Initialization Vector (IV)
 
-    async decrypt(text) {
-         const crypto = await import('crypto');
-        const textParts = text.split(':');
-        const iv = Buffer.from(textParts.shift(), 'hex');
-        const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-        const decipher = crypto.createDecipheriv(this.algorithm, Buffer.from(this.key), iv);
+function encrypt(text) {
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return iv.toString('hex') + ':' + encrypted.toString('hex'); // Include IV in the output
+}
+
+function decrypt(text) {
+    try {
+        let textParts = text.split(':');
+        let iv = Buffer.from(textParts.shift(), 'hex');
+        let encryptedText = Buffer.from(textParts.join(':'), 'hex');
+        let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
         let decrypted = decipher.update(encryptedText);
-        decrypted = Buffer.concat([decrypted, decipher.final()]);
-        return decrypted.toString();
-    }
 
-    static generateKey() {
-        const crypto = require('crypto');
-        return crypto.randomBytes(32).toString('hex');
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+        return decrypted.toString();
+    } catch (error) {
+        console.error("Decryption error:", error);
+        return null; // Or handle the error as needed (e.g., return an error message)
     }
 }
 
-module.exports = Encryption;
+module.exports = { encrypt, decrypt };
