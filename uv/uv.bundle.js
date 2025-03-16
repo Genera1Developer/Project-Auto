@@ -60,18 +60,31 @@
 
         function i(t) {
             const iv = o.enc.Utf8.parse(a.substring(0, 16));
-            const encrypted = o.AES.encrypt(t, o.enc.Utf8.parse(r), {
+            const salt = o.lib.WordArray.random(128/8);
+            const key = o.PBKDF2(r, salt, {
+                keySize: 256/32,
+                iterations: 100
+            });
+            const encrypted = o.AES.encrypt(t, key, {
                 iv: iv,
                 mode: o.mode.CBC,
                 padding: o.pad.Pkcs7
             });
-            return encrypted.toString();
+            return salt.toString()+encrypted.toString();
         }
 
         function c(t) {
             try {
                 const iv = o.enc.Utf8.parse(a.substring(0, 16));
-                const decrypted = o.AES.decrypt(t, o.enc.Utf8.parse(r), {
+                const salt = o.enc.Hex.parse(t.substring(0, 32));
+                const encrypted = t.substring(32);
+
+                const key = o.PBKDF2(r, salt, {
+                    keySize: 256/32,
+                    iterations: 100
+                });
+
+                const decrypted = o.AES.decrypt(encrypted, key, {
                     iv: iv,
                     mode: o.mode.CBC,
                     padding: o.pad.Pkcs7
