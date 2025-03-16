@@ -2,20 +2,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('proxy-form');
   const urlInput = document.getElementById('url');
   const iframe = document.getElementById('proxy-iframe');
-  const particlesContainer = document.getElementById('particles-js');
 
   /* global particlesJS */
   particlesJS('particles-js', {
     particles: {
       number: {
-        value: 80,
+        value: 100,
         density: {
           enable: true,
           value_area: 800
         }
       },
       color: {
-        value: '#007bff' // Encryption-themed color
+        value: '#2ecc71' // Encryption-themed color: Emerald green
       },
       shape: {
         type: 'circle',
@@ -27,14 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
           nb_sides: 5
         },
         image: {
-          src: 'img/github.svg',
+          src: '',
           width: 100,
           height: 100
         }
       },
       opacity: {
-        value: 0.5,
-        random: false,
+        value: 0.7,
+        random: true,
         anim: {
           enable: false,
           speed: 1,
@@ -43,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       },
       size: {
-        value: 5,
+        value: 3,
         random: true,
         anim: {
           enable: false,
@@ -55,15 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
       line_linked: {
         enable: true,
         distance: 150,
-        color: '#007bff', // Encryption-themed color
+        color: '#3498db', // Encryption-themed color: Bright blue
         opacity: 0.4,
         width: 1
       },
       move: {
         enable: true,
-        speed: 6,
+        speed: 4,
         direction: 'none',
-        random: false,
+        random: true,
         straight: false,
         out_mode: 'out',
         attract: {
@@ -101,7 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
           speed: 3
         },
         repulse: {
-          distance: 200
+          distance: 200,
+          duration: 0.4
         },
         push: {
           particles_nb: 4
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     retina_detect: true,
     config_demo: {
       hide_card: false,
-      background_color: '#1E2D3D',
+      background_color: '#2c3e50', // Darker background
       background_image: '',
       background_position: '50% 50%',
       background_repeat: 'no-repeat',
@@ -124,7 +124,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const url = urlInput.value;
+    let url = urlInput.value;
+
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'http://' + url; // Default to http if no protocol specified
+    }
+
     iframe.src = '/api/proxy?url=' + encodeURIComponent(url);
+  });
+
+  // Add event listener for iframe load to handle potential errors
+  iframe.addEventListener('load', () => {
+    // Check if the iframe content is an error page
+    if (iframe.contentDocument && iframe.contentDocument.body) {
+      const bodyContent = iframe.contentDocument.body.textContent;
+      if (bodyContent.includes('Proxy Error') || bodyContent.includes('error')) {
+        alert('An error occurred while loading the page. Please check the URL and try again.');
+      }
+    }
+  });
+
+  // Function to handle iframe errors
+  iframe.addEventListener('error', () => {
+    alert('Failed to load the content in the iframe. Please check the URL.');
   });
 });
