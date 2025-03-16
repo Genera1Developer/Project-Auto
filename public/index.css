@@ -1,16 +1,9 @@
 body {
     margin: 0;
     font-family: sans-serif;
-    background-color: #111;
-    color: #eee;
-    overflow: hidden;
-}
-
-#particles-js {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+    background-color: #000;
+    color: #fff;
+    overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
@@ -25,38 +18,39 @@ body {
 h1 {
     font-size: 3em;
     margin-bottom: 0.5em;
-    color: #00ff00; /* Encryption green */
-    text-shadow: 0 0 10px #00ff00;
+    text-shadow: 0 0 10px #0f0; /* Green glow */
 }
 
-input[type="text"] {
-    padding: 1em;
-    font-size: 1.2em;
-    border: none;
-    border-radius: 5px;
-    margin-bottom: 1em;
+input[type="url"] {
+    padding: 10px;
     width: 80%;
     max-width: 400px;
+    margin-bottom: 1em;
+    border: 2px solid #0f0;
     background-color: #222;
-    color: #eee;
+    color: #fff;
+    border-radius: 5px;
 }
 
 button {
-    padding: 1em 2em;
-    font-size: 1.2em;
+    padding: 10px 20px;
+    background-color: #0f0;
+    color: #000;
     border: none;
     border-radius: 5px;
-    background-color: #00ff00; /* Encryption green */
-    color: #111;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #00aa00;
+    background-color: #0a0;
 }
 
-#error-message {
-    color: #ff0000;
-    margin-top: 1em;
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
