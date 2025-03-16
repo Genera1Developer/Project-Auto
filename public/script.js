@@ -18,11 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const encryptedData = await response.text();
-            const decryptionKey = 'defaultEncryptionKey';
+            const data = await response.json();
 
-            // Decrypt the data on the client-side
-            const decryptedData = decrypt(encryptedData, decryptionKey);
+            if (!data.iv || !data.encryptedData) {
+                throw new Error('Invalid encrypted data format received.');
+            }
+
+            const decryptedData = decrypt(data.encryptedData, data.iv);
 
             contentDiv.textContent = decryptedData;
 
@@ -32,19 +34,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function decrypt(text, key) {
-        const textParts = text.split(':');
-        const iv = textParts.shift();
-		const authTag = textParts.shift();
-        const encryptedText = textParts.join(':');
-    
-        const ivBuffer = Buffer.from(iv, 'hex');
-		const authTagBuffer = Buffer.from(authTag, 'hex');
-        const encryptedTextBuffer = Buffer.from(encryptedText, 'hex');
-    
+    function decrypt(encryptedData, iv) {
         try {
-            const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), ivBuffer);
-			decipher.setAuthTag(authTagBuffer);
+            // Ensure Buffer is available in the browser
+            if (typeof Buffer === 'undefined') {
+                throw new Error('Buffer is not defined. Ensure buffer.js is loaded.');
+            }
+    
+            const encryptionKey = 'defaultEncryptionKey'; // USE a more secure key management strategy
+            const ivBuffer = Buffer.from(iv, 'hex');
+            const encryptedTextBuffer = Buffer.from(encryptedData, 'hex');
+    
+            const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey), ivBuffer);
             let decrypted = decipher.update(encryptedTextBuffer);
             decrypted = Buffer.concat([decrypted, decipher.final()]);
             return decrypted.toString();
@@ -54,158 +55,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
-edit filepath: uv/buffer.js
-content: // buffer.js - Polyfill for Buffer (needed for browser compatibility)
+edit filepath: api/proxy.js
+content: const express = require('express');
+const router = express.Router();
+const { encrypt } = require('./encryption');
+const https = require('https');
 
-(function() {
-  if (typeof window === 'undefined') {
-    return; // Skip if not in a browser environment
-  }
+router.get('/', async (req, res) => {
+    const url = req.query.url;
 
-  if (window.Buffer) {
-    return; // Buffer is already defined
-  }
-
-  // Implement a basic Buffer polyfill
-  window.Buffer = class Buffer {
-    constructor(arg, encodingOrOffset, length) {
-      if (typeof arg === 'number') {
-        this.data = new Uint8Array(arg);
-      } else if (Array.isArray(arg)) {
-        this.data = new Uint8Array(arg);
-      } else if (typeof arg === 'string') {
-        this.data = new TextEncoder().encode(arg);
-      } else if (arg instanceof ArrayBuffer) {
-        this.data = new Uint8Array(arg);
-      } else if (arg instanceof Uint8Array) {
-        this.data = new Uint8Array(arg.buffer, arg.byteOffset, arg.byteLength);
-      } else {
-        this.data = new Uint8Array(0);
-      }
+    if (!url) {
+        return res.status(400).send('URL parameter is required.');
     }
 
-    static from(arg, encodingOrOffset, length) {
-      return new Buffer(arg, encodingOrOffset, length);
+    try {
+        const httpsResponse = await getWebContent(url);
+        const { encryptedData, iv } = encrypt(httpsResponse);
+        res.json({ iv, encryptedData });
+
+    } catch (error) {
+        console.error('Error fetching or encrypting:', error);
+        res.status(500).send(`Proxy Error: ${error.message}`);
     }
+});
 
-    toString(encoding) {
-      return new TextDecoder(encoding).decode(this.data);
-    }
+function getWebContent(url) {
+    return new Promise((resolve, reject) => {
+        https.get(url, (res) => {
+            let data = '';
 
-    write(string, offset, length, encoding) {
-      const encoder = new TextEncoder(encoding);
-      const encoded = encoder.encode(string);
-      const len = Math.min(length, this.data.length - offset, encoded.length);
-      for (let i = 0; i < len; i++) {
-        this.data[offset + i] = encoded[i];
-      }
-      return len;
-    }
+            res.on('data', (chunk) => {
+                data += chunk;
+            });
 
-    slice(start, end) {
-      return new Buffer(this.data.slice(start, end));
-    }
+            res.on('end', () => {
+                resolve(data);
+            });
 
-    static isBuffer(obj) {
-      return obj instanceof Buffer;
-    }
-
-    static concat(list) {
-      let totalLength = 0;
-      for (const buf of list) {
-        totalLength += buf.length;
-      }
-      const result = new Uint8Array(totalLength);
-      let offset = 0;
-      for (const buf of list) {
-        result.set(buf.data, offset);
-        offset += buf.length;
-      }
-      return new Buffer(result);
-    }
-
-    get length() {
-      return this.data.length;
-    }
-
-    toJSON() {
-        return {
-            type: 'Buffer',
-            data: Array.from(this.data)
-        };
-    }
-
-    equals(otherBuffer) {
-      if (!Buffer.isBuffer(otherBuffer)) {
-        return false;
-      }
-      if (this.length !== otherBuffer.length) {
-        return false;
-      }
-      for (let i = 0; i < this.length; i++) {
-        if (this.data[i] !== otherBuffer.data[i]) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    indexOf(value, byteOffset, encoding) {
-      if (typeof value === 'string') {
-        value = new Buffer(value, encoding).data[0];
-      }
-      for (let i = byteOffset || 0; i < this.length; i++) {
-        if (this.data[i] === value) {
-          return i;
-        }
-      }
-      return -1;
-    }
-
-    copy(targetBuffer, targetStart, sourceStart, sourceEnd) {
-      targetStart = targetStart || 0;
-      sourceStart = sourceStart || 0;
-      sourceEnd = sourceEnd || this.length;
-
-      if (sourceEnd > this.length) {
-        throw new Error('Source end exceeds buffer length');
-      }
-
-      if (targetStart >= targetBuffer.length) {
-        throw new Error('Target start out of bounds');
-      }
-
-      const len = Math.min(sourceEnd - sourceStart, targetBuffer.length - targetStart);
-
-      for (let i = 0; i < len; i++) {
-        targetBuffer.data[targetStart + i] = this.data[sourceStart + i];
-      }
-
-      return len;
-    }
-  };
-})();
-edit filepath: api/encryption.js
-content: const crypto = require('crypto');
-
-const algorithm = 'aes-256-cbc';
-const key = crypto.randomBytes(32); // Generate a 256-bit key
-const iv = crypto.randomBytes(16); // Generate a 128-bit IV
-
-function encrypt(text) {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+            res.on('error', (err) => {
+                reject(err);
+            });
+        }).on('error', (err) => {
+            reject(err);
+        });
+    });
 }
 
-function decrypt(text, ivHex) {
-    let iv = Buffer.from(ivHex, 'hex');
-    let encryptedText = Buffer.from(text, 'hex');
-    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
-
-module.exports = { encrypt, decrypt };
+module.exports = router;
