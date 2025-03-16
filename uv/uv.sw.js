@@ -2,81 +2,118 @@ self.importScripts('./uv.bundle.js', './uv.config.js');
 
 const sw = new UVServiceWorker();
 
+const encryptionEnabledDomains = ['example.com'];
+
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  if (url.hostname === 'example.com') {
-    console.log('Encrypting request to example.com');
+  if (encryptionEnabledDomains.includes(url.hostname)) {
+    console.log(`Encrypting request to ${url.hostname}`);
 
     const encrypt = async (data) => {
-      const key = await crypto.subtle.generateKey(
-        {
-          name: "AES-CBC",
-          length: 256,
-        },
-        true,
-        ["encrypt", "decrypt"]
-      );
-      const iv = crypto.getRandomValues(new Uint8Array(16));
-      const encoded = new TextEncoder().encode(data);
-      const ciphertext = await crypto.subtle.encrypt(
-        {
-          name: "AES-CBC",
-          iv: iv,
-        },
-        key,
-        encoded
-      );
-      return {
-        ciphertext: Array.from(new Uint8Array(ciphertext)),
-        iv: Array.from(iv),
-        key: await crypto.subtle.exportKey("jwk", key),
-      };
+      try {
+        const key = await crypto.subtle.generateKey(
+          {
+            name: "AES-GCM",
+            length: 256,
+          },
+          true,
+          ["encrypt", "decrypt"]
+        );
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encoded = new TextEncoder().encode(data);
+        const ciphertext = await crypto.subtle.encrypt(
+          {
+            name: "AES-GCM",
+            iv: iv,
+            tagLength: 128,
+          },
+          key,
+          encoded
+        );
+        const exportedKey = await crypto.subtle.exportKey("jwk", key);
+        return {
+          ciphertext: Array.from(new Uint8Array(ciphertext)),
+          iv: Array.from(iv),
+          key: exportedKey,
+        };
+      } catch (error) {
+        console.error('Encryption failed:', error);
+        throw error;
+      }
     };
 
     const decrypt = async (data, key, iv) => {
-      const importedKey = await crypto.subtle.importKey(
-        "jwk",
-        key,
-        {
-          name: "AES-CBC",
-          length: 256,
-        },
-        true,
-        ["encrypt", "decrypt"]
-      );
-      const ciphertext = new Uint8Array(data);
-      const decrypted = await crypto.subtle.decrypt(
-        {
-          name: "AES-CBC",
-          iv: new Uint8Array(iv),
-        },
-        importedKey,
-        ciphertext
-      );
-      const decoded = new TextDecoder().decode(decrypted);
-      return decoded;
+      try {
+        const importedKey = await crypto.subtle.importKey(
+          "jwk",
+          key,
+          {
+            name: "AES-GCM",
+            length: 256,
+          },
+          true,
+          ["encrypt", "decrypt"]
+        );
+        const ciphertext = new Uint8Array(data);
+        const decrypted = await crypto.subtle.decrypt(
+          {
+            name: "AES-GCM",
+            iv: new Uint8Array(iv),
+            tagLength: 128,
+          },
+          importedKey,
+          ciphertext
+        );
+        const decoded = new TextDecoder().decode(decrypted);
+        return decoded;
+      } catch (error) {
+        console.error('Decryption failed:', error);
+        throw error;
+      }
     };
 
     const handleRequest = async () => {
       try {
-        const response = await fetch(event.request.clone());
-        let data = await response.text();
-
+        const request = await fetch(event.request.clone());
+        if (!request.ok) {
+          throw new Error(`HTTP error! status: ${request.status}`);
+        }
+        let data = await request.text();
         const encryptedData = await encrypt(data);
-
         const encryptedResponse = new Response(JSON.stringify(encryptedData), {
           headers: { 'Content-Type': 'application/json' }
         });
-
         return encryptedResponse;
       } catch (error) {
-        console.error('Encryption error:', error);
-        return new Response('Encryption failed', { status: 500 });
+        console.error('Request or encryption error:', error);
+        return new Response(JSON.stringify({ error: error.message }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        });
       }
     };
 
-    event.respondWith(handleRequest());
+    const handleResponse = async () => {
+      try {
+        const response = await fetch(event.request.clone());
+        let data = await response.clone().json();
+        const decryptedData = await decrypt(data.ciphertext, data.key, data.iv);
+        return new Response(decryptedData, {
+          headers: { 'Content-Type': 'text/html' }
+        });
+      } catch (error) {
+        console.error('Decryption error:', error);
+        return new Response('Decryption failed', { status: 500 });
+      }
+    };
+
+    if (event.request.method === 'GET') {
+        event.respondWith(handleRequest());
+    }
+    else if (event.request.method === 'POST') {
+      event.respondWith(handleRequest());
+    }
   } else {
     event.respondWith(sw.fetch(event));
   }
