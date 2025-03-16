@@ -4,6 +4,11 @@ body {
     background-color: #000;
     color: #00ff00; /* Bright green for encryption theme */
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Ensure full viewport height */
 }
 
 #particles-js {
@@ -14,12 +19,12 @@ body {
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
     text-align: center;
+    padding: 20px;
+    border: 1px solid #00ff00;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #00ff00;
+    background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background */
 }
 
 h1 {
@@ -40,6 +45,7 @@ input[type="text"] {
     max-width: 400px;
     margin-bottom: 1em;
     font-family: 'Courier New', monospace;
+    transition: box-shadow 0.3s ease; /* Smooth transition for focus effect */
 }
 
 button {
@@ -50,13 +56,13 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    font-family: 'Courier New', monospace;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease; /* Smooth transition for hover effect */
 }
 
 button:hover {
     background-color: #008000; /* Darker green on hover */
     color: #fff; /* White text on hover */
+    transform: scale(1.1); /* Slightly enlarge button on hover */
 }
 
 #error-message {
@@ -66,11 +72,119 @@ button:hover {
 }
 
 /* Add a subtle animation for the input */
-input[type="text"] {
-    transition: box-shadow 0.5s ease;
-}
-
 input[type="text"]:focus {
     box-shadow: 0 0 15px #00ff00; /* Glowing effect on focus */
     outline: none;
 }
+
+/* Add some responsive design */
+@media (max-width: 600px) {
+    h1 {
+        font-size: 2em;
+    }
+    input[type="text"], button {
+        font-size: 1em;
+    }
+}
+
+/* Keyframes for a subtle pulsating effect */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 10px #00ff00;
+    }
+    50% {
+        box-shadow: 0 0 20px #00ff00;
+    }
+    100% {
+        box-shadow: 0 0 10px #00ff00;
+    }
+}
+
+/* Apply the pulse animation to the container */
+.container {
+    animation: pulse 5s infinite;
+}
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('proxy-form');
+    const urlInput = document.getElementById('url-input');
+    const errorMessage = document.getElementById('error-message');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const url = urlInput.value.trim();
+
+        if (!url) {
+            errorMessage.textContent = 'Please enter a URL.';
+            return;
+        }
+
+        errorMessage.textContent = ''; // Clear any previous error messages
+
+        // Simple URL validation (you might want to use a more robust method)
+        if (!isValidURL(url)) {
+            errorMessage.textContent = 'Please enter a valid URL.';
+            return;
+        }
+
+        // Use localStorage to store the URL
+        localStorage.setItem('proxyUrl', url);
+
+        // Redirect to the proxy page (replace 'proxy.html' with your actual proxy page)
+        window.location.href = 'proxy.html';
+    });
+
+    // Function to validate URL format
+    function isValidURL(url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+});
+edit filepath: public/proxy.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Proxy</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            background-color: #000;
+            color: #00ff00;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #proxy-frame {
+            width: 80%;
+            height: 80%;
+            border: 2px solid #00ff00;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="proxy-frame" src=""></iframe>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const proxyFrame = document.getElementById('proxy-frame');
+            const url = localStorage.getItem('proxyUrl'); // Retrieve the URL
+
+            if (url) {
+                proxyFrame.src = url; // Set the URL to the iframe
+            } else {
+                proxyFrame.src = 'https://www.google.com'; // Default URL
+            }
+        });
+    </script>
+</body>
+</html>
