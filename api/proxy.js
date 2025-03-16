@@ -3,10 +3,12 @@ const https = require('https');
 const http = require('http');
 const zlib = require('zlib');
 const crypto = require('crypto');
+const { URL } = require('url');
 
 const app = express();
 const port = 3000;
 
+// Middleware to handle CORS headers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -14,7 +16,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/api/proxy', (req, res) => {
+// Proxy endpoint
+app.get('/api/proxy', async (req, res) => {
     const url = req.query.url;
 
     if (!url) {
@@ -25,33 +28,43 @@ app.get('/api/proxy', (req, res) => {
         const parsedURL = new URL(url);
         const protocol = parsedURL.protocol === 'https:' ? https : http;
 
-        protocol.get(url, { headers: { 'User-Agent': 'EncryptedProxy/1.0' } }, (proxyRes) => {
+        const options = {
+            headers: { 'User-Agent': 'EncryptedProxy/1.0' },
+            timeout: 10000 // Add a timeout to prevent indefinite waiting
+        };
+
+        const proxyReq = protocol.get(url, options, (proxyRes) => {
+            const contentEncoding = proxyRes.headers['content-encoding'];
             let rawData = [];
 
             proxyRes.on('data', (chunk) => {
                 rawData.push(chunk);
             });
 
-            proxyRes.on('end', () => {
-                let buffer = Buffer.concat(rawData);
+            proxyRes.on('end', async () => {
+                try {
+                    let buffer = Buffer.concat(rawData);
 
-                // Attempt to decompress if content is gzipped
-                if (proxyRes.headers['content-encoding'] === 'gzip') {
-                    zlib.gunzip(buffer, (err, unzippedBuffer) => {
-                        if (err) {
-                            console.error('Error decompressing gzip:', err);
-                            handleResponse(buffer, proxyRes, res); // Fallback to original buffer if decompression fails
-                        } else {
-                            handleResponse(unzippedBuffer, proxyRes, res);
-                        }
-                    });
-                } else {
-                    handleResponse(buffer, proxyRes, res);
+                    if (contentEncoding === 'gzip') {
+                        buffer = await gunzipAsync(buffer);
+                    }
+
+                    const response = await handleResponse(buffer, proxyRes);
+                    res.status(proxyRes.statusCode).json(response);
+
+                } catch (error) {
+                    console.error('Error processing response:', error);
+                    res.status(500).send('Error processing response: ' + error.message);
                 }
             });
         }).on('error', (error) => {
             console.error('Proxy request error:', error);
             res.status(500).send('Proxy request failed: ' + error.message);
+        });
+
+        proxyReq.on('timeout', () => {
+            proxyReq.destroy();
+            res.status(504).send('Proxy request timed out');
         });
 
     } catch (error) {
@@ -60,30 +73,46 @@ app.get('/api/proxy', (req, res) => {
     }
 });
 
-function handleResponse(buffer, proxyRes, res) {
+// Promisify zlib.gunzip
+function gunzipAsync(buffer) {
+    return new Promise((resolve, reject) => {
+        zlib.gunzip(buffer, (err, unzippedBuffer) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(unzippedBuffer);
+            }
+        });
+    });
+}
+
+// Function to handle the response, sanitize and encrypt
+async function handleResponse(buffer, proxyRes) {
     let data = buffer.toString('utf-8');
 
     // Basic HTML sanitization (crude example)
     data = data.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 
-    // Encrypt the data using AES
+    // Generate a secure, random encryption key
     const encryptionKey = crypto.randomBytes(32); // 256-bit key
     const iv = crypto.randomBytes(16); // Initialization vector
 
+    // Encrypt the data using AES-256-CBC
     const cipher = crypto.createCipheriv('aes-256-cbc', encryptionKey, iv);
     let encryptedData = cipher.update(data, 'utf-8', 'hex');
     encryptedData += cipher.final('hex');
 
-    // Send encryption details and encrypted data
+    // Construct the response object
     const responseData = {
         encryptedData: encryptedData,
         encryptionKey: encryptionKey.toString('hex'),
         iv: iv.toString('hex')
     };
 
-    res.status(proxyRes.statusCode).json(responseData);
+    return responseData;
 }
 
+// Start the server
 app.listen(port, () => {
     console.log(`Proxy server listening at http://localhost:${port}`);
 });
