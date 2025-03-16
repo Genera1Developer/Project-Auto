@@ -1,37 +1,36 @@
-const CryptoJS = require('crypto-js');
+class Encryption {
+  constructor(algorithm = 'aes-256-cbc', secretKey = 'defaultKey') {
+    this.algorithm = algorithm;
+    this.secretKey = secretKey;
+    this.iv = crypto.randomBytes(16); // Initialization Vector
+  }
 
-const secretKey = process.env.ENCRYPTION_KEY || 'DefaultSecretKey123'; // Use environment variable for security
-const ivKey = process.env.IV_KEY || 'DefaultIVKey12345';
+  encrypt(text) {
+    const cipher = crypto.createCipheriv(this.algorithm, this.secretKey, this.iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return {
+      iv: this.iv.toString('hex'),
+      encryptedData: encrypted.toString('hex')
+    };
+  }
 
-function encrypt(data) {
-    try {
-        const iv = CryptoJS.enc.Utf8.parse(ivKey.substring(0, 16)); // Ensure IV is 16 bytes
-        const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), CryptoJS.enc.Utf8.parse(secretKey), {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-        return encrypted.toString();
-    } catch (error) {
-        console.error("Encryption error:", error);
-        return null;
-    }
+  decrypt(text) {
+    const iv = Buffer.from(text.iv, 'hex');
+    const encryptedText = Buffer.from(text.encryptedData, 'hex');
+    const decipher = crypto.createDecipheriv(this.algorithm, this.secretKey, iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+  }
+
+  static generateSecretKey(length = 32) {
+      return crypto.randomBytes(length).toString('hex');
+  }
+
+  static hash(data) {
+      return crypto.createHash('sha256').update(data).digest('hex');
+  }
 }
 
-function decrypt(ciphertext) {
-    try {
-        const iv = CryptoJS.enc.Utf8.parse(ivKey.substring(0, 16));
-        const decrypted = CryptoJS.AES.decrypt(ciphertext, CryptoJS.enc.Utf8.parse(secretKey), {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-        const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
-        return decryptedData;
-    } catch (error) {
-        console.error("Decryption error:", error);
-        return null;
-    }
-}
-
-module.exports = { encrypt, decrypt };
+module.exports = Encryption;
