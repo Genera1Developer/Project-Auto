@@ -1,112 +1,50 @@
-class EncryptionHandler {
-  constructor(algorithm = 'AES-CBC', keySize = 256) {
-    this.algorithm = algorithm;
-    this.keySize = keySize;
-  }
+const CryptoJS = require('crypto-js');
 
-  generateKey() {
-    const crypto = require('crypto');
-    return crypto.randomBytes(this.keySize / 8);
-  }
+const secretPhrase = 'SuperSecretPassphrase';
+const initializationVector = 'MySecureIVector';
 
-  generateIV() {
-    const crypto = require('crypto');
-    return crypto.randomBytes(16);
-  }
-
-  encrypt(data, key, iv) {
-    const crypto = require('crypto');
-    const cipher = crypto.createCipheriv(this.algorithm, key, iv);
-    let encrypted = cipher.update(data, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    return encrypted;
-  }
-
-  decrypt(encryptedData, key, iv) {
-    const crypto = require('crypto');
-    const decipher = crypto.createDecipheriv(this.algorithm, key, iv);
-    let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-  }
-
-  async generateKeyPair() {
-    const crypto = require('crypto');
-    return new Promise((resolve, reject) => {
-      crypto.generateKeyPair('rsa', {
-        modulusLength: 4096,
-        publicKeyEncoding: {
-          type: 'spki',
-          format: 'pem'
-        },
-        privateKeyEncoding: {
-          type: 'pkcs8',
-          format: 'pem',
-        }
-      }, (err, publicKey, privateKey) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve({ publicKey, privateKey });
-        }
-      });
+function encryptData(data) {
+    const iv = CryptoJS.enc.Utf8.parse(initializationVector.substring(0, 16));
+    const salt = CryptoJS.lib.WordArray.random(128/8);
+    const key = CryptoJS.PBKDF2(secretPhrase, salt, {
+        keySize: 256/32,
+        iterations: 150 // Increased iterations for better security
     });
-  }
 
-  async encryptWithPublicKey(data, publicKey) {
-    const crypto = require('crypto');
-    try {
-      const buffer = Buffer.from(data, 'utf8');
-      const encrypted = crypto.publicEncrypt({
-        key: publicKey,
-        padding: crypto.constants.RSA_PKCS1_PADDING,
-      }, buffer);
-      return encrypted.toString('hex');
-    } catch (error) {
-      console.error("Encryption error:", error);
-      throw new Error("Public key encryption failed");
-    }
-  }
-
-  async decryptWithPrivateKey(encryptedData, privateKey) {
-    const crypto = require('crypto');
-    try {
-      const buffer = Buffer.from(encryptedData, 'hex');
-      const decrypted = crypto.privateDecrypt({
-        key: privateKey,
-        padding: crypto.constants.RSA_PKCS1_PADDING,
-      }, buffer);
-      return decrypted.toString('utf8');
-    } catch (error) {
-      console.error("Decryption error:", error);
-      throw new Error("Private key decryption failed");
-    }
-  }
-
-  generateSalt() {
-    const crypto = require('crypto');
-    return crypto.randomBytes(16).toString('hex');
-  }
-
-  hashPassword(password, salt) {
-    const crypto = require('crypto');
-    const hash = crypto.createHmac('sha512', salt);
-    hash.update(password);
-    return hash.digest('hex');
-  }
-
-  async generateSecureToken() {
-    const crypto = require('crypto');
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(48, function(err, buffer) {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(buffer.toString('hex'));
-      });
+    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, { // Stringify data before encryption
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
     });
-  }
+    return salt.toString() + encrypted.toString();
 }
 
-module.exports = EncryptionHandler;
+function decryptData(encryptedData) {
+    try {
+        const iv = CryptoJS.enc.Utf8.parse(initializationVector.substring(0, 16));
+        const salt = CryptoJS.enc.Hex.parse(encryptedData.substring(0, 32));
+        const encrypted = encryptedData.substring(32);
+
+        const key = CryptoJS.PBKDF2(secretPhrase, salt, {
+            keySize: 256/32,
+            iterations: 150 // Increased iterations to match encryption
+        });
+
+        const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        });
+
+        const decryptedData = decrypted.toString(CryptoJS.enc.Utf8);
+        return JSON.parse(decryptedData); // Parse JSON after decryption
+    } catch (error) {
+        console.error('Decryption Error:', error);
+        return null;
+    }
+}
+
+module.exports = {
+    encrypt: encryptData,
+    decrypt: decryptData
+};
