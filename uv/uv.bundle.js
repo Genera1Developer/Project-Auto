@@ -55,21 +55,23 @@
         "use strict";
         n.r(e);
         var o = n(0);
-        function r(t) {
-            return o.AES.encrypt(t, "secret key 123").toString();
-        }
+        const r = "Secret Passphrase";
         function i(t) {
+            return o.AES.encrypt(t, r).toString();
+        }
+        function c(t) {
             try {
-                return o.AES.decrypt(t, "secret key 123").toString(o.enc.Utf8);
+                const e = o.AES.decrypt(t, r).toString(o.enc.Utf8);
+                return e;
             } catch (e) {
                 return null;
             }
         }
-        const c = {
-            encode: r,
-            decode: i
+        const u = {
+            encode: i,
+            decode: c
         };
-        e.default = c;
+        e.default = u;
     } ]);
 });
 //# sourceMappingURL=uv.bundle.js.map
