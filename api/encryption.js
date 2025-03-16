@@ -1,50 +1,48 @@
-const crypto = require('crypto');
+const CryptoJS = require('crypto-js');
 
-const algorithm = 'aes-256-gcm';
-let encryptionKey;
+const secretKey = process.env.ENCRYPTION_KEY || 'Secret Passphrase'; // Use env var for security
+const ivString = process.env.INITIALIZATION_VECTOR || 'InitializationVe'; // Use env var
+const iterations = parseInt(process.env.PBKDF2_ITERATIONS || '1000'); // Use env var and parse to int
 
-function setEncryptionKey(key) {
-    encryptionKey = key;
+function encrypt(text) {
+    const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16)); // Ensure IV is 16 bytes
+    const salt = CryptoJS.lib.WordArray.random(128/8);
+    const key = CryptoJS.PBKDF2(secretKey, salt, {
+        keySize: 256/32,
+        iterations: iterations
+    });
+    const encrypted = CryptoJS.AES.encrypt(text, key, {
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    return salt.toString()+encrypted.toString();
 }
 
-function generateEncryptionKey() {
-    return crypto.randomBytes(32);
-}
-
-function encrypt(text, key = encryptionKey) {
-    if (!key) {
-        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
-    }
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    const authTag = cipher.getAuthTag().toString('hex');
-    return iv.toString('hex') + ':' + authTag + ':' + encrypted;
-}
-
-function decrypt(encryptedData, key = encryptionKey) {
-    if (!key) {
-        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
-    }
+function decrypt(text) {
     try {
-        const parts = encryptedData.split(':');
-        if (parts.length !== 3) {
-            throw new Error('Invalid encrypted data format.');
-        }
-        const iv = Buffer.from(parts[0], 'hex');
-        const authTag = Buffer.from(parts[1], 'hex');
-        const encryptedText = parts[2];
+        const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
+        const salt = CryptoJS.enc.Hex.parse(text.substring(0, 32));
+        const encrypted = text.substring(32);
 
-        const decipher = crypto.createDecipheriv(algorithm, key, iv);
-        decipher.setAuthTag(authTag);
-        let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-        decrypted += decipher.final('utf8');
-        return decrypted;
-    } catch (error) {
-        console.error('Decryption error:', error);
+        const key = CryptoJS.PBKDF2(secretKey, salt, {
+            keySize: 256/32,
+            iterations: iterations
+        });
+
+        const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        });
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    } catch (e) {
+        console.error("Decryption error:", e);
         return null;
     }
 }
 
-module.exports = { encrypt, decrypt, setEncryptionKey, generateEncryptionKey };
+module.exports = {
+    encrypt,
+    decrypt
+};
