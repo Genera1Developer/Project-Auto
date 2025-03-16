@@ -22,6 +22,7 @@ self.__uv$config = {
     cookieDomainRewrite: '',
     cookiePathRewrite: '/',
     forwardCookies: true,
-    // Add a new setting to control strict origin handling
     strictOriginHandling: true,
+    // Added a new setting to enable/disable TLS passthrough
+    tlsPassthrough: true,
 };
