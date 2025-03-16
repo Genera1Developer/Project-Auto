@@ -1,53 +1,42 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('urlInput');
-    const proxyButton = document.getElementById('proxyButton');
-    const contentDiv = document.getElementById('content');
+document.addEventListener('DOMContentLoaded', () => {
+    const urlForm = document.getElementById('urlForm');
+    const urlInput = document.getElementById('url');
+    const resultDiv = document.getElementById('result');
+    const proxyUrl = '/api/proxy';
 
-    proxyButton.addEventListener('click', async function() {
-        const url = urlInput.value;
+    urlForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const targetUrl = urlInput.value;
 
-        if (!url) {
-            contentDiv.textContent = 'Please enter a URL.';
+        if (!targetUrl) {
+            resultDiv.textContent = 'Please enter a URL.';
             return;
         }
 
         try {
-            // AES key exchange endpoint (simulated)
-            const keyResponse = await fetch('/api/keyExchange');
-            const keyData = await keyResponse.json();
-            const aesKey = keyData.key;
-
-            // Fetch proxied content
-            const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
+            const response = await fetch(`${proxyUrl}?url=${encodeURIComponent(targetUrl)}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
+            const encryptedData = await response.text();
 
-            if (data.encryptedContent && aesKey) {
-                // Decrypt content
-                const decryptedContent = await decryptAES(data.encryptedContent, aesKey);
-                contentDiv.innerHTML = decryptedContent;
-            } else {
-                contentDiv.textContent = data.message || 'Failed to fetch or decrypt content.';
-            }
+            // Decrypt the data (assuming decryption function is available)
+            const decryptedData = decryptData(encryptedData);
+
+            // Display the decrypted data
+            resultDiv.textContent = `Decrypted Content: ${decryptedData}`;
 
         } catch (error) {
-            console.error('Error fetching content:', error);
-            contentDiv.textContent = 'An error occurred while fetching the content.';
-            contentDiv.classList.add('error');
+            console.error('Error fetching data:', error);
+            resultDiv.textContent = `Error: ${error.message}`;
         }
     });
 
-    // AES decryption function (simulated)
-    async function decryptAES(encryptedContent, key) {
-        // This is a placeholder for actual AES decryption.
-        // In a real application, use the Web Crypto API for secure decryption.
-        // Example using CryptoJS (include CryptoJS library in your HTML):
-        // const decrypted = CryptoJS.AES.decrypt(encryptedContent, key).toString(CryptoJS.enc.Utf8);
-        // return decrypted;
-        return `Decrypted: ${encryptedContent} (using key: ${key})`; // Placeholder
+    // Placeholder for decryption function (implement in encryption.js)
+    function decryptData(encryptedData) {
+        //  Call a function from encryption.js to decrypt
+        return "PLACEHOLDER - Implement decryption";
     }
 });
