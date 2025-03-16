@@ -71,7 +71,7 @@
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "grab"
+        "mode": "repulse"
       },
       "onclick": {
         "enable": true,
@@ -81,7 +81,7 @@
     },
     "modes": {
       "grab": {
-        "distance": 140,
+        "distance": 400,
         "line_linked": {
           "opacity": 1
         }
@@ -90,7 +90,7 @@
         "distance": 400,
         "size": 40,
         "duration": 2,
-        "opacity": 8,
+        "opacity": 0.8,
         "speed": 3
       },
       "repulse": {
@@ -114,7 +114,290 @@
     "background_size": "cover"
   }
 }
-edit filepath: public/index.css
+edit filepath: public/particles.js
+content: /* particlesJS('dom-id', params);
+/* @license http://opensource.org/licenses/MIT - MIT License */
+/*
+
+particlesJS - v2.0.0
+Copyright (c) 2015 Vincent Garreau vincentgarreau.com - Released under the MIT license
+
+*/
+
+var pJS = function(tag_id, params){
+
+  var canvas = document.querySelector('#'+tag_id+' > .particles-js-canvas-el');
+
+  this.pJS = {
+    canvas: {
+      el: canvas,
+      w: canvas.offsetWidth,
+      h: canvas.offsetHeight
+    },
+    particles: {
+      number: params.particles.number.value,
+      color: params.particles.color.value,
+      shape: params.particles.shape.type,
+      opacity: {
+        value: params.particles.opacity.value,
+        anim: params.particles.opacity.anim.enable
+      },
+      size: {
+        value: params.particles.size.value,
+        anim: params.particles.size.anim.enable
+      },
+      line_linked: {
+        enable: params.particles.line_linked.enable,
+        distance: params.particles.line_linked.distance,
+        color: params.particles.line_linked.color,
+        opacity: params.particles.line_linked.opacity
+      },
+      move: {
+        enable: params.particles.move.enable,
+        speed: params.particles.move.speed,
+        direction: params.particles.move.direction,
+        random: params.particles.move.random,
+        out_mode: params.particles.move.out_mode
+      },
+      array: []
+    },
+    interactivity: {
+      mouse: {
+        pos_x: 0,
+        pos_y: 0,
+        click_pos_x: 0,
+        click_pos_y: 0
+      },
+      detect_on: params.interactivity.detect_on,
+      mode: params.interactivity.events.onhover.mode,
+      events: {
+        onclick: {
+          enable: params.interactivity.events.onclick.enable,
+          mode: params.interactivity.events.onclick.mode
+        },
+        resize: {
+          enable: params.interactivity.events.resize
+        }
+      }
+    },
+    retina_detect: params.retina_detect
+  };
+
+  this.pJS.particles.color_rgb = hexToRgb(this.pJS.particles.color);
+  this.pJS.particles.line_linked.color_rgb_line = hexToRgb(this.pJS.particles.line_linked.color);
+
+  /* ---------- Canvas creation ---------- */
+
+  canvas.width = this.pJS.canvas.w;
+  canvas.height = this.pJS.canvas.h;
+
+  /* ---------- Particles creation ---------- */
+
+  window.addEventListener('resize', function(){
+
+    /* ---------- Canvas width/height ---------- */
+
+    this.pJS.canvas.w = canvas.offsetWidth;
+    this.pJS.canvas.h = canvas.offsetHeight;
+
+    /* ---------- Reset canvas ---------- */
+
+    canvas.width = this.pJS.canvas.w;
+    canvas.height = this.pJS.canvas.h;
+
+    /* ---------- New particles ---------- */
+
+    if(this.pJS.interactivity.mouse.click_pos_x || this.pJS.interactivity.mouse.click_pos_y){
+      this.pJS.interactivity.mouse.click_pos_x = 0;
+      this.pJS.interactivity.mouse.click_pos_y = 0;
+    }
+
+    this.pJS.particles.array = [];
+    this.pJS.particles.array = [];
+
+    this.pJS.particles.number = params.particles.number.value;
+    this.pJS.particles.number = (this.pJS.particles.number > canvas.width * canvas.height / 2000) ? Math.floor(canvas.width * canvas.height / 2000) : this.pJS.particles.number;
+
+    createParticles();
+
+  }.bind(this));
+
+  function createParticles(){
+    for(var i = 0; i < this.pJS.particles.number; i++){
+      this.pJS.particles.array.push( new Particle(this.pJS, params.particles.shape.type) );
+    }
+  }
+
+  createParticles();
+
+  /* ---------- Animation ---------- */
+
+  function animloop(){
+    draw();
+    requestAnimFrame(animloop);
+  }
+
+  animloop();
+
+  /* ---------- Draw ---------- */
+
+  function draw(){
+
+    /* ---------- Clear canvas ---------- */
+
+    canvas.getContext('2d').clearRect(0, 0, this.pJS.canvas.w, this.pJS.canvas.h);
+
+    /* ---------- Update particles ---------- */
+
+    for(var i = 0; i < this.pJS.particles.number; i++){
+      var p = this.pJS.particles.array[i];
+
+      p.draw();
+    }
+
+    /* ---------- Mouse interaction ---------- */
+
+    if(this.pJS.interactivity.mouse.click_pos_x || this.pJS.interactivity.mouse.click_pos_y){
+      if(this.pJS.interactivity.events.onclick.enable){
+        //onclick_particle();
+      }
+    }
+
+  }
+
+  /* ---------- Vendors ---------- */
+
+  window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        window.oRequestAnimationFrame      ||
+        window.msRequestAnimationFrame     ||
+        function(callback){
+          window.setTimeout(callback, 1000 / 60);
+        };
+  })();
+
+  function hexToRgb(hex){
+    // By Tim Down - http://stackoverflow.com/a/5624139/3493650
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+      return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : null;
+  }
+
+  /* ---------- Particle class ---------- */
+
+  function Particle(pJS, shape){
+
+    var _this = this;
+
+    this.x = Math.random() * pJS.canvas.w;
+    this.y = Math.random() * pJS.canvas.h;
+
+    this.vx = ((Math.random() - 0.5) * pJS.particles.move.speed)   ;
+    this.vy = ((Math.random() - 0.5) * pJS.particles.move.speed)  ;
+
+    this.radius = (pJS.particles.size.anim) ? Math.random() * pJS.particles.size.value : pJS.particles.size.value;
+
+    this.color = 'rgba('+pJS.particles.color_rgb.r+','+pJS.particles.color_rgb.g+','+pJS.particles.color_rgb.b+','+pJS.particles.opacity.value+')';
+
+    this.draw = function(){
+      pJS.canvas.el.getContext('2d').fillStyle = this.color;
+      pJS.canvas.el.getContext('2d').beginPath();
+
+      switch(shape){
+        case 'circle':
+          pJS.canvas.el.getContext('2d').arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        break;
+
+        case 'edge':
+          pJS.canvas.el.getContext('2d').rect(this.x, this.y, this.radius, this.radius);
+        break;
+      }
+
+      pJS.canvas.el.getContext('2d').closePath();
+      pJS.canvas.el.getContext('2d').fill();
+
+      /* ---------- Move the particle ---------- */
+
+      this.x += this.vx;
+      this.y += this.vy;
+
+      /* ---------- All the edges ---------- */
+
+      if(this.x < -this.radius){
+        this.x = pJS.canvas.w + this.radius;
+      }
+      else if(this.x > pJS.canvas.w + this.radius){
+        this.x = -this.radius;
+      }
+
+      if(this.y < -this.radius){
+        this.y = pJS.canvas.h + this.radius;
+      }
+      else if(this.y > pJS.canvas.h + this.radius){
+        this.y = -this.radius;
+      }
+    }
+  }
+};
+
+/* ---------- Particles.js global ---------- */
+
+window.particlesJS = function(tag_id, params){
+  return new pJS(tag_id, params);
+};
+
+window.particlesJS.load = function(tag_id, path_json, callback){
+
+  /* ---------- xhr ---------- */
+
+  var xobj = new XMLHttpRequest();
+      xobj.overrideMimeType("application/json");
+  xobj.open('GET', path_json, true); // Replace 'my_data' with the path to your JSON file
+  xobj.onreadystatechange = function () {
+    if (xobj.readyState == 4 && xobj.status == "200") {
+      // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+      callback(JSON.parse(xobj.responseText));
+    }
+  };
+  xobj.send(null);
+};
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+    </div>
+    <script src="particles.js"></script>
+    <script>
+        particlesJS.load('particles-js', 'particles.json', function() {
+          console.log('callback - particles.js config loaded');
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
+edit filepath: public/style.css
 content: body {
     font-family: 'Arial', sans-serif;
     background-color: #000;
@@ -124,7 +407,6 @@ content: body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    color: #00ffff; /* Cyan text for encryption theme */
     overflow: hidden; /* Hide scrollbars */
 }
 
@@ -132,157 +414,81 @@ content: body {
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: -1;
     top: 0;
     left: 0;
+    z-index: -1; /* Place behind content */
 }
 
 .container {
-    background-color: rgba(0, 0, 0, 0.8); /* Dark translucent background */
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Cyan glow */
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     text-align: center;
     width: 80%;
     max-width: 600px;
-    border: 1px solid #00ffff; /* Cyan border */
+    color: #fff;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    backdrop-filter: blur(10px); /* Add blur effect */
 }
 
 h1 {
     color: #00ffff;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); /* Glowing text */
+    text-shadow: 0 0 5px #00ffff;
 }
 
 #urlInput {
-    width: calc(100% - 30px);
-    padding: 15px;
-    margin: 15px 0;
-    border: 2px solid #00ffff; /* Cyan border */
-    border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #00ffff;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.3s ease;
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid rgba(0, 255, 255, 0.5);
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #fff;
 }
 
-#urlInput:focus {
-    border-color: #00bfff; /* Lighter cyan on focus */
+#urlInput::placeholder {
+    color: rgba(0, 255, 255, 0.7);
 }
 
 #proxyButton {
-    padding: 15px 30px;
+    padding: 10px 20px;
     background-color: #00ffff;
     color: #000;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 5px #00ffff;
 }
 
 #proxyButton:hover {
     background-color: #00bfff;
-    color: #fff;
+    box-shadow: 0 0 10px #00bfff;
 }
 
 #content {
-    margin-top: 30px;
+    margin-top: 20px;
     text-align: left;
-    border: 2px solid #00ffff;
-    padding: 20px;
-    border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #00ffff;
-    overflow-wrap: break-word; /* Handle long words */
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
 }
 
-#content p.error {
-    color: #ff4d4d; /* Red for error messages */
+.error {
+    color: #ff4d4d;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
         width: 95%;
-        padding: 20px;
     }
 
     #urlInput {
-        width: calc(100% - 20px);
+        width: calc(100% - 10px);
     }
 }
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html>
-<head>
-    <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL">
-        <button id="proxyButton">Go</button>
-        <div id="content"></div>
-    </div>
-    <script src="particles.min.js"></script>
-    <script src="script.js"></script>
-    <script>
-        particlesJS.load('particles-js', 'particles.json', function() {
-            console.log('particles.json loaded - Encryption Engaged');
-        });
-    </script>
-</body>
-</html>
-edit filepath: public/script.js
-content: document.addEventListener('DOMContentLoaded', function() {
-    const proxyButton = document.getElementById('proxyButton');
-    const urlInput = document.getElementById('urlInput');
-    const contentDiv = document.getElementById('content');
-
-    proxyButton.addEventListener('click', function() {
-        const url = urlInput.value;
-
-        if (!url) {
-            contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
-            return;
-        }
-
-        // Basic URL validation
-        if (!isValidURL(url)) {
-            contentDiv.innerHTML = '<p class="error">Please enter a valid URL.</p>';
-            return;
-        }
-
-        // Display loading message
-        contentDiv.innerHTML = '<p>Loading...</p>';
-
-        fetch('/api/proxy?url=' + encodeURIComponent(url))
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.text();
-            })
-            .then(data => {
-                contentDiv.innerHTML = data;
-            })
-            .catch(error => {
-                contentDiv.innerHTML = '<p class="error">Error: ' + error.message + '</p>';
-            });
-    });
-
-    // Helper function to validate URL
-    function isValidURL(string) {
-        try {
-            new URL(string);
-            return true;
-        } catch (_) {
-            return false;
-        }
-    }
-});
+edit filepath:
