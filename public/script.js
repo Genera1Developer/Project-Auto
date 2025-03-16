@@ -5,10 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     proxyButton.addEventListener('click', async () => {
         const url = urlInput.value;
+
         if (!url) {
             contentDiv.textContent = 'Please enter a URL.';
+            contentDiv.classList.add('error');
             return;
         }
+
+        contentDiv.classList.remove('error');
+        contentDiv.textContent = 'Loading...';
 
         try {
             const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
@@ -16,83 +21,87 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const encryptedData = await response.text();
+			
+			const decryptionKey = 'defaultEncryptionKey';
 
-            // Decrypt the data here on the client-side
-            const decryptionKey = 'defaultEncryptionKey'; // Should be securely managed, not hardcoded
-            const decryptedData = decrypt(encryptedData, decryptionKey);
+			const decryptedData = await decryptData(encryptedData, decryptionKey);
 
             contentDiv.textContent = decryptedData;
-
         } catch (error) {
-            console.error('Error fetching or decrypting:', error);
+            console.error('Error fetching data:', error);
             contentDiv.textContent = `Error: ${error.message}`;
+            contentDiv.classList.add('error');
         }
     });
 
-    function decrypt(text, key) {
-        const textParts = text.split(':');
-        const iv = textParts.shift();
-		const authTag = textParts.shift();
-        const encryptedText = textParts.join(':');
+    async function decryptData(encryptedData, key) {
+        return new Promise((resolve, reject) => {
+            // Simple AES decryption in JavaScript (for demonstration purposes)
+            // **WARNING: This is NOT secure for production use.**
+            // In a real application, use a secure, well-vetted library like CryptoJS.
+            try {
+                const textParts = encryptedData.split(':');
+                const iv = Buffer.from(textParts.shift(), 'hex');
+                const authTag = Buffer.from(textParts.shift(), 'hex');
+                const encryptedText = Buffer.from(textParts.join(':'), 'hex');
 
-        const ivBuffer = CryptoJS.enc.Hex.parse(iv);
-		const authTagBuffer = CryptoJS.enc.Hex.parse(authTag);
-        const encryptedBuffer = CryptoJS.enc.Hex.parse(encryptedText);
+                const keyBuffer = Buffer.from(key);
+                const ivBuffer = Buffer.from(iv);
+                const encryptedTextBuffer = Buffer.from(encryptedText);
 
-        const keyHex = CryptoJS.enc.Utf8.parse(key);
-
-        const decrypted = CryptoJS.AES.decrypt({ ciphertext: encryptedBuffer }, keyHex, {
-            iv: ivBuffer,
-			mode: CryptoJS.mode.CBC,
-			padding: CryptoJS.pad.Pkcs7,
-			authTag: authTagBuffer,
-			authTagLength: 128 / 8
+                crypto.subtle.importKey(
+                    "raw",
+                    keyBuffer,
+                    { name: "AES-CBC", length: 256 },
+                    false,
+                    ["encrypt", "decrypt"]
+                ).then(key => {
+                    crypto.subtle.decrypt(
+                        { name: "AES-CBC", iv: ivBuffer },
+                        key,
+                        encryptedTextBuffer
+                    ).then(decrypted => {
+                        const decryptedText = new TextDecoder().decode(decrypted);
+                        resolve(decryptedText);
+                    }).catch(err => {
+                        reject(err);
+                    });
+                }).catch(err => {
+                    reject(err);
+                });
+            } catch (error) {
+                reject(error);
+            }
         });
-
-        return decrypted.toString(CryptoJS.enc.Utf8);
     }
+
 });
-edit filepath: public/aes-encryption.js
-content: const CryptoJS = require('crypto-js');
+edit filepath: api/encryption.js
+content: const crypto = require('crypto');
 
-function encrypt(message, key) {
-    const iv = CryptoJS.lib.WordArray.random(16);
-    const salt = CryptoJS.lib.WordArray.random(128 / 8); 
-    const keyParam = CryptoJS.PBKDF2(key, salt, {
-        keySize: 256/32,
-        iterations: 100
-    });
+const algorithm = 'aes-256-cbc'; //Use AES 256 encryption
+const key = crypto.randomBytes(32);
+const iv = crypto.randomBytes(16);
 
-    const encrypted = CryptoJS.AES.encrypt(message, keyParam, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-
-    return {
-        ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
-        iv: iv.toString(),
-        salt: salt.toString()
-    };
+function encrypt(text) {
+    let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-function decrypt(encryptedData, key) {
-    const iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
-    const salt = CryptoJS.enc.Hex.parse(encryptedData.salt);
-
-    const keyParam = CryptoJS.PBKDF2(key, salt, {
-        keySize: 256/32,
-        iterations: 100
-    });
-    const ciphertext = CryptoJS.enc.Base64.parse(encryptedData.ciphertext);
-
-    const decrypted = CryptoJS.AES.decrypt({ ciphertext: ciphertext }, keyParam, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-
-    return decrypted.toString(CryptoJS.enc.Utf8);
+function decrypt(text) {
+    let iv = Buffer.from(text.iv, 'hex');
+    let encryptedText = Buffer.from(text.encryptedData, 'hex');
+    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
+
+//Test Functions
+// var hw = encrypt("Testing Encryption");
+// console.log(hw);
+// console.log(decrypt(hw));
 
 module.exports = { encrypt, decrypt };
