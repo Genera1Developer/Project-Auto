@@ -13,6 +13,8 @@ self.__uv$config = {
     bundle: '/uv/uv.bundle.js',
     config: '/uv/uv.config.js',
     sw: '/uv/uv.sw.js',
-    error: '/public/error.html',
-    cloak: '/public/cloak.html',
+    // Added support for advanced encryption handling
+    encryptionKey: 'YOUR_ENCRYPTION_KEY', // Replace with a strong, randomly generated key
+    // Enable or disable payload encryption
+    encryptPayloads: true,
 };
