@@ -8,7 +8,7 @@
       }
     },
     "color": {
-      "value": "#00ffff"
+      "value": "#00ff00"
     },
     "shape": {
       "type": "circle",
@@ -48,7 +48,7 @@
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00ffff",
+      "color": "#00ff00",
       "opacity": 0.4,
       "width": 1
     },
@@ -71,7 +71,7 @@
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "repulse"
+        "mode": "grab"
       },
       "onclick": {
         "enable": true,
@@ -81,7 +81,7 @@
     },
     "modes": {
       "grab": {
-        "distance": 400,
+        "distance": 140,
         "line_linked": {
           "opacity": 1
         }
@@ -90,7 +90,7 @@
         "distance": 400,
         "size": 40,
         "duration": 2,
-        "opacity": 0.8,
+        "opacity": 8,
         "speed": 3
       },
       "repulse": {
@@ -113,142 +113,4 @@
     "background_repeat": "no-repeat",
     "background_size": "cover"
   }
-}
-edit filepath: public/particles.js
-content: /* particlesJS('dom-id', params);
-*/
-/* params - check the particles.json file in this package folder
-*/
-
-window.onload = function() {
-  Particles.init({
-    selector: '.background',
-	maxParticles: 200,
-	color: ['#00ffff', '#00ffff'],
-    connectParticles: true,
-    responsive: [
-      {
-        breakpoint: 768,
-        options: {
-          maxParticles: 80,
-          color: ['#00ffff', '#00ffff'],
-          connectParticles: true
-        }
-      }
-    ]
-  });
-};
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html>
-<head>
-    <title>Web Proxy - Encrypted Access</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-	<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-    <div class="container">
-		<canvas class="background"></canvas>
-        <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL">
-        <button id="proxyButton">Go</button>
-        <div id="content"></div>
-    </div>
-    <script src="script.js"></script>
-	<script src="particles.js"></script>
-</body>
-</html>
-edit filepath: public/style.css
-content: body {
-    font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background for encryption theme */
-    color: #fff; /* Light text for contrast */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden; /* Hide scrollbars caused by particles */
-}
-
-.container {
-    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent container */
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Neon glow effect */
-    text-align: center;
-    width: 80%;
-    max-width: 600px;
-    position: relative; /* Ensure content stays above particles */
-    z-index: 1; /* Ensure content stays above particles */
-}
-
-h1 {
-    color: #00ffff; /* Neon color */
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); /* Neon text shadow */
-}
-
-#urlInput {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #00ffff; /* Neon border */
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.1); /* Transparent input background */
-    color: #fff; /* White text */
-}
-
-#urlInput::placeholder {
-    color: rgba(255, 255, 255, 0.5); /* Faded placeholder text */
-}
-
-#proxyButton {
-    padding: 10px 20px;
-    background-color: #00ffff; /* Neon button color */
-    color: #000; /* Black text */
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#proxyButton:hover {
-    background-color: #00bfff; /* Darker neon on hover */
-}
-
-#content {
-    margin-top: 20px;
-    text-align: left;
-    border: 1px solid #00ffff; /* Neon border */
-    padding: 10px;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.05); /* Very transparent background */
-    color: #fff; /* White text */
-}
-
-#content p.error {
-    color: #ff4136; /* Red error text */
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-    }
-
-    #urlInput {
-        width: calc(100% - 10px);
-    }
-}
-
-/* Particles.js styles */
-.background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0; /* Behind the content */
 }
