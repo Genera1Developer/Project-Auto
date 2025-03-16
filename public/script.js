@@ -1,14 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const urlForm = document.getElementById('urlForm');
-    const urlInput = document.getElementById('url');
-    const resultDiv = document.getElementById('result');
+    const urlInput = document.getElementById('urlInput');
+    const proxyButton = document.getElementById('proxyButton');
+    const contentDiv = document.getElementById('content');
 
-    urlForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    proxyButton.addEventListener('click', async () => {
         const url = urlInput.value;
 
         if (!url) {
-            resultDiv.textContent = 'Please enter a URL.';
+            contentDiv.textContent = 'Please enter a URL.';
             return;
         }
 
@@ -16,36 +15,63 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
 
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const encryptedData = await response.text();
-
-            // Decrypt the data (simulated client-side decryption)
-            const decryptedData = await decryptData(encryptedData);
-
-            resultDiv.innerHTML = `<iframe srcdoc="${decryptedData}" width="100%" height="500px"></iframe>`;
-
+            const decryptionKey = 'defaultEncryptionKey'; // This should be fetched securely
+			const decryptedData = decrypt(encryptedData, decryptionKey);
+            contentDiv.textContent = decryptedData;
 
         } catch (error) {
-            console.error('Fetch error:', error);
-            resultDiv.textContent = `Error: ${error.message}`;
+            console.error('Error fetching data:', error);
+            contentDiv.textContent = `Error: ${error.message}`;
         }
     });
 
-    // Simulated decryption function (replace with actual client-side decryption)
-    async function decryptData(encryptedData) {
-        try {
-            const response = await fetch('/api/encryption?data=' + encodeURIComponent(encryptedData));
-            if (!response.ok) {
-                throw new Error(`HTTP decryption error! Status: ${response.status}`);
-            }
-            const decryptedText = await response.text();
-            return decryptedText;
+	function decrypt(text, key) {
+		const textParts = text.split(':');
+		const iv = textParts.shift();
+		const authTag = textParts.shift();
+		const encryptedText = textParts.join(':');
+	
+		const ivBuffer = hexToBytes(iv);
+		const authTagBuffer = hexToBytes(authTag);
+		const encryptedTextBuffer = hexToBytes(encryptedText);
+	
+		const keyBuffer = new TextEncoder().encode(key);
+		
+		return window.crypto.subtle.importKey(
+			"raw",
+			keyBuffer,
+			"AES-CBC",
+			false,
+			["encrypt", "decrypt"]
+		).then(function(key){
+			const algorithm = {
+				name: "AES-CBC",
+				iv: ivBuffer,
+			};
+			
+			return window.crypto.subtle.decrypt(
+				algorithm,
+				key,
+				encryptedTextBuffer
+			);
+		}).then(function(decrypted){
+			let decoder = new TextDecoder();
+			return decoder.decode(decrypted);
+		})
+		.catch(function(err){
+			console.error("Error decrypting:", err);
+			return 'Decryption Error: ' + err.message;
+		});
+	}
 
-        } catch (error) {
-            console.error('Decryption error:', error);
-            return `Decryption Error: ${error.message}`;
-        }
-    }
+	function hexToBytes(hex) {
+		let bytes = [];
+		for (let c = 0; c < hex.length; c += 2)
+		bytes.push(parseInt(hex.substr(c, 2), 16));
+		return new Uint8Array(bytes);
+	}
 });
