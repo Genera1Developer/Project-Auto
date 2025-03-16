@@ -1,9 +1,10 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const proxyForm = document.getElementById('proxy-form');
-  const urlInput = document.getElementById('url-input');
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('proxy-form');
+  const urlInput = document.getElementById('url');
+  const iframe = document.getElementById('proxy-iframe');
   const particlesContainer = document.getElementById('particles-js');
 
-  // Initialize Particles.js
+  /* global particlesJS */
   particlesJS('particles-js', {
     particles: {
       number: {
@@ -14,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       },
       color: {
-        value: '#00c698' // Encryption-themed color
+        value: '#007bff' // Encryption-themed color
       },
       shape: {
         type: 'circle',
@@ -33,7 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       opacity: {
         value: 0.5,
-        random: false
+        random: false,
+        anim: {
+          enable: false,
+          speed: 1,
+          opacity_min: 0.1,
+          sync: false
+        }
       },
       size: {
         value: 5,
@@ -48,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
       line_linked: {
         enable: true,
         distance: 150,
-        color: '#00c698',
+        color: '#007bff', // Encryption-themed color
         opacity: 0.4,
         width: 1
       },
@@ -107,25 +114,17 @@ document.addEventListener('DOMContentLoaded', function() {
     retina_detect: true,
     config_demo: {
       hide_card: false,
-      background_color: '#b61924',
+      background_color: '#1E2D3D',
       background_image: '',
-      opacity: 0.8
+      background_position: '50% 50%',
+      background_repeat: 'no-repeat',
+      background_size: 'cover'
     }
   });
 
-  proxyForm.addEventListener('submit', function(event) {
+  form.addEventListener('submit', (event) => {
     event.preventDefault();
-    let url = urlInput.value;
-
-    // Basic URL validation
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'http://' + url;
-    }
-
-    // URL Encoding
-    const encodedURL = encodeURIComponent(url);
-
-    // Redirect to the proxy URL
-    window.location.href = '/uv/service/' + encodedURL;
+    const url = urlInput.value;
+    iframe.src = '/api/proxy?url=' + encodeURIComponent(url);
   });
 });
