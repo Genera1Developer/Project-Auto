@@ -55,22 +55,32 @@ class EncryptionHandler {
 
   async encryptWithPublicKey(data, publicKey) {
     const crypto = require('crypto');
-    const buffer = Buffer.from(data, 'utf8');
-    const encrypted = crypto.publicEncrypt({
-      key: publicKey,
-      padding: crypto.constants.RSA_PKCS1_PADDING,
-    }, buffer);
-    return encrypted.toString('hex');
+    try {
+      const buffer = Buffer.from(data, 'utf8');
+      const encrypted = crypto.publicEncrypt({
+        key: publicKey,
+        padding: crypto.constants.RSA_PKCS1_PADDING,
+      }, buffer);
+      return encrypted.toString('hex');
+    } catch (error) {
+      console.error("Encryption error:", error);
+      throw new Error("Public key encryption failed");
+    }
   }
 
   async decryptWithPrivateKey(encryptedData, privateKey) {
-     const crypto = require('crypto');
+    const crypto = require('crypto');
+    try {
       const buffer = Buffer.from(encryptedData, 'hex');
       const decrypted = crypto.privateDecrypt({
-          key: privateKey,
-          padding: crypto.constants.RSA_PKCS1_PADDING,
+        key: privateKey,
+        padding: crypto.constants.RSA_PKCS1_PADDING,
       }, buffer);
       return decrypted.toString('utf8');
+    } catch (error) {
+      console.error("Decryption error:", error);
+      throw new Error("Private key decryption failed");
+    }
   }
 
   generateSalt() {
@@ -83,6 +93,19 @@ class EncryptionHandler {
     const hash = crypto.createHmac('sha512', salt);
     hash.update(password);
     return hash.digest('hex');
+  }
+
+  async generateSecureToken() {
+    const crypto = require('crypto');
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(48, function(err, buffer) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(buffer.toString('hex'));
+      });
+    });
   }
 }
 
