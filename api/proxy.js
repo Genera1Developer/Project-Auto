@@ -5,6 +5,7 @@ const crypto = require('crypto');
 
 const algorithm = 'aes-256-gcm';
 const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'), 'hex'); // Use environment variable, generate if absent, store securely
+const ENCRYPTION_ENABLED = process.env.ENCRYPTION_ENABLED === 'true'; // Enable/disable encryption via env variable
 
 function encrypt(text) {
     const iv = crypto.randomBytes(16);
@@ -92,15 +93,52 @@ module.exports = (req, res) => {
                     }
                     decodedBody = uncompressed;
 
-                     let encryptedBody;
-                     try {
-                         encryptedBody = encrypt(decodedBody.toString());
-                     } catch (encryptErr) {
-                         console.error('Encryption error:', encryptErr);
-                         res.writeHead(500, { 'Content-Type': 'text/plain' });
-                         res.end('Proxy error: Encryption failed.');
-                         return;
-                     }
+                    let encryptedBody;
+                    if (ENCRYPTION_ENABLED) { // Conditionally encrypt
+                        try {
+                            encryptedBody = encrypt(decodedBody.toString());
+                        } catch (encryptErr) {
+                            console.error('Encryption error:', encryptErr);
+                            res.writeHead(500, { 'Content-Type': 'text/plain' });
+                            res.end('Proxy error: Encryption failed.');
+                            return;
+                        }
+
+                        res.writeHead(proxyRes.statusCode, {
+                            ...proxyRes.headers,
+                            'Content-Type': 'text/encrypted',
+                            'Content-Encoding': 'identity',
+                            'Cache-Control': 'no-store',
+                            'X-Content-Type-Options': 'nosniff',
+                            'X-Frame-Options': 'DENY',
+                            'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
+                            'X-XSS-Protection': '1; mode=block',
+                        });
+                        res.end(encryptedBody);
+                    } else {
+                        // If encryption is disabled, return the unencrypted content
+                        res.writeHead(proxyRes.statusCode, {
+                            ...proxyRes.headers,
+                            'Cache-Control': 'no-store',
+                            'X-Content-Type-Options': 'nosniff',
+                            'X-Frame-Options': 'DENY',
+                            'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
+                            'X-XSS-Protection': '1; mode=block',
+                        });
+                        res.end(decodedBody);
+                    }
+                });
+            } else {
+                let encryptedBody;
+                if (ENCRYPTION_ENABLED) { // Conditionally encrypt
+                    try {
+                        encryptedBody = encrypt(decodedBody.toString());
+                    } catch (encryptErr) {
+                        console.error('Encryption error:', encryptErr);
+                        res.writeHead(500, { 'Content-Type': 'text/plain' });
+                        res.end('Proxy error: Encryption failed.');
+                        return;
+                    }
 
                     res.writeHead(proxyRes.statusCode, {
                         ...proxyRes.headers,
@@ -113,29 +151,18 @@ module.exports = (req, res) => {
                         'X-XSS-Protection': '1; mode=block',
                     });
                     res.end(encryptedBody);
-                });
-            } else {
-                let encryptedBody;
-                try {
-                    encryptedBody = encrypt(decodedBody.toString());
-                } catch (encryptErr) {
-                    console.error('Encryption error:', encryptErr);
-                    res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end('Proxy error: Encryption failed.');
-                    return;
+                } else {
+                    // If encryption is disabled, return the unencrypted content
+                    res.writeHead(proxyRes.statusCode, {
+                        ...proxyRes.headers,
+                        'Cache-Control': 'no-store',
+                        'X-Content-Type-Options': 'nosniff',
+                        'X-Frame-Options': 'DENY',
+                        'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
+                        'X-XSS-Protection': '1; mode=block',
+                    });
+                    res.end(decodedBody);
                 }
-
-                res.writeHead(proxyRes.statusCode, {
-                    ...proxyRes.headers,
-                    'Content-Type': 'text/encrypted',
-                    'Content-Encoding': 'identity',
-                    'Cache-Control': 'no-store',
-                    'X-Content-Type-Options': 'nosniff',
-                    'X-Frame-Options': 'DENY',
-                    'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
-                    'X-XSS-Protection': '1; mode=block',
-                });
-                res.end(encryptedBody);
             }
         });
     }).on('error', (err) => {
