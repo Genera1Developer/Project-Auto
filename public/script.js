@@ -1,34 +1,33 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('urlInput');
-    const proxyButton = document.getElementById('proxyButton');
-    const contentDiv = document.getElementById('content');
+document.getElementById('proxyButton').addEventListener('click', function() {
+    var url = document.getElementById('urlInput').value;
+    var contentDiv = document.getElementById('content');
 
-    proxyButton.addEventListener('click', async function() {
-        const url = urlInput.value;
-        if (!url) {
-            contentDiv.textContent = 'Please enter a URL.';
-            return;
-        }
+    // Basic URL validation (improve as needed)
+    if (!url) {
+        contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
+        return;
+    }
 
-        try {
-            const response = await fetch('/api/proxy?url=' + encodeURIComponent(url));
+    // Display loading message
+    contentDiv.innerHTML = '<p>Loading...</p>';
 
+    // Use a more robust encoding method to handle special characters in the URL
+    var encodedUrl = encodeURIComponent(url);
+
+    // Fetch content from the proxy endpoint (replace with your actual endpoint)
+    fetch('/api/proxy?url=' + encodedUrl)
+        .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error('Network response was not ok ' + response.statusText);
             }
-
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                const data = await response.json();
-                contentDiv.textContent = JSON.stringify(data, null, 2);
-            } else {
-                const text = await response.text();
-                contentDiv.textContent = text;
-            }
-        } catch (error) {
+            return response.text();
+        })
+        .then(data => {
+            // Display the proxied content
+            contentDiv.innerHTML = data;
+        })
+        .catch(error => {
             console.error('Error fetching content:', error);
-            contentDiv.textContent = 'Error fetching content. Please check the URL and try again.';
-            contentDiv.classList.add('error');
-        }
-    });
+            contentDiv.innerHTML = '<p class="error">Error: ' + error.message + '</p>';
+        });
 });
