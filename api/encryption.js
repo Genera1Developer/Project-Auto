@@ -1,66 +1,33 @@
-const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 
-const secretKey = process.env.ENCRYPTION_KEY || 'SecretPassphrase';
-const ivString = process.env.IV_STRING || 'InitializationVe'; // Ensure length is 16
-const iterations = parseInt(process.env.PBKDF2_ITERATIONS) || 120; // Increased iterations
-const keySize = 256/32;
-const saltSize = 128/8;
+const algorithm = 'aes-256-gcm';
+const encryptionKey = crypto.randomBytes(32); // Store securely in production!
 
-function encrypt(plainText) {
-    const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16)); // Correctly sized IV
-    const salt = CryptoJS.lib.WordArray.random(saltSize);
-
-    const key = CryptoJS.PBKDF2(secretKey, salt, {
-        keySize: keySize,
-        iterations: iterations
-    });
-
-    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-
-    const saltHex = salt.toString(CryptoJS.enc.Hex);
-    const encryptedHex = encrypted.toString();
-
-    return saltHex + encryptedHex;
+function encrypt(text) {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv);
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag().toString('hex');
+    return iv.toString('hex') + ':' + authTag + ':' + encrypted;
 }
 
-function decrypt(cipherText) {
+function decrypt(encryptedData) {
     try {
-        const saltHex = cipherText.substring(0, saltSize * 2);
-        const encryptedHex = cipherText.substring(saltSize * 2);
+        const parts = encryptedData.split(':');
+        const iv = Buffer.from(parts.shift(), 'hex');
+        const authTag = Buffer.from(parts.shift(), 'hex');
+        const encryptedText = parts.join(':');
 
-        const salt = CryptoJS.enc.Hex.parse(saltHex);
-        const encrypted = CryptoJS.enc.Hex.parse(encryptedHex);
-        const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
-
-        const key = CryptoJS.PBKDF2(secretKey, salt, {
-            keySize: keySize,
-            iterations: iterations
-        });
-
-        const decrypted = CryptoJS.AES.decrypt({ ciphertext: encrypted }, key, {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-
-        const plaintext = decrypted.toString(CryptoJS.enc.Utf8);
-        return plaintext;
+        const decipher = crypto.createDecipheriv(algorithm, encryptionKey, iv);
+        decipher.setAuthTag(authTag);
+        let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
     } catch (error) {
-        console.error("Decryption Error:", error);
-        return null;
+        console.error('Decryption error:', error);
+        return null; // Or throw an error, depending on your needs
     }
 }
 
-function generateSecureKey() {
-    return CryptoJS.lib.WordArray.random(256/8).toString();
-}
-
-module.exports = {
-    encrypt,
-    decrypt,
-    generateSecureKey
-};
+module.exports = { encrypt, decrypt, encryptionKey };
