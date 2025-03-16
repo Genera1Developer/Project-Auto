@@ -4,29 +4,11 @@ const url = require('url');
 const crypto = require('crypto');
 
 const algorithm = 'aes-256-gcm';
-const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'), 'hex'); // Use environment variable, generate if absent, store securely
-const ENCRYPTION_ENABLED = process.env.ENCRYPTION_ENABLED === 'true'; // Enable/disable encryption via env variable
+const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'), 'hex');
+const ENCRYPTION_ENABLED = process.env.ENCRYPTION_ENABLED === 'true';
 
-function encrypt(text) {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    const authTag = cipher.getAuthTag().toString('hex');
-    return iv.toString('hex') + ':' + authTag + ':' + encrypted;
-}
-
-function decrypt(encryptedData) {
-    const parts = encryptedData.split(':');
-    const iv = Buffer.from(parts.shift(), 'hex');
-    const authTag = Buffer.from(parts.shift(), 'hex');
-    const encryptedText = parts.join(':');
-    const decipher = crypto.createDecipheriv(algorithm, encryptionKey, iv);
-    decipher.setAuthTag(authTag);
-    let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-}
+const decryptBody = require('./encryption').decrypt; // Import decrypt function
+const encryptBody = require('./encryption').encrypt; // Import encrypt function
 
 module.exports = (req, res) => {
     const targetUrl = req.query.url;
@@ -52,9 +34,9 @@ module.exports = (req, res) => {
         method: 'GET',
         headers: {
             'User-Agent': 'EncryptedProxy/1.0',
-            'Accept-Encoding': 'gzip, deflate, br', // Add brotli support
+            'Accept-Encoding': 'gzip, deflate, br',
         },
-        timeout: 10000, // Add timeout
+        timeout: 10000,
     };
 
     const protocol = parsedUrl.protocol === 'https:' ? https : http;
@@ -74,14 +56,14 @@ module.exports = (req, res) => {
 
             if (encoding === 'gzip' || encoding === 'deflate' || encoding === 'br') {
                 const zlib = require('zlib');
-                const brotli = require('zlib');
                 let decompress;
+
                 if (encoding === 'gzip') {
                     decompress = zlib.gunzip;
                 } else if (encoding === 'deflate') {
                     decompress = zlib.inflate;
                 } else if (encoding === 'br') {
-                    decompress = brotli.brotliDecompress;
+                    decompress = zlib.brotliDecompress;
                 }
 
                 decompress(buffer, (err, uncompressed) => {
@@ -92,77 +74,10 @@ module.exports = (req, res) => {
                         return;
                     }
                     decodedBody = uncompressed;
-
-                    let encryptedBody;
-                    if (ENCRYPTION_ENABLED) { // Conditionally encrypt
-                        try {
-                            encryptedBody = encrypt(decodedBody.toString());
-                        } catch (encryptErr) {
-                            console.error('Encryption error:', encryptErr);
-                            res.writeHead(500, { 'Content-Type': 'text/plain' });
-                            res.end('Proxy error: Encryption failed.');
-                            return;
-                        }
-
-                        res.writeHead(proxyRes.statusCode, {
-                            ...proxyRes.headers,
-                            'Content-Type': 'text/encrypted',
-                            'Content-Encoding': 'identity',
-                            'Cache-Control': 'no-store',
-                            'X-Content-Type-Options': 'nosniff',
-                            'X-Frame-Options': 'DENY',
-                            'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
-                            'X-XSS-Protection': '1; mode=block',
-                        });
-                        res.end(encryptedBody);
-                    } else {
-                        // If encryption is disabled, return the unencrypted content
-                        res.writeHead(proxyRes.statusCode, {
-                            ...proxyRes.headers,
-                            'Cache-Control': 'no-store',
-                            'X-Content-Type-Options': 'nosniff',
-                            'X-Frame-Options': 'DENY',
-                            'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
-                            'X-XSS-Protection': '1; mode=block',
-                        });
-                        res.end(decodedBody);
-                    }
+                    processResponse(proxyRes, decodedBody, res);
                 });
             } else {
-                let encryptedBody;
-                if (ENCRYPTION_ENABLED) { // Conditionally encrypt
-                    try {
-                        encryptedBody = encrypt(decodedBody.toString());
-                    } catch (encryptErr) {
-                        console.error('Encryption error:', encryptErr);
-                        res.writeHead(500, { 'Content-Type': 'text/plain' });
-                        res.end('Proxy error: Encryption failed.');
-                        return;
-                    }
-
-                    res.writeHead(proxyRes.statusCode, {
-                        ...proxyRes.headers,
-                        'Content-Type': 'text/encrypted',
-                        'Content-Encoding': 'identity',
-                        'Cache-Control': 'no-store',
-                        'X-Content-Type-Options': 'nosniff',
-                        'X-Frame-Options': 'DENY',
-                        'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
-                        'X-XSS-Protection': '1; mode=block',
-                    });
-                    res.end(encryptedBody);
-                } else {
-                    // If encryption is disabled, return the unencrypted content
-                    res.writeHead(proxyRes.statusCode, {
-                        ...proxyRes.headers,
-                        'Cache-Control': 'no-store',
-                        'X-Content-Type-Options': 'nosniff',
-                        'X-Frame-Options': 'DENY',
-                        'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
-                        'X-XSS-Protection': '1; mode=block',
-                    });
-                    res.end(decodedBody);
-                }
+                processResponse(proxyRes, decodedBody, res);
             }
         });
     }).on('error', (err) => {
@@ -179,3 +94,39 @@ module.exports = (req, res) => {
 
     proxyReq.end();
 };
+
+function processResponse(proxyRes, decodedBody, res) {
+    let encryptedBody;
+    if (ENCRYPTION_ENABLED) {
+        try {
+            encryptedBody = encryptBody(decodedBody.toString()); // Use imported function
+        } catch (encryptErr) {
+            console.error('Encryption error:', encryptErr);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Proxy error: Encryption failed.');
+            return;
+        }
+
+        res.writeHead(proxyRes.statusCode, {
+            ...proxyRes.headers,
+            'Content-Type': 'text/encrypted',
+            'Content-Encoding': 'identity',
+            'Cache-Control': 'no-store',
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'DENY',
+            'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
+            'X-XSS-Protection': '1; mode=block',
+        });
+        res.end(encryptedBody);
+    } else {
+        res.writeHead(proxyRes.statusCode, {
+            ...proxyRes.headers,
+            'Cache-Control': 'no-store',
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'DENY',
+            'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
+            'X-XSS-Protection': '1; mode=block',
+        });
+        res.end(decodedBody);
+    }
+}
