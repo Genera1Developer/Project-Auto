@@ -1,90 +1,151 @@
-const express = require('express');
-const router = express.Router();
 const https = require('https');
 const http = require('http');
 const crypto = require('crypto');
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default_encryption_key'; // Use environment variable
-const IV_LENGTH = 16;
-
-function encrypt(text) {
-    let iv = crypto.randomBytes(IV_LENGTH);
-    let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
+function encrypt(text, key) {
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key), iv);
     let encrypted = cipher.update(text);
-
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-
     return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
-function decrypt(text) {
-    try {
-        let textParts = text.split(':');
-        let iv = Buffer.from(textParts.shift(), 'hex');
-        let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-        let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-        let decrypted = decipher.update(encryptedText);
-
-        decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-        return decrypted.toString();
-    } catch (error) {
-        console.error('Decryption error:', error);
-        return null;
-    }
+function decrypt(text, key) {
+    const textParts = text.split(':');
+    const iv = Buffer.from(textParts.shift(), 'hex');
+    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
-router.get('/proxy', async (req, res) => {
+module.exports = (req, res) => {
     const url = req.query.url;
 
     if (!url) {
-        return res.status(400).send('URL parameter is required');
+        res.status(400).send('URL is required');
+        return;
     }
 
     try {
-        const parsedURL = new URL(url);
-        const protocol = parsedURL.protocol === 'https:' ? https : http;
-
-        protocol.get(url, (proxyRes) => {
-            let data = '';
-
-            proxyRes.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            proxyRes.on('end', () => {
-                const encryptedData = encrypt(data);
-                res.send(encryptedData);
-            });
-
-            proxyRes.on('error', (err) => {
-                console.error('Error during data transfer:', err);
-                res.status(500).send('Error during data transfer');
-            });
-        }).on('error', (err) => {
-            console.error('Error during request:', err);
-            res.status(500).send('Error during request');
-        });
-    } catch (error) {
-        console.error('Invalid URL:', error);
+        new URL(url);
+    } catch (err) {
         res.status(400).send('Invalid URL');
+        return;
+    }
+
+    const protocol = url.startsWith('https') ? https : http;
+
+    protocol.get(url, (proxyRes) => {
+        let data = '';
+
+        proxyRes.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        proxyRes.on('end', () => {
+            const encryptionKey = process.env.ENCRYPTION_KEY || 'defaultEncryptionKey';
+            const encryptedData = encrypt(data, encryptionKey);
+            res.status(200).send(encryptedData);
+        });
+
+    }).on('error', (err) => {
+        console.error(err);
+        res.status(500).send('Proxy error: ' + err.message);
+    });
+};
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    const proxyButton = document.getElementById('proxyButton');
+    const urlInput = document.getElementById('urlInput');
+    const contentDiv = document.getElementById('content');
+
+    proxyButton.addEventListener('click', function() {
+        const url = urlInput.value;
+
+        if (!url) {
+            contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
+            return;
+        }
+
+        // Basic URL validation
+        if (!isValidURL(url)) {
+            contentDiv.innerHTML = '<p class="error">Please enter a valid URL.</p>';
+            return;
+        }
+
+        // Display loading message
+        contentDiv.innerHTML = '<p>Loading...</p>';
+
+        fetch('/api/proxy?url=' + encodeURIComponent(url))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(encryptedData => {
+                // Decrypt the data in the browser
+                decryptData(encryptedData)
+                    .then(decryptedData => {
+                        contentDiv.innerHTML = decryptedData;
+                    })
+                    .catch(error => {
+                        contentDiv.innerHTML = '<p class="error">Decryption Error: ' + error.message + '</p>';
+                    });
+            })
+            .catch(error => {
+                contentDiv.innerHTML = '<p class="error">Error: ' + error.message + '</p>';
+            });
+    });
+
+    // Helper function to validate URL
+    function isValidURL(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    async function decryptData(encryptedData) {
+        const encryptionKey = 'defaultEncryptionKey'; // Should be securely managed, not hardcoded
+
+        return new Promise((resolve, reject) => {
+            try {
+                const textParts = encryptedData.split(':');
+                const iv = Buffer.from(textParts.shift(), 'hex');
+                const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+
+                // Import the key (consider using a more robust key derivation function)
+                crypto.subtle.importKey(
+                    "raw",
+                    new TextEncoder().encode(encryptionKey),
+                    { name: "AES-CBC", length: 256 },
+                    false,
+                    ["decrypt"]
+                ).then(key => {
+                    // Decrypt the data
+                    crypto.subtle.decrypt(
+                        { name: "AES-CBC", iv: iv },
+                        key,
+                        encryptedText
+                    ).then(decrypted => {
+                        const decryptedText = new TextDecoder().decode(decrypted);
+                        resolve(decryptedText);
+                    }).catch(err => {
+                        reject(new Error("Decryption failed: " + err.message));
+                    });
+                }).catch(err => {
+                    reject(new Error("Key import failed: " + err.message));
+                });
+            } catch (err) {
+                reject(new Error("Data processing error: " + err.message));
+            }
+        });
     }
 });
-
-router.get('/decrypt', (req, res) => {
-    const encryptedData = req.query.data;
-
-    if (!encryptedData) {
-        return res.status(400).send('Encrypted data is required');
-    }
-
-    const decryptedData = decrypt(encryptedData);
-
-    if (decryptedData === null) {
-        return res.status(500).send('Decryption failed');
-    }
-
-    res.send(decryptedData);
-});
-
-module.exports = router;
+edit filepath: .env
+content: ENCRYPTION_KEY=YourSecureEncryptionKeyHere
