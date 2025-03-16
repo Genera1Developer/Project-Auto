@@ -1,48 +1,47 @@
 const CryptoJS = require('crypto-js');
 
-const secretKey = process.env.ENCRYPTION_KEY || 'Secret Passphrase'; // Use env var for security
-const ivString = process.env.INITIALIZATION_VECTOR || 'InitializationVe'; // Use env var
-const iterations = parseInt(process.env.PBKDF2_ITERATIONS || '1000'); // Use env var and parse to int
+const secretPhrase = 'SuperSecretPassphrase';
+const initializationVector = 'InitializationVe'; //Must be exactly 16 bytes
 
-function encrypt(text) {
-    const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16)); // Ensure IV is 16 bytes
-    const salt = CryptoJS.lib.WordArray.random(128/8);
-    const key = CryptoJS.PBKDF2(secretKey, salt, {
-        keySize: 256/32,
-        iterations: iterations
+function encrypt(plainText) {
+    const iv = CryptoJS.enc.Utf8.parse(initializationVector);
+    const salt = CryptoJS.lib.WordArray.random(128 / 8);
+    const key = CryptoJS.PBKDF2(secretPhrase, salt, {
+        keySize: 256 / 32,
+        iterations: 500,
     });
-    const encrypted = CryptoJS.AES.encrypt(text, key, {
+
+    const encrypted = CryptoJS.AES.encrypt(plainText, key, {
         iv: iv,
         mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
+        padding: CryptoJS.pad.Pkcs7,
     });
-    return salt.toString()+encrypted.toString();
+
+    return salt.toString() + encrypted.toString();
 }
 
-function decrypt(text) {
+function decrypt(cipherText) {
     try {
-        const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
-        const salt = CryptoJS.enc.Hex.parse(text.substring(0, 32));
-        const encrypted = text.substring(32);
+        const iv = CryptoJS.enc.Utf8.parse(initializationVector);
+        const salt = CryptoJS.enc.Hex.parse(cipherText.substring(0, 32));
+        const encrypted = cipherText.substring(32);
 
-        const key = CryptoJS.PBKDF2(secretKey, salt, {
-            keySize: 256/32,
-            iterations: iterations
+        const key = CryptoJS.PBKDF2(secretPhrase, salt, {
+            keySize: 256 / 32,
+            iterations: 500,
         });
 
         const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
             iv: iv,
             mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
+            padding: CryptoJS.pad.Pkcs7,
         });
+
         return decrypted.toString(CryptoJS.enc.Utf8);
-    } catch (e) {
-        console.error("Decryption error:", e);
+    } catch (error) {
+        console.error('Decryption Error:', error);
         return null;
     }
 }
 
-module.exports = {
-    encrypt,
-    decrypt
-};
+module.exports = { encrypt, decrypt };
