@@ -8,7 +8,7 @@ particlesJS("particles-js", {
       }
     },
     "color": {
-      "value": "#00c698"
+      "value": "#007bff"
     },
     "shape": {
       "type": "circle",
@@ -48,7 +48,7 @@ particlesJS("particles-js", {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00c698",
+      "color": "#007bff",
       "opacity": 0.4,
       "width": 1
     },
@@ -94,8 +94,7 @@ particlesJS("particles-js", {
         "speed": 3
       },
       "repulse": {
-        "distance": 200,
-        "duration": 0.4
+        "distance": 200
       },
       "push": {
         "particles_nb": 4
@@ -105,30 +104,13 @@ particlesJS("particles-js", {
       }
     }
   },
-  "retina_detect": true
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#b61924",
+    "background_image": "",
+    "background_position": "50% 50%",
+    "background_repeat": "no-repeat",
+    "background_size": "cover"
+  }
 });
-edit filepath: api/encryption.js
-content: class Encryption {
-    constructor(key) {
-        this.key = key;
-    }
-
-    encrypt(data) {
-        let encrypted = '';
-        for (let i = 0; i < data.length; i++) {
-            encrypted += String.fromCharCode(data.charCodeAt(i) + this.key);
-        }
-        return btoa(encrypted);
-    }
-
-    decrypt(data) {
-        let decrypted = '';
-        data = atob(data);
-        for (let i = 0; i < data.length; i++) {
-            decrypted += String.fromCharCode(data.charCodeAt(i) - this.key);
-        }
-        return decrypted;
-    }
-}
-
-module.exports = Encryption;
