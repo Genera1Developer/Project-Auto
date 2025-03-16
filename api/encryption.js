@@ -1,23 +1,31 @@
 const crypto = require('crypto');
 
-const algorithm = 'aes-256-cbc';
-const key = crypto.randomBytes(32); // Generate a secure key
-const iv = crypto.randomBytes(16); // Generate a secure IV
+const algorithm = 'aes-256-gcm'; // Use GCM for authenticated encryption
+const key = crypto.randomBytes(32); // 256-bit key
+const ivLength = 16; // GCM mode uses 12-byte IVs
 
 function encrypt(text) {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    const iv = crypto.randomBytes(ivLength);
+    const cipher = crypto.createCipheriv(algorithm, key, iv);
     let encrypted = cipher.update(text);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+    const authTag = cipher.getAuthTag();
+    return {
+        iv: iv.toString('hex'),
+        encryptedData: encrypted.toString('hex'),
+        authTag: authTag.toString('hex')
+    };
 }
 
 function decrypt(text) {
-    let iv = Buffer.from(text.iv, 'hex');
-    let encryptedText = Buffer.from(text.encryptedData, 'hex');
-    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
+    const iv = Buffer.from(text.iv, 'hex');
+    const encryptedData = Buffer.from(text.encryptedData, 'hex');
+    const authTag = Buffer.from(text.authTag, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+    decipher.setAuthTag(authTag);
+    let decrypted = decipher.update(encryptedData);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
 }
 
-module.exports = { encrypt, decrypt };
+module.exports = { encrypt, decrypt, key };
