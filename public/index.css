@@ -3,7 +3,7 @@ body {
     font-family: sans-serif;
     background-color: #000;
     color: #00ff00;
-    overflow: hidden;
+    overflow: hidden; /* Prevent scrollbars, allow particles to cover entire screen */
 }
 
 #particles-js {
@@ -12,7 +12,7 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    z-index: -1;
+    z-index: -1; /* Behind all other content */
 }
 
 .container {
@@ -26,29 +26,30 @@ body {
 
 h1 {
     font-size: 3em;
-    margin-bottom: 20px;
+    margin-bottom: 0.5em;
+    text-shadow: 0 0 10px #00ff00;
 }
 
 input[type="text"] {
-    padding: 10px;
-    font-size: 1.2em;
+    padding: 0.5em;
+    margin-bottom: 1em;
     border: 2px solid #00ff00;
-    background-color: #000;
+    background-color: #222;
     color: #00ff00;
     border-radius: 5px;
-    margin-bottom: 20px;
     width: 80%;
     max-width: 400px;
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 1.2em;
+    padding: 0.75em 1.5em;
     background-color: #00ff00;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -57,10 +58,17 @@ button:hover {
 
 #error-message {
     color: red;
-    margin-top: 10px;
+    margin-top: 1em;
 }
 
+/* Style the encryption status */
 #encryption-status {
-    margin-top: 20px;
-    font-size: 1.1em;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #00ff00;
+    font-size: 0.8em;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    border-radius: 5px;
 }
