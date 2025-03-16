@@ -8,7 +8,7 @@ particlesJS("particles-js", {
       }
     },
     "color": {
-      "value": "#007bff"
+      "value": "#00c698"
     },
     "shape": {
       "type": "circle",
@@ -48,7 +48,7 @@ particlesJS("particles-js", {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#007bff",
+      "color": "#00c698",
       "opacity": 0.4,
       "width": 1
     },
@@ -71,7 +71,7 @@ particlesJS("particles-js", {
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "grab"
+        "mode": "repulse"
       },
       "onclick": {
         "enable": true,
@@ -81,7 +81,7 @@ particlesJS("particles-js", {
     },
     "modes": {
       "grab": {
-        "distance": 140,
+        "distance": 400,
         "line_linked": {
           "opacity": 1
         }
@@ -114,3 +114,114 @@ particlesJS("particles-js", {
     "background_size": "cover"
   }
 });
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Encrypted Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Encrypted Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+    </div>
+    <script src="particles.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+edit filepath: public/style.css
+content: body {
+    font-family: 'Arial', sans-serif;
+    background-color: #000; /* Dark background for encryption theme */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Hide scrollbars caused by particles */
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Place particles behind content */
+    top: 0;
+    left: 0;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white container */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 200, 150, 0.5); /* Glow effect */
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    z-index: 1; /* Place container above particles */
+    backdrop-filter: blur(5px); /* Glass effect */
+}
+
+h1 {
+    color: #00c698; /* Neon green text */
+    text-shadow: 0 0 5px #00c698, 0 0 10px #00c698; /* Glow effect */
+}
+
+#urlInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #00c698; /* Neon green border */
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    color: #fff; /* White text */
+}
+
+#proxyButton {
+    padding: 10px 20px;
+    background-color: #00c698; /* Neon green button */
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-shadow: 0 0 5px #00c698; /* Glow effect */
+}
+
+#proxyButton:hover {
+    background-color: #00a07a; /* Darker neon green on hover */
+}
+
+#content {
+    margin-top: 20px;
+    text-align: left;
+    border: 1px solid #00c698; /* Neon green border */
+    padding: 10px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+    color: #fff; /* White text */
+}
+
+/* Error messages */
+.error {
+    color: #ff4136; /* Red error text */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    #urlInput {
+        width: calc(100% - 10px);
+    }
+}
+edit filepath: .gitattributes
+content: * text=auto eol=lf
