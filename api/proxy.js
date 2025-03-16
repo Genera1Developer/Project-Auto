@@ -3,17 +3,16 @@ const http = require('http');
 const url = require('url');
 const crypto = require('crypto');
 
-const algorithm = 'aes-256-gcm'; // Use a strong and authenticated encryption algorithm (GCM)
-const encryptionKey = crypto.randomBytes(32); // Generate a secure encryption key (store securely in production)
+const algorithm = 'aes-256-gcm';
+const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'), 'hex'); // Use environment variable, generate if absent, store securely
 
 function encrypt(text) {
-    const iv = crypto.randomBytes(16); // Generate a unique IV for each encryption
+    const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv(algorithm, encryptionKey, iv);
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    const authTag = cipher.getAuthTag().toString('hex'); // Get the authentication tag
-
-    return iv.toString('hex') + ':' + authTag + ':' + encrypted; // Include IV and authTag in the output
+    const authTag = cipher.getAuthTag().toString('hex');
+    return iv.toString('hex') + ':' + authTag + ':' + encrypted;
 }
 
 function decrypt(encryptedData) {
@@ -21,9 +20,8 @@ function decrypt(encryptedData) {
     const iv = Buffer.from(parts.shift(), 'hex');
     const authTag = Buffer.from(parts.shift(), 'hex');
     const encryptedText = parts.join(':');
-
     const decipher = crypto.createDecipheriv(algorithm, encryptionKey, iv);
-    decipher.setAuthTag(authTag); // Set the authentication tag
+    decipher.setAuthTag(authTag);
     let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     return decrypted;
@@ -39,7 +37,7 @@ module.exports = (req, res) => {
     }
 
     try {
-        new URL(targetUrl); // Validate URL
+        new URL(targetUrl);
     } catch (err) {
         res.writeHead(400, { 'Content-Type': 'text/plain' });
         res.end('Invalid URL');
@@ -52,9 +50,10 @@ module.exports = (req, res) => {
         path: parsedUrl.path,
         method: 'GET',
         headers: {
-            'User-Agent': 'EncryptedProxy/1.0', // Add a custom user agent
-            'Accept-Encoding': 'gzip, deflate', // Accept compressed content
+            'User-Agent': 'EncryptedProxy/1.0',
+            'Accept-Encoding': 'gzip, deflate, br', // Add brotli support
         },
+        timeout: 10000, // Add timeout
     };
 
     const protocol = parsedUrl.protocol === 'https:' ? https : http;
@@ -69,60 +68,86 @@ module.exports = (req, res) => {
         proxyRes.on('end', () => {
             const buffer = Buffer.concat(body);
 
-            // Handle compressed content
             let encoding = proxyRes.headers['content-encoding'];
             let decodedBody = buffer;
 
-            if (encoding === 'gzip') {
+            if (encoding === 'gzip' || encoding === 'deflate' || encoding === 'br') {
                 const zlib = require('zlib');
+                const brotli = require('zlib');
+                let decompress;
+                if (encoding === 'gzip') {
+                    decompress = zlib.gunzip;
+                } else if (encoding === 'deflate') {
+                    decompress = zlib.inflate;
+                } else if (encoding === 'br') {
+                    decompress = brotli.brotliDecompress;
+                }
+
+                decompress(buffer, (err, uncompressed) => {
+                    if (err) {
+                        console.error('Decompression error:', err);
+                        res.writeHead(500, { 'Content-Type': 'text/plain' });
+                        res.end('Proxy error: Content decoding failed.');
+                        return;
+                    }
+                    decodedBody = uncompressed;
+
+                     let encryptedBody;
+                     try {
+                         encryptedBody = encrypt(decodedBody.toString());
+                     } catch (encryptErr) {
+                         console.error('Encryption error:', encryptErr);
+                         res.writeHead(500, { 'Content-Type': 'text/plain' });
+                         res.end('Proxy error: Encryption failed.');
+                         return;
+                     }
+
+                    res.writeHead(proxyRes.statusCode, {
+                        ...proxyRes.headers,
+                        'Content-Type': 'text/encrypted',
+                        'Content-Encoding': 'identity',
+                        'Cache-Control': 'no-store',
+                        'X-Content-Type-Options': 'nosniff',
+                        'X-Frame-Options': 'DENY',
+                        'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
+                        'X-XSS-Protection': '1; mode=block',
+                    });
+                    res.end(encryptedBody);
+                });
+            } else {
+                let encryptedBody;
                 try {
-                    decodedBody = zlib.gunzipSync(buffer);
-                } catch (err) {
-                    console.error('Gunzip error:', err);
+                    encryptedBody = encrypt(decodedBody.toString());
+                } catch (encryptErr) {
+                    console.error('Encryption error:', encryptErr);
                     res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end('Proxy error: Content decoding failed.');
+                    res.end('Proxy error: Encryption failed.');
                     return;
                 }
-            } else if (encoding === 'deflate') {
-                const zlib = require('zlib');
-                try {
-                    decodedBody = zlib.inflateSync(buffer);
-                } catch (err) {
-                    console.error('Inflate error:', err);
-                    res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end('Proxy error: Content decoding failed.');
-                    return;
-                }
+
+                res.writeHead(proxyRes.statusCode, {
+                    ...proxyRes.headers,
+                    'Content-Type': 'text/encrypted',
+                    'Content-Encoding': 'identity',
+                    'Cache-Control': 'no-store',
+                    'X-Content-Type-Options': 'nosniff',
+                    'X-Frame-Options': 'DENY',
+                    'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
+                    'X-XSS-Protection': '1; mode=block',
+                });
+                res.end(encryptedBody);
             }
-
-            const contentType = proxyRes.headers['content-type'] || 'text/plain';
-            let encryptedBody;
-            try {
-                encryptedBody = encrypt(decodedBody.toString());
-            } catch (encryptErr) {
-                console.error('Encryption error:', encryptErr);
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('Proxy error: Encryption failed.');
-                return;
-            }
-
-
-            res.writeHead(proxyRes.statusCode, {
-                ...proxyRes.headers,
-                'Content-Type': 'text/encrypted',
-                'Content-Encoding': 'identity', // Remove content encoding
-                'Cache-Control': 'no-store', // Disable caching
-                'X-Content-Type-Options': 'nosniff', // Prevent MIME sniffing
-                'X-Frame-Options': 'DENY', // Prevent framing
-                'Content-Security-Policy': "default-src 'none'; script-src 'none'; object-src 'none'; style-src 'unsafe-inline'; img-src data:; media-src 'none'; frame-src 'none'; connect-src 'none'; font-src 'none';",
-                'X-XSS-Protection': '1; mode=block', // Enable XSS protection
-            });
-            res.end(encryptedBody);
         });
     }).on('error', (err) => {
         console.error('Proxy error:', err);
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Proxy error: ' + err.message);
+    });
+
+    proxyReq.on('timeout', () => {
+        proxyReq.abort();
+        res.writeHead(504, { 'Content-Type': 'text/plain' });
+        res.end('Proxy timeout.');
     });
 
     proxyReq.end();
