@@ -1,76 +1,112 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background for encryption theme */
-    color: #00FF00; /* Green text, like a terminal */
+    background-color: #000;
+    color: #00FF00;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow: hidden; /* Hide scrollbars */
+    overflow: hidden;
 }
 
 .container {
-    background-color: rgba(0, 0, 0, 0.8); /* Slightly transparent dark background */
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3); /* Green glow effect */
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
     text-align: center;
     width: 80%;
     max-width: 600px;
-    position: relative; /* For particles.js positioning */
-    z-index: 1; /* Ensure content is above particles */
+    position: relative;
+    z-index: 1;
 }
 
 h1 {
     color: #00FF00;
     margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5); /* Glowing text effect */
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    animation: glitch 2s infinite;
 }
 
 #urlInput {
     width: calc(100% - 20px);
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #00FF00; /* Green border */
+    border: 1px solid #00FF00;
     border-radius: 4px;
-    background-color: #222; /* Dark input background */
-    color: #00FF00; /* Green input text */
+    background-color: #222;
+    color: #00FF00;
 }
 
 #proxyButton {
     padding: 10px 20px;
-    background-color: #00FF00; /* Green button */
-    color: #000; /* Black text */
+    background-color: #00FF00;
+    color: #000;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 #proxyButton:hover {
-    background-color: #00BB00; /* Slightly darker green on hover */
+    background-color: #00BB00;
+    transform: scale(1.1);
 }
 
 #content {
     margin-top: 20px;
     text-align: left;
-    border: 1px solid #00FF00; /* Green border */
+    border: 1px solid #00FF00;
     padding: 10px;
     border-radius: 4px;
-    background-color: #111; /* Dark content background */
-    color: #00FF00; /* Green content text */
+    background-color: #111;
+    color: #00FF00;
     overflow-wrap: break-word;
 }
 
-/* Error message styling */
 #content p.error {
-    color: #FF0000; /* Red error text */
-    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Red glow for errors */
+    color: #FF0000;
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
 
-/* Responsive Design */
+@keyframes glitch {
+    0% {
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    10% {
+        text-shadow: -2px 2px 10px rgba(255, 0, 0, 0.5), 2px -2px 10px rgba(0, 0, 255, 0.5);
+    }
+    20% {
+        text-shadow: 2px -2px 10px rgba(255, 0, 0, 0.5), -2px 2px 10px rgba(0, 0, 255, 0.5);
+    }
+    30% {
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    40% {
+        text-shadow: -2px 0px 10px rgba(255, 0, 0, 0.5);
+    }
+    50% {
+        text-shadow: 2px 2px 10px rgba(0, 0, 255, 0.5);
+    }
+    60% {
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    70% {
+        text-shadow: 0px -2px 10px rgba(255, 0, 0, 0.5);
+    }
+    80% {
+        text-shadow: -2px -2px 10px rgba(0, 0, 255, 0.5);
+    }
+    90% {
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    100% {
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         width: 95%;
@@ -81,12 +117,33 @@ h1 {
     }
 }
 
-/* Particles.js container */
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 0; /* Behind the content */
+    z-index: 0;
+}
+
+.encryption-info {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px dashed #00FF00;
+    border-radius: 4px;
+    background-color: #222;
+    color: #00FF00;
+    text-align: left;
+    font-size: 0.8em;
+}
+
+.encryption-info h3 {
+    color: #00FF00;
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+}
+
+.encryption-info p {
+    margin-bottom: 5px;
 }
