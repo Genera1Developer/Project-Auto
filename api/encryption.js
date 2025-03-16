@@ -1,51 +1,23 @@
-const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 
-const secretKey = process.env.ENCRYPTION_KEY || 'Secret Passphrase';
-const initializationVector = process.env.IV || 'Initialization Vector';
-const iterations = 120;
+const algorithm = 'aes-256-cbc'; // Use a strong encryption algorithm
+const key = crypto.randomBytes(32); // Generate a secure key (32 bytes for AES-256)
+const iv = crypto.randomBytes(16); // Generate a secure initialization vector (16 bytes for AES)
 
 function encrypt(text) {
-    const iv = CryptoJS.enc.Utf8.parse(initializationVector.substring(0, 16));
-    const salt = CryptoJS.lib.WordArray.random(128 / 8);
-    const key = CryptoJS.PBKDF2(secretKey, salt, {
-        keySize: 256 / 32,
-        iterations: iterations
-    });
-
-    const encrypted = CryptoJS.AES.encrypt(text, key, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-
-    return salt.toString() + encrypted.toString();
+    const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
 function decrypt(text) {
-    try {
-        const iv = CryptoJS.enc.Utf8.parse(initializationVector.substring(0, 16));
-        const salt = CryptoJS.enc.Hex.parse(text.substring(0, 32));
-        const encrypted = text.substring(32);
-
-        const key = CryptoJS.PBKDF2(secretKey, salt, {
-            keySize: 256 / 32,
-            iterations: iterations
-        });
-
-        const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-
-        return decrypted.toString(CryptoJS.enc.Utf8);
-    } catch (error) {
-        console.error("Decryption error:", error);
-        return null;
-    }
+    const iv = Buffer.from(text.iv, 'hex');
+    const encryptedText = Buffer.from(text.encryptedData, 'hex');
+    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
-module.exports = {
-    encrypt,
-    decrypt
-};
+module.exports = { encrypt, decrypt };
