@@ -1,62 +1,65 @@
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #000;
     color: #fff;
     overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #particles-js {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    background-color: #000;
+    z-index: 0;
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
     text-align: center;
+    z-index: 1;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+}
+
+p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
 }
 
 input[type="text"] {
     padding: 10px;
-    border: 2px solid #333;
-    background-color: #111;
-    color: #fff;
+    width: 70%;
+    border: none;
     border-radius: 5px;
     margin-bottom: 20px;
-    width: 80%;
-    max-width: 400px;
+    background-color: #222;
+    color: #fff;
 }
 
 button {
     padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
+    background-color: #00ffff;
+    color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1.1em;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
-}
-
-#error-message {
-    color: red;
-    margin-top: 10px;
-}
-
-a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
+    background-color: #00bfff;
 }
