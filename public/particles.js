@@ -107,27 +107,46 @@ particlesJS("particles-js", {
   },
   "retina_detect": true
 });
-edit filepath: api/encryption.js
-content: const crypto = require('crypto');
+edit filepath: api/proxy.js
+content: const http = require('http');
+const https = require('https');
+const url = require('url');
 
-const algorithm = 'aes-256-cbc'; //Using AES encryption
-const key = crypto.randomBytes(32);
-const iv = crypto.randomBytes(16);
+const proxyHandler = (req, res) => {
+    const targetURL = req.url.slice(1);
 
-function encrypt(text) {
-    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
-}
+    if (!targetURL) {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Please provide a URL to proxy.');
+        return;
+    }
 
-function decrypt(text) {
-    let iv = Buffer.from(text.iv, 'hex');
-    let encryptedText = Buffer.from(text.encryptedData, 'hex');
-    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
+    try {
+        const parsedURL = new URL(targetURL);
+        const options = {
+            hostname: parsedURL.hostname,
+            path: parsedURL.pathname + parsedURL.search,
+            method: req.method,
+            headers: req.headers
+        };
 
-module.exports = { encrypt, decrypt };
+        const proxyRequest = (parsedURL.protocol === 'https:' ? https : http).request(options, proxyResponse => {
+            res.writeHead(proxyResponse.statusCode, proxyResponse.headers);
+            proxyResponse.pipe(res, { end: true });
+        });
+
+        proxyRequest.on('error', error => {
+            console.error('Proxy request error:', error);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Proxy request failed.');
+        });
+
+        req.pipe(proxyRequest, { end: true });
+    } catch (error) {
+        console.error('URL parsing error:', error);
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Invalid URL.');
+    }
+};
+
+module.exports = proxyHandler;
