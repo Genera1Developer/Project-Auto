@@ -1,74 +1,59 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background */
-    color: #fff;
     margin: 0;
-    padding: 0;
-    height: 100vh;
-    overflow: hidden; /* Hide scrollbars */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.container {
-    position: relative;
-    z-index: 1; /* Ensure content is above particles */
-    padding: 20px;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Cyan glow */
-}
-
-h1 {
-    color: #00ffff; /* Cyan text */
-    margin-bottom: 20px;
-}
-
-p {
-    color: #fff;
-    margin-bottom: 10px;
-}
-
-input[type="text"] {
-    padding: 10px;
-    border: 2px solid #00ffff; /* Cyan border */
-    border-radius: 5px;
-    background-color: #222;
-    color: #fff;
-    width: 80%;
-    margin-bottom: 20px;
-}
-
-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #00ffff; /* Cyan button */
-    color: #000;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #00bfff; /* Darker cyan on hover */
-}
-
-#error {
-    color: #ff4d4d; /* Red error message */
-    margin-top: 10px;
-}
-
-.hidden {
-    display: none;
+    font-family: sans-serif;
+    background-color: #000;
+    color: #00ff00;
+    overflow: hidden;
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
+    z-index: -1;
     top: 0;
     left: 0;
-    z-index: 0; /* Place particles behind content */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin: 10px;
+    border: 2px solid #00ff00;
+    background-color: #222;
+    color: #00ff00;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #00ff00;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+}
+
+button:hover {
+    background-color: #00aa00;
+}
+
+a {
+    color: #00ff00;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
