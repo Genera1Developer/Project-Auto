@@ -56,14 +56,29 @@
         n.r(e);
         var o = n(0);
         const r = "Secret Passphrase";
+        const a = "Initialization Vector";
+
         function i(t) {
-            return o.AES.encrypt(t, r).toString();
+            const iv = o.enc.Utf8.parse(a.substring(0, 16));
+            const encrypted = o.AES.encrypt(t, o.enc.Utf8.parse(r), {
+                iv: iv,
+                mode: o.mode.CBC,
+                padding: o.pad.Pkcs7
+            });
+            return encrypted.toString();
         }
+
         function c(t) {
             try {
-                const e = o.AES.decrypt(t, r).toString(o.enc.Utf8);
-                return e;
+                const iv = o.enc.Utf8.parse(a.substring(0, 16));
+                const decrypted = o.AES.decrypt(t, o.enc.Utf8.parse(r), {
+                    iv: iv,
+                    mode: o.mode.CBC,
+                    padding: o.pad.Pkcs7
+                });
+                return decrypted.toString(o.enc.Utf8);
             } catch (e) {
+                console.error("Decryption error:", e);
                 return null;
             }
         }
