@@ -1,33 +1,51 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('urlInput');
-    const proxyButton = document.getElementById('proxyButton');
-    const contentDiv = document.getElementById('content');
+document.addEventListener('DOMContentLoaded', () => {
+    const urlForm = document.getElementById('urlForm');
+    const urlInput = document.getElementById('url');
+    const resultDiv = document.getElementById('result');
 
-    proxyButton.addEventListener('click', async function() {
+    urlForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
         const url = urlInput.value;
 
         if (!url) {
-            contentDiv.textContent = 'Please enter a URL.';
-            contentDiv.classList.add('error');
+            resultDiv.textContent = 'Please enter a URL.';
             return;
         }
 
-        contentDiv.classList.remove('error');
-        contentDiv.textContent = 'Loading...';
-
         try {
-            const response = await fetch('/api/proxy?url=' + encodeURIComponent(url));
+            const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            const data = await response.text();
-            contentDiv.textContent = data;
+            const encryptedData = await response.text();
+
+            // Decrypt the data (simulated client-side decryption)
+            const decryptedData = await decryptData(encryptedData);
+
+            resultDiv.innerHTML = `<iframe srcdoc="${decryptedData}" width="100%" height="500px"></iframe>`;
+
+
         } catch (error) {
-            console.error('Error fetching content:', error);
-            contentDiv.textContent = 'Failed to load content. Please check the URL and try again.';
-            contentDiv.classList.add('error');
+            console.error('Fetch error:', error);
+            resultDiv.textContent = `Error: ${error.message}`;
         }
     });
+
+    // Simulated decryption function (replace with actual client-side decryption)
+    async function decryptData(encryptedData) {
+        try {
+            const response = await fetch('/api/encryption?data=' + encodeURIComponent(encryptedData));
+            if (!response.ok) {
+                throw new Error(`HTTP decryption error! Status: ${response.status}`);
+            }
+            const decryptedText = await response.text();
+            return decryptedText;
+
+        } catch (error) {
+            console.error('Decryption error:', error);
+            return `Decryption Error: ${error.message}`;
+        }
+    }
 });
