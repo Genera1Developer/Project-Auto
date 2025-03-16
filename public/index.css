@@ -1,9 +1,9 @@
 body {
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Courier New', monospace;
     background-color: #000;
-    color: #fff;
-    overflow: hidden; /* Prevent scrollbars */
+    color: #00ff00; /* Bright green for encryption theme */
+    overflow: hidden;
 }
 
 #particles-js {
@@ -25,37 +25,52 @@ body {
 h1 {
     font-size: 3em;
     margin-bottom: 0.5em;
-    text-shadow: 0 0 10px #0f0; /* Neon green glow */
+    text-shadow: 0 0 10px #00ff00; /* Stronger neon glow */
+    letter-spacing: 2px; /* Add letter spacing for a tech look */
 }
 
 input[type="text"] {
     padding: 10px;
     font-size: 1.2em;
-    border: 2px solid #0f0; /* Neon green border */
-    background-color: #222;
-    color: #fff;
+    border: 2px solid #00ff00; /* Bright green border */
+    background-color: #111; /* Darker background */
+    color: #00ff00;
     border-radius: 5px;
     width: 80%;
     max-width: 400px;
     margin-bottom: 1em;
+    font-family: 'Courier New', monospace;
 }
 
 button {
     padding: 10px 20px;
     font-size: 1.2em;
-    background-color: #0f0; /* Neon green button */
+    background-color: #00ff00; /* Bright green button */
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Courier New', monospace;
 }
 
 button:hover {
-    background-color: #0a0; /* Darker green on hover */
+    background-color: #008000; /* Darker green on hover */
+    color: #fff; /* White text on hover */
 }
 
 #error-message {
-    color: red;
+    color: #ff4500; /* Orange-red for errors */
     margin-top: 10px;
+    font-family: 'Courier New', monospace;
+}
+
+/* Add a subtle animation for the input */
+input[type="text"] {
+    transition: box-shadow 0.5s ease;
+}
+
+input[type="text"]:focus {
+    box-shadow: 0 0 15px #00ff00; /* Glowing effect on focus */
+    outline: none;
 }
