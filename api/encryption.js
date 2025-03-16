@@ -4,10 +4,11 @@ const secretKey = process.env.ENCRYPTION_KEY || 'SecretPassphrase';
 const ivString = process.env.IV_STRING || 'InitializationVe'; // Ensure length is 16
 const iterations = parseInt(process.env.PBKDF2_ITERATIONS) || 120; // Increased iterations
 const keySize = 256/32;
+const saltSize = 128/8;
 
 function encrypt(plainText) {
     const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16)); // Correctly sized IV
-    const salt = CryptoJS.lib.WordArray.random(128/8);
+    const salt = CryptoJS.lib.WordArray.random(saltSize);
 
     const key = CryptoJS.PBKDF2(secretKey, salt, {
         keySize: keySize,
@@ -20,13 +21,19 @@ function encrypt(plainText) {
         padding: CryptoJS.pad.Pkcs7
     });
 
-    return salt.toString() + encrypted.toString();
+    const saltHex = salt.toString(CryptoJS.enc.Hex);
+    const encryptedHex = encrypted.toString();
+
+    return saltHex + encryptedHex;
 }
 
 function decrypt(cipherText) {
     try {
-        const salt = CryptoJS.enc.Hex.parse(cipherText.substring(0, 32));
-        const encrypted = cipherText.substring(32);
+        const saltHex = cipherText.substring(0, saltSize * 2);
+        const encryptedHex = cipherText.substring(saltSize * 2);
+
+        const salt = CryptoJS.enc.Hex.parse(saltHex);
+        const encrypted = CryptoJS.enc.Hex.parse(encryptedHex);
         const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
 
         const key = CryptoJS.PBKDF2(secretKey, salt, {
@@ -34,13 +41,14 @@ function decrypt(cipherText) {
             iterations: iterations
         });
 
-        const decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+        const decrypted = CryptoJS.AES.decrypt({ ciphertext: encrypted }, key, {
             iv: iv,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7
         });
 
-        return decrypted.toString(CryptoJS.enc.Utf8);
+        const plaintext = decrypted.toString(CryptoJS.enc.Utf8);
+        return plaintext;
     } catch (error) {
         console.error("Decryption Error:", error);
         return null;
