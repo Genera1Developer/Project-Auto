@@ -1,75 +1,71 @@
 body {
-    font-family: 'Arial', sans-serif;
     margin: 0;
-    overflow: hidden; /* Hide scrollbars */
+    font-family: sans-serif;
     background-color: #000;
-    color: #fff;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    color: #00ff00;
+    overflow: hidden;
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+    left: 0;
 }
 
 .container {
-    text-align: center;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    z-index: 1;
-}
-
-h1 {
-    font-size: 2.5em;
-    margin-bottom: 10px;
-    color: #00ffff;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-}
-
-p {
-    font-size: 1.2em;
-    color: #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
 input[type="text"] {
     padding: 10px;
     margin: 10px 0;
-    width: 300px;
-    border: 2px solid #00ffff;
+    border: 2px solid #00ff00;
+    background-color: #222;
+    color: #00ff00;
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
-    font-size: 1em;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus {
-    border-color: #00abff;
+    width: 300px;
+    font-size: 16px;
 }
 
 button {
-    padding: 12px 24px;
-    background-color: #00ffff;
+    padding: 10px 20px;
+    background-color: #00ff00;
     color: #000;
     border: none;
     border-radius: 5px;
-    font-size: 1.1em;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 16px;
 }
 
 button:hover {
-    background-color: #00abff;
-    color: #fff;
+    background-color: #00bb00;
 }
 
-#particles-js {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 0;
+#error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+a {
+    color: #00ff00;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.footer {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    color: #888;
+    font-size: 12px;
 }
