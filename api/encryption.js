@@ -1,16 +1,33 @@
 const CryptoJS = require('crypto-js');
 
-const key = CryptoJS.enc.Hex.parse('000102030405060708090a0b0c0d0e0f');
-const iv = CryptoJS.enc.Hex.parse('101112131415161718191a1b1c1d1e1f');
+// Generate a more secure, random key and IV on server start or using a secure method. DO NOT HARDCODE IN PRODUCTION
+const generateRandomKey = () => CryptoJS.lib.WordArray.random(16).toString();
+const generateRandomIV = () => CryptoJS.lib.WordArray.random(16).toString();
+
+const key = CryptoJS.enc.Hex.parse(generateRandomKey());
+const iv = CryptoJS.enc.Hex.parse(generateRandomIV());
 
 function encrypt(plaintext) {
-  const encrypted = CryptoJS.AES.encrypt(plaintext, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
-  return encrypted.toString();
+  try {
+    const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
+    return encrypted.toString();
+  } catch (error) {
+    console.error("Encryption failed:", error);
+    return null;
+  }
 }
 
 function decrypt(ciphertext) {
   try {
-    const decrypted = CryptoJS.AES.decrypt(ciphertext, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
+    const decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7
+    });
     return decrypted.toString(CryptoJS.enc.Utf8);
   } catch (error) {
     console.error("Decryption failed:", error);
