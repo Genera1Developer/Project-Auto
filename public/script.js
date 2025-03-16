@@ -1,135 +1,53 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const urlForm = document.getElementById('urlForm');
-    const urlInput = document.getElementById('url');
-    const proxyFrame = document.getElementById('proxyFrame');
-    const particlesContainer = document.getElementById('particles-js');
+document.addEventListener('DOMContentLoaded', function() {
+    const urlInput = document.getElementById('urlInput');
+    const proxyButton = document.getElementById('proxyButton');
+    const contentDiv = document.getElementById('content');
 
-    urlForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const targetUrl = urlInput.value;
+    proxyButton.addEventListener('click', async function() {
+        const url = urlInput.value;
 
-        if (targetUrl) {
-            proxyFrame.src = `/api/proxy?url=${encodeURIComponent(targetUrl)}`;
-        } else {
-            alert('Please enter a URL.');
+        if (!url) {
+            contentDiv.textContent = 'Please enter a URL.';
+            return;
+        }
+
+        try {
+            // AES key exchange endpoint (simulated)
+            const keyResponse = await fetch('/api/keyExchange');
+            const keyData = await keyResponse.json();
+            const aesKey = keyData.key;
+
+            // Fetch proxied content
+            const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.encryptedContent && aesKey) {
+                // Decrypt content
+                const decryptedContent = await decryptAES(data.encryptedContent, aesKey);
+                contentDiv.innerHTML = decryptedContent;
+            } else {
+                contentDiv.textContent = data.message || 'Failed to fetch or decrypt content.';
+            }
+
+        } catch (error) {
+            console.error('Error fetching content:', error);
+            contentDiv.textContent = 'An error occurred while fetching the content.';
+            contentDiv.classList.add('error');
         }
     });
 
-    /* global particlesJS */
-    particlesJS('particles-js', {
-        particles: {
-            number: {
-                value: 80,
-                density: {
-                    enable: true,
-                    value_area: 800
-                }
-            },
-            color: {
-                value: '#00c698'
-            },
-            shape: {
-                type: 'circle',
-                stroke: {
-                    width: 0,
-                    color: '#000000'
-                },
-                polygon: {
-                    nb_sides: 5
-                },
-                image: {
-                    src: 'img/github.svg',
-                    width: 100,
-                    height: 100
-                }
-            },
-            opacity: {
-                value: 0.5,
-                random: false,
-                anim: {
-                    enable: false,
-                    speed: 1,
-                    opacity_min: 0.1,
-                    sync: false
-                }
-            },
-            size: {
-                value: 5,
-                random: true,
-                anim: {
-                    enable: false,
-                    speed: 40,
-                    size_min: 0.1,
-                    sync: false
-                }
-            },
-            line_linked: {
-                enable: true,
-                distance: 150,
-                color: '#00c698',
-                opacity: 0.4,
-                width: 1
-            },
-            move: {
-                enable: true,
-                speed: 6,
-                direction: 'none',
-                random: false,
-                straight: false,
-                out_mode: 'out',
-                attract: {
-                    enable: false,
-                    rotateX: 600,
-                    rotateY: 1200
-                }
-            }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: {
-                onhover: {
-                    enable: true,
-                    mode: 'grab'
-                },
-                onclick: {
-                    enable: true,
-                    mode: 'push'
-                },
-                resize: true
-            },
-            modes: {
-                grab: {
-                    distance: 140,
-                    line_linked: {
-                        opacity: 1
-                    }
-                },
-                bubble: {
-                    distance: 400,
-                    size: 40,
-                    duration: 2,
-                    opacity: 8,
-                    speed: 3
-                },
-                repulse: {
-                    distance: 200
-                },
-                push: {
-                    particles_nb: 4
-                },
-                remove: {
-                    particles_nb: 2
-                }
-            }
-        },
-        retina_detect: true,
-        config_demo: {
-            hide_card: false,
-            background_color: '#000',
-            background_image: '',
-            background_position: '50% 50%',
-            background_repeat: 'no-repeat',
-            background_size: 'cover'
-        }
-    });
+    // AES decryption function (simulated)
+    async function decryptAES(encryptedContent, key) {
+        // This is a placeholder for actual AES decryption.
+        // In a real application, use the Web Crypto API for secure decryption.
+        // Example using CryptoJS (include CryptoJS library in your HTML):
+        // const decrypted = CryptoJS.AES.decrypt(encryptedContent, key).toString(CryptoJS.enc.Utf8);
+        // return decrypted;
+        return `Decrypted: ${encryptedContent} (using key: ${key})`; // Placeholder
+    }
 });
