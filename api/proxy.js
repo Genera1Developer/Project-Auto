@@ -11,9 +11,7 @@ function encrypt(text) {
     let iv = crypto.randomBytes(IV_LENGTH);
     let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
     let encrypted = cipher.update(text);
-
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-
     return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
@@ -24,16 +22,13 @@ function decrypt(text) {
         let encryptedText = Buffer.from(textParts.join(':'), 'hex');
         let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
         let decrypted = decipher.update(encryptedText);
-
         decrypted = Buffer.concat([decrypted, decipher.final()]);
-
         return decrypted.toString();
     } catch (error) {
         console.error('Decryption error:', error);
-        return null; // Or throw an error, depending on your needs
+        return null;
     }
 }
-
 
 module.exports = (req, res) => {
     const targetUrl = req.url.substring(req.url.indexOf('url=') + 4);
@@ -56,10 +51,11 @@ module.exports = (req, res) => {
                 'Accept-Language': req.headers['accept-language'] || 'en-US,en;q=0.9',
                 'Cache-Control': 'no-cache',
                 'Connection': 'close',
-                'Accept-Encoding': 'gzip, deflate, br', // Accept compressed content
+                'Accept-Encoding': 'gzip, deflate, br',
             },
         }, (proxyRes) => {
             let body = [];
+            const contentEncoding = proxyRes.headers['content-encoding'];
 
             proxyRes.on('data', (chunk) => {
                 body.push(chunk);
@@ -68,21 +64,26 @@ module.exports = (req, res) => {
             proxyRes.on('end', () => {
                 let responseData = Buffer.concat(body);
 
-                // Handle compressed content
-                if (proxyRes.headers['content-encoding'] === 'gzip') {
-                    responseData = zlib.gunzipSync(responseData);
-                } else if (proxyRes.headers['content-encoding'] === 'deflate') {
-                    responseData = zlib.inflateSync(responseData);
+                try {
+                    if (contentEncoding === 'gzip') {
+                        responseData = zlib.gunzipSync(responseData);
+                    } else if (contentEncoding === 'deflate') {
+                        responseData = zlib.inflateSync(responseData);
+                    }
+                } catch (error) {
+                    console.error('Decompression error:', error);
+                    return res.status(500).send('Decompression error');
                 }
 
-                responseData = responseData.toString();
+                let responseString = responseData.toString();
 
-                // Encrypt the response data
-                const encryptedData = encrypt(responseData);
+                const encryptedData = encrypt(responseString);
 
-                // Set appropriate headers for encrypted content
-                res.setHeader('Content-Type', 'application/octet-stream'); // Or a custom type
-                res.setHeader('Content-Disposition', 'attachment; filename="encrypted_data.enc"'); // Suggest a filename
+                res.setHeader('Content-Type', 'application/octet-stream');
+                res.setHeader('Content-Disposition', 'attachment; filename="encrypted_data.enc"');
+                res.setHeader('X-Content-Type-Options', 'nosniff'); // Prevent MIME sniffing
+                res.setHeader('X-Frame-Options', 'DENY'); // Prevent clickjacking
+                res.setHeader('Content-Security-Policy', "default-src 'none'; script-src 'none'; object-src 'none'"); // CSP
 
                 res.writeHead(proxyRes.statusCode);
                 res.end(encryptedData);
