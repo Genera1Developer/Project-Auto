@@ -18,78 +18,92 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             const encryptedData = await response.text();
-
-            const decryptionKey = 'defaultEncryptionKey'; 
 			
-			const decryptedData = decrypt(encryptedData, decryptionKey);
+			// Decrypt the data in the browser
+			const encryptionKey = 'defaultEncryptionKey'; //TODO: Replace with secure key exchange
 
-            contentDiv.textContent = decryptedData;
+			async function decrypt(encryptedData, key) {
+				return new Promise((resolve, reject) => {
+					try {
+						const textParts = encryptedData.split(':');
+						const iv = Buffer.from(textParts.shift(), 'hex');
+						const authTag = Buffer.from(textParts.shift(), 'hex');
+						const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+
+						crypto.subtle.importKey(
+							"raw",
+							new TextEncoder().encode(key),
+							"AES-CBC",
+							false,
+							["encrypt", "decrypt"]
+						).then(key => {
+							crypto.subtle.decrypt(
+								{
+									name: "AES-CBC",
+									iv: iv,
+									tagLength: 128,
+								},
+								key,
+								encryptedText
+							).then(decrypted => {
+								resolve(new TextDecoder().decode(decrypted));
+							}).catch(err => reject(err));
+						}).catch(err => reject(err));
+					} catch (error) {
+						reject(error);
+					}
+				});
+			}
+
+
+            decrypt(encryptedData, encryptionKey)
+                .then(decryptedData => {
+                    contentDiv.textContent = decryptedData;
+                })
+                .catch(error => {
+                    console.error("Decryption error:", error);
+                    contentDiv.textContent = 'Decryption failed.  Check console for details.';
+                    contentDiv.classList.add('error');
+                });
+
         } catch (error) {
-            console.error('Error fetching data:', error);
-            contentDiv.textContent = 'Error: ' + error.message;
+            console.error("Proxy error:", error);
+            contentDiv.textContent = 'Proxy request failed. Check console for details.';
             contentDiv.classList.add('error');
         }
     });
 });
-
-function decrypt(text, key) {
-    const textParts = text.split(':');
-    const iv = Buffer.from(textParts.shift(), 'hex');
-	const authTag = Buffer.from(textParts.shift(), 'hex');
-    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
-	decipher.setAuthTag(authTag);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
-
-const crypto = {
-  randomBytes: (size) => {
-    const arr = new Uint8Array(size);
-    for (let i = 0; i < size; i++) {
-      arr[i] = Math.floor(Math.random() * 256);
-    }
-    return arr;
-  },
-};
-
 edit filepath: api/encryption.js
-content: const crypto = require('crypto');
+content: // api/encryption.js
 
-function encrypt(text, key) {
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(key, 'hex'), iv);
+const crypto = require('crypto');
 
-    let encrypted = cipher.update(text, 'utf8');
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-
-    const authTag = cipher.getAuthTag();
-
-    return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
+// Function to generate a secure encryption key
+function generateEncryptionKey() {
+  return crypto.randomBytes(32).toString('hex'); // 256-bit key
 }
 
+// Function to encrypt data using AES-256-CBC
+function encrypt(data, key) {
+  const iv = crypto.randomBytes(16); // Initialization vector
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+  let encrypted = cipher.update(data);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return iv.toString('hex') + ':' + encrypted.toString('hex'); // Store IV for decryption
+}
+
+// Function to decrypt data using AES-256-CBC
 function decrypt(encryptedData, key) {
-    try {
-        const parts = encryptedData.split(':');
-        const iv = Buffer.from(parts[0], 'hex');
-        const authTag = Buffer.from(parts[1], 'hex');
-        const encryptedText = Buffer.from(parts[2], 'hex');
-
-        const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(key, 'hex'), iv);
-        decipher.setAuthTag(authTag);
-
-        let decrypted = decipher.update(encryptedText);
-        decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-        return decrypted.toString('utf8');
-    } catch (error) {
-        console.error("Decryption error:", error);
-        return null;
-    }
+  const parts = encryptedData.split(':');
+  const iv = Buffer.from(parts[0], 'hex');
+  const encryptedText = Buffer.from(parts[1], 'hex');
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(key, 'hex'), iv);
+  let decrypted = decipher.update(encryptedText);
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted.toString();
 }
 
-module.exports = { encrypt, decrypt };
+module.exports = { generateEncryptionKey, encrypt, decrypt };
