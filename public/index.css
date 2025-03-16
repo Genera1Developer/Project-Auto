@@ -1,66 +1,201 @@
 body {
-    font-family: 'Arial', sans-serif;
     margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #000; /* Dark background */
+    color: #fff; /* White text */
     overflow: hidden; /* Hide scrollbars */
-    background: #000;
-    color: #fff;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 #particles-js {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
-    background: #000;
+    background-color: #000;
     z-index: 0;
 }
 
 .container {
-    text-align: center;
+    position: relative;
     z-index: 1;
     padding: 20px;
     border-radius: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Neon glow */
 }
 
 h1 {
-    color: #00ffff;
+    font-size: 2.5em;
     margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    color: #00ffff; /* Cyan color */
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); /* Neon glow */
 }
 
 p {
     font-size: 1.2em;
-    color: #eee;
+    margin-bottom: 10px;
 }
 
 input[type="text"] {
     padding: 10px;
-    margin: 20px 0;
-    width: 70%;
+    width: 300px;
     border: none;
     border-radius: 5px;
-    background: #222;
+    margin-bottom: 20px;
+    background-color: #222;
     color: #fff;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
 button {
-    padding: 12px 24px;
-    background: #00ffff;
-    color: #000;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
+    background-color: #00ffff; /* Cyan color */
+    color: #000;
     cursor: pointer;
     font-size: 1.1em;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 button:hover {
-    background-color: #00a0a0;
+    background-color: #00bfff; /* Darker cyan on hover */
 }
+edit filepath: public/particles.json
+content: {
+  "particles": {
+    "number": {
+      "value": 80,
+      "density": {
+        "enable": true,
+        "value_area": 800
+      }
+    },
+    "color": {
+      "value": "#00ffff"
+    },
+    "shape": {
+      "type": "circle",
+      "stroke": {
+        "width": 0,
+        "color": "#000000"
+      },
+      "polygon": {
+        "nb_sides": 5
+      },
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100
+      }
+    },
+    "opacity": {
+      "value": 0.7,
+      "random": true,
+      "anim": {
+        "enable": true,
+        "speed": 1,
+        "opacity_min": 0.1,
+        "sync": false
+      }
+    },
+    "size": {
+      "value": 3,
+      "random": true,
+      "anim": {
+        "enable": false,
+        "speed": 40,
+        "size_min": 0.1,
+        "sync": false
+      }
+    },
+    "line_linked": {
+      "enable": true,
+      "distance": 150,
+      "color": "#00ffff",
+      "opacity": 0.4,
+      "width": 1
+    },
+    "move": {
+      "enable": true,
+      "speed": 3,
+      "direction": "none",
+      "random": true,
+      "straight": false,
+      "out_mode": "out",
+      "bounce": false,
+      "attract": {
+        "enable": false,
+        "rotateX": 600,
+        "rotateY": 1200
+      }
+    }
+  },
+  "interactivity": {
+    "detect_on": "canvas",
+    "events": {
+      "onhover": {
+        "enable": true,
+        "mode": "grab"
+      },
+      "onclick": {
+        "enable": true,
+        "mode": "push"
+      },
+      "resize": true
+    },
+    "modes": {
+      "grab": {
+        "distance": 140,
+        "line_linked": {
+          "opacity": 1
+        }
+      },
+      "bubble": {
+        "distance": 400,
+        "size": 40,
+        "duration": 2,
+        "opacity": 8,
+        "speed": 3
+      },
+      "repulse": {
+        "distance": 200,
+        "duration": 0.4
+      },
+      "push": {
+        "particles_nb": 4
+      },
+      "remove": {
+        "particles_nb": 2
+      }
+    }
+  },
+  "retina_detect": true
+}
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    particlesJS.load('particles-js', 'public/particles.json', function() {
+        console.log('particles.json loaded...');
+    });
+
+    const accessButton = document.getElementById('accessButton');
+    const urlInput = document.getElementById('urlInput');
+
+    accessButton.addEventListener('click', function() {
+        const url = urlInput.value;
+        if (url) {
+            // Basic URL validation (can be improved)
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                // Redirect to proxy endpoint with URL
+                window.location.href = '/api/proxy?url=' + encodeURIComponent(url);
+            } else {
+                alert('Please enter a valid URL starting with http:// or https://');
+            }
+        } else {
+            alert('Please enter a URL.');
+        }
+    });
+});
