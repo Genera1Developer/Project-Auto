@@ -1,41 +1,23 @@
-const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 
-// Generate a more secure, random key and IV on server start or using a secure method. DO NOT HARDCODE IN PRODUCTION
-const generateRandomKey = () => CryptoJS.lib.WordArray.random(16).toString();
-const generateRandomIV = () => CryptoJS.lib.WordArray.random(16).toString();
+const algorithm = 'aes-256-cbc'; //Use a strong algorithm
+const key = crypto.randomBytes(32); // Generate a secure, random key
+const iv = crypto.randomBytes(16); // Generate a secure, random IV
 
-const key = CryptoJS.enc.Hex.parse(generateRandomKey());
-const iv = CryptoJS.enc.Hex.parse(generateRandomIV());
-
-function encrypt(plaintext) {
-  try {
-    const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
-      iv: iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7
-    });
-    return encrypted.toString();
-  } catch (error) {
-    console.error("Encryption failed:", error);
-    return null;
-  }
+function encrypt(text) {
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-function decrypt(ciphertext) {
-  try {
-    const decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
-      iv: iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7
-    });
-    return decrypted.toString(CryptoJS.enc.Utf8);
-  } catch (error) {
-    console.error("Decryption failed:", error);
-    return null;
-  }
+function decrypt(text) {
+    let iv = Buffer.from(text.iv, 'hex');
+    let encryptedText = Buffer.from(text.encryptedData, 'hex');
+    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
-module.exports = {
-  encrypt,
-  decrypt
-};
+module.exports = { encrypt, decrypt };
