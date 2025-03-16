@@ -1,648 +1,146 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const urlForm = document.getElementById('urlForm');
-    const urlInput = document.getElementById('url');
-    const proxyOutput = document.getElementById('proxyOutput');
-    const particlesContainer = document.getElementById('particles-js');
+    const urlInput = document.getElementById('urlInput');
+    const proxyButton = document.getElementById('proxyButton');
+    const contentDiv = document.getElementById('content');
 
-    // Function to update the particles theme based on URL input
-    const updateParticlesTheme = (url) => {
-        let theme = 'default';
-        if (url.includes('secure')) {
-            theme = 'secure';
-        } else if (url.includes('danger')) {
-            theme = 'danger';
-        } else if (url.includes('stealth')) {
-            theme = 'stealth';
-        }
-
-        // Modify particles.js config based on the theme
-        let particlesConfig = {};
-
-        if (theme === 'secure') {
-            particlesContainer.style.backgroundColor = '#003366'; // Deep blue for secure
-            particlesConfig = {
-                "particles": {
-                    "number": {
-                        "value": 80,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
-                    },
-                    "color": {
-                        "value": "#00FF00" // Green for secure
-                    },
-                    "shape": {
-                        "type": "circle",
-                        "stroke": {
-                            "width": 0,
-                            "color": "#000000"
-                        },
-                        "polygon": {
-                            "nb_sides": 5
-                        }
-                    },
-                    "opacity": {
-                        "value": 0.5,
-                        "random": false,
-                        "anim": {
-                            "enable": false,
-                            "speed": 1,
-                            "opacity_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "size": {
-                        "value": 3,
-                        "random": true,
-                        "anim": {
-                            "enable": false,
-                            "speed": 40,
-                            "size_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 150,
-                        "color": "#00FF00", // Green for secure
-                        "opacity": 0.4,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 6,
-                        "direction": "none",
-                        "random": false,
-                        "straight": false,
-                        "out_mode": "out",
-                        "attract": {
-                            "enable": false,
-                            "rotateX": 600,
-                            "rotateY": 1200
-                        }
-                    }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "repulse"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": "push"
-                        },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": {
-                            "distance": 400,
-                            "line_linked": {
-                                "opacity": 1
-                            }
-                        },
-                        "bubble": {
-                            "distance": 400,
-                            "size": 40,
-                            "duration": 2,
-                            "opacity": 8,
-                            "speed": 3
-                        },
-                        "repulse": {
-                            "distance": 200
-                        },
-                        "push": {
-                            "particles_nb": 4
-                        },
-                        "remove": {
-                            "particles_nb": 2
-                        }
-                    }
-                },
-                "retina_detect": true,
-                "config_demo": {
-                    "hide_card": false,
-                    "background_color": "#000000",
-                    "background_image": "",
-                    "source_code": false,
-                    "start_paused": false,
-                    "fps_limit": 60,
-                    "open_selector": false,
-
-                }
-            };
-        } else if (theme === 'danger') {
-            particlesContainer.style.backgroundColor = '#8B0000'; // Dark red for danger
-            particlesConfig = {
-                "particles": {
-                    "number": {
-                        "value": 80,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
-                    },
-                    "color": {
-                        "value": "#FF0000" // Red for danger
-                    },
-                    "shape": {
-                        "type": "circle",
-                        "stroke": {
-                            "width": 0,
-                            "color": "#000000"
-                        },
-                        "polygon": {
-                            "nb_sides": 5
-                        }
-                    },
-                    "opacity": {
-                        "value": 0.5,
-                        "random": false,
-                        "anim": {
-                            "enable": false,
-                            "speed": 1,
-                            "opacity_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "size": {
-                        "value": 3,
-                        "random": true,
-                        "anim": {
-                            "enable": false,
-                            "speed": 40,
-                            "size_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 150,
-                        "color": "#FF0000", // Red for danger
-                        "opacity": 0.4,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 6,
-                        "direction": "none",
-                        "random": false,
-                        "straight": false,
-                        "out_mode": "out",
-                        "attract": {
-                            "enable": false,
-                            "rotateX": 600,
-                            "rotateY": 1200
-                        }
-                    }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "repulse"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": "push"
-                        },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": {
-                            "distance": 400,
-                            "line_linked": {
-                                "opacity": 1
-                            }
-                        },
-                        "bubble": {
-                            "distance": 400,
-                            "size": 40,
-                            "duration": 2,
-                            "opacity": 8,
-                            "speed": 3
-                        },
-                        "repulse": {
-                            "distance": 200
-                        },
-                        "push": {
-                            "particles_nb": 4
-                        },
-                        "remove": {
-                            "particles_nb": 2
-                        }
-                    }
-                },
-                "retina_detect": true,
-                "config_demo": {
-                    "hide_card": false,
-                    "background_color": "#000000",
-                    "background_image": "",
-                    "source_code": false,
-                    "start_paused": false,
-                    "fps_limit": 60,
-                    "open_selector": false,
-
-                }
-            };
-        } else if (theme === 'stealth') {
-            particlesContainer.style.backgroundColor = '#000000'; // Black for stealth
-            particlesConfig = {
-                "particles": {
-                    "number": {
-                        "value": 100,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
-                    },
-                    "color": {
-                        "value": "#444444" // Dark gray for stealth
-                    },
-                    "shape": {
-                        "type": "circle",
-                        "stroke": {
-                            "width": 0,
-                            "color": "#000000"
-                        },
-                        "polygon": {
-                            "nb_sides": 5
-                        }
-                    },
-                    "opacity": {
-                        "value": 0.3,
-                        "random": true,
-                        "anim": {
-                            "enable": false,
-                            "speed": 1,
-                            "opacity_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "size": {
-                        "value": 2,
-                        "random": true,
-                        "anim": {
-                            "enable": false,
-                            "speed": 40,
-                            "size_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 100,
-                        "color": "#444444", // Dark gray for stealth
-                        "opacity": 0.2,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 3,
-                        "direction": "none",
-                        "random": true,
-                        "straight": false,
-                        "out_mode": "out",
-                        "attract": {
-                            "enable": false,
-                            "rotateX": 600,
-                            "rotateY": 1200
-                        }
-                    }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "repulse"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": "push"
-                        },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": {
-                            "distance": 400,
-                            "line_linked": {
-                                "opacity": 1
-                            }
-                        },
-                        "bubble": {
-                            "distance": 400,
-                            "size": 40,
-                            "duration": 2,
-                            "opacity": 8,
-                            "speed": 3
-                        },
-                        "repulse": {
-                            "distance": 200
-                        },
-                        "push": {
-                            "particles_nb": 4
-                        },
-                        "remove": {
-                            "particles_nb": 2
-                        }
-                    }
-                },
-                "retina_detect": true,
-                "config_demo": {
-                    "hide_card": false,
-                    "background_color": "#000000",
-                    "background_image": "",
-                    "source_code": false,
-                    "start_paused": false,
-                    "fps_limit": 60,
-                    "open_selector": false,
-
-                }
-            };
-        } else {
-            particlesContainer.style.backgroundColor = '#222222'; // Default dark gray
-            particlesConfig = {
-                "particles": {
-                    "number": {
-                        "value": 80,
-                        "density": {
-                            "enable": true,
-                            "value_area": 800
-                        }
-                    },
-                    "color": {
-                        "value": "#ffffff" // Default white
-                    },
-                    "shape": {
-                        "type": "circle",
-                        "stroke": {
-                            "width": 0,
-                            "color": "#000000"
-                        },
-                        "polygon": {
-                            "nb_sides": 5
-                        }
-                    },
-                    "opacity": {
-                        "value": 0.5,
-                        "random": false,
-                        "anim": {
-                            "enable": false,
-                            "speed": 1,
-                            "opacity_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "size": {
-                        "value": 3,
-                        "random": true,
-                        "anim": {
-                            "enable": false,
-                            "speed": 40,
-                            "size_min": 0.1,
-                            "sync": false
-                        }
-                    },
-                    "line_linked": {
-                        "enable": true,
-                        "distance": 150,
-                        "color": "#ffffff", // Default white
-                        "opacity": 0.4,
-                        "width": 1
-                    },
-                    "move": {
-                        "enable": true,
-                        "speed": 6,
-                        "direction": "none",
-                        "random": false,
-                        "straight": false,
-                        "out_mode": "out",
-                        "attract": {
-                            "enable": false,
-                            "rotateX": 600,
-                            "rotateY": 1200
-                        }
-                    }
-                },
-                "interactivity": {
-                    "detect_on": "canvas",
-                    "events": {
-                        "onhover": {
-                            "enable": true,
-                            "mode": "repulse"
-                        },
-                        "onclick": {
-                            "enable": true,
-                            "mode": "push"
-                        },
-                        "resize": true
-                    },
-                    "modes": {
-                        "grab": {
-                            "distance": 400,
-                            "line_linked": {
-                                "opacity": 1
-                            }
-                        },
-                        "bubble": {
-                            "distance": 400,
-                            "size": 40,
-                            "duration": 2,
-                            "opacity": 8,
-                            "speed": 3
-                        },
-                        "repulse": {
-                            "distance": 200
-                        },
-                        "push": {
-                            "particles_nb": 4
-                        },
-                        "remove": {
-                            "particles_nb": 2
-                        }
-                    }
-                },
-                "retina_detect": true,
-                "config_demo": {
-                    "hide_card": false,
-                    "background_color": "#000000",
-                    "background_image": "",
-                    "source_code": false,
-                    "start_paused": false,
-                    "fps_limit": 60,
-                    "open_selector": false,
-
-                }
-            };
-        }
-         // Initialize or update particles.js with the appropriate configuration
-        if (window.particlesJS) {
-            window.particlesJS('particles-js', particlesConfig);
-        }
-    };
-
-    urlForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    proxyButton.addEventListener('click', async () => {
         const url = urlInput.value;
-        updateParticlesTheme(url); // Update particles based on URL
+
+        if (!url) {
+            contentDiv.textContent = 'Please enter a URL.';
+            return;
+        }
+
         try {
             const response = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
+
             const encryptedData = await response.text();
 
-            // Decrypt the data (call decrypt function from decryption.js)
-            const decryptedData = await decryptData(encryptedData);
+            // Decrypt the data in the browser
+            const encryptionKey = 'defaultEncryptionKey'; //TODO: replace with secure key exchange
+            const decryptedData = decrypt(encryptedData, encryptionKey);
 
-            proxyOutput.textContent = decryptedData;
+            contentDiv.textContent = decryptedData;
+
         } catch (error) {
-            console.error('Error fetching proxy content:', error);
-            proxyOutput.textContent = 'An error occurred while fetching the content.';
+            console.error('Error fetching or decrypting data:', error);
+            contentDiv.textContent = `Error: ${error.message}`;
         }
     });
 
-    // Initial particles setup
-     if (window.particlesJS) {
-        window.particlesJS('particles-js', {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {
-                    "value": "#ffffff"
-                },
-                "shape": {
-                    "type": "circle",
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
-                    }
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false,
-                    "anim": {
-                        "enable": false,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "size": {
-                    "value": 3,
-                    "random": true,
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#ffffff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 6,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
-                    }
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "repulse"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
-                    "resize": true
-                },
-                "modes": {
-                    "grab": {
-                        "distance": 400,
-                        "line_linked": {
-                            "opacity": 1
-                        }
-                    },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
-                    },
-                    "repulse": {
-                        "distance": 200
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
-                    }
-                }
-            },
-            "retina_detect": true,
-            "config_demo": {
-                "hide_card": false,
-                "background_color": "#000000",
-                "background_image": "",
-                "source_code": false,
-                "start_paused": false,
-                "fps_limit": 60,
-                "open_selector": false,
+    function decrypt(text, key) {
+        const textParts = text.split(':');
+        const iv = textParts.shift();
+		const authTag = textParts.shift();
+        const encryptedText = textParts.join(':');
 
-            }
-        });
+        const ivBuffer = Buffer.from(iv, 'hex');
+		const authTagBuffer = Buffer.from(authTag, 'hex');
+        const encryptedTextBuffer = Buffer.from(encryptedText, 'hex');
+		const keyBuffer = Buffer.from(key);
+
+        try {
+            const decipher = crypto.createDecipheriv('aes-256-cbc', keyBuffer, ivBuffer);
+			decipher.setAuthTag(authTagBuffer);
+            let decrypted = decipher.update(encryptedTextBuffer);
+            decrypted = Buffer.concat([decrypted, decipher.final()]);
+            return decrypted.toString();
+        } catch (error) {
+            console.error("Decryption error:", error);
+            return "Decryption failed: " + error.message;
+        }
     }
+
 });
 
-// Decryption function (assumed to be defined in decryption.js)
-async function decryptData(encryptedData) {
-    try {
-        const response = await fetch('/api/decrypt', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ data: encryptedData })
-        });
+edit filepath: uv/buffer.js
+content: // buffer.js - Polyfill for Buffer in Ultraviolet
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+// A simple buffer implementation for demonstration purposes.
+// In a real-world scenario, you'd likely use a more complete
+// and optimized Buffer implementation.
 
-        const decryptedData = await response.text();
-        return decryptedData;
-    } catch (error) {
-        console.error('Decryption error:', error);
-        return 'Decryption failed.';
+class Buffer {
+  constructor(array) {
+    this.data = new Uint8Array(array);
+    this.length = this.data.length;
+  }
+
+  static from(obj, encoding) {
+    if (typeof obj === 'string') {
+      encoding = encoding || 'utf-8';
+      let array;
+      if (encoding === 'utf-8') {
+        array = new TextEncoder().encode(obj);
+      } else {
+        throw new Error('Unsupported encoding: ' + encoding);
+      }
+      return new Buffer(array);
+    } else if (Array.isArray(obj)) {
+      return new Buffer(obj);
+    } else if (obj instanceof ArrayBuffer) {
+      return new Buffer(new Uint8Array(obj));
+    } else if (obj instanceof Uint8Array) {
+      return new Buffer(obj);
     }
+    throw new Error('Unsupported argument type for Buffer.from()');
+  }
+
+  toString(encoding) {
+    encoding = encoding || 'utf-8';
+    if (encoding === 'utf-8') {
+      return new TextDecoder().decode(this.data);
+    } else {
+      throw new Error('Unsupported encoding: ' + encoding);
+    }
+  }
+
+  toArray() {
+    return Array.from(this.data);
+  }
+
+  static isBuffer(obj) {
+    return obj instanceof Buffer;
+  }
 }
+
+// Export the Buffer class
+globalThis.Buffer = Buffer;
+edit filepath: uv/crypto.js
+content: // crypto.js - Placeholder for crypto functionality
+
+// Placeholder implementation for crypto functions used in proxy.js.
+// Replace with a real crypto library or polyfill for production use.
+
+const crypto = {
+    randomBytes: (size) => {
+        const array = new Uint8Array(size);
+        for (let i = 0; i < size; i++) {
+            array[i] = Math.floor(Math.random() * 256); // Simulate random byte generation
+        }
+        return array;
+    },
+    createCipheriv: (algorithm, key, iv) => {
+        // Dummy cipher object
+        return {
+            update: (data) => data,
+            final: () => new Uint8Array(0),
+			getAuthTag: () => crypto.randomBytes(16),
+			setAuthTag: (tag) => {},
+        };
+    },
+    createDecipheriv: (algorithm, key, iv) => {
+        // Dummy decipher object
+        return {
+            update: (data) => data,
+            final: () => new Uint8Array(0),
+			setAuthTag: (tag) => {},
+        };
+    },
+};
+
+globalThis.crypto = crypto;
