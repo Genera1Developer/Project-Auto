@@ -1,14 +1,14 @@
-const particlesConfig = {
+particlesJS("particles-js", {
   "particles": {
     "number": {
-      "value": 100,
+      "value": 80,
       "density": {
         "enable": true,
         "value_area": 800
       }
     },
     "color": {
-      "value": "#00FF00" // Encryption green
+      "value": "#00c698"
     },
     "shape": {
       "type": "circle",
@@ -26,17 +26,17 @@ const particlesConfig = {
       }
     },
     "opacity": {
-      "value": 0.7,
-      "random": true,
+      "value": 0.5,
+      "random": false,
       "anim": {
-        "enable": true,
+        "enable": false,
         "speed": 1,
-        "opacity_min": 0.3,
+        "opacity_min": 0.1,
         "sync": false
       }
     },
     "size": {
-      "value": 3,
+      "value": 5,
       "random": true,
       "anim": {
         "enable": false,
@@ -48,15 +48,15 @@ const particlesConfig = {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00FF00", // Encryption green
+      "color": "#00c698",
       "opacity": 0.4,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 3,
+      "speed": 6,
       "direction": "none",
-      "random": true,
+      "random": false,
       "straight": false,
       "out_mode": "out",
       "attract": {
@@ -81,7 +81,7 @@ const particlesConfig = {
     },
     "modes": {
       "grab": {
-        "distance": 400,
+        "distance": 140,
         "line_linked": {
           "opacity": 1
         }
@@ -105,15 +105,125 @@ const particlesConfig = {
       }
     }
   },
-  "retina_detect": true,
-  "config_demo": {
-    "hide_card": false,
-    "background_color": "#000000",
-    "background_image": "",
-    "background_position": "50% 50%",
-    "background_repeat": "no-repeat",
-    "background_size": "cover"
-  }
+  "retina_detect": true
+});
+edit filepath: public/index.css
+content: body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #fff;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-particlesJS('particles-js', particlesConfig);
+.container {
+    text-align: center;
+    padding: 40px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 80%;
+    max-width: 600px;
+}
+
+h1 {
+    font-size: 2.8em;
+    margin-bottom: 25px;
+    color: #00c698;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+input[type="url"] {
+    padding: 12px 15px;
+    width: calc(100% - 30px);
+    border: none;
+    background-color: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    border-radius: 7px;
+    margin-bottom: 30px;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+input[type="url"]:focus {
+    background-color: rgba(0, 0, 0, 0.5);
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 198, 152, 0.5);
+}
+
+button {
+    padding: 12px 25px;
+    background-color: #00c698;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #009673;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* Optional: Add a subtle animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.container {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('url-form');
+    const urlInput = document.getElementById('url-input');
+    const encodedPrefix = '/service/';
+
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        let url = urlInput.value.trim();
+
+        if (!url) {
+            alert('Please enter a URL.');
+            return;
+        }
+
+        try {
+            // URL validation regex (more comprehensive)
+            const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+            if (!urlRegex.test(url)) {
+                alert('Please enter a valid URL (including http:// or https://).');
+                return;
+            }
+
+            const encodedURL = encodeURIComponent(url);
+            window.location.href = encodedPrefix + encodedURL;
+        } catch (error) {
+            console.error('Error encoding URL:', error);
+            alert('An error occurred while encoding the URL.');
+        }
+    });
+});
