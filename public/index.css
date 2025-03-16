@@ -48,6 +48,6 @@ button:hover {
 }
 
 #error-message {
-    color: #ff4d4d;
+    color: red;
     margin-top: 10px;
 }
