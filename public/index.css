@@ -1,22 +1,13 @@
 body {
     margin: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: sans-serif;
     background-color: #000;
     color: #fff;
     overflow: hidden; /* Hide scrollbars */
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    text-align: center;
-}
-
 #particles-js {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
@@ -24,92 +15,96 @@ body {
     z-index: 0;
 }
 
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 1;
+}
+
 h1 {
     font-size: 3em;
-    margin-bottom: 0.5em;
-    color: #00c698;
-    text-shadow: 0 0 10px #00c698;
+    margin-bottom: 20px;
+    color: #00c698; /* Encryption-themed color */
 }
 
 input[type="text"] {
-    padding: 1em;
-    font-size: 1.2em;
+    padding: 10px;
+    width: 300px;
     border: none;
     border-radius: 5px;
-    margin-bottom: 1em;
-    width: 80%;
-    max-width: 400px;
+    margin-bottom: 20px;
     background-color: #222;
     color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 button {
-    padding: 1em 2em;
-    font-size: 1.2em;
+    padding: 10px 20px;
+    background-color: #00c698; /* Encryption-themed color */
+    color: #fff;
     border: none;
     border-radius: 5px;
-    background-color: #00c698;
-    color: #000;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 button:hover {
     background-color: #00a37d;
 }
 
-#error-message {
-    color: red;
-    margin-top: 1em;
+/* Style for displaying encryption key */
+#encryptionKeyDisplay {
+    margin-top: 20px;
+    font-size: 0.8em;
+    color: #aaa;
+    word-wrap: break-word;
 }
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encrypted Proxy</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Proxy</h1>
-        <input type="text" id="url-input" placeholder="Enter URL">
-        <button id="proxy-button">Access via Proxy</button>
-        <div id="error-message"></div>
-    </div>
-    <script src="particles.js"></script>
-    <script src="script.js"></script>
-</body>
-</html>
+
+/* Animate the encryption key display */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+#encryptionKeyDisplay {
+    animation: fadeIn 2s;
+}
 edit filepath: public/script.js
 content: document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('url-input');
-    const proxyButton = document.getElementById('proxy-button');
-    const errorMessage = document.getElementById('error-message');
+    const proxyForm = document.getElementById('proxyForm');
+    const urlInput = document.getElementById('urlInput');
+    const encryptionKeyDisplay = document.getElementById('encryptionKeyDisplay'); // Get the display element
 
-    proxyButton.addEventListener('click', function() {
+    function generateAndDisplayKey() {
+        const key = generateEncryptionKey();
+        encryptionKeyDisplay.textContent = 'Encryption Key: ' + key; // Update the text
+    }
+  
+      // Function to generate a random encryption key
+    function generateEncryptionKey() {
+        const keyLength = 16; // You can adjust the key length as needed
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let key = '';
+        for (let i = 0; i < keyLength; i++) {
+            key += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        return key;
+    }
+
+
+    proxyForm.addEventListener('submit', function(event) {
+        event.preventDefault();
         const url = urlInput.value;
+        const key = generateEncryptionKey(); //Generate a new key on submission
+        const encodedUrl = btoa(url); // Basic encoding
 
-        if (!url) {
-            errorMessage.textContent = 'Please enter a URL.';
-            return;
-        }
+        // Store the key in localStorage
+        localStorage.setItem('encryptionKey', key);
 
-        errorMessage.textContent = '';
-
-        // Basic URL validation
-        try {
-            new URL(url);
-        } catch (e) {
-            errorMessage.textContent = 'Please enter a valid URL.';
-            return;
-        }
-
-        // Redirect to the proxy page (replace with your actual proxy endpoint)
-        window.location.href = '/uv/service/' + encodeURIComponent(url);
+        window.location.href = '/uv/service/' + encodedUrl;
     });
+
+    generateAndDisplayKey(); // Generate and display key on page load
 });
