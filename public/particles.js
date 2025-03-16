@@ -1,6 +1,4 @@
-particlesJS('particles-js',
-
-{
+particlesJS("particles-js", {
   "particles": {
     "number": {
       "value": 80,
@@ -10,7 +8,7 @@ particlesJS('particles-js',
       }
     },
     "color": {
-      "value": "#007bff"
+      "value": "#00c698"
     },
     "shape": {
       "type": "circle",
@@ -50,7 +48,7 @@ particlesJS('particles-js',
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#007bff",
+      "color": "#00c698",
       "opacity": 0.4,
       "width": 1
     },
@@ -96,7 +94,8 @@ particlesJS('particles-js',
         "speed": 3
       },
       "repulse": {
-        "distance": 200
+        "distance": 200,
+        "duration": 0.4
       },
       "push": {
         "particles_nb": 4
@@ -106,15 +105,45 @@ particlesJS('particles-js',
       }
     }
   },
-  "retina_detect": true,
-  "config_demo": {
-    "hide_card": false,
-    "background_color": "#b61924",
-    "background_image": "",
-    "background_position": "50% 50%",
-    "background_repeat": "no-repeat",
-    "background_size": "cover"
+  "retina_detect": true
+});
+var count_particles, stats, update;
+stats = new Stats;
+stats.setMode(0);
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.left = '0px';
+stats.domElement.style.top = '0px';
+document.body.appendChild(stats.domElement);
+count_particles = document.querySelector('.js-count-particles');
+update = function() {
+  stats.begin();
+  stats.end();
+  if (window.pJSDom[0].pJS.particles && window.pJSDom[0].pJS.particles.array) {
+    count_particles.innerText = window.pJSDom[0].pJS.particles.array.length;
   }
-}
-
-);
+  requestAnimationFrame(update);
+};
+requestAnimationFrame(update);;
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Web Proxy</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Encrypted Web Proxy</h1>
+        <form id="url-form">
+            <input type="url" id="url-input" placeholder="Enter URL" required>
+            <button type="submit">Go</button>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="particles.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
