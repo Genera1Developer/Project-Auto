@@ -1,83 +1,74 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000;
+    background-color: #000; /* Dark background */
     color: #fff;
     margin: 0;
     padding: 0;
     height: 100vh;
-    overflow: hidden; /* Prevent scrollbars */
+    overflow: hidden; /* Hide scrollbars */
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 }
 
 .container {
-    text-align: center;
+    position: relative;
+    z-index: 1; /* Ensure content is above particles */
     padding: 20px;
     border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    z-index: 1; /* Ensure it's above the particles */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Cyan glow */
 }
 
 h1 {
-    color: #00ffff;
+    color: #00ffff; /* Cyan text */
     margin-bottom: 20px;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
 }
 
 p {
-    font-size: 1.2em;
-    margin-bottom: 15px;
+    color: #fff;
+    margin-bottom: 10px;
 }
 
 input[type="text"] {
     padding: 10px;
-    border: none;
+    border: 2px solid #00ffff; /* Cyan border */
     border-radius: 5px;
-    width: 70%;
-    margin-bottom: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #222;
     color: #fff;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-}
-
-input[type="text"]::placeholder {
-    color: #ccc;
+    width: 80%;
+    margin-bottom: 20px;
 }
 
 button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #00ffff;
+    background-color: #00ffff; /* Cyan button */
     color: #000;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
 }
 
 button:hover {
-    background-color: #00bfff;
+    background-color: #00bfff; /* Darker cyan on hover */
 }
 
 #error {
-    color: #ff4d4d;
+    color: #ff4d4d; /* Red error message */
     margin-top: 10px;
-    font-weight: bold;
 }
 
 .hidden {
     display: none;
 }
 
-/* Styles for the particles.js container */
 #particles-js {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    background-color: #000;
-    z-index: 0; /* Place behind the content */
+    z-index: 0; /* Place particles behind content */
 }
