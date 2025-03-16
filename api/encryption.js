@@ -1,23 +1,89 @@
-const crypto = require('crypto');
+class EncryptionHandler {
+  constructor(algorithm = 'AES-CBC', keySize = 256) {
+    this.algorithm = algorithm;
+    this.keySize = keySize;
+  }
 
-const algorithm = 'aes-256-cbc'; // Use a strong encryption algorithm
-const key = crypto.randomBytes(32); // Generate a secure key (32 bytes for AES-256)
-const iv = crypto.randomBytes(16); // Generate a secure initialization vector (16 bytes for AES)
+  generateKey() {
+    const crypto = require('crypto');
+    return crypto.randomBytes(this.keySize / 8);
+  }
 
-function encrypt(text) {
-    const cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+  generateIV() {
+    const crypto = require('crypto');
+    return crypto.randomBytes(16);
+  }
+
+  encrypt(data, key, iv) {
+    const crypto = require('crypto');
+    const cipher = crypto.createCipheriv(this.algorithm, key, iv);
+    let encrypted = cipher.update(data, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
+  }
+
+  decrypt(encryptedData, key, iv) {
+    const crypto = require('crypto');
+    const decipher = crypto.createDecipheriv(this.algorithm, key, iv);
+    let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+  }
+
+  async generateKeyPair() {
+    const crypto = require('crypto');
+    return new Promise((resolve, reject) => {
+      crypto.generateKeyPair('rsa', {
+        modulusLength: 4096,
+        publicKeyEncoding: {
+          type: 'spki',
+          format: 'pem'
+        },
+        privateKeyEncoding: {
+          type: 'pkcs8',
+          format: 'pem',
+        }
+      }, (err, publicKey, privateKey) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve({ publicKey, privateKey });
+        }
+      });
+    });
+  }
+
+  async encryptWithPublicKey(data, publicKey) {
+    const crypto = require('crypto');
+    const buffer = Buffer.from(data, 'utf8');
+    const encrypted = crypto.publicEncrypt({
+      key: publicKey,
+      padding: crypto.constants.RSA_PKCS1_PADDING,
+    }, buffer);
+    return encrypted.toString('hex');
+  }
+
+  async decryptWithPrivateKey(encryptedData, privateKey) {
+     const crypto = require('crypto');
+      const buffer = Buffer.from(encryptedData, 'hex');
+      const decrypted = crypto.privateDecrypt({
+          key: privateKey,
+          padding: crypto.constants.RSA_PKCS1_PADDING,
+      }, buffer);
+      return decrypted.toString('utf8');
+  }
+
+  generateSalt() {
+    const crypto = require('crypto');
+    return crypto.randomBytes(16).toString('hex');
+  }
+
+  hashPassword(password, salt) {
+    const crypto = require('crypto');
+    const hash = crypto.createHmac('sha512', salt);
+    hash.update(password);
+    return hash.digest('hex');
+  }
 }
 
-function decrypt(text) {
-    const iv = Buffer.from(text.iv, 'hex');
-    const encryptedText = Buffer.from(text.encryptedData, 'hex');
-    const decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
-
-module.exports = { encrypt, decrypt };
+module.exports = EncryptionHandler;
