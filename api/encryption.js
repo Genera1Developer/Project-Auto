@@ -1,37 +1,23 @@
-const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 
-const secretKey = process.env.ENCRYPTION_KEY || 'DefaultSecretKey';
-const ivString = process.env.ENCRYPTION_IV || 'DefaultIVString';
+const algorithm = 'aes-256-cbc';
+const key = crypto.randomBytes(32); // Generate a secure key
+const iv = crypto.randomBytes(16); // Generate a secure IV
 
-function encrypt(data) {
-  try {
-    const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
-    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), CryptoJS.enc.Utf8.parse(secretKey), {
-      iv: iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7
-    });
-    return encrypted.toString();
-  } catch (error) {
-    console.error('Encryption Error:', error);
-    throw new Error('Encryption failed');
-  }
+function encrypt(text) {
+    let cipher = crypto.createCipheriv(algorithm, Buffer.from(key), iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
 }
 
-function decrypt(cipherText) {
-  try {
-    const iv = CryptoJS.enc.Utf8.parse(ivString.substring(0, 16));
-    const decrypted = CryptoJS.AES.decrypt(cipherText, CryptoJS.enc.Utf8.parse(secretKey), {
-      iv: iv,
-      mode: CryptoJS.mode.CBC,
-      padding: CryptoJS.pad.Pkcs7
-    });
-    const decryptedData = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
-    return decryptedData;
-  } catch (error) {
-    console.error('Decryption Error:', error);
-    throw new Error('Decryption failed');
-  }
+function decrypt(text) {
+    let iv = Buffer.from(text.iv, 'hex');
+    let encryptedText = Buffer.from(text.encryptedData, 'hex');
+    let decipher = crypto.createDecipheriv(algorithm, Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
 module.exports = { encrypt, decrypt };
