@@ -24,10 +24,23 @@ self.__uv$config = {
     forwardCookies: true,
     strictOriginHandling: true,
     tlsPassthrough: true,
-    //New Feature: Adding cache control to improve performance and reduce load on bare servers
-    cacheExpiration: 3600, // Cache expiration time in seconds (e.g., 1 hour)
-    //New Feature: Support for custom encryption algorithms
-    customEncryption: false, // Set to true if using a custom encryption algorithm
-    customEncodeUrl: null, // Function to encode URLs using the custom algorithm
-    customDecodeUrl: null  // Function to decode URLs using the custom algorithm
+    cacheExpiration: 3600,
+    customEncryption: false,
+    customEncodeUrl: null,
+    customDecodeUrl: null,
+    // Enhanced Security Features: Adding nonce for CSP and HSTS
+    cspNonce: generateNonce(), // Function to generate a unique nonce
+    hstsMaxAge: 31536000, // HSTS max-age in seconds (1 year)
+    hstsIncludeSubDomains: true, // Include subdomains in HSTS policy
+    hstsPreload: true // Enable HSTS preload
 };
+
+function generateNonce() {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 16; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
