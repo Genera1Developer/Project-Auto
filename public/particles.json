@@ -1,14 +1,14 @@
 {
   "particles": {
     "number": {
-      "value": 100,
+      "value": 120,
       "density": {
         "enable": true,
         "value_area": 800
       }
     },
     "color": {
-      "value": "#00FF7F" /* Electric Green */
+      "value": "#00BFFF" /* Deep Sky Blue - Encryption-like */
     },
     "shape": {
       "type": "circle",
@@ -18,25 +18,20 @@
       },
       "polygon": {
         "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
       }
     },
     "opacity": {
-      "value": 0.8,
+      "value": 0.7,
       "random": true,
       "anim": {
         "enable": true,
-        "speed": 1,
-        "opacity_min": 0.3,
+        "speed": 0.7,
+        "opacity_min": 0.2,
         "sync": false
       }
     },
     "size": {
-      "value": 2,
+      "value": 2.5,
       "random": true,
       "anim": {
         "enable": false,
@@ -48,13 +43,13 @@
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00FF7F", /* Electric Green */
-      "opacity": 0.5,
-      "width": 1
+      "color": "#00BFFF", /* Deep Sky Blue */
+      "opacity": 0.4,
+      "width": 1.3
     },
     "move": {
       "enable": true,
-      "speed": 2,
+      "speed": 1.7,
       "direction": "none",
       "random": true,
       "straight": false,
@@ -72,7 +67,7 @@
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "repulse"
+        "mode": "grab"
       },
       "onclick": {
         "enable": true,
