@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encrypted Web Proxy</title>
-    <link rel="stylesheet" href="public/index.css">
-    <link rel="icon" href="public/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="particles.js"></script>
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="container">
-        <h1>Secure Web Access</h1>
-        <p>Enter the URL to access securely:</p>
-        <form id="proxyForm">
-            <input type="url" id="url" placeholder="https://example.com" required>
-            <button type="submit">Go</button>
-        </form>
-        <div id="error" class="error-message"></div>
+        <h1>Encrypted Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
     </div>
-    <script src="public/particles.js"></script>
-    <script src="public/script.js"></script>
+    <script src="script.js"></script>
+    <script>
+        window.onload = function() {
+            particlesJS.load('particles-js', 'particles.json', function() {
+              console.log('callback - particles.js config loaded');
+            });
+          };
+    </script>
 </body>
 </html>
