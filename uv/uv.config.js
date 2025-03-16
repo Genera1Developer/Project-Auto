@@ -23,6 +23,11 @@ self.__uv$config = {
     cookiePathRewrite: '/',
     forwardCookies: true,
     strictOriginHandling: true,
-    // Added a new setting to enable/disable TLS passthrough
     tlsPassthrough: true,
+    //New Feature: Adding cache control to improve performance and reduce load on bare servers
+    cacheExpiration: 3600, // Cache expiration time in seconds (e.g., 1 hour)
+    //New Feature: Support for custom encryption algorithms
+    customEncryption: false, // Set to true if using a custom encryption algorithm
+    customEncodeUrl: null, // Function to encode URLs using the custom algorithm
+    customDecodeUrl: null  // Function to decode URLs using the custom algorithm
 };
