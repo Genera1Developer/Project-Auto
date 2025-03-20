@@ -5,7 +5,7 @@ body {
     background-color: #111;
     color: #00FFFF;
     overflow: hidden;
-    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, encrypt 7s steps(5, end) infinite;
+    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite; /* Removed encrypt animation from body */
 }
 
 @keyframes glitch {
@@ -80,7 +80,7 @@ h1 {
     font-size: 3.5em;
     margin-bottom: 20px;
     text-shadow: 0 0 15px #00FFFF, 0 0 5px #00FFFF;
-    animation: flicker 1.5s infinite alternate;
+    animation: flicker 1.5s infinite alternate, encrypt 7s steps(5, end) infinite; /* added encrypt animation */
     position: relative;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -190,6 +190,7 @@ button:hover {
     text-shadow: 0 0 8px #00FFFF;
     text-transform: uppercase;
     letter-spacing: 1px;
+    animation: encrypt 5s steps(5, end) infinite;
 }
 
 .link-to-register,
