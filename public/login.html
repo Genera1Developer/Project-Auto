@@ -233,6 +233,16 @@
             return CryptoJS.lib.WordArray.random(16).toString();
         }
 
+        // Function to encrypt the localStorage encryption key with a server key
+        function encryptLocalKey(encryptionKey, serverPublicKey) {
+            const serverKey = CryptoJS.enc.Utf8.parse(serverPublicKey);
+            const encryptedKey = CryptoJS.AES.encrypt(encryptionKey, serverKey, {
+                mode: CryptoJS.mode.ECB,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return encryptedKey.toString();
+        }
+
 
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -269,6 +279,12 @@
             // Include a timestamp in the request headers for replay protection
             const timestamp = Date.now();
 
+            // Get the server's public key (replace with actual method)
+            const serverPublicKey = "YOUR_SERVER_PUBLIC_KEY"; // Replace with your actual public key retrieval method
+
+            // Encrypt the encryption key with the server's public key
+            const encryptedEncryptionKey = encryptLocalKey(encryptionKey, serverPublicKey);
+
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
@@ -276,7 +292,8 @@
                     'X-Encryption-Key-Hash': keyHash, // Send the key hash
                     'X-Encryption-IV': iv, // Send IV in header
                     'X-Request-Timestamp': timestamp, // Send timestamp
-                    'X-Salt-Hash': saltHash // Send Salt hash
+                    'X-Salt-Hash': saltHash, // Send Salt hash
+                    'X-Encrypted-Key': encryptedEncryptionKey
                 },
                 body: JSON.stringify({
                     username: encryptedUsername,
