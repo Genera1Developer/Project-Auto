@@ -26,11 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return captcha;
     }
 
-    function encryptCaptcha(captcha) {
-         const key = CryptoJS.enc.Hex.parse(encryptionKey);
-         const iv = CryptoJS.enc.Hex.parse(encryptionIV);
-         const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(captcha), key, {
-            iv: iv,
+    function encryptCaptcha(captcha, key, iv) {
+         const parsedKey = CryptoJS.enc.Hex.parse(key);
+         const parsedIv = CryptoJS.enc.Hex.parse(iv);
+         const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(captcha), parsedKey, {
+            iv: parsedIv,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7
         });
@@ -40,11 +40,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayEncryptedCaptcha() {
         generateEncryptionKeys();
         const captcha = generateCaptcha();
-        const encryptedCaptcha = encryptCaptcha(captcha);
+        const encryptedCaptcha = encryptCaptcha(captcha, encryptionKey, encryptionIV);
         captchaTextElement.textContent = encryptedCaptcha;
         sessionStorage.setItem('encryptionKey', encryptionKey);
         sessionStorage.setItem('encryptionIV', encryptionIV);
-        // Store encrypted captcha, not original
         sessionStorage.setItem('encryptedCaptcha', encryptedCaptcha);
         sessionStorage.removeItem('generatedCaptcha');
     }
@@ -63,27 +62,28 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const key = CryptoJS.enc.Hex.parse(storedKey);
-        const iv = CryptoJS.enc.Hex.parse(storedIV);
-
         try {
-             const decrypted = CryptoJS.AES.decrypt(userInput, key, {
+            const key = CryptoJS.enc.Hex.parse(storedKey);
+            const iv = CryptoJS.enc.Hex.parse(storedIV);
+
+            const decrypted = CryptoJS.AES.decrypt(CryptoJS.enc.Utf8.parse(userInput), key, {
                 iv: iv,
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
             });
-
             const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
 
-             if (encryptCaptcha(decryptedText.trim()) === encryptedCaptcha) {
-                errorMessageElement.textContent = 'Captcha verified!';
-                errorMessageElement.style.color = 'green';
+            if (decryptedText.trim() === generateCaptcha()) {
+                 errorMessageElement.textContent = 'Captcha verified!';
+                 errorMessageElement.style.color = 'green';
             } else {
                 errorMessageElement.textContent = 'Incorrect captcha. Please try again.';
                 errorMessageElement.style.color = 'red';
                 displayEncryptedCaptcha();
                 captchaInputElement.value = '';
             }
+
+
         } catch (error) {
             errorMessageElement.textContent = 'Decryption error.  Double check.';
             errorMessageElement.style.color = 'red';
