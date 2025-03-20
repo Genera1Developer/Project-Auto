@@ -251,6 +251,11 @@
             const encryptedData = await encryptText(captchaText, derivedKey.key, derivedKey.iv);
 
             document.getElementById('captcha-text').innerText = encryptedData.ciphertext;
+             // Store encryption parameters securely
+             sessionStorage.setItem('captchaSalt', salt);
+             sessionStorage.setItem('captchaKey', derivedKey.key);
+             sessionStorage.setItem('captchaIV', derivedKey.iv);
+             sessionStorage.setItem('captchaTag', encryptedData.tag);
             return {
                 original: captchaText,
                 encrypted: encryptedData.ciphertext,
@@ -314,32 +319,34 @@
             return result;
         }
 
-        let currentCaptcha;
 
         async function validateCaptcha() {
             const userInput = document.getElementById('captcha-input').value;
-            const encryptedText = document.getElementById('captcha-text').innerText; // Cache encrypted text
-            if(!currentCaptcha || !currentCaptcha.salt){
+            const encryptedText = document.getElementById('captcha-text').innerText;
+            const storedSalt = sessionStorage.getItem('captchaSalt');
+            const storedKey = sessionStorage.getItem('captchaKey');
+            const storedIV = sessionStorage.getItem('captchaIV');
+            const storedTag = sessionStorage.getItem('captchaTag');
+
+             if (!storedSalt || !storedKey || !storedIV || !storedTag) {
                 document.getElementById('error-message').innerText = 'Session expired. Refresh the page.';
                 return;
-            }
+             }
 
-            const decryptedText = await decryptText(encryptedText, currentCaptcha.key, currentCaptcha.iv, currentCaptcha.tag);
+            const decryptedText = await decryptText(encryptedText, storedKey, storedIV, storedTag);
 
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
-                // Optionally regenerate the captcha after successful validation
-                currentCaptcha = await generateCaptcha();
+                await generateCaptcha(); // Regenerate for next time
             } else {
                 document.getElementById('error-message').innerText = 'Captcha does not match. Please try again.';
-                // Optionally regenerate the captcha after failed validation
-                currentCaptcha = await generateCaptcha();
+                await generateCaptcha(); // Regenerate on failure
             }
         }
 
         // Initialize captcha on page load
         (async () => {
-            currentCaptcha = await generateCaptcha();
+            await generateCaptcha();
         })();
 
     </script>
