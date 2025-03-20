@@ -1,1 +1,94 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #000;
+    color: #ddd;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Hide scrollbars */
+}
 
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    background-color: #000;
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: 100px auto;
+    padding: 30px;
+    background-color: rgba(30, 30, 30, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+    text-align: center;
+}
+
+h1 {
+    color: #00bcd4;
+    margin-bottom: 20px;
+    text-shadow: 0 0 5px #00bcd4;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    background-color: #444;
+    color: #fff;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #00bcd4;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #008ba7;
+}
+
+a {
+    color: #00bcd4;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #008ba7;
+}
+
+.error {
+    color: #ff5252;
+    margin-top: 10px;
+}
+
+/* Keyframe animation for a subtle glowing effect */
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px #00bcd4;
+    }
+    50% {
+        box-shadow: 0 0 20px #00bcd4;
+    }
+    100% {
+        box-shadow: 0 0 5px #00bcd4;
+    }
+}
+
+/* Apply the glowing animation to important elements */
+h1, button, a {
+    animation: glow 2s infinite;
+}
