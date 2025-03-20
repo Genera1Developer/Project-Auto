@@ -185,15 +185,22 @@
 
                     updateColors(colorValue, linkedColorValue);
 
-                    setInterval(function() {
+                    var colorUpdateInterval = 5000;
+
+                    var updateColorsAndSchedule = function() {
                         try {
                             colorValue = CryptoJS.MD5("f5c3bb" + Date.now()).toString().substring(0, 6);
                             linkedColorValue = CryptoJS.MD5("9b59b6" + Date.now()).toString().substring(0, 6);
                             updateColors(colorValue, linkedColorValue);
+                            setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         } catch (cryptoIntervalError) {
                             console.error("CryptoJS Interval Error:", cryptoIntervalError);
+                            colorUpdateInterval = Math.min(colorUpdateInterval * 2, 60000);
+                            setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         }
-                    }, 5000); // Update every 5 seconds
+                    };
+
+                    setTimeout(updateColorsAndSchedule, colorUpdateInterval);
 
                  } catch (cryptoUpdateError) {
                     console.error("CryptoJS Update Error:", cryptoUpdateError);
