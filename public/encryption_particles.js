@@ -8,13 +8,13 @@ const particlesConfig = {
       }
     },
     "color": {
-      "value": "#2ecc71" // A vibrant green, symbolizing security
+      "value": "#2ecc71" // Encryption green
     },
     "shape": {
       "type": "circle",
       "stroke": {
         "width": 0,
-        "color": "#3498db" // A shade of blue for visual interest
+        "color": "#2ecc71"
       },
       "polygon": {
         "nb_sides": 5
@@ -43,7 +43,7 @@ const particlesConfig = {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#3498db",
+      "color": "#2ecc71",
       "opacity": 0.5,
       "width": 1
     },
@@ -105,7 +105,29 @@ const particlesConfig = {
 };
 
 window.onload = function() {
-  if (document.getElementById('particles-js')) {
-        particlesJS('particles-js', particlesConfig);
-  }
+  particlesJS('particles-js', particlesConfig);
+
+  // Optional: Add a rotating encryption key icon
+  const keyIcon = document.createElement('div');
+  keyIcon.innerHTML = '<i class="fas fa-key fa-spin" style="font-size:3em; color:#2ecc71;"></i>'; //Encryption Green
+  keyIcon.style.position = 'fixed';
+  keyIcon.style.bottom = '20px';
+  keyIcon.style.right = '20px';
+  keyIcon.style.zIndex = '1000'; // Ensure it's on top
+  document.body.appendChild(keyIcon);
+
+  // Add a subtle encryption message ticker
+  const ticker = document.createElement('div');
+  ticker.id = 'encryption-ticker';
+  ticker.style.position = 'fixed';
+  ticker.style.bottom = '0';
+  ticker.style.left = '0';
+  ticker.style.width = '100%';
+  ticker.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+  ticker.style.color = '#2ecc71'; // Encryption green
+  ticker.style.padding = '5px';
+  ticker.style.textAlign = 'center';
+  ticker.style.overflow = 'hidden';
+  ticker.innerHTML = 'Securing your connection with advanced encryption...';
+  document.body.appendChild(ticker);
 };
