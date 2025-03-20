@@ -11,7 +11,7 @@
             color: #fff;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Hide scrollbars */
+            overflow: hidden;
         }
 
         #particles-js {
@@ -91,6 +91,34 @@
             color: #ff4d4d;
             margin-top: 10px;
         }
+
+        .captcha-container {
+            margin-top: 20px;
+        }
+
+        #captcha-image {
+            width: 100%;
+            max-width: 200px;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+        }
+
+        #captcha-input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(50, 50, 50, 0.7);
+            color: #fff;
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+
+        #captcha-input:focus {
+            outline: none;
+            background-color: rgba(70, 70, 70, 0.9);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -100,6 +128,12 @@
         <input type="text" id="username" placeholder="Username" required>
         <input type="password" id="password" placeholder="Password" required>
         <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+
+        <div class="captcha-container">
+            <img src="/api/captcha.js" alt="CAPTCHA" id="captcha-image">
+            <input type="text" id="captcha-input" placeholder="Enter CAPTCHA" required>
+        </div>
+
         <button onclick="signUp()">Sign Up</button>
         <p id="error-message"></p>
         <a href="login.html" class="login-link">Already have an account? Log In</a>
@@ -115,6 +149,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
+            const captchaInput = document.getElementById('captcha-input').value;
             const errorMessage = document.getElementById('error-message');
 
             if (password !== confirmPassword) {
@@ -123,18 +158,18 @@
             }
 
             try {
-                const response = await fetch('/api/account.js', { // Adjusted path
+                const response = await fetch('/api/account.js', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ username, password, captcha: captchaInput })
                 });
 
                 const data = await response.json();
 
                 if (response.ok) {
-                    window.location.href = 'login.html'; // Redirect on success
+                    window.location.href = 'login.html';
                 } else {
                     errorMessage.textContent = data.message || 'Signup failed.';
                 }
