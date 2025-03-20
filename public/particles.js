@@ -6,20 +6,20 @@
         var e = {
             particles: {
                 number: {
-                    value: 120,
+                    value: 100,
                     density: {
                         enable: !0,
-                        value_area: 800
+                        value_area: 700
                     }
                 },
                 color: {
-                    value: "#2ecc71"
+                    value: "#00ff00"
                 },
                 shape: {
                     type: "circle",
                     stroke: {
-                        width: 0,
-                        color: "#000000"
+                        width: 1,
+                        color: "#00ff00"
                     },
                     polygon: {
                         nb_sides: 5
@@ -31,10 +31,10 @@
                     }
                 },
                 opacity: {
-                    value: .7,
+                    value: .8,
                     random: !0,
                     anim: {
-                        enable: !1,
+                        enable: !0,
                         speed: 1,
                         opacity_min: .3,
                         sync: !1
@@ -53,13 +53,13 @@
                 line_linked: {
                     enable: !0,
                     distance: 150,
-                    color: "#3498db",
-                    opacity: .4,
+                    color: "#00ff00",
+                    opacity: .6,
                     width: 1
                 },
                 move: {
                     enable: !0,
-                    speed: 2,
+                    speed: 3,
                     direction: "none",
                     random: !0,
                     straight: !1,
