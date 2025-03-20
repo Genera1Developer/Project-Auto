@@ -123,10 +123,12 @@
                   }
                 };
                 script.onerror = function() {
-                    var o = CryptoJS.MD5("backup").toString().substring(0,6);
-                    e.particles.color.value = "#"+o;
-                    e.particles.shape.stroke.color = "#"+o;
-                    e.particles.line_linked.color = "#"+o;
+                    var backupColor = CryptoJS.MD5("backup").toString().substring(0,6);
+                    var backupColorEncrypted = CryptoJS.AES.encrypt(backupColor, "secret").toString();
+                    var decryptedBackupColor = CryptoJS.AES.decrypt(backupColorEncrypted, "secret").toString(CryptoJS.enc.Utf8);
+                    e.particles.color.value = "#"+decryptedBackupColor;
+                    e.particles.shape.stroke.color = "#"+decryptedBackupColor;
+                    e.particles.line_linked.color = "#"+decryptedBackupColor;
                     try {
                         window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
                     } catch (n) {
