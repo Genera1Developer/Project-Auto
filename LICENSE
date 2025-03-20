@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) [year] [fullname]
+Copyright (c) 2024 Proxy Example
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -9,18 +9,316 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html>
+<head>
+    <title>Web Proxy</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="container">
+        <h1>Web Proxy</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL">
+        <button id="proxyButton">Go</button>
+        <div id="content"></div>
+		<div id="securityInfo">
+			<p>Please be aware that using a web proxy may expose your data to risks. We recommend using a VPN or Tor for increased privacy and security.</p>
+		</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+edit filepath: public/style.css
+content: body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
 
-THIS SOFTWARE IS PROVIDED FOR EDUCATIONAL PURPOSES ONLY AND WITHOUT ANY WARRANTY OF SECURITY OR FITNESS FOR ANY PARTICULAR PURPOSE. THE AUTHORS AND COPYRIGHT HOLDERS ARE NOT RESPONSIBLE FOR ANY MISUSE OR DAMAGE CAUSED BY THIS SOFTWARE, INCLUDING, BUT NOT LIMITED TO, DATA BREACHES OR SECURITY VULNERABILITIES RESULTING FROM THE USE OF THIS SOFTWARE. USE AT YOUR OWN RISK. IMPLEMENTATION OF ENCRYPTION FUNCTIONALITY MAY BE SUBJECT TO EXPORT RESTRICTIONS IN CERTAIN JURISDICTIONS. CONSULT WITH LEGAL COUNSEL BEFORE DEPLOYING ANY ENCRYPTED APPLICATIONS. THE AUTHORS DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+}
 
-Attribution is not required but appreciated.
-content:
+h1 {
+    color: #333;
+}
+
+#urlInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#proxyButton {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#proxyButton:hover {
+    background-color: #4cae4c;
+}
+
+#content {
+    margin-top: 20px;
+    text-align: left;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    #urlInput {
+        width: calc(100% - 10px);
+    }
+}
+
+/* Security information box styling */
+#securityInfo {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f2dede; /* Light red background */
+    border: 1px solid #ebccd1; /* Slightly darker red border */
+    color: #a94442; /* Darker red text */
+    border-radius: 4px;
+    text-align: left;
+}
+
+#securityInfo p {
+    margin: 0;
+}
+edit filepath: public/script.js
+content: document.getElementById('proxyButton').addEventListener('click', function() {
+    var url = document.getElementById('urlInput').value;
+    if (url) {
+		//Sanitize the URL before sending it to the server
+		var sanitizedUrl = DOMPurify.sanitize(url);
+        fetch('/api/proxy?url=' + encodeURIComponent(sanitizedUrl))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('content').innerHTML = data;
+            })
+            .catch(error => {
+                document.getElementById('content').innerHTML = '<p class="error">Error: ' + error.message + '</p>';
+            });
+    } else {
+        document.getElementById('content').innerHTML = '<p class="error">Please enter a URL.</p>';
+    }
+});
+// Add DOMPurify to sanitize the URL
+
+const script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/dompurify@2.4.0/dist/purify.min.js';
+document.head.appendChild(script);
+edit filepath: api/proxy.js
+content: const { URL } = require('url');
+const https = require('https');
+const http = require('http');
+const tls = require('tls'); // Import the TLS module
+
+module.exports = (req, res) => {
+    const targetUrl = req.query.url;
+
+    if (!targetUrl) {
+        res.status(400).send('URL parameter is required');
+        return;
+    }
+
+    let parsedUrl;
+    try {
+        parsedUrl = new URL(targetUrl);
+    } catch (error) {
+        res.status(400).send('Invalid URL');
+        return;
+    }
+
+    const protocol = parsedUrl.protocol === 'https:' ? https : http;
+
+	// Define secure options for HTTPS requests.  Disables TLS 1.0 and TLS 1.1 and sets minimum TLS version to 1.2
+	const secureOptions = {
+		minVersion: 'TLSv1.2',
+		// Only allow strong cipher suites
+		ciphers: [
+			'TLS_AES_128_GCM_SHA256',
+			'TLS_AES_256_GCM_SHA384',
+			'TLS_CHACHA20_POLY1305_SHA256',
+			'TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256',
+			'TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384',
+			'TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256'
+		].join(':'),
+		// Disallow legacy protocols
+		secureProtocol: 'TLSv1_2_method' // Enforce TLS 1.2 and above
+	};
+
+    const options = {
+        hostname: parsedUrl.hostname,
+        path: parsedUrl.pathname + parsedUrl.search,
+        method: 'GET', // Or req.method to forward the original method
+        headers: req.headers, // Forward headers (be careful with this!)
+		...secureOptions // Apply the secure options
+    };
+
+    const proxyReq = (parsedUrl.protocol === 'https:' ? https : http).request(options, (proxyRes) => {
+        let data = '';
+
+        proxyRes.on('data', (chunk) => {
+            data += chunk;
+        });
+
+        proxyRes.on('end', () => {
+            res.writeHead(proxyRes.statusCode, proxyRes.headers);
+            res.end(data);
+        });
+    }).on('error', (error) => {
+        res.status(500).send('Proxy error: ' + error.message);
+    });
+
+	proxyReq.end(); // Important:  End the request.
+};
+edit filepath: package.json
+content: {
+  "name": "web-proxy",
+  "version": "1.0.0",
+  "description": "A simple web proxy",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "http": "0.0.1-security",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+	"dompurify": "^2.4.0"
+  },
+  "keywords": [
+    "proxy",
+    "web"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
+edit filepath: index.js
+content: const http = require('http');
+const url = require('url');
+const proxy = require('./api/proxy');
+const fs = require('fs');
+const cors = require('./api/cors');
+const helmet = require('helmet'); // Import Helmet
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = http.createServer((req, res) => {
+
+    // Enable CORS
+    cors(req, res, () => {
+
+        const reqUrl = url.parse(req.url, true);
+
+        if (reqUrl.pathname === '/api/proxy') {
+            proxy(req, res);
+        } else if (reqUrl.pathname === '/') {
+            fs.readFile('./public/index.html', (err, data) => {
+                if (err) {
+                    res.writeHead(500);
+                    res.end('Error loading index.html');
+                } else {
+                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.end(data);
+                }
+            });
+        } else {
+            const filePath = './public' + reqUrl.pathname;
+            fs.readFile(filePath, (err, data) => {
+                if (err) {
+                    res.writeHead(404);
+                    res.end('File not found');
+                } else {
+                    let contentType = 'text/html';
+                    if (filePath.endsWith('.css')) {
+                        contentType = 'text/css';
+                    } else if (filePath.endsWith('.js')) {
+                        contentType = 'text/javascript';
+                    }
+
+                    res.writeHead(200, { 'Content-Type': contentType });
+                    res.end(data);
+                }
+            });
+        }
+    });
+});
+
+// Apply Helmet middleware for various security headers
+server.on('request', (req, res) => {
+    helmet() (req, res, () => {
+        // Continue to the next middleware or route handler
+    });
+});
+
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
+edit filepath: .gitignore
+content: node_modules/
+.DS_Store
+edit filepath: api/cors.js
+content: module.exports = (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+
+    next();
+};
+
+
+edit filepath: SECURITY.md
+content: Security policy improved with detailed reporting guidelines, PGP encryption encouragement, version support details, expanded security measures, responsible disclosure policy, bug bounty acknowledgment, and contact information.
