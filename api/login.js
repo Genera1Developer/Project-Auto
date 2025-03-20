@@ -1,14 +1,15 @@
 const crypto = require('crypto');
 
 const generateSalt = () => {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(64).toString('hex'); // Increased salt size
 };
 
 const encryptPassword = (password, salt) => {
-  const hash = crypto.createHmac('sha512', salt);
-  hash.update(password);
-  const value = hash.digest('hex');
-  return value;
+  const iterations = 10000; // Increased iterations for stronger hashing
+  const keylen = 64; // Key length for PBKDF2
+  const digest = 'sha512'; // Algorithm for PBKDF2
+  const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
+  return derivedKey.toString('hex');
 };
 
 const timingSafeCompare = (a, b) => {
@@ -19,21 +20,19 @@ const timingSafeCompare = (a, b) => {
   if (a.length !== b.length) {
     return false;
   }
-  let result = 0;
-  for (let i = 0; i < a.length; i++) {
-    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return result === 0;
+  return crypto.timingSafeEqual(Buffer.from(a, 'utf-8'), Buffer.from(b, 'utf-8'));
 };
 
 // Mock database interaction - replace with actual DB calls
 const fetchUser = async (username) => {
   // Simulate database lookup
   if (username === 'testuser') {
+    const salt = generateSalt();
+    const passwordHash = encryptPassword('password123', salt);
     return {
       username: 'testuser',
-      passwordHash: 'e5a5f7a9c599b8a6c6e3f6b5a4b7a8c6e9f2a1c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6',
-      salt: 'somesalt',
+      passwordHash: passwordHash,
+      salt: salt,
     };
   }
   return null;
