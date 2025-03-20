@@ -1,168 +1,84 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #000;
     color: #fff;
-    margin: 0;
-    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
+    margin: 0;
     overflow: hidden;
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Cdefs%3E%3ClinearGradient id="gradient" x1="0%25" y1="0%25" x2="100%25" y2="100%25"%3E%3Cstop offset="0%25" stop-color="%2300bcd4"/%3E%3Cstop offset="100%25" stop-color="%23008ba7"/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width="100" height="100" fill="url(%23gradient)"/%3E%3C/svg%3E');
-    background-size: cover;
-    animation: gradientShift 5s infinite alternate;
-}
-
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-    100% {
-        background-position: 100% 50%;
-    }
-}
-
-#particles-js {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
 }
 
 .container {
-    background: rgba(0, 0, 0, 0.7);
+    background-color: rgba(20, 20, 20, 0.8);
     padding: 40px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 200, 200, 0.5);
-    position: relative;
-    z-index: 1;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(0, 200, 200, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+    width: 80%;
+    max-width: 600px;
 }
 
 h1 {
     font-size: 2.5em;
     margin-bottom: 20px;
     color: #00bcd4;
-    text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
-    animation: neonGlow 2s infinite alternate;
-}
-
-@keyframes neonGlow {
-    0% {
-        text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
-    }
-    100% {
-        text-shadow: 0 0 20px rgba(0, 230, 255, 1);
-    }
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 p {
-    font-size: 1.1em;
-    color: #eee;
-    margin-bottom: 25px;
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: #ddd;
 }
 
 .input-group {
     display: flex;
-    justify-content: center;
     margin-bottom: 20px;
 }
 
 input[type="text"] {
-    padding: 12px 15px;
+    padding: 15px;
     font-size: 1em;
-    border: 1px solid rgba(0, 200, 200, 0.3);
+    border: none;
     border-radius: 8px 0 0 8px;
-    width: 300px;
-    background-color: #222;
+    width: 80%;
+    background-color: #333;
     color: #fff;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s ease;
-}
-
-input[type="text"]::placeholder {
-    color: #999;
-}
-
-input[type="text"]:focus {
-    border-color: #00bcd4;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
-    outline: none;
 }
 
 button {
-    padding: 12px 20px;
+    padding: 15px 20px;
     font-size: 1em;
     border: none;
     border-radius: 0 8px 8px 0;
     background-color: #00bcd4;
     color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
     background-color: #008ba7;
-    transform: translateY(-2px);
-}
-
-button:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .error {
-    color: #ff4081;
+    color: #ff5252;
     margin-top: 10px;
-    animation: shake 0.5s ease-in-out;
-}
-
-@keyframes shake {
-    0%, 100% {
-        transform: translateX(0);
-    }
-    20%, 60% {
-        transform: translateX(-5px);
-    }
-    40%, 80% {
-        transform: translateX(5px);
-    }
 }
 
 .security-info {
     margin-top: 30px;
-    color: #a7ffeb;
+    color: #a5d6a7;
     font-size: 1.1em;
-    text-shadow: 0 0 5px rgba(0, 255, 234, 0.3);
 }
 
-.security-info i {
-    margin-right: 8px;
-    color: #64ffda;
-}
-
-/* New styles for the key icon */
-.key-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 2em;
-    color: #64ffda;
-    animation: pulse 2s infinite alternate;
-    text-shadow: 0 0 10px rgba(0, 255, 234, 0.8);
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1.2);
-        opacity: 1;
-    }
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
