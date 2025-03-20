@@ -71,7 +71,9 @@
       "encryptedValuePrefix": "ENC_",
       "keyRotationInterval": 86400,
        "hmacEnable": true,
-       "hmacAlgorithm": "SHA256"
+       "hmacAlgorithm": "SHA256",
+      "salt": "ENC_SALT_PLACEHOLDER",
+      "iterations": 10000
     }
   },
   "interactivity": {
