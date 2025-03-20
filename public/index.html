@@ -178,6 +178,9 @@
 
                      // Potentially store the nonce in local storage or a cookie
                      // localStorage.setItem('lastRequestNonce', nonce); //Example
+                     // Consider using sessionStorage to store the key temporarily
+                     sessionStorage.setItem('encryptionKey', encryptionKey);
+
                 } catch (e) {
                     errorDiv.textContent = 'Invalid URL.';
                 } finally {
