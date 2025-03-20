@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Sign Up</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -119,6 +120,11 @@
             background-color: rgba(70, 70, 70, 0.9);
             box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
+
+        #password-strength {
+            margin-top: 10px;
+            font-size: 0.8em;
+        }
     </style>
 </head>
 <body>
@@ -126,11 +132,12 @@
     <div class="signup-container">
         <h2>Create Secure Account</h2>
         <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="password" placeholder="Password" required onkeyup="checkPasswordStrength()">
+        <div id="password-strength"></div>
         <input type="password" id="confirm-password" placeholder="Confirm Password" required>
 
         <div class="captcha-container">
-            <img src="/api/captcha.js" alt="CAPTCHA" id="captcha-image">
+            <img src="/api/captcha.js" alt="CAPTCHA" id="captcha-image" onclick="refreshCaptcha()">
             <input type="text" id="captcha-input" placeholder="Enter CAPTCHA" required>
         </div>
 
@@ -145,6 +152,59 @@
             console.log('callback - particles.js config loaded');
         });
 
+        function refreshCaptcha() {
+            document.getElementById('captcha-image').src = '/api/captcha.js?' + new Date().getTime();
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strength = calculatePasswordStrength(password);
+            const strengthElement = document.getElementById('password-strength');
+
+            switch (strength) {
+                case 0:
+                    strengthElement.textContent = 'Very Weak';
+                    strengthElement.style.color = '#ff4d4d';
+                    break;
+                case 1:
+                    strengthElement.textContent = 'Weak';
+                    strengthElement.style.color = '#ff7043';
+                    break;
+                case 2:
+                    strengthElement.textContent = 'Fair';
+                    strengthElement.style.color = '#ffc107';
+                    break;
+                case 3:
+                    strengthElement.textContent = 'Good';
+                    strengthElement.style.color = '#4caf50';
+                    break;
+                case 4:
+                    strengthElement.textContent = 'Strong';
+                    strengthElement.style.color = '#2e7d32';
+                    break;
+            }
+        }
+
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) {
+                strength++;
+            }
+            if (password.match(/[a-z]+/)) {
+                strength++;
+            }
+            if (password.match(/[A-Z]+/)) {
+                strength++;
+            }
+            if (password.match(/[0-9]+/)) {
+                strength++;
+            }
+            if (password.match(/[$@#&!]+/)) {
+                strength++;
+            }
+            return Math.min(strength, 4);
+        }
+
         async function signUp() {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
@@ -154,6 +214,11 @@
 
             if (password !== confirmPassword) {
                 errorMessage.textContent = "Passwords do not match.";
+                return;
+            }
+
+             if (calculatePasswordStrength(password) < 3) {
+                errorMessage.textContent = "Password is not strong enough. Use a mix of uppercase, lowercase, numbers, and symbols.";
                 return;
             }
 
