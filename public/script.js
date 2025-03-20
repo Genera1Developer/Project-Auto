@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fetch('/api/proxy?url=' + encodeURIComponent(url))
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return response.text();
                 })
@@ -17,11 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     contentDiv.innerHTML = data;
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    contentDiv.innerHTML = '<p class="error">An error occurred: ' + error + '</p>';
+                    console.error('Error fetching content:', error);
+                    contentDiv.innerHTML = '<div class="error">Error: Unable to fetch content. Please check the URL and try again.</div>';
                 });
         } else {
-            contentDiv.innerHTML = '<p class="error">Please enter a URL.</p>';
+            contentDiv.innerHTML = '<div class="error">Please enter a URL.</div>';
         }
     });
 });
