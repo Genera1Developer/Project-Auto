@@ -239,23 +239,38 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
-        const ENCRYPTION_KEY = 'secretPassphrase'; // Store key as const
+        const ENCRYPTION_KEY = CryptoJS.SHA256('secretPassphrase').toString(); // Secure key
 
         async function generateCaptcha() {
             const captchaText = generateRandomString(6);
-            const encryptedCaptcha = await encryptText(captchaText, ENCRYPTION_KEY);
+            const salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
+            const encryptedCaptcha = await encryptText(captchaText, ENCRYPTION_KEY, salt);
             document.getElementById('captcha-text').innerText = encryptedCaptcha;
-            return { original: captchaText, encrypted: encryptedCaptcha };
+            return { original: captchaText, encrypted: encryptedCaptcha, salt: salt };
         }
 
-        async function encryptText(plainText, key) {
-            return CryptoJS.AES.encrypt(plainText, key).toString();
+        async function encryptText(plainText, key, salt) {
+             const iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
+            const cipherText = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
+                iv: CryptoJS.enc.Hex.parse(iv),
+                salt: CryptoJS.enc.Hex.parse(salt),
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            }).toString();
+            return iv + cipherText; // Prepend IV for decryption
         }
 
-        async function decryptText(cipherText, key) {
+        async function decryptText(cipherText, key, salt) {
             try {
-                const bytes = CryptoJS.AES.decrypt(cipherText, key);
-                return bytes.toString(CryptoJS.enc.Utf8);
+                const iv = cipherText.substring(0, 32); // Extract IV
+                const encrypted = cipherText.substring(32); // Extract cipher text
+                const decrypted = CryptoJS.AES.decrypt(encrypted, CryptoJS.enc.Utf8.parse(key), {
+                    iv: CryptoJS.enc.Hex.parse(iv),
+                    salt: CryptoJS.enc.Hex.parse(salt),
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                return decrypted.toString(CryptoJS.enc.Utf8);
             } catch (e) {
                 return ''; // Decryption failed
             }
@@ -276,7 +291,7 @@
         async function validateCaptcha() {
             const userInput = document.getElementById('captcha-input').value;
             const encryptedText = document.getElementById('captcha-text').innerText; // Cache encrypted text
-            const decryptedText = await decryptText(encryptedText, ENCRYPTION_KEY);
+            const decryptedText = await decryptText(encryptedText, ENCRYPTION_KEY, currentCaptcha.salt);
 
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
