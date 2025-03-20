@@ -78,8 +78,13 @@ async function deriveKey(password, salt) {
     const iterations = 100000; // Adjust as needed
     const keyLength = 32; // 32 bytes for AES-256
     const digest = 'sha512';
-    const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keyLength, digest);
-    return derivedKey.toString('hex');
+    return crypto.pbkdf2Sync(password, salt, iterations, keyLength, digest);
+}
+
+// Function to generate a strong, random encryption key
+async function generateEncryptionKey() {
+    const key = await randomBytesAsync(32); // 32 bytes for AES-256
+    return key;
 }
 
 
@@ -108,12 +113,11 @@ module.exports = async (req, res) => {
       // Securely store data (e.g., in a database):
 
       // 1. Generate a unique encryption key per user.
-      const encryptionSalt = await generateSalt(); // Separate salt for encryption
-      const encryptionKey = await deriveKey(password, encryptionSalt); // Derive key from password and salt
+      const encryptionKey = await generateEncryptionKey(); // Generate strong key
 
       // 2. Encrypt the username and salt
-      const encryptedUsername = await encryptData(username, encryptionKey);
-      const encryptedSalt = salt ? await encryptData(salt, encryptionKey) : null;
+      const encryptedUsername = await encryptData(username, encryptionKey.toString('hex'));
+      const encryptedSalt = salt ? await encryptData(salt, encryptionKey.toString('hex')) : null;
 
       // 3. Store the encryptionKey, encryptedUsername, encryptedSalt, and hashedPassword.
       // For demonstration, we log them. NEVER log sensitive data in production.
@@ -130,7 +134,6 @@ module.exports = async (req, res) => {
       if (process.env.NODE_ENV !== 'production') {
         console.log('User record (for demonstration only):', userRecord);
       }
-
 
       return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
