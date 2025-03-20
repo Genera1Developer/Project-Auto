@@ -44,14 +44,29 @@ function timingSafeEqual(a, b) {
   return timingSafeCompare(a, b);
 }
 
-// Function to encrypt data using AES-256-CBC
+// Function to encrypt data using AES-256-GCM
 async function encryptData(data, encryptionKey) {
   const iv = await randomBytesAsync(16); // Initialization Vector
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), iv);
+  const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
   let encrypted = cipher.update(data);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+  const authTag = cipher.getAuthTag();
+  return {
+    iv: iv.toString('hex'),
+    encryptedData: encrypted.toString('hex'),
+    authTag: authTag.toString('hex'),
+  };
 }
+
+// Function to decrypt data using AES-256-GCM
+async function decryptData(encryptedData, encryptionKey, iv, authTag) {
+  const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), Buffer.from(iv, 'hex'));
+  decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+  let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+  return decrypted.toString();
+}
+
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
@@ -92,6 +107,21 @@ module.exports = async (req, res) => {
         console.log('Encrypted Salt:', encryptedSalt);
       }
       console.log('Hashed Password:', hashedPassword);
+
+      // Example of decryption (for demonstration purposes ONLY):
+      // In a real-world scenario, decryption would occur in a different context,
+      // such as when retrieving user data.
+      try {
+        const decryptedUsername = await decryptData(
+          encryptedUsername.encryptedData,
+          encryptionKey,
+          encryptedUsername.iv,
+          encryptedUsername.authTag
+        );
+        console.log('Decrypted Username:', decryptedUsername);
+      } catch (decryptionError) {
+        console.error('Decryption error:', decryptionError);
+      }
 
       return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
