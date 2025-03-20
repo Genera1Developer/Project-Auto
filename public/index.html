@@ -99,6 +99,16 @@
                 return { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) };
             }
 
+              // Function to decrypt the URL using AES (for potential future use)
+            async function decryptURL(ciphertext, key, iv) {
+                const encryptedData = Uint8Array.from(atob(ciphertext), c => c.charCodeAt(0));
+                const ivData = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+                const alg = { name: 'AES-GCM', iv: ivData };
+                const jwk = await window.crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['decrypt']);
+                const decrypted = await window.crypto.subtle.decrypt(alg, jwk, encryptedData);
+                return new TextDecoder().decode(decrypted);
+            }
+
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
                 if (!url) {
