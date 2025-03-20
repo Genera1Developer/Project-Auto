@@ -106,16 +106,6 @@
                 return nonce;
             }
 
-            // Function to encrypt the URL using AES
-            async function encryptURL(url, key) {
-                const iv = window.crypto.getRandomValues(new Uint8Array(12));
-                const encoded = new TextEncoder().encode(url);
-                const alg = { name: 'AES-GCM', iv: iv };
-                const jwk = await window.crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['encrypt']);
-                const ciphertext = await window.crypto.subtle.encrypt(alg, jwk, encoded);
-                return { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) };
-            }
-
               // Function to decrypt the URL using AES (for potential future use)
             async function decryptURL(ciphertext, key, iv) {
                 try {
@@ -222,16 +212,9 @@
                     const hashedKey = await hashKey(keyHex);
                     console.log("Hashed Key:", hashedKey); // Log the hashed key
 
-                    // Encrypt the URL
-                    const iv = window.crypto.getRandomValues(new Uint8Array(12));
-                    const encoded = new TextEncoder().encode(url);
-                     const alg = { name: 'AES-GCM', iv: iv };
-                    const ciphertext = await window.crypto.subtle.encrypt(alg, derivedKey, encoded);
-                     const encryptedData = { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) };
 
-
-                     // Construct the URL with encrypted parameters
-                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(encryptedData.ciphertext)}&iv=${encodeURIComponent(encryptedData.iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}&salt=${encodeURIComponent(salt)}`;
+                    // Construct the URL with encrypted parameters
+                    const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}&salt=${encodeURIComponent(salt)}`;
 
                     // Show loading indicator
                     loadingDiv.style.display = 'block';
