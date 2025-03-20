@@ -109,6 +109,10 @@
                 transform: rotate(360deg);
             }
         }
+
+        #captcha-container {
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -118,6 +122,11 @@
         <form id="loginForm">
             <input type="text" id="username" name="username" placeholder="Username" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
+            <div id="captcha-container">
+                <img src="/api/captcha" alt="CAPTCHA Image" id="captchaImage">
+                <input type="text" id="captcha" name="captcha" placeholder="Enter CAPTCHA" required>
+                <button type="button" onclick="refreshCaptcha()">Refresh CAPTCHA</button>
+            </div>
             <div class="encryption-animation" id="encryptionAnimation"></div>
             <button type="submit">Login</button>
         </form>
@@ -132,16 +141,21 @@
           console.log('particles.js loaded - callback');
         });
 
+        function refreshCaptcha() {
+            document.getElementById('captchaImage').src = '/api/captcha?' + new Date().getTime();
+        }
+
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const captcha = document.getElementById('captcha').value;
             const errorMessage = document.getElementById('error-message');
             const encryptionStatus = document.getElementById('encryption-status');
             const encryptionAnimation = document.getElementById('encryptionAnimation');
 
-            if (!username || !password) {
-                errorMessage.textContent = 'Please enter both username and password.';
+            if (!username || !password || !captcha) {
+                errorMessage.textContent = 'Please enter all fields.';
                 return;
             }
 
@@ -154,7 +168,7 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username: username, password: password })
+                body: JSON.stringify({ username: username, password: password, captcha: captcha })
             })
             .then(response => {
                 encryptionAnimation.style.display = 'none'; // Hide animation
