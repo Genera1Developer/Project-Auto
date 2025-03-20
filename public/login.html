@@ -132,9 +132,41 @@
             cursor: pointer;
             color: #fff;
         }
+
+        /* Added styles for preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000; /* Black background */
+            z-index: 1000; /* Ensure it's on top */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3; /* Light grey border */
+            border-top: 8px solid #3498db; /* Blue border top */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
     </style>
 </head>
 <body>
+    <div class="preloader" id="preloader">
+        <div class="loader"></div>
+    </div>
     <div id="particles-js"></div>
     <div class="login-container">
         <h2>Login</h2>
@@ -159,6 +191,9 @@
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="particles.js"></script>
     <script>
+        window.onload = function() {
+            document.getElementById('preloader').style.display = 'none';
+        }
         particlesJS.load('particles-js', 'particles-config.json', function() {
           console.log('particles.js loaded - callback');
         });
