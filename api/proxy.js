@@ -9,7 +9,7 @@ const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16; //For GCM
 
 //Consider using environment variables for cipher algorithm
-const CIPHER_ALGORITHM = 'aes-256-gcm';
+const CIPHER_ALGORITHM = process.env.CIPHER_ALGORITHM || 'aes-256-gcm';
 
 function encrypt(text) {
     let iv = crypto.randomBytes(IV_LENGTH);
