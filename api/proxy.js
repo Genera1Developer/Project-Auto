@@ -14,29 +14,27 @@ const KEY_DERIVATION_SALT = process.env.KEY_DERIVATION_SALT || crypto.randomByte
 const ITERATIONS = parseInt(process.env.PBKDF2_ITERATIONS) || 10000; // Adjust based on security needs and performance
 const DIGEST = process.env.PBKDF2_DIGEST || 'sha512';
 
+const SENSITIVE_HEADERS = ['authorization', 'cookie', 'proxy-authorization'];
+
 function deriveKey(password, salt) {
     return crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
 }
 
-function encrypt(text) {
-    const salt = crypto.randomBytes(16); // Use byte array for salt
-    const key = deriveKey(ENCRYPTION_KEY, salt.toString('hex'));
+function encrypt(text, key) {
     let iv = crypto.randomBytes(IV_LENGTH);
     const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
     const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
     const authTag = cipher.getAuthTag();
-    return Buffer.concat([salt, iv, authTag, encrypted]).toString('hex'); // Store salt as Buffer
+    return Buffer.concat([iv, authTag, encrypted]).toString('hex');
 }
 
-function decrypt(text) {
+function decrypt(text, key) {
     try {
         const buffer = Buffer.from(text, 'hex');
-        const salt = buffer.slice(0, 16); // salt is now Buffer
-        const iv = buffer.slice(16, 16 + IV_LENGTH);
-        const authTag = buffer.slice(16 + IV_LENGTH, 16 + IV_LENGTH + AUTH_TAG_LENGTH);
-        const encrypted = buffer.slice(16 + IV_LENGTH + AUTH_TAG_LENGTH);
+        const iv = buffer.slice(0, IV_LENGTH);
+        const authTag = buffer.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        const encrypted = buffer.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        const key = deriveKey(ENCRYPTION_KEY, salt.toString('hex')); // use salt.toString('hex')
         const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv);
         decipher.setAuthTag(authTag);
 
@@ -49,7 +47,7 @@ function decrypt(text) {
 }
 
 // Function to encrypt/decrypt headers
-function transformHeaders(headers, encryptFlag) {
+function transformHeaders(headers, encryptFlag, encryptionKey) {
     const transformedHeaders = {};
     for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
@@ -59,8 +57,14 @@ function transformHeaders(headers, encryptFlag) {
                 transformedHeaders[key] = headers[key];
             } else {
                 const value = String(headers[key]); // Ensure value is a string
+                const useEncryption = SENSITIVE_HEADERS.includes(lowerKey) || encryptFlag;
+
                 try {
-                    transformedHeaders[encryptFlag ? encrypt(key) : decrypt(key)] = encryptFlag ? encrypt(value) : decrypt(value);
+                    const transformedKey = useEncryption ? encrypt(key, encryptionKey) : key;
+                    const transformedValue = useEncryption ? encrypt(value, encryptionKey) : value;
+
+                    transformedHeaders[encryptFlag ? transformedKey : decrypt(transformedKey, encryptionKey)] = encryptFlag ? transformedValue : decrypt(transformedValue, encryptionKey);
+
                 } catch (err) {
                     console.error(`Header transformation error for key ${key}:`, err);
                     //If encryption or decryption fails, keep the original value
@@ -80,7 +84,10 @@ function proxyRequest(req, res) {
 
     try {
         const parsedUrl = new url.URL(targetUrl);
-        let reqHeaders = transformHeaders(req.headers, false); // Decrypt incoming headers
+        const salt = crypto.randomBytes(16);
+        const encryptionKey = deriveKey(ENCRYPTION_KEY, salt.toString('hex'));
+
+        let reqHeaders = transformHeaders(req.headers, false, encryptionKey); // Decrypt incoming headers, using salt
         const options = {
             hostname: parsedUrl.hostname,
             port: parsedUrl.port,
@@ -111,13 +118,13 @@ function proxyRequest(req, res) {
                 raw = brotliDecompress;
             }
 
-            let resHeaders = transformHeaders(proxyRes.headers, true); // Encrypt outgoing headers
+            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey); // Encrypt outgoing headers, using salt
             delete resHeaders['content-encoding'];
 
+            // Send the salt to the client for decryption
+            res.setHeader('x-encryption-salt', salt.toString('hex'));
             res.writeHead(proxyRes.statusCode, resHeaders);
             raw.pipe(res);
-
-
         });
 
         proxyReq.on('error', (err) => {
