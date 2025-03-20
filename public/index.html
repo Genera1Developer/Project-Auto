@@ -81,8 +81,8 @@
                 const jwk = await crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['encrypt']);
                 const ciphertext = await crypto.subtle.encrypt(alg, jwk, encoded);
 
-                const ivHex = Array.from(iv).map(b => b.toString(16).padStart(2, '0')).join('');
-                const ciphertextHex = Array.from(new Uint8Array(ciphertext)).map(b => b.toString(16).padStart(2, '0')).join('');
+                const ivHex = btoa(String.fromCharCode(...iv)); // Base64 encode IV
+                const ciphertextHex = btoa(String.fromCharCode(...new Uint8Array(ciphertext))); // Base64 encode ciphertext
 
                 return ivHex + ciphertextHex;
             }
