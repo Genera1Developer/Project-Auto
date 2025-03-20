@@ -215,11 +215,12 @@
 
         // Function to encrypt data
         function encryptData(data, key, iv) {
-            return CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
+            const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
                 iv: CryptoJS.enc.Utf8.parse(iv),
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
-            }).toString();
+            });
+            return encrypted.toString();
         }
 
         // Function to hash the encryption key for integrity check
@@ -257,12 +258,16 @@
             // Hash the encryption key for integrity check on the server
             const keyHash = hashKey(encryptionKey);
 
+            // Include a timestamp in the request headers for replay protection
+            const timestamp = Date.now();
+
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Encryption-Key-Hash': keyHash, // Send the key hash
-                    'X-Encryption-IV': iv // Send IV in header
+                    'X-Encryption-IV': iv, // Send IV in header
+                    'X-Request-Timestamp': timestamp // Send timestamp
                 },
                 body: JSON.stringify({
                     username: encryptedUsername,
