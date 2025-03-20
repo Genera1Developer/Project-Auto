@@ -80,6 +80,33 @@ const isRateLimited = (req) => {
   return false;
 };
 
+const encryptSession = (sessionData, encryptionKey) => {
+    try {
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), iv);
+        let encrypted = cipher.update(JSON.stringify(sessionData));
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        return iv.toString('hex') + ':' + encrypted.toString('hex');
+    } catch (error) {
+        console.error('Session encryption error:', error);
+        return null;
+    }
+};
+
+const decryptSession = (encryptedSession, encryptionKey) => {
+    try {
+        const textParts = encryptedSession.split(':');
+        const iv = Buffer.from(textParts.shift(), 'hex');
+        const encryptedData = Buffer.from(textParts.join(':'), 'hex');
+        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), iv);
+        let decrypted = decipher.update(encryptedData);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return JSON.parse(decrypted.toString());
+    } catch (error) {
+        console.error('Session decryption error:', error);
+        return null;
+    }
+};
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
@@ -109,7 +136,21 @@ module.exports = async (req, res) => {
       }
 
       if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
-        res.status(200).json({ message: 'Login successful!' });
+        const sessionData = {
+          username: userData.username,
+          loginTime: Date.now(),
+        };
+
+        const encryptionKey = process.env.SESSION_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
+        const encryptedSession = encryptSession(sessionData, encryptionKey);
+
+        if (encryptedSession) {
+          res.setHeader('Set-Cookie', `session=${encryptedSession}; HttpOnly; Secure`);
+          res.status(200).json({ message: 'Login successful!' });
+        } else {
+          res.status(500).json({ message: 'Session encryption failed' });
+        }
+
       } else {
         res.status(401).json({ message: 'Invalid credentials' });
       }
