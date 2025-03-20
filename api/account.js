@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const crypto = require('crypto');
+const { promisify } = require('util');
 
 const dbPath = './api/accounts.db'; // Explicit path
 let db;
@@ -17,7 +18,8 @@ function connectToDatabase() {
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 salt TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                password_version INTEGER DEFAULT 1
             )
         `, (err) => {
             if (err) {
@@ -31,33 +33,45 @@ function connectToDatabase() {
 connectToDatabase(); // Initialize database connection on module load
 
 
-function hashPassword(password, salt) {
-    const hash = crypto.createHmac('sha512', salt);
-    hash.update(password);
-    return hash.digest('hex');
+const pbkdf2 = promisify(crypto.pbkdf2);
+
+async function hashPassword(password, salt, iterations = 100000) {
+    const keylen = 64;
+    const digest = 'sha512';
+    const derivedKey = await pbkdf2(password, salt, iterations, keylen, digest);
+    return {
+        hashedPassword: derivedKey.toString('hex'),
+        salt: salt,
+        iterations: iterations
+    };
 }
 
 function generateSalt() {
-    return crypto.randomBytes(16).toString('hex');
+    return crypto.randomBytes(32).toString('hex'); // Increased salt size
 }
 
 
-exports.createUser = (username, password, callback) => {
+exports.createUser = async (username, password, callback) => {
     const salt = generateSalt();
-    const hashedPassword = hashPassword(password, salt);
+    try {
+        const { hashedPassword, iterations } = await hashPassword(password, salt);
 
-    db.run(`INSERT INTO users (username, password, salt) VALUES (?, ?, ?)`, [username, hashedPassword, salt], function(err) {
-        if (err) {
-            console.error(err.message);
-            return callback(err);
-        }
-        callback(null, { id: this.lastID, username: username });
-    });
+        db.run(`INSERT INTO users (username, password, salt, password_version) VALUES (?, ?, ?, ?)`, [username, hashedPassword, salt, iterations], function(err) {
+            if (err) {
+                console.error(err.message);
+                return callback(err);
+            }
+            callback(null, { id: this.lastID, username: username });
+        });
+    } catch (err) {
+        console.error("Password hashing error:", err);
+        return callback(err);
+    }
 };
 
 
 exports.verifyUser = (username, password, callback) => {
-    db.get(`SELECT id, username, password, salt FROM users WHERE username = ?`, [username], (err, row) => {
+    db.get(`SELECT id, username, password, salt, password_version FROM users WHERE username = ?`, [username], async (err, row) => {
         if (err) {
             console.error(err.message);
             return callback(err);
@@ -66,11 +80,16 @@ exports.verifyUser = (username, password, callback) => {
             return callback(null, false); // User not found
         }
 
-        const hashedPassword = hashPassword(password, row.salt);
-        if (hashedPassword === row.password) {
-            callback(null, { id: row.id, username: row.username });
-        } else {
-            callback(null, false); // Incorrect password
+        try {
+            const { hashedPassword } = await hashPassword(password, row.salt, row.password_version);
+            if (hashedPassword === row.password) {
+                callback(null, { id: row.id, username: row.username });
+            } else {
+                callback(null, false); // Incorrect password
+            }
+        } catch (error) {
+            console.error("Password verification error:", error);
+            return callback(error);
         }
     });
 };
@@ -101,4 +120,3 @@ process.on('SIGTERM', () => {
     }
     process.exit();
 });
-content:
