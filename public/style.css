@@ -1,59 +1,73 @@
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background for encryption theme */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #000;
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
     margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
     overflow: hidden; /* Hide scrollbars */
 }
 
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
 .container {
-    text-align: center;
-    background-color: rgba(30, 30, 30, 0.8); /* Semi-transparent dark container */
+    background: rgba(0, 0, 0, 0.7);
     padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    width: 80%;
-    max-width: 600px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 200, 200, 0.5);
+    position: relative;
+    z-index: 1;
 }
 
 h1 {
     font-size: 2.5em;
     margin-bottom: 20px;
-    color: #00bcd4; /* Cyan color for the heading */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    color: #00bcd4; /* Cyan for encryption theme */
+    text-shadow: 0 0 10px rgba(0, 188, 212, 0.8);
 }
 
 p {
-    font-size: 1.2em;
-    margin-bottom: 20px;
+    font-size: 1.1em;
     color: #eee;
+    margin-bottom: 25px;
 }
 
 .input-group {
     display: flex;
+    justify-content: center;
     margin-bottom: 20px;
 }
 
 input[type="text"] {
-    flex: 1;
-    padding: 15px;
+    padding: 12px 15px;
     font-size: 1em;
     border: none;
-    border-radius: 5px 0 0 5px;
+    border-radius: 8px 0 0 8px;
+    width: 300px;
     background-color: #222;
     color: #fff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+input[type="text"]::placeholder {
+    color: #999;
 }
 
 button {
-    padding: 15px 20px;
+    padding: 12px 20px;
     font-size: 1em;
     border: none;
-    border-radius: 0 5px 5px 0;
-    background-color: #00bcd4; /* Cyan button color */
+    border-radius: 0 8px 8px 0;
+    background-color: #00bcd4;
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -64,29 +78,17 @@ button:hover {
 }
 
 .error {
-    color: #f44336;
-    margin-bottom: 15px;
+    color: #ff4081;
+    margin-top: 10px;
 }
 
 .security-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #4caf50;
+    margin-top: 30px;
+    color: #a7ffeb;
     font-size: 1.1em;
-    margin-top: 20px;
 }
 
 .security-info i {
-    margin-right: 10px;
-}
-
-/* Styles for particles.js */
-#particles-js {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: -1;
+    margin-right: 8px;
+    color: #64ffda;
 }
