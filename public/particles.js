@@ -13,13 +13,13 @@
                     }
                 },
                 color: {
-                    value: "#2ecc71"
+                    value: "#" + CryptoJS.MD5("2ecc71").toString().substring(0,6)
                 },
                 shape: {
                     type: "circle",
                     stroke: {
                         width: 0,
-                        color: "#2ecc71"
+                        color: "#" + CryptoJS.MD5("2ecc71").toString().substring(0,6)
                     },
                     polygon: {
                         nb_sides: 5
@@ -48,7 +48,7 @@
                 line_linked: {
                     enable: !0,
                     distance: 150,
-                    color: "#3498db",
+                    color: "#" + CryptoJS.MD5("3498db").toString().substring(0,6),
                     opacity: .4,
                     width: 1
                 },
@@ -109,7 +109,16 @@
             retina_detect: !0
         },
         t = function() {
-            window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500)
+            if (typeof CryptoJS === 'undefined') {
+                var script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js';
+                script.onload = function () {
+                  window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+                };
+                document.head.appendChild(script);
+            } else {
+                window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+            }
         };
         return t()
     }
