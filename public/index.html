@@ -39,6 +39,11 @@
         .error {
             color: #f44336;
         }
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -52,6 +57,7 @@
             <button id="browse"><i class="fas fa-arrow-right"></i> Browse</button>
         </div>
         <div id="error" class="error"></div>
+        <div id="loading">Loading...</div>
         <div class="security-info">
             <i class="fas fa-shield-alt"></i> Your connection is encrypted. We use strong encryption to protect your data.
         </div>
@@ -62,6 +68,7 @@
             const urlInput = document.getElementById('url');
             const browseButton = document.getElementById('browse');
             const errorDiv = document.getElementById('error');
+            const loadingDiv = document.getElementById('loading');
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -139,12 +146,22 @@
                     form.appendChild(keyInput);
 
                     document.body.appendChild(form);
+
+                    // Show loading indicator
+                    loadingDiv.style.display = 'block';
+                    errorDiv.textContent = ''; // Clear any previous errors
+
                     form.submit();
 
                      // Potentially store the nonce in local storage or a cookie
                      // localStorage.setItem('lastRequestNonce', nonce); //Example
                 } catch (e) {
                     errorDiv.textContent = 'Invalid URL.';
+                } finally {
+                    // Hide loading indicator (in case of immediate errors)
+                    setTimeout(() => {
+                        loadingDiv.style.display = 'none';
+                    }, 500); // Small delay to ensure the loading indicator is shown briefly
                 }
             });
         });
