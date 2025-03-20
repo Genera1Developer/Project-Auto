@@ -9,23 +9,41 @@
 </head>
 <body>
     <div id="particles-js"></div>
+
     <div class="container">
         <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL">
-        <button id="proxyButton">Go</button>
+        <p>Enter the URL to browse securely:</p>
+        <input type="text" id="url" placeholder="https://example.com">
+        <button id="browse">Browse</button>
+        <div id="error" class="error"></div>
     </div>
+
     <script>
-        document.getElementById('proxyButton').addEventListener('click', function() {
-            let url = document.getElementById('urlInput').value;
-            // Basic URL validation (can be improved)
-            if (url) {
-                window.location.href = '/proxy?url=' + encodeURIComponent(url);
-            } else {
-                alert('Please enter a URL.');
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlInput = document.getElementById('url');
+            const browseButton = document.getElementById('browse');
+            const errorDiv = document.getElementById('error');
+
+            browseButton.addEventListener('click', async () => {
+                const url = urlInput.value.trim();
+                if (!url) {
+                    errorDiv.textContent = 'Please enter a URL.';
+                    return;
+                }
+
+                try {
+                    // Basic URL validation (can be improved)
+                    new URL(url);
+
+                    // Redirect to the proxy endpoint (replace with your actual proxy URL)
+                    window.location.href = '/api/proxy?url=' + encodeURIComponent(url);
+                } catch (e) {
+                    errorDiv.textContent = 'Invalid URL.';
+                }
+            });
         });
 
-        particlesJS.load('particles-js', 'particlesjs-config.json', function() {
+        particlesJS.load('particles-js', 'particles-config.json', function() {
             console.log('callback - particles.js config loaded');
         });
     </script>
