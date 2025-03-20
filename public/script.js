@@ -57,40 +57,43 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMessage.textContent = '';
             encryptionStatus.textContent = 'Encrypting...';
 
-            fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username: username, password: password, captcha: captcha })
-            })
-            .then(response => {
-                if (encryptionAnimation) {
-                    encryptionAnimation.style.display = 'none';
-                }
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    errorMessage.textContent = '';
-                    encryptionStatus.textContent = 'Encrypted connection established.';
-                    window.location.href = '/index.html';
-                } else {
-                    errorMessage.textContent = data.message || 'Invalid username or password.';
-                    encryptionStatus.textContent = 'Login failed. Encryption in transit.';
-                }
-            })
-            .catch(error => {
-                if (encryptionAnimation) {
-                    encryptionAnimation.style.display = 'none';
-                }
-                console.error('Error:', error);
-                errorMessage.textContent = 'An error occurred during login.';
-                encryptionStatus.textContent = 'Connection error.';
-            });
+            // Simulate encryption delay (for visual effect)
+            setTimeout(() => {
+                fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username: username, password: password, captcha: captcha })
+                })
+                .then(response => {
+                    if (encryptionAnimation) {
+                        encryptionAnimation.style.display = 'none';
+                    }
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        errorMessage.textContent = '';
+                        encryptionStatus.textContent = 'Encrypted connection established.';
+                        window.location.href = '/index.html';
+                    } else {
+                        errorMessage.textContent = data.message || 'Invalid username or password.';
+                        encryptionStatus.textContent = 'Login failed. Encryption in transit.';
+                    }
+                })
+                .catch(error => {
+                    if (encryptionAnimation) {
+                        encryptionAnimation.style.display = 'none';
+                    }
+                    console.error('Error:', error);
+                    errorMessage.textContent = 'An error occurred during login.';
+                    encryptionStatus.textContent = 'Connection error.';
+                });
+            }, 1500); // Simulate 1.5 seconds of encryption
         });
     }
 
