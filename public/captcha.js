@@ -1,67 +1,59 @@
-function generateCaptchaText(length) {
-    let result = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+document.addEventListener('DOMContentLoaded', function() {
+    const captchaTextElement = document.getElementById('captcha-text');
+    const captchaInputElement = document.getElementById('captcha-input');
+    const errorMessageElement = document.getElementById('error-message');
+
+    let encryptedCaptcha = '';
+    let decryptedCaptcha = '';
+
+    function generateRandomString(length) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
     }
-    return result;
-}
 
-function encryptCaptcha(text) {
-    const key = CryptoJS.enc.Utf8.parse('1234567890123456'); // 16-byte key for AES-128
-    const iv = CryptoJS.enc.Utf8.parse('abcdefghijklmnop'); // 16-byte IV
-    const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(text), key,
-        {
-            keySize: 128 / 8,
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-    return encrypted.toString();
-}
-
-function displayEncryptedCaptcha() {
-    const captchaText = generateCaptchaText(6); // Generate a 6-character CAPTCHA
-    const encryptedCaptcha = encryptCaptcha(captchaText);
-    document.getElementById('captcha-text').innerText = encryptedCaptcha;
-    // Store the original captcha text for validation
-    sessionStorage.setItem('captcha', captchaText);
-}
-
-function decryptCaptcha(encryptedText) {
-    const key = CryptoJS.enc.Utf8.parse('1234567890123456'); // Same key as encryption
-    const iv = CryptoJS.enc.Utf8.parse('abcdefghijklmnop'); // Same IV as encryption
-
-    try {
-        const decrypted = CryptoJS.AES.decrypt(encryptedText, key, {
-            keySize: 128 / 8,
-            iv: iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-        return decrypted.toString(CryptoJS.enc.Utf8);
-    } catch (e) {
-        console.error("Decryption error:", e);
-        return null;
+    function encrypt(text, key) {
+        return CryptoJS.AES.encrypt(text, key).toString();
     }
-}
 
-function validateCaptcha() {
-    const userInput = document.getElementById('captcha-input').value;
-    const encryptedCaptchaText = document.getElementById('captcha-text').innerText; // Get the encrypted text from display
-    const originalCaptcha = sessionStorage.getItem('captcha'); // Get the original CAPTCHA from sessionStorage
-    const decryptedUserInput = decryptCaptcha(encryptedCaptchaText);
-    if (decryptedUserInput && userInput === originalCaptcha) {
-        alert('Captcha Matched!');
-        // You can redirect the user or perform other actions here
-    } else {
-        document.getElementById('error-message').innerText = 'Captcha does not match. Please try again.';
-        displayEncryptedCaptcha(); // Regenerate CAPTCHA on failure
+    function decrypt(ciphertext, key) {
+        try {
+            const bytes = CryptoJS.AES.decrypt(ciphertext, key);
+            return bytes.toString(CryptoJS.enc.Utf8);
+        } catch (e) {
+            return ''; // Decryption failed
+        }
     }
-}
 
-// Call this function when the page loads
-window.onload = function() {
-    displayEncryptedCaptcha();
-};
+    function initializeCaptcha() {
+        decryptedCaptcha = generateRandomString(6);
+        const encryptionKey = generateRandomString(16); // AES key size
+        encryptedCaptcha = encrypt(decryptedCaptcha, encryptionKey);
+        captchaTextElement.textContent = encryptedCaptcha;
+        captchaTextElement.dataset.key = encryptionKey; // Store key in data attribute
+    }
+
+    window.validateCaptcha = function() {
+        const userInput = captchaInputElement.value.trim();
+        const storedKey = captchaTextElement.dataset.key;
+        const decryptedInput = decrypt(encryptedCaptcha, storedKey);
+
+        if (decryptedInput === userInput) {
+            errorMessageElement.textContent = 'Captcha Matched!';
+            errorMessageElement.style.color = 'green';
+            // You can add a redirect or other actions here upon successful validation
+             window.location.href = "/public/index.html"; // Redirect to index.html
+        } else {
+            errorMessageElement.textContent = 'Captcha Failed. Please try again.';
+            errorMessageElement.style.color = 'red';
+            initializeCaptcha(); // Regenerate captcha on failure
+            captchaInputElement.value = ''; // Clear input field
+        }
+    };
+
+    initializeCaptcha();
+});
