@@ -107,7 +107,7 @@
 
     <script src="particles.js"></script>
     <script>
-        particlesJS.load('particles-js', 'particles-config.json', function() {
+        particlesJS.load('particles-js', 'public/particles-config.json', function() {
           console.log('particles.js loaded - callback');
         });
 
@@ -126,7 +126,7 @@
 
             // NO SIMULATIMNG DO ANNYTHING TO MAKE IT WORK
             
-            fetch('/api/account/login', {
+            fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
