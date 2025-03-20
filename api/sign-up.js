@@ -44,6 +44,14 @@ function timingSafeEqual(a, b) {
   return timingSafeCompare(a, b);
 }
 
+// Function to encrypt data using AES-256-CBC
+async function encryptData(data, encryptionKey) {
+  const iv = await randomBytesAsync(16); // Initialization Vector
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), iv);
+  let encrypted = cipher.update(data);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
+}
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
@@ -67,17 +75,27 @@ module.exports = async (req, res) => {
         return res.status(400).json({ message: 'Invalid hashing algorithm'});
       }
 
-    // Store username, salt, and hashedPassword securely in a database.
-    // For demonstration purposes, we'll just log them.
-      console.log('Username:', username);
-      if (salt){
-        console.log('Salt:', salt);
+      // Securely store data (e.g., in a database):
+
+      // 1. Generate a unique encryption key per user.
+      const encryptionKey = await generateSalt();
+
+      // 2. Encrypt the username and salt
+      const encryptedUsername = await encryptData(username, encryptionKey);
+      const encryptedSalt = salt ? await encryptData(salt, encryptionKey) : null;
+
+      // 3. Store the encryptionKey, encryptedUsername, encryptedSalt, and hashedPassword.
+      // For demonstration, we log them. NEVER log sensitive data in production.
+      console.log('Encryption Key:', encryptionKey);
+      console.log('Encrypted Username:', encryptedUsername);
+      if (encryptedSalt) {
+        console.log('Encrypted Salt:', encryptedSalt);
       }
       console.log('Hashed Password:', hashedPassword);
 
       return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
-      console.error("Error during password hashing:", error);
+      console.error("Error during password hashing/encryption:", error);
       return res.status(500).json({ message: 'Internal server error' });
     }
 
