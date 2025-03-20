@@ -125,6 +125,12 @@
             margin-top: 10px;
             font-size: 0.8em;
         }
+        #password-requirements {
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #aaa;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -134,6 +140,15 @@
         <input type="text" id="username" placeholder="Username" required>
         <input type="password" id="password" placeholder="Password" required onkeyup="checkPasswordStrength()">
         <div id="password-strength"></div>
+         <div id="password-requirements">
+            Password must be at least 8 characters long and include:
+            <ul>
+                <li>At least one uppercase letter</li>
+                <li>At least one lowercase letter</li>
+                <li>At least one number</li>
+                <li>At least one special character ($@#&!)</li>
+            </ul>
+        </div>
         <input type="password" id="confirm-password" placeholder="Confirm Password" required>
 
         <div class="captcha-container">
@@ -218,7 +233,7 @@
             }
 
              if (calculatePasswordStrength(password) < 3) {
-                errorMessage.textContent = "Password is not strong enough. Use a mix of uppercase, lowercase, numbers, and symbols.";
+                errorMessage.textContent = "Password is not strong enough.";
                 return;
             }
 
