@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
 const generateSalt = () => {
-  return crypto.randomBytes(32).toString('hex'); // Increased salt size
+  return crypto.randomBytes(32).toString('hex');
 };
 
 const encryptPassword = (password, salt) => {
@@ -12,6 +12,10 @@ const encryptPassword = (password, salt) => {
 };
 
 const timingSafeCompare = (a, b) => {
+  if (typeof a !== 'string' || typeof b !== 'string') {
+    return false;
+  }
+
   if (a.length !== b.length) {
     return false;
   }
@@ -22,18 +26,26 @@ const timingSafeCompare = (a, b) => {
   return result === 0;
 };
 
+// Mock database interaction - replace with actual DB calls
+const fetchUser = async (username) => {
+  // Simulate database lookup
+  if (username === 'testuser') {
+    return {
+      username: 'testuser',
+      passwordHash: 'e5a5f7a9c599b8a6c6e3f6b5a4b7a8c6e9f2a1c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6',
+      salt: 'somesalt',
+    };
+  }
+  return null;
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password } = req.body;
 
-// NEEDS REPLACED WITH ACTUAL FUNCTIONS THAT WORJ
-    const userData = {
-      username: 'testuser', // NEEDS REPLACED WITH ACTUAL FUNCTIONS THAT WORJ
-      passwordHash: 'e5a5f7a9c599b8a6c6e3f6b5a4b7a8c6e9f2a1c8b7a6f5e4d3c2b1a0f9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b3a2f1e0d9c8b7a6f5e4d3c2b1a0f9e8d7c6', // NEEDS REPLACED WITH ACTUAL FUNCTIONS THAT WORJ
-      salt: 'somesalt', // NEEDS REPLACED WITH ACTUAL FUNCTIONS THAT WORJ
-    };
+    const userData = await fetchUser(username);
 
-    if (username === userData.username) {
+    if (userData) {
       const hashedPassword = encryptPassword(password, userData.salt);
 
       if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
