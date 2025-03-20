@@ -176,3 +176,49 @@ body {
     color: #ccc;
     line-height: 1.6;
 }
+
+/* New Styles for Tor-like Encryption Overlay */
+.encryption-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 1000; /* Ensure it's on top */
+    pointer-events: none; /* Allow clicks to pass through */
+}
+
+.encryption-line {
+    position: absolute;
+    background: rgba(0, 123, 255, 0.3); /* Encryption blue */
+    height: 2px;
+    width: 0;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    animation: encryptionLineAnimation 2s linear infinite;
+}
+
+@keyframes encryptionLineAnimation {
+    0% {
+        left: 0;
+        width: 0;
+    }
+    25% {
+        left: 0;
+        width: 100%;
+    }
+    50% {
+        left: 0;
+        width: 100%;
+    }
+    75% {
+        left: 0;
+        width: 0;
+    }
+    100% {
+        left: 100%;
+        width: 0;
+    }
+}
