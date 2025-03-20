@@ -1,4 +1,4 @@
-<!DOCTYPE html> <!-- needs updated -->
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -296,20 +296,22 @@
                 });
 
                 // Encrypt username and email too
+                const iv = CryptoJS.lib.WordArray.random(128/8);
+
                 const usernameEncrypted = CryptoJS.AES.encrypt(username, key, {
-                    iv: salt, // Use salt as IV to simply the process
+                    iv: iv,
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7
                 }).toString();
 
                 const emailEncrypted = CryptoJS.AES.encrypt(email, key, {
-                    iv: salt,
+                    iv: iv,
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7
                 }).toString();
 
                 const encrypted = CryptoJS.AES.encrypt(password, key, {
-                    iv: salt,
+                    iv: iv,
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7
                 }).toString();
@@ -319,13 +321,15 @@
 
                 const encryptedKey = CryptoJS.enc.Base64.stringify(key);
                 const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
+                const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
+
 
               fetch('/api/sign-up', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify({ username: usernameEncrypted, password: encryptedPassword, email: emailEncrypted, captcha: captcha, key: encryptedKey, salt: encryptedSalt })
+                  body: JSON.stringify({ username: usernameEncrypted, password: encryptedPassword, email: emailEncrypted, captcha: captcha, key: encryptedKey, salt: encryptedSalt, iv: encryptedIV })
               })
               .then(response => {
                   encryptionAnimation.style.display = 'none';
