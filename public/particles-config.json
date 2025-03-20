@@ -63,7 +63,7 @@
     },
     "encryption": {
       "enable": true,
-      "algorithm": "AES-256-CBC",
+      "algorithm": "AES-256-GCM",
       "key": "ENC_KEY_PLACEHOLDER",
       "iv": "ENC_IV_PLACEHOLDER",
       "dataFields": ["color.value", "line_linked.color", "shape.stroke.color"],
@@ -80,9 +80,10 @@
       "adata": "particles-config",
       "compression": {
         "enable": true,
-        "algorithm": "gzip",
-        "level": 6
-      }
+        "algorithm": "zlib",
+        "level": 9
+      },
+      "keyEncoding": "base64"
     }
   },
   "interactivity": {
