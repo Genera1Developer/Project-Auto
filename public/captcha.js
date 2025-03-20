@@ -56,18 +56,18 @@ document.addEventListener('DOMContentLoaded', function() {
         captchaTextElement.textContent = encryptedCaptcha;
         sessionStorage.setItem('encryptionKey', encryptionKey);
         sessionStorage.setItem('encryptionIV', encryptionIV);
-        sessionStorage.setItem('encryptedCaptcha', encryptedCaptcha);
-        sessionStorage.setItem('generatedCaptchaHash', CryptoJS.SHA256(captcha).toString());
+        const hash = CryptoJS.SHA256(encryptedCaptcha).toString();
+        sessionStorage.setItem('encryptedCaptchaHash', hash);
+        sessionStorage.removeItem('encryptedCaptcha');
     }
 
     window.validateCaptcha = function() {
         const userInput = captchaInputElement.value;
         const storedKey = sessionStorage.getItem('encryptionKey');
         const storedIV = sessionStorage.getItem('encryptionIV');
-        const encryptedCaptcha = sessionStorage.getItem('encryptedCaptcha');
-        const generatedCaptchaHash = sessionStorage.getItem('generatedCaptchaHash');
+        const encryptedCaptchaHash = sessionStorage.getItem('encryptedCaptchaHash');
 
-        if (!storedKey || !storedIV || !encryptedCaptcha || !generatedCaptchaHash) {
+        if (!storedKey || !storedIV || !encryptedCaptchaHash) {
             errorMessageElement.textContent = 'Encryption keys missing. Refresh.';
             errorMessageElement.style.color = 'red';
             displayEncryptedCaptcha();
@@ -76,10 +76,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const decryptedText = decryptCaptcha(encryptedCaptcha, storedKey, storedIV);
-            const userInputHash = CryptoJS.SHA256(userInput).toString();
-
-            if (userInputHash === generatedCaptchaHash) {
+            const encryptedUserInput = encryptCaptcha(userInput, storedKey, storedIV);
+            const userInputHash = CryptoJS.SHA256(encryptedUserInput).toString();
+            if (userInputHash === encryptedCaptchaHash) {
                  errorMessageElement.textContent = 'Captcha verified!';
                  errorMessageElement.style.color = 'green';
             } else {
