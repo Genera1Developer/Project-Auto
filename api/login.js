@@ -38,9 +38,8 @@ const timingSafeCompare = (a, b) => {
 
 const fetchUser = async (username) => {
   if (username === 'testuser') {
-    const salt = generateSalt();
-    const passwordHash = encryptPassword('password123', salt);
-    if (!passwordHash) return null;
+    const salt = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // Fixed salt for test user
+    const passwordHash = '7c44e9e53ea1951b95740c8364a95c757bb64b3449766db539693de67d3554109f33621e148305443d3586e4f9d46e0a4615a680320d9f863503c62e2169f690'; //Fixed password hash
     return {
       username: 'testuser',
       passwordHash: passwordHash,
