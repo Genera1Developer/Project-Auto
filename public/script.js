@@ -85,3 +85,28 @@ function showEncryptionNotification(message, duration = 3000) {
         }, 500);
     }, duration);
 }
+
+function createDataEncryptionKey() {
+    // Simulate key generation (replace with actual crypto logic)
+    const key = Array.from({ length: 32 }, () => Math.floor(Math.random() * 256))
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+    return key;
+}
+
+function storeEncryptionKey(key) {
+    // In a real application, use secure storage (e.g., browser's Web Crypto API)
+    sessionStorage.setItem('encryptionKey', key);
+    showEncryptionNotification('Encryption key generated and stored securely.');
+}
+
+function initEncryption() {
+    // Check if key exists, if not generate and store
+    if (!sessionStorage.getItem('encryptionKey')) {
+        const newKey = createDataEncryptionKey();
+        storeEncryptionKey(newKey);
+    }
+}
+
+// Call initEncryption when the page loads
+window.onload = initEncryption;
