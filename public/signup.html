@@ -113,6 +113,27 @@
         #captcha-container {
             margin-top: 15px;
         }
+
+        /* New styles for password strength meter */
+        .password-strength {
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .password-strength-bar {
+            height: 8px;
+            width: 100%;
+            background-color: #444;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar div {
+            height: 100%;
+            width: 0;
+            background-color: #00aaff;
+            transition: width 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -121,7 +142,14 @@
         <h2>Sign Up</h2>
         <form id="signupForm">
             <input type="text" id="username" name="username" placeholder="Username" required>
-            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="password" id="password" name="password" placeholder="Password" required onkeyup="checkPasswordStrength()">
+            <div class="password-strength">
+                Password Strength:
+                <div class="password-strength-bar">
+                    <div id="password-strength-meter"></div>
+                </div>
+                <span id="password-strength-text"></span>
+            </div>
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
             <input type="email" id="email" name="email" placeholder="Email" required>
             <div id="captcha-container">
@@ -146,6 +174,78 @@
         function refreshCaptcha() {
             document.getElementById('captchaImage').src = '/api/captcha?' + new Date().getTime();
         }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strength = calculatePasswordStrength(password);
+            updatePasswordStrengthMeter(strength);
+        }
+
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) {
+                strength += 1;
+            }
+            if (password.match(/[a-z]+/)) {
+                strength += 1;
+            }
+            if (password.match(/[A-Z]+/)) {
+                strength += 1;
+            }
+            if (password.match(/[0-9]+/)) {
+                strength += 1;
+            }
+            if (password.match(/[$@#&!]+/)) {
+                strength += 1;
+            }
+            return strength;
+        }
+
+        function updatePasswordStrengthMeter(strength) {
+            const meter = document.getElementById('password-strength-meter');
+            const text = document.getElementById('password-strength-text');
+            let width = 0;
+            let color = '';
+            let textContent = '';
+
+            switch (strength) {
+                case 0:
+                    width = 0;
+                    color = '#ff0000';
+                    textContent = 'Very Weak';
+                    break;
+                case 1:
+                    width = 20;
+                    color = '#ff0000';
+                    textContent = 'Weak';
+                    break;
+                case 2:
+                    width = 40;
+                    color = '#ffcc00';
+                    textContent = 'Fair';
+                    break;
+                case 3:
+                    width = 60;
+                    color = '#ffcc00';
+                    textContent = 'Good';
+                    break;
+                case 4:
+                    width = 80;
+                    color = '#00ff00';
+                    textContent = 'Strong';
+                    break;
+                case 5:
+                    width = 100;
+                    color = '#00ff00';
+                    textContent = 'Very Strong';
+                    break;
+            }
+
+            meter.style.width = width + '%';
+            meter.style.backgroundColor = color;
+            text.textContent = textContent;
+        }
+
 
         document.getElementById('signupForm').addEventListener('submit', function(event) {
             event.preventDefault();
