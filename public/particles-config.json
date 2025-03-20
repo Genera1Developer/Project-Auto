@@ -64,10 +64,11 @@
     "encryption": {
       "enable": true,
       "algorithm": "AES-256-CBC",
-      "key": "YOUR_ENCRYPTION_KEY",
-      "iv": "YOUR_IV_KEY",
+      "key": "PLACEHOLDER_ENCRYPTION_KEY",
+      "iv": "PLACEHOLDER_IV_KEY",
       "dataFields": ["color.value", "line_linked.color"],
-      "obfuscate": true
+      "obfuscate": true,
+      "encryptedValuePrefix": "ENC_"
     }
   },
   "interactivity": {
