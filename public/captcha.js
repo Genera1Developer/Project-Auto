@@ -2,58 +2,40 @@ document.addEventListener('DOMContentLoaded', function() {
     const captchaTextElement = document.getElementById('captcha-text');
     const captchaInputElement = document.getElementById('captcha-input');
     const errorMessageElement = document.getElementById('error-message');
+    let generatedCaptcha = '';
 
-    let encryptedCaptcha = '';
-    let decryptedCaptcha = '';
-
-    function generateRandomString(length) {
-        let result = '';
+    function generateCaptcha() {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        let captcha = '';
+        for (let i = 0; i < 6; i++) {
+            captcha += characters.charAt(Math.floor(Math.random() * characters.length));
         }
-        return result;
+        generatedCaptcha = captcha;
+        return captcha;
     }
 
-    function encrypt(text, key) {
-        return CryptoJS.AES.encrypt(text, key).toString();
-    }
-
-    function decrypt(ciphertext, key) {
-        try {
-            const bytes = CryptoJS.AES.decrypt(ciphertext, key);
-            return bytes.toString(CryptoJS.enc.Utf8);
-        } catch (e) {
-            return ''; // Decryption failed
-        }
-    }
-
-    function initializeCaptcha() {
-        decryptedCaptcha = generateRandomString(6);
-        const encryptionKey = generateRandomString(16); // AES key size
-        encryptedCaptcha = encrypt(decryptedCaptcha, encryptionKey);
-        captchaTextElement.textContent = encryptedCaptcha;
-        captchaTextElement.dataset.key = encryptionKey; // Store key in data attribute
+    function displayEncryptedCaptcha() {
+        const captcha = generateCaptcha();
+        const encryptedCaptcha = CryptoJS.AES.encrypt(captcha, 'secret key 123').toString();
+        captchaTextElement.textContent = encryptedCaptcha.substring(0, 12) + "...";
     }
 
     window.validateCaptcha = function() {
-        const userInput = captchaInputElement.value.trim();
-        const storedKey = captchaTextElement.dataset.key;
-        const decryptedInput = decrypt(encryptedCaptcha, storedKey);
+        const userInputValue = captchaInputElement.value;
+        const decryptedCaptcha = CryptoJS.AES.decrypt(captchaTextElement.textContent.replace("...", ""), 'secret key 123').toString(CryptoJS.enc.Utf8);
 
-        if (decryptedInput === userInput) {
-            errorMessageElement.textContent = 'Captcha Matched!';
+        if (userInputValue === generatedCaptcha) {
+            errorMessageElement.textContent = 'Captcha verified!';
             errorMessageElement.style.color = 'green';
-            // You can add a redirect or other actions here upon successful validation
-             window.location.href = "/public/index.html"; // Redirect to index.html
+            // Optionally, redirect or perform other actions upon successful validation
+            // window.location.href = '/success.html';
         } else {
-            errorMessageElement.textContent = 'Captcha Failed. Please try again.';
+            errorMessageElement.textContent = 'Captcha verification failed. Please try again.';
             errorMessageElement.style.color = 'red';
-            initializeCaptcha(); // Regenerate captcha on failure
+            displayEncryptedCaptcha(); // Regenerate captcha on failure
             captchaInputElement.value = ''; // Clear input field
         }
     };
 
-    initializeCaptcha();
+    displayEncryptedCaptcha();
 });
