@@ -83,6 +83,12 @@
             color: red;
             margin-top: 10px;
         }
+
+        #encryption-status {
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #00ff00; /* Green for secure connection */
+        }
     </style>
 </head>
 <body>
@@ -96,11 +102,12 @@
         </form>
         <a href="signup.html">Don't have an account? Sign up</a>
         <div id="error-message" class="error-message"></div>
+        <div id="encryption-status"></div>
     </div>
 
     <script src="particles.js"></script>
     <script>
-        particlesJS.load('particles-js', 'particlesjs-config.json', function() {
+        particlesJS.load('particles-js', 'particles-config.json', function() {
           console.log('particles.js loaded - callback');
         });
 
@@ -109,6 +116,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('error-message');
+            const encryptionStatus = document.getElementById('encryption-status');
 
             // Basic client-side validation
             if (!username || !password) {
@@ -125,21 +133,29 @@
                 },
                 body: JSON.stringify({ username: username, password: password })
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     // Successful login
                     errorMessage.textContent = '';
+                    encryptionStatus.textContent = 'Encrypted connection established.';
                     // Redirect to a secure page (e.g., proxy page)
                     window.location.href = '/index.html'; // Or wherever the proxy is
                 } else {
                     // Failed login
                     errorMessage.textContent = data.message || 'Invalid username or password.';
+                    encryptionStatus.textContent = 'Connection not encrypted.'; // Indicate potential issue
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 errorMessage.textContent = 'An error occurred during login.';
+                encryptionStatus.textContent = 'Connection error.'; //Indicate connection issue
             });
         });
     </script>
