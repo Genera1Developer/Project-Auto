@@ -1,77 +1,70 @@
-function generateCaptcha() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let captcha = '';
-    for (let i = 0; i < 6; i++) {
-        captcha += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return captcha;
-}
-
-function encryptCaptcha(captcha) {
-    const key = 'YOUR_SECRET_KEY';
-    const iv = CryptoJS.lib.WordArray.random(128 / 8).toString();
-    const salt = CryptoJS.lib.WordArray.random(128 / 8).toString();
-    const saltedCaptcha = salt + captcha;
-    const encrypted = CryptoJS.AES.encrypt(saltedCaptcha, CryptoJS.PBKDF2(key, CryptoJS.enc.Hex.parse(salt), {
-        keySize: 256/32,
-        iterations: 100
-    }), {
-        iv: CryptoJS.enc.Utf8.parse(iv),
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-    return iv + salt + encrypted.toString();
-}
-
-let captchaText = generateCaptcha();
-let encryptedText = encryptCaptcha(captchaText);
-
-function decryptCaptcha(encryptedCaptcha) {
-    const key = 'YOUR_SECRET_KEY';
-    const iv = encryptedCaptcha.substring(0, 32);
-    const salt = encryptedCaptcha.substring(32, 64);
-    const encrypted = encryptedCaptcha.substring(64);
-
-    try {
-        const decrypted = CryptoJS.AES.decrypt(encrypted, CryptoJS.PBKDF2(key, CryptoJS.enc.Hex.parse(salt), {
-            keySize: 256/32,
-            iterations: 100
-        }), {
-            iv: CryptoJS.enc.Utf8.parse(iv),
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-
-        const saltedCaptcha = decrypted.toString(CryptoJS.enc.Utf8);
-        if (saltedCaptcha) {
-            return saltedCaptcha.substring(32);
-        } else {
-            return '';
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to generate a random encryption key (for demonstration purposes)
+    function generateEncryptionKey() {
+        const keyLength = 32; // 256 bits
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let key = '';
+        for (let i = 0; i < keyLength; i++) {
+            key += characters.charAt(Math.floor(Math.random() * characters.length));
         }
-    } catch (e) {
-        console.error("Decryption Error:", e);
-        return '';
+        return key;
     }
-}
 
-function displayCaptcha() {
-    captchaText = generateCaptcha();
-    encryptedText = encryptCaptcha(captchaText);
-    document.getElementById('captcha-text').innerText = encryptedText;
-}
-
-function validateCaptcha() {
-    const userInput = document.getElementById('captcha-input').value;
-    const decryptedText = decryptCaptcha(encryptedText);
-
-    if (decryptedText === userInput) {
-        alert('Captcha validation successful!');
-        window.location.href = '/';
-    } else {
-        document.getElementById('error-message').innerText = 'Incorrect captcha. Please try again.';
-        displayCaptcha();
-        document.getElementById('captcha-input').value = '';
+    // Function to display encryption status
+    function updateEncryptionStatus(status, message) {
+        const statusElement = document.getElementById('encryption-status');
+        if (statusElement) {
+            statusElement.textContent = message;
+            statusElement.className = status === 'success' ? 'encryption-success' : 'encryption-error';
+        }
     }
-}
 
-displayCaptcha();
+    // Simulate encryption setup (in a real scenario, this would involve secure key exchange)
+    function setupEncryption() {
+        const encryptionKey = generateEncryptionKey(); // Insecure key generation for demonstration
+        localStorage.setItem('encryptionKey', encryptionKey); // Storing in localStorage is also insecure
+        updateEncryptionStatus('success', 'Encryption initialized.');
+    }
+
+    // Example usage (can be called on page load or after login)
+    setupEncryption();
+
+    // Intercept form submissions for potential encryption (example)
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent standard submission
+
+            const encryptionKey = localStorage.getItem('encryptionKey');
+            if (!encryptionKey) {
+                updateEncryptionStatus('error', 'Encryption key missing.');
+                return;
+            }
+
+            // Collect form data
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Simulate encrypting data (in reality, use a proper encryption library)
+            const encryptedData = btoa(JSON.stringify(data)); // Very basic encoding, NOT true encryption
+
+            // Display encrypted data (for demonstration)
+            console.log('Encrypted Data:', encryptedData);
+            updateEncryptionStatus('success', 'Data encrypted (simulated).');
+
+            // In a real scenario, send the encryptedData to the server
+            // fetch('/api/submit', {
+            //     method: 'POST',
+            //     body: JSON.stringify({ encryptedData: encryptedData }),
+            //     headers: { 'Content-Type': 'application/json' }
+            // })
+            // .then(...)
+
+             // For demonstration, just log the data.
+             console.log("Form Data:", data);
+        });
+    });
+});
