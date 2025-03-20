@@ -62,11 +62,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Use AES encryption instead of btoa
                 encryptData({ username: username, password: password, captcha: captcha })
                     .then(encryptedData => {
+                        return Promise.all([encryptedData, generateAndStoreSalt()]);
+                    })
+                    .then(([encryptedData, salt]) => {
                         fetch('/api/login', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-Encryption': 'true' // Indicate encryption
+                                'X-Encryption': 'true', // Indicate encryption
+                                'X-Salt': salt  // Send the salt to the server
                             },
                             body: JSON.stringify({ data: encryptedData }) // Send encrypted data
                         })
@@ -120,8 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // AES Encryption function (using CryptoJS)
     async function encryptData(data) {
-        const key = CryptoJS.enc.Utf8.parse('YOUR_SECRET_KEY'); // Replace with a strong, securely stored key
-        const iv = CryptoJS.enc.Utf8.parse('YOUR_SECRET_IV'); // Replace with a unique IV
+        const salt = localStorage.getItem('encryptionSalt');  // Retrieve stored salt
+        const key = CryptoJS.enc.Utf8.parse(generateKey(salt));
+        const iv = CryptoJS.enc.Utf8.parse(generateIV(salt));
 
         const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
             iv: iv,
@@ -131,6 +136,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return encrypted.toString();
     }
+
+    function generateKey(salt) {
+        // Deriving a key from the salt (example: SHA256 hash)
+        const combined = "YourSecretKeyPrefix" + salt;
+        const hash = CryptoJS.SHA256(combined).toString();
+        return hash.substring(0, 32); // AES-256 requires a 32-byte key
+    }
+
+    function generateIV(salt) {
+          const combined = "YourSecretIVPrefix" + salt;
+          const hash = CryptoJS.SHA256(combined).toString();
+          return hash.substring(0, 16); // AES requires a 16-byte IV
+
+    }
+    async function generateAndStoreSalt() {
+          let salt = localStorage.getItem('encryptionSalt');
+          if (!salt) {
+              salt = CryptoJS.lib.WordArray.random(16).toString();
+              localStorage.setItem('encryptionSalt', salt);
+          }
+          return salt;
+      }
+
 
 
     // Particle.js Initialization
