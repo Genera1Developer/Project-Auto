@@ -75,18 +75,19 @@
                 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 let nonce = '';
                 for (let i = 0; i < length; i++) {
-                    nonce += characters.charAt(Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * characters.length));
+                    // Use window.crypto for wider compatibility
+                    nonce += characters.charAt(Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * characters.length));
                 }
                 return nonce;
             }
 
             // Function to encrypt the URL using AES
             async function encryptURL(url, key) {
-                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const iv = window.crypto.getRandomValues(new Uint8Array(12));
                 const encoded = new TextEncoder().encode(url);
                 const alg = { name: 'AES-GCM', iv: iv };
-                const jwk = await crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['encrypt']);
-                const ciphertext = await crypto.subtle.encrypt(alg, jwk, encoded);
+                const jwk = await window.crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['encrypt']);
+                const ciphertext = await window.crypto.subtle.encrypt(alg, jwk, encoded);
                 return { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) };
             }
 
