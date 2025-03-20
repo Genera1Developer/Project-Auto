@@ -25,9 +25,9 @@ function encrypt(text) {
     const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
     const authTag = cipher.getAuthTag();
     return {
-        iv: iv.toString('hex'),
-        encryptedData: encrypted.toString('hex'),
-        authTag: authTag.toString('hex')
+        iv: iv.toString('base64'),
+        encryptedData: encrypted.toString('base64'),
+        authTag: authTag.toString('base64')
     };
 }
 
@@ -36,9 +36,9 @@ function decrypt(text) {
         if (!key) {
             throw new Error('Encryption key not set. Call setEncryptionKey() first.');
         }
-        const iv = Buffer.from(text.iv, 'hex');
-        const encryptedData = Buffer.from(text.encryptedData, 'hex');
-        const authTag = Buffer.from(text.authTag, 'hex');
+        const iv = Buffer.from(text.iv, 'base64');
+        const encryptedData = Buffer.from(text.encryptedData, 'base64');
+        const authTag = Buffer.from(text.authTag, 'base64');
 
         const decipher = crypto.createDecipheriv(algorithm, key, iv);
         decipher.setAuthTag(authTag);
@@ -51,4 +51,15 @@ function decrypt(text) {
     }
 }
 
-module.exports = { encrypt, decrypt, setEncryptionKey, generateEncryptionKey };
+function safeCompare(a, b) {
+    if (a.length !== b.length) {
+      return false;
+    }
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return result === 0;
+  }
+
+module.exports = { encrypt, decrypt, setEncryptionKey, generateEncryptionKey, safeCompare };
