@@ -134,9 +134,14 @@
                 script.onerror = function() {
                     var backupColor = "f0f0f0";
                     try {
-                      backupColor = CryptoJS.MD5("backup").toString().substring(0,6);
-                      var backupColorEncrypted = CryptoJS.AES.encrypt(backupColor, "secret").toString();
-                      backupColor = CryptoJS.AES.decrypt(backupColorEncrypted, "secret").toString(CryptoJS.enc.Utf8);
+                      var key = CryptoJS.SHA256("fallback_key").toString();
+                      var encrypted = CryptoJS.AES.encrypt(backupColor, key).toString();
+                      var decrypted = CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8);
+                      if (decrypted) {
+                        backupColor = decrypted;
+                      } else {
+                        backupColor = "cccccc";
+                      }
                     } catch (cryptoError) {
                       console.error("CryptoJS Backup Error:", cryptoError);
                       backupColor = "cccccc";
