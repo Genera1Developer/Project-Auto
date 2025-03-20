@@ -209,6 +209,11 @@ function proxyRequest(req, res) {
             // Send the salt and algorithm to the client for decryption
             res.setHeader('x-encryption-salt', salt.toString('hex'));
             res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
+
+            // Optional: Send PBKDF2 parameters to the client for key derivation if needed
+            // res.setHeader('x-pbkdf2-iterations', ITERATIONS);
+            // res.setHeader('x-pbkdf2-digest', DIGEST);
+
             res.writeHead(proxyRes.statusCode, resHeaders);
             raw.pipe(res);
         });
