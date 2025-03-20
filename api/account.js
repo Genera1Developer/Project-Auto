@@ -6,7 +6,7 @@ const { createCipheriv, createDecipheriv } = crypto;
 const dbPath = './api/accounts.db'; // Explicit path
 let db;
 
-const encryptionKey = crypto.randomBytes(32); // 256-bit key, DO NOT HARDCODE IN PRODUCTION
+const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'), 'hex'); // Load from env
 const ivLength = 16; // IV length for AES
 const AUTH_TAG_LENGTH = 16; // For GCM
 
@@ -65,6 +65,7 @@ function encrypt(text) {
 }
 
 function decrypt(encryptedText) {
+    try {
     const encryptedBytes = Buffer.from(encryptedText, 'hex');
     const iv = encryptedBytes.slice(0, ivLength);
     const authTag = encryptedBytes.slice(ivLength, ivLength + AUTH_TAG_LENGTH);
@@ -76,6 +77,10 @@ function decrypt(encryptedText) {
     let decrypted = decipher.update(encrypted);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString('utf8');
+    } catch (error) {
+        console.error("Decryption error:", error);
+        return null;
+    }
 }
 
 
@@ -115,8 +120,10 @@ exports.verifyUser = (username, password, callback) => {
 
         try {
             const decryptedSalt = decrypt(row.salt);
+            if (!decryptedSalt) return callback(new Error("Salt decryption failed"));
             const { hashedPassword } = await hashPassword(password, decryptedSalt, row.password_version);
             const decryptedPassword = decrypt(row.password);
+            if (!decryptedPassword) return callback(new Error("Password decryption failed"));
             if (hashedPassword === decryptedPassword) {
                 callback(null, { id: row.id, username: decrypt(row.username) });
             } else {
