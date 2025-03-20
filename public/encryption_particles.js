@@ -8,7 +8,7 @@ const encryptionParticlesConfig = {
       }
     },
     "color": {
-      "value": "#00ffff"
+      "value": "#00ff00"
     },
     "shape": {
       "type": "circle",
@@ -48,7 +48,7 @@ const encryptionParticlesConfig = {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00ffff",
+      "color": "#00ff00",
       "opacity": 0.4,
       "width": 1
     },
