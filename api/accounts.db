@@ -1,1 +1,1 @@
-{"accounts": [], "encryption_key": null, "cipher_suite": "AES-GCM-256", "key_rotation_policy": "monthly", "key_derivation_function": "argon2id", "key_salt": null, "initial_vector": null, "key_version": 1}
+{"accounts": [], "encryption_key": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "cipher_suite": "AES-GCM-256", "key_rotation_policy": "monthly", "key_derivation_function": "argon2id", "key_salt": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", "initial_vector": "CCCCCCCCCCCCCCCC", "key_version": 1}
