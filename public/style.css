@@ -5,7 +5,7 @@ body {
     background-color: #000;
     color: #00FFFF;
     overflow: hidden;
-    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, decrypt 5s steps(5, end) infinite;
+    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, decrypt 5s steps(5, end) infinite, ciphertext 7s steps(10, end) infinite;
 }
 
 @keyframes glitch {
@@ -45,6 +45,15 @@ body {
     }
 }
 
+@keyframes ciphertext {
+    0%, 100% {
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><text x="0" y="10" style="font-size: 12px; fill: rgba(0, 255, 255, 0.2);">█</text></svg>');
+    }
+    50% {
+        background-image: none;
+    }
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -58,7 +67,7 @@ h1 {
     font-size: 3em;
     margin-bottom: 20px;
     text-shadow: 0 0 10px #00FFFF;
-    animation: flicker 1.5s infinite alternate, encryption 5s steps(5, end) infinite;
+    animation: flicker 1.5s infinite alternate, encryption 5s steps(5, end) infinite, encryptText 7s steps(5, end) infinite;
     position: relative;
 }
 
@@ -136,11 +145,22 @@ h1::after {
     }
 }
 
+@keyframes encryptText {
+    0%, 100% {
+        opacity: 0.8;
+        text-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF, 0 0 15px #00FFFF;
+    }
+    50% {
+        opacity: 0.5;
+        text-shadow: none;
+    }
+}
+
 p {
     font-size: 1.2em;
     margin-bottom: 30px;
     text-shadow: 0 0 5px #00FFFF;
-    animation: decryptText 5s steps(5, end) infinite;
+    animation: decryptText 5s steps(5, end) infinite, pulse 8s infinite alternate;
 }
 
 @keyframes decryptText {
@@ -150,6 +170,15 @@ p {
     50% {
         filter: blur(0px);
     }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.1);
+  }
 }
 
 input[type="text"] {
@@ -162,7 +191,7 @@ input[type="text"] {
     margin-bottom: 20px;
     width: 300px;
     transition: all 0.3s ease;
-    animation: decryptInput 5s steps(5, end) infinite;
+    animation: decryptInput 5s steps(5, end) infinite, shake 0.5s infinite;
 }
 
 input[type="text"]:focus {
@@ -179,6 +208,12 @@ input[type="text"]:focus {
     }
 }
 
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
 button {
     padding: 10px 20px;
     font-size: 1.1em;
@@ -188,7 +223,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-    animation: decryptButton 5s steps(5, end) infinite;
+    animation: decryptButton 5s steps(5, end) infinite, rotate 4s linear infinite;
 }
 
 button:hover {
@@ -204,6 +239,15 @@ button:hover {
     50% {
         filter: blur(0px);
     }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 #particles-js {
@@ -299,7 +343,7 @@ button:hover {
 .link-to-login {
     margin-top: 15px;
     font-size: 0.9em;
-    animation: decryptLink 5s steps(5, end) infinite;
+    animation: decryptLink 5s steps(5, end) infinite, blink 1s step-end infinite;
 }
 
 @keyframes decryptLink {
@@ -309,6 +353,12 @@ button:hover {
     50% {
         filter: blur(0px);
     }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 .link-to-register a,
