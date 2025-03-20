@@ -7,9 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let encryptionIV = '';
 
     function generateEncryptionKeys() {
-        // Generate a random 16-byte key and IV
-        encryptionKey = CryptoJS.lib.WordArray.random(16).toString();
-        encryptionIV = CryptoJS.lib.WordArray.random(16).toString();
+        // Generate a random 16-byte key and IV (using typed arrays)
+        const keyArray = new Uint8Array(16);
+        const ivArray = new Uint8Array(16);
+        window.crypto.getRandomValues(keyArray);
+        window.crypto.getRandomValues(ivArray);
+
+        encryptionKey = Array.from(keyArray).map(byte => byte.toString(16).padStart(2, '0')).join('');
+        encryptionIV = Array.from(ivArray).map(byte => byte.toString(16).padStart(2, '0')).join('');
     }
 
     function generateCaptcha() {
@@ -23,9 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function encryptCaptcha(captcha) {
-        const key = CryptoJS.enc.Utf8.parse(encryptionKey); // Use dynamically generated key
-        const iv = CryptoJS.enc.Utf8.parse(encryptionIV); // Use dynamically generated IV
-        const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(captcha), key, {
+         const key = CryptoJS.enc.Hex.parse(encryptionKey);
+         const iv = CryptoJS.enc.Hex.parse(encryptionIV);
+         const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(captcha), key, {
             iv: iv,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7
@@ -56,11 +61,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        const key = CryptoJS.enc.Utf8.parse(storedKey);
-        const iv = CryptoJS.enc.Utf8.parse(storedIV);
+        const key = CryptoJS.enc.Hex.parse(storedKey);
+        const iv = CryptoJS.enc.Hex.parse(storedIV);
 
         try {
-            const decrypted = CryptoJS.AES.decrypt(userInput, key, {
+             const decrypted = CryptoJS.AES.decrypt(userInput, key, {
                 iv: iv,
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
@@ -71,8 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
              if (decryptedText.trim() === generatedCaptcha) {
                 errorMessageElement.textContent = 'Captcha verified!';
                 errorMessageElement.style.color = 'green';
-                // Optionally, redirect or perform an action upon successful validation
-                // window.location.href = '/success.html';
             } else {
                 errorMessageElement.textContent = 'Incorrect captcha. Please try again.';
                 errorMessageElement.style.color = 'red';
