@@ -61,11 +61,16 @@ async function encryptData(data, encryptionKey) {
 
 // Function to decrypt data using AES-256-GCM
 async function decryptData(encryptedData, encryptionKey, iv, authTag) {
-  const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), Buffer.from(iv, 'hex'));
-  decipher.setAuthTag(Buffer.from(authTag, 'hex'));
-  let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
+  try {
+    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), Buffer.from(iv, 'hex'));
+    decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+    let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+  } catch (error) {
+    console.error("Decryption error:", error);
+    return null;
+  }
 }
 
 // Function to derive a key from a password using PBKDF2
@@ -103,8 +108,8 @@ module.exports = async (req, res) => {
       // Securely store data (e.g., in a database):
 
       // 1. Generate a unique encryption key per user.
-      salt = await generateSalt();
-      const encryptionKey = await deriveKey(password, salt); // Derive key from password and salt
+      const encryptionSalt = await generateSalt(); // Separate salt for encryption
+      const encryptionKey = await deriveKey(password, encryptionSalt); // Derive key from password and salt
 
       // 2. Encrypt the username and salt
       const encryptedUsername = await encryptData(username, encryptionKey);
@@ -112,27 +117,20 @@ module.exports = async (req, res) => {
 
       // 3. Store the encryptionKey, encryptedUsername, encryptedSalt, and hashedPassword.
       // For demonstration, we log them. NEVER log sensitive data in production.
-      console.log('Encryption Key:', encryptionKey);
-      console.log('Encrypted Username:', encryptedUsername);
-      if (encryptedSalt) {
-        console.log('Encrypted Salt:', encryptedSalt);
-      }
-      console.log('Hashed Password:', hashedPassword);
+      // Consider storing the derived encryption key securely (e.g., with KMS)
+      // It should NOT be stored directly in the database
 
-      // Example of decryption (for demonstration purposes ONLY):
-      // In a real-world scenario, decryption would occur in a different context,
-      // such as when retrieving user data.
-      try {
-        const decryptedUsername = await decryptData(
-          encryptedUsername.encryptedData,
-          encryptionKey,
-          encryptedUsername.iv,
-          encryptedUsername.authTag
-        );
-        console.log('Decrypted Username:', decryptedUsername);
-      } catch (decryptionError) {
-        console.error('Decryption error:', decryptionError);
+      const userRecord = {
+        hashedPassword: hashedPassword,
+        encryptedUsername: encryptedUsername,
+        encryptedSalt: encryptedSalt,
+      };
+
+      // NEVER log sensitive data in production.  Instead, log the user ID after creation.
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('User record (for demonstration only):', userRecord);
       }
+
 
       return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
