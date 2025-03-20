@@ -1,28 +1,23 @@
-const encryptionParticlesConfig = {
+const particlesConfig = {
   "particles": {
     "number": {
-      "value": 80,
+      "value": 150,
       "density": {
         "enable": true,
         "value_area": 800
       }
     },
     "color": {
-      "value": "#00ff00" // Encryption green
+      "value": "#2ecc71" // Emerald green - encryption key color
     },
     "shape": {
       "type": "circle",
       "stroke": {
         "width": 0,
-        "color": "#000000"
+        "color": "#2ecc71"
       },
       "polygon": {
         "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
       }
     },
     "opacity": {
@@ -30,8 +25,8 @@ const encryptionParticlesConfig = {
       "random": true,
       "anim": {
         "enable": true,
-        "speed": 1,
-        "opacity_min": 0.1,
+        "speed": 0.7,
+        "opacity_min": 0.3,
         "sync": false
       }
     },
@@ -48,13 +43,13 @@ const encryptionParticlesConfig = {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00ff00", // Encryption green
-      "opacity": 0.4,
+      "color": "#3498db", // Sapphire blue - secure connection color
+      "opacity": 0.5,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 3,
+      "speed": 4,
       "direction": "none",
       "random": true,
       "straight": false,
@@ -91,7 +86,7 @@ const encryptionParticlesConfig = {
         "distance": 400,
         "size": 40,
         "duration": 2,
-        "opacity": 8,
+        "opacity": 0.8,
         "speed": 3
       },
       "repulse": {
@@ -107,4 +102,26 @@ const encryptionParticlesConfig = {
     }
   },
   "retina_detect": true
+};
+
+window.onload = function() {
+  particlesJS('particles-js', particlesConfig);
+
+  // Add a rotating encryption key icon
+  const keyIcon = document.createElement('div');
+  keyIcon.innerHTML = '<i class="fas fa-key fa-spin" style="font-size:3em; color:#2ecc71;"></i>';
+  keyIcon.style.position = 'fixed';
+  keyIcon.style.bottom = '20px';
+  keyIcon.style.right = '20px';
+  keyIcon.style.zIndex = '1000'; // Ensure it's on top
+  document.body.appendChild(keyIcon);
+
+  // Add a secure lock icon
+  const lockIcon = document.createElement('div');
+  lockIcon.innerHTML = '<i class="fas fa-lock fa-spin" style="font-size:3em; color:#3498db;"></i>';
+  lockIcon.style.position = 'fixed';
+  lockIcon.style.bottom = '20px';
+  lockIcon.style.left = '20px';
+  lockIcon.style.zIndex = '1000'; // Ensure it's on top
+  document.body.appendChild(lockIcon);
 };
