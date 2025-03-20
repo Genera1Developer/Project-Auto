@@ -109,6 +109,15 @@
                 return new TextDecoder().decode(decrypted);
             }
 
+             // Function to hash the encryption key (SHA-256)
+            async function hashKey(key) {
+                const encodedKey = new TextEncoder().encode(key);
+                const hashBuffer = await window.crypto.subtle.digest('SHA-256', encodedKey);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                return hashHex;
+            }
+
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
                 if (!url) {
@@ -131,11 +140,15 @@
                     // Generate a key for AES encryption
                     const encryptionKey = generateNonce(32);
 
+                    // Hash the encryption key
+                    const hashedKey = await hashKey(encryptionKey);
+                    console.log("Hashed Key:", hashedKey); // Log the hashed key
+
                     // Encrypt the URL
                     const encryptedData = await encryptURL(url, encryptionKey);
 
                      // Construct the URL with encrypted parameters
-                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(encryptedData.ciphertext)}&iv=${encodeURIComponent(encryptedData.iv)}&nonce=${encodeURIComponent(nonce)}&key=${encodeURIComponent(encryptionKey)}`;
+                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(encryptedData.ciphertext)}&iv=${encodeURIComponent(encryptedData.iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}`;
 
                     // Show loading indicator
                     loadingDiv.style.display = 'block';
