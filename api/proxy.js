@@ -87,8 +87,32 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
 
             if(useEncryption) {
                 try {
-                    transformedKey = encryptFlag ? encrypt(key, encryptionKey) : decrypt(key, encryptionKey);
-                    transformedValue = encryptFlag ? encrypt(value, encryptionKey) : decrypt(value, encryptionKey);
+                    if(encryptFlag){
+                      transformedKey = encrypt(key, encryptionKey);
+                      transformedValue = encrypt(value, encryptionKey);
+                    } else {
+                      if (key !== null && key !== undefined && typeof key === 'string') {
+                        transformedKey = decrypt(key, encryptionKey);
+                        if (transformedKey === null) {
+                          console.warn(`Skipping header ${key} due to key decryption failure.`);
+                          continue;
+                        }
+                      } else {
+                        console.warn(`Skipping header ${key} due to invalid key type.`);
+                        continue;
+                      }
+
+                      if (value !== null && value !== undefined && typeof value === 'string') {
+                        transformedValue = decrypt(value, encryptionKey);
+                        if (transformedValue === null) {
+                          console.warn(`Skipping header value for ${key} due to decryption failure.`);
+                          continue;
+                        }
+                      } else {
+                        console.warn(`Skipping header value for ${key} due to invalid value type.`);
+                        continue;
+                      }
+                    }
 
                     //If transformation results in null, skip the header.
                     if(transformedKey === null || transformedValue === null) {
