@@ -69,10 +69,10 @@ function encrypt(text, iv) {
 function decrypt(encryptedText, ivHex, authTagHex) {
     try {
         const iv = Buffer.from(ivHex, 'hex');
-         const authTag = Buffer.from(authTagHex, 'hex');
+        const authTag = Buffer.from(authTagHex, 'hex');
         const encrypted = Buffer.from(encryptedText, 'hex');
 
-        const decipher = crypto.createDecipheriv('aes-256-gcm', encryptionKey, iv);
+        const decipher = crypto.createCipheriv('aes-256-gcm', encryptionKey, iv);
         decipher.setAuthTag(authTag);
 
         let decrypted = decipher.update(encrypted);
@@ -91,10 +91,11 @@ exports.createUser = async (username, password, callback) => {
 
     try {
         const hashedPassword = await hashPassword(password, salt);
-        const encryptedUsername = encrypt(username, iv);
+
         const encryptedPassword = encrypt(hashedPassword, iv);
         const encryptedSalt = encrypt(salt, iv);
 
+        const encryptedUsername = encrypt(username, iv);
 
         db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData, encryptedSalt.encryptedData, PBKDF2_ITERATIONS, encryptedUsername.iv, encryptedUsername.authTag], function(err) {
             if (err) {
@@ -112,8 +113,11 @@ exports.createUser = async (username, password, callback) => {
 
 exports.verifyUser = (username, password, callback) => {
     try {
+
+        const salt = generateSalt();
         const iv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, iv);
+
         db.get(`SELECT id, username, password, salt, password_version, encryption_iv, auth_tag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
             if (err) {
                 console.error(err.message);
@@ -124,14 +128,17 @@ exports.verifyUser = (username, password, callback) => {
             }
 
             try {
+                const decryptedUsername = decrypt(row.username, row.encryption_iv, row.auth_tag);
+                if (!decryptedUsername) return callback(new Error("Username decryption failed"));
+
                 const decryptedSalt = decrypt(row.salt, row.encryption_iv, row.auth_tag);
                 if (!decryptedSalt) return callback(new Error("Salt decryption failed"));
                 const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
+
                 const decryptedPassword = decrypt(row.password, row.encryption_iv, row.auth_tag);
                 if (!decryptedPassword) return callback(new Error("Password decryption failed"));
 
                 if (hashedPassword === decryptedPassword) {
-                    const decryptedUsername = decrypt(row.username, row.encryption_iv, row.auth_tag);
                     callback(null, { id: row.id, username: decryptedUsername });
                 } else {
                     callback(null, false); // Incorrect password
