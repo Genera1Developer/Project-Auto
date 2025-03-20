@@ -73,7 +73,8 @@
        "hmacEnable": true,
        "hmacAlgorithm": "SHA256",
       "salt": "ENC_SALT_PLACEHOLDER",
-      "iterations": 10000
+      "iterations": 10000,
+      "base64Encode": true
     }
   },
   "interactivity": {
