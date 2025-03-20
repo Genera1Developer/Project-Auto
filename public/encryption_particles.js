@@ -1,23 +1,23 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 150,
+      value: 120,
       density: {
         enable: true,
-        value_area: 800
+        value_area: 700
       }
     },
     color: {
-      value: '#00e600' // Green for encryption theme
+      value: '#00FF00' // Encryption Green
     },
     shape: {
       type: 'circle',
       stroke: {
         width: 0,
-        color: '#00b300'
+        color: '#008000'
       },
       polygon: {
-        nb_sides: 6 // Hexagon shape
+        nb_sides: 5
       },
       image: {
         src: '',
@@ -26,35 +26,35 @@ particlesJS('particles-js', {
       }
     },
     opacity: {
-      value: 0.7,
+      value: 0.6,
       random: true,
       anim: {
         enable: true,
-        speed: 1.5,
+        speed: 1,
         opacity_min: 0.1,
         sync: false
       }
     },
     size: {
-      value: 3,
+      value: 2.5,
       random: true,
       anim: {
         enable: true,
-        speed: 10,
+        speed: 8,
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 160,
-      color: '#00ff40', // Brighter green
-      opacity: 0.6,
-      width: 1.5
+      distance: 150,
+      color: '#00C000',
+      opacity: 0.5,
+      width: 1
     },
     move: {
       enable: true,
-      speed: 1.7,
+      speed: 1.5,
       direction: 'none',
       random: true,
       straight: false,
@@ -81,9 +81,9 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 150,
+        distance: 140,
         line_linked: {
-          opacity: 0.8
+          opacity: 0.7
         }
       },
       bubble: {
@@ -98,7 +98,7 @@ particlesJS('particles-js', {
         duration: 0.4
       },
       push: {
-        particles_nb: 4
+        particles_nb: 3
       },
       remove: {
         particles_nb: 2
