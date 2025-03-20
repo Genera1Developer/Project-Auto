@@ -1,4 +1,5 @@
 let captchaText = null;
+const captchaKey = CryptoJS.lib.WordArray.random(16).toString(); // Generate a random 128-bit key
 
 function generateCaptcha() {
     const captchaLength = 6;
@@ -7,14 +8,17 @@ function generateCaptcha() {
     for (let i = 0; i < captchaLength; i++) {
         result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    captchaText = CryptoJS.AES.encrypt(result, 'secret passphrase'); // Encrypt the captcha
+    captchaText = CryptoJS.AES.encrypt(result, captchaKey).toString(); // Encrypt the captcha with the key
     document.getElementById('captcha-text').innerText = 'Encrypted';
+    document.getElementById('captcha-input').value = ''; // Clear the input field
+    document.getElementById('error-message').innerText = '';
 }
 
 function validateCaptcha() {
     const userInput = document.getElementById('captcha-input').value;
     try {
-        const decryptedText = CryptoJS.AES.decrypt(captchaText, 'secret passphrase').toString(CryptoJS.enc.Utf8);
+        const bytes = CryptoJS.AES.decrypt(captchaText, captchaKey);
+        const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
 
         if (decryptedText === userInput) {
             alert('Captcha verified!');
