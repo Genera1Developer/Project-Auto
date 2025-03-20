@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.setItem('salt', salt);
         const hash = CryptoJS.SHA256(encryptedCaptcha + salt).toString();
         sessionStorage.setItem('encryptedCaptchaHash', hash);
-        sessionStorage.removeItem('encryptedCaptcha');
+        sessionStorage.setItem('encryptedCaptcha', encryptedCaptcha);
     }
 
     window.validateCaptcha = async function() {
@@ -70,8 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const storedIV = sessionStorage.getItem('encryptionIV');
         const encryptedCaptchaHash = sessionStorage.getItem('encryptedCaptchaHash');
         const storedSalt = sessionStorage.getItem('salt');
+        const storedEncryptedCaptcha = sessionStorage.getItem('encryptedCaptcha');
 
-        if (!storedKey || !storedIV || !encryptedCaptchaHash || !storedSalt) {
+        if (!storedKey || !storedIV || !encryptedCaptchaHash || !storedSalt || !storedEncryptedCaptcha) {
             errorMessageElement.textContent = 'Encryption keys missing. Refresh.';
             errorMessageElement.style.color = 'red';
             displayEncryptedCaptcha();
@@ -95,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 errorMessageElement.textContent = 'Incorrect captcha. Please try again.';
                 errorMessageElement.style.color = 'red';
+
                 displayEncryptedCaptcha();
                 captchaInputElement.value = '';
             }
