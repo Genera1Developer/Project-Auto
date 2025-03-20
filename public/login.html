@@ -190,6 +190,7 @@
     </div>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="particles.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         window.onload = function() {
             document.getElementById('preloader').style.display = 'none';
@@ -220,12 +221,23 @@
             errorMessage.textContent = ''; // Clear previous errors
             encryptionStatus.textContent = 'Encrypting...'; // Update status
 
+            // Encrypt data before sending
+            const encryptedUsername = CryptoJS.AES.encrypt(username, 'SecretPassphrase').toString();
+            const encryptedPassword = CryptoJS.AES.encrypt(password, 'SecretPassphrase').toString();
+            const encryptedCaptcha = CryptoJS.AES.encrypt(captcha, 'SecretPassphrase').toString();
+
+
+
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username: username, password: password, captcha: captcha })
+                body: JSON.stringify({
+                  username: encryptedUsername,
+                  password: encryptedPassword,
+                  captcha: encryptedCaptcha
+                })
             })
             .then(response => {
                 encryptionAnimation.style.display = 'none'; // Hide animation
