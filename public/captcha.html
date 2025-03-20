@@ -7,14 +7,14 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #000; /* Encryption-themed dark background */
-            color: #0f0; /* Green text for matrix effect */
+            background-color: #000;
+            color: #0f0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden; /* Hide scrollbars */
+            overflow: hidden;
         }
 
         #captcha-container {
@@ -30,7 +30,7 @@
             font-size: 2em;
             letter-spacing: 0.2em;
             margin-bottom: 15px;
-            user-select: none; /* Prevent text selection */
+            user-select: none;
         }
 
         input[type="text"] {
@@ -63,7 +63,6 @@
             margin-top: 10px;
         }
 
-        /* Particle animation styles */
         #particles-js {
             position: absolute;
             width: 100%;
@@ -87,7 +86,6 @@
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // Encryption-themed particle configuration
         particlesJS('particles-js', {
             particles: {
                 number: {
@@ -98,7 +96,7 @@
                     }
                 },
                 color: {
-                    value: "#0f0" // Green color
+                    value: "#0f0"
                 },
                 shape: {
                     type: "circle",
@@ -184,14 +182,13 @@
         });
     </script>
     <script>
-        // Function to display a matrix rain effect
         function matrixRain() {
             const canvas = document.createElement('canvas');
             canvas.id = 'matrix-canvas';
             canvas.style.position = 'fixed';
             canvas.style.top = '0';
             canvas.style.left = '0';
-            canvas.style.zIndex = '-2'; // Behind the particles
+            canvas.style.zIndex = '-2';
             document.body.appendChild(canvas);
 
             const ctx = canvas.getContext('2d');
@@ -201,50 +198,93 @@
             const fontSize = 16;
             const columns = canvas.width / fontSize;
 
-            // An array of drops - one per column
             const drops = [];
             for (let x = 0; x < columns; x++) {
                 drops[x] = 1;
             }
 
             function draw() {
-                // Black BG for the canvas
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                ctx.fillStyle = '#0F0'; // Green text
+                ctx.fillStyle = '#0F0';
                 ctx.font = fontSize + 'px arial';
-                // Looping over drops
                 for (let i = 0; i < drops.length; i++) {
-                    // A random character to print
                     const text = String.fromCharCode(Math.random() * 122 + 33);
                     ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-                    // Sending the drop back to the top randomly after it has crossed the screen
-                    // Adding a randomness to the reset to make the drops scattered on the Y axis
                     if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                         drops[i] = 0;
                     }
 
-                    // Incrementing Y coordinate
                     drops[i]++;
                 }
             }
 
-            // Calling the draw function every 35ms
             setInterval(draw, 35);
 
-            // Handle window resize
             window.addEventListener('resize', function() {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;
             });
         }
 
-        // Initialize the matrix rain effect
         matrixRain();
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="/public/captcha.js"></script>
+    <script>
+        async function generateCaptcha() {
+            const captchaText = generateRandomString(6);
+            const encryptedCaptcha = await encryptText(captchaText, 'secretPassphrase');
+            document.getElementById('captcha-text').innerText = encryptedCaptcha;
+            return { original: captchaText, encrypted: encryptedCaptcha };
+        }
+
+        async function encryptText(plainText, passphrase) {
+            return CryptoJS.AES.encrypt(plainText, passphrase).toString();
+        }
+
+        async function decryptText(cipherText, passphrase) {
+            try {
+                const bytes = CryptoJS.AES.decrypt(cipherText, passphrase);
+                return bytes.toString(CryptoJS.enc.Utf8);
+            } catch (e) {
+                return ''; // Decryption failed
+            }
+        }
+
+        function generateRandomString(length) {
+            let result = '';
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            const charactersLength = characters.length;
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
+        let currentCaptcha;
+
+        async function validateCaptcha() {
+            const userInput = document.getElementById('captcha-input').value;
+            const decryptedText = await decryptText(document.getElementById('captcha-text').innerText, 'secretPassphrase');
+
+            if (decryptedText && userInput === decryptedText) {
+                alert('Captcha Matched!');
+                // Optionally regenerate the captcha after successful validation
+                currentCaptcha = await generateCaptcha();
+            } else {
+                document.getElementById('error-message').innerText = 'Captcha does not match. Please try again.';
+                // Optionally regenerate the captcha after failed validation
+                currentCaptcha = await generateCaptcha();
+            }
+        }
+
+        // Initialize captcha on page load
+        (async () => {
+            currentCaptcha = await generateCaptcha();
+        })();
+
+    </script>
 </body>
 </html>
