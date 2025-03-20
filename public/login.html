@@ -205,7 +205,12 @@
 
         // Function to generate a cryptographically secure random key
         function generateEncryptionKey() {
-            return CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
+            let key = localStorage.getItem('encryptionKey');
+            if(!key){
+                key = CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
+                localStorage.setItem('encryptionKey', key);
+            }
+            return key;
         }
 
         // Function to encrypt data
