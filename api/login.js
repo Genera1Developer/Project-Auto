@@ -1,28 +1,37 @@
 const crypto = require('crypto');
 
 const generateSalt = () => {
-  return crypto.randomBytes(64).toString('hex');
+  return crypto.randomBytes(32).toString('hex'); // Reduced salt size, still secure
 };
 
 const encryptPassword = (password, salt) => {
-  const iterations = 100000; // Increased iterations significantly
+  const iterations = 300000; // Increased iterations even further
   const keylen = 64;
   const digest = 'sha512';
-  const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
-  return derivedKey.toString('hex');
+  try {
+    const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
+    return derivedKey.toString('hex');
+  } catch (error) {
+    console.error('Password encryption error:', error);
+    return null; // Handle encryption errors gracefully
+  }
 };
 
 const timingSafeCompare = (a, b) => {
-  if (typeof a !== 'string' || typeof b !== 'string') {
+  if (!a || !b || typeof a !== 'string' || typeof b !== 'string') {
     return false;
   }
 
   if (a.length !== b.length) {
     return false;
   }
+
   try {
-    return crypto.timingSafeEqual(Buffer.from(a, 'utf-8'), Buffer.from(b, 'utf-8'));
+    const aBuff = Buffer.from(a, 'utf-8');
+    const bBuff = Buffer.from(b, 'utf-8');
+    return crypto.timingSafeEqual(aBuff, bBuff);
   } catch (error) {
+    console.error('Timing safe compare error:', error);
     return false; // Handle potential buffer creation errors
   }
 };
@@ -31,6 +40,7 @@ const fetchUser = async (username) => {
   if (username === 'testuser') {
     const salt = generateSalt();
     const passwordHash = encryptPassword('password123', salt);
+    if (!passwordHash) return null; // Handle encryption failure during user creation
     return {
       username: 'testuser',
       passwordHash: passwordHash,
@@ -48,18 +58,26 @@ module.exports = async (req, res) => {
       return res.status(400).json({ message: 'Username and password required' }); //Prevent null errors
     }
 
-    const userData = await fetchUser(username);
+    try {
+      const userData = await fetchUser(username);
 
-    if (userData) {
-      const hashedPassword = encryptPassword(password, userData.salt);
+      if (userData) {
+        const hashedPassword = encryptPassword(password, userData.salt);
+        if(!hashedPassword) {
+            return res.status(500).json({ message: 'Encryption error' });
+        }
 
-      if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
-        res.status(200).json({ message: 'Login successful!' });
+        if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
+          res.status(200).json({ message: 'Login successful!' });
+        } else {
+          res.status(401).json({ message: 'Invalid credentials' });
+        }
       } else {
         res.status(401).json({ message: 'Invalid credentials' });
       }
-    } else {
-      res.status(401).json({ message: 'Invalid credentials' });
+    } catch (error) {
+      console.error('Login error:', error);
+      return res.status(500).json({ message: 'Internal server error' }); // Handle errors
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
