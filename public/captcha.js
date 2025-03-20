@@ -37,6 +37,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return encrypted.toString();
     }
 
+    function decryptCaptcha(encryptedCaptcha, key, iv) {
+        const parsedKey = CryptoJS.enc.Hex.parse(key);
+        const parsedIv = CryptoJS.enc.Hex.parse(iv);
+
+        const decrypted = CryptoJS.AES.decrypt(encryptedCaptcha, parsedKey, {
+            iv: parsedIv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        });
+        return decrypted.toString(CryptoJS.enc.Utf8);
+    }
+
     function displayEncryptedCaptcha() {
         generateEncryptionKeys();
         const captcha = generateCaptcha();
@@ -45,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.setItem('encryptionKey', encryptionKey);
         sessionStorage.setItem('encryptionIV', encryptionIV);
         sessionStorage.setItem('encryptedCaptcha', encryptedCaptcha);
-        sessionStorage.removeItem('generatedCaptcha');
+        sessionStorage.setItem('generatedCaptchaHash', CryptoJS.SHA256(captcha).toString());
     }
 
     window.validateCaptcha = function() {
@@ -53,8 +65,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const storedKey = sessionStorage.getItem('encryptionKey');
         const storedIV = sessionStorage.getItem('encryptionIV');
         const encryptedCaptcha = sessionStorage.getItem('encryptedCaptcha');
+        const generatedCaptchaHash = sessionStorage.getItem('generatedCaptchaHash');
 
-        if (!storedKey || !storedIV || !encryptedCaptcha) {
+        if (!storedKey || !storedIV || !encryptedCaptcha || !generatedCaptchaHash) {
             errorMessageElement.textContent = 'Encryption keys missing. Refresh.';
             errorMessageElement.style.color = 'red';
             displayEncryptedCaptcha();
@@ -63,17 +76,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const key = CryptoJS.enc.Hex.parse(storedKey);
-            const iv = CryptoJS.enc.Hex.parse(storedIV);
+            const decryptedText = decryptCaptcha(encryptedCaptcha, storedKey, storedIV);
+            const userInputHash = CryptoJS.SHA256(userInput).toString();
 
-            const decrypted = CryptoJS.AES.decrypt(CryptoJS.enc.Utf8.parse(userInput), key, {
-                iv: iv,
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7
-            });
-            const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
-
-            if (decryptedText.trim() === generateCaptcha()) {
+            if (userInputHash === generatedCaptchaHash) {
                  errorMessageElement.textContent = 'Captcha verified!';
                  errorMessageElement.style.color = 'green';
             } else {
