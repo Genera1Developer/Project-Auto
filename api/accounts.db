@@ -1,1 +1,74 @@
+import sqlite3
+import hashlib
+import os
 
+def connect_db(db_path):
+    return sqlite3.connect(db_path)
+
+def create_table(conn):
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS accounts (
+            username TEXT PRIMARY KEY,
+            password_hash TEXT NOT NULL,
+            salt TEXT NOT NULL
+        )
+    """)
+    conn.commit()
+
+def hash_password(password, salt=None):
+    if salt is None:
+        salt = os.urandom(16).hex()
+    salted_password = salt + password
+    hashed_password = hashlib.sha256(salted_password.encode('utf-8')).hexdigest()
+    return hashed_password, salt
+
+def create_account(conn, username, password):
+    hashed_password, salt = hash_password(password)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO accounts (username, password_hash, salt) VALUES (?, ?, ?)", (username, hashed_password, salt))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+
+def verify_password(conn, username, password):
+    cursor = conn.cursor()
+    cursor.execute("SELECT password_hash, salt FROM accounts WHERE username = ?", (username,))
+    result = cursor.fetchone()
+    if result:
+        stored_hash, salt = result
+        hashed_password, _ = hash_password(password, salt)
+        return hashed_password == stored_hash
+    return False
+
+def change_password(conn, username, new_password):
+     hashed_password, salt = hash_password(new_password)
+     cursor = conn.cursor()
+     cursor.execute("UPDATE accounts SET password_hash = ?, salt = ? WHERE username = ?", (hashed_password, salt, username))
+     conn.commit()
+     return cursor.rowcount > 0
+
+if __name__ == '__main__':
+    db_path = 'accounts.db'
+    conn = connect_db(db_path)
+    create_table(conn)
+
+    # Example Usage
+    if create_account(conn, 'testuser', 'P@$$wOrd'):
+        print("Account created successfully!")
+    else:
+        print("Account creation failed (username may already exist).")
+
+    if verify_password(conn, 'testuser', 'P@$$wOrd'):
+        print("Password verification successful!")
+    else:
+        print("Password verification failed.")
+
+    if change_password(conn, 'testuser', 'NewP@$$wOrd'):
+        print("Password changed successfully!")
+    else:
+        print("Password change failed.")
+
+    conn.close()
