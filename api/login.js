@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
 const generateSalt = () => {
-  return crypto.randomBytes(16).toString('hex');
+  return crypto.randomBytes(32).toString('hex'); // Increased salt size
 };
 
 const encryptPassword = (password, salt) => {
@@ -9,6 +9,17 @@ const encryptPassword = (password, salt) => {
   hash.update(password);
   const value = hash.digest('hex');
   return value;
+};
+
+const timingSafeCompare = (a, b) => {
+  if (a.length !== b.length) {
+    return false;
+  }
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
 };
 
 module.exports = async (req, res) => {
@@ -25,7 +36,7 @@ module.exports = async (req, res) => {
     if (username === userData.username) {
       const hashedPassword = encryptPassword(password, userData.salt);
 
-      if (hashedPassword === userData.passwordHash) {
+      if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
         res.status(200).json({ message: 'Login successful!' });
       } else {
         res.status(401).json({ message: 'Invalid credentials' });
