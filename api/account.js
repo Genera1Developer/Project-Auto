@@ -6,8 +6,9 @@ const { createCipheriv, createDecipheriv } = crypto;
 const dbPath = './api/accounts.db'; // Explicit path
 let db;
 
-const encryptionKey = crypto.randomBytes(32); // 256-bit key
+const encryptionKey = crypto.randomBytes(32); // 256-bit key, DO NOT HARDCODE IN PRODUCTION
 const ivLength = 16; // IV length for AES
+const AUTH_TAG_LENGTH = 16; // For GCM
 
 function connectToDatabase() {
     db = new sqlite3.Database(dbPath, (err) => {
@@ -19,9 +20,9 @@ function connectToDatabase() {
         db.run(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL,
-                salt TEXT NOT NULL,
+                username BLOB UNIQUE NOT NULL,
+                password BLOB NOT NULL,
+                salt BLOB NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 password_version INTEGER DEFAULT 1
             )
@@ -56,24 +57,25 @@ function generateSalt() {
 
 function encrypt(text) {
     const iv = crypto.randomBytes(ivLength);
-    const cipher = createCipheriv('aes-256-cbc', Buffer.from(encryptionKey), iv);
-    let encrypted = cipher.update(text);
-
+    const cipher = crypto.createCipheriv('aes-256-gcm', encryptionKey, iv);
+    let encrypted = cipher.update(text, 'utf8');
     encrypted = Buffer.concat([encrypted, cipher.final()]);
-
-    return iv.toString('hex') + ':' + encrypted.toString('hex');
+    const authTag = cipher.getAuthTag();
+    return Buffer.concat([iv, authTag, encrypted]).toString('hex');
 }
 
-function decrypt(text) {
-    const textParts = text.split(':');
-    const iv = Buffer.from(textParts.shift(), 'hex');
-    const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    const decipher = createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey), iv);
-    let decrypted = decipher.update(encryptedText);
+function decrypt(encryptedText) {
+    const encryptedBytes = Buffer.from(encryptedText, 'hex');
+    const iv = encryptedBytes.slice(0, ivLength);
+    const authTag = encryptedBytes.slice(ivLength, ivLength + AUTH_TAG_LENGTH);
+    const encrypted = encryptedBytes.slice(ivLength + AUTH_TAG_LENGTH);
 
+    const decipher = crypto.createDecipheriv('aes-256-gcm', encryptionKey, iv);
+    decipher.setAuthTag(authTag);
+
+    let decrypted = decipher.update(encrypted);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-    return decrypted.toString();
+    return decrypted.toString('utf8');
 }
 
 
@@ -82,8 +84,10 @@ exports.createUser = async (username, password, callback) => {
     try {
         const { hashedPassword, iterations } = await hashPassword(password, salt);
         const encryptedUsername = encrypt(username);
+        const encryptedPassword = encrypt(hashedPassword);
+        const encryptedSalt = encrypt(salt);
 
-        db.run(`INSERT INTO users (username, password, salt, password_version) VALUES (?, ?, ?, ?)`, [encryptedUsername, hashedPassword, salt, iterations], function(err) {
+        db.run(`INSERT INTO users (username, password, salt, password_version) VALUES (?, ?, ?, ?)`, [encryptedUsername, encryptedPassword, encryptedSalt, iterations], function(err) {
             if (err) {
                 console.error(err.message);
                 return callback(err);
@@ -98,7 +102,9 @@ exports.createUser = async (username, password, callback) => {
 
 
 exports.verifyUser = (username, password, callback) => {
-    db.get(`SELECT id, username, password, salt, password_version FROM users WHERE username = ?`, [encrypt(username)], async (err, row) => {
+    try {
+        const encryptedUsername = encrypt(username);
+    db.get(`SELECT id, username, password, salt, password_version FROM users WHERE username = ?`, [encryptedUsername], async (err, row) => {
         if (err) {
             console.error(err.message);
             return callback(err);
@@ -108,8 +114,10 @@ exports.verifyUser = (username, password, callback) => {
         }
 
         try {
-            const { hashedPassword } = await hashPassword(password, row.salt, row.password_version);
-            if (hashedPassword === row.password) {
+            const decryptedSalt = decrypt(row.salt);
+            const { hashedPassword } = await hashPassword(password, decryptedSalt, row.password_version);
+            const decryptedPassword = decrypt(row.password);
+            if (hashedPassword === decryptedPassword) {
                 callback(null, { id: row.id, username: decrypt(row.username) });
             } else {
                 callback(null, false); // Incorrect password
@@ -119,6 +127,10 @@ exports.verifyUser = (username, password, callback) => {
             return callback(error);
         }
     });
+    } catch(error) {
+        console.error("Encryption error:", error);
+        return callback(error);
+    }
 };
 
 exports.closeDatabase = () => {
