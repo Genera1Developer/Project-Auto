@@ -8,13 +8,13 @@
       }
     },
     "color": {
-      "value": "#00ff00"
+      "value": "#00FFFF"
     },
     "shape": {
       "type": "circle",
       "stroke": {
-        "width": 0,
-        "color": "#000000"
+        "width": 1,
+        "color": "#00FFFF"
       },
       "polygon": {
         "nb_sides": 5
@@ -26,30 +26,30 @@
       "anim": {
         "enable": true,
         "speed": 1,
-        "opacity_min": 0.2,
+        "opacity_min": 0.1,
         "sync": false
       }
     },
     "size": {
-      "value": 2.5,
+      "value": 2,
       "random": true,
       "anim": {
         "enable": true,
-        "speed": 1.5,
-        "size_min": 0.3,
+        "speed": 2,
+        "size_min": 0.1,
         "sync": false
       }
     },
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00ff00",
-      "opacity": 0.5,
+      "color": "#00FFFF",
+      "opacity": 0.4,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 3,
+      "speed": 2,
       "direction": "none",
       "random": true,
       "straight": false,
@@ -79,7 +79,7 @@
       "grab": {
         "distance": 140,
         "line_linked": {
-          "opacity": 0.8
+          "opacity": 1
         }
       },
       "bubble": {
