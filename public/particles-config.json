@@ -75,7 +75,8 @@
       "salt": "ENC_SALT_PLACEHOLDER",
       "iterations": 10000,
       "base64Encode": true,
-      "keyDerivationRounds": 3
+      "keyDerivationRounds": 3,
+      "integrityCheck": true
     }
   },
   "interactivity": {
