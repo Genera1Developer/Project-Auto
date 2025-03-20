@@ -56,8 +56,38 @@ const sanitizeInput = (input) => {
     return input.replace(/[^a-zA-Z0-9]/g, '');
 };
 
+const isRateLimited = (req) => {
+  const ip = req.ip;
+  const now = Date.now();
+  const windowMs = 60000; // 1 minute
+  const maxRequests = 5;
+
+  if (!req.rateLimit) {
+    req.rateLimit = {
+      requests: [],
+    };
+  }
+
+  req.rateLimit.requests = req.rateLimit.requests.filter(
+    (time) => time > now - windowMs
+  );
+
+  if (req.rateLimit.requests.length >= maxRequests) {
+    return true;
+  }
+
+  req.rateLimit.requests.push(now);
+  return false;
+};
+
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
+
+    if (isRateLimited(req)) {
+      return res.status(429).json({ message: 'Too many requests' });
+    }
+
     let { username, password } = req.body;
 
     if (!username || !password) {
