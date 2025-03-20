@@ -22,6 +22,7 @@ const ENCRYPT_HEADER_PREFIX = 'enc_';
 // Store derived keys in a cache to avoid repeated derivation
 const keyCache = new Map();
 
+// Function to derive a symmetric key using PBKDF2
 function deriveKey(password, salt) {
     const cacheKey = `${password}-${salt}`;
     if (keyCache.has(cacheKey)) {
@@ -159,6 +160,7 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
     return transformedHeaders;
 }
 
+// Function to handle the proxy request
 function proxyRequest(req, res) {
     const targetUrl = req.headers['x-target-url'];
     if (!targetUrl) {
@@ -204,7 +206,7 @@ function proxyRequest(req, res) {
             let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey); // Encrypt outgoing headers, using salt
             delete resHeaders['content-encoding'];
 
-            // Send the salt to the client for decryption
+            // Send the salt and algorithm to the client for decryption
             res.setHeader('x-encryption-salt', salt.toString('hex'));
             res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
             res.writeHead(proxyRes.statusCode, resHeaders);
