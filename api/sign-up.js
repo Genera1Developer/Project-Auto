@@ -52,33 +52,15 @@ async function encryptData(data, encryptionKey) {
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   const authTag = cipher.getAuthTag();
 
-  // Encrypt the IV with a separate key for added security
-  const ivEncryptionKey = await generateSalt(); // Generate a unique key for IV encryption
-
-  const ivCipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(ivEncryptionKey, 'hex'), Buffer.from(await generateSalt(), 'hex').slice(0,16)); // Use unique IV for IV encryption
-  let encryptedIV = ivCipher.update(iv.toString('hex'));
-  encryptedIV = Buffer.concat([encryptedIV, ivCipher.final()]);
-  const ivAuthTag = ivCipher.getAuthTag();
-
   return {
     encryptedData: encrypted.toString('hex'),
-    encryptedIV: encryptedIV.toString('hex'),
-    ivAuthTag: ivAuthTag.toString('hex'),
-    authTag: authTag.toString('hex'),
-    ivEncryptionKey: ivEncryptionKey
+    iv: iv.toString('hex'),
+    authTag: authTag.toString('hex')
   };
 }
 
 // Function to decrypt data using AES-256-GCM
-async function decryptData(encryptedData, encryptionKey, encryptedIV, ivAuthTag, authTag, ivEncryptionKey) {
-
-  // Decrypt the IV first
-  const ivDecipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(ivEncryptionKey, 'hex'), Buffer.from(await generateSalt(), 'hex').slice(0,16));
-  ivDecipher.setAuthTag(Buffer.from(ivAuthTag, 'hex'));
-  let decryptedIV = ivDecipher.update(Buffer.from(encryptedIV, 'hex'));
-  decryptedIV = Buffer.concat([decryptedIV, ivDecipher.final()]);
-  const iv = decryptedIV.toString();
-
+async function decryptData(encryptedData, encryptionKey, iv, authTag) {
   const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), Buffer.from(iv, 'hex'));
   decipher.setAuthTag(Buffer.from(authTag, 'hex'));
   let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
@@ -134,10 +116,8 @@ module.exports = async (req, res) => {
         const decryptedUsername = await decryptData(
           encryptedUsername.encryptedData,
           encryptionKey,
-          encryptedUsername.encryptedIV,
-          encryptedUsername.ivAuthTag,
-          encryptedUsername.authTag,
-          encryptedUsername.ivEncryptionKey
+          encryptedUsername.iv,
+          encryptedUsername.authTag
         );
         console.log('Decrypted Username:', decryptedUsername);
       } catch (decryptionError) {
