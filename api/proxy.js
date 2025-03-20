@@ -55,11 +55,17 @@ function transformHeaders(headers, encryptFlag) {
         if (headers.hasOwnProperty(key)) {
             const lowerKey = key.toLowerCase();
             // Skip certain headers that should not be encrypted
-            if (['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding'].includes(lowerKey)) {
+            if (['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date'].includes(lowerKey)) {
                 transformedHeaders[key] = headers[key];
             } else {
                 const value = String(headers[key]); // Ensure value is a string
-                transformedHeaders[encryptFlag ? encrypt(key) : decrypt(key)] = encryptFlag ? encrypt(value) : decrypt(value);
+                try {
+                    transformedHeaders[encryptFlag ? encrypt(key) : decrypt(key)] = encryptFlag ? encrypt(value) : decrypt(value);
+                } catch (err) {
+                    console.error(`Header transformation error for key ${key}:`, err);
+                    //If encryption or decryption fails, keep the original value
+                    transformedHeaders[key] = headers[key];
+                }
             }
         }
     }
