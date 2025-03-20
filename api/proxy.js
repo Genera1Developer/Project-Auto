@@ -2,37 +2,40 @@ const https = require('https');
 const http = require('http');
 const crypto = require('crypto');
 const url = require('url');
+const zlib = require('zlib');
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'); // Generate a random key if not provided
 const IV_LENGTH = 16;
+const AUTH_TAG_LENGTH = 16; //For GCM
+
+//Consider using environment variables for cipher algorithm
+const CIPHER_ALGORITHM = 'aes-256-gcm';
 
 function encrypt(text) {
     let iv = crypto.randomBytes(IV_LENGTH);
-    let cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
-    let encrypted = cipher.update(text);
-
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-
-    return iv.toString('hex') + ':' + encrypted.toString('hex');
+    const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
+    const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+    const authTag = cipher.getAuthTag();
+    return Buffer.concat([iv, authTag, encrypted]).toString('hex');
 }
 
 function decrypt(text) {
     try {
-        let textParts = text.split(':');
-        let iv = Buffer.from(textParts.shift(), 'hex');
-        let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-        let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
-        let decrypted = decipher.update(encryptedText);
+        const buffer = Buffer.from(text, 'hex');
+        const iv = buffer.slice(0, IV_LENGTH);
+        const authTag = buffer.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        const encrypted = buffer.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
+        decipher.setAuthTag(authTag);
 
-        return decrypted.toString();
+        const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
+        return decrypted.toString('utf8');
     } catch (error) {
         console.error("Decryption error:", error);
         return null;
     }
 }
-
 
 function proxyRequest(req, res) {
     const targetUrl = req.headers['x-target-url'];
@@ -48,16 +51,36 @@ function proxyRequest(req, res) {
             path: parsedUrl.pathname + parsedUrl.search,
             method: req.method,
             headers: req.headers,
+            rejectUnauthorized: false // Add this line.  Be careful using this in production without proper cert validation.
         };
 
         delete options.headers['x-target-url']; // Prevent loop
         delete options.headers['host']; // Ensure correct host
+        delete options.headers['accept-encoding']; // Disable compression for proxy to handle it
 
         const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
         const proxyReq = protocol.request(options, (proxyRes) => {
+            // Handle compressed responses
+            let encoding = proxyRes.headers['content-encoding'];
+            let raw = proxyRes;
+
+            if (encoding == 'gzip' || encoding == 'deflate') {
+                let gunzip = zlib.createUnzip();
+                proxyRes.pipe(gunzip);
+                raw = gunzip;
+            } else if (encoding == 'br') {
+                let brotliDecompress = zlib.createBrotliDecompress();
+                proxyRes.pipe(brotliDecompress);
+                raw = brotliDecompress;
+            }
+
+            delete proxyRes.headers['content-encoding'];
+
             res.writeHead(proxyRes.statusCode, proxyRes.headers);
-            proxyRes.pipe(res);
+            raw.pipe(res);
+
+
         });
 
         proxyReq.on('error', (err) => {
