@@ -2,6 +2,7 @@
 const crypto = require('crypto');
 const scrypt = require('scrypt-kdf');
 const argon2 = require('argon2');
+const timingSafeCompare = require('tsscmp');
 
 const SCRYPT_CONFIG = {
   cost: 16384,
@@ -21,7 +22,9 @@ async function hashPasswordArgon2(password) {
       type: argon2.argon2id,
       memory: 2**16,
       timeCost: 2,
-      parallelism: 1
+      parallelism: 1,
+      secret: Buffer.from(process.env.ARGON2_SECRET || ''), // optional secret
+      salt: Buffer.from(crypto.randomBytes(16)) // Explicit salt generation
     });
   } catch (err) {
     console.error(err);
@@ -32,6 +35,11 @@ async function hashPasswordArgon2(password) {
 function generateSalt() {
   return crypto.randomBytes(32).toString('hex');
 }
+
+function timingSafeEqual(a, b) {
+  return timingSafeCompare(a, b);
+}
+
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
