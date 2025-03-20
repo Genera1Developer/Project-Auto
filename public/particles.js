@@ -6,42 +6,37 @@
         var e = {
             particles: {
                 number: {
-                    value: 120,
+                    value: 100,
                     density: {
                         enable: !0,
-                        value_area: 800
+                        value_area: 700
                     }
                 },
                 color: {
-                    value: "#00bfff"
+                    value: "#2ecc71"
                 },
                 shape: {
                     type: "circle",
                     stroke: {
                         width: 0,
-                        color: "#0077b3"
+                        color: "#2ecc71"
                     },
                     polygon: {
                         nb_sides: 5
-                    },
-                    image: {
-                        src: "img/github.svg",
-                        width: 100,
-                        height: 100
                     }
                 },
                 opacity: {
-                    value: .7,
+                    value: .5,
                     random: !0,
                     anim: {
                         enable: !0,
-                        speed: 0.7,
-                        opacity_min: .2,
+                        speed: 0.5,
+                        opacity_min: .1,
                         sync: !1
                     }
                 },
                 size: {
-                    value: 2.5,
+                    value: 3,
                     random: !0,
                     anim: {
                         enable: !1,
@@ -53,13 +48,13 @@
                 line_linked: {
                     enable: !0,
                     distance: 150,
-                    color: "#00bfff",
-                    opacity: .5,
-                    width: 1.2
+                    color: "#3498db",
+                    opacity: .4,
+                    width: 1
                 },
                 move: {
                     enable: !0,
-                    speed: 2.5,
+                    speed: 3,
                     direction: "none",
                     random: !0,
                     straight: !1,
@@ -77,7 +72,7 @@
                 events: {
                     onhover: {
                         enable: !0,
-                        mode: "grab"
+                        mode: "repulse"
                     },
                     onclick: {
                         enable: !0,
@@ -89,7 +84,7 @@
                     grab: {
                         distance: 140,
                         line_linked: {
-                            opacity: .9
+                            opacity: 1
                         }
                     },
                     bubble: {
@@ -100,7 +95,7 @@
                         speed: 3
                     },
                     repulse: {
-                        distance: 200,
+                        distance: 150,
                         duration: .4
                     },
                     push: {
