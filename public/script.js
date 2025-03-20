@@ -65,12 +65,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         return Promise.all([encryptedData, generateAndStoreSalt()]);
                     })
                     .then(([encryptedData, salt]) => {
+                        return Promise.all([encryptedData, generateAndStoreHmac(encryptedData, salt)]);
+                    })
+                    .then(([encryptedData, hmac]) => {
                         fetch('/api/login', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-Encryption': 'true', // Indicate encryption
-                                'X-Salt': salt  // Send the salt to the server
+                                'X-Salt': salt,  // Send the salt to the server
+                                'X-HMAC': hmac   // Send the HMAC for integrity check
                             },
                             body: JSON.stringify({ data: encryptedData }) // Send encrypted data
                         })
@@ -108,6 +112,16 @@ document.addEventListener('DOMContentLoaded', function() {
                              showAlert('An error occurred during login. Please try again later.', 'error');
                         });
                     })
+                    .catch(hmacError => {
+                        if (encryptionAnimation) {
+                            encryptionAnimation.style.display = 'none';
+                        }
+                        console.error('HMAC Error:', hmacError);
+                        errorMessage.textContent = 'HMAC generation failed.';
+                        encryptionStatus.textContent = 'HMAC error.';
+                         // Show error alert
+                         showAlert('HMAC generation failed. Please try again.', 'error');
+                    })
                     .catch(encryptionError => {
                         if (encryptionAnimation) {
                             encryptionAnimation.style.display = 'none';
@@ -136,6 +150,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return encrypted.toString();
     }
+
+    async function generateHmac(data, salt) {
+        const hmacKey = CryptoJS.SHA256("YourSecretHmacKey" + salt).toString();
+        const hmac = CryptoJS.HmacSHA256(data, hmacKey).toString();
+        return hmac;
+    }
+
+    async function generateAndStoreHmac(data, salt) {
+        const hmac = await generateHmac(data, salt);
+        localStorage.setItem('hmac', hmac);  // Store the HMAC (optional)
+        return hmac;
+    }
+
 
     function generateKey(salt) {
         // Deriving a key from the salt (example: SHA256 hash)
