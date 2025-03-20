@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Simulate encryption delay (for visual effect)
             setTimeout(() => {
-                // Use AES encryption instead of btoa
                 encryptData({ username: username, password: password, captcha: captcha })
                     .then(encryptedData => {
                         return Promise.all([encryptedData, generateAndStoreSalt()]);
@@ -72,11 +71,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-Encryption': 'true', // Indicate encryption
-                                'X-Salt': salt,  // Send the salt to the server
-                                'X-HMAC': hmac   // Send the HMAC for integrity check
+                                'X-Encryption': 'true',
+                                'X-Salt': salt,
+                                'X-HMAC': hmac
                             },
-                            body: JSON.stringify({ data: encryptedData }) // Send encrypted data
+                            body: JSON.stringify({ data: encryptedData })
                         })
                         .then(response => {
                             if (encryptionAnimation) {
@@ -92,13 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                 errorMessage.textContent = '';
                                 encryptionStatus.textContent = 'Encrypted connection established.';
                                 window.location.href = '/index.html';
-                                 // Show success alert
-                                 showAlert('Login successful. Secure connection established.', 'success');
+                                showAlert('Login successful. Secure connection established.', 'success');
                             } else {
                                 errorMessage.textContent = data.message || 'Invalid username or password.';
                                 encryptionStatus.textContent = 'Login failed. Encryption in transit.';
-                                 // Show error alert
-                                 showAlert(data.message || 'Login failed. Check credentials and try again.', 'error');
+                                showAlert(data.message || 'Login failed. Check credentials and try again.', 'error');
                             }
                         })
                         .catch(error => {
@@ -108,8 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.error('Error:', error);
                             errorMessage.textContent = 'An error occurred during login.';
                             encryptionStatus.textContent = 'Connection error.';
-                             // Show error alert
-                             showAlert('An error occurred during login. Please try again later.', 'error');
+                            showAlert('An error occurred during login. Please try again later.', 'error');
                         });
                     })
                     .catch(hmacError => {
@@ -119,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error('HMAC Error:', hmacError);
                         errorMessage.textContent = 'HMAC generation failed.';
                         encryptionStatus.textContent = 'HMAC error.';
-                         // Show error alert
                          showAlert('HMAC generation failed. Please try again.', 'error');
                     })
                     .catch(encryptionError => {
@@ -129,14 +124,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error('Encryption Error:', encryptionError);
                         errorMessage.textContent = 'Encryption failed.';
                         encryptionStatus.textContent = 'Encryption error.';
-                         // Show error alert
                          showAlert('Encryption failed. Please try again.', 'error');
                     });
-            }, 1500); // Simulate 1.5 seconds of encryption
+            }, 1500);
         });
     }
 
-    // AES Encryption function (using CryptoJS)
     async function encryptData(data) {
         const salt = await generateAndStoreSalt();
         const key = CryptoJS.enc.Utf8.parse(generateKey(salt));
@@ -152,40 +145,64 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function generateHmac(data, salt) {
-        const hmacKey = CryptoJS.SHA256("YourSecretHmacKey" + salt).toString();
+      const hmacKey = CryptoJS.SHA256(await getHmacSecret() + salt).toString();
         const hmac = CryptoJS.HmacSHA256(data, hmacKey).toString();
         return hmac;
     }
 
     async function generateAndStoreHmac(data, salt) {
         const hmac = await generateHmac(data, salt);
-        localStorage.setItem('hmac', hmac);  // Store the HMAC (optional)
+        sessionStorage.setItem('hmac', hmac);
         return hmac;
     }
 
-
     function generateKey(salt) {
-        // Deriving a key from the salt (example: SHA256 hash)
-        const combined = "YourSecretKeyPrefix" + salt;
+        const combined =  salt + await getKeyPrefix();
         const hash = CryptoJS.SHA256(combined).toString();
-        return hash.substring(0, 32); // AES-256 requires a 32-byte key
+        return hash.substring(0, 32);
     }
 
     function generateIV(salt) {
-          const combined = "YourSecretIVPrefix" + salt;
+          const combined = salt + await getIVPrefix();
           const hash = CryptoJS.SHA256(combined).toString();
-          return hash.substring(0, 16); // AES requires a 16-byte IV
+          return hash.substring(0, 16);
 
     }
     async function generateAndStoreSalt() {
-          let salt = localStorage.getItem('encryptionSalt');
+          let salt = sessionStorage.getItem('encryptionSalt');
           if (!salt) {
               salt = CryptoJS.lib.WordArray.random(16).toString();
-              localStorage.setItem('encryptionSalt', salt);
+              sessionStorage.setItem('encryptionSalt', salt);
           }
           return salt;
       }
 
+    async function getKeyPrefix() {
+        let prefix = sessionStorage.getItem('keyPrefix');
+        if (!prefix) {
+            prefix = CryptoJS.lib.WordArray.random(8).toString();
+            sessionStorage.setItem('keyPrefix', prefix);
+        }
+        return prefix;
+    }
+
+     async function getIVPrefix() {
+        let prefix = sessionStorage.getItem('ivPrefix');
+        if (!prefix) {
+            prefix = CryptoJS.lib.WordArray.random(8).toString();
+            sessionStorage.setItem('ivPrefix', prefix);
+        }
+        return prefix;
+    }
+
+    async function getHmacSecret() {
+         let secret = sessionStorage.getItem('hmacSecret');
+         if (!secret) {
+             secret = CryptoJS.lib.WordArray.random(16).toString();
+             sessionStorage.setItem('hmacSecret', secret);
+         }
+         return secret;
+    }
 
 
     // Particle.js Initialization
@@ -206,10 +223,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Remove the alert after a few seconds
         setTimeout(() => {
-            alertContainer.classList.add('fade-out'); // Add fade-out class
+            alertContainer.classList.add('fade-out');
             setTimeout(() => {
                 alertContainer.remove();
-            }, 500); // Wait for fade-out animation
-        }, 3000); // Adjust time as needed
+            }, 500);
+        }, 3000);
     }
 });
