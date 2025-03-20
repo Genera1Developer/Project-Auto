@@ -38,10 +38,10 @@ function encrypt(text) {
 }
 
 function decrypt(text) {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
     try {
-        if (!key) {
-            throw new Error('Encryption key not set. Call setEncryptionKey() first.');
-        }
         const iv = Buffer.from(text.iv, 'base64');
         const encryptedData = Buffer.from(text.encryptedData, 'base64');
         const authTag = Buffer.from(text.authTag, 'base64');
@@ -66,8 +66,15 @@ function safeCompare(a, b) {
         return false;
     }
 
+    const aBuffer = Buffer.from(a);
+    const bBuffer = Buffer.from(b);
+
+    if (aBuffer.length !== bBuffer.length) {
+        return false;
+    }
+
     try {
-        return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+        return crypto.timingSafeEqual(aBuffer, bBuffer);
     } catch (error) {
         return false;
     }
