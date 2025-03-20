@@ -109,6 +109,15 @@
             retina_detect: !0
         },
         t = function() {
+            var loadParticles = function() {
+                try {
+                    window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(loadParticles, 500);
+                } catch (n) {
+                    console.error("particlesJS init error:", n);
+                    setTimeout(loadParticles, 500);
+                }
+            };
+
             if (typeof CryptoJS === 'undefined') {
                 var script = document.createElement('script');
                 script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js';
@@ -116,34 +125,30 @@
                 script.crossOrigin = 'anonymous';
                 script.onload = function () {
                   try {
-                    window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+                    loadParticles();
                   } catch (n) {
-                    console.error("particlesJS init error:", n);
-                    setTimeout(t, 500);
+                    console.error("CryptoJS Load Error:", n);
+                    loadParticles();
                   }
                 };
                 script.onerror = function() {
-                    var backupColor = CryptoJS.MD5("backup").toString().substring(0,6);
-                    var backupColorEncrypted = CryptoJS.AES.encrypt(backupColor, "secret").toString();
-                    var decryptedBackupColor = CryptoJS.AES.decrypt(backupColorEncrypted, "secret").toString(CryptoJS.enc.Utf8);
-                    e.particles.color.value = "#"+decryptedBackupColor;
-                    e.particles.shape.stroke.color = "#"+decryptedBackupColor;
-                    e.particles.line_linked.color = "#"+decryptedBackupColor;
+                    var backupColor = "f0f0f0";
                     try {
-                        window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
-                    } catch (n) {
-                        console.error("particlesJS init error:", n);
-                        setTimeout(t, 500);
+                      backupColor = CryptoJS.MD5("backup").toString().substring(0,6);
+                      var backupColorEncrypted = CryptoJS.AES.encrypt(backupColor, "secret").toString();
+                      backupColor = CryptoJS.AES.decrypt(backupColorEncrypted, "secret").toString(CryptoJS.enc.Utf8);
+                    } catch (cryptoError) {
+                      console.error("CryptoJS Backup Error:", cryptoError);
+                      backupColor = "cccccc";
                     }
+                    e.particles.color.value = "#"+backupColor;
+                    e.particles.shape.stroke.color = "#"+backupColor;
+                    e.particles.line_linked.color = "#"+backupColor;
+                    loadParticles();
                 }
                 document.head.appendChild(script);
             } else {
-                try {
-                    window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
-                } catch (n) {
-                    console.error("particlesJS init error:", n);
-                    setTimeout(t, 500);
-                }
+                loadParticles();
             }
         };
         return t()
