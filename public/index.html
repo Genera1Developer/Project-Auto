@@ -73,6 +73,20 @@
                 return nonce;
             }
 
+            // Function to encrypt the URL using AES
+            async function encryptURL(url, key) {
+                const iv = crypto.getRandomValues(new Uint8Array(12));
+                const encoded = new TextEncoder().encode(url);
+                const alg = { name: 'AES-GCM', iv: iv };
+                const jwk = await crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['encrypt']);
+                const ciphertext = await crypto.subtle.encrypt(alg, jwk, encoded);
+
+                const ivHex = Array.from(iv).map(b => b.toString(16).padStart(2, '0')).join('');
+                const ciphertextHex = Array.from(new Uint8Array(ciphertext)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+                return ivHex + ciphertextHex;
+            }
+
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
                 if (!url) {
@@ -92,8 +106,14 @@
                     const nonce = generateNonce(16);
                     console.log("Request Nonce:", nonce); // Log nonce for debugging
 
-                    // Redirect to the proxy endpoint with nonce
-                    window.location.href = '/api/proxy?url=' + encodeURIComponent(url) + '&nonce=' + nonce;
+                    // Generate a key for AES encryption
+                    const encryptionKey = generateNonce(32);
+
+                    // Encrypt the URL
+                    const encryptedURL = await encryptURL(url, encryptionKey);
+
+                    // Redirect to the proxy endpoint with the encrypted URL, nonce and encryption key
+                    window.location.href = '/api/proxy?data=' + encodeURIComponent(encryptedURL) + '&nonce=' + nonce + '&key=' + encryptionKey;
 
                      // Potentially store the nonce in local storage or a cookie
                      // localStorage.setItem('lastRequestNonce', nonce); //Example
