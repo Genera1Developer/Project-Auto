@@ -16,6 +16,7 @@ const DIGEST = process.env.PBKDF2_DIGEST || 'sha512';
 
 const SENSITIVE_HEADERS = ['authorization', 'cookie', 'proxy-authorization'];
 const MAX_ENCRYPTED_HEADER_LENGTH = 2048; // Limit header size to prevent DoS
+const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date'];
 
 function deriveKey(password, salt) {
     return crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
@@ -72,37 +73,38 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
     for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
             const lowerKey = key.toLowerCase();
-            // Skip certain headers that should not be encrypted
-            if (['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date'].includes(lowerKey)) {
+            const value = String(headers[key]); // Ensure value is a string
+
+            if (NON_ENCRYPTED_HEADERS.includes(lowerKey)) {
                 transformedHeaders[key] = headers[key];
-            } else {
-                const value = String(headers[key]); // Ensure value is a string
-                const useEncryption = SENSITIVE_HEADERS.includes(lowerKey) || encryptFlag;
-
-                let transformedKey = key;
-                let transformedValue = value;
-
-                if(useEncryption) {
-                    try {
-                        transformedKey = encryptFlag ? encrypt(key, encryptionKey) : decrypt(key, encryptionKey);
-                        transformedValue = encryptFlag ? encrypt(value, encryptionKey) : decrypt(value, encryptionKey);
-
-                        //If transformation results in null, skip the header.
-                        if(transformedKey === null || transformedValue === null) {
-                            console.warn(`Skipping header ${key} due to transformation failure.`);
-                            continue;
-                        }
-
-                    } catch (err) {
-                        console.error(`Header transformation error for key ${key}:`, err);
-                        //If encryption or decryption fails, keep the original value
-                        transformedHeaders[key] = headers[key];
-                        continue; // Skip to the next header
-                    }
-                }
-
-                transformedHeaders[transformedKey] = transformedValue;
+                continue;
             }
+
+            const useEncryption = SENSITIVE_HEADERS.includes(lowerKey) || encryptFlag;
+
+            let transformedKey = key;
+            let transformedValue = value;
+
+            if(useEncryption) {
+                try {
+                    transformedKey = encryptFlag ? encrypt(key, encryptionKey) : decrypt(key, encryptionKey);
+                    transformedValue = encryptFlag ? encrypt(value, encryptionKey) : decrypt(value, encryptionKey);
+
+                    //If transformation results in null, skip the header.
+                    if(transformedKey === null || transformedValue === null) {
+                        console.warn(`Skipping header ${key} due to transformation failure.`);
+                        continue;
+                    }
+
+                } catch (err) {
+                    console.error(`Header transformation error for key ${key}:`, err);
+                    //If encryption or decryption fails, keep the original value
+                    transformedHeaders[key] = headers[key];
+                    continue; // Skip to the next header
+                }
+            }
+
+            transformedHeaders[transformedKey] = transformedValue;
         }
     }
     return transformedHeaders;
@@ -155,6 +157,7 @@ function proxyRequest(req, res) {
 
             // Send the salt to the client for decryption
             res.setHeader('x-encryption-salt', salt.toString('hex'));
+            res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
             res.writeHead(proxyRes.statusCode, resHeaders);
             raw.pipe(res);
         });
