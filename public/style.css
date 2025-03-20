@@ -1,67 +1,57 @@
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto Mono', monospace; /* Changed font for a more cyberpunk feel */
     margin: 0;
     padding: 0;
-    background-color: #000;
+    background-color: #111; /* Darker background */
     color: #00FFFF;
-    overflow: hidden;
-    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, decrypt 5s steps(5, end) infinite, ciphertext 7s steps(10, end) infinite, bitRotation 3s linear infinite;
+    overflow: hidden; /* Keeps the glitch effect contained */
+    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite; /* Simplified animations initially */
 }
 
+/* Reduced and adjusted glitch effect */
 @keyframes glitch {
-    2%,64%{
-        transform: translate(2px,0) skew(0deg);
+    0%, 100% {
+        transform: skew(0deg);
     }
-    4%,60%{
-        transform: translate(-2px,0) skew(0deg);
+    20% {
+        transform: translate(-5px, 3px) skew(-2deg);
     }
-    62%{
-        transform: translate(0,0) skew(5deg);
+    40% {
+        transform: translate(5px, -2px) skew(3deg);
+    }
+    60% {
+        transform: translate(-3px, 5px) skew(1deg);
+    }
+    80% {
+        transform: translate(3px, -3px) skew(-1deg);
     }
 }
 
+/* Matrix style background */
 @keyframes matrix {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 -1000px; }
+    0% {
+        background-color: rgba(0, 0, 0, 0.8);
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpiYGBgYJjEwMDAYAAUYAAAGwMAAVYAAAFkAMAAwADAAQCLWQAlKAAKAAAAAElFTkSuQmCC'); /* Simple matrix character */
+        background-size: 20px 20px;
+        opacity: 0.7;
+    }
+    100% {
+        background-color: rgba(0, 0, 0, 0.8);
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpiYGBgYJjEwMDAYAAUYAAAGwMAAVYAAAFkAMAAwADAAQCLWQAlKAAKAAAAAElFTkSuQmCC'); /* Simple matrix character */
+        background-size: 20px 20px;
+        background-position: 0 1000px;
+        opacity: 0.7;
+    }
 }
 
+/* Scanlines effect */
 @keyframes scanlines {
-    0% {
-        background-image: linear-gradient(rgba(0, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 255, 255, 0.1) 50%, rgba(0, 255, 255, 0.1) 75%, transparent 75%, transparent);
-        background-size: 100% 8px;
-    }
-    100% {
-        background-image: linear-gradient(rgba(0, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 255, 255, 0.1) 50%, rgba(0, 255, 255, 0.1) 75%, transparent 75%, transparent);
-        background-size: 100% 8px;
-    }
-}
-
-@keyframes decrypt {
     0%, 100% {
-        filter: blur(5px) grayscale(100%);
-    }
-    50% {
-        filter: blur(0px) grayscale(0%);
+        background-image: linear-gradient(to bottom, rgba(0, 255, 255, 0) 0%, rgba(0, 255, 255, 0.1) 15%, rgba(0, 255, 255, 0) 30%, rgba(0, 0, 0, 0) 100%);
+        background-size: 100% 6px;
     }
 }
 
-@keyframes ciphertext {
-    0%, 100% {
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><text x="0" y="10" style="font-size: 12px; fill: rgba(0, 255, 255, 0.2);">█</text></svg>');
-    }
-    50% {
-        background-image: none;
-    }
-}
-
-@keyframes bitRotation {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
 
 .container {
     display: flex;
@@ -73,103 +63,20 @@ body {
 }
 
 h1 {
-    font-size: 3em;
+    font-size: 3.5em; /* Increased size */
     margin-bottom: 20px;
-    text-shadow: 0 0 10px #00FFFF;
-    animation: flicker 1.5s infinite alternate, encryption 5s steps(5, end) infinite, encryptText 7s steps(5, end) infinite;
+    text-shadow: 0 0 15px #00FFFF, 0 0 5px #00FFFF; /* Stronger shadow */
+    animation: flicker 1.5s infinite alternate; /* Simplified animation */
     position: relative;
+    letter-spacing: 2px; /* Added letter spacing */
+    text-transform: uppercase; /* Uppercase for a techy look */
 }
 
-h1::before,
-h1::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
-    overflow: hidden;
-    animation: glitch-effect 2s steps(2, end) infinite, shiftColors 3s steps(1, end) infinite;
-}
-
-h1::before {
-    left: 2px;
-    text-shadow: -1px 0 #00FFFF;
-    clip: rect(44px, 450px, 56px, 0);
-}
-
-h1::after {
-    left: -2px;
-    text-shadow: 1px 0 #00FFFF;
-    clip: rect(44px, 450px, 56px, 0);
-    animation-delay: -1.15s;
-}
-
-@keyframes glitch-effect {
-    0% {
-        clip: rect(9px, 9999px, 4px, 0);
-    }
-    25% {
-        clip: rect(12px, 9999px, 15px, 0);
-    }
-    50% {
-        clip: rect(2px, 9999px, 12px, 0);
-    }
-    75% {
-        clip: rect(10px, 9999px, 3px, 0);
-    }
-    100% {
-        clip: rect(2px, 9999px, 8px, 0);
-    }
-}
-
-@keyframes shiftColors {
-    0% {
-        color: #00FFFF;
-    }
-    50% {
-        color: #FF00FF;
-    }
-    100% {
-        color: #00FFFF;
-    }
-}
-
+/* Simplified flicker effect */
 @keyframes flicker {
     0%, 100% {
-        opacity: 1;
-    }
-    40% {
-        opacity: 0.6;
-    }
-    60% {
-        opacity: 0.8;
-    }
-}
-
-@keyframes encryption {
-    0%, 100% {
-        content: "ENCRYPTED";
-    }
-    20% {
-        content: "1NCRYPT3D";
-    }
-    40% {
-        content: "3NCRYP7ED";
-    }
-    60% {
-        content: "3NCR!PT3D";
-    }
-    80% {
-        content: "ENCR!PT3D";
-    }
-}
-
-@keyframes encryptText {
-    0%, 100% {
-        opacity: 0.8;
-        text-shadow: 0 0 5px #00FFFF, 0 0 10px #00FFFF, 0 0 15px #00FFFF;
+        opacity: 0.9;
+        text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF, 0 0 30px #00FFFF;
     }
     50% {
         opacity: 0.5;
@@ -178,97 +85,56 @@ h1::after {
 }
 
 p {
-    font-size: 1.2em;
+    font-size: 1.3em; /* Increased size */
     margin-bottom: 30px;
-    text-shadow: 0 0 5px #00FFFF;
-    animation: decryptText 5s steps(5, end) infinite, pulse 8s infinite alternate, dataCorruption 6s steps(4, end) infinite;
+    text-shadow: 0 0 8px #00FFFF; /* Adjusted shadow */
+    animation: pulse 8s infinite alternate; /* Simplified animation */
+    line-height: 1.6; /* Improved readability */
 }
 
-@keyframes decryptText {
-    0%, 100% {
-        filter: blur(3px);
-    }
-    50% {
-        filter: blur(0px);
-    }
-}
-
+/* Simplified pulse effect */
 @keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.1);
-  }
-}
-
-@keyframes dataCorruption {
-    0%, 100% {
-        content: attr(data-original);
+    0% {
+        transform: scale(1);
+        text-shadow: 0 0 5px #00FFFF;
     }
-    25% {
-        content: "D@t@ C0rrupted";
-    }
-    50% {
-        content: "Däta Ćørruptéd";
-    }
-    75% {
-        content: "D@t@ C0rrüpt3d";
+    100% {
+        transform: scale(1.05);
+        text-shadow: 0 0 15px #00FFFF;
     }
 }
 
-input[type="text"] {
-    padding: 10px;
-    font-size: 1em;
+input[type="text"],
+input[type="password"] {
+    padding: 12px; /* Increased padding */
+    font-size: 1.1em; /* Increased font size */
     border: 2px solid #00FFFF;
     background-color: #222;
     color: #00FFFF;
     border-radius: 5px;
     margin-bottom: 20px;
-    width: 300px;
+    width: 320px; /* Adjusted width */
     transition: all 0.3s ease;
-    animation: decryptInput 5s steps(5, end) infinite, shake 0.5s infinite, bitInversion 4s steps(2, end) infinite;
 }
 
-input[type="text"]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus {
     box-shadow: 0 0 15px #00FFFF;
     border-color: #00BFFF;
-}
-
-@keyframes decryptInput {
-    0%, 100% {
-        filter: blur(2px);
-    }
-    50% {
-        filter: blur(0px);
-    }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-    20%, 40%, 60%, 80% { transform: translateX(2px); }
-}
-
-@keyframes bitInversion {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.7;
-    }
+    outline: none; /* Remove default focus outline */
 }
 
 button {
-    padding: 10px 20px;
-    font-size: 1.1em;
+    padding: 12px 25px; /* Adjusted padding */
+    font-size: 1.2em; /* Increased font size */
     background-color: #00FFFF;
-    color: #000;
+    color: #111; /* Darker text for contrast */
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-    animation: decryptButton 5s steps(5, end) infinite, rotate 4s linear infinite, colorCycle 6s linear infinite;
+    text-transform: uppercase; /* Uppercase for a techy look */
+    letter-spacing: 1px; /* Added letter spacing */
 }
 
 button:hover {
@@ -277,39 +143,7 @@ button:hover {
     box-shadow: 0 0 10px #00FFFF;
 }
 
-@keyframes decryptButton {
-    0%, 100% {
-        filter: blur(2px);
-    }
-    50% {
-        filter: blur(0px);
-    }
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes colorCycle {
-    0% {
-        background-color: #00FFFF;
-        color: #000;
-    }
-    50% {
-        background-color: #FF00FF;
-        color: #FFF;
-    }
-    100% {
-        background-color: #00FFFF;
-        color: #000;
-    }
-}
-
+/* particles.js container */
 #particles-js {
     position: fixed;
     width: 100%;
@@ -320,141 +154,33 @@ button:hover {
 }
 
 .form-container {
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 30px;
+    background-color: rgba(0, 0, 0, 0.6); /* Adjusted transparency */
+    padding: 35px; /* Increased padding */
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-    width: 400px;
-    animation: fadeIn 1s ease-out, decryptForm 5s steps(5, end) infinite, lineNoise 7s steps(3, end) infinite;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4); /* Stronger shadow */
+    width: 420px; /* Adjusted width */
     border: 1px dashed #00FFFF;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes decryptForm {
-    0%, 100% {
-        filter: blur(3px);
-    }
-    50% {
-        filter: blur(0px);
-    }
-}
-
-@keyframes lineNoise {
-    0%, 100% {
-        border-color: #00FFFF;
-    }
-    50% {
-        border-color: #FF00FF;
-    }
-}
-
 .form-container h2 {
-    margin-bottom: 20px;
+    margin-bottom: 25px; /* Increased margin */
     color: #00FFFF;
-    text-shadow: 0 0 5px #00FFFF;
-    animation: scramble 3s steps(10, end) infinite, decryptHeading 5s steps(5, end) infinite, reverseText 8s steps(2, end) infinite;
-}
-
-@keyframes decryptHeading {
-    0%, 100% {
-        filter: blur(3px);
-    }
-    50% {
-        filter: blur(0px);
-    }
-}
-
-@keyframes scramble {
-    0% { content: "Login"; }
-    10% { content: "L0gin"; }
-    20% { content: "L0g1n"; }
-    30% { content: "L0g1N"; }
-    40% { content: "L0G1N"; }
-    50% { content: "l0G1N"; }
-    60% { content: "l0g1N"; }
-    70% { content: "l0gin"; }
-    80% { content: "l0gin"; }
-    90% { content: "Login"; }
-    100% { content: "Login"; }
-}
-
-@keyframes reverseText {
-    0%, 100% {
-      direction: ltr;
-    }
-    50% {
-      direction: rtl;
-    }
-}
-
-.form-container input[type="text"],
-.form-container input[type="password"] {
-    width: 90%;
-    margin-bottom: 15px;
-    animation: decryptField 5s steps(5, end) infinite, pixelate 6s steps(4, end) infinite;
-}
-
-@keyframes decryptField {
-    0%, 100% {
-        filter: blur(2px);
-    }
-    50% {
-        filter: blur(0px);
-    }
-}
-
-@keyframes pixelate {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(0.95);
-    }
-}
-
-.form-container button {
-    width: 100%;
+    text-shadow: 0 0 8px #00FFFF; /* Adjusted shadow */
+    text-transform: uppercase; /* Uppercase for a techy look */
+    letter-spacing: 1px; /* Added letter spacing */
 }
 
 .link-to-register,
 .link-to-login {
-    margin-top: 15px;
-    font-size: 0.9em;
-    animation: decryptLink 5s steps(5, end) infinite, blink 1s step-end infinite, underlineGlitch 9s steps(3, end) infinite;
-}
-
-@keyframes decryptLink {
-    0%, 100% {
-        filter: blur(2px);
-    }
-    50% {
-        filter: blur(0px);
-    }
+    margin-top: 20px; /* Increased margin */
+    font-size: 1em; /* Adjusted font size */
+    animation: blink 1s step-end infinite; /* Simplified animation */
 }
 
 @keyframes blink {
   50% {
-    opacity: 0;
+    opacity: 0.5;
   }
-}
-
-@keyframes underlineGlitch {
-    0%, 100% {
-        text-decoration: none;
-    }
-    50% {
-        text-decoration: underline wavy #FF00FF;
-    }
 }
 
 .link-to-register a,
@@ -462,27 +188,6 @@ button:hover {
     color: #00BFFF;
     text-decoration: none;
     transition: color 0.3s ease;
-    animation: decryptAnchor 5s steps(5, end) infinite, rainbowText 10s linear infinite;
-}
-
-@keyframes decryptAnchor {
-    0%, 100% {
-        filter: blur(2px);
-    }
-    50% {
-        filter: blur(0px);
-    }
-}
-
-@keyframes rainbowText {
-    0% { color: #00BFFF; }
-    14% { color: #4A148C; }
-    28% { color: #303F9F; }
-    42% { color: #006064; }
-    57% { color: #1B5E20; }
-    71% { color: #FF6F00; }
-    85% { color: #E65100; }
-    100% { color: #00BFFF; }
 }
 
 .link-to-register a:hover,
