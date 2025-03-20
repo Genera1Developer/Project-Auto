@@ -1,127 +1,116 @@
-const particlesConfig = {
-  "particles": {
-    "number": {
-      "value": 150,
-      "density": {
-        "enable": true,
-        "value_area": 800
-      }
-    },
-    "color": {
-      "value": "#2ecc71" // Emerald green - encryption key color
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 0,
-        "color": "#2ecc71"
-      },
-      "polygon": {
-        "nb_sides": 5
-      }
-    },
-    "opacity": {
-      "value": 0.7,
-      "random": true,
-      "anim": {
-        "enable": true,
-        "speed": 0.7,
-        "opacity_min": 0.3,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#3498db", // Sapphire blue - secure connection color
-      "opacity": 0.5,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 4,
-      "direction": "none",
-      "random": true,
-      "straight": false,
-      "out_mode": "out",
-      "bounce": false,
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 1200
-      }
+!function(e, t) {
+    "object" == typeof exports && "object" == typeof module ? module.exports = t() : "function" == typeof define && define.amd ? define([], t) : "object" == typeof exports ? exports.particlesJS = t() : e.particlesJS = t()
+}(this, function() {
+    return function() {
+        "use strict";
+        var e = {
+            particles: {
+                number: {
+                    value: 120,
+                    density: {
+                        enable: !0,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: "#00FF00"
+                },
+                shape: {
+                    type: "circle",
+                    stroke: {
+                        width: 1,
+                        color: "#00FF00"
+                    },
+                    polygon: {
+                        nb_sides: 5
+                    }
+                },
+                opacity: {
+                    value: 0.7,
+                    random: !0,
+                    anim: {
+                        enable: !0,
+                        speed: 1,
+                        opacity_min: 0.3,
+                        sync: !1
+                    }
+                },
+                size: {
+                    value: 2.5,
+                    random: !0,
+                    anim: {
+                        enable: !1,
+                        speed: 40,
+                        size_min: 0.1,
+                        sync: !1
+                    }
+                },
+                line_linked: {
+                    enable: !0,
+                    distance: 160,
+                    color: "#00FF00",
+                    opacity: 0.5,
+                    width: 1
+                },
+                move: {
+                    enable: !0,
+                    speed: 2,
+                    direction: "none",
+                    random: !0,
+                    straight: !1,
+                    out_mode: "out",
+                    bounce: !1,
+                    attract: {
+                        enable: !1,
+                        rotateX: 600,
+                        rotateY: 1200
+                    }
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: {
+                        enable: !0,
+                        mode: "grab"
+                    },
+                    onclick: {
+                        enable: !0,
+                        mode: "push"
+                    },
+                    resize: !0
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 1
+                        }
+                    },
+                    bubble: {
+                        distance: 400,
+                        size: 40,
+                        duration: 2,
+                        opacity: 0.8,
+                        speed: 3
+                    },
+                    repulse: {
+                        distance: 150,
+                        duration: 0.4
+                    },
+                    push: {
+                        particles_nb: 4
+                    },
+                    remove: {
+                        particles_nb: 2
+                    }
+                }
+            },
+            retina_detect: !0
+        },
+        t = function() {
+            window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500)
+        };
+        return t()
     }
-  },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": {
-        "enable": true,
-        "mode": "grab"
-      },
-      "onclick": {
-        "enable": true,
-        "mode": "push"
-      },
-      "resize": true
-    },
-    "modes": {
-      "grab": {
-        "distance": 140,
-        "line_linked": {
-          "opacity": 1
-        }
-      },
-      "bubble": {
-        "distance": 400,
-        "size": 40,
-        "duration": 2,
-        "opacity": 0.8,
-        "speed": 3
-      },
-      "repulse": {
-        "distance": 200,
-        "duration": 0.4
-      },
-      "push": {
-        "particles_nb": 4
-      },
-      "remove": {
-        "particles_nb": 2
-      }
-    }
-  },
-  "retina_detect": true
-};
-
-window.onload = function() {
-  particlesJS('particles-js', particlesConfig);
-
-  // Add a rotating encryption key icon
-  const keyIcon = document.createElement('div');
-  keyIcon.innerHTML = '<i class="fas fa-key fa-spin" style="font-size:3em; color:#2ecc71;"></i>';
-  keyIcon.style.position = 'fixed';
-  keyIcon.style.bottom = '20px';
-  keyIcon.style.right = '20px';
-  keyIcon.style.zIndex = '1000'; // Ensure it's on top
-  document.body.appendChild(keyIcon);
-
-  // Add a secure lock icon
-  const lockIcon = document.createElement('div');
-  lockIcon.innerHTML = '<i class="fas fa-lock fa-spin" style="font-size:3em; color:#3498db;"></i>';
-  lockIcon.style.position = 'fixed';
-  lockIcon.style.bottom = '20px';
-  lockIcon.style.left = '20px';
-  lockIcon.style.zIndex = '1000'; // Ensure it's on top
-  document.body.appendChild(lockIcon);
-};
+});
