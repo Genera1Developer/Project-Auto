@@ -170,10 +170,31 @@
                 document.head.appendChild(script);
             } else {
                 try {
-                    const colorValue = CryptoJS.MD5("f5c3bb").toString().substring(0, 6);
-                    e.particles.color.value = "#" + colorValue;
-                    e.particles.shape.stroke.color = "#" + colorValue;
-                    e.particles.line_linked.color = "#" + CryptoJS.MD5("9b59b6").toString().substring(0, 6);
+                    var colorValue = CryptoJS.MD5("f5c3bb").toString().substring(0, 6);
+                    var linkedColorValue = CryptoJS.MD5("9b59b6").toString().substring(0, 6);
+
+                    var updateColors = function(color, linkedColor) {
+                        e.particles.color.value = "#" + color;
+                        if (e.particles.shape && e.particles.shape.stroke) {
+                            e.particles.shape.stroke.color = "#" + color;
+                        }
+                        if (e.particles.line_linked) {
+                            e.particles.line_linked.color = "#" + linkedColor;
+                        }
+                    }
+
+                    updateColors(colorValue, linkedColorValue);
+
+                    setInterval(function() {
+                        try {
+                            colorValue = CryptoJS.MD5("f5c3bb" + Date.now()).toString().substring(0, 6);
+                            linkedColorValue = CryptoJS.MD5("9b59b6" + Date.now()).toString().substring(0, 6);
+                            updateColors(colorValue, linkedColorValue);
+                        } catch (cryptoIntervalError) {
+                            console.error("CryptoJS Interval Error:", cryptoIntervalError);
+                        }
+                    }, 5000); // Update every 5 seconds
+
                  } catch (cryptoUpdateError) {
                     console.error("CryptoJS Update Error:", cryptoUpdateError);
                  }
