@@ -52,14 +52,23 @@ function decrypt(text) {
 }
 
 function safeCompare(a, b) {
-    if (a.length !== b.length) {
-      return false;
+    if (typeof a !== 'string' || typeof b !== 'string') {
+        return false;
     }
+
+    const aLen = a.length;
+    const bLen = b.length;
     let result = 0;
-    for (let i = 0; i < a.length; i++) {
-      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+
+    if (aLen !== bLen) {
+        return false;
     }
+
+    for (let i = 0; i < aLen; i++) {
+        result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+
     return result === 0;
-  }
+}
 
 module.exports = { encrypt, decrypt, setEncryptionKey, generateEncryptionKey, safeCompare };
