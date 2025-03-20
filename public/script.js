@@ -9,12 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function storeEncryptionKey(key) {
         // This is a placeholder - in a real application, use a secure method
         // such as encrypting the key before storing it.  Consider using the Web Crypto API for encryption.
-        localStorage.setItem('encryptionKey', key);
+        // Consider using a more secure storage like sessionStorage or a cookie with HttpOnly flag set.
+        sessionStorage.setItem('encryptionKey', key); // Using sessionStorage for session-based key storage
     }
 
     // Function to retrieve the encryption key
     function getEncryptionKey() {
-        return localStorage.getItem('encryptionKey');
+        return sessionStorage.getItem('encryptionKey');
     }
 
     // Function to encrypt data using AES-256
@@ -79,6 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Example usage (for testing purposes, integrate with login/signup later)
     const generateKeyButton = document.createElement('button');
     generateKeyButton.textContent = 'Generate Encryption Key';
+	generateKeyButton.id = 'generateKeyButton'; // Added ID for styling
     generateKeyButton.style.position = 'absolute';
     generateKeyButton.style.top = '20px';
     generateKeyButton.style.left = '20px';
@@ -88,10 +90,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const newKey = generateEncryptionKey();
         storeEncryptionKey(newKey);
         console.log('New encryption key generated and stored.');
+		alert('New encryption key generated and stored in session storage.'); // Added alert for user feedback
     });
 
      const encryptionTestButton = document.createElement('button');
         encryptionTestButton.textContent = 'Test Encryption';
+		encryptionTestButton.id = 'encryptionTestButton'; // Added ID for styling
         encryptionTestButton.style.position = 'absolute';
         encryptionTestButton.style.top = '60px';
         encryptionTestButton.style.left = '20px';
@@ -101,6 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const key = getEncryptionKey();
             if (!key) {
                 console.error('No encryption key found. Generate one first.');
+				alert('No encryption key found. Generate one first.'); // Added alert for user feedback
                 return;
             }
 
@@ -114,11 +119,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (testData === decryptedData) {
                     console.log('Encryption and decryption successful!');
+					alert('Encryption and decryption successful!'); // Added alert for user feedback
                 } else {
                     console.error('Encryption and decryption failed.');
+					alert('Encryption and decryption failed.'); // Added alert for user feedback
                 }
             } catch (error) {
                 console.error('Encryption/decryption error:', error);
+				alert('Encryption/decryption error: ' + error); // Added alert for user feedback
             }
         });
 });
