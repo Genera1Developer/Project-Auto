@@ -5,7 +5,7 @@ body {
     background-color: #000;
     color: #00FFFF;
     overflow: hidden;
-    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, decrypt 5s steps(5, end) infinite, ciphertext 7s steps(10, end) infinite;
+    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, decrypt 5s steps(5, end) infinite, ciphertext 7s steps(10, end) infinite, bitRotation 3s linear infinite;
 }
 
 @keyframes glitch {
@@ -38,10 +38,10 @@ body {
 
 @keyframes decrypt {
     0%, 100% {
-        filter: blur(5px);
+        filter: blur(5px) grayscale(100%);
     }
     50% {
-        filter: blur(0px);
+        filter: blur(0px) grayscale(0%);
     }
 }
 
@@ -51,6 +51,15 @@ body {
     }
     50% {
         background-image: none;
+    }
+}
+
+@keyframes bitRotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }
 
@@ -81,7 +90,7 @@ h1::after {
     height: 100%;
     background: #000;
     overflow: hidden;
-    animation: glitch-effect 2s steps(2, end) infinite;
+    animation: glitch-effect 2s steps(2, end) infinite, shiftColors 3s steps(1, end) infinite;
 }
 
 h1::before {
@@ -112,6 +121,18 @@ h1::after {
     }
     100% {
         clip: rect(2px, 9999px, 8px, 0);
+    }
+}
+
+@keyframes shiftColors {
+    0% {
+        color: #00FFFF;
+    }
+    50% {
+        color: #FF00FF;
+    }
+    100% {
+        color: #00FFFF;
     }
 }
 
@@ -160,7 +181,7 @@ p {
     font-size: 1.2em;
     margin-bottom: 30px;
     text-shadow: 0 0 5px #00FFFF;
-    animation: decryptText 5s steps(5, end) infinite, pulse 8s infinite alternate;
+    animation: decryptText 5s steps(5, end) infinite, pulse 8s infinite alternate, dataCorruption 6s steps(4, end) infinite;
 }
 
 @keyframes decryptText {
@@ -181,6 +202,21 @@ p {
   }
 }
 
+@keyframes dataCorruption {
+    0%, 100% {
+        content: attr(data-original);
+    }
+    25% {
+        content: "D@t@ C0rrupted";
+    }
+    50% {
+        content: "Däta Ćørruptéd";
+    }
+    75% {
+        content: "D@t@ C0rrüpt3d";
+    }
+}
+
 input[type="text"] {
     padding: 10px;
     font-size: 1em;
@@ -191,7 +227,7 @@ input[type="text"] {
     margin-bottom: 20px;
     width: 300px;
     transition: all 0.3s ease;
-    animation: decryptInput 5s steps(5, end) infinite, shake 0.5s infinite;
+    animation: decryptInput 5s steps(5, end) infinite, shake 0.5s infinite, bitInversion 4s steps(2, end) infinite;
 }
 
 input[type="text"]:focus {
@@ -214,6 +250,15 @@ input[type="text"]:focus {
     20%, 40%, 60%, 80% { transform: translateX(2px); }
 }
 
+@keyframes bitInversion {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
 button {
     padding: 10px 20px;
     font-size: 1.1em;
@@ -223,7 +268,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-    animation: decryptButton 5s steps(5, end) infinite, rotate 4s linear infinite;
+    animation: decryptButton 5s steps(5, end) infinite, rotate 4s linear infinite, colorCycle 6s linear infinite;
 }
 
 button:hover {
@@ -250,6 +295,21 @@ button:hover {
   }
 }
 
+@keyframes colorCycle {
+    0% {
+        background-color: #00FFFF;
+        color: #000;
+    }
+    50% {
+        background-color: #FF00FF;
+        color: #FFF;
+    }
+    100% {
+        background-color: #00FFFF;
+        color: #000;
+    }
+}
+
 #particles-js {
     position: fixed;
     width: 100%;
@@ -265,7 +325,7 @@ button:hover {
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
     width: 400px;
-    animation: fadeIn 1s ease-out, decryptForm 5s steps(5, end) infinite;
+    animation: fadeIn 1s ease-out, decryptForm 5s steps(5, end) infinite, lineNoise 7s steps(3, end) infinite;
     border: 1px dashed #00FFFF;
 }
 
@@ -289,11 +349,20 @@ button:hover {
     }
 }
 
+@keyframes lineNoise {
+    0%, 100% {
+        border-color: #00FFFF;
+    }
+    50% {
+        border-color: #FF00FF;
+    }
+}
+
 .form-container h2 {
     margin-bottom: 20px;
     color: #00FFFF;
     text-shadow: 0 0 5px #00FFFF;
-    animation: scramble 3s steps(10, end) infinite, decryptHeading 5s steps(5, end) infinite;
+    animation: scramble 3s steps(10, end) infinite, decryptHeading 5s steps(5, end) infinite, reverseText 8s steps(2, end) infinite;
 }
 
 @keyframes decryptHeading {
@@ -319,11 +388,20 @@ button:hover {
     100% { content: "Login"; }
 }
 
+@keyframes reverseText {
+    0%, 100% {
+      direction: ltr;
+    }
+    50% {
+      direction: rtl;
+    }
+}
+
 .form-container input[type="text"],
 .form-container input[type="password"] {
     width: 90%;
     margin-bottom: 15px;
-    animation: decryptField 5s steps(5, end) infinite;
+    animation: decryptField 5s steps(5, end) infinite, pixelate 6s steps(4, end) infinite;
 }
 
 @keyframes decryptField {
@@ -335,6 +413,15 @@ button:hover {
     }
 }
 
+@keyframes pixelate {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+}
+
 .form-container button {
     width: 100%;
 }
@@ -343,7 +430,7 @@ button:hover {
 .link-to-login {
     margin-top: 15px;
     font-size: 0.9em;
-    animation: decryptLink 5s steps(5, end) infinite, blink 1s step-end infinite;
+    animation: decryptLink 5s steps(5, end) infinite, blink 1s step-end infinite, underlineGlitch 9s steps(3, end) infinite;
 }
 
 @keyframes decryptLink {
@@ -361,12 +448,21 @@ button:hover {
   }
 }
 
+@keyframes underlineGlitch {
+    0%, 100% {
+        text-decoration: none;
+    }
+    50% {
+        text-decoration: underline wavy #FF00FF;
+    }
+}
+
 .link-to-register a,
 .link-to-login a {
     color: #00BFFF;
     text-decoration: none;
     transition: color 0.3s ease;
-    animation: decryptAnchor 5s steps(5, end) infinite;
+    animation: decryptAnchor 5s steps(5, end) infinite, rainbowText 10s linear infinite;
 }
 
 @keyframes decryptAnchor {
@@ -376,6 +472,17 @@ button:hover {
     50% {
         filter: blur(0px);
     }
+}
+
+@keyframes rainbowText {
+    0% { color: #00BFFF; }
+    14% { color: #4A148C; }
+    28% { color: #303F9F; }
+    42% { color: #006064; }
+    57% { color: #1B5E20; }
+    71% { color: #FF6F00; }
+    85% { color: #E65100; }
+    100% { color: #00BFFF; }
 }
 
 .link-to-register a:hover,
