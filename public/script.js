@@ -1,100 +1,124 @@
-const passwordToggle = document.querySelector('.password-toggle');
-const passwordInput = document.querySelector('#password');
-
-if (passwordToggle && passwordInput) {
-    passwordToggle.addEventListener('click', function () {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        this.classList.toggle('active');
-    });
-}
-
-async function secureSubmit(formId) {
-    const form = document.getElementById(formId);
-    if (!form) {
-        console.error('Form not found:', formId);
-        return;
-    }
-
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault();
-
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-            data[key] = value;
-        });
-
-        // Generate a new AES encryption key for each session
-        const keyPair = await generateKeyPair();
-        const encryptionKey = keyPair.privateKey;
-        const publicKey = keyPair.publicKey;
-
-        // Encrypt the data
-        const encryptedData = await encryptData(JSON.stringify(data), encryptionKey);
-
-        // Convert public key to a string
-        const publicKeyString = await exportPublicKey(publicKey);
-
-        // Prepare the encrypted payload, include the public key
-        const payload = {
-            encrypted: encryptedData,
-            publicKey: publicKeyString
-        };
-
-        // Send the encrypted data and public key to the server
-        try {
-            const response = await fetch(form.action, {
-                method: form.method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (response.ok) {
-                console.log('Submission successful');
-                window.location.href = '/login.html';
-
-            } else {
-                console.error('Submission error:', response.status);
-            }
-        } catch (error) {
-            console.error('Submission error:', error);
+document.addEventListener('DOMContentLoaded', function() {
+  particlesJS('particles-js', {
+    particles: {
+      number: {
+        value: 80,
+        density: {
+          enable: true,
+          value_area: 800
         }
-    });
-}
-
-async function encryptData(data, key) {
-    const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Initialization vector
-    const algorithm = { name: "AES-GCM", iv: iv };
-    const encodedData = new TextEncoder().encode(data);
-    const cipherText = await window.crypto.subtle.encrypt(algorithm, key, encodedData);
-
-    // Return IV + Ciphertext (IV is needed for decryption)
-    return btoa(String.fromCharCode(...iv) + String.fromCharCode(...new Uint8Array(cipherText)));
-}
-
-async function generateKeyPair() {
-    return window.crypto.subtle.generateKey(
-        {
-            name: "AES-GCM",
-            length: 256,
+      },
+      color: {
+        value: '#00FFFF' // Cyan for encryption theme
+      },
+      shape: {
+        type: 'circle',
+        stroke: {
+          width: 0,
+          color: '#000000'
         },
-        true,
-        ["encrypt", "decrypt"]
-    );
-}
+        polygon: {
+          nb_sides: 5
+        },
+        image: {
+          src: '',
+          width: 100,
+          height: 100
+        }
+      },
+      opacity: {
+        value: 0.7,
+        random: true,
+        anim: {
+          enable: false,
+          speed: 1,
+          opacity_min: 0.1,
+          sync: false
+        }
+      },
+      size: {
+        value: 3,
+        random: true,
+        anim: {
+          enable: false,
+          speed: 40,
+          size_min: 0.1,
+          sync: false
+        }
+      },
+      line_linked: {
+        enable: true,
+        distance: 150,
+        color: '#00FFFF', // Cyan for encryption theme
+        opacity: 0.4,
+        width: 1
+      },
+      move: {
+        enable: true,
+        speed: 3, // Slightly faster for more dynamic feel
+        direction: 'none',
+        random: true,
+        straight: false,
+        out_mode: 'out',
+        bounce: false,
+        attract: {
+          enable: false,
+          rotateX: 600,
+          rotateY: 1200
+        }
+      },
+    },
+    interactivity: {
+      detect_on: 'canvas',
+      events: {
+        onhover: {
+          enable: true,
+          mode: 'grab'
+        },
+        onclick: {
+          enable: true,
+          mode: 'push'
+        },
+        resize: true
+      },
+      modes: {
+        grab: {
+          distance: 140,
+          line_linked: {
+            opacity: 1
+          }
+        },
+        bubble: {
+          distance: 400,
+          size: 40,
+          duration: 2,
+          opacity: 0.8,
+          speed: 3
+        },
+        repulse: {
+          distance: 200,
+          duration: 0.4
+        },
+        push: {
+          particles_nb: 4
+        },
+        remove: {
+          particles_nb: 2
+        }
+      }
+    },
+    retina_detect: true
+  });
 
-async function exportPublicKey(publicKey) {
-    const exported = await window.crypto.subtle.exportKey(
-        "jwk", // (private)
-        publicKey // what key to export
-    );
-    return JSON.stringify(exported);
-}
+  // Encryption/decryption text animation (example)
+  const textElement = document.querySelector('.encryption-text'); // Assuming you have an element with this class
+  if (textElement) {
+    const texts = ['Encrypting...', 'Decrypting...', 'Securing...'];
+    let textIndex = 0;
 
-document.addEventListener('DOMContentLoaded', function () {
-    secureSubmit('signupForm');
-    secureSubmit('loginForm');
+    setInterval(() => {
+      textElement.textContent = texts[textIndex];
+      textIndex = (textIndex + 1) % texts.length;
+    }, 1500);
+  }
 });
