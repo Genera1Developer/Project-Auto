@@ -112,19 +112,36 @@
             if (typeof CryptoJS === 'undefined') {
                 var script = document.createElement('script');
                 script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js';
+                script.integrity = 'sha384-xxxx';
+                script.crossOrigin = 'anonymous';
                 script.onload = function () {
-                  window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+                  try {
+                    window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+                  } catch (error) {
+                    console.error("particlesJS init error:", error);
+                    setTimeout(t, 500);
+                  }
                 };
                 script.onerror = function() {
                     var backupColor = CryptoJS.MD5("backup").toString().substring(0,6);
                     e.particles.color.value = "#"+backupColor;
                     e.particles.shape.stroke.color = "#"+backupColor;
                     e.particles.line_linked.color = "#"+backupColor;
-                    window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+                    try {
+                        window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+                    } catch (error) {
+                        console.error("particlesJS init error:", error);
+                        setTimeout(t, 500);
+                    }
                 }
                 document.head.appendChild(script);
             } else {
-                window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+                try {
+                    window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
+                } catch (error) {
+                    console.error("particlesJS init error:", error);
+                    setTimeout(t, 500);
+                }
             }
         };
         return t()
