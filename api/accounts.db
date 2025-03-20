@@ -1,1 +1,1 @@
-{"accounts": [], "encryption_key": ""}
+{"accounts": [], "encryption_key": null, "cipher_suite": "AES-GCM-256", "key_rotation_policy": "monthly"}
