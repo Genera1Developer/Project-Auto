@@ -2,14 +2,14 @@ document.addEventListener('DOMContentLoaded', function() {
     particlesJS('particles-js', {
         particles: {
             number: {
-                value: 100,
+                value: 120,
                 density: {
                     enable: true,
                     value_area: 800
                 }
             },
             color: {
-                value: '#2ecc71' // Encryption green
+                value: '#00ff00' // Electric green, more encryption-like
             },
             shape: {
                 type: 'circle',
@@ -19,25 +19,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 polygon: {
                     nb_sides: 5
-                },
-                image: {
-                    src: '',
-                    width: 100,
-                    height: 100
                 }
             },
             opacity: {
-                value: 0.7,
+                value: 0.8,
                 random: true,
                 anim: {
-                    enable: false,
-                    speed: 1,
-                    opacity_min: 0.1,
+                    enable: true,
+                    speed: 0.5,
+                    opacity_min: 0.2,
                     sync: false
                 }
             },
             size: {
-                value: 2.5,
+                value: 3,
                 random: true,
                 anim: {
                     enable: false,
@@ -49,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
             line_linked: {
                 enable: true,
                 distance: 150,
-                color: '#3498db', // Encryption blue
+                color: '#00ffff', // Cyan, complements the green
                 opacity: 0.4,
                 width: 1
             },
@@ -110,12 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
         retina_detect: true
     });
 
-    // Add a subtle animation to the particles container
     const particlesContainer = document.getElementById('particles-js');
-    particlesContainer.style.transition = 'opacity 1s ease-in-out';
-    particlesContainer.style.opacity = 0;
+    if (particlesContainer) { // Check if the element exists
+        particlesContainer.style.transition = 'opacity 1s ease-in-out';
+        particlesContainer.style.opacity = 0;
 
-    setTimeout(() => {
-        particlesContainer.style.opacity = 1;
-    }, 500); // Fade in after 0.5 seconds
+        setTimeout(() => {
+            particlesContainer.style.opacity = 1;
+        }, 500);
+    }
 });
