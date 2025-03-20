@@ -251,11 +251,10 @@
             const encryptedData = await encryptText(captchaText, derivedKey.key, derivedKey.iv);
 
             document.getElementById('captcha-text').innerText = encryptedData.ciphertext;
-             // Store encryption parameters securely
-             sessionStorage.setItem('captchaSalt', salt);
-             sessionStorage.setItem('captchaKey', derivedKey.key);
-             sessionStorage.setItem('captchaIV', derivedKey.iv);
-             sessionStorage.setItem('captchaTag', encryptedData.tag);
+             // Store encryption parameters securely, use local storage
+             localStorage.setItem('captchaSalt', salt);
+             localStorage.setItem('captchaCiphertext', encryptedData.ciphertext);
+             localStorage.setItem('captchaTag', encryptedData.tag);
             return {
                 original: captchaText,
                 encrypted: encryptedData.ciphertext,
@@ -323,17 +322,19 @@
         async function validateCaptcha() {
             const userInput = document.getElementById('captcha-input').value;
             const encryptedText = document.getElementById('captcha-text').innerText;
-            const storedSalt = sessionStorage.getItem('captchaSalt');
-            const storedKey = sessionStorage.getItem('captchaKey');
-            const storedIV = sessionStorage.getItem('captchaIV');
-            const storedTag = sessionStorage.getItem('captchaTag');
+            const storedSalt = localStorage.getItem('captchaSalt');
+            const storedCiphertext = localStorage.getItem('captchaCiphertext');
+            const storedTag = localStorage.getItem('captchaTag');
 
-             if (!storedSalt || !storedKey || !storedIV || !storedTag) {
+             if (!storedSalt || !storedCiphertext || !storedTag) {
                 document.getElementById('error-message').innerText = 'Session expired. Refresh the page.';
                 return;
              }
 
-            const decryptedText = await decryptText(encryptedText, storedKey, storedIV, storedTag);
+             //Re-derive key
+             const derivedKey = await deriveKey(ENCRYPTION_KEY, storedSalt, HASH_ITERATIONS);
+
+            const decryptedText = await decryptText(storedCiphertext, derivedKey.key, derivedKey.iv, storedTag);
 
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
