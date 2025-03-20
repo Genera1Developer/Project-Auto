@@ -47,6 +47,7 @@ function generateCaptcha() {
     // Store the encryption key and IV in sessionStorage (in real application, use secure server-side storage)
     sessionStorage.setItem('captchaKey', encryptionKey);
     sessionStorage.setItem('captchaIV', iv);
+    sessionStorage.setItem('encryptedCaptcha', encryptedText); // Store the encrypted captcha
     sessionStorage.setItem('originalCaptcha', captchaText);
 
     document.getElementById('captcha-text').innerText = encryptedText;
@@ -70,17 +71,43 @@ function validateCaptcha() {
 
     if (decryptedText === originalCaptcha && userInput === originalCaptcha) {
         // Captcha is valid
-        alert('Captcha Verified!'); // Replace with appropriate action
-        document.getElementById('error-message').innerText = '';
+        // alert('Captcha Verified!'); // Replace with appropriate action
+        document.getElementById('error-message').innerText = 'Captcha Verified!';
+        document.getElementById('error-message').style.color = 'green'; // Style the success message
+        // Replace alert with a styled message
         // Optionally, regenerate the captcha after successful validation
         generateCaptcha();
     } else {
         // Captcha is invalid
         document.getElementById('error-message').innerText = 'Incorrect captcha. Please try again.';
+        document.getElementById('error-message').style.color = 'red'; // Style the error message
         // Regenerate the captcha on incorrect input
         generateCaptcha();
     }
 }
 
+function togglePasswordVisibility() {
+    const captchaInput = document.getElementById("captcha-input");
+    const toggleButton = document.getElementById("toggle-captcha");
+
+    if (captchaInput.type === "password") {
+        captchaInput.type = "text";
+        toggleButton.textContent = "Hide";
+    } else {
+        captchaInput.type = "password";
+        toggleButton.textContent = "Show";
+    }
+}
+
 // Generate the captcha when the page loads
 window.onload = generateCaptcha;
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.createElement('button');
+    toggleButton.id = 'toggle-captcha';
+    toggleButton.textContent = 'Show';
+    toggleButton.addEventListener('click', togglePasswordVisibility);
+
+    const captchaInput = document.getElementById('captcha-input');
+    captchaInput.type = "password";
+    captchaInput.parentNode.insertBefore(toggleButton, captchaInput.nextSibling);
+});
