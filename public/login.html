@@ -221,10 +221,16 @@
             errorMessage.textContent = ''; // Clear previous errors
             encryptionStatus.textContent = 'Encrypting...'; // Update status
 
-            // Generate a unique encryption key for this session
-            const encryptionKey = CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
-			// Generate a random Initialization Vector (IV)
+			// Generate a more robust Initialization Vector (IV)
             const iv = CryptoJS.lib.WordArray.random(16).toString();
+
+            // Generate a unique encryption key for this session using PBKDF2
+            const salt = CryptoJS.lib.WordArray.random(16).toString(); // Random salt
+            const encryptionKey = CryptoJS.PBKDF2(
+                "YourSecretPhrase" + salt, // Derive key from a constant phrase and salt
+                CryptoJS.enc.Utf8.parse(salt),
+                { keySize: 256/32, iterations: 100 } // 256-bit key, 100 iterations
+            ).toString();
 
             // Encrypt data before sending
             const encryptedUsername = CryptoJS.AES.encrypt(username, CryptoJS.enc.Utf8.parse(encryptionKey), {
@@ -253,7 +259,8 @@
                 headers: {
                     'Content-Type': 'application/json',
 					'X-Encryption-Key': encryptionKey, // Send key in header (INSECURE)
-					'X-Encryption-IV': iv         // Send IV in header (INSECURE)
+					'X-Encryption-IV': iv,         // Send IV in header (INSECURE)
+					'X-Encryption-Salt': salt	  // Send the salt (INSECURE)
                 },
                 body: JSON.stringify({
                   username: encryptedUsername,
