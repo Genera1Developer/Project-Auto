@@ -1,48 +1,36 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000;
+    background-color: #000; /* Dark background for encryption theme */
     color: #fff;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 100vh;
     margin: 0;
-    overflow: hidden;
+    overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
-    background-color: rgba(30, 30, 30, 0.8);
-    padding: 40px;
-    border-radius: 15px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+    background-color: rgba(30, 30, 30, 0.8); /* Semi-transparent dark container */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     width: 80%;
     max-width: 600px;
-    z-index: 1;
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.container:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 30px rgba(0, 200, 255, 0.7);
 }
 
 h1 {
-    color: #00c8ff;
-    margin-bottom: 20px;
     font-size: 2.5em;
-    text-shadow: 0 0 10px rgba(0, 200, 255, 0.8);
-    transition: color 0.3s ease;
-}
-
-h1:hover {
-    color: #00e6ff;
+    margin-bottom: 20px;
+    color: #00bcd4; /* Cyan color for the heading */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 p {
     font-size: 1.2em;
-    color: #ddd;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    color: #eee;
 }
 
 .input-group {
@@ -51,57 +39,41 @@ p {
 }
 
 input[type="text"] {
+    flex: 1;
     padding: 15px;
-    border: none;
-    border-radius: 8px 0 0 8px;
     font-size: 1em;
-    width: 70%;
+    border: none;
+    border-radius: 5px 0 0 5px;
     background-color: #222;
     color: #fff;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-input[type="text"]:focus {
-    background-color: #333;
-    color: #eee;
 }
 
 button {
-    padding: 15px 25px;
-    border: none;
-    border-radius: 0 8px 8px 0;
-    background-color: #00c8ff;
-    color: #fff;
+    padding: 15px 20px;
     font-size: 1em;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    background-color: #00bcd4; /* Cyan button color */
+    color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #00a6d6;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 200, 255, 0.6);
-}
-
-button:active {
-    transform: translateY(0);
-    box-shadow: 0 0 5px rgba(0, 200, 255, 0.5);
+    background-color: #008ba7;
 }
 
 .error {
-    color: #ff4d4d;
-    margin-bottom: 20px;
-    font-size: 1.1em;
+    color: #f44336;
+    margin-bottom: 15px;
 }
 
 .security-info {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #aaff80;
-    font-size: 1em;
+    color: #4caf50;
+    font-size: 1.1em;
     margin-top: 20px;
 }
 
@@ -109,38 +81,12 @@ button:active {
     margin-right: 10px;
 }
 
+/* Styles for particles.js */
 #particles-js {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    background-color: #000;
-    z-index: 0;
-}
-
-/* Keyframe animation for encrypted text effect */
-@keyframes encryptedText {
-    0% {
-        content: attr(data-text);
-    }
-    25% {
-        content: '▒' attr(data-text);
-    }
-    50% {
-        content: '█' attr(data-text);
-    }
-    75% {
-        content: '▓' attr(data-text);
-    }
-    100% {
-        content: attr(data-text);
-    }
-}
-
-/* Use the animation for a cool "encrypted" effect */
-h1::after {
-    content: attr(data-text);
-    animation: encryptedText 5s steps(4) infinite;
-    display: inline-block;
+    z-index: -1;
 }
