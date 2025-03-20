@@ -60,17 +60,17 @@ module.exports = async (req, res) => {
     try {
       const userData = await fetchUser(username);
 
-      if (userData) {
-        const hashedPassword = encryptPassword(password, userData.salt);
-        if(!hashedPassword) {
-            return res.status(500).json({ message: 'Encryption error' });
-        }
+      if (!userData) {
+          return res.status(401).json({ message: 'Invalid credentials' });
+      }
 
-        if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
-          res.status(200).json({ message: 'Login successful!' });
-        } else {
-          res.status(401).json({ message: 'Invalid credentials' });
-        }
+      const hashedPassword = encryptPassword(password, userData.salt);
+      if(!hashedPassword) {
+          return res.status(500).json({ message: 'Encryption error' });
+      }
+
+      if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
+        res.status(200).json({ message: 'Login successful!' });
       } else {
         res.status(401).json({ message: 'Invalid credentials' });
       }
