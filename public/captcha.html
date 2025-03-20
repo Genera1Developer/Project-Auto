@@ -184,61 +184,6 @@
         });
     </script>
     <script>
-        function generateCaptcha() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let captcha = '';
-            for (let i = 0; i < 6; i++) {
-                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return captcha;
-        }
-
-        function encryptCaptcha(captcha) {
-            // AES encryption
-            const key = 'YOUR_SECRET_KEY'; // Replace with a strong, secret key
-            const iv = CryptoJS.lib.WordArray.random(128/8).toString(); // Generate a random IV
-            const encrypted = CryptoJS.AES.encrypt(captcha, CryptoJS.enc.Utf8.parse(key), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7
-            });
-            return iv + encrypted.toString(); // Prepend IV for decryption
-        }
-
-        let captchaText = generateCaptcha();
-        let encryptedText = encryptCaptcha(captchaText);
-        document.getElementById('captcha-text').innerText = encryptedText;
-
-        function validateCaptcha() {
-            const userInput = document.getElementById('captcha-input').value;
-            if (decryptCaptcha(encryptedText) === userInput) {
-                alert('Captcha validation successful!');
-                // Redirect to a secure page or perform other actions
-                window.location.href = '/';
-            } else {
-                document.getElementById('error-message').innerText = 'Incorrect captcha. Please try again.';
-                captchaText = generateCaptcha();
-                encryptedText = encryptCaptcha(captchaText);
-                document.getElementById('captcha-text').innerText = encryptedText;
-                document.getElementById('captcha-input').value = '';
-            }
-        }
-
-        function decryptCaptcha(encryptedCaptcha) {
-            // AES decryption
-            const key = 'YOUR_SECRET_KEY'; // Replace with the same secret key used for encryption
-            const iv = encryptedCaptcha.substring(0, 32); // Extract IV from the beginning
-            const encrypted = encryptedCaptcha.substring(32); // Extract the encrypted text
-            const decrypted = CryptoJS.AES.decrypt(encrypted, CryptoJS.enc.Utf8.parse(key), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7
-            });
-            return decrypted.toString(CryptoJS.enc.Utf8);
-        }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script>
         // Function to display a matrix rain effect
         function matrixRain() {
             const canvas = document.createElement('canvas');
@@ -299,68 +244,7 @@
         // Initialize the matrix rain effect
         matrixRain();
     </script>
-    <script>
-        const secureKey = () => {
-            let key = localStorage.getItem('encryptionKey');
-            if (!key) {
-                key = CryptoJS.lib.WordArray.random(256/8).toString();
-                localStorage.setItem('encryptionKey', key);
-            }
-            return key;
-        }
-
-        function generateCaptcha() {
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            let captcha = '';
-            for (let i = 0; i < 6; i++) {
-                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return captcha;
-        }
-
-        function encryptCaptcha(captcha) {
-            // AES encryption
-            const key = secureKey(); // Access key from local storage
-            const iv = CryptoJS.lib.WordArray.random(128/8).toString(); // Generate a random IV
-            const encrypted = CryptoJS.AES.encrypt(captcha, CryptoJS.enc.Utf8.parse(key), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7
-            });
-            return iv + encrypted.toString(); // Prepend IV for decryption
-        }
-
-        let captchaText = generateCaptcha();
-        let encryptedText = encryptCaptcha(captchaText);
-        document.getElementById('captcha-text').innerText = encryptedText;
-
-        function validateCaptcha() {
-            const userInput = document.getElementById('captcha-input').value;
-            if (decryptCaptcha(encryptedText) === userInput) {
-                alert('Captcha validation successful!');
-                // Redirect to a secure page or perform other actions
-                window.location.href = '/';
-            } else {
-                document.getElementById('error-message').innerText = 'Incorrect captcha. Please try again.';
-                captchaText = generateCaptcha();
-                encryptedText = encryptCaptcha(captchaText);
-                document.getElementById('captcha-text').innerText = encryptedText;
-                document.getElementById('captcha-input').value = '';
-            }
-        }
-
-        function decryptCaptcha(encryptedCaptcha) {
-            // AES decryption
-            const key = secureKey(); // Access key from local storage
-            const iv = encryptedCaptcha.substring(0, 32); // Extract IV from the beginning
-            const encrypted = encryptedCaptcha.substring(32); // Extract the encrypted text
-            const decrypted = CryptoJS.AES.decrypt(encrypted, CryptoJS.enc.Utf8.parse(key), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7
-            });
-            return decrypted.toString(CryptoJS.enc.Utf8);
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="/public/captcha.js"></script>
 </body>
 </html>
