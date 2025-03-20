@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.setItem('encryptionIV', encryptionIV);
         const hash = CryptoJS.SHA256(encryptedCaptcha).toString();
         sessionStorage.setItem('encryptedCaptchaHash', hash);
+        sessionStorage.setItem('encryptedCaptchaSalt', CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex));
         sessionStorage.removeItem('encryptedCaptcha');
     }
 
@@ -66,8 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const storedKey = sessionStorage.getItem('encryptionKey');
         const storedIV = sessionStorage.getItem('encryptionIV');
         const encryptedCaptchaHash = sessionStorage.getItem('encryptedCaptchaHash');
+        const salt = sessionStorage.getItem('encryptedCaptchaSalt');
 
-        if (!storedKey || !storedIV || !encryptedCaptchaHash) {
+        if (!storedKey || !storedIV || !encryptedCaptchaHash || !salt) {
             errorMessageElement.textContent = 'Encryption keys missing. Refresh.';
             errorMessageElement.style.color = 'red';
             displayEncryptedCaptcha();
@@ -76,7 +78,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const encryptedUserInput = encryptCaptcha(userInput, storedKey, storedIV);
+            const saltedInput = userInput + salt;
+            const encryptedUserInput = encryptCaptcha(saltedInput, storedKey, storedIV);
             const userInputHash = CryptoJS.SHA256(encryptedUserInput).toString();
             if (userInputHash === encryptedCaptchaHash) {
                  errorMessageElement.textContent = 'Captcha verified!';
