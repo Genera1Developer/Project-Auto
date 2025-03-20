@@ -1,42 +1,37 @@
-const encryptionParticlesConfig = {
+const particlesConfig = {
   "particles": {
     "number": {
-      "value": 80,
+      "value": 150,
       "density": {
         "enable": true,
         "value_area": 800
       }
     },
     "color": {
-      "value": "#00aaff"
+      "value": "#2ecc71" // A vibrant green, symbolizing security
     },
     "shape": {
       "type": "circle",
       "stroke": {
         "width": 0,
-        "color": "#000000"
+        "color": "#3498db" // A shade of blue for visual interest
       },
       "polygon": {
         "nb_sides": 5
-      },
-      "image": {
-        "src": "img/github.svg",
-        "width": 100,
-        "height": 100
       }
     },
     "opacity": {
-      "value": 0.5,
-      "random": false,
+      "value": 0.7,
+      "random": true,
       "anim": {
-        "enable": false,
-        "speed": 1,
-        "opacity_min": 0.1,
+        "enable": true,
+        "speed": 0.7,
+        "opacity_min": 0.3,
         "sync": false
       }
     },
     "size": {
-      "value": 5,
+      "value": 3,
       "random": true,
       "anim": {
         "enable": false,
@@ -48,17 +43,18 @@ const encryptionParticlesConfig = {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00aaff",
-      "opacity": 0.4,
+      "color": "#3498db",
+      "opacity": 0.5,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 6,
+      "speed": 4,
       "direction": "none",
-      "random": false,
+      "random": true,
       "straight": false,
       "out_mode": "out",
+      "bounce": false,
       "attract": {
         "enable": false,
         "rotateX": 600,
@@ -71,7 +67,7 @@ const encryptionParticlesConfig = {
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "repulse"
+        "mode": "grab"
       },
       "onclick": {
         "enable": true,
@@ -81,7 +77,7 @@ const encryptionParticlesConfig = {
     },
     "modes": {
       "grab": {
-        "distance": 400,
+        "distance": 140,
         "line_linked": {
           "opacity": 1
         }
@@ -94,7 +90,8 @@ const encryptionParticlesConfig = {
         "speed": 3
       },
       "repulse": {
-        "distance": 200
+        "distance": 200,
+        "duration": 0.4
       },
       "push": {
         "particles_nb": 4
@@ -104,13 +101,11 @@ const encryptionParticlesConfig = {
       }
     }
   },
-  "retina_detect": true,
-  "config_demo": {
-    "hide_card": false,
-    "background_color": "#000000",
-    "background_image": "",
-    "background_position": "50% 50%",
-    "background_repeat": "no-repeat",
-    "background_size": "cover"
+  "retina_detect": true
+};
+
+window.onload = function() {
+  if (document.getElementById('particles-js')) {
+        particlesJS('particles-js', particlesConfig);
   }
-}
+};
