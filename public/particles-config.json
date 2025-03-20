@@ -8,13 +8,13 @@
       }
     },
     "color": {
-      "value": "#00bcd4"
+      "value": "ENC_COLOR_VALUE"
     },
     "shape": {
       "type": "circle",
       "stroke": {
         "width": 0,
-        "color": "#000000"
+        "color": "ENC_STROKE_COLOR"
       },
       "polygon": {
         "nb_sides": 5
@@ -43,7 +43,7 @@
     "line_linked": {
       "enable": true,
       "distance": 120,
-      "color": "#00bcd4",
+      "color": "ENC_LINE_COLOR",
       "opacity": 0.5,
       "width": 1
     },
@@ -66,7 +66,7 @@
       "algorithm": "AES-256-CBC",
       "key": "ENC_KEY_PLACEHOLDER",
       "iv": "ENC_IV_PLACEHOLDER",
-      "dataFields": ["color.value", "line_linked.color"],
+      "dataFields": ["color.value", "line_linked.color", "shape.stroke.color"],
       "obfuscate": true,
       "encryptedValuePrefix": "ENC_"
     }
