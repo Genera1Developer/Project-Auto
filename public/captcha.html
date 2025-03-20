@@ -242,34 +242,42 @@
         const ENCRYPTION_KEY = CryptoJS.SHA256('secretPassphrase').toString(); // Secure key
         const SALT_LENGTH = 16; // Recommended length
         const IV_LENGTH = 16;   // AES block size
+        const HASH_ITERATIONS = 3; // Number of iterations for key derivation
 
         async function generateCaptcha() {
             const captchaText = generateRandomString(6);
             const salt = CryptoJS.lib.WordArray.random(SALT_LENGTH).toString(CryptoJS.enc.Hex);
-            const encryptedCaptcha = await encryptText(captchaText, ENCRYPTION_KEY, salt);
+            const derivedKey = await deriveKey(ENCRYPTION_KEY, salt, HASH_ITERATIONS);
+            const encryptedCaptcha = await encryptText(captchaText, derivedKey.key, derivedKey.iv);
             document.getElementById('captcha-text').innerText = encryptedCaptcha;
-            return { original: captchaText, encrypted: encryptedCaptcha, salt: salt };
+            return { original: captchaText, encrypted: encryptedCaptcha, key: derivedKey.key, iv: derivedKey.iv, salt: salt };
         }
 
-        async function encryptText(plainText, key, salt) {
-            const iv = CryptoJS.lib.WordArray.random(IV_LENGTH).toString(CryptoJS.enc.Hex);
+        async function deriveKey(password, salt, iterations) {
+            let key = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+                keySize: 256/32,   // Key size in bytes (256 bits)
+                iterations: iterations,
+                hasher: CryptoJS.algo.SHA256
+            });
+
+            let iv  = CryptoJS.lib.WordArray.random(IV_LENGTH).toString(CryptoJS.enc.Hex);
+            return { key: key.toString(), iv: iv };
+        }
+
+        async function encryptText(plainText, key, iv) {
+
             const cipherText = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
                 iv: CryptoJS.enc.Hex.parse(iv),
-                salt: CryptoJS.enc.Hex.parse(salt),
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
             }).toString();
-            return iv + cipherText; // Prepend IV for decryption
+            return cipherText;
         }
 
-        async function decryptText(cipherText, key, salt) {
+        async function decryptText(cipherText, key, iv) {
             try {
-                const iv = cipherText.substring(0, IV_LENGTH * 2); // Extract IV
-                const encrypted = cipherText.substring(IV_LENGTH * 2); // Extract cipher text
-
-                const decrypted = CryptoJS.AES.decrypt(encrypted, CryptoJS.enc.Utf8.parse(key), {
+                const decrypted = CryptoJS.AES.decrypt(cipherText, CryptoJS.enc.Utf8.parse(key), {
                     iv: CryptoJS.enc.Hex.parse(iv),
-                    salt: CryptoJS.enc.Hex.parse(salt),
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7
                 });
@@ -298,7 +306,8 @@
                 document.getElementById('error-message').innerText = 'Session expired. Refresh the page.';
                 return;
             }
-            const decryptedText = await decryptText(encryptedText, ENCRYPTION_KEY, currentCaptcha.salt);
+
+            const decryptedText = await decryptText(encryptedText, currentCaptcha.key, currentCaptcha.iv);
 
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
