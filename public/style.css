@@ -7,7 +7,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    overflow: hidden; /* Hide scrollbars caused by particles */
+    overflow: hidden;
 }
 
 .container {
@@ -18,7 +18,13 @@ body {
     box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
     width: 80%;
     max-width: 600px;
-    z-index: 1; /* Ensure content is above particles */
+    z-index: 1;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.container:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 30px rgba(0, 200, 255, 0.7);
 }
 
 h1 {
@@ -26,6 +32,11 @@ h1 {
     margin-bottom: 20px;
     font-size: 2.5em;
     text-shadow: 0 0 10px rgba(0, 200, 255, 0.8);
+    transition: color 0.3s ease;
+}
+
+h1:hover {
+    color: #00e6ff;
 }
 
 p {
@@ -48,6 +59,12 @@ input[type="text"] {
     background-color: #222;
     color: #fff;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    background-color: #333;
+    color: #eee;
 }
 
 button {
@@ -58,12 +75,19 @@ button {
     color: #fff;
     font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
 }
 
 button:hover {
     background-color: #00a6d6;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 200, 255, 0.6);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 0 5px rgba(0, 200, 255, 0.5);
 }
 
 .error {
@@ -92,5 +116,31 @@ button:hover {
     top: 0;
     left: 0;
     background-color: #000;
-    z-index: 0; /* Ensure particles are behind content */
+    z-index: 0;
+}
+
+/* Keyframe animation for encrypted text effect */
+@keyframes encryptedText {
+    0% {
+        content: attr(data-text);
+    }
+    25% {
+        content: '▒' attr(data-text);
+    }
+    50% {
+        content: '█' attr(data-text);
+    }
+    75% {
+        content: '▓' attr(data-text);
+    }
+    100% {
+        content: attr(data-text);
+    }
+}
+
+/* Use the animation for a cool "encrypted" effect */
+h1::after {
+    content: attr(data-text);
+    animation: encryptedText 5s steps(4) infinite;
+    display: inline-block;
 }
