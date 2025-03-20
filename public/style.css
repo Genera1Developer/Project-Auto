@@ -18,7 +18,7 @@ body {
     z-index: -1;
 }
 
-.login-container, .signup-container {
+.container {
     background-color: rgba(30, 30, 30, 0.8);
     padding: 40px;
     border-radius: 10px;
@@ -27,12 +27,12 @@ body {
     width: 300px;
 }
 
-.login-container h2, .signup-container h2 {
+.container h2 {
     color: #fff;
     margin-bottom: 20px;
 }
 
-.login-container input, .signup-container input {
+.container input {
     width: 100%;
     padding: 12px;
     margin: 8px 0;
@@ -43,7 +43,7 @@ body {
     box-sizing: border-box;
 }
 
-.login-container button, .signup-container button {
+.container button {
     background-color: #007bff;
     color: white;
     padding: 14px 20px;
@@ -56,18 +56,18 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.login-container button:hover, .signup-container button:hover {
+.container button:hover {
     background-color: #0056b3;
 }
 
-.login-container a, .signup-container a {
+.container a {
     color: #007bff;
     text-decoration: none;
     display: block;
     margin-top: 10px;
 }
 
-.login-container a:hover, .signup-container a:hover {
+.container a:hover {
     text-decoration: underline;
 }
 
@@ -125,43 +125,4 @@ body {
     width: 0;
     background-color: #00aaff;
     transition: width 0.3s ease;
-}
-
-/* Styles for the proxy input and results */
-#proxy-form {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#proxy-form input[type="text"] {
-    width: 70%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #555;
-    border-radius: 5px;
-    background-color: #222;
-    color: #fff;
-    box-sizing: border-box;
-}
-
-#proxy-form button {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 20px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-#proxy-form button:hover {
-    background-color: #0056b3;
-}
-
-#proxy-result {
-    margin-top: 20px;
-    color: #fff;
-    text-align: center;
 }
