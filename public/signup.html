@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Sign Up</title>
+    <title>Sign Up - Secure Proxy</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background-color: #000;
-            color: #fff;
+            color: #ddd;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             overflow: hidden;
         }
 
@@ -19,360 +23,186 @@
             position: fixed;
             width: 100%;
             height: 100%;
-            top: 0;
-            left: 0;
             z-index: -1;
         }
 
         .signup-container {
-            width: 400px;
-            margin: 100px auto;
             background-color: rgba(30, 30, 30, 0.8);
-            padding: 30px;
+            padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
             text-align: center;
+            width: 300px;
         }
 
-        h2 {
-            color: #00ffff;
+        .signup-container h2 {
+            color: #fff;
             margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
         }
 
-        input[type="text"],
-        input[type="password"] {
-            width: 90%;
-            padding: 12px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background-color: rgba(50, 50, 50, 0.7);
-            color: #fff;
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            outline: none;
-            background-color: rgba(70, 70, 70, 0.9);
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
-
-        button {
-            width: 90%;
-            padding: 12px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #00ffff;
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-        }
-
-        button:hover {
-            background-color: #00bfff;
-        }
-
-        .login-link {
-            margin-top: 20px;
-            color: #00ffff;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .login-link:hover {
-            color: #00bfff;
-        }
-
-        #error-message {
-            color: #ff4d4d;
-            margin-top: 10px;
-        }
-
-        .captcha-container {
-            margin-top: 20px;
-        }
-
-        #captcha-image {
+        .signup-container input {
             width: 100%;
-            max-width: 200px;
-            border: 1px solid #00ffff;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #555;
             border-radius: 5px;
+            background-color: #222;
+            color: #fff;
+            box-sizing: border-box;
         }
 
-        #captcha-input {
-            width: 90%;
-            padding: 12px;
+        .signup-container button {
+            background-color: #007bff;
+            color: white;
+            padding: 14px 20px;
             margin: 10px 0;
             border: none;
             border-radius: 5px;
-            background-color: rgba(50, 50, 50, 0.7);
-            color: #fff;
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
 
-        #captcha-input:focus {
-            outline: none;
-            background-color: rgba(70, 70, 70, 0.9);
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        .signup-container button:hover {
+            background-color: #0056b3;
         }
 
-        #password-strength {
+        .signup-container a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .signup-container a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        #encryption-status {
             margin-top: 10px;
             font-size: 0.8em;
-        }
-        #password-requirements {
-            margin-top: 10px;
-            font-size: 0.8em;
-            color: #aaa;
-            text-align: left;
+            color: #00ff00;
         }
 
-        #security-tips {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(30, 30, 30, 0.8);
-            border-radius: 10px;
-            text-align: left;
+        .encryption-animation {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto;
+            border-radius: 50%;
+            border: 5px solid transparent;
+            border-top-color: #007bff;
+            animation: rotate 1.2s linear infinite;
+            display: none; /* Hidden by default */
         }
 
-        #security-tips h3 {
-            color: #00ffff;
-            margin-bottom: 10px;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        #security-tips ul {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-
-        #security-tips li {
-            margin-bottom: 5px;
-        }
-
-        /* New styles for password meter */
-        .password-meter {
-            width: 90%;
-            height: 10px;
-            background-color: #ddd;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-
-        .password-meter-bar {
-            height: 100%;
-            border-radius: 5px;
-            width: 0;
-            transition: width 0.3s ease;
-        }
-
-        .strength-0 { background-color: #ff4d4d; }
-        .strength-1 { background-color: #ff7043; }
-        .strength-2 { background-color: #ffc107; }
-        .strength-3 { background-color: #4caf50; }
-        .strength-4 { background-color: #2e7d32; }
-
-        /* New styles for displaying password requirements */
-        .password-requirement {
-            color: #aaa;
-            font-size: 0.8em;
-            margin-bottom: 5px;
-        }
-
-        .password-requirement.met {
-            color: #4caf50;
+        #captcha-container {
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="signup-container">
-        <h2>Create Secure Account</h2>
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required onkeyup="checkPasswordStrength()">
-        <div class="password-meter">
-            <div class="password-meter-bar" id="password-meter-bar"></div>
-        </div>
-        <div id="password-strength"></div>
-         <div id="password-requirements">
-            Password must be at least 8 characters long and include:
-            <ul id="password-requirements-list">
-                <li class="password-requirement" id="length-requirement">At least 8 characters</li>
-                <li class="password-requirement" id="uppercase-requirement">At least one uppercase letter</li>
-                <li class="password-requirement" id="lowercase-requirement">At least one lowercase letter</li>
-                <li class="password-requirement" id="number-requirement">At least one number</li>
-                <li class="password-requirement" id="special-requirement">At least one special character ($@#&!)</li>
-            </ul>
-        </div>
-        <input type="password" id="confirm-password" placeholder="Confirm Password" required>
-
-        <div class="captcha-container">
-            <img src="/api/captcha.js" alt="CAPTCHA" id="captcha-image" onclick="refreshCaptcha()">
-            <input type="text" id="captcha-input" placeholder="Enter CAPTCHA" required>
-        </div>
-
-        <button onclick="signUp()">Sign Up</button>
-        <p id="error-message"></p>
-        <a href="login.html" class="login-link">Already have an account? Log In</a>
-
-         <div id="security-tips">
-            <h3>Security Tips:</h3>
-            <ul>
-                <li>Use a strong, unique password.</li>
-                <li>Enable two-factor authentication if available.</li>
-                <li>Be cautious of phishing attempts.</li>
-                <li>Keep your browser and operating system up to date.</li>
-            </ul>
-        </div>
+        <h2>Sign Up</h2>
+        <form id="signupForm">
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <div id="captcha-container">
+                <img src="/api/captcha" alt="CAPTCHA Image" id="captchaImage">
+                <input type="text" id="captcha" name="captcha" placeholder="Enter CAPTCHA" required>
+                <button type="button" onclick="refreshCaptcha()">Refresh CAPTCHA</button>
+            </div>
+            <div class="encryption-animation" id="encryptionAnimation"></div>
+            <button type="submit">Sign Up</button>
+        </form>
+        <a href="login.html">Already have an account? Login</a>
+        <div id="error-message" class="error-message"></div>
+        <div id="encryption-status"></div>
     </div>
 
     <script src="particles.js"></script>
     <script>
         particlesJS.load('particles-js', 'particles-config.json', function() {
-            console.log('callback - particles.js config loaded');
+          console.log('particles.js loaded - callback');
         });
 
         function refreshCaptcha() {
-            document.getElementById('captcha-image').src = '/api/captcha.js?' + new Date().getTime();
+            document.getElementById('captchaImage').src = '/api/captcha?' + new Date().getTime();
         }
 
-        function checkPasswordStrength() {
-            const password = document.getElementById('password').value;
-            const strength = calculatePasswordStrength(password);
-            const strengthElement = document.getElementById('password-strength');
-            const meterBar = document.getElementById('password-meter-bar');
-
-            meterBar.className = 'password-meter-bar strength-' + strength;
-            meterBar.style.width = (strength / 4) * 100 + '%';
-
-
-            switch (strength) {
-                case 0:
-                    strengthElement.textContent = 'Very Weak';
-                    strengthElement.style.color = '#ff4d4d';
-                    break;
-                case 1:
-                    strengthElement.textContent = 'Weak';
-                    strengthElement.style.color = '#ff7043';
-                    break;
-                case 2:
-                    strengthElement.textContent = 'Fair';
-                    strengthElement.style.color = '#ffc107';
-                    break;
-                case 3:
-                    strengthElement.textContent = 'Good';
-                    strengthElement.style.color = '#4caf50';
-                    break;
-                case 4:
-                    strengthElement.textContent = 'Strong';
-                    strengthElement.style.color = '#2e7d32';
-                    break;
-            }
-
-            updatePasswordRequirements(password);
-        }
-
-        function calculatePasswordStrength(password) {
-            let strength = 0;
-            if (password.length >= 8) {
-                strength++;
-            }
-            if (password.match(/[a-z]+/)) {
-                strength++;
-            }
-            if (password.match(/[A-Z]+/)) {
-                strength++;
-            }
-            if (password.match(/[0-9]+/)) {
-                strength++;
-            }
-            if (password.match(/[$@#&!]+/)) {
-                strength++;
-            }
-            return Math.min(strength, 4);
-        }
-
-         function updatePasswordRequirements(password) {
-            const lengthRequirement = document.getElementById('length-requirement');
-            const uppercaseRequirement = document.getElementById('uppercase-requirement');
-            const lowercaseRequirement = document.getElementById('lowercase-requirement');
-            const numberRequirement = document.getElementById('number-requirement');
-            const specialRequirement = document.getElementById('special-requirement');
-
-            if (password.length >= 8) {
-                lengthRequirement.classList.add('met');
-            } else {
-                lengthRequirement.classList.remove('met');
-            }
-
-            if (password.match(/[A-Z]+/)) {
-                uppercaseRequirement.classList.add('met');
-            } else {
-                uppercaseRequirement.classList.remove('met');
-            }
-
-            if (password.match(/[a-z]+/)) {
-                lowercaseRequirement.classList.add('met');
-            } else {
-                lowercaseRequirement.classList.remove('met');
-            }
-
-            if (password.match(/[0-9]+/)) {
-                numberRequirement.classList.add('met');
-            } else {
-                numberRequirement.classList.remove('met');
-            }
-
-            if (password.match(/[$@#&!]+/)) {
-                specialRequirement.classList.add('met');
-            } else {
-                specialRequirement.classList.remove('met');
-            }
-        }
-
-        async function signUp() {
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const captchaInput = document.getElementById('captcha-input').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const email = document.getElementById('email').value;
+            const captcha = document.getElementById('captcha').value;
             const errorMessage = document.getElementById('error-message');
+            const encryptionStatus = document.getElementById('encryption-status');
+            const encryptionAnimation = document.getElementById('encryptionAnimation');
+
+            if (!username || !password || !confirmPassword || !email || !captcha) {
+                errorMessage.textContent = 'Please enter all fields.';
+                return;
+            }
 
             if (password !== confirmPassword) {
-                errorMessage.textContent = "Passwords do not match.";
+                errorMessage.textContent = 'Passwords do not match.';
                 return;
             }
 
-             if (calculatePasswordStrength(password) < 3) {
-                errorMessage.textContent = "Password is not strong enough.";
-                return;
-            }
+            encryptionAnimation.style.display = 'block';
+            errorMessage.textContent = '';
+            encryptionStatus.textContent = 'Encrypting...';
 
-            try {
-                const response = await fetch('/api/sign-up.js', { // Modified URL
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ username, password, captcha: captchaInput })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
+            fetch('/api/sign-up', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password, email: email, captcha: captcha })
+            })
+            .then(response => {
+                encryptionAnimation.style.display = 'none';
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    errorMessage.textContent = '';
+                    encryptionStatus.textContent = 'Encrypted account created.';
                     window.location.href = 'login.html';
                 } else {
                     errorMessage.textContent = data.message || 'Signup failed.';
+                    encryptionStatus.textContent = 'Signup attempt encrypted.';
                 }
-            } catch (error) {
+            })
+            .catch(error => {
+                encryptionAnimation.style.display = 'none';
                 console.error('Error:', error);
                 errorMessage.textContent = 'An error occurred during signup.';
-            }
-        }
+                encryptionStatus.textContent = 'Connection error.';
+            });
+        });
     </script>
 </body>
 </html>
