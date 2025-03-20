@@ -68,6 +68,15 @@ async function decryptData(encryptedData, encryptionKey, iv, authTag) {
   return decrypted.toString();
 }
 
+// Function to derive a key from a password using PBKDF2
+async function deriveKey(password, salt) {
+    const iterations = 100000; // Adjust as needed
+    const keyLength = 32; // 32 bytes for AES-256
+    const digest = 'sha512';
+    const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keyLength, digest);
+    return derivedKey.toString('hex');
+}
+
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
@@ -94,7 +103,8 @@ module.exports = async (req, res) => {
       // Securely store data (e.g., in a database):
 
       // 1. Generate a unique encryption key per user.
-      const encryptionKey = await generateSalt();
+      salt = await generateSalt();
+      const encryptionKey = await deriveKey(password, salt); // Derive key from password and salt
 
       // 2. Encrypt the username and salt
       const encryptedUsername = await encryptData(username, encryptionKey);
