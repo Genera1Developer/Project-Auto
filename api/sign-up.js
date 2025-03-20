@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const scrypt = require('scrypt-kdf');
 const argon2 = require('argon2');
 const timingSafeCompare = require('tsscmp');
+const { promisify } = require('util');
 
 const SCRYPT_CONFIG = {
   cost: 16384,
@@ -11,12 +12,14 @@ const SCRYPT_CONFIG = {
   maxMemory: 67108864,
 };
 
+const randomBytesAsync = promisify(crypto.randomBytes);
+
 async function hashPasswordScrypt(password, salt) {
   const derivedKey = await scrypt.scrypt(password, salt, SCRYPT_CONFIG);
   return derivedKey.toString('hex');
 }
 
-async function hashPasswordArgon2(password) {
+async function hashPasswordArgon2(password, salt) {
   try {
     return await argon2.hash(password, {
       type: argon2.argon2id,
@@ -24,7 +27,7 @@ async function hashPasswordArgon2(password) {
       timeCost: 2,
       parallelism: 1,
       secret: Buffer.from(process.env.ARGON2_SECRET || ''), // optional secret
-      salt: Buffer.from(crypto.randomBytes(16)) // Explicit salt generation
+      salt: salt
     });
   } catch (err) {
     console.error(err);
@@ -32,8 +35,9 @@ async function hashPasswordArgon2(password) {
   }
 }
 
-function generateSalt() {
-  return crypto.randomBytes(32).toString('hex');
+async function generateSalt() {
+  const buffer = await randomBytesAsync(32);
+  return buffer.toString('hex');
 }
 
 function timingSafeEqual(a, b) {
@@ -53,10 +57,11 @@ module.exports = async (req, res) => {
 
     try {
       if (hashingAlgo === 'scrypt') {
-        salt = generateSalt();
+        salt = await generateSalt();
         hashedPassword = await hashPasswordScrypt(password, salt);
       } else if (hashingAlgo === 'argon2'){
-        hashedPassword = await hashPasswordArgon2(password);
+        salt = await generateSalt();
+        hashedPassword = await hashPasswordArgon2(password, Buffer.from(salt, 'hex'));
       }
       else{
         return res.status(400).json({ message: 'Invalid hashing algorithm'});
