@@ -4,15 +4,14 @@ const algorithm = 'aes-256-gcm';
 let key = null;
 
 function setEncryptionKey(newKey) {
-    if (newKey && Buffer.isBuffer(newKey) && newKey.length === 32) {
-        key = newKey;
-    } else {
+    if (!Buffer.isBuffer(newKey) || newKey.length !== 32) {
         throw new Error('Invalid key. Key must be a 32-byte Buffer.');
     }
+    key = newKey;
 }
 
 function generateEncryptionKey() {
-    key = crypto.randomBytes(32);
+    key = crypto.generateKeySync('aes', { length: 256 });
     return key.toString('hex');
 }
 
@@ -56,19 +55,11 @@ function safeCompare(a, b) {
         return false;
     }
 
-    const aLen = a.length;
-    const bLen = b.length;
-    let result = 0;
-
-    if (aLen !== bLen) {
+    if (a.length !== b.length) {
         return false;
     }
 
-    for (let i = 0; i < aLen; i++) {
-        result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    }
-
-    return result === 0;
+    return crypto.timingSafeEqual(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8'));
 }
 
 module.exports = { encrypt, decrypt, setEncryptionKey, generateEncryptionKey, safeCompare };
