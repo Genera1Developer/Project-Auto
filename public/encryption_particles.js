@@ -8,16 +8,16 @@ particlesJS('particles-js', {
       }
     },
     color: {
-      value: '#00e600'
+      value: '#00e600' // Green for encryption theme
     },
     shape: {
-      type: 'circle', // Changed to circle for simplicity
+      type: 'circle',
       stroke: {
         width: 0,
         color: '#00b300'
       },
       polygon: {
-        nb_sides: 5
+        nb_sides: 6 // Hexagon shape
       },
       image: {
         src: '',
@@ -48,7 +48,7 @@ particlesJS('particles-js', {
     line_linked: {
       enable: true,
       distance: 160,
-      color: '#00ff40',
+      color: '#00ff40', // Brighter green
       opacity: 0.6,
       width: 1.5
     },
