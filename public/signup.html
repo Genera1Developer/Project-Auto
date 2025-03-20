@@ -199,6 +199,9 @@
             if (password.match(/[$@#&!]+/)) {
                 strength += 1;
             }
+			if (password.length >= 12) {
+				strength += 1;
+			}
             return strength;
         }
 
@@ -216,29 +219,34 @@
                     textContent = 'Very Weak';
                     break;
                 case 1:
-                    width = 20;
+                    width = 16;
                     color = '#ff0000';
                     textContent = 'Weak';
                     break;
                 case 2:
-                    width = 40;
+                    width = 33;
                     color = '#ffcc00';
                     textContent = 'Fair';
                     break;
                 case 3:
-                    width = 60;
+                    width = 50;
                     color = '#ffcc00';
                     textContent = 'Good';
                     break;
                 case 4:
-                    width = 80;
+                    width = 66;
                     color = '#00ff00';
                     textContent = 'Strong';
                     break;
-                case 5:
+				case 5:
+					width = 83;
+					color = '#00ff00';
+					textContent = 'Very Strong';
+					break;
+                case 6:
                     width = 100;
                     color = '#00ff00';
-                    textContent = 'Very Strong';
+                    textContent = 'Excellent';
                     break;
             }
 
