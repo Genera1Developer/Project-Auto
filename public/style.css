@@ -5,7 +5,7 @@ body {
     background-color: #000;
     color: #00FFFF;
     overflow: hidden;
-    animation: glitch 2s linear infinite;
+    animation: glitch 2s linear infinite, matrix 10s linear infinite;
 }
 
 @keyframes glitch {
@@ -18,6 +18,11 @@ body {
     62%{
         transform: translate(0,0) skew(5deg);
     }
+}
+
+@keyframes matrix {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 -1000px; }
 }
 
 .container {
@@ -33,7 +38,7 @@ h1 {
     font-size: 3em;
     margin-bottom: 20px;
     text-shadow: 0 0 10px #00FFFF;
-    animation: flicker 1.5s infinite alternate;
+    animation: flicker 1.5s infinite alternate, encryption 5s steps(5, end) infinite;
 }
 
 @keyframes flicker {
@@ -48,9 +53,28 @@ h1 {
     }
 }
 
+@keyframes encryption {
+    0%, 100% {
+        content: "ENCRYPTED";
+    }
+    20% {
+        content: "1NCRYPT3D";
+    }
+    40% {
+        content: "3NCRYP7ED";
+    }
+    60% {
+        content: "3NCR!PT3D";
+    }
+    80% {
+        content: "ENCR!PT3D";
+    }
+}
+
 p {
     font-size: 1.2em;
     margin-bottom: 30px;
+    text-shadow: 0 0 5px #00FFFF;
 }
 
 input[type="text"] {
@@ -62,6 +86,12 @@ input[type="text"] {
     border-radius: 5px;
     margin-bottom: 20px;
     width: 300px;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+    box-shadow: 0 0 15px #00FFFF;
+    border-color: #00BFFF;
 }
 
 button {
@@ -72,12 +102,13 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.1s ease;
+    transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
 }
 
 button:hover {
     background-color: #00BFFF;
     transform: scale(1.05);
+    box-shadow: 0 0 10px #00FFFF;
 }
 
 #particles-js {
@@ -96,6 +127,7 @@ button:hover {
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
     width: 400px;
     animation: fadeIn 1s ease-out;
+    border: 1px dashed #00FFFF;
 }
 
 @keyframes fadeIn {
@@ -113,6 +145,21 @@ button:hover {
     margin-bottom: 20px;
     color: #00FFFF;
     text-shadow: 0 0 5px #00FFFF;
+    animation: scramble 3s steps(10, end) infinite;
+}
+
+@keyframes scramble {
+    0% { content: "Login"; }
+    10% { content: "L0gin"; }
+    20% { content: "L0g1n"; }
+    30% { content: "L0g1N"; }
+    40% { content: "L0G1N"; }
+    50% { content: "l0G1N"; }
+    60% { content: "l0g1N"; }
+    70% { content: "l0gin"; }
+    80% { content: "l0gin"; }
+    90% { content: "Login"; }
+    100% { content: "Login"; }
 }
 
 .form-container input[type="text"],
