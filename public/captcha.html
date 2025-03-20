@@ -31,6 +31,12 @@
             letter-spacing: 0.2em;
             margin-bottom: 15px;
             user-select: none;
+            filter: blur(5px); /* Initial blur for added security */
+            cursor: pointer; /* Indicate it's interactive */
+        }
+
+        #captcha-text:hover {
+            filter: none; /* Remove blur on hover */
         }
 
         input[type="text"] {
@@ -78,7 +84,7 @@
     <div id="captcha-container">
         <h2>Decryption Required</h2>
         <p>Enter the decrypted text:</p>
-        <div id="captcha-text"></div>
+        <div id="captcha-text" onclick="this.style.filter='none'"></div>
         <input type="text" id="captcha-input" placeholder="Enter Captcha">
         <button onclick="validateCaptcha()">Verify</button>
         <div id="error-message"></div>
@@ -233,20 +239,22 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
+        const ENCRYPTION_KEY = 'secretPassphrase'; // Store key as const
+
         async function generateCaptcha() {
             const captchaText = generateRandomString(6);
-            const encryptedCaptcha = await encryptText(captchaText, 'secretPassphrase');
+            const encryptedCaptcha = await encryptText(captchaText, ENCRYPTION_KEY);
             document.getElementById('captcha-text').innerText = encryptedCaptcha;
             return { original: captchaText, encrypted: encryptedCaptcha };
         }
 
-        async function encryptText(plainText, passphrase) {
-            return CryptoJS.AES.encrypt(plainText, passphrase).toString();
+        async function encryptText(plainText, key) {
+            return CryptoJS.AES.encrypt(plainText, key).toString();
         }
 
-        async function decryptText(cipherText, passphrase) {
+        async function decryptText(cipherText, key) {
             try {
-                const bytes = CryptoJS.AES.decrypt(cipherText, passphrase);
+                const bytes = CryptoJS.AES.decrypt(cipherText, key);
                 return bytes.toString(CryptoJS.enc.Utf8);
             } catch (e) {
                 return ''; // Decryption failed
@@ -267,7 +275,8 @@
 
         async function validateCaptcha() {
             const userInput = document.getElementById('captcha-input').value;
-            const decryptedText = await decryptText(document.getElementById('captcha-text').innerText, 'secretPassphrase');
+            const encryptedText = document.getElementById('captcha-text').innerText; // Cache encrypted text
+            const decryptedText = await decryptText(encryptedText, ENCRYPTION_KEY);
 
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
