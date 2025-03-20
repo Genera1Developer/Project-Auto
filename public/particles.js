@@ -13,13 +13,13 @@
                     }
                 },
                 color: {
-                    value: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("2ecc71").toString().substring(0,6) : "2ecc71")
+                    value: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("f5c3bb").toString().substring(0,6) : "2ecc71")
                 },
                 shape: {
                     type: "circle",
                     stroke: {
                         width: 0,
-                        color: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("2ecc71").toString().substring(0,6) : "2ecc71")
+                        color: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("f5c3bb").toString().substring(0,6) : "2ecc71")
                     },
                     polygon: {
                         nb_sides: 5
@@ -48,7 +48,7 @@
                 line_linked: {
                     enable: !0,
                     distance: 150,
-                    color: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("3498db").toString().substring(0,6) : "3498db"),
+                    color: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("9b59b6").toString().substring(0,6) : "3498db"),
                     opacity: .4,
                     width: 1
                 },
@@ -116,9 +116,10 @@
                   window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
                 };
                 script.onerror = function() {
-                    e.particles.color.value = "#2ecc71";
-                    e.particles.shape.stroke.color = "#2ecc71";
-                    e.particles.line_linked.color = "#3498db";
+                    var backupColor = CryptoJS.MD5("backup").toString().substring(0,6);
+                    e.particles.color.value = "#"+backupColor;
+                    e.particles.shape.stroke.color = "#"+backupColor;
+                    e.particles.line_linked.color = "#"+backupColor;
                     window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
                 }
                 document.head.appendChild(script);
