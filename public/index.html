@@ -80,11 +80,7 @@
                 const alg = { name: 'AES-GCM', iv: iv };
                 const jwk = await crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['encrypt']);
                 const ciphertext = await crypto.subtle.encrypt(alg, jwk, encoded);
-
-                const ivHex = btoa(String.fromCharCode(...iv)); // Base64 encode IV
-                const ciphertextHex = btoa(String.fromCharCode(...new Uint8Array(ciphertext))); // Base64 encode ciphertext
-
-                return ivHex + ciphertextHex;
+                return { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) };
             }
 
             browseButton.addEventListener('click', async () => {
@@ -110,10 +106,40 @@
                     const encryptionKey = generateNonce(32);
 
                     // Encrypt the URL
-                    const encryptedURL = await encryptURL(url, encryptionKey);
+                    const encryptedData = await encryptURL(url, encryptionKey);
 
-                    // Redirect to the proxy endpoint with the encrypted URL, nonce and encryption key
-                    window.location.href = '/api/proxy?data=' + encodeURIComponent(encryptedURL) + '&nonce=' + nonce + '&key=' + encryptionKey;
+                    // Create form and submit to proxy endpoint
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/api/proxy';
+                    form.style.display = 'none';
+
+                    const dataInput = document.createElement('input');
+                    dataInput.type = 'hidden';
+                    dataInput.name = 'ciphertext';
+                    dataInput.value = encryptedData.ciphertext;
+                    form.appendChild(dataInput);
+
+                    const ivInput = document.createElement('input');
+                    ivInput.type = 'hidden';
+                    ivInput.name = 'iv';
+                    ivInput.value = encryptedData.iv;
+                    form.appendChild(ivInput);
+
+                    const nonceInput = document.createElement('input');
+                    nonceInput.type = 'hidden';
+                    nonceInput.name = 'nonce';
+                    nonceInput.value = nonce;
+                    form.appendChild(nonceInput);
+
+                    const keyInput = document.createElement('input');
+                    keyInput.type = 'hidden';
+                    keyInput.name = 'key';
+                    keyInput.value = encryptionKey;
+                    form.appendChild(keyInput);
+
+                    document.body.appendChild(form);
+                    form.submit();
 
                      // Potentially store the nonce in local storage or a cookie
                      // localStorage.setItem('lastRequestNonce', nonce); //Example
