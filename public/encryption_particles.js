@@ -1,58 +1,55 @@
-/* particlesJS('dom-id', params);
-*/
-
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 120,
+      value: 150,
       density: {
         enable: true,
-        value_area: 700
+        value_area: 800
       }
     },
     color: {
-      value: '#00FF00' // Encryption green
+      value: '#00FF00'
     },
     shape: {
       type: 'circle',
       stroke: {
         width: 1,
-        color: '#008000' // Darker green for stroke
+        color: '#008000'
       },
       polygon: {
-        nb_sides: 5 // Pentagon - symbolic of security
+        nb_sides: 5
       }
     },
     opacity: {
-      value: 0.8,
+      value: 0.7,
       random: true,
       anim: {
         enable: true,
-        speed: 0.7,
-        opacity_min: 0.4,
+        speed: 1,
+        opacity_min: 0.3,
         sync: false
       }
     },
     size: {
-      value: 2.5,
+      value: 3,
       random: true,
       anim: {
         enable: true,
-        speed: 15,
+        speed: 12,
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 150,
+      distance: 160,
       color: '#00FF00',
-      opacity: 0.6,
+      opacity: 0.5,
       width: 1
     },
     move: {
       enable: true,
-      speed: 3,
+      speed: 2,
       direction: 'none',
       random: true,
       straight: false,
@@ -69,7 +66,7 @@ particlesJS('particles-js', {
     events: {
       onhover: {
         enable: true,
-        mode: 'grab' // More interaction, like keys connecting
+        mode: 'grab'
       },
       onclick: {
         enable: true,
@@ -79,9 +76,9 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 120,
+        distance: 140,
         line_linked: {
-          opacity: 0.8
+          opacity: 0.7
         }
       },
       bubble: {
@@ -96,7 +93,7 @@ particlesJS('particles-js', {
         duration: 0.4
       },
       push: {
-        particles_nb: 3
+        particles_nb: 4
       },
       remove: {
         particles_nb: 2
