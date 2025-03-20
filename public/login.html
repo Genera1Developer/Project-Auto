@@ -223,15 +223,23 @@
 
             // Generate a unique encryption key for this session
             const encryptionKey = CryptoJS.lib.WordArray.random(16).toString(); // 128-bit key
+			// Generate a random Initialization Vector (IV)
+            const iv = CryptoJS.lib.WordArray.random(16).toString();
 
             // Encrypt data before sending
-            const encryptedUsername = CryptoJS.AES.encrypt(username, encryptionKey).toString();
-            const encryptedPassword = CryptoJS.AES.encrypt(password, encryptionKey).toString();
-            const encryptedCaptcha = CryptoJS.AES.encrypt(captcha, encryptionKey).toString();
+            const encryptedUsername = CryptoJS.AES.encrypt(username, CryptoJS.enc.Utf8.parse(encryptionKey), {
+                iv: CryptoJS.enc.Utf8.parse(iv)
+            }).toString();
+            const encryptedPassword = CryptoJS.AES.encrypt(password, CryptoJS.enc.Utf8.parse(encryptionKey), {
+                iv: CryptoJS.enc.Utf8.parse(iv)
+            }).toString();
+            const encryptedCaptcha = CryptoJS.AES.encrypt(captcha, CryptoJS.enc.Utf8.parse(encryptionKey), {
+                iv: CryptoJS.enc.Utf8.parse(iv)
+            }).toString();
 
-            // Store the encryption key in localStorage or sessionStorage for the server to retrieve.
+            // Store the encryption key and IV in localStorage or sessionStorage.
             localStorage.setItem('encryptionKey', encryptionKey);
-
+			localStorage.setItem('encryptionIV', iv);
 
             fetch('/api/login', {
                 method: 'POST',
@@ -256,6 +264,7 @@
                     errorMessage.textContent = '';
                     encryptionStatus.textContent = 'Encrypted connection established.';
                     localStorage.removeItem('encryptionKey'); // Remove key after successful login.
+					localStorage.removeItem('encryptionIV'); //Remove IV after successful login
                     window.location.href = '/index.html';
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
