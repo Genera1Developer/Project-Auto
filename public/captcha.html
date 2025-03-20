@@ -194,21 +194,15 @@
         }
 
         function encryptCaptcha(captcha) {
-            // Simple Caesar cipher encryption for demonstration
-            let encryptedCaptcha = '';
-            for (let i = 0; i < captcha.length; i++) {
-                let charCode = captcha.charCodeAt(i);
-                if (charCode >= 65 && charCode <= 90) { // A-Z
-                    encryptedCaptcha += String.fromCharCode(((charCode - 65 + 3) % 26) + 65);
-                } else if (charCode >= 97 && charCode <= 122) { // a-z
-                    encryptedCaptcha += String.fromCharCode(((charCode - 97 + 3) % 26) + 97);
-                } else if (charCode >= 48 && charCode <= 57) { // 0-9
-                    encryptedCaptcha += String.fromCharCode(((charCode - 48 + 3) % 10) + 48);
-                } else {
-                    encryptedCaptcha += captcha[i];
-                }
-            }
-            return encryptedCaptcha;
+            // AES encryption
+            const key = 'YOUR_SECRET_KEY'; // Replace with a strong, secret key
+            const iv = CryptoJS.lib.WordArray.random(128/8).toString(); // Generate a random IV
+            const encrypted = CryptoJS.AES.encrypt(captcha, CryptoJS.enc.Utf8.parse(key), {
+                iv: CryptoJS.enc.Utf8.parse(iv),
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return iv + encrypted.toString(); // Prepend IV for decryption
         }
 
         let captchaText = generateCaptcha();
@@ -231,22 +225,18 @@
         }
 
         function decryptCaptcha(encryptedCaptcha) {
-            // Simple Caesar cipher decryption for demonstration
-            let decryptedCaptcha = '';
-            for (let i = 0; i < encryptedCaptcha.length; i++) {
-                let charCode = encryptedCaptcha.charCodeAt(i);
-                if (charCode >= 65 && charCode <= 90) { // A-Z
-                    decryptedCaptcha += String.fromCharCode(((charCode - 65 - 3 + 26) % 26) + 65);
-                } else if (charCode >= 97 && charCode <= 122) { // a-z
-                    decryptedCaptcha += String.fromCharCode(((charCode - 97 - 3 + 26) % 26) + 97);
-                } else if (charCode >= 48 && charCode <= 57) { // 0-9
-                    decryptedCaptcha += String.fromCharCode(((charCode - 48 - 3 + 10) % 10) + 48);
-                } else {
-                    decryptedCaptcha += encryptedCaptcha[i];
-                }
-            }
-            return decryptedCaptcha;
+            // AES decryption
+            const key = 'YOUR_SECRET_KEY'; // Replace with the same secret key used for encryption
+            const iv = encryptedCaptcha.substring(0, 32); // Extract IV from the beginning
+            const encrypted = encryptedCaptcha.substring(32); // Extract the encrypted text
+            const decrypted = CryptoJS.AES.decrypt(encrypted, CryptoJS.enc.Utf8.parse(key), {
+                iv: CryptoJS.enc.Utf8.parse(iv),
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return decrypted.toString(CryptoJS.enc.Utf8);
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </body>
 </html>
