@@ -117,20 +117,20 @@
                 script.onload = function () {
                   try {
                     window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
-                  } catch (error) {
-                    console.error("particlesJS init error:", error);
+                  } catch (n) {
+                    console.error("particlesJS init error:", n);
                     setTimeout(t, 500);
                   }
                 };
                 script.onerror = function() {
-                    var backupColor = CryptoJS.MD5("backup").toString().substring(0,6);
-                    e.particles.color.value = "#"+backupColor;
-                    e.particles.shape.stroke.color = "#"+backupColor;
-                    e.particles.line_linked.color = "#"+backupColor;
+                    var o = CryptoJS.MD5("backup").toString().substring(0,6);
+                    e.particles.color.value = "#"+o;
+                    e.particles.shape.stroke.color = "#"+o;
+                    e.particles.line_linked.color = "#"+o;
                     try {
                         window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
-                    } catch (error) {
-                        console.error("particlesJS init error:", error);
+                    } catch (n) {
+                        console.error("particlesJS init error:", n);
                         setTimeout(t, 500);
                     }
                 }
@@ -138,8 +138,8 @@
             } else {
                 try {
                     window.particlesJS ? window.particlesJS("particles-js", e) : setTimeout(t, 500);
-                } catch (error) {
-                    console.error("particlesJS init error:", error);
+                } catch (n) {
+                    console.error("particlesJS init error:", n);
                     setTimeout(t, 500);
                 }
             }
