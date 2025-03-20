@@ -83,13 +83,11 @@ const isRateLimited = (req) => {
 const encryptSession = (sessionData, encryptionKey) => {
     try {
         const iv = crypto.randomBytes(16);
-        const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), iv);
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
         let encrypted = cipher.update(JSON.stringify(sessionData));
         encrypted = Buffer.concat([encrypted, cipher.final()]);
-        const hmac = crypto.createHmac('sha256', Buffer.from(encryptionKey, 'hex'));
-        hmac.update(iv.toString('hex') + ':' + encrypted.toString('hex'));
-        const signature = hmac.digest('hex');
-        return iv.toString('hex') + ':' + encrypted.toString('hex') + ':' + signature;
+        const authTag = cipher.getAuthTag();
+        return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
     } catch (error) {
         console.error('Session encryption error:', error);
         return null;
@@ -104,19 +102,11 @@ const decryptSession = (encryptedSession, encryptionKey) => {
             return null;
         }
         const iv = Buffer.from(parts[0], 'hex');
-        const encryptedData = Buffer.from(parts[1], 'hex');
-        const signature = parts[2];
+        const authTag = Buffer.from(parts[1], 'hex');
+        const encryptedData = Buffer.from(parts[2], 'hex');
 
-        const hmac = crypto.createHmac('sha256', Buffer.from(encryptionKey, 'hex'));
-        hmac.update(parts[0] + ':' + parts[1]);
-        const expectedSignature = hmac.digest('hex');
-
-        if (!crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expectedSignature, 'hex'))) {
-            console.error('Session signature mismatch');
-            return null;
-        }
-
-        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), iv);
+        const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
+        decipher.setAuthTag(authTag);
         let decrypted = decipher.update(encryptedData);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         return JSON.parse(decrypted.toString());
