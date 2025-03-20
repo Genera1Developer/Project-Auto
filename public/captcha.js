@@ -30,33 +30,48 @@ document.addEventListener('DOMContentLoaded', function() {
         return captcha;
     }
 
-    function encryptCaptcha(captcha, key, iv) {
-         const parsedKey = CryptoJS.enc.Hex.parse(key);
-         const parsedIv = CryptoJS.enc.Hex.parse(iv);
-         const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(captcha), parsedKey, {
-            iv: parsedIv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-        return encrypted.toString();
+    async function encryptCaptcha(captcha, key, iv) {
+        try {
+            const parsedKey = CryptoJS.enc.Hex.parse(key);
+            const parsedIv = CryptoJS.enc.Hex.parse(iv);
+            const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(captcha), parsedKey, {
+                iv: parsedIv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return encrypted.toString();
+        } catch (error) {
+            console.error("Encryption error:", error);
+            return null;
+        }
     }
 
-    function decryptCaptcha(encryptedCaptcha, key, iv) {
-        const parsedKey = CryptoJS.enc.Hex.parse(key);
-        const parsedIv = CryptoJS.enc.Hex.parse(iv);
+    async function decryptCaptcha(encryptedCaptcha, key, iv) {
+        try{
+            const parsedKey = CryptoJS.enc.Hex.parse(key);
+            const parsedIv = CryptoJS.enc.Hex.parse(iv);
 
-        const decrypted = CryptoJS.AES.decrypt(encryptedCaptcha, parsedKey, {
-            iv: parsedIv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.Pkcs7
-        });
-        return decrypted.toString(CryptoJS.enc.Utf8);
+            const decrypted = CryptoJS.AES.decrypt(encryptedCaptcha, parsedKey, {
+                iv: parsedIv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            });
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        } catch (error) {
+            console.error("Decryption error:", error);
+            return null;
+        }
     }
 
-    function displayEncryptedCaptcha() {
+    async function displayEncryptedCaptcha() {
         generateEncryptionKeys();
         const captcha = generateCaptcha();
-        const encryptedCaptcha = encryptCaptcha(captcha, encryptionKey, encryptionIV);
+        const encryptedCaptcha = await encryptCaptcha(captcha, encryptionKey, encryptionIV);
+         if (encryptedCaptcha === null) {
+            errorMessageElement.textContent = 'Encryption failed. Refresh.';
+            errorMessageElement.style.color = 'red';
+            return;
+        }
         captchaTextElement.textContent = encryptedCaptcha;
         sessionStorage.setItem('encryptionKey', encryptionKey);
         sessionStorage.setItem('encryptionIV', encryptionIV);
@@ -66,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.removeItem('encryptedCaptcha');
     }
 
-    window.validateCaptcha = function() {
+    window.validateCaptcha = async function() {
         const userInput = captchaInputElement.value;
         const storedKey = sessionStorage.getItem('encryptionKey');
         const storedIV = sessionStorage.getItem('encryptionIV');
@@ -82,7 +97,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const encryptedUserInput = encryptCaptcha(userInput, storedKey, storedIV);
+            const encryptedUserInput = await encryptCaptcha(userInput, storedKey, storedIV);
+             if (encryptedUserInput === null) {
+                errorMessageElement.textContent = 'Encryption failed. Please try again.';
+                errorMessageElement.style.color = 'red';
+                displayEncryptedCaptcha();
+                captchaInputElement.value = '';
+                return;
+            }
             const userInputHash = CryptoJS.SHA256(encryptedUserInput + storedSalt).toString();
             if (userInputHash === encryptedCaptchaHash) {
                  errorMessageElement.textContent = 'Captcha verified!';
