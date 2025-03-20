@@ -2,40 +2,48 @@ document.addEventListener('DOMContentLoaded', function() {
     const captchaTextElement = document.getElementById('captcha-text');
     const captchaInputElement = document.getElementById('captcha-input');
     const errorMessageElement = document.getElementById('error-message');
-    let generatedCaptcha = '';
+
+    let captchaText = '';
 
     function generateCaptcha() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let captcha = '';
-        for (let i = 0; i < 6; i++) {
-            captcha += characters.charAt(Math.floor(Math.random() * characters.length));
-        }
-        generatedCaptcha = captcha;
-        return captcha;
-    }
+        // Generate a simple arithmetic problem
+        const num1 = Math.floor(Math.random() * 10) + 1;
+        const num2 = Math.floor(Math.random() * 10) + 1;
+        const operator = ['+', '-', '*'][Math.floor(Math.random() * 3)];
+        let answer;
 
-    function displayEncryptedCaptcha() {
-        const captcha = generateCaptcha();
-        const encryptedCaptcha = CryptoJS.AES.encrypt(captcha, 'secret key 123').toString();
-        captchaTextElement.textContent = encryptedCaptcha.substring(0, 12) + "...";
+        switch (operator) {
+            case '+':
+                answer = num1 + num2;
+                break;
+            case '-':
+                answer = num1 - num2;
+                break;
+            case '*':
+                answer = num1 * num2;
+                break;
+        }
+
+        captchaText = answer.toString();
+        captchaTextElement.textContent = `${num1} ${operator} ${num2} = ?`;
     }
 
     window.validateCaptcha = function() {
-        const userInputValue = captchaInputElement.value;
-        const decryptedCaptcha = CryptoJS.AES.decrypt(captchaTextElement.textContent.replace("...", ""), 'secret key 123').toString(CryptoJS.enc.Utf8);
+        const userInput = captchaInputElement.value;
 
-        if (userInputValue === generatedCaptcha) {
-            errorMessageElement.textContent = 'Captcha verified!';
-            errorMessageElement.style.color = 'green';
-            // Optionally, redirect or perform other actions upon successful validation
-            // window.location.href = '/success.html';
+        if (userInput === captchaText) {
+            // CAPTCHA is correct
+            errorMessageElement.textContent = '';
+            // Redirect or perform further actions here
+            window.location.href = '/public/index.html'; // Example: Redirect to the main page
         } else {
-            errorMessageElement.textContent = 'Captcha verification failed. Please try again.';
-            errorMessageElement.style.color = 'red';
-            displayEncryptedCaptcha(); // Regenerate captcha on failure
-            captchaInputElement.value = ''; // Clear input field
+            // CAPTCHA is incorrect
+            errorMessageElement.textContent = 'Incorrect CAPTCHA. Please try again.';
+            generateCaptcha(); // Generate a new CAPTCHA
+            captchaInputElement.value = ''; // Clear the input field
         }
     };
 
-    displayEncryptedCaptcha();
+    // Initial CAPTCHA generation
+    generateCaptcha();
 });
