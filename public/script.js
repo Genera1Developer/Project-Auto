@@ -1,27 +1,112 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('urlInput');
-    const proxyButton = document.getElementById('proxyButton');
-    const contentDiv = document.getElementById('content');
-
-    proxyButton.addEventListener('click', function() {
-        const url = urlInput.value;
-        if (url) {
-            fetch('/api/proxy?url=' + encodeURIComponent(url))
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    contentDiv.innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('Error fetching content:', error);
-                    contentDiv.innerHTML = '<div class="error">Error: Unable to fetch content. Please check the URL and try again.</div>';
-                });
-        } else {
-            contentDiv.innerHTML = '<div class="error">Please enter a URL.</div>';
+  particlesJS("particles-js", {
+    particles: {
+      number: {
+        value: 120,
+        density: {
+          enable: true,
+          value_area: 800
         }
-    });
+      },
+      color: {
+        value: '#00FFFF' // Cyan for encryption theme
+      },
+      shape: {
+        type: 'circle',
+        stroke: {
+          width: 0,
+          color: '#000000'
+        },
+        polygon: {
+          nb_sides: 5
+        },
+        image: {
+          src: 'img/github.svg',
+          width: 100,
+          height: 100
+        }
+      },
+      opacity: {
+        value: 0.8,
+        random: true,
+        anim: {
+          enable: true,
+          speed: 1,
+          opacity_min: 0.1,
+          sync: false
+        }
+      },
+      size: {
+        value: 3,
+        random: true,
+        anim: {
+          enable: false,
+          speed: 40,
+          size_min: 0.1,
+          sync: false
+        }
+      },
+      line_linked: {
+        enable: true,
+        distance: 150,
+        color: '#00FFFF', // Cyan for encryption theme
+        opacity: 0.4,
+        width: 1
+      },
+      move: {
+        enable: true,
+        speed: 3,
+        direction: 'none',
+        random: true,
+        straight: false,
+        out_mode: 'out',
+        bounce: false,
+        attract: {
+          enable: false,
+          rotateX: 600,
+          rotateY: 1200
+        }
+      }
+    },
+    interactivity: {
+      detect_on: 'canvas',
+      events: {
+        onhover: {
+          enable: true,
+          mode: 'grab'
+        },
+        onclick: {
+          enable: true,
+          mode: 'push'
+        },
+        resize: true
+      },
+      modes: {
+        grab: {
+          distance: 150,
+          line_linked: {
+            opacity: 1
+          }
+        },
+        bubble: {
+          distance: 400,
+          size: 40,
+          duration: 2,
+          opacity: 0.8,
+          speed: 3
+        },
+        repulse: {
+          distance: 200,
+          duration: 0.4
+        },
+        push: {
+          particles_nb: 4
+        },
+        remove: {
+          particles_nb: 2
+        }
+      }
+    },
+    retina_detect: true
+  });
 });
