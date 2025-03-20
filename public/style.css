@@ -5,7 +5,7 @@ body {
     background-color: #000;
     color: #00FFFF;
     overflow: hidden;
-    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite;
+    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, decrypt 5s steps(5, end) infinite;
 }
 
 @keyframes glitch {
@@ -33,6 +33,15 @@ body {
     100% {
         background-image: linear-gradient(rgba(0, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 255, 255, 0.1) 50%, rgba(0, 255, 255, 0.1) 75%, transparent 75%, transparent);
         background-size: 100% 8px;
+    }
+}
+
+@keyframes decrypt {
+    0%, 100% {
+        filter: blur(5px);
+    }
+    50% {
+        filter: blur(0px);
     }
 }
 
@@ -131,6 +140,16 @@ p {
     font-size: 1.2em;
     margin-bottom: 30px;
     text-shadow: 0 0 5px #00FFFF;
+    animation: decryptText 5s steps(5, end) infinite;
+}
+
+@keyframes decryptText {
+    0%, 100% {
+        filter: blur(3px);
+    }
+    50% {
+        filter: blur(0px);
+    }
 }
 
 input[type="text"] {
@@ -143,11 +162,21 @@ input[type="text"] {
     margin-bottom: 20px;
     width: 300px;
     transition: all 0.3s ease;
+    animation: decryptInput 5s steps(5, end) infinite;
 }
 
 input[type="text"]:focus {
     box-shadow: 0 0 15px #00FFFF;
     border-color: #00BFFF;
+}
+
+@keyframes decryptInput {
+    0%, 100% {
+        filter: blur(2px);
+    }
+    50% {
+        filter: blur(0px);
+    }
 }
 
 button {
@@ -159,12 +188,22 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+    animation: decryptButton 5s steps(5, end) infinite;
 }
 
 button:hover {
     background-color: #00BFFF;
     transform: scale(1.05);
     box-shadow: 0 0 10px #00FFFF;
+}
+
+@keyframes decryptButton {
+    0%, 100% {
+        filter: blur(2px);
+    }
+    50% {
+        filter: blur(0px);
+    }
 }
 
 #particles-js {
@@ -182,7 +221,7 @@ button:hover {
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
     width: 400px;
-    animation: fadeIn 1s ease-out;
+    animation: fadeIn 1s ease-out, decryptForm 5s steps(5, end) infinite;
     border: 1px dashed #00FFFF;
 }
 
@@ -197,11 +236,29 @@ button:hover {
     }
 }
 
+@keyframes decryptForm {
+    0%, 100% {
+        filter: blur(3px);
+    }
+    50% {
+        filter: blur(0px);
+    }
+}
+
 .form-container h2 {
     margin-bottom: 20px;
     color: #00FFFF;
     text-shadow: 0 0 5px #00FFFF;
-    animation: scramble 3s steps(10, end) infinite;
+    animation: scramble 3s steps(10, end) infinite, decryptHeading 5s steps(5, end) infinite;
+}
+
+@keyframes decryptHeading {
+    0%, 100% {
+        filter: blur(3px);
+    }
+    50% {
+        filter: blur(0px);
+    }
 }
 
 @keyframes scramble {
@@ -222,6 +279,16 @@ button:hover {
 .form-container input[type="password"] {
     width: 90%;
     margin-bottom: 15px;
+    animation: decryptField 5s steps(5, end) infinite;
+}
+
+@keyframes decryptField {
+    0%, 100% {
+        filter: blur(2px);
+    }
+    50% {
+        filter: blur(0px);
+    }
 }
 
 .form-container button {
@@ -232,6 +299,16 @@ button:hover {
 .link-to-login {
     margin-top: 15px;
     font-size: 0.9em;
+    animation: decryptLink 5s steps(5, end) infinite;
+}
+
+@keyframes decryptLink {
+    0%, 100% {
+        filter: blur(2px);
+    }
+    50% {
+        filter: blur(0px);
+    }
 }
 
 .link-to-register a,
@@ -239,6 +316,16 @@ button:hover {
     color: #00BFFF;
     text-decoration: none;
     transition: color 0.3s ease;
+    animation: decryptAnchor 5s steps(5, end) infinite;
+}
+
+@keyframes decryptAnchor {
+    0%, 100% {
+        filter: blur(2px);
+    }
+    50% {
+        filter: blur(0px);
+    }
 }
 
 .link-to-register a:hover,
