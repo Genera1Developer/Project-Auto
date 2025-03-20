@@ -76,7 +76,8 @@
       "iterations": 10000,
       "base64Encode": true,
       "keyDerivationRounds": 3,
-      "integrityCheck": true
+      "integrityCheck": true,
+      "adata": "particles-config"
     }
   },
   "interactivity": {
