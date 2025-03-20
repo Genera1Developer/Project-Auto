@@ -49,13 +49,22 @@ const fetchUser = async (username) => {
   return null;
 };
 
+const sanitizeInput = (input) => {
+    if (typeof input !== 'string') {
+        return '';
+    }
+    return input.replace(/[^a-zA-Z0-9]/g, '');
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
-    const { username, password } = req.body;
+    let { username, password } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ message: 'Username and password required' });
     }
+
+    username = sanitizeInput(username);
 
     try {
       const userData = await fetchUser(username);
