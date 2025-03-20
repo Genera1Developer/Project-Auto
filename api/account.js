@@ -2,20 +2,20 @@ const sqlite3 = require('sqlite3').verbose();
 const crypto = require('crypto');
 const { promisify } = require('util');
 
-const dbPath = './api/accounts.db'; // Explicit path
+const dbPath = './api/accounts.db';
 let db;
 
-const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'), 'hex'); // Load from env
-const ivLength = 16; // IV length for AES
-const AUTH_TAG_LENGTH = 16; // For GCM
+const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'), 'hex');
+const ivLength = 16;
+const AUTH_TAG_LENGTH = 16;
 const SALT_LENGTH = 64;
-const PBKDF2_ITERATIONS = 200000; // Increased iterations
+const PBKDF2_ITERATIONS = 200000;
 
 function connectToDatabase() {
     db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
             console.error("Database connection error:", err.message);
-            throw err; // Crucial: Terminate on DB connection failure.
+            throw err;
         }
         console.log('Connected to the accounts database.');
         db.run(`
@@ -32,13 +32,13 @@ function connectToDatabase() {
         `, (err) => {
             if (err) {
                 console.error("Table creation error:", err.message);
-                throw err; // Terminate if table creation fails.
+                throw err;
             }
         });
     });
 }
 
-connectToDatabase(); // Initialize database connection on module load
+connectToDatabase();
 
 const pbkdf2 = promisify(crypto.pbkdf2);
 
@@ -50,7 +50,7 @@ async function hashPassword(password, salt, iterations = PBKDF2_ITERATIONS) {
 }
 
 function generateSalt() {
-    return crypto.randomBytes(SALT_LENGTH).toString('hex'); // Increased salt size
+    return crypto.randomBytes(SALT_LENGTH).toString('hex');
 }
 
 function encrypt(text, iv) {
@@ -108,7 +108,7 @@ exports.createUser = async (username, password, callback) => {
 
 exports.verifyUser = (username, password, callback) => {
     try {
-        const verifyIv = crypto.randomBytes(ivLength); // New IV for verification
+        const verifyIv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, verifyIv);
 
         db.get(`SELECT id, username, password, salt, password_version, encryption_iv, auth_tag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
@@ -117,7 +117,7 @@ exports.verifyUser = (username, password, callback) => {
                 return callback(err);
             }
             if (!row) {
-                return callback(null, false); // User not found
+                return callback(null, false);
             }
 
             try {
@@ -131,16 +131,17 @@ exports.verifyUser = (username, password, callback) => {
                     return callback(new Error("Salt decryption failed"));
                 }
 
-                const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
-
                 const decryptedPassword = decrypt(row.password, row.encryption_iv, row.auth_tag);
-                 if (!decryptedPassword) {
+                if (!decryptedPassword) {
                     return callback(new Error("Password decryption failed"));
                 }
+
+                const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
+
                 if (hashedPassword === decryptedPassword) {
                     callback(null, { id: row.id, username: decryptedUsername });
                 } else {
-                    callback(null, false); // Incorrect password
+                    callback(null, false);
                 }
             } catch (error) {
                 console.error("Password verification error:", error);
@@ -164,20 +165,20 @@ exports.closeDatabase = () => {
 
 process.on('exit', () => {
     if (db) {
-        exports.closeDatabase(); // Ensure DB closes on exit.
+        exports.closeDatabase();
     }
 });
 
 process.on('SIGINT', () => {
     if (db) {
-        exports.closeDatabase(); // Close db on Ctrl+C
+        exports.closeDatabase();
     }
     process.exit();
 });
 
 process.on('SIGTERM', () => {
     if (db) {
-        exports.closeDatabase(); // Close db on termination
+        exports.closeDatabase();
     }
     process.exit();
 });
