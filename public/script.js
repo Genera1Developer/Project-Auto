@@ -174,13 +174,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generateKey(salt) {
-        const combined =  salt + await getKeyPrefix();
+        const combined =  salt + getKeyPrefix();
         const hash = CryptoJS.SHA256(combined).toString();
         return hash.substring(0, 32);
     }
 
     function generateIV(salt) {
-          const combined = salt + await getIVPrefix();
+          const combined = salt + getIVPrefix();
           const hash = CryptoJS.SHA256(combined).toString();
           return hash.substring(0, 16);
 
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
           return salt;
       }
 
-    async function getKeyPrefix() {
+    function getKeyPrefix() {
         let prefix = sessionStorage.getItem('keyPrefix');
         if (!prefix) {
             prefix = CryptoJS.lib.WordArray.random(8).toString();
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return prefix;
     }
 
-     async function getIVPrefix() {
+     function getIVPrefix() {
         let prefix = sessionStorage.getItem('ivPrefix');
         if (!prefix) {
             prefix = CryptoJS.lib.WordArray.random(8).toString();
