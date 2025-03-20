@@ -44,6 +44,12 @@
             text-align: center;
             margin-top: 10px;
         }
+        #proxyFrame {
+            width: 100%;
+            height: 600px; /* Adjust as needed */
+            border: none;
+            display: none; /* Initially hide the iframe */
+        }
     </style>
 </head>
 <body>
@@ -61,6 +67,7 @@
         <div class="security-info">
             <i class="fas fa-shield-alt"></i> Your connection is encrypted. We use strong encryption to protect your data.
         </div>
+        <iframe id="proxyFrame"></iframe>
     </div>
 
     <script>
@@ -69,6 +76,7 @@
             const browseButton = document.getElementById('browse');
             const errorDiv = document.getElementById('error');
             const loadingDiv = document.getElementById('loading');
+            const proxyFrame = document.getElementById('proxyFrame');
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -116,43 +124,16 @@
                     // Encrypt the URL
                     const encryptedData = await encryptURL(url, encryptionKey);
 
-                    // Create form and submit to proxy endpoint
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/api/proxy';
-                    form.style.display = 'none';
-
-                    const dataInput = document.createElement('input');
-                    dataInput.type = 'hidden';
-                    dataInput.name = 'ciphertext';
-                    dataInput.value = encryptedData.ciphertext;
-                    form.appendChild(dataInput);
-
-                    const ivInput = document.createElement('input');
-                    ivInput.type = 'hidden';
-                    ivInput.name = 'iv';
-                    ivInput.value = encryptedData.iv;
-                    form.appendChild(ivInput);
-
-                    const nonceInput = document.createElement('input');
-                    nonceInput.type = 'hidden';
-                    nonceInput.name = 'nonce';
-                    nonceInput.value = nonce;
-                    form.appendChild(nonceInput);
-
-                    const keyInput = document.createElement('input');
-                    keyInput.type = 'hidden';
-                    keyInput.name = 'key';
-                    keyInput.value = encryptionKey;
-                    form.appendChild(keyInput);
-
-                    document.body.appendChild(form);
+                     // Construct the URL with encrypted parameters
+                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(encryptedData.ciphertext)}&iv=${encodeURIComponent(encryptedData.iv)}&nonce=${encodeURIComponent(nonce)}&key=${encodeURIComponent(encryptionKey)}`;
 
                     // Show loading indicator
                     loadingDiv.style.display = 'block';
                     errorDiv.textContent = ''; // Clear any previous errors
+                    proxyFrame.style.display = 'block';
 
-                    form.submit();
+                    // Load the URL in the iframe
+                    proxyFrame.src = proxyUrl;
 
                      // Potentially store the nonce in local storage or a cookie
                      // localStorage.setItem('lastRequestNonce', nonce); //Example
