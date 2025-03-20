@@ -1,11 +1,11 @@
 const crypto = require('crypto');
 
 const generateSalt = () => {
-  return crypto.randomBytes(32).toString('hex'); // Reduced salt size, still secure
+  return crypto.randomBytes(32).toString('hex');
 };
 
 const encryptPassword = (password, salt) => {
-  const iterations = 300000; // Increased iterations even further
+  const iterations = 310000;
   const keylen = 64;
   const digest = 'sha512';
   try {
@@ -13,7 +13,7 @@ const encryptPassword = (password, salt) => {
     return derivedKey.toString('hex');
   } catch (error) {
     console.error('Password encryption error:', error);
-    return null; // Handle encryption errors gracefully
+    return null;
   }
 };
 
@@ -32,7 +32,7 @@ const timingSafeCompare = (a, b) => {
     return crypto.timingSafeEqual(aBuff, bBuff);
   } catch (error) {
     console.error('Timing safe compare error:', error);
-    return false; // Handle potential buffer creation errors
+    return false;
   }
 };
 
@@ -40,7 +40,7 @@ const fetchUser = async (username) => {
   if (username === 'testuser') {
     const salt = generateSalt();
     const passwordHash = encryptPassword('password123', salt);
-    if (!passwordHash) return null; // Handle encryption failure during user creation
+    if (!passwordHash) return null;
     return {
       username: 'testuser',
       passwordHash: passwordHash,
@@ -55,7 +55,7 @@ module.exports = async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      return res.status(400).json({ message: 'Username and password required' }); //Prevent null errors
+      return res.status(400).json({ message: 'Username and password required' });
     }
 
     try {
@@ -77,7 +77,7 @@ module.exports = async (req, res) => {
       }
     } catch (error) {
       console.error('Login error:', error);
-      return res.status(500).json({ message: 'Internal server error' }); // Handle errors
+      return res.status(500).json({ message: 'Internal server error' });
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
