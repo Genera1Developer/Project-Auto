@@ -17,6 +17,7 @@ const DIGEST = process.env.PBKDF2_DIGEST || 'sha512';
 const SENSITIVE_HEADERS = ['authorization', 'cookie', 'proxy-authorization'];
 const MAX_ENCRYPTED_HEADER_LENGTH = 2048; // Limit header size to prevent DoS
 const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date'];
+const ENCRYPT_HEADER_PREFIX = 'enc_';
 
 function deriveKey(password, salt) {
     return crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
@@ -72,8 +73,8 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
     const transformedHeaders = {};
     for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
-            const lowerKey = key.toLowerCase();
-            const value = String(headers[key]); // Ensure value is a string
+            let lowerKey = key.toLowerCase();
+            let value = String(headers[key]); // Ensure value is a string
 
             if (NON_ENCRYPTED_HEADERS.includes(lowerKey)) {
                 transformedHeaders[key] = headers[key];
@@ -89,27 +90,37 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
                 try {
                     if(encryptFlag){
                       transformedKey = encrypt(key, encryptionKey);
+                      if (transformedKey) {
+                        transformedKey = ENCRYPT_HEADER_PREFIX + transformedKey;
+                      }
                       transformedValue = encrypt(value, encryptionKey);
                     } else {
-                      if (key !== null && key !== undefined && typeof key === 'string') {
-                        transformedKey = decrypt(key, encryptionKey);
-                        if (transformedKey === null) {
-                          console.warn(`Skipping header ${key} due to key decryption failure.`);
-                          continue;
-                        }
-                      } else {
-                        console.warn(`Skipping header ${key} due to invalid key type.`);
-                        continue;
-                      }
+                      if (key.startsWith(ENCRYPT_HEADER_PREFIX)) {
+                        const encryptedKey = key.slice(ENCRYPT_HEADER_PREFIX.length);
+                         if (encryptedKey !== null && encryptedKey !== undefined && typeof encryptedKey === 'string') {
+                            transformedKey = decrypt(encryptedKey, encryptionKey);
+                            if (transformedKey === null) {
+                              console.warn(`Skipping header ${key} due to key decryption failure.`);
+                              continue;
+                            }
+                          } else {
+                            console.warn(`Skipping header ${key} due to invalid key type.`);
+                            continue;
+                          }
 
-                      if (value !== null && value !== undefined && typeof value === 'string') {
-                        transformedValue = decrypt(value, encryptionKey);
-                        if (transformedValue === null) {
-                          console.warn(`Skipping header value for ${key} due to decryption failure.`);
-                          continue;
-                        }
+                          if (value !== null && value !== undefined && typeof value === 'string') {
+                            transformedValue = decrypt(value, encryptionKey);
+                            if (transformedValue === null) {
+                              console.warn(`Skipping header value for ${key} due to decryption failure.`);
+                              continue;
+                            }
+                          } else {
+                            console.warn(`Skipping header value for ${key} due to invalid value type.`);
+                            continue;
+                          }
+
                       } else {
-                        console.warn(`Skipping header value for ${key} due to invalid value type.`);
+                        transformedHeaders[key] = headers[key];
                         continue;
                       }
                     }
