@@ -138,9 +138,9 @@
                         linkColor: "f0f0f0"
                     };
                     try {
-                      var key = CryptoJS.SHA256("fallback_key").toString();
-                      var encrypted = CryptoJS.AES.encrypt(JSON.stringify(backupData), key).toString();
-                      var decryptedString = CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8);
+                      var encryptionKey = CryptoJS.SHA256("fallback_key").toString();
+                      var encrypted = CryptoJS.AES.encrypt(JSON.stringify(backupData), encryptionKey).toString();
+                      var decryptedString = CryptoJS.AES.decrypt(encrypted, encryptionKey).toString(CryptoJS.enc.Utf8);
                       if (decryptedString) {
                          backupData = JSON.parse(decryptedString);
                       } else {
@@ -169,6 +169,14 @@
                 }
                 document.head.appendChild(script);
             } else {
+                try {
+                    const colorValue = CryptoJS.MD5("f5c3bb").toString().substring(0, 6);
+                    e.particles.color.value = "#" + colorValue;
+                    e.particles.shape.stroke.color = "#" + colorValue;
+                    e.particles.line_linked.color = "#" + CryptoJS.MD5("9b59b6").toString().substring(0, 6);
+                 } catch (cryptoUpdateError) {
+                    console.error("CryptoJS Update Error:", cryptoUpdateError);
+                 }
                 loadParticles();
             }
         };
