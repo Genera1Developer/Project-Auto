@@ -10,23 +10,34 @@ const AUTH_TAG_LENGTH = 16; //For GCM
 
 //Consider using environment variables for cipher algorithm
 const CIPHER_ALGORITHM = process.env.CIPHER_ALGORITHM || 'aes-256-gcm';
+const KEY_DERIVATION_SALT = process.env.KEY_DERIVATION_SALT || crypto.randomBytes(16).toString('hex');
+const ITERATIONS = 10000; // Adjust based on security needs and performance
+const DIGEST = 'sha512';
+
+function deriveKey(password, salt) {
+    return crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
+}
 
 function encrypt(text) {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const key = deriveKey(ENCRYPTION_KEY, salt);
     let iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
+    const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
     const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
     const authTag = cipher.getAuthTag();
-    return Buffer.concat([iv, authTag, encrypted]).toString('hex');
+    return Buffer.concat([Buffer.from(salt, 'hex'), iv, authTag, encrypted]).toString('hex');
 }
 
 function decrypt(text) {
     try {
         const buffer = Buffer.from(text, 'hex');
-        const iv = buffer.slice(0, IV_LENGTH);
-        const authTag = buffer.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
-        const encrypted = buffer.slice(IV_LENGTH + AUTH_TAG_LENGTH);
+        const salt = buffer.slice(0, 16);
+        const iv = buffer.slice(16, 16 + IV_LENGTH);
+        const authTag = buffer.slice(16 + IV_LENGTH, 16 + IV_LENGTH + AUTH_TAG_LENGTH);
+        const encrypted = buffer.slice(16 + IV_LENGTH + AUTH_TAG_LENGTH);
 
-        const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
+        const key = deriveKey(ENCRYPTION_KEY, salt.toString('hex'));
+        const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv);
         decipher.setAuthTag(authTag);
 
         const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
