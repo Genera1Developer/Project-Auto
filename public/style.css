@@ -1,14 +1,13 @@
 body {
-    font-family: 'Roboto Mono', monospace; /* Changed font for a more cyberpunk feel */
+    font-family: 'Roboto Mono', monospace;
     margin: 0;
     padding: 0;
-    background-color: #111; /* Darker background */
+    background-color: #111;
     color: #00FFFF;
-    overflow: hidden; /* Keeps the glitch effect contained */
-    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite; /* Simplified animations initially */
+    overflow: hidden;
+    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, encrypt 7s steps(5, end) infinite;
 }
 
-/* Reduced and adjusted glitch effect */
 @keyframes glitch {
     0%, 100% {
         transform: skew(0deg);
@@ -27,24 +26,22 @@ body {
     }
 }
 
-/* Matrix style background */
 @keyframes matrix {
     0% {
         background-color: rgba(0, 0, 0, 0.8);
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpiYGBgYJjEwMDAYAAUYAAAGwMAAVYAAAFkAMAAwADAAQCLWQAlKAAKAAAAAElFTkSuQmCC'); /* Simple matrix character */
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpiYGBgYJjEwMDAYAAUYAAAGwMAAVYAAAFkAMAAwADAAQCLWQAlKAAKAAAAAElFTkSuQmCC');
         background-size: 20px 20px;
         opacity: 0.7;
     }
     100% {
         background-color: rgba(0, 0, 0, 0.8);
-        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpiYGBgYJjEwMDAYAAUYAAAGwMAAVYAAAFkAMAAwADAAQCLWQAlKAAKAAAAAElFTkSuQmCC'); /* Simple matrix character */
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpiYGBgYJjEwMDAYAAUYAAAGwMAAVYAAAFkAMAAwADAAQCLWQAlKAAKAAAAAElFTkSuQmCC');
         background-size: 20px 20px;
         background-position: 0 1000px;
         opacity: 0.7;
     }
 }
 
-/* Scanlines effect */
 @keyframes scanlines {
     0%, 100% {
         background-image: linear-gradient(to bottom, rgba(0, 255, 255, 0) 0%, rgba(0, 255, 255, 0.1) 15%, rgba(0, 255, 255, 0) 30%, rgba(0, 0, 0, 0) 100%);
@@ -52,6 +49,23 @@ body {
     }
 }
 
+@keyframes encrypt {
+  0%, 100% {
+    content: attr(data-text);
+  }
+  20% {
+    content: '░' + attr(data-text);
+  }
+  40% {
+    content: '▒' + attr(data-text);
+  }
+  60% {
+    content: '▓' + attr(data-text);
+  }
+  80% {
+    content: '█' + attr(data-text);
+  }
+}
 
 .container {
     display: flex;
@@ -63,16 +77,26 @@ body {
 }
 
 h1 {
-    font-size: 3.5em; /* Increased size */
+    font-size: 3.5em;
     margin-bottom: 20px;
-    text-shadow: 0 0 15px #00FFFF, 0 0 5px #00FFFF; /* Stronger shadow */
-    animation: flicker 1.5s infinite alternate; /* Simplified animation */
+    text-shadow: 0 0 15px #00FFFF, 0 0 5px #00FFFF;
+    animation: flicker 1.5s infinite alternate;
     position: relative;
-    letter-spacing: 2px; /* Added letter spacing */
-    text-transform: uppercase; /* Uppercase for a techy look */
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
-/* Simplified flicker effect */
+h1::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #00FFFF;
+    overflow: hidden;
+}
+
 @keyframes flicker {
     0%, 100% {
         opacity: 0.9;
@@ -85,14 +109,13 @@ h1 {
 }
 
 p {
-    font-size: 1.3em; /* Increased size */
+    font-size: 1.3em;
     margin-bottom: 30px;
-    text-shadow: 0 0 8px #00FFFF; /* Adjusted shadow */
-    animation: pulse 8s infinite alternate; /* Simplified animation */
-    line-height: 1.6; /* Improved readability */
+    text-shadow: 0 0 8px #00FFFF;
+    animation: pulse 8s infinite alternate;
+    line-height: 1.6;
 }
 
-/* Simplified pulse effect */
 @keyframes pulse {
     0% {
         transform: scale(1);
@@ -106,14 +129,14 @@ p {
 
 input[type="text"],
 input[type="password"] {
-    padding: 12px; /* Increased padding */
-    font-size: 1.1em; /* Increased font size */
+    padding: 12px;
+    font-size: 1.1em;
     border: 2px solid #00FFFF;
     background-color: #222;
     color: #00FFFF;
     border-radius: 5px;
     margin-bottom: 20px;
-    width: 320px; /* Adjusted width */
+    width: 320px;
     transition: all 0.3s ease;
 }
 
@@ -121,20 +144,20 @@ input[type="text"]:focus,
 input[type="password"]:focus {
     box-shadow: 0 0 15px #00FFFF;
     border-color: #00BFFF;
-    outline: none; /* Remove default focus outline */
+    outline: none;
 }
 
 button {
-    padding: 12px 25px; /* Adjusted padding */
-    font-size: 1.2em; /* Increased font size */
+    padding: 12px 25px;
+    font-size: 1.2em;
     background-color: #00FFFF;
-    color: #111; /* Darker text for contrast */
+    color: #111;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-    text-transform: uppercase; /* Uppercase for a techy look */
-    letter-spacing: 1px; /* Added letter spacing */
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 button:hover {
@@ -143,7 +166,6 @@ button:hover {
     box-shadow: 0 0 10px #00FFFF;
 }
 
-/* particles.js container */
 #particles-js {
     position: fixed;
     width: 100%;
@@ -154,27 +176,27 @@ button:hover {
 }
 
 .form-container {
-    background-color: rgba(0, 0, 0, 0.6); /* Adjusted transparency */
-    padding: 35px; /* Increased padding */
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 35px;
     border-radius: 10px;
-    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4); /* Stronger shadow */
-    width: 420px; /* Adjusted width */
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+    width: 420px;
     border: 1px dashed #00FFFF;
 }
 
 .form-container h2 {
-    margin-bottom: 25px; /* Increased margin */
+    margin-bottom: 25px;
     color: #00FFFF;
-    text-shadow: 0 0 8px #00FFFF; /* Adjusted shadow */
-    text-transform: uppercase; /* Uppercase for a techy look */
-    letter-spacing: 1px; /* Added letter spacing */
+    text-shadow: 0 0 8px #00FFFF;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .link-to-register,
 .link-to-login {
-    margin-top: 20px; /* Increased margin */
-    font-size: 1em; /* Adjusted font size */
-    animation: blink 1s step-end infinite; /* Simplified animation */
+    margin-top: 20px;
+    font-size: 1em;
+    animation: blink 1s step-end infinite;
 }
 
 @keyframes blink {
