@@ -29,9 +29,14 @@ function deriveKey(password, salt) {
         return keyCache.get(cacheKey);
     }
 
-    const derivedKey = crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
-    keyCache.set(cacheKey, derivedKey);
-    return derivedKey;
+    try {
+        const derivedKey = crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
+        keyCache.set(cacheKey, derivedKey);
+        return derivedKey;
+    } catch (error) {
+        console.error("Key derivation error:", error);
+        return null;
+    }
 }
 
 function encrypt(text, key) {
@@ -170,7 +175,12 @@ function proxyRequest(req, res) {
     try {
         const parsedUrl = new url.URL(targetUrl);
         const salt = crypto.randomBytes(16);
-        const encryptionKey = deriveKey(ENCRYPTION_KEY, salt.toString('hex'));
+        const saltHex = salt.toString('hex');
+        const encryptionKey = deriveKey(ENCRYPTION_KEY, saltHex);
+
+        if (!encryptionKey) {
+            return res.status(500).send('Failed to derive encryption key.');
+        }
 
         let reqHeaders = transformHeaders(req.headers, false, encryptionKey); // Decrypt incoming headers, using salt
         const options = {
@@ -207,7 +217,7 @@ function proxyRequest(req, res) {
             delete resHeaders['content-encoding'];
 
             // Send the salt and algorithm to the client for decryption
-            res.setHeader('x-encryption-salt', salt.toString('hex'));
+            res.setHeader('x-encryption-salt', saltHex);
             res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
 
             // Optional: Send PBKDF2 parameters to the client for key derivation if needed
