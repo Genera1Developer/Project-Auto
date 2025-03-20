@@ -11,13 +11,18 @@ particlesJS('particles-js', {
       value: '#00FF00'
     },
     shape: {
-      type: 'circle',
+      type: 'polygon', // Changed to polygon for key-like shape
       stroke: {
         width: 1,
         color: '#008000'
       },
       polygon: {
-        nb_sides: 4 // Changed to 4 for a "key" like feel
+        nb_sides: 4 // Keep as 4
+      },
+      image: {
+        src: '',
+        width: 100,
+        height: 100
       }
     },
     opacity: {
@@ -84,7 +89,7 @@ particlesJS('particles-js', {
       bubble: {
         distance: 400,
         size: 40,
-        duration: 0.3, //shorter bubble duration
+        duration: 0.3,
         opacity: 8,
         speed: 3
       },
