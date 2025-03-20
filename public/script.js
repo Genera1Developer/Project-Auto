@@ -5,11 +5,11 @@ if (passwordToggle && passwordInput) {
     passwordToggle.addEventListener('click', function () {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
-        this.classList.toggle('active'); // Change the class for a different icon, if needed
+        this.classList.toggle('active');
     });
 }
 
-function secureSubmit(formId) {
+async function secureSubmit(formId) {
     const form = document.getElementById(formId);
     if (!form) {
         console.error('Form not found:', formId);
@@ -25,18 +25,24 @@ function secureSubmit(formId) {
             data[key] = value;
         });
 
-        // AES encryption key (replace with a securely generated key and proper key exchange)
-        const encryptionKey = "YOUR_SECURE_KEY"; // INSECURE: Replace with a secure key!
+        // Generate a new AES encryption key for each session
+        const keyPair = await generateKeyPair();
+        const encryptionKey = keyPair.privateKey;
+        const publicKey = keyPair.publicKey;
 
         // Encrypt the data
         const encryptedData = await encryptData(JSON.stringify(data), encryptionKey);
 
-        // Prepare the encrypted payload
+        // Convert public key to a string
+        const publicKeyString = await exportPublicKey(publicKey);
+
+        // Prepare the encrypted payload, include the public key
         const payload = {
-            encrypted: encryptedData
+            encrypted: encryptedData,
+            publicKey: publicKeyString
         };
 
-        // Send the encrypted data to the server
+        // Send the encrypted data and public key to the server
         try {
             const response = await fetch(form.action, {
                 method: form.method,
@@ -47,12 +53,10 @@ function secureSubmit(formId) {
             });
 
             if (response.ok) {
-                // Handle successful submission
                 console.log('Submission successful');
                 window.location.href = '/login.html';
-                // Optionally, redirect or display a success message
+
             } else {
-                // Handle errors
                 console.error('Submission error:', response.status);
             }
         } catch (error) {
@@ -62,26 +66,35 @@ function secureSubmit(formId) {
 }
 
 async function encryptData(data, key) {
-    const keyBytes = new TextEncoder().encode(key);
     const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Initialization vector
     const algorithm = { name: "AES-GCM", iv: iv };
-    const cryptoKey = await window.crypto.subtle.importKey(
-        "raw",
-        keyBytes,
-        algorithm,
-        false,
-        ["encrypt", "decrypt"]
-    );
-
     const encodedData = new TextEncoder().encode(data);
-    const cipherText = await window.crypto.subtle.encrypt(algorithm, cryptoKey, encodedData);
+    const cipherText = await window.crypto.subtle.encrypt(algorithm, key, encodedData);
 
-    // Return IV + Ciphertext
+    // Return IV + Ciphertext (IV is needed for decryption)
     return btoa(String.fromCharCode(...iv) + String.fromCharCode(...new Uint8Array(cipherText)));
 }
 
-// Initialize secure submission for signup and login forms
+async function generateKeyPair() {
+    return window.crypto.subtle.generateKey(
+        {
+            name: "AES-GCM",
+            length: 256,
+        },
+        true,
+        ["encrypt", "decrypt"]
+    );
+}
+
+async function exportPublicKey(publicKey) {
+    const exported = await window.crypto.subtle.exportKey(
+        "jwk", // (private)
+        publicKey // what key to export
+    );
+    return JSON.stringify(exported);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    secureSubmit('signupForm'); // Assuming you have a signup form with id="signupForm"
-    secureSubmit('loginForm'); // Assuming you have a login form with id="loginForm"
+    secureSubmit('signupForm');
+    secureSubmit('loginForm');
 });
