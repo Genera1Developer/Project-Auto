@@ -77,7 +77,12 @@
       "base64Encode": true,
       "keyDerivationRounds": 3,
       "integrityCheck": true,
-      "adata": "particles-config"
+      "adata": "particles-config",
+      "compression": {
+        "enable": true,
+        "algorithm": "gzip",
+        "level": 6
+      }
     }
   },
   "interactivity": {
