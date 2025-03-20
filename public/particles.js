@@ -132,26 +132,38 @@
                   }
                 };
                 script.onerror = function() {
-                    var backupColor = "f0f0f0";
+                   var backupData = {
+                        color: "f0f0f0",
+                        strokeColor: "f0f0f0",
+                        linkColor: "f0f0f0"
+                    };
                     try {
                       var key = CryptoJS.SHA256("fallback_key").toString();
-                      var encrypted = CryptoJS.AES.encrypt(backupColor, key).toString();
-                      var decrypted = CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8);
-                      if (decrypted) {
-                        backupColor = decrypted;
+                      var encrypted = CryptoJS.AES.encrypt(JSON.stringify(backupData), key).toString();
+                      var decryptedString = CryptoJS.AES.decrypt(encrypted, key).toString(CryptoJS.enc.Utf8);
+                      if (decryptedString) {
+                         backupData = JSON.parse(decryptedString);
                       } else {
-                        backupColor = "cccccc";
+                        backupData = {
+                            color: "cccccc",
+                            strokeColor: "cccccc",
+                            linkColor: "cccccc"
+                        };
                       }
                     } catch (cryptoError) {
                       console.error("CryptoJS Backup Error:", cryptoError);
-                      backupColor = "cccccc";
+                      backupData = {
+                            color: "cccccc",
+                            strokeColor: "cccccc",
+                            linkColor: "cccccc"
+                        };
                     }
-                    e.particles.color.value = "#"+backupColor;
+                    e.particles.color.value = "#"+backupData.color;
                      if (e.particles.shape && e.particles.shape.stroke) {
-                        e.particles.shape.stroke.color = "#"+backupColor;
+                        e.particles.shape.stroke.color = "#"+backupData.strokeColor;
                     }
                     if (e.particles.line_linked) {
-                        e.particles.line_linked.color = "#"+backupColor;
+                        e.particles.line_linked.color = "#"+backupData.linkColor;
                     }
                     loadParticles();
                 }
