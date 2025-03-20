@@ -1,92 +1,105 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #000;
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
-    overflow: hidden; /* Hide scrollbars caused by particles */
+    padding: 0;
+    background-color: #000;
+    color: #00FFFF; /* Cyan for text */
+    overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
-    background-color: rgba(30, 30, 30, 0.8);
-    padding: 40px;
-    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    width: 80%;
-    max-width: 600px;
-    z-index: 1; /* Ensure content is above particles */
 }
 
 h1 {
-    font-size: 2.5em;
+    font-size: 3em;
     margin-bottom: 20px;
-    color: #00bcd4; /* Encryption-themed color */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 0 10px #00FFFF; /* Glowing effect */
 }
 
 p {
-    font-size: 1.1em;
-    margin-bottom: 20px;
-}
-
-.input-group {
-    display: flex;
-    margin-bottom: 20px;
+    font-size: 1.2em;
+    margin-bottom: 30px;
 }
 
 input[type="text"] {
-    padding: 12px 15px;
+    padding: 10px;
     font-size: 1em;
-    border: none;
-    border-radius: 5px 0 0 5px;
-    flex-grow: 1;
+    border: 2px solid #00FFFF;
     background-color: #222;
-    color: #fff;
+    color: #00FFFF;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 300px;
 }
 
 button {
-    padding: 12px 20px;
-    font-size: 1em;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    background-color: #00FFFF;
+    color: #000;
     border: none;
-    border-radius: 0 5px 5px 0;
-    background-color: #00bcd4; /* Encryption-themed color */
-    color: #fff;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #008ba3;
+    background-color: #00BFFF;
 }
 
-.error {
-    color: #ff5252;
-    margin-bottom: 15px;
-}
-
-.security-info {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #a5d6a7;
-    font-size: 0.9em;
-    margin-top: 20px;
-}
-
-.security-info i {
-    margin-right: 8px;
-}
-
-/* Particles.js container */
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 0; /* Place particles behind content */
+    z-index: -1;
+}
+
+/* Login and Signup Specific Styles */
+.form-container {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    width: 400px;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    color: #00FFFF;
+    text-shadow: 0 0 5px #00FFFF;
+}
+
+.form-container input[type="text"],
+.form-container input[type="password"] {
+    width: 90%;
+    margin-bottom: 15px;
+}
+
+.form-container button {
+    width: 100%;
+}
+
+.link-to-register,
+.link-to-login {
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.link-to-register a,
+.link-to-login a {
+    color: #00BFFF;
+    text-decoration: none;
+}
+
+.link-to-register a:hover,
+.link-to-login a:hover {
+    text-decoration: underline;
 }
