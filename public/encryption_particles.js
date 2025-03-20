@@ -1,23 +1,23 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 150,
+      value: 120,
       density: {
         enable: true,
-        value_area: 800
+        value_area: 700
       }
     },
     color: {
       value: '#00FF00'
     },
     shape: {
-      type: 'polygon', // Changed to polygon for key-like shape
+      type: 'polygon',
       stroke: {
         width: 1,
         color: '#008000'
       },
       polygon: {
-        nb_sides: 4 // Keep as 4
+        nb_sides: 5 // Pentagonal key-like shape
       },
       image: {
         src: '',
@@ -26,35 +26,35 @@ particlesJS('particles-js', {
       }
     },
     opacity: {
-      value: 0.7,
+      value: 0.8,
       random: true,
       anim: {
         enable: true,
-        speed: 1.5,
-        opacity_min: 0.3,
+        speed: 2,
+        opacity_min: 0.2,
         sync: false
       }
     },
     size: {
-      value: 3,
+      value: 2.5,
       random: true,
       anim: {
         enable: true,
-        speed: 14,
+        speed: 12,
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 160,
+      distance: 150,
       color: '#00FF00',
-      opacity: 0.6,
-      width: 1
+      opacity: 0.7,
+      width: 1.2
     },
     move: {
       enable: true,
-      speed: 2.5,
+      speed: 2,
       direction: 'none',
       random: true,
       straight: false,
@@ -81,9 +81,9 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 150,
+        distance: 140,
         line_linked: {
-          opacity: 0.8
+          opacity: 0.9
         }
       },
       bubble: {
