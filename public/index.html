@@ -101,7 +101,6 @@
                 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 let nonce = '';
                 for (let i = 0; i < length; i++) {
-                    // Use window.crypto for wider compatibility
                     nonce += characters.charAt(Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * characters.length));
                 }
                 return nonce;
@@ -119,12 +118,17 @@
 
               // Function to decrypt the URL using AES (for potential future use)
             async function decryptURL(ciphertext, key, iv) {
-                const encryptedData = Uint8Array.from(atob(ciphertext), c => c.charCodeAt(0));
-                const ivData = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
-                const alg = { name: 'AES-GCM', iv: ivData };
-                const jwk = await window.crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['decrypt']);
-                const decrypted = await window.crypto.subtle.decrypt(alg, jwk, encryptedData);
-                return new TextDecoder().decode(decrypted);
+                try {
+                    const encryptedData = Uint8Array.from(atob(ciphertext), c => c.charCodeAt(0));
+                    const ivData = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+                    const alg = { name: 'AES-GCM', iv: ivData };
+                    const jwk = await window.crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['decrypt']);
+                    const decrypted = await window.crypto.subtle.decrypt(alg, jwk, encryptedData);
+                    return new TextDecoder().decode(decrypted);
+                } catch (error) {
+                    console.error("Decryption failed:", error);
+                    return null; // Or throw the error, depending on your needs
+                }
             }
 
              // Function to hash the encryption key (SHA-256)
@@ -146,6 +150,39 @@
               return salt;
             }
 
+            // Function to derive a key from the password and salt using PBKDF2
+            async function deriveKey(password, salt) {
+                const encodedPassword = new TextEncoder().encode(password);
+                const encodedSalt = new TextEncoder().encode(salt);
+
+                const algorithm = {
+                    name: 'PBKDF2',
+                    hash: 'SHA-256',
+                    salt: encodedSalt,
+                    iterations: 100000 // Adjust the number of iterations based on security needs and performance
+                };
+
+                const key = await window.crypto.subtle.importKey(
+                    'raw',
+                    encodedPassword,
+                    algorithm,
+                    false,
+                    ['deriveKey']
+                );
+
+                const keyAlgorithm = { name: 'AES-GCM', length: 256 }; // Key length can be adjusted
+                const derivedKey = await window.crypto.subtle.deriveKey(
+                    algorithm,
+                    key,
+                    keyAlgorithm,
+                    false,
+                    ['encrypt', 'decrypt']
+                );
+
+                return derivedKey; // Return the CryptoKey object
+            }
+
+
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
                 if (!url) {
@@ -165,18 +202,33 @@
                     const nonce = generateNonce(16);
                     console.log("Request Nonce:", nonce); // Log nonce for debugging
 
-                    // Generate a key for AES encryption
-                    const encryptionKey = generateNonce(32);
-
-                    // Hash the encryption key
-                    const hashedKey = await hashKey(encryptionKey);
-                    console.log("Hashed Key:", hashedKey); // Log the hashed key
-
                     // Generate a salt
                     const salt = generateSalt(16);
 
+                     // For demonstration, use a fixed password. In a real application,
+                     // the user should provide a strong password.
+                    const password = generateNonce(32); // Replace with user-provided password
+
+                    // Derive the key from the password and salt
+                    const derivedKey = await deriveKey(password, salt);
+
+                    // Export the key to raw format to hash it
+                    const rawKey = await window.crypto.subtle.exportKey("raw", derivedKey);
+                    const keyArray = Array.from(new Uint8Array(rawKey));
+                    const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+
+                    // Hash the derived key
+                    const hashedKey = await hashKey(keyHex);
+                    console.log("Hashed Key:", hashedKey); // Log the hashed key
+
                     // Encrypt the URL
-                    const encryptedData = await encryptURL(url, encryptionKey);
+                    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                    const encoded = new TextEncoder().encode(url);
+                     const alg = { name: 'AES-GCM', iv: iv };
+                    const ciphertext = await window.crypto.subtle.encrypt(alg, derivedKey, encoded);
+                     const encryptedData = { iv: btoa(String.fromCharCode(...iv)), ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))) };
+
 
                      // Construct the URL with encrypted parameters
                     const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(encryptedData.ciphertext)}&iv=${encodeURIComponent(encryptedData.iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}&salt=${encodeURIComponent(salt)}`;
@@ -192,10 +244,11 @@
                      // Potentially store the nonce in local storage or a cookie
                      // localStorage.setItem('lastRequestNonce', nonce); //Example
                      // Consider using sessionStorage to store the key temporarily
-                     sessionStorage.setItem('encryptionKey', encryptionKey);
+                    sessionStorage.setItem('hashedKey', hashedKey);
 
                 } catch (e) {
                     errorDiv.textContent = 'Invalid URL.';
+                    console.error("Error:", e);
                 } finally {
                     // Hide loading indicator (in case of immediate errors)
                     setTimeout(() => {
