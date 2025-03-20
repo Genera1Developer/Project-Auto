@@ -71,18 +71,20 @@ function validateCaptcha() {
 
     if (decryptedText === originalCaptcha && userInput === originalCaptcha) {
         // Captcha is valid
-        // alert('Captcha Verified!'); // Replace with appropriate action
         document.getElementById('error-message').innerText = 'Captcha Verified!';
         document.getElementById('error-message').style.color = 'green'; // Style the success message
-        // Replace alert with a styled message
         // Optionally, regenerate the captcha after successful validation
         generateCaptcha();
+        // Clear input field after success
+        document.getElementById('captcha-input').value = '';
     } else {
         // Captcha is invalid
         document.getElementById('error-message').innerText = 'Incorrect captcha. Please try again.';
         document.getElementById('error-message').style.color = 'red'; // Style the error message
         // Regenerate the captcha on incorrect input
         generateCaptcha();
+        // Clear input field after failure
+        document.getElementById('captcha-input').value = '';
     }
 }
 
@@ -110,4 +112,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const captchaInput = document.getElementById('captcha-input');
     captchaInput.type = "password";
     captchaInput.parentNode.insertBefore(toggleButton, captchaInput.nextSibling);
+
+    // Add event listener for Enter key press
+    captchaInput.addEventListener("keyup", function(event) {
+        if (event.key === "Enter") {
+            validateCaptcha();
+        }
+    });
 });
