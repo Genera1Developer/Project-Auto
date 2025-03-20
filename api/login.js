@@ -86,7 +86,10 @@ const encryptSession = (sessionData, encryptionKey) => {
         const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), iv);
         let encrypted = cipher.update(JSON.stringify(sessionData));
         encrypted = Buffer.concat([encrypted, cipher.final()]);
-        return iv.toString('hex') + ':' + encrypted.toString('hex');
+        const hmac = crypto.createHmac('sha256', Buffer.from(encryptionKey, 'hex'));
+        hmac.update(iv.toString('hex') + ':' + encrypted.toString('hex'));
+        const signature = hmac.digest('hex');
+        return iv.toString('hex') + ':' + encrypted.toString('hex') + ':' + signature;
     } catch (error) {
         console.error('Session encryption error:', error);
         return null;
@@ -95,9 +98,24 @@ const encryptSession = (sessionData, encryptionKey) => {
 
 const decryptSession = (encryptedSession, encryptionKey) => {
     try {
-        const textParts = encryptedSession.split(':');
-        const iv = Buffer.from(textParts.shift(), 'hex');
-        const encryptedData = Buffer.from(textParts.join(':'), 'hex');
+        const parts = encryptedSession.split(':');
+        if (parts.length !== 3) {
+            console.error('Invalid session format');
+            return null;
+        }
+        const iv = Buffer.from(parts[0], 'hex');
+        const encryptedData = Buffer.from(parts[1], 'hex');
+        const signature = parts[2];
+
+        const hmac = crypto.createHmac('sha256', Buffer.from(encryptionKey, 'hex'));
+        hmac.update(parts[0] + ':' + parts[1]);
+        const expectedSignature = hmac.digest('hex');
+
+        if (!crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expectedSignature, 'hex'))) {
+            console.error('Session signature mismatch');
+            return null;
+        }
+
         const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey, 'hex'), iv);
         let decrypted = decipher.update(encryptedData);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
