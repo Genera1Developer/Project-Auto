@@ -67,13 +67,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         return Promise.all([encryptedData, generateAndStoreHmac(encryptedData, salt)]);
                     })
                     .then(([encryptedData, hmac]) => {
-                        fetch('/api/login', {
+                        return Promise.all([encryptedData, encryptHmac(hmac)]);
+                    })
+                    .then(([encryptedData, encryptedHmac]) => {
+                         fetch('/api/login', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-Encryption': 'true',
-                                'X-Salt': salt,
-                                'X-HMAC': hmac
+                                'X-Salt': sessionStorage.getItem('encryptionSalt'),
+                                'X-HMAC': encryptedHmac
                             },
                             body: JSON.stringify({ data: encryptedData })
                         })
@@ -154,6 +157,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const hmac = await generateHmac(data, salt);
         sessionStorage.setItem('hmac', hmac);
         return hmac;
+    }
+
+    async function encryptHmac(hmac) {
+        const salt = await generateAndStoreSalt();
+        const hmacEncryptionKey = CryptoJS.enc.Utf8.parse(generateKey(salt));
+        const hmacEncryptionIv = CryptoJS.enc.Utf8.parse(generateIV(salt));
+
+        const encryptedHmac = CryptoJS.AES.encrypt(hmac, hmacEncryptionKey, {
+            iv: hmacEncryptionIv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        });
+
+        return encryptedHmac.toString();
     }
 
     function generateKey(salt) {
