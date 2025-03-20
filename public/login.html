@@ -117,16 +117,30 @@
             }
 
             // Simulate login request (replace with actual API call)
-            setTimeout(() => {
-                if (username === 'test' && password === 'password') {
+            // Replace with actual API call to /api/account/login
+            fetch('/api/account/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
                     // Successful login
-                    errorMessage.textContent = ''; // Clear any previous errors
-                    alert('Login successful!'); // Replace with redirect
+                    errorMessage.textContent = '';
+                    // Redirect to a secure page (e.g., proxy page)
+                    window.location.href = '/index.html'; // Or wherever the proxy is
                 } else {
                     // Failed login
-                    errorMessage.textContent = 'Invalid username or password.';
+                    errorMessage.textContent = data.message || 'Invalid username or password.';
                 }
-            }, 1000); // Simulate network latency
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorMessage.textContent = 'An error occurred during login.';
+            });
         });
     </script>
 </body>
