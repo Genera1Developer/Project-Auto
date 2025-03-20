@@ -294,18 +294,30 @@
                   keySize: 256/32,
                   iterations: 1000
                 });
-                const iv = CryptoJS.lib.WordArray.random(128/8);
 
-                // Encrypt the password using AES
-                const encrypted = CryptoJS.AES.encrypt(password, key, {
-                    iv: iv,
+                // Encrypt username and email too
+                const usernameEncrypted = CryptoJS.AES.encrypt(username, key, {
+                    iv: salt, // Use salt as IV to simply the process
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7
-                });
+                }).toString();
 
-                const encryptedPassword = encrypted.toString();
+                const emailEncrypted = CryptoJS.AES.encrypt(email, key, {
+                    iv: salt,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                }).toString();
+
+                const encrypted = CryptoJS.AES.encrypt(password, key, {
+                    iv: salt,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                }).toString();
+
+                // Encrypt the password using AES
+                const encryptedPassword = encrypted;
+
                 const encryptedKey = CryptoJS.enc.Base64.stringify(key);
-                const encryptedIv = CryptoJS.enc.Base64.stringify(iv);
                 const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
 
               fetch('/api/sign-up', {
@@ -313,7 +325,7 @@
                   headers: {
                       'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify({ username: username, password: encryptedPassword, email: email, captcha: captcha, key: encryptedKey, iv: encryptedIv, salt: encryptedSalt })
+                  body: JSON.stringify({ username: usernameEncrypted, password: encryptedPassword, email: emailEncrypted, captcha: captcha, key: encryptedKey, salt: encryptedSalt })
               })
               .then(response => {
                   encryptionAnimation.style.display = 'none';
