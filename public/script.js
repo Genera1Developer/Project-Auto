@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // AES Encryption function (using CryptoJS)
     async function encryptData(data) {
-        const salt = localStorage.getItem('encryptionSalt');  // Retrieve stored salt
+        const salt = await generateAndStoreSalt();
         const key = CryptoJS.enc.Utf8.parse(generateKey(salt));
         const iv = CryptoJS.enc.Utf8.parse(generateIV(salt));
 
