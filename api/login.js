@@ -1,13 +1,13 @@
 const crypto = require('crypto');
 
 const generateSalt = () => {
-  return crypto.randomBytes(64).toString('hex'); // Increased salt size
+  return crypto.randomBytes(64).toString('hex');
 };
 
 const encryptPassword = (password, salt) => {
-  const iterations = 10000; // Increased iterations for stronger hashing
-  const keylen = 64; // Key length for PBKDF2
-  const digest = 'sha512'; // Algorithm for PBKDF2
+  const iterations = 100000; // Increased iterations significantly
+  const keylen = 64;
+  const digest = 'sha512';
   const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
   return derivedKey.toString('hex');
 };
@@ -20,12 +20,14 @@ const timingSafeCompare = (a, b) => {
   if (a.length !== b.length) {
     return false;
   }
-  return crypto.timingSafeEqual(Buffer.from(a, 'utf-8'), Buffer.from(b, 'utf-8'));
+  try {
+    return crypto.timingSafeEqual(Buffer.from(a, 'utf-8'), Buffer.from(b, 'utf-8'));
+  } catch (error) {
+    return false; // Handle potential buffer creation errors
+  }
 };
 
-// Mock database interaction - replace with actual DB calls
 const fetchUser = async (username) => {
-  // Simulate database lookup
   if (username === 'testuser') {
     const salt = generateSalt();
     const passwordHash = encryptPassword('password123', salt);
@@ -41,6 +43,10 @@ const fetchUser = async (username) => {
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password required' }); //Prevent null errors
+    }
 
     const userData = await fetchUser(username);
 
