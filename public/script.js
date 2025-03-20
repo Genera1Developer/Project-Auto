@@ -2,14 +2,14 @@ document.addEventListener('DOMContentLoaded', function() {
     particlesJS('particles-js', {
         particles: {
             number: {
-                value: 80,
+                value: 100,
                 density: {
                     enable: true,
                     value_area: 800
                 }
             },
             color: {
-                value: '#00ffff' // Cyan for encryption theme
+                value: '#2ecc71' // Encryption green
             },
             shape: {
                 type: 'circle',
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             opacity: {
-                value: 0.5,
+                value: 0.7,
                 random: true,
                 anim: {
                     enable: false,
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             },
             size: {
-                value: 3,
+                value: 2.5,
                 random: true,
                 anim: {
                     enable: false,
@@ -49,13 +49,13 @@ document.addEventListener('DOMContentLoaded', function() {
             line_linked: {
                 enable: true,
                 distance: 150,
-                color: '#00ffff', // Cyan for encryption theme
+                color: '#3498db', // Encryption blue
                 opacity: 0.4,
                 width: 1
             },
             move: {
                 enable: true,
-                speed: 3,
+                speed: 2,
                 direction: 'none',
                 random: true,
                 straight: false,
@@ -109,4 +109,13 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         retina_detect: true
     });
+
+    // Add a subtle animation to the particles container
+    const particlesContainer = document.getElementById('particles-js');
+    particlesContainer.style.transition = 'opacity 1s ease-in-out';
+    particlesContainer.style.opacity = 0;
+
+    setTimeout(() => {
+        particlesContainer.style.opacity = 1;
+    }, 500); // Fade in after 0.5 seconds
 });
