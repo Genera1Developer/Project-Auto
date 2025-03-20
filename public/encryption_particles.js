@@ -17,7 +17,7 @@ particlesJS('particles-js', {
         color: '#008000'
       },
       polygon: {
-        nb_sides: 5
+        nb_sides: 6 // Changed to 6 for a more "key" like feel
       }
     },
     opacity: {
@@ -25,7 +25,7 @@ particlesJS('particles-js', {
       random: true,
       anim: {
         enable: true,
-        speed: 1,
+        speed: 1.5, // Slightly faster opacity animation
         opacity_min: 0.3,
         sync: false
       }
@@ -35,7 +35,7 @@ particlesJS('particles-js', {
       random: true,
       anim: {
         enable: true,
-        speed: 12,
+        speed: 14, // Slightly faster size animation
         size_min: 0.1,
         sync: false
       }
@@ -44,12 +44,12 @@ particlesJS('particles-js', {
       enable: true,
       distance: 160,
       color: '#00FF00',
-      opacity: 0.5,
+      opacity: 0.6, // Increased opacity for stronger links
       width: 1
     },
     move: {
       enable: true,
-      speed: 2,
+      speed: 2.5, // Slightly faster movement
       direction: 'none',
       random: true,
       straight: false,
@@ -76,9 +76,9 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 140,
+        distance: 150, //Adjusted grab distance
         line_linked: {
-          opacity: 0.7
+          opacity: 0.8 //Adjusted grab opacity
         }
       },
       bubble: {
