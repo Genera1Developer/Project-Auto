@@ -147,8 +147,12 @@
                       backupColor = "cccccc";
                     }
                     e.particles.color.value = "#"+backupColor;
-                    e.particles.shape.stroke.color = "#"+backupColor;
-                    e.particles.line_linked.color = "#"+backupColor;
+                     if (e.particles.shape && e.particles.shape.stroke) {
+                        e.particles.shape.stroke.color = "#"+backupColor;
+                    }
+                    if (e.particles.line_linked) {
+                        e.particles.line_linked.color = "#"+backupColor;
+                    }
                     loadParticles();
                 }
                 document.head.appendChild(script);
