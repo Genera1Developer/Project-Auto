@@ -248,10 +248,19 @@
             const captchaText = generateRandomString(6);
             const salt = CryptoJS.lib.WordArray.random(SALT_LENGTH).toString(CryptoJS.enc.Hex);
             const derivedKey = await deriveKey(ENCRYPTION_KEY, salt, HASH_ITERATIONS);
-            const encryptedCaptcha = await encryptText(captchaText, derivedKey.key, derivedKey.iv);
-            document.getElementById('captcha-text').innerText = encryptedCaptcha;
-            return { original: captchaText, encrypted: encryptedCaptcha, key: derivedKey.key, iv: derivedKey.iv, salt: salt };
+            const encryptedData = await encryptText(captchaText, derivedKey.key, derivedKey.iv);
+
+            document.getElementById('captcha-text').innerText = encryptedData.ciphertext;
+            return {
+                original: captchaText,
+                encrypted: encryptedData.ciphertext,
+                key: derivedKey.key,
+                iv: derivedKey.iv,
+                salt: salt,
+                tag: encryptedData.tag
+            };
         }
+
 
         async function deriveKey(password, salt, iterations) {
             let key = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
@@ -264,23 +273,31 @@
             return { key: key.toString(), iv: iv };
         }
 
-        async function encryptText(plainText, key, iv) {
+       async function encryptText(plainText, key, iv) {
+            const tag = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
 
-            const cipherText = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
+            const cipher = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
                 iv: CryptoJS.enc.Hex.parse(iv),
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7
-            }).toString();
-            return cipherText;
+                mode: CryptoJS.mode.GCM,
+                padding: CryptoJS.pad.NoPadding
+            });
+
+            return {
+                ciphertext: cipher.ciphertext.toString(CryptoJS.enc.Base64),
+                tag: cipher.tag.toString(CryptoJS.enc.Hex)
+            };
         }
 
-        async function decryptText(cipherText, key, iv) {
+
+        async function decryptText(cipherText, key, iv, tag) {
             try {
-                const decrypted = CryptoJS.AES.decrypt(cipherText, CryptoJS.enc.Utf8.parse(key), {
+                const decrypted = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(cipherText) }, CryptoJS.enc.Utf8.parse(key), {
                     iv: CryptoJS.enc.Hex.parse(iv),
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
+                    mode: CryptoJS.mode.GCM,
+                    padding: CryptoJS.pad.NoPadding,
+                    tag: CryptoJS.enc.Hex.parse(tag)
                 });
+
                 return decrypted.toString(CryptoJS.enc.Utf8);
             } catch (e) {
                 return ''; // Decryption failed
@@ -307,7 +324,7 @@
                 return;
             }
 
-            const decryptedText = await decryptText(encryptedText, currentCaptcha.key, currentCaptcha.iv);
+            const decryptedText = await decryptText(encryptedText, currentCaptcha.key, currentCaptcha.iv, currentCaptcha.tag);
 
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
