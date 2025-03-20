@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let encryptionIV = '';
 
     function generateEncryptionKeys() {
-        // Generate a random 16-byte key and IV (using typed arrays)
         const keyArray = new Uint8Array(16);
         const ivArray = new Uint8Array(16);
         window.crypto.getRandomValues(keyArray);
@@ -39,22 +38,23 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayEncryptedCaptcha() {
-        generateEncryptionKeys(); // Generate new keys on each display
+        generateEncryptionKeys();
         const captcha = generateCaptcha();
         const encryptedCaptcha = encryptCaptcha(captcha);
         captchaTextElement.textContent = encryptedCaptcha;
-        // Store keys in sessionStorage (more secure than global variable)
         sessionStorage.setItem('encryptionKey', encryptionKey);
         sessionStorage.setItem('encryptionIV', encryptionIV);
+        sessionStorage.setItem('generatedCaptcha', captcha); // Store original
     }
 
     window.validateCaptcha = function() {
         const userInput = captchaInputElement.value;
         const storedKey = sessionStorage.getItem('encryptionKey');
         const storedIV = sessionStorage.getItem('encryptionIV');
+        const originalCaptcha = sessionStorage.getItem('generatedCaptcha'); // Retrieve
 
-        if (!storedKey || !storedIV) {
-            errorMessageElement.textContent = 'Encryption keys missing. Please refresh.';
+        if (!storedKey || !storedIV || !originalCaptcha) {
+            errorMessageElement.textContent = 'Encryption keys missing. Refresh.';
             errorMessageElement.style.color = 'red';
             displayEncryptedCaptcha();
             captchaInputElement.value = '';
@@ -73,22 +73,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
 
-             if (decryptedText.trim() === generatedCaptcha) {
+             if (decryptedText.trim() === originalCaptcha) {
                 errorMessageElement.textContent = 'Captcha verified!';
                 errorMessageElement.style.color = 'green';
             } else {
                 errorMessageElement.textContent = 'Incorrect captcha. Please try again.';
                 errorMessageElement.style.color = 'red';
-                displayEncryptedCaptcha(); // Refresh captcha on failure
-                captchaInputElement.value = ''; // Clear input field
+                displayEncryptedCaptcha();
+                captchaInputElement.value = '';
             }
         } catch (error) {
-            errorMessageElement.textContent = 'Decryption error.  Are you sure you decrypted it?';
+            errorMessageElement.textContent = 'Decryption error.  Double check.';
             errorMessageElement.style.color = 'red';
-            displayEncryptedCaptcha(); // Refresh captcha on failure
-            captchaInputElement.value = ''; // Clear input field
+            displayEncryptedCaptcha();
+            captchaInputElement.value = '';
         }
     };
 
-    displayEncryptedCaptcha(); // Initial captcha display
+    displayEncryptedCaptcha();
 });
