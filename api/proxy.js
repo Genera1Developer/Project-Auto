@@ -15,6 +15,7 @@ const ITERATIONS = parseInt(process.env.PBKDF2_ITERATIONS) || 10000; // Adjust b
 const DIGEST = process.env.PBKDF2_DIGEST || 'sha512';
 
 const SENSITIVE_HEADERS = ['authorization', 'cookie', 'proxy-authorization'];
+const MAX_ENCRYPTED_HEADER_LENGTH = 2048; // Limit header size to prevent DoS
 
 function deriveKey(password, salt) {
     return crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
@@ -22,17 +23,34 @@ function deriveKey(password, salt) {
 
 function encrypt(text, key) {
     if (!text) return text;
-    let iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
-    const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    return Buffer.concat([iv, authTag, encrypted]).toString('hex');
+    try {
+        let iv = crypto.randomBytes(IV_LENGTH);
+        const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
+        const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+
+         // Limit the size of encrypted data to prevent DoS
+        if (ciphertext.length > MAX_ENCRYPTED_HEADER_LENGTH) {
+            throw new Error('Encrypted text exceeds maximum allowed length.');
+        }
+
+        return ciphertext.toString('hex');
+    } catch (error) {
+        console.error("Encryption error:", error);
+        return null;
+    }
 }
 
 function decrypt(text, key) {
     if (!text) return text;
     try {
         const buffer = Buffer.from(text, 'hex');
+
+        if (buffer.length > MAX_ENCRYPTED_HEADER_LENGTH) {
+            throw new Error('Encrypted text exceeds maximum allowed length.');
+        }
+
         const iv = buffer.slice(0, IV_LENGTH);
         const authTag = buffer.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encrypted = buffer.slice(IV_LENGTH + AUTH_TAG_LENGTH);
@@ -68,6 +86,13 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
                     try {
                         transformedKey = encryptFlag ? encrypt(key, encryptionKey) : decrypt(key, encryptionKey);
                         transformedValue = encryptFlag ? encrypt(value, encryptionKey) : decrypt(value, encryptionKey);
+
+                        //If transformation results in null, skip the header.
+                        if(transformedKey === null || transformedValue === null) {
+                            console.warn(`Skipping header ${key} due to transformation failure.`);
+                            continue;
+                        }
+
                     } catch (err) {
                         console.error(`Header transformation error for key ${key}:`, err);
                         //If encryption or decryption fails, keep the original value
