@@ -1,91 +1,87 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Function to generate a matrix-style rain of characters
-    function matrixRain() {
-        const canvas = document.createElement('canvas');
-        canvas.id = 'matrixCanvas';
-        canvas.style.position = 'fixed';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.zIndex = '-1'; // Behind other content
-        document.body.appendChild(canvas);
+const passwordToggle = document.querySelector('.password-toggle');
+const passwordInput = document.querySelector('#password');
 
-        const ctx = canvas.getContext('2d');
+if (passwordToggle && passwordInput) {
+    passwordToggle.addEventListener('click', function () {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('active'); // Change the class for a different icon, if needed
+    });
+}
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+function secureSubmit(formId) {
+    const form = document.getElementById(formId);
+    if (!form) {
+        console.error('Form not found:', formId);
+        return;
+    }
 
-        window.addEventListener('resize', function() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => {
+            data[key] = value;
         });
 
-        const katakana = 'アァカサタナハマヤャラワガザダバパ';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const alphabet = katakana + latin + nums;
+        // AES encryption key (replace with a securely generated key and proper key exchange)
+        const encryptionKey = "YOUR_SECURE_KEY"; // INSECURE: Replace with a secure key!
 
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
+        // Encrypt the data
+        const encryptedData = await encryptData(JSON.stringify(data), encryptionKey);
 
-        const drops = [];
-        for (let x = 0; x < columns; x++) {
-            drops[x] = 1;
-        }
+        // Prepare the encrypted payload
+        const payload = {
+            encrypted: encryptedData
+        };
 
-        function draw() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Send the encrypted data to the server
+        try {
+            const response = await fetch(form.action, {
+                method: form.method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
 
-            ctx.fillStyle = '#00FF00'; // Electric green
-            ctx.font = fontSize + 'px monospace';
-
-            for (let i = 0; i < drops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-
-                drops[i]++;
+            if (response.ok) {
+                // Handle successful submission
+                console.log('Submission successful');
+                window.location.href = '/login.html';
+                // Optionally, redirect or display a success message
+            } else {
+                // Handle errors
+                console.error('Submission error:', response.status);
             }
+        } catch (error) {
+            console.error('Submission error:', error);
         }
+    });
+}
 
-        setInterval(draw, 33); // Adjusted for smoother animation
-    }
+async function encryptData(data, key) {
+    const keyBytes = new TextEncoder().encode(key);
+    const iv = window.crypto.getRandomValues(new Uint8Array(12)); // Initialization vector
+    const algorithm = { name: "AES-GCM", iv: iv };
+    const cryptoKey = await window.crypto.subtle.importKey(
+        "raw",
+        keyBytes,
+        algorithm,
+        false,
+        ["encrypt", "decrypt"]
+    );
 
-    // Function to create glowing lines effect
-    function glowingLines() {
-        const canvas = document.createElement('canvas');
-        canvas.id = 'glowingLinesCanvas';
-        canvas.style.position = 'fixed';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.zIndex = '-1'; // Behind other content
-        document.body.appendChild(canvas);
+    const encodedData = new TextEncoder().encode(data);
+    const cipherText = await window.crypto.subtle.encrypt(algorithm, cryptoKey, encodedData);
 
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    // Return IV + Ciphertext
+    return btoa(String.fromCharCode(...iv) + String.fromCharCode(...new Uint8Array(cipherText)));
+}
 
-        window.addEventListener('resize', function() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
-        function drawLine() {
-            ctx.strokeStyle = 'rgba(0, 255, 0, 0.3)'; // Glowing green
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-            ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-            ctx.stroke();
-        }
-
-        setInterval(drawLine, 50);
-    }
-
-    // Call both effects
-    matrixRain();
-    glowingLines();
+// Initialize secure submission for signup and login forms
+document.addEventListener('DOMContentLoaded', function () {
+    secureSubmit('signupForm'); // Assuming you have a signup form with id="signupForm"
+    secureSubmit('loginForm'); // Assuming you have a login form with id="loginForm"
 });
