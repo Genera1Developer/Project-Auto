@@ -281,7 +281,11 @@
             // Simulate encryption with a delay
             setTimeout(() => {
                 // Generate a random key (AES key size should be 128, 192, or 256 bits)
-                const key = CryptoJS.lib.WordArray.random(256/8);
+                const salt = CryptoJS.lib.WordArray.random(128/8);
+                const key = CryptoJS.PBKDF2(password, salt, {
+                  keySize: 256/32,
+                  iterations: 1000
+                });
                 const iv = CryptoJS.lib.WordArray.random(128/8);
 
                 // Encrypt the password using AES
@@ -294,13 +298,14 @@
                 const encryptedPassword = encrypted.toString();
                 const encryptedKey = CryptoJS.enc.Base64.stringify(key);
                 const encryptedIv = CryptoJS.enc.Base64.stringify(iv);
+                const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
 
               fetch('/api/sign-up', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify({ username: username, password: encryptedPassword, email: email, captcha: captcha, key: encryptedKey, iv: encryptedIv })
+                  body: JSON.stringify({ username: username, password: encryptedPassword, email: email, captcha: captcha, key: encryptedKey, iv: encryptedIv, salt: encryptedSalt })
               })
               .then(response => {
                   encryptionAnimation.style.display = 'none';
