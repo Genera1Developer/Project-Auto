@@ -46,23 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    async function decryptCaptcha(encryptedCaptcha, key, iv) {
-        try{
-            const parsedKey = CryptoJS.enc.Hex.parse(key);
-            const parsedIv = CryptoJS.enc.Hex.parse(iv);
-
-            const decrypted = CryptoJS.AES.decrypt(encryptedCaptcha, parsedKey, {
-                iv: parsedIv,
-                mode: CryptoJS.mode.CBC,
-                padding: CryptoJS.pad.Pkcs7
-            });
-            return decrypted.toString(CryptoJS.enc.Utf8);
-        } catch (error) {
-            console.error("Decryption error:", error);
-            return null;
-        }
-    }
-
     async function displayEncryptedCaptcha() {
         generateEncryptionKeys();
         const captcha = generateCaptcha();
