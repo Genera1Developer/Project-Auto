@@ -7,6 +7,39 @@
     <link rel="stylesheet" href="style.css">
     <script src="particles.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Added styling to visually emphasize encryption theme */
+        body {
+            background-color: #1a1a1a;
+            color: #eee;
+            font-family: sans-serif;
+        }
+        .container {
+            background-color: #222;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            color: #00bcd4; /* A cyan/blue shade */
+        }
+        .security-info {
+            color: #4caf50; /* A green shade indicating security */
+        }
+        .input-group input {
+            background-color: #333;
+            color: #eee;
+            border: 1px solid #555;
+        }
+        .input-group button {
+            background-color: #00bcd4;
+            color: #fff;
+            border: none;
+        }
+        .error {
+            color: #f44336;
+        }
+    </style>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -20,7 +53,7 @@
         </div>
         <div id="error" class="error"></div>
         <div class="security-info">
-            <i class="fas fa-shield-alt"></i> Your connection is encrypted.
+            <i class="fas fa-shield-alt"></i> Your connection is encrypted. We use strong encryption to protect your data.
         </div>
     </div>
 
@@ -29,6 +62,16 @@
             const urlInput = document.getElementById('url');
             const browseButton = document.getElementById('browse');
             const errorDiv = document.getElementById('error');
+
+             // Function to generate a cryptographically secure nonce
+            function generateNonce(length) {
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let nonce = '';
+                for (let i = 0; i < length; i++) {
+                    nonce += characters.charAt(Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * characters.length));
+                }
+                return nonce;
+            }
 
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
@@ -45,8 +88,15 @@
                     }
                     new URL(url);
 
-                    // Redirect to the proxy endpoint
-                    window.location.href = '/api/proxy?url=' + encodeURIComponent(url);
+                    // Generate a nonce for request tracking (example)
+                    const nonce = generateNonce(16);
+                    console.log("Request Nonce:", nonce); // Log nonce for debugging
+
+                    // Redirect to the proxy endpoint with nonce
+                    window.location.href = '/api/proxy?url=' + encodeURIComponent(url) + '&nonce=' + nonce;
+
+                     // Potentially store the nonce in local storage or a cookie
+                     // localStorage.setItem('lastRequestNonce', nonce); //Example
                 } catch (e) {
                     errorDiv.textContent = 'Invalid URL.';
                 }
