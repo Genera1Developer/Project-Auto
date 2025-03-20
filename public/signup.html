@@ -176,6 +176,17 @@
         .strength-2 { background-color: #ffc107; }
         .strength-3 { background-color: #4caf50; }
         .strength-4 { background-color: #2e7d32; }
+
+        /* New styles for displaying password requirements */
+        .password-requirement {
+            color: #aaa;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+
+        .password-requirement.met {
+            color: #4caf50;
+        }
     </style>
 </head>
 <body>
@@ -190,11 +201,12 @@
         <div id="password-strength"></div>
          <div id="password-requirements">
             Password must be at least 8 characters long and include:
-            <ul>
-                <li>At least one uppercase letter</li>
-                <li>At least one lowercase letter</li>
-                <li>At least one number</li>
-                <li>At least one special character ($@#&!)</li>
+            <ul id="password-requirements-list">
+                <li class="password-requirement" id="length-requirement">At least 8 characters</li>
+                <li class="password-requirement" id="uppercase-requirement">At least one uppercase letter</li>
+                <li class="password-requirement" id="lowercase-requirement">At least one lowercase letter</li>
+                <li class="password-requirement" id="number-requirement">At least one number</li>
+                <li class="password-requirement" id="special-requirement">At least one special character ($@#&!)</li>
             </ul>
         </div>
         <input type="password" id="confirm-password" placeholder="Confirm Password" required>
@@ -261,6 +273,8 @@
                     strengthElement.style.color = '#2e7d32';
                     break;
             }
+
+            updatePasswordRequirements(password);
         }
 
         function calculatePasswordStrength(password) {
@@ -281,6 +295,44 @@
                 strength++;
             }
             return Math.min(strength, 4);
+        }
+
+         function updatePasswordRequirements(password) {
+            const lengthRequirement = document.getElementById('length-requirement');
+            const uppercaseRequirement = document.getElementById('uppercase-requirement');
+            const lowercaseRequirement = document.getElementById('lowercase-requirement');
+            const numberRequirement = document.getElementById('number-requirement');
+            const specialRequirement = document.getElementById('special-requirement');
+
+            if (password.length >= 8) {
+                lengthRequirement.classList.add('met');
+            } else {
+                lengthRequirement.classList.remove('met');
+            }
+
+            if (password.match(/[A-Z]+/)) {
+                uppercaseRequirement.classList.add('met');
+            } else {
+                uppercaseRequirement.classList.remove('met');
+            }
+
+            if (password.match(/[a-z]+/)) {
+                lowercaseRequirement.classList.add('met');
+            } else {
+                lowercaseRequirement.classList.remove('met');
+            }
+
+            if (password.match(/[0-9]+/)) {
+                numberRequirement.classList.add('met');
+            } else {
+                numberRequirement.classList.remove('met');
+            }
+
+            if (password.match(/[$@#&!]+/)) {
+                specialRequirement.classList.add('met');
+            } else {
+                specialRequirement.classList.remove('met');
+            }
         }
 
         async function signUp() {
