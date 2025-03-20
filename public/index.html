@@ -50,6 +50,23 @@
             border: none;
             display: none; /* Initially hide the iframe */
         }
+
+        /* Add a key icon to the URL input */
+        .input-group {
+            position: relative;
+        }
+
+        .input-group i.fa-key {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .input-group input {
+            padding-left: 30px; /* Adjust to accommodate the key icon */
+        }
     </style>
 </head>
 <body>
@@ -59,6 +76,7 @@
         <h1><i class="fas fa-lock"></i> Encrypted Web Proxy</h1>
         <p>Enter the URL to browse securely:</p>
         <div class="input-group">
+            <i class="fas fa-key"></i>
             <input type="text" id="url" placeholder="https://example.com">
             <button id="browse"><i class="fas fa-arrow-right"></i> Browse</button>
         </div>
