@@ -83,7 +83,8 @@
         "algorithm": "zlib",
         "level": 9
       },
-      "keyEncoding": "base64"
+      "keyEncoding": "base64",
+      "cacheEncryptedData": true
     }
   },
   "interactivity": {
