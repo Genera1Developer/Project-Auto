@@ -68,7 +68,10 @@
       "iv": "ENC_IV_PLACEHOLDER",
       "dataFields": ["color.value", "line_linked.color", "shape.stroke.color"],
       "obfuscate": true,
-      "encryptedValuePrefix": "ENC_"
+      "encryptedValuePrefix": "ENC_",
+      "keyRotationInterval": 86400,
+       "hmacEnable": true,
+       "hmacAlgorithm": "SHA256"
     }
   },
   "interactivity": {
