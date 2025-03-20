@@ -1,93 +1,95 @@
 body {
-    margin: 0;
     font-family: 'Arial', sans-serif;
     background-color: #000;
     color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
     overflow: hidden; /* Hide scrollbars */
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
     text-align: center;
+    background-color: rgba(30, 30, 30, 0.8); /* Darker background for contrast */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Neon glow effect */
+    width: 80%;
+    max-width: 600px;
 }
 
 h1 {
-    font-size: 3em;
+    font-size: 2.5em;
     margin-bottom: 20px;
-    color: #00bcd4; /* Cyan for a techy feel */
-    text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+    color: #00ffff; /* Cyan color for the title */
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8); /* Stronger glow for the title */
 }
 
 p {
     font-size: 1.2em;
-    color: #eee;
     margin-bottom: 30px;
+    color: #ddd;
+}
+
+.input-group {
+    display: flex;
+    margin-bottom: 20px;
 }
 
 input[type="text"] {
     padding: 15px;
     font-size: 1em;
-    border: 2px solid #444;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    width: 70%;
     background-color: #222;
     color: #fff;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 400px;
-    margin-bottom: 20px;
-    transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus {
-    border-color: #00bcd4;
-    outline: none;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 button {
-    padding: 15px 30px;
-    font-size: 1.1em;
-    background-color: #00bcd4;
-    color: #000;
+    padding: 15px 20px;
+    font-size: 1em;
     border: none;
-    border-radius: 8px;
+    border-radius: 0 8px 8px 0;
+    background-color: #00ffff; /* Cyan color for the button */
+    color: #000;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); /* Glow for the button */
 }
 
 button:hover {
-    background-color: #008ba7;
-    color: #fff;
+    background-color: #00bfff; /* Slightly darker cyan on hover */
+}
+
+.error {
+    color: #ff4d4d;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+}
+
+.security-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaffaa;
+    font-size: 1em;
+    margin-top: 20px;
+}
+
+.security-info i {
+    margin-right: 10px;
+    font-size: 1.2em;
 }
 
 #particles-js {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
     z-index: -1;
-}
-
-.login-signup {
-    margin-top: 20px;
-}
-
-.login-signup a {
-    color: #00bcd4;
-    text-decoration: none;
-    margin: 0 10px;
-    transition: color 0.3s ease;
-}
-
-.login-signup a:hover {
-    color: #008ba7;
-}
-
-/* Add a subtle glow effect */
-.glow {
-    text-shadow: 0 0 5px rgba(0, 188, 212, 0.8);
 }
