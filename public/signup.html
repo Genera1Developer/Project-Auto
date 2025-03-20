@@ -166,6 +166,7 @@
     </div>
 
     <script src="particles.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         particlesJS.load('particles-js', 'particles-config.json', function() {
           console.log('particles.js loaded - callback');
@@ -279,15 +280,27 @@
 
             // Simulate encryption with a delay
             setTimeout(() => {
-              // Use a more secure method for client-side encryption if possible (e.g., WebCrypto API)
-              // This is just a placeholder and should be replaced with proper encryption
-              const encryptedPassword = btoa(password);
+                // Generate a random key (AES key size should be 128, 192, or 256 bits)
+                const key = CryptoJS.lib.WordArray.random(256/8);
+                const iv = CryptoJS.lib.WordArray.random(128/8);
+
+                // Encrypt the password using AES
+                const encrypted = CryptoJS.AES.encrypt(password, key, {
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+
+                const encryptedPassword = encrypted.toString();
+                const encryptedKey = CryptoJS.enc.Base64.stringify(key);
+                const encryptedIv = CryptoJS.enc.Base64.stringify(iv);
+
               fetch('/api/sign-up', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json'
                   },
-                  body: JSON.stringify({ username: username, password: encryptedPassword, email: email, captcha: captcha })
+                  body: JSON.stringify({ username: username, password: encryptedPassword, email: email, captcha: captcha, key: encryptedKey, iv: encryptedIv })
               })
               .then(response => {
                   encryptionAnimation.style.display = 'none';
