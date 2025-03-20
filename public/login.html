@@ -215,7 +215,7 @@
 
         // Function to encrypt data
         function encryptData(data, key, iv) {
-            const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
+            const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(data), { //Corrected
                 iv: CryptoJS.enc.Utf8.parse(iv),
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
@@ -243,6 +243,11 @@
             return encryptedKey.toString();
         }
 
+        // Function to generate a HMAC for request integrity
+        function generateHMAC(data, key) {
+            const hmac = CryptoJS.HmacSHA256(data, key);
+            return hmac.toString();
+        }
 
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -285,6 +290,10 @@
             // Encrypt the encryption key with the server's public key
             const encryptedEncryptionKey = encryptLocalKey(encryptionKey, serverPublicKey);
 
+            // Create a combined data string for HMAC calculation
+            const hmacData = username + password + captcha + salt + timestamp + encryptedEncryptionKey;
+            const hmac = generateHMAC(hmacData, encryptionKey);
+
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
@@ -293,7 +302,8 @@
                     'X-Encryption-IV': iv, // Send IV in header
                     'X-Request-Timestamp': timestamp, // Send timestamp
                     'X-Salt-Hash': saltHash, // Send Salt hash
-                    'X-Encrypted-Key': encryptedEncryptionKey
+                    'X-Encrypted-Key': encryptedEncryptionKey,
+                    'X-Request-HMAC': hmac // Send HMAC for integrity
                 },
                 body: JSON.stringify({
                     username: encryptedUsername,
