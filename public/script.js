@@ -1,118 +1,119 @@
-const particlesConfig = {
-  "particles": {
-    "number": {
-      "value": 150,
-      "density": {
-        "enable": true,
-        "value_area": 800
-      }
-    },
-    "color": {
-      "value": "#00ffff"
-    },
-    "shape": {
-      "type": "circle",
-      "stroke": {
-        "width": 0,
-        "color": "#00ffff"
-      },
-      "polygon": {
-        "nb_sides": 5
-      }
-    },
-    "opacity": {
-      "value": 0.7,
-      "random": true,
-      "anim": {
-        "enable": true,
-        "speed": 0.7,
-        "opacity_min": 0.3,
-        "sync": false
-      }
-    },
-    "size": {
-      "value": 3,
-      "random": true,
-      "anim": {
-        "enable": false,
-        "speed": 40,
-        "size_min": 0.1,
-        "sync": false
-      }
-    },
-    "line_linked": {
-      "enable": true,
-      "distance": 150,
-      "color": "#00ffff",
-      "opacity": 0.5,
-      "width": 1
-    },
-    "move": {
-      "enable": true,
-      "speed": 4,
-      "direction": "none",
-      "random": true,
-      "straight": false,
-      "out_mode": "out",
-      "bounce": false,
-      "attract": {
-        "enable": false,
-        "rotateX": 600,
-        "rotateY": 1200
-      }
+document.addEventListener('DOMContentLoaded', function() {
+    // Preloader
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        window.addEventListener('load', () => {
+            preloader.classList.add('preloader-hidden');
+        });
     }
-  },
-  "interactivity": {
-    "detect_on": "canvas",
-    "events": {
-      "onhover": {
-        "enable": true,
-        "mode": "grab"
-      },
-      "onclick": {
-        "enable": true,
-        "mode": "push"
-      },
-      "resize": true
-    },
-    "modes": {
-      "grab": {
-        "distance": 140,
-        "line_linked": {
-          "opacity": 1
+
+    // Password Toggle
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+
+    if (togglePassword && password) {
+        togglePassword.addEventListener('click', function (e) {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.classList.toggle('fa-eye');
+            this.classList.toggle('fa-eye-slash');
+        });
+    }
+
+    // Captcha Refresh
+    const captchaImage = document.getElementById('captchaImage');
+    const refreshCaptchaButton = document.querySelector('button[onclick="refreshCaptcha()"]');
+
+    function refreshCaptcha() {
+        if (captchaImage) {
+            captchaImage.src = '/api/captcha?' + new Date().getTime();
         }
-      },
-      "bubble": {
-        "distance": 400,
-        "size": 40,
-        "duration": 2,
-        "opacity": 0.8,
-        "speed": 3
-      },
-      "repulse": {
-        "distance": 200,
-        "duration": 0.4
-      },
-      "push": {
-        "particles_nb": 4
-      },
-      "remove": {
-        "particles_nb": 2
-      }
     }
-  },
-  "retina_detect": true
-};
 
-window.onload = function() {
-  particlesJS('particles-js', particlesConfig);
+    if (refreshCaptchaButton) {
+        refreshCaptchaButton.addEventListener('click', refreshCaptcha);
+    }
 
-  // Optional: Add a rotating encryption key icon
-  const keyIcon = document.createElement('div');
-  keyIcon.innerHTML = '<i class="fas fa-key fa-spin" style="font-size:3em; color:#00ffff;"></i>';
-  keyIcon.style.position = 'fixed';
-  keyIcon.style.bottom = '20px';
-  keyIcon.style.right = '20px';
-  keyIcon.style.zIndex = '1000'; // Ensure it's on top
-  document.body.appendChild(keyIcon);
-};
+    // Login Form Submission
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const captcha = document.getElementById('captcha').value;
+            const errorMessage = document.getElementById('error-message');
+            const encryptionStatus = document.getElementById('encryption-status');
+            const encryptionAnimation = document.getElementById('encryptionAnimation');
+
+            if (!username || !password || !captcha) {
+                errorMessage.textContent = 'Please enter all fields.';
+                return;
+            }
+
+            if (encryptionAnimation) {
+                encryptionAnimation.style.display = 'block';
+            }
+            errorMessage.textContent = '';
+            encryptionStatus.textContent = 'Encrypting...';
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, password: password, captcha: captcha })
+            })
+            .then(response => {
+                if (encryptionAnimation) {
+                    encryptionAnimation.style.display = 'none';
+                }
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    errorMessage.textContent = '';
+                    encryptionStatus.textContent = 'Encrypted connection established.';
+                    window.location.href = '/index.html';
+                } else {
+                    errorMessage.textContent = data.message || 'Invalid username or password.';
+                    encryptionStatus.textContent = 'Login failed. Encryption in transit.';
+                }
+            })
+            .catch(error => {
+                if (encryptionAnimation) {
+                    encryptionAnimation.style.display = 'none';
+                }
+                console.error('Error:', error);
+                errorMessage.textContent = 'An error occurred during login.';
+                encryptionStatus.textContent = 'Connection error.';
+            });
+        });
+    }
+
+    // Particle.js Initialization
+    if (typeof particlesJS === 'function') {
+        particlesJS.load('particles-js', 'particles-config.json', function() {
+            console.log('particles.js loaded - callback');
+        });
+    } else {
+        console.warn('particlesJS function not found. Ensure particles.js is loaded.');
+    }
+
+    // Function to show a custom alert
+    function showAlert(message, type = 'info') {
+        const alertContainer = document.createElement('div');
+        alertContainer.className = `custom-alert ${type}`;
+        alertContainer.textContent = message;
+
+        document.body.appendChild(alertContainer);
+
+        // Remove the alert after a few seconds
+        setTimeout(() => {
+            alertContainer.remove();
+        }, 3000); // Adjust time as needed
+    }
+});
