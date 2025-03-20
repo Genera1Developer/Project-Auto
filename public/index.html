@@ -136,6 +136,16 @@
                 return hashHex;
             }
 
+            // Function to generate a cryptographically secure salt
+            function generateSalt(length) {
+              const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+              let salt = '';
+              for (let i = 0; i < length; i++) {
+                  salt += characters.charAt(Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * characters.length));
+              }
+              return salt;
+            }
+
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
                 if (!url) {
@@ -162,11 +172,14 @@
                     const hashedKey = await hashKey(encryptionKey);
                     console.log("Hashed Key:", hashedKey); // Log the hashed key
 
+                    // Generate a salt
+                    const salt = generateSalt(16);
+
                     // Encrypt the URL
                     const encryptedData = await encryptURL(url, encryptionKey);
 
                      // Construct the URL with encrypted parameters
-                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(encryptedData.ciphertext)}&iv=${encodeURIComponent(encryptedData.iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}`;
+                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(encryptedData.ciphertext)}&iv=${encodeURIComponent(encryptedData.iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}&salt=${encodeURIComponent(salt)}`;
 
                     // Show loading indicator
                     loadingDiv.style.display = 'block';
