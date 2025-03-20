@@ -9,7 +9,6 @@ body {
     align-items: center;
     height: 100vh;
     overflow: hidden;
-    background: linear-gradient(to bottom, #000000, #001530); /* Dark gradient */
 }
 
 #particles-js {
@@ -20,19 +19,17 @@ body {
 }
 
 .login-container, .signup-container {
-    background-color: rgba(30, 30, 30, 0.9); /* Increased opacity */
+    background-color: rgba(30, 30, 30, 0.8);
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0, 119, 255, 0.8); /* Electric blue shadow */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
     text-align: center;
     width: 300px;
-    border: 1px solid #444; /* Subtle border */
 }
 
 .login-container h2, .signup-container h2 {
     color: #fff;
     margin-bottom: 20px;
-    text-shadow: 0 0 10px #007bff; /* Glowing text */
 }
 
 .login-container input, .signup-container input {
@@ -44,12 +41,6 @@ body {
     background-color: #222;
     color: #fff;
     box-sizing: border-box;
-    transition: border-color 0.3s ease; /* Smooth transition */
-}
-
-.login-container input:focus, .signup-container input:focus {
-    border-color: #007bff; /* Highlight on focus */
-    outline: none; /* Remove default focus outline */
 }
 
 .login-container button, .signup-container button {
@@ -62,12 +53,11 @@ body {
     cursor: pointer;
     width: 100%;
     font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transition and scale */
+    transition: background-color 0.3s ease;
 }
 
 .login-container button:hover, .signup-container button:hover {
     background-color: #0056b3;
-    transform: scale(1.05); /* Scale up slightly */
 }
 
 .login-container a, .signup-container a {
@@ -75,35 +65,31 @@ body {
     text-decoration: none;
     display: block;
     margin-top: 10px;
-    transition: color 0.3s ease; /* Smooth color transition */
 }
 
 .login-container a:hover, .signup-container a:hover {
     text-decoration: underline;
-    color: #00aaff; /* Lighter blue on hover */
 }
 
 .error-message {
-    color: #ff4d4d; /* More alarming red */
+    color: red;
     margin-top: 10px;
-    text-shadow: 0 0 5px #ff4d4d; /* Glowing error text */
 }
 
 #encryption-status {
     margin-top: 10px;
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: #00ff00;
-    text-shadow: 0 0 5px #00ff00; /* Glowing status */
 }
 
 .encryption-animation {
-    width: 60px; /* Slightly larger */
-    height: 60px; /* Slightly larger */
-    margin: 10px auto; /* Add some margin */
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
     border-radius: 50%;
-    border: 6px solid transparent; /* Thicker border */
-    border-top-color: #00aaff; /* Electric blue */
-    animation: rotate 1.4s linear infinite; /* Slightly slower */
+    border: 5px solid transparent;
+    border-top-color: #007bff;
+    animation: rotate 1.2s linear infinite;
     display: none; /* Hidden by default */
 }
 
@@ -124,7 +110,6 @@ body {
 .password-strength {
     margin-top: 5px;
     text-align: left;
-    color: #888; /* Muted color */
 }
 
 .password-strength-bar {
@@ -142,107 +127,41 @@ body {
     transition: width 0.3s ease;
 }
 
-/* Styles for index page */
-.container {
+/* Styles for the proxy input and results */
+#proxy-form {
+    margin-top: 20px;
     text-align: center;
-    color: #fff;
 }
 
-h1 {
-    font-size: 3.5em; /* Larger heading */
-    margin-bottom: 20px;
-    text-shadow: 0 0 15px #007bff; /* Stronger glow */
-}
-
-.input-container {
-    margin-bottom: 20px;
-}
-
-input[type="text"] {
-    padding: 12px;
-    font-size: 16px;
-    border: none;
+#proxy-form input[type="text"] {
+    width: 70%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #555;
     border-radius: 5px;
-    width: 60%;
     background-color: #222;
     color: #fff;
-    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
+    box-sizing: border-box;
 }
 
-input[type="text"]:focus {
-    background-color: #333;
-    color: #fff;
-    outline: none;
-}
-
-button {
+#proxy-form button {
     background-color: #007bff;
     color: white;
-    padding: 14px 20px;
+    padding: 12px 20px;
+    margin: 10px 0;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease;
 }
 
-button:hover {
+#proxy-form button:hover {
     background-color: #0056b3;
-    transform: scale(1.05);
 }
 
-#proxy-url {
-    word-wrap: break-word;
+#proxy-result {
     margin-top: 20px;
-    color: #00ff00; /* Encryption green */
-    text-shadow: 0 0 5px #00ff00;
-}
-
-#uv-error {
-    color: #ff4d4d;
-    margin-top: 10px;
-    text-shadow: 0 0 5px #ff4d4d;
-}
-
-.feature-list {
-    list-style-type: none;
-    padding: 0;
-    margin-top: 30px;
-    display: flex;
-    justify-content: space-around;
-}
-
-.feature-list li {
-    background-color: rgba(30, 30, 30, 0.9); /* Increased opacity */
-    padding: 20px;
-    border-radius: 10px;
-    width: 200px;
+    color: #fff;
     text-align: center;
-    border: 1px solid #444;
-    transition: transform 0.3s ease; /* Smooth scale */
-}
-
-.feature-list li:hover {
-    transform: scale(1.1); /* Scale up on hover */
-}
-
-.feature-list li h3 {
-    color: #fff;
-    margin-bottom: 10px;
-    text-shadow: 0 0 8px #007bff; /* Glowing feature titles */
-}
-
-/* Added style for encryption key display */
-#encryption-key {
-    margin-top: 20px;
-    font-size: 0.9em;
-    color: #00ff00;
-    word-wrap: break-word;
-    text-shadow: 0 0 5px #00ff00;
-}
-
-/* Additional styles for a more 'tech' look */
-::selection {
-    background: #007bff;
-    color: #fff;
 }
