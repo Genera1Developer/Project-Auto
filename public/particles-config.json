@@ -74,7 +74,8 @@
        "hmacAlgorithm": "SHA256",
       "salt": "ENC_SALT_PLACEHOLDER",
       "iterations": 10000,
-      "base64Encode": true
+      "base64Encode": true,
+      "keyDerivationRounds": 3
     }
   },
   "interactivity": {
