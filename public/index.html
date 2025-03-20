@@ -1,1 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypted Proxy</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+        }
 
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: -1;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            background-color: #222;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        button:hover {
+            background-color: #00cc00;
+        }
+
+        #encryption-status {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <h1>Encrypted Proxy Access</h1>
+        <input type="text" id="url-input" placeholder="Enter URL">
+        <button id="access-button">Access Securely</button>
+        <div id="encryption-status">Encryption: Enabled</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS.load('particles-js', 'particles.json', function() {
+            console.log('particles.json loaded...');
+        });
+
+        document.getElementById('access-button').addEventListener('click', function() {
+            var url = document.getElementById('url-input').value;
+            if (url) {
+                window.location.href = '/proxy?url=' + encodeURIComponent(url);
+            } else {
+                alert('Please enter a URL.');
+            }
+        });
+    </script>
+</body>
+</html>
