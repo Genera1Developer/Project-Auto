@@ -21,8 +21,14 @@ function encrypt(text) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, key, iv, {authTagLength: 16});
-    const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+    const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: 16 });
+    let encrypted;
+    try {
+        encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+    } catch (error) {
+        console.error("Encryption failed:", error);
+        return null;
+    }
     const authTag = cipher.getAuthTag();
     return {
         iv: iv.toString('base64'),
@@ -40,7 +46,7 @@ function decrypt(text) {
         const encryptedData = Buffer.from(text.encryptedData, 'base64');
         const authTag = Buffer.from(text.authTag, 'base64');
 
-        const decipher = crypto.createDecipheriv(algorithm, key, iv, {authTagLength: 16});
+        const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: 16 });
         decipher.setAuthTag(authTag);
 
         const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
@@ -53,6 +59,10 @@ function decrypt(text) {
 
 function safeCompare(a, b) {
     if (typeof a !== 'string' || typeof b !== 'string') {
+        return false;
+    }
+
+    if (a.length !== b.length) {
         return false;
     }
 
