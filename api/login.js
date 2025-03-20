@@ -1,5 +1,9 @@
 const crypto = require('crypto');
 
+const generateSalt = () => {
+  return crypto.randomBytes(16).toString('hex');
+};
+
 const encryptPassword = (password, salt) => {
   const hash = crypto.createHmac('sha512', salt);
   hash.update(password);
