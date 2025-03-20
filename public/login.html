@@ -228,6 +228,12 @@
             return CryptoJS.SHA256(key).toString();
         }
 
+        // Function to generate a salt
+        function generateSalt() {
+            return CryptoJS.lib.WordArray.random(16).toString();
+        }
+
+
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
@@ -249,14 +255,16 @@
             // Generate a unique encryption key and IV for this session
             const encryptionKey = generateEncryptionKey();
             const iv = CryptoJS.lib.WordArray.random(16).toString();
+            const salt = generateSalt(); // Generate a unique salt for this submission
 
             // Encrypt data before sending
-            const encryptedUsername = encryptData(username, encryptionKey, iv);
-            const encryptedPassword = encryptData(password, encryptionKey, iv);
-            const encryptedCaptcha = encryptData(captcha, encryptionKey, iv);
+            const encryptedUsername = encryptData(username + salt, encryptionKey, iv); // Append salt
+            const encryptedPassword = encryptData(password + salt, encryptionKey, iv); // Append salt
+            const encryptedCaptcha = encryptData(captcha + salt, encryptionKey, iv); // Append salt
 
-            // Hash the encryption key for integrity check on the server
+            // Hash the encryption key and salt for integrity check on the server
             const keyHash = hashKey(encryptionKey);
+            const saltHash = hashKey(salt);
 
             // Include a timestamp in the request headers for replay protection
             const timestamp = Date.now();
@@ -267,7 +275,8 @@
                     'Content-Type': 'application/json',
                     'X-Encryption-Key-Hash': keyHash, // Send the key hash
                     'X-Encryption-IV': iv, // Send IV in header
-                    'X-Request-Timestamp': timestamp // Send timestamp
+                    'X-Request-Timestamp': timestamp, // Send timestamp
+                    'X-Salt-Hash': saltHash // Send Salt hash
                 },
                 body: JSON.stringify({
                     username: encryptedUsername,
