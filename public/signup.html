@@ -154,6 +154,28 @@
         #security-tips li {
             margin-bottom: 5px;
         }
+
+        /* New styles for password meter */
+        .password-meter {
+            width: 90%;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        .password-meter-bar {
+            height: 100%;
+            border-radius: 5px;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .strength-0 { background-color: #ff4d4d; }
+        .strength-1 { background-color: #ff7043; }
+        .strength-2 { background-color: #ffc107; }
+        .strength-3 { background-color: #4caf50; }
+        .strength-4 { background-color: #2e7d32; }
     </style>
 </head>
 <body>
@@ -162,6 +184,9 @@
         <h2>Create Secure Account</h2>
         <input type="text" id="username" placeholder="Username" required>
         <input type="password" id="password" placeholder="Password" required onkeyup="checkPasswordStrength()">
+        <div class="password-meter">
+            <div class="password-meter-bar" id="password-meter-bar"></div>
+        </div>
         <div id="password-strength"></div>
          <div id="password-requirements">
             Password must be at least 8 characters long and include:
@@ -208,6 +233,11 @@
             const password = document.getElementById('password').value;
             const strength = calculatePasswordStrength(password);
             const strengthElement = document.getElementById('password-strength');
+            const meterBar = document.getElementById('password-meter-bar');
+
+            meterBar.className = 'password-meter-bar strength-' + strength;
+            meterBar.style.width = (strength / 4) * 100 + '%';
+
 
             switch (strength) {
                 case 0:
@@ -271,7 +301,7 @@
             }
 
             try {
-                const response = await fetch('/api/account.js', {
+                const response = await fetch('/api/sign-up.js', { // Modified URL
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
