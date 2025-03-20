@@ -57,12 +57,14 @@ function decrypt(text) {
     }
 }
 
+const SAFE_COMPARE_MAX_LENGTH = 256;
+
 function safeCompare(a, b) {
     if (typeof a !== 'string' || typeof b !== 'string') {
         return false;
     }
 
-    if (a.length !== b.length) {
+    if (a.length > SAFE_COMPARE_MAX_LENGTH || b.length > SAFE_COMPARE_MAX_LENGTH) {
         return false;
     }
 
