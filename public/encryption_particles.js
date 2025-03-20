@@ -8,7 +8,7 @@ const encryptionParticlesConfig = {
       }
     },
     "color": {
-      "value": "#00ff00"
+      "value": "#00aaff"
     },
     "shape": {
       "type": "circle",
@@ -26,10 +26,10 @@ const encryptionParticlesConfig = {
       }
     },
     "opacity": {
-      "value": 0.7,
-      "random": true,
+      "value": 0.5,
+      "random": false,
       "anim": {
-        "enable": true,
+        "enable": false,
         "speed": 1,
         "opacity_min": 0.1,
         "sync": false
@@ -48,18 +48,17 @@ const encryptionParticlesConfig = {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#00ff00",
+      "color": "#00aaff",
       "opacity": 0.4,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 3,
+      "speed": 6,
       "direction": "none",
-      "random": true,
+      "random": false,
       "straight": false,
       "out_mode": "out",
-      "bounce": false,
       "attract": {
         "enable": false,
         "rotateX": 600,
@@ -72,7 +71,7 @@ const encryptionParticlesConfig = {
     "events": {
       "onhover": {
         "enable": true,
-        "mode": "grab"
+        "mode": "repulse"
       },
       "onclick": {
         "enable": true,
@@ -82,7 +81,7 @@ const encryptionParticlesConfig = {
     },
     "modes": {
       "grab": {
-        "distance": 140,
+        "distance": 400,
         "line_linked": {
           "opacity": 1
         }
@@ -91,12 +90,11 @@ const encryptionParticlesConfig = {
         "distance": 400,
         "size": 40,
         "duration": 2,
-        "opacity": 8,
+        "opacity": 0.8,
         "speed": 3
       },
       "repulse": {
-        "distance": 200,
-        "duration": 0.4
+        "distance": 200
       },
       "push": {
         "particles_nb": 4
@@ -106,5 +104,13 @@ const encryptionParticlesConfig = {
       }
     }
   },
-  "retina_detect": true
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#000000",
+    "background_image": "",
+    "background_position": "50% 50%",
+    "background_repeat": "no-repeat",
+    "background_size": "cover"
+  }
 }
