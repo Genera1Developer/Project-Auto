@@ -78,6 +78,11 @@
         .login-container a:hover {
             text-decoration: underline;
         }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -90,6 +95,7 @@
             <button type="submit">Login</button>
         </form>
         <a href="signup.html">Don't have an account? Sign up</a>
+        <div id="error-message" class="error-message"></div>
     </div>
 
     <script src="particles.js"></script>
@@ -102,13 +108,25 @@
             event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
 
-            // In a real application, you would send this data to your server
-            // and handle the authentication process there.
-            console.log('Logging in with:', username, password);
+            // Basic client-side validation
+            if (!username || !password) {
+                errorMessage.textContent = 'Please enter both username and password.';
+                return;
+            }
 
-            // Placeholder for actual login logic
-            alert('Login functionality not yet implemented. Check the console for details.');
+            // Simulate login request (replace with actual API call)
+            setTimeout(() => {
+                if (username === 'test' && password === 'password') {
+                    // Successful login
+                    errorMessage.textContent = ''; // Clear any previous errors
+                    alert('Login successful!'); // Replace with redirect
+                } else {
+                    // Failed login
+                    errorMessage.textContent = 'Invalid username or password.';
+                }
+            }, 1000); // Simulate network latency
         });
     </script>
 </body>
