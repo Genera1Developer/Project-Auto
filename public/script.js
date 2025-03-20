@@ -1,117 +1,87 @@
-document.addEventListener('DOMContentLoaded', function() {
-    particlesJS('particles-js', {
-        particles: {
-            number: {
-                value: 120,
-                density: {
-                    enable: true,
-                    value_area: 800
-                }
-            },
-            color: {
-                value: '#00ff00' // Electric green, more encryption-like
-            },
-            shape: {
-                type: 'circle',
-                stroke: {
-                    width: 0,
-                    color: '#000000'
-                },
-                polygon: {
-                    nb_sides: 5
-                }
-            },
-            opacity: {
-                value: 0.8,
-                random: true,
-                anim: {
-                    enable: true,
-                    speed: 0.5,
-                    opacity_min: 0.2,
-                    sync: false
-                }
-            },
-            size: {
-                value: 3,
-                random: true,
-                anim: {
-                    enable: false,
-                    speed: 40,
-                    size_min: 0.1,
-                    sync: false
-                }
-            },
-            line_linked: {
-                enable: true,
-                distance: 150,
-                color: '#00ffff', // Cyan, complements the green
-                opacity: 0.4,
-                width: 1
-            },
-            move: {
-                enable: true,
-                speed: 2,
-                direction: 'none',
-                random: true,
-                straight: false,
-                out_mode: 'out',
-                bounce: false,
-                attract: {
-                    enable: false,
-                    rotateX: 600,
-                    rotateY: 1200
-                }
-            }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: {
-                onhover: {
-                    enable: true,
-                    mode: 'grab'
-                },
-                onclick: {
-                    enable: true,
-                    mode: 'push'
-                },
-                resize: true
-            },
-            modes: {
-                grab: {
-                    distance: 140,
-                    line_linked: {
-                        opacity: 1
-                    }
-                },
-                bubble: {
-                    distance: 400,
-                    size: 40,
-                    duration: 2,
-                    opacity: 0.8,
-                    speed: 3
-                },
-                repulse: {
-                    distance: 200,
-                    duration: 0.4
-                },
-                push: {
-                    particles_nb: 4
-                },
-                remove: {
-                    particles_nb: 2
-                }
-            }
-        },
-        retina_detect: true
+function generateBinaryEncryptionEffect(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+        console.error(`Element with id "${elementId}" not found.`);
+        return;
+    }
+
+    const text = element.innerText;
+    const binaryText = Array.from(text)
+        .map(char => char.charCodeAt(0).toString(2).padStart(8, '0'))
+        .join(' ');
+
+    element.setAttribute('data-original-text', text);
+    element.innerText = binaryText;
+
+    element.addEventListener('mouseover', () => {
+        element.innerText = element.getAttribute('data-original-text');
     });
 
-    const particlesContainer = document.getElementById('particles-js');
-    if (particlesContainer) { // Check if the element exists
-        particlesContainer.style.transition = 'opacity 1s ease-in-out';
-        particlesContainer.style.opacity = 0;
+    element.addEventListener('mouseout', () => {
+        element.innerText = binaryText;
+    });
+}
 
-        setTimeout(() => {
-            particlesContainer.style.opacity = 1;
-        }, 500);
+function applyMatrixAnimation(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) {
+        console.error(`Element with id "${elementId}" not found.`);
+        return;
     }
-});
+
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const originalText = element.innerText;
+    let iteration = 0;
+
+    const interval = setInterval(() => {
+        element.innerText = originalText
+            .split("")
+            .map((char, index) => {
+                if (index < iteration) {
+                    return originalText[index];
+                }
+
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                return characters[randomIndex];
+            })
+            .join("");
+
+        if (iteration >= originalText.length) {
+            clearInterval(interval);
+        }
+
+        iteration += 1 / 3;
+    }, 30);
+}
+
+function showEncryptionNotification(message, duration = 3000) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 123, 255, 0.8);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+    `;
+    notification.innerText = message;
+    document.body.appendChild(notification);
+
+    // Fade in
+    setTimeout(() => {
+        notification.style.opacity = '1';
+    }, 100);
+
+    // Fade out and remove
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 500);
+    }, duration);
+}
