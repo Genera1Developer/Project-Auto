@@ -5,7 +5,7 @@ body {
     background-color: #000;
     color: #00FFFF;
     overflow: hidden;
-    animation: glitch 2s linear infinite, matrix 10s linear infinite;
+    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite;
 }
 
 @keyframes glitch {
@@ -25,6 +25,17 @@ body {
     100% { background-position: 0 -1000px; }
 }
 
+@keyframes scanlines {
+    0% {
+        background-image: linear-gradient(rgba(0, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 255, 255, 0.1) 50%, rgba(0, 255, 255, 0.1) 75%, transparent 75%, transparent);
+        background-size: 100% 8px;
+    }
+    100% {
+        background-image: linear-gradient(rgba(0, 255, 255, 0.1) 25%, transparent 25%, transparent 50%, rgba(0, 255, 255, 0.1) 50%, rgba(0, 255, 255, 0.1) 75%, transparent 75%, transparent);
+        background-size: 100% 8px;
+    }
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -39,6 +50,51 @@ h1 {
     margin-bottom: 20px;
     text-shadow: 0 0 10px #00FFFF;
     animation: flicker 1.5s infinite alternate, encryption 5s steps(5, end) infinite;
+    position: relative;
+}
+
+h1::before,
+h1::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    animation: glitch-effect 2s steps(2, end) infinite;
+}
+
+h1::before {
+    left: 2px;
+    text-shadow: -1px 0 #00FFFF;
+    clip: rect(44px, 450px, 56px, 0);
+}
+
+h1::after {
+    left: -2px;
+    text-shadow: 1px 0 #00FFFF;
+    clip: rect(44px, 450px, 56px, 0);
+    animation-delay: -1.15s;
+}
+
+@keyframes glitch-effect {
+    0% {
+        clip: rect(9px, 9999px, 4px, 0);
+    }
+    25% {
+        clip: rect(12px, 9999px, 15px, 0);
+    }
+    50% {
+        clip: rect(2px, 9999px, 12px, 0);
+    }
+    75% {
+        clip: rect(10px, 9999px, 3px, 0);
+    }
+    100% {
+        clip: rect(2px, 9999px, 8px, 0);
+    }
 }
 
 @keyframes flicker {
