@@ -1,107 +1,223 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const urlInput = document.getElementById('urlInput');
-    const proxyButton = document.getElementById('proxyButton');
-    const contentDiv = document.getElementById('content');
-    const encryptionKey = generateEncryptionKey(); // Generate a key
-    const keyDisplay = document.getElementById('keyDisplay'); // Key
+    // Dark mode toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+    const icon = document.getElementById('darkModeIcon');
 
-    // Display the encryption key (for demonstration purposes only!)
-    keyDisplay.textContent = 'Encryption Key (Demo): ' + encryptionKey;
+    // Check for saved preference
+    const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
 
-    proxyButton.addEventListener('click', async function() {
-        const url = urlInput.value;
+    // Function to enable dark mode
+    function enableDarkMode() {
+        body.classList.add('dark-mode');
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+        localStorage.setItem('darkMode', 'enabled');
+    }
 
-        if (!url) {
-            contentDiv.textContent = 'Please enter a URL.';
-            return;
-        }
+    // Function to disable dark mode
+    function disableDarkMode() {
+        body.classList.remove('dark-mode');
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+        localStorage.setItem('darkMode', null);
+    }
 
-        try {
-            // Encrypt the URL
-            const encryptedUrl = await encryptURL(url, encryptionKey);
+    // Set initial dark mode state
+    if (isDarkMode) {
+        enableDarkMode();
+    }
 
-            // Call the proxy endpoint with the encrypted URL
-            const response = await fetch('/api/proxy?url=' + encodeURIComponent(encryptedUrl));
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.text();
-
-            // Decrypt the data
-            const decryptedData = await decryptData(data, encryptionKey);
-
-            contentDiv.innerHTML = decryptedData; // Display content as HTML
-        } catch (error) {
-            console.error('Error fetching content:', error);
-            contentDiv.textContent = 'An error occurred while fetching the content.';
+    // Toggle dark mode on click
+    darkModeToggle.addEventListener('click', function() {
+        if (body.classList.contains('dark-mode')) {
+            disableDarkMode();
+        } else {
+            enableDarkMode();
         }
     });
-
-    // Encryption function using AES
-    async function encryptURL(url, key) {
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const encoded = new TextEncoder().encode(url);
-        const cryptoKey = await window.crypto.subtle.importKey(
-            "raw",
-            new TextEncoder().encode(key),
-            "AES-GCM",
-            false,
-            ["encrypt"]
-        );
-        const cipher = await window.crypto.subtle.encrypt(
-            {
-                name: "AES-GCM",
-                iv: iv
-            },
-            cryptoKey,
-            encoded
-        );
-
-        const ivString = String.fromCharCode(...iv);
-        const cipherString = String.fromCharCode(...new Uint8Array(cipher));
-        const combined = btoa(ivString + cipherString);
-        return combined;
-    }
-
-    // Decryption function using AES
-    async function decryptData(data, key) {
-        try {
-            const decoded = atob(data);
-            const iv = decoded.substring(0, 12);
-            const cipherText = decoded.substring(12);
-
-            const ivArray = new Uint8Array(iv.split('').map(char => char.charCodeAt(0)));
-            const cipherArray = new Uint8Array(cipherText.split('').map(char => char.charCodeAt(0)));
-
-            const cryptoKey = await window.crypto.subtle.importKey(
-                "raw",
-                new TextEncoder().encode(key),
-                "AES-GCM",
-                false,
-                ["decrypt"]
-            );
-
-            const decrypted = await window.crypto.subtle.decrypt(
-                {
-                    name: "AES-GCM",
-                    iv: ivArray
-                },
-                cryptoKey,
-                cipherArray
-            );
-            const decodedText = new TextDecoder().decode(decrypted);
-            return decodedText;
-        } catch (error) {
-            console.error("Decryption error:", error);
-            return "Error: Could not decrypt data.";
-        }
-    }
-
-    // Generate a simple encryption key (for demonstration purposes only!)
-    function generateEncryptionKey() {
-        return 'SecretPassphrase'; // Replace with a more secure method in production
-    }
 });
+
+edit filepath: public/style.css
+content: body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-mode {
+    background-color: #1e1e1e;
+    color: #eee;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding: 20px;
+}
+
+header {
+    background: #333;
+    color: #fff;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: 3px solid #e8491d;
+}
+
+header a {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+header ul {
+    margin: 0;
+    padding: 0;
+}
+
+header li {
+    float: left;
+    display: inline;
+    padding: 0 20px 0 20px;
+}
+
+header #branding {
+    float: left;
+}
+
+header #branding h1 {
+    margin: 0;
+}
+
+header nav {
+    float: right;
+    margin-top: 10px;
+}
+
+header .highlight, header .current a {
+    color: #e8491d;
+    font-weight: bold;
+}
+
+header a:hover {
+    color: #ccc;
+    font-weight: bold;
+}
+
+#newsletter {
+    padding: 15px;
+    color: #fff;
+    background: #333;
+}
+
+#newsletter h1 {
+    float: left;
+}
+
+#newsletter form {
+    float: right;
+    margin-top: 15px;
+}
+
+#newsletter input[type="email"] {
+    padding: 4px;
+    height: 25px;
+    width: 250px;
+}
+
+.button_1 {
+    height: 38px;
+    background: #e8491d;
+    border: 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: #fff;
+}
+
+#main {
+    padding: 20px;
+}
+
+article#main-col {
+    float: left;
+    width: 65%;
+}
+
+aside#sidebar {
+    float: right;
+    width: 30%;
+    margin-top: 10px;
+}
+
+#services {
+    padding: 20px;
+}
+
+#services .box {
+    padding: 20px;
+    margin-bottom: 40px;
+    border-bottom: #e8491d 3px solid;
+}
+
+aside#sidebar .quote input, aside#sidebar .quote textarea {
+    width: 90%;
+    padding: 5px;
+}
+
+footer {
+    padding: 20px;
+    margin-top: 20px;
+    color: #fff;
+    background-color: #e8491d;
+    text-align: center;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark-mode header {
+    background: #222;
+    border-bottom: 3px solid #bb3915;
+}
+
+body.dark-mode #newsletter {
+    background: #222;
+}
+
+body.dark-mode footer {
+    background-color: #bb3915;
+}
+
+/* Font Awesome Icons for Dark Mode Toggle */
+.dark-mode-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #fff; /* Default color */
+    padding: 0;
+    transition: color 0.3s ease;
+}
+
+body.dark-mode .dark-mode-toggle {
+    color: #ffcc00; /* Color when dark mode is enabled */
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #232741;
+    z-index: -1;
+}
 edit filepath: public/index.html
 content: <!DOCTYPE html>
 <html lang="en">
@@ -110,252 +226,78 @@ content: <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encrypted Web Proxy</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #000;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; /* Hide scrollbars */
-        }
-
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        h1 {
-            text-align: center;
-            color: #00bcd4;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background-color: #333;
-            color: #fff;
-        }
-
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
-            background-color: #00bcd4;
-            color: #fff;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #008ba7;
-        }
-
-        #content {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #222;
-            border-radius: 5px;
-            overflow-wrap: break-word;
-        }
-        #keyDisplay {
-            text-align: center;
-            margin-top: 10px;
-            color: #777; /* A subtle grey color */
-            font-size: 0.8em;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div id="particles-js"></div>
-    <div class="container">
-        <h1>Encrypted Web Proxy</h1>
-        <input type="text" id="urlInput" placeholder="Enter URL">
-        <button id="proxyButton">Access via Proxy</button>
-        <div id="keyDisplay"></div>
-        <div id="content"></div>
-    </div>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><span class="highlight">Encrypted</span> Web Proxy</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="current"><a href="index.html">Home</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="signup.html">Signup</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
+    <section id="newsletter">
+        <div class="container">
+            <h1>Subscribe to Our Newsletter</h1>
+            <form>
+                <input type="email" placeholder="Enter Email...">
+                <button type="submit" class="button_1">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="main">
+        <div class="container">
+            <article id="main-col">
+                <h1>About Us</h1>
+                <p>This is a secure web proxy designed to encrypt your web traffic and protect your privacy. We use state-of-the-art encryption techniques to ensure that your data remains confidential and secure.</p>
+                <p>Our proxy supports various encryption protocols, including AES and TLS, to provide a robust security layer for your online activities.</p>
+            </article>
+
+            <aside id="sidebar">
+                <div class="quote">
+                    <h3>Get a Quote</h3>
+                    <form>
+                        <div>
+                            <label>Name</label><br>
+                            <input type="text" placeholder="Name">
+                        </div>
+                        <div>
+                            <label>Email</label><br>
+                            <input type="email" placeholder="Email Address">
+                        </div>
+                        <div>
+                            <label>Message</label><br>
+                            <textarea placeholder="Message"></textarea>
+                        </div>
+                        <button class="button_1" type="submit">Send</button>
+                    </form>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <footer>
+        <p>Encrypted Web Proxy, Copyright &copy; 2024</p>
+    </footer>
+    <button id="darkModeToggle" class="dark-mode-toggle">
+        <i id="darkModeIcon" class="fas fa-moon"></i>
+    </button>
     <script src="particles.js"></script>
-    <script src="script.js"></script>
     <script>
         particlesJS.load('particles-js', 'particles-config.json', function() {
             console.log('particles.js loaded - callback');
         });
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
-edit filepath: public/style.css
-content: /* Reset some default styles */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-}
-
-/* Body styles */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background */
-    color: #fff; /* Light text */
-    overflow: hidden; /* Prevent scrollbars, the particles will cover the whole area */
-}
-
-/* Particles.js container */
-#particles-js {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1; /* Behind all content */
-}
-
-/* Main container */
-.container {
-    position: relative;
-    z-index: 1; /* Above particles */
-    max-width: 800px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: rgba(30, 30, 30, 0.8); /* Darker, translucent background */
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 188, 212, 0.3); /* Cyan shadow */
-}
-
-/* Title */
-h1 {
-    text-align: center;
-    color: #00bcd4; /* Cyan color */
-    text-shadow: 0 0 10px rgba(0, 188, 212, 0.8); /* Glowing text */
-}
-
-/* Input field */
-input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #444; /* Darker input background */
-    color: #eee; /* Lighter input text */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5) inset; /* Inset shadow */
-}
-
-/* Button */
-button {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    background-color: #00bcd4; /* Cyan button color */
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5); /* Cyan shadow */
-}
-
-button:hover {
-    background-color: #008ba7; /* Darker cyan on hover */
-    box-shadow: 0 0 15px rgba(0, 188, 212, 0.7); /* Stronger shadow on hover */
-}
-
-/* Content area */
-#content {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #333; /* Darker content background */
-    border-radius: 5px;
-    overflow-wrap: break-word;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Shadow for the content area */
-}
-edit filepath: api/proxy.js
-content: const https = require('https');
-const http = require('http');
-const zlib = require('zlib');
-const URL = require('url').URL;
-
-module.exports = async (req, res) => {
-    const targetUrl = req.query.url;
-
-    if (!targetUrl) {
-        return res.status(400).send('URL parameter is required');
-    }
-
-    try {
-        const parsedUrl = new URL(targetUrl);
-        const options = {
-            hostname: parsedUrl.hostname,
-            path: parsedUrl.pathname + parsedUrl.search,
-            method: 'GET',
-            headers: {
-                'User-Agent': req.headers['user-agent'] || 'EncryptedProxy',
-                'Accept-Encoding': 'gzip, deflate, br', // Accept compressed content
-            },
-        };
-
-        const protocol = parsedUrl.protocol === 'https:' ? https : http;
-
-        const proxyReq = protocol.request(options, (proxyRes) => {
-            // Set response headers
-            for (const header in proxyRes.headers) {
-                res.setHeader(header, proxyRes.headers[header]);
-            }
-            res.setHeader('x-proxy-by', 'EncryptedProxy');
-
-            // Handle compressed responses
-            let encoding = proxyRes.headers['content-encoding'];
-            let stream = proxyRes;
-
-            if (encoding === 'gzip') {
-                stream = zlib.createGunzip();
-                proxyRes.pipe(stream);
-            } else if (encoding === 'deflate') {
-                stream = zlib.createInflate();
-                proxyRes.pipe(stream);
-            }
-
-            // Pipe the response to the client
-            stream.pipe(res);
-
-            // Handle errors during streaming
-            stream.on('error', (err) => {
-                console.error('Streaming error:', err);
-                res.status(500).send('Error streaming content');
-            });
-        });
-
-        proxyReq.on('error', (err) => {
-            console.error('Proxy request error:', err);
-            res.status(500).send('Proxy request failed');
-        });
-
-        proxyReq.end();
-
-    } catch (error) {
-        console.error('URL parsing error:', error);
-        res.status(400).send('Invalid URL');
-    }
-};
