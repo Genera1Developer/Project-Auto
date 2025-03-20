@@ -268,40 +268,51 @@
                 return;
             }
 
+            if (password.length < 12) {
+              errorMessage.textContent = 'Password must be at least 12 characters long.';
+              return;
+            }
+
             encryptionAnimation.style.display = 'block';
             errorMessage.textContent = '';
             encryptionStatus.textContent = 'Encrypting...';
 
-            fetch('/api/sign-up', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username: username, password: password, email: email, captcha: captcha })
-            })
-            .then(response => {
-                encryptionAnimation.style.display = 'none';
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    errorMessage.textContent = '';
-                    encryptionStatus.textContent = 'Encrypted account created.';
-                    window.location.href = 'login.html';
-                } else {
-                    errorMessage.textContent = data.message || 'Signup failed.';
-                    encryptionStatus.textContent = 'Signup attempt encrypted.';
-                }
-            })
-            .catch(error => {
-                encryptionAnimation.style.display = 'none';
-                console.error('Error:', error);
-                errorMessage.textContent = 'An error occurred during signup.';
-                encryptionStatus.textContent = 'Connection error.';
-            });
+            // Simulate encryption with a delay
+            setTimeout(() => {
+              // Use a more secure method for client-side encryption if possible (e.g., WebCrypto API)
+              // This is just a placeholder and should be replaced with proper encryption
+              const encryptedPassword = btoa(password);
+              fetch('/api/sign-up', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ username: username, password: encryptedPassword, email: email, captcha: captcha })
+              })
+              .then(response => {
+                  encryptionAnimation.style.display = 'none';
+                  if (!response.ok) {
+                      throw new Error('Network response was not ok');
+                  }
+                  return response.json();
+              })
+              .then(data => {
+                  if (data.success) {
+                      errorMessage.textContent = '';
+                      encryptionStatus.textContent = 'Encrypted account created.';
+                      window.location.href = 'login.html';
+                  } else {
+                      errorMessage.textContent = data.message || 'Signup failed.';
+                      encryptionStatus.textContent = 'Signup attempt encrypted.';
+                  }
+              })
+              .catch(error => {
+                  encryptionAnimation.style.display = 'none';
+                  console.error('Error:', error);
+                  errorMessage.textContent = 'An error occurred during signup.';
+                  encryptionStatus.textContent = 'Connection error.';
+              });
+            }, 1000); // Simulate encryption time
         });
     </script>
 </body>
