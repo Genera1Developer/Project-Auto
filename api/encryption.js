@@ -11,8 +11,9 @@ function setEncryptionKey(newKey) {
 }
 
 function generateEncryptionKey() {
-    key = crypto.generateKeySync('aes', { length: 256 });
-    return key.toString('hex');
+    const newKey = crypto.generateKeySync('aes', { length: 256 });
+    key = newKey;
+    return newKey.toString('hex');
 }
 
 function encrypt(text) {
@@ -20,7 +21,7 @@ function encrypt(text) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv(algorithm, key, iv);
+    const cipher = crypto.createCipheriv(algorithm, key, iv, {authTagLength: 16});
     const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
     const authTag = cipher.getAuthTag();
     return {
@@ -39,7 +40,7 @@ function decrypt(text) {
         const encryptedData = Buffer.from(text.encryptedData, 'base64');
         const authTag = Buffer.from(text.authTag, 'base64');
 
-        const decipher = crypto.createDecipheriv(algorithm, key, iv);
+        const decipher = crypto.createDecipheriv(algorithm, key, iv, {authTagLength: 16});
         decipher.setAuthTag(authTag);
 
         const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
@@ -55,11 +56,11 @@ function safeCompare(a, b) {
         return false;
     }
 
-    if (a.length !== b.length) {
+    try {
+        return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+    } catch (error) {
         return false;
     }
-
-    return crypto.timingSafeEqual(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8'));
 }
 
 module.exports = { encrypt, decrypt, setEncryptionKey, generateEncryptionKey, safeCompare };
