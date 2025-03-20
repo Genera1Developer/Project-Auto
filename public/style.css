@@ -9,6 +9,7 @@ body {
     align-items: center;
     height: 100vh;
     overflow: hidden;
+    background: linear-gradient(to right, #00093c, #2d0b00); /* Encryption-themed gradient */
 }
 
 #particles-js {
@@ -22,14 +23,16 @@ body {
     background-color: rgba(30, 30, 30, 0.8);
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.3); /* Encryption blue shadow */
     text-align: center;
     width: 300px;
+    border: 1px solid rgba(0, 123, 255, 0.1); /* Subtle border */
 }
 
 .container h2 {
     color: #fff;
     margin-bottom: 20px;
+    text-shadow: 0 0 10px #007bff; /* Glowing text */
 }
 
 .container input {
@@ -41,6 +44,12 @@ body {
     background-color: #222;
     color: #fff;
     box-sizing: border-box;
+    transition: border-color 0.3s ease; /* Smooth transition */
+}
+
+.container input:focus {
+    border-color: #007bff;
+    outline: none;
 }
 
 .container button {
@@ -53,11 +62,12 @@ body {
     cursor: pointer;
     width: 100%;
     font-size: 16px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .container button:hover {
     background-color: #0056b3;
+    transform: translateY(-2px); /* Slight lift on hover */
 }
 
 .container a {
@@ -65,21 +75,25 @@ body {
     text-decoration: none;
     display: block;
     margin-top: 10px;
+    transition: color 0.3s ease;
 }
 
 .container a:hover {
     text-decoration: underline;
+    color: #00aaff;
 }
 
 .error-message {
-    color: red;
+    color: #ff4444; /* More noticeable error color */
     margin-top: 10px;
+    animation: shake 0.5s; /* Subtle shake animation for errors */
 }
 
 #encryption-status {
     margin-top: 10px;
-    font-size: 0.8em;
+    font-size: 0.9em;
     color: #00ff00;
+    text-shadow: 0 0 5px #00ff00; /* Glowing status */
 }
 
 .encryption-animation {
@@ -125,4 +139,10 @@ body {
     width: 0;
     background-color: #00aaff;
     transition: width 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
 }
