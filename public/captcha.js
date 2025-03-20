@@ -44,16 +44,18 @@ document.addEventListener('DOMContentLoaded', function() {
         captchaTextElement.textContent = encryptedCaptcha;
         sessionStorage.setItem('encryptionKey', encryptionKey);
         sessionStorage.setItem('encryptionIV', encryptionIV);
-        sessionStorage.setItem('generatedCaptcha', captcha); // Store original
+        // Store encrypted captcha, not original
+        sessionStorage.setItem('encryptedCaptcha', encryptedCaptcha);
+        sessionStorage.removeItem('generatedCaptcha');
     }
 
     window.validateCaptcha = function() {
         const userInput = captchaInputElement.value;
         const storedKey = sessionStorage.getItem('encryptionKey');
         const storedIV = sessionStorage.getItem('encryptionIV');
-        const originalCaptcha = sessionStorage.getItem('generatedCaptcha'); // Retrieve
+        const encryptedCaptcha = sessionStorage.getItem('encryptedCaptcha');
 
-        if (!storedKey || !storedIV || !originalCaptcha) {
+        if (!storedKey || !storedIV || !encryptedCaptcha) {
             errorMessageElement.textContent = 'Encryption keys missing. Refresh.';
             errorMessageElement.style.color = 'red';
             displayEncryptedCaptcha();
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
 
-             if (decryptedText.trim() === originalCaptcha) {
+             if (encryptCaptcha(decryptedText.trim()) === encryptedCaptcha) {
                 errorMessageElement.textContent = 'Captcha verified!';
                 errorMessageElement.style.color = 'green';
             } else {
