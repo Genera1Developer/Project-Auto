@@ -203,6 +203,25 @@
             document.getElementById('captchaImage').src = '/api/captcha?' + new Date().getTime();
         }
 
+        // Function to generate a cryptographically secure random key
+        function generateEncryptionKey() {
+            return CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
+        }
+
+        // Function to encrypt data
+        function encryptData(data, key, iv) {
+            return CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
+                iv: CryptoJS.enc.Utf8.parse(iv),
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            }).toString();
+        }
+
+        // Function to hash the encryption key for integrity check
+        function hashKey(key) {
+            return CryptoJS.SHA256(key).toString();
+        }
+
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
@@ -221,51 +240,29 @@
             errorMessage.textContent = ''; // Clear previous errors
             encryptionStatus.textContent = 'Encrypting...'; // Update status
 
-			// Generate a more robust Initialization Vector (IV)
+            // Generate a unique encryption key and IV for this session
+            const encryptionKey = generateEncryptionKey();
             const iv = CryptoJS.lib.WordArray.random(16).toString();
 
-            // Generate a unique encryption key for this session using PBKDF2
-            const salt = CryptoJS.lib.WordArray.random(16).toString(); // Random salt
-            const encryptionKey = CryptoJS.PBKDF2(
-                "YourSecretPhrase" + salt, // Derive key from a constant phrase and salt
-                CryptoJS.enc.Utf8.parse(salt),
-                { keySize: 256/32, iterations: 100 } // 256-bit key, 100 iterations
-            ).toString();
-
             // Encrypt data before sending
-            const encryptedUsername = CryptoJS.AES.encrypt(username, CryptoJS.enc.Utf8.parse(encryptionKey), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
-				mode: CryptoJS.mode.CBC,
-				padding: CryptoJS.pad.Pkcs7
-            }).toString();
-            const encryptedPassword = CryptoJS.AES.encrypt(password, CryptoJS.enc.Utf8.parse(encryptionKey), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
-				mode: CryptoJS.mode.CBC,
-				padding: CryptoJS.pad.Pkcs7
-            }).toString();
-            const encryptedCaptcha = CryptoJS.AES.encrypt(captcha, CryptoJS.enc.Utf8.parse(encryptionKey), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
-				mode: CryptoJS.mode.CBC,
-				padding: CryptoJS.pad.Pkcs7
-            }).toString();
+            const encryptedUsername = encryptData(username, encryptionKey, iv);
+            const encryptedPassword = encryptData(password, encryptionKey, iv);
+            const encryptedCaptcha = encryptData(captcha, encryptionKey, iv);
 
-            // Do not store the encryption key and IV in localStorage!
-            // It's very unsafe. Instead, negotiate a key using a secure protocol like Diffie-Hellman
-            // In this example, we're skipping the secure key exchange for simplicity and assuming
-            // the server knows how to decrypt the data (e.g., using a pre-shared key or a more sophisticated method).
+            // Hash the encryption key for integrity check on the server
+            const keyHash = hashKey(encryptionKey);
 
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-					'X-Encryption-Key': encryptionKey, // Send key in header (INSECURE)
-					'X-Encryption-IV': iv,         // Send IV in header (INSECURE)
-					'X-Encryption-Salt': salt	  // Send the salt (INSECURE)
+                    'X-Encryption-Key-Hash': keyHash, // Send the key hash
+                    'X-Encryption-IV': iv // Send IV in header
                 },
                 body: JSON.stringify({
-                  username: encryptedUsername,
-                  password: encryptedPassword,
-                  captcha: encryptedCaptcha
+                    username: encryptedUsername,
+                    password: encryptedPassword,
+                    captcha: encryptedCaptcha
                 })
             })
             .then(response => {
@@ -273,18 +270,19 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+				// Store encryption key in session storage for use on the next page
+                sessionStorage.setItem('encryptionKey', encryptionKey);
                 return response.json();
             })
             .then(data => {
                 if (data.success) {
                     errorMessage.textContent = '';
                     encryptionStatus.textContent = 'Encrypted connection established.';
-                    //localStorage.removeItem('encryptionKey'); // Remove key after successful login.
-					//localStorage.removeItem('encryptionIV'); //Remove IV after successful login
                     window.location.href = '/index.html';
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
                     encryptionStatus.textContent = 'Login failed. Encryption in transit.';
+                    sessionStorage.removeItem('encryptionKey'); // Remove the key on failure
                 }
             })
             .catch(error => {
@@ -292,6 +290,7 @@
                 console.error('Error:', error);
                 errorMessage.textContent = 'An error occurred during login.';
                 encryptionStatus.textContent = 'Connection error.';
+                sessionStorage.removeItem('encryptionKey'); // Remove the key on error
             });
         });
 
