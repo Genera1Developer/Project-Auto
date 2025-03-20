@@ -19,8 +19,18 @@ const MAX_ENCRYPTED_HEADER_LENGTH = 2048; // Limit header size to prevent DoS
 const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date'];
 const ENCRYPT_HEADER_PREFIX = 'enc_';
 
+// Store derived keys in a cache to avoid repeated derivation
+const keyCache = new Map();
+
 function deriveKey(password, salt) {
-    return crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
+    const cacheKey = `${password}-${salt}`;
+    if (keyCache.has(cacheKey)) {
+        return keyCache.get(cacheKey);
+    }
+
+    const derivedKey = crypto.pbkdf2Sync(password, salt, ITERATIONS, 32, DIGEST); // 32 bytes for AES-256
+    keyCache.set(cacheKey, derivedKey);
+    return derivedKey;
 }
 
 function encrypt(text, key) {
@@ -73,6 +83,10 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
     const transformedHeaders = {};
     for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
+            if (key === 'transfer-encoding' && headers[key] === 'chunked') {
+                continue; // Skip transfer-encoding: chunked
+            }
+
             let lowerKey = key.toLowerCase();
             let value = String(headers[key]); // Ensure value is a string
 
