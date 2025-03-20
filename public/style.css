@@ -11,26 +11,27 @@ body {
 }
 
 .container {
-    background-color: rgba(30, 30, 30, 0.8); /* Darker, translucent background */
+    background-color: rgba(30, 30, 30, 0.8);
     padding: 40px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); /* Cyan glow */
+    box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
     width: 80%;
     max-width: 600px;
+    z-index: 1; /* Ensure content is above particles */
 }
 
 h1 {
-    font-size: 2.5em;
+    color: #00c8ff;
     margin-bottom: 20px;
-    color: #00ffff; /* Cyan title */
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    font-size: 2.5em;
+    text-shadow: 0 0 10px rgba(0, 200, 255, 0.8);
 }
 
 p {
     font-size: 1.2em;
+    color: #ddd;
     margin-bottom: 30px;
-    color: #eee;
 }
 
 .input-group {
@@ -40,43 +41,44 @@ p {
 
 input[type="text"] {
     padding: 15px;
-    font-size: 1.1em;
     border: none;
     border-radius: 8px 0 0 8px;
+    font-size: 1em;
     width: 70%;
     background-color: #222;
     color: #fff;
-    outline: none;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 button {
-    padding: 15px 20px;
-    font-size: 1.1em;
+    padding: 15px 25px;
     border: none;
     border-radius: 0 8px 8px 0;
-    background-color: #00ffff; /* Cyan button */
-    color: #000;
+    background-color: #00c8ff;
+    color: #fff;
+    font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    outline: none;
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
 }
 
 button:hover {
-    background-color: #00bfff;
+    background-color: #00a6d6;
 }
 
 .error {
     color: #ff4d4d;
-    margin-top: 10px;
+    margin-bottom: 20px;
+    font-size: 1.1em;
 }
 
 .security-info {
-    margin-top: 30px;
-    font-size: 1em;
-    color: #aaffaa; /* Light green security info */
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #aaff80;
+    font-size: 1em;
+    margin-top: 20px;
 }
 
 .security-info i {
@@ -84,10 +86,11 @@ button:hover {
 }
 
 #particles-js {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: -1; /* Behind all content */
+    background-color: #000;
+    z-index: 0; /* Ensure particles are behind content */
 }
