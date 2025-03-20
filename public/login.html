@@ -215,7 +215,7 @@
 
         // Function to encrypt data
         function encryptData(data, key, iv) {
-            const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(data), { //Encrypt data using data as the key
+            const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
                 iv: CryptoJS.enc.Utf8.parse(iv),
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
@@ -268,9 +268,9 @@
             const salt = generateSalt(); // Generate a unique salt for this submission
 
             // Encrypt data before sending
-            const encryptedUsername = encryptData(username + salt, username, iv); // Append salt
-            const encryptedPassword = encryptData(password + salt, password, iv); // Append salt
-            const encryptedCaptcha = encryptData(captcha + salt, captcha, iv); // Append salt
+            const encryptedUsername = encryptData(username + salt, encryptionKey, iv); // Append salt
+            const encryptedPassword = encryptData(password + salt, encryptionKey, iv); // Append salt
+            const encryptedCaptcha = encryptData(captcha + salt, encryptionKey, iv); // Append salt
 
             // Hash the encryption key and salt for integrity check on the server
             const keyHash = hashKey(encryptionKey);
@@ -298,7 +298,8 @@
                 body: JSON.stringify({
                     username: encryptedUsername,
                     password: encryptedPassword,
-                    captcha: encryptedCaptcha
+                    captcha: encryptedCaptcha,
+                    saltHash: saltHash
                 })
             })
             .then(response => {
