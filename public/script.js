@@ -1,64 +1,77 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('login-form');
-    const signupForm = document.getElementById('signup-form');
-
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const formData = new FormData(loginForm);
-            const data = Object.fromEntries(formData);
-
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    alert(result.message); // Success message
-                    window.location.href = '/index.html'; // Redirect to index
-                } else {
-                    alert(result.message || 'Login failed'); // Error message
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred during login.');
-            }
-        });
+function generateCaptcha() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let captcha = '';
+    for (let i = 0; i < 6; i++) {
+        captcha += characters.charAt(Math.floor(Math.random() * characters.length));
     }
+    return captcha;
+}
 
-    if (signupForm) {
-        signupForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const formData = new FormData(signupForm);
-            const data = Object.fromEntries(formData);
+function encryptCaptcha(captcha) {
+    const key = 'YOUR_SECRET_KEY';
+    const iv = CryptoJS.lib.WordArray.random(128 / 8).toString();
+    const salt = CryptoJS.lib.WordArray.random(128 / 8).toString();
+    const saltedCaptcha = salt + captcha;
+    const encrypted = CryptoJS.AES.encrypt(saltedCaptcha, CryptoJS.PBKDF2(key, CryptoJS.enc.Hex.parse(salt), {
+        keySize: 256/32,
+        iterations: 100
+    }), {
+        iv: CryptoJS.enc.Utf8.parse(iv),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    return iv + salt + encrypted.toString();
+}
 
-            try {
-                const response = await fetch('/api/sign-up', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
+let captchaText = generateCaptcha();
+let encryptedText = encryptCaptcha(captchaText);
 
-                const result = await response.json();
+function decryptCaptcha(encryptedCaptcha) {
+    const key = 'YOUR_SECRET_KEY';
+    const iv = encryptedCaptcha.substring(0, 32);
+    const salt = encryptedCaptcha.substring(32, 64);
+    const encrypted = encryptedCaptcha.substring(64);
 
-                if (response.ok) {
-                    alert(result.message); // Success message
-                    window.location.href = '/login.html'; // Redirect to login
-                } else {
-                    alert(result.message || 'Signup failed'); // Error message
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred during signup.');
-            }
+    try {
+        const decrypted = CryptoJS.AES.decrypt(encrypted, CryptoJS.PBKDF2(key, CryptoJS.enc.Hex.parse(salt), {
+            keySize: 256/32,
+            iterations: 100
+        }), {
+            iv: CryptoJS.enc.Utf8.parse(iv),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
         });
+
+        const saltedCaptcha = decrypted.toString(CryptoJS.enc.Utf8);
+        if (saltedCaptcha) {
+            return saltedCaptcha.substring(32);
+        } else {
+            return '';
+        }
+    } catch (e) {
+        console.error("Decryption Error:", e);
+        return '';
     }
-});
+}
+
+function displayCaptcha() {
+    captchaText = generateCaptcha();
+    encryptedText = encryptCaptcha(captchaText);
+    document.getElementById('captcha-text').innerText = encryptedText;
+}
+
+function validateCaptcha() {
+    const userInput = document.getElementById('captcha-input').value;
+    const decryptedText = decryptCaptcha(encryptedText);
+
+    if (decryptedText === userInput) {
+        alert('Captcha validation successful!');
+        window.location.href = '/';
+    } else {
+        document.getElementById('error-message').innerText = 'Incorrect captcha. Please try again.';
+        displayCaptcha();
+        document.getElementById('captcha-input').value = '';
+    }
+}
+
+displayCaptcha();
