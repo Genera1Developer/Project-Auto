@@ -1,4 +1,4 @@
-const encryptionParticlesConfig = {
+const particleConfig = {
     "particles": {
         "number": {
             "value": 80,
@@ -8,7 +8,7 @@ const encryptionParticlesConfig = {
             }
         },
         "color": {
-            "value": "#007bff"
+            "value": "#00ffff"
         },
         "shape": {
             "type": "circle",
@@ -26,10 +26,10 @@ const encryptionParticlesConfig = {
             }
         },
         "opacity": {
-            "value": 0.5,
-            "random": false,
+            "value": 0.7,
+            "random": true,
             "anim": {
-                "enable": false,
+                "enable": true,
                 "speed": 1,
                 "opacity_min": 0.1,
                 "sync": false
@@ -48,13 +48,13 @@ const encryptionParticlesConfig = {
         "line_linked": {
             "enable": true,
             "distance": 150,
-            "color": "#007bff",
+            "color": "#00ffff",
             "opacity": 0.4,
             "width": 1
         },
         "move": {
             "enable": true,
-            "speed": 6,
+            "speed": 3,
             "direction": "none",
             "random": false,
             "straight": false,
@@ -71,7 +71,7 @@ const encryptionParticlesConfig = {
         "events": {
             "onhover": {
                 "enable": true,
-                "mode": "grab"
+                "mode": "repulse"
             },
             "onclick": {
                 "enable": true,
@@ -81,7 +81,7 @@ const encryptionParticlesConfig = {
         },
         "modes": {
             "grab": {
-                "distance": 140,
+                "distance": 400,
                 "line_linked": {
                     "opacity": 1
                 }
@@ -90,7 +90,7 @@ const encryptionParticlesConfig = {
                 "distance": 400,
                 "size": 40,
                 "duration": 2,
-                "opacity": 8,
+                "opacity": 0.8,
                 "speed": 3
             },
             "repulse": {
@@ -107,10 +107,20 @@ const encryptionParticlesConfig = {
     "retina_detect": true,
     "config_demo": {
         "hide_card": false,
-        "background_color": "#000000",
+        "background_color": "#b61924",
         "background_image": "",
         "background_position": "50% 50%",
         "background_repeat": "no-repeat",
         "background_size": "cover"
     }
 }
+
+window.onload = function() {
+    Particles.init(particleConfig);
+};
+
+const Particles = {
+    init: function(config) {
+        particlesJS('particles-js', config);
+    }
+};
