@@ -1,204 +1,93 @@
 body {
+    margin: 0;
     font-family: 'Arial', sans-serif;
     background-color: #000;
-    color: #ddd;
-    margin: 0;
-    padding: 0;
+    color: #fff;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+.container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
-    overflow: hidden;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+    color: #00bcd4; /* Cyan for a techy feel */
+    text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+}
+
+p {
+    font-size: 1.2em;
+    color: #eee;
+    margin-bottom: 30px;
+}
+
+input[type="text"] {
+    padding: 15px;
+    font-size: 1em;
+    border: 2px solid #444;
+    background-color: #222;
+    color: #fff;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #00bcd4;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 1.1em;
+    background-color: #00bcd4;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button:hover {
+    background-color: #008ba7;
+    color: #fff;
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
     z-index: -1;
 }
 
-.login-container {
-    background-color: rgba(30, 30, 30, 0.8);
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-    text-align: center;
-    width: 300px;
+.login-signup {
+    margin-top: 20px;
 }
 
-.login-container h2 {
-    color: #fff;
-    margin-bottom: 20px;
-}
-
-.login-container input {
-    width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border: 1px solid #555;
-    border-radius: 5px;
-    background-color: #222;
-    color: #fff;
-    box-sizing: border-box;
-}
-
-.login-container button {
-    background-color: #007bff;
-    color: white;
-    padding: 14px 20px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.login-container button:hover {
-    background-color: #0056b3;
-}
-
-.login-container a {
-    color: #007bff;
-    text-decoration: none;
-    display: block;
-    margin-top: 10px;
-}
-
-.login-container a:hover {
-    text-decoration: underline;
-}
-
-.error-message {
-    color: red;
-    margin-top: 10px;
-}
-
-#encryption-status {
-    margin-top: 10px;
-    font-size: 0.8em;
-    color: #00ff00;
-}
-
-.encryption-animation {
-    width: 50px;
-    height: 50px;
-    margin: 0 auto;
-    border-radius: 50%;
-    border: 5px solid transparent;
-    border-top-color: #007bff;
-    animation: rotate 1.2s linear infinite;
-    display: none; /* Hidden by default */
-}
-
-@keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-#captcha-container {
-    margin-top: 15px;
-}
-
-.password-toggle {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.password-toggle input {
-    padding-right: 40px; /* Space for the eye icon */
-}
-
-.password-toggle i {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    color: #fff;
-}
-
-/* Added styles for preloader */
-.preloader {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #000; /* Black background */
-    z-index: 1000; /* Ensure it's on top */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.loader {
-    border: 8px solid #f3f3f3; /* Light grey border */
-    border-top: 8px solid #3498db; /* Blue border top */
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-/* New styles for encryption theme */
-body {
-    background: linear-gradient(45deg, #0a0a0a, #1a1a1a);
-}
-
-.login-container {
-    background-color: rgba(30, 30, 30, 0.9);
-    border: 1px solid #333;
-}
-
-.login-container h2 {
-    color: #00bcd4; /* Cyan accent color */
-    text-shadow: 0 0 10px #00bcd4;
-}
-
-.login-container input {
-    border: 1px solid #444;
-    background-color: #333;
-}
-
-.login-container button {
-    background-color: #00bcd4;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 5px #00bcd4;
-}
-
-.login-container button:hover {
-    background-color: #00acc1;
-    box-shadow: 0 0 10px #00acc1;
-}
-
-.login-container a {
+.login-signup a {
     color: #00bcd4;
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color 0.3s ease;
 }
 
-.error-message {
-    color: #ff4081; /* Pink error color */
+.login-signup a:hover {
+    color: #008ba7;
 }
 
-#encryption-status {
-    color: #4caf50; /* Green success color */
-}
-
-.encryption-animation {
-    border-top-color: #00bcd4;
-}
-/* Terminal style for text */
-body, input, button {
-    font-family: 'Courier New', monospace;
+/* Add a subtle glow effect */
+.glow {
+    text-shadow: 0 0 5px rgba(0, 188, 212, 0.8);
 }
