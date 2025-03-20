@@ -6,6 +6,20 @@ const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16;
 const KEY_LENGTH = 32; // 256 bits
 
+let deriveKeySalt = null;
+
+function setDeriveKeySalt(salt) {
+    deriveKeySalt = salt;
+}
+
+function deriveEncryptionKey(password) {
+    if (!deriveKeySalt) {
+        throw new Error('Derive key salt not set.');
+    }
+
+    key = crypto.pbkdf2Sync(password, deriveKeySalt, 100000, KEY_LENGTH, 'sha512');
+}
+
 function setEncryptionKey(newKey) {
     if (!Buffer.isBuffer(newKey) || newKey.length !== KEY_LENGTH) {
         throw new Error(`Invalid key. Key must be a ${KEY_LENGTH}-byte Buffer.`);
@@ -83,4 +97,12 @@ function safeCompare(a, b) {
     }
 }
 
-module.exports = { encrypt, decrypt, setEncryptionKey, generateEncryptionKey, safeCompare };
+module.exports = {
+    encrypt,
+    decrypt,
+    setEncryptionKey,
+    generateEncryptionKey,
+    safeCompare,
+    deriveEncryptionKey,
+    setDeriveKeySalt
+};
