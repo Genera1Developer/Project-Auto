@@ -59,22 +59,18 @@ function encrypt(text, iv) {
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     const authTag = cipher.getAuthTag();
     return {
-        encryptedData: encrypted.toString('hex'),
-        iv: iv.toString('hex'),
-        authTag: authTag.toString('hex')
+        encryptedData: encrypted,
+        iv: iv,
+        authTag: authTag
     };
 }
 
-function decrypt(encryptedText, ivHex, authTagHex) {
+function decrypt(encryptedData, iv, authTag) {
     try {
-        const iv = Buffer.from(ivHex, 'hex');
-        const authTag = Buffer.from(authTagHex, 'hex');
-        const encrypted = Buffer.from(encryptedText, 'hex');
-
         const decipher = crypto.createCipheriv('aes-256-gcm', encryptionKey, iv);
         decipher.setAuthTag(authTag);
 
-        let decrypted = decipher.update(encrypted);
+        let decrypted = decipher.update(encryptedData);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
         return decrypted.toString('utf8');
     } catch (error) {
