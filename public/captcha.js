@@ -1,29 +1,42 @@
-// Function to generate a random encryption key (AES)
-function generateEncryptionKey() {
-    const key = CryptoJS.lib.WordArray.random(16); // 128-bit key
-    return key.toString(CryptoJS.enc.Hex);
+function generateCaptchaText(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
 }
 
-// Function to encrypt the captcha text using AES
-function encryptCaptcha(text, key) {
-    const iv = CryptoJS.lib.WordArray.random(16); // Generate a random IV
-    const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(text), CryptoJS.enc.Hex.parse(key), {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-    });
-    // Return both the encrypted text and the IV (in hex format)
-    return {
-        ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Hex),
-        iv: iv.toString(CryptoJS.enc.Hex)
-    };
+function encryptCaptcha(text) {
+    const key = CryptoJS.enc.Utf8.parse('1234567890123456'); // 16-byte key for AES-128
+    const iv = CryptoJS.enc.Utf8.parse('abcdefghijklmnop'); // 16-byte IV
+    const encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(text), key,
+        {
+            keySize: 128 / 8,
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        });
+    return encrypted.toString();
 }
 
-// Function to decrypt the captcha text using AES
-function decryptCaptcha(ciphertext, key, iv) {
+function displayEncryptedCaptcha() {
+    const captchaText = generateCaptchaText(6); // Generate a 6-character CAPTCHA
+    const encryptedCaptcha = encryptCaptcha(captchaText);
+    document.getElementById('captcha-text').innerText = encryptedCaptcha;
+    // Store the original captcha text for validation
+    sessionStorage.setItem('captcha', captchaText);
+}
+
+function decryptCaptcha(encryptedText) {
+    const key = CryptoJS.enc.Utf8.parse('1234567890123456'); // Same key as encryption
+    const iv = CryptoJS.enc.Utf8.parse('abcdefghijklmnop'); // Same IV as encryption
+
     try {
-        const decrypted = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Hex.parse(ciphertext) }, CryptoJS.enc.Hex.parse(key), {
-            iv: CryptoJS.enc.Hex.parse(iv),
+        const decrypted = CryptoJS.AES.decrypt(encryptedText, key, {
+            keySize: 128 / 8,
+            iv: iv,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7
         });
@@ -34,89 +47,21 @@ function decryptCaptcha(ciphertext, key, iv) {
     }
 }
 
-// Function to generate the captcha
-function generateCaptcha() {
-    const captchaText = Math.random().toString(36).substring(2, 7).toUpperCase();
-    const encryptionKey = generateEncryptionKey(); // Generate a new encryption key
-
-    // Encrypt the captcha text
-    const encryptedData = encryptCaptcha(captchaText, encryptionKey);
-    const encryptedText = encryptedData.ciphertext;
-    const iv = encryptedData.iv;
-
-    // Store the encryption key and IV in sessionStorage (in real application, use secure server-side storage)
-    sessionStorage.setItem('captchaKey', encryptionKey);
-    sessionStorage.setItem('captchaIV', iv);
-    sessionStorage.setItem('encryptedCaptcha', encryptedText); // Store the encrypted captcha
-    sessionStorage.setItem('originalCaptcha', captchaText);
-
-    document.getElementById('captcha-text').innerText = encryptedText;
-}
-
-// Function to validate the captcha
 function validateCaptcha() {
-    const encryptedCaptchaText = document.getElementById('captcha-text').innerText;
-    const userInput = document.getElementById('captcha-input').value.toUpperCase();
-    const encryptionKey = sessionStorage.getItem('captchaKey');
-    const iv = sessionStorage.getItem('captchaIV');
-    const originalCaptcha = sessionStorage.getItem('originalCaptcha');
-
-
-    if (!encryptionKey || !iv) {
-        document.getElementById('error-message').innerText = 'Encryption key or IV missing. Please refresh the page.';
-        return;
-    }
-
-    const decryptedText = decryptCaptcha(encryptedCaptchaText, encryptionKey, iv);
-
-    if (decryptedText === originalCaptcha && userInput === originalCaptcha) {
-        // Captcha is valid
-        document.getElementById('error-message').innerText = 'Captcha Verified!';
-        document.getElementById('error-message').style.color = 'green'; // Style the success message
-        // Optionally, regenerate the captcha after successful validation
-        generateCaptcha();
-        // Clear input field after success
-        document.getElementById('captcha-input').value = '';
+    const userInput = document.getElementById('captcha-input').value;
+    const encryptedCaptchaText = document.getElementById('captcha-text').innerText; // Get the encrypted text from display
+    const originalCaptcha = sessionStorage.getItem('captcha'); // Get the original CAPTCHA from sessionStorage
+    const decryptedUserInput = decryptCaptcha(encryptedCaptchaText);
+    if (decryptedUserInput && userInput === originalCaptcha) {
+        alert('Captcha Matched!');
+        // You can redirect the user or perform other actions here
     } else {
-        // Captcha is invalid
-        document.getElementById('error-message').innerText = 'Incorrect captcha. Please try again.';
-        document.getElementById('error-message').style.color = 'red'; // Style the error message
-        // Regenerate the captcha on incorrect input
-        generateCaptcha();
-        // Clear input field after failure
-        document.getElementById('captcha-input').value = '';
+        document.getElementById('error-message').innerText = 'Captcha does not match. Please try again.';
+        displayEncryptedCaptcha(); // Regenerate CAPTCHA on failure
     }
 }
 
-function togglePasswordVisibility() {
-    const captchaInput = document.getElementById("captcha-input");
-    const toggleButton = document.getElementById("toggle-captcha");
-
-    if (captchaInput.type === "password") {
-        captchaInput.type = "text";
-        toggleButton.textContent = "Hide";
-    } else {
-        captchaInput.type = "password";
-        toggleButton.textContent = "Show";
-    }
-}
-
-// Generate the captcha when the page loads
-window.onload = generateCaptcha;
-document.addEventListener('DOMContentLoaded', function() {
-    const toggleButton = document.createElement('button');
-    toggleButton.id = 'toggle-captcha';
-    toggleButton.textContent = 'Show';
-    toggleButton.addEventListener('click', togglePasswordVisibility);
-
-    const captchaInput = document.getElementById('captcha-input');
-    captchaInput.type = "password";
-    captchaInput.parentNode.insertBefore(toggleButton, captchaInput.nextSibling);
-
-    // Add event listener for Enter key press
-    captchaInput.addEventListener("keyup", function(event) {
-        if (event.key === "Enter") {
-            validateCaptcha();
-        }
-    });
-});
+// Call this function when the page loads
+window.onload = function() {
+    displayEncryptedCaptcha();
+};
