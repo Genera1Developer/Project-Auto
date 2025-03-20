@@ -1,101 +1,184 @@
 body {
-    margin: 0;
     font-family: 'Arial', sans-serif;
-    background-color: #000; /* Dark background for encryption theme */
-    color: #fff;
-    overflow: hidden; /* Hide scrollbars */
+    background-color: #000;
+    color: #ddd;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
 }
 
 #particles-js {
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: -1; /* Behind all content */
-    top: 0;
-    left: 0;
-    background-color: #000;
+    z-index: -1;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+.login-container, .signup-container {
+    background-color: rgba(30, 30, 30, 0.8);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    width: 300px;
+}
+
+.login-container h2, .signup-container h2 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.login-container input, .signup-container input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background-color: #222;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.login-container button, .signup-container button {
+    background-color: #007bff;
+    color: white;
+    padding: 14px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.login-container button:hover, .signup-container button:hover {
+    background-color: #0056b3;
+}
+
+.login-container a, .signup-container a {
+    color: #007bff;
+    text-decoration: none;
+    display: block;
+    margin-top: 10px;
+}
+
+.login-container a:hover, .signup-container a:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+#encryption-status {
+    margin-top: 10px;
+    font-size: 0.8em;
+    color: #00ff00;
+}
+
+.encryption-animation {
+    width: 50px;
+    height: 50px;
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 5px solid transparent;
+    border-top-color: #007bff;
+    animation: rotate 1.2s linear infinite;
+    display: none; /* Hidden by default */
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#captcha-container {
+    margin-top: 15px;
+}
+
+.proxy-container {
+    background-color: rgba(30, 30, 30, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    width: 80%;
+    max-width: 800px;
     text-align: center;
 }
 
-h1 {
-    font-size: 3em;
+.proxy-container h1 {
+    color: #fff;
     margin-bottom: 20px;
-    color: #2ecc71; /* Encryption green */
-    text-shadow: 0 0 10px rgba(46, 204, 113, 0.8);
 }
 
-p {
-    font-size: 1.2em;
-    color: #ddd;
-    margin-bottom: 30px;
-}
-
-input[type="text"] {
-    padding: 15px 20px;
-    font-size: 1em;
-    border: none;
+.proxy-container input[type="url"] {
+    width: 80%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #555;
     border-radius: 5px;
-    margin-bottom: 20px;
-    width: 70%;
-    max-width: 400px;
     background-color: #222;
     color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
 }
 
-input[type="text"]:focus {
-    outline: none;
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.8);
-}
-
-button {
-    padding: 15px 30px;
-    font-size: 1.1em;
+.proxy-container button {
+    background-color: #007bff;
+    color: white;
+    padding: 14px 20px;
+    margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #2ecc71;
-    color: #fff;
     cursor: pointer;
+    font-size: 16px;
     transition: background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
 }
 
-button:hover {
-    background-color: #27ae60;
+.proxy-container button:hover {
+    background-color: #0056b3;
 }
 
-/* Add some futuristic styling */
-::selection {
-    background: #2ecc71;
-    color: #000;
+#proxy-iframe {
+    width: 100%;
+    height: 600px;
+    border: none;
+    margin-top: 20px;
+    background-color: #fff;
+}
+#url-form{
+    display: flex;
+    justify-content: center;
+}
+/* Additional styles for the encryption theme */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('path/to/your/encryption-background.jpg') repeat; /* Replace with an actual image path */
+    opacity: 0.1; /* Adjust opacity as needed */
+    z-index: -2;
 }
 
-/* Create a glowing effect */
-.glowing-text {
-    text-shadow: 0 0 10px rgba(46, 204, 113, 0.8);
+/* Terminal-style text effect */
+.terminal-text {
+    font-family: monospace;
+    color: #00ff00;
+    text-shadow: 0 0 5px #00ff00;
 }
-
-/* Keyframe animation for subtle pulsing */
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
-button {
-    animation: pulse 2s infinite;
+.glowing-border {
+    border: 1px solid #007bff;
+    box-shadow: 0 0 10px #007bff;
 }
