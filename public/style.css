@@ -9,7 +9,7 @@ body {
     align-items: center;
     height: 100vh;
     overflow: hidden;
-    background: linear-gradient(to right, #00093c, #2d0b00); /* Encryption-themed gradient */
+    background: linear-gradient(to right, #03001e, #730046); /* Encryption-themed gradient */
 }
 
 #particles-js {
@@ -27,6 +27,12 @@ body {
     text-align: center;
     width: 300px;
     border: 1px solid rgba(0, 123, 255, 0.1); /* Subtle border */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added transition */
+}
+
+.container:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 0 30px rgba(0, 123, 255, 0.5); /* Enhanced shadow on hover */
 }
 
 .container h2 {
@@ -44,12 +50,13 @@ body {
     background-color: #222;
     color: #fff;
     box-sizing: border-box;
-    transition: border-color 0.3s ease; /* Smooth transition */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
 }
 
 .container input:focus {
     border-color: #007bff;
     outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle glow on focus */
 }
 
 .container button {
@@ -62,12 +69,13 @@ body {
     cursor: pointer;
     width: 100%;
     font-size: 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .container button:hover {
     background-color: #0056b3;
     transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.7);
 }
 
 .container a {
@@ -145,4 +153,26 @@ body {
     0%, 100% { transform: translateX(0); }
     10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
     20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+/* Additional styles for a modern, encryption-focused look */
+.security-info {
+    background-color: rgba(40, 40, 40, 0.7);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: left;
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);
+    border: 1px solid rgba(0, 123, 255, 0.05);
+}
+
+.security-info h3 {
+    color: #fff;
+    margin-bottom: 10px;
+    text-shadow: 0 0 8px #007bff;
+}
+
+.security-info p {
+    font-size: 0.9em;
+    color: #ccc;
+    line-height: 1.6;
 }
