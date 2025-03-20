@@ -21,6 +21,7 @@ function deriveKey(password, salt) {
 }
 
 function encrypt(text, key) {
+    if (!text) return text;
     let iv = crypto.randomBytes(IV_LENGTH);
     const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
     const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
@@ -29,6 +30,7 @@ function encrypt(text, key) {
 }
 
 function decrypt(text, key) {
+    if (!text) return text;
     try {
         const buffer = Buffer.from(text, 'hex');
         const iv = buffer.slice(0, IV_LENGTH);
@@ -59,17 +61,22 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
                 const value = String(headers[key]); // Ensure value is a string
                 const useEncryption = SENSITIVE_HEADERS.includes(lowerKey) || encryptFlag;
 
-                try {
-                    const transformedKey = useEncryption ? encrypt(key, encryptionKey) : key;
-                    const transformedValue = useEncryption ? encrypt(value, encryptionKey) : value;
+                let transformedKey = key;
+                let transformedValue = value;
 
-                    transformedHeaders[encryptFlag ? transformedKey : decrypt(transformedKey, encryptionKey)] = encryptFlag ? transformedValue : decrypt(transformedValue, encryptionKey);
-
-                } catch (err) {
-                    console.error(`Header transformation error for key ${key}:`, err);
-                    //If encryption or decryption fails, keep the original value
-                    transformedHeaders[key] = headers[key];
+                if(useEncryption) {
+                    try {
+                        transformedKey = encryptFlag ? encrypt(key, encryptionKey) : decrypt(key, encryptionKey);
+                        transformedValue = encryptFlag ? encrypt(value, encryptionKey) : decrypt(value, encryptionKey);
+                    } catch (err) {
+                        console.error(`Header transformation error for key ${key}:`, err);
+                        //If encryption or decryption fails, keep the original value
+                        transformedHeaders[key] = headers[key];
+                        continue; // Skip to the next header
+                    }
                 }
+
+                transformedHeaders[transformedKey] = transformedValue;
             }
         }
     }
