@@ -1,32 +1,37 @@
-const particlesConfig = {
+const encryptionParticlesConfig = {
   "particles": {
     "number": {
-      "value": 150,
+      "value": 80,
       "density": {
         "enable": true,
         "value_area": 800
       }
     },
     "color": {
-      "value": "#2ecc71" // Encryption green
+      "value": "#007bff"
     },
     "shape": {
       "type": "circle",
       "stroke": {
         "width": 0,
-        "color": "#2ecc71"
+        "color": "#000000"
       },
       "polygon": {
         "nb_sides": 5
+      },
+      "image": {
+        "src": "img/github.svg",
+        "width": 100,
+        "height": 100
       }
     },
     "opacity": {
       "value": 0.7,
-      "random": true,
+      "random": false,
       "anim": {
-        "enable": true,
-        "speed": 0.7,
-        "opacity_min": 0.3,
+        "enable": false,
+        "speed": 1,
+        "opacity_min": 0.1,
         "sync": false
       }
     },
@@ -43,18 +48,17 @@ const particlesConfig = {
     "line_linked": {
       "enable": true,
       "distance": 150,
-      "color": "#2ecc71",
-      "opacity": 0.5,
+      "color": "#007bff",
+      "opacity": 0.4,
       "width": 1
     },
     "move": {
       "enable": true,
-      "speed": 4,
+      "speed": 6,
       "direction": "none",
-      "random": true,
+      "random": false,
       "straight": false,
       "out_mode": "out",
-      "bounce": false,
       "attract": {
         "enable": false,
         "rotateX": 600,
@@ -86,12 +90,11 @@ const particlesConfig = {
         "distance": 400,
         "size": 40,
         "duration": 2,
-        "opacity": 0.8,
+        "opacity": 8,
         "speed": 3
       },
       "repulse": {
-        "distance": 200,
-        "duration": 0.4
+        "distance": 200
       },
       "push": {
         "particles_nb": 4
@@ -101,33 +104,9 @@ const particlesConfig = {
       }
     }
   },
-  "retina_detect": true
-};
-
-window.onload = function() {
-  particlesJS('particles-js', particlesConfig);
-
-  // Optional: Add a rotating encryption key icon
-  const keyIcon = document.createElement('div');
-  keyIcon.innerHTML = '<i class="fas fa-key fa-spin" style="font-size:3em; color:#2ecc71;"></i>'; //Encryption Green
-  keyIcon.style.position = 'fixed';
-  keyIcon.style.bottom = '20px';
-  keyIcon.style.right = '20px';
-  keyIcon.style.zIndex = '1000'; // Ensure it's on top
-  document.body.appendChild(keyIcon);
-
-  // Add a subtle encryption message ticker
-  const ticker = document.createElement('div');
-  ticker.id = 'encryption-ticker';
-  ticker.style.position = 'fixed';
-  ticker.style.bottom = '0';
-  ticker.style.left = '0';
-  ticker.style.width = '100%';
-  ticker.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-  ticker.style.color = '#2ecc71'; // Encryption green
-  ticker.style.padding = '5px';
-  ticker.style.textAlign = 'center';
-  ticker.style.overflow = 'hidden';
-  ticker.innerHTML = 'Securing your connection with advanced encryption...';
-  document.body.appendChild(ticker);
-};
+  "retina_detect": true,
+  "config_demo": {
+    "hide_card": false,
+    "background_color": "#000"
+  }
+}
