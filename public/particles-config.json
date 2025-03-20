@@ -64,8 +64,8 @@
     "encryption": {
       "enable": true,
       "algorithm": "AES-256-CBC",
-      "key": "PLACEHOLDER_ENCRYPTION_KEY",
-      "iv": "PLACEHOLDER_IV_KEY",
+      "key": "ENC_KEY_PLACEHOLDER",
+      "iv": "ENC_IV_PLACEHOLDER",
       "dataFields": ["color.value", "line_linked.color"],
       "obfuscate": true,
       "encryptedValuePrefix": "ENC_"
