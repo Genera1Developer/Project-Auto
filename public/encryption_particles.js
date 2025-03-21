@@ -516,7 +516,7 @@ particlesJS('particles-js', {
                 if (newKey) {
                     config.encrypt_config.key = newKey;
                     key = newKey;
-                    encryptPlugin.storeCryptoDetails(newKey, null, null);
+                    encryptPlugin.storeCryptoDetails(newKey, iv, salt);
 
                     console.log('New encryption key generated:', newKey);
                 } else {
@@ -539,7 +539,7 @@ particlesJS('particles-js', {
                 if (newIV) {
                     config.encrypt_config.iv = newIV;
                     iv = newIV;
-                    encryptPlugin.storeCryptoDetails(null, newIV, null);
+                    encryptPlugin.storeCryptoDetails(key, newIV, salt);
                     console.log('New encryption IV generated:', newIV);
                 } else {
                     console.error('Failed to generate encryption IV. Encryption disabled.');
@@ -561,7 +561,7 @@ particlesJS('particles-js', {
                 if (newSalt) {
                     config.encrypt_config.salt = newSalt;
                     salt = newSalt;
-                    encryptPlugin.storeCryptoDetails(null, null, newSalt);
+                    encryptPlugin.storeCryptoDetails(key, iv, newSalt);
                     console.log('New encryption salt generated:', newSalt);
                 } else {
                     console.error('Failed to generate encryption salt. Encryption disabled.');
