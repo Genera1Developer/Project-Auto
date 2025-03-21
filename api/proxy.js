@@ -192,7 +192,6 @@ function encryptStream(key, iv) {
 function decryptStream(key, iv, authTag) {
     try {
         const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-        decipher.setAuthTag(authTag);
         return decipher;
     } catch (error) {
         console.error("Stream decryption error:", error);
@@ -295,6 +294,9 @@ async function proxyRequest(req, res) {
             // Encrypt the response body
             try {
                 const responseCipher = encryptStream(encryptionKey, resIv);
+                if(!responseCipher){
+                  return res.status(500).send('Failed to create response cipher.');
+                }
                 const authTag = responseCipher.getAuthTag();
 
                 // Send the auth tag to the client
