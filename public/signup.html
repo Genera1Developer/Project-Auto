@@ -290,12 +290,13 @@
             setTimeout(() => {
                 // Generate a random key (AES key size should be 128, 192, or 256 bits)
                 const salt = CryptoJS.lib.WordArray.random(128/8);
+                // Derive key from password and salt
                 const key = CryptoJS.PBKDF2(password, salt, {
                   keySize: 256/32,
                   iterations: 1000
                 });
 
-                // Encrypt username and email too
+                // Encrypt username and email
                 const iv = CryptoJS.lib.WordArray.random(128/8);
 
                 const usernameEncrypted = CryptoJS.AES.encrypt(username, key, {
@@ -310,18 +311,15 @@
                     padding: CryptoJS.pad.Pkcs7
                 }).toString();
 
-                const encrypted = CryptoJS.AES.encrypt(password, key, {
+                // Encrypt the password using AES.  This is only for transport.
+                // The server should re-derive key and encrypt for storage.
+                const encryptedPassword = CryptoJS.AES.encrypt(password, key, {
                     iv: iv,
                     mode: CryptoJS.mode.CBC,
                     padding: CryptoJS.pad.Pkcs7
                 }).toString();
 
-                // Encrypt the password using AES
-                const encryptedPassword = encrypted;
-
-                // Consider removing key and salt. Server can rederive it.
-                // Alternatively, encrypt these with a public key.
-                //const encryptedKey = CryptoJS.enc.Base64.stringify(key); // No longer sending key
+                // No longer send key to reduce vulnerability if intercepted.
                 const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
                 const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
 
