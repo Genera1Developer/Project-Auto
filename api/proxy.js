@@ -32,6 +32,10 @@ const RATE_LIMIT = 100; // 100 requests per minute
 const nonceCache = new Set();
 const NONCE_CACHE_SIZE = 1000;
 
+// Define a separate nonce cache for stream encryption
+const streamNonceCache = new Set();
+const STREAM_NONCE_CACHE_SIZE = 1000;
+
 // Function to derive a symmetric key using PBKDF2
 function deriveKey(password, salt) {
     const cacheKey = `${password}-${salt}`;
@@ -188,7 +192,12 @@ function maybeDecompress(proxyRes) {
   return raw;
 }
 
-function encryptStream(key, iv) {
+function encryptStream(key, iv, streamNonce) {
+  if (!validateStreamNonce(streamNonce)) {
+    console.error("Invalid stream nonce.");
+    return null;
+  }
+
   try {
     const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
     return cipher;
@@ -198,7 +207,12 @@ function encryptStream(key, iv) {
   }
 }
 
-function decryptStream(key, iv) {
+function decryptStream(key, iv, streamNonce) {
+  if (!validateStreamNonce(streamNonce)) {
+    console.error("Invalid stream nonce.");
+    return null;
+  }
+
     try {
         const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         return decipher;
@@ -208,14 +222,14 @@ function decryptStream(key, iv) {
     }
 }
 
-async function handleRequestBody(req, encryptionKey, reqIv) {
+async function handleRequestBody(req, encryptionKey, reqIv, streamNonce) {
     return new Promise((resolve, reject) => {
         if (req.method === 'GET' || req.method === 'HEAD') {
             resolve(Buffer.alloc(0)); // Resolve with empty buffer for GET/HEAD
             return;
         }
 
-        const requestCipher = encryptStream(encryptionKey, reqIv);
+        const requestCipher = encryptStream(encryptionKey, reqIv, streamNonce);
 
         if (!requestCipher) {
             reject(new Error('Failed to create request cipher.'));
@@ -301,6 +315,25 @@ function validateNonce(nonce) {
     return true;
 }
 
+function validateStreamNonce(nonce) {
+  if (!nonce) {
+    return false;
+  }
+
+  if (streamNonceCache.has(nonce)) {
+    return false; // Nonce already used, possible replay attack
+  }
+
+  streamNonceCache.add(nonce);
+  if (streamNonceCache.size > STREAM_NONCE_CACHE_SIZE) {
+    // Remove the oldest nonce to prevent unbounded growth
+    const oldestNonce = streamNonceCache.values().next().value;
+    streamNonceCache.delete(oldestNonce);
+  }
+
+  return true;
+}
+
 // Function to handle the proxy request
 async function proxyRequest(req, res) {
 
@@ -377,7 +410,8 @@ async function proxyRequest(req, res) {
             // Encrypt the response body
             let encryptedStream = null; // Initialize to null
             try {
-                const responseCipher = encryptStream(encryptionKey, resIv);
+                const streamNonce = crypto.randomBytes(16).toString('hex');
+                const responseCipher = encryptStream(encryptionKey, resIv, streamNonce);
                 if(!responseCipher){
                   return earlyReject(res, 500, 'Failed to create response cipher.');
                 }
@@ -392,6 +426,7 @@ async function proxyRequest(req, res) {
                 });
 
                 res.setHeader('Content-Encoding', 'encrypted');
+                res.setHeader('x-stream-nonce', streamNonce);
                 encryptedStream.pipe(res);
 
             } catch (streamErr) {
@@ -426,8 +461,10 @@ async function proxyRequest(req, res) {
         const reqIv = crypto.randomBytes(IV_LENGTH);
         options.headers['x-request-encryption-iv'] = reqIv.toString('hex');
 
+        const streamNonce = crypto.randomBytes(16).toString('hex');
+
         try {
-            const encryptedRequestBody = await handleRequestBody(req, encryptionKey, reqIv);
+            const encryptedRequestBody = await handleRequestBody(req, encryptionKey, reqIv, streamNonce);
             if (req.method !== 'GET' && req.method !== 'HEAD') {
                 proxyReq.setHeader('Content-Length', encryptedRequestBody.length);
                 proxyReq.write(encryptedRequestBody);
