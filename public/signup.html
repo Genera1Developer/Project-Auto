@@ -146,7 +146,32 @@
         #captchaImage {
             cursor: pointer;
         }
+
+        .password-requirements {
+            font-size: 0.7em;
+            color: #aaa;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        .password-requirements ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .password-requirements li {
+            margin-bottom: 3px;
+        }
+
+        .password-requirements li.met::before {
+            content: '\f00c'; /* Font Awesome checkmark */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: #00ff00;
+            margin-right: 5px;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <div id="particles-js"></div>
@@ -162,7 +187,16 @@
                 </div>
                 <span id="password-strength-text"></span>
             </div>
-            <div id="password-hint">Password must be at least 12 characters. Use uppercase, lowercase, numbers, and symbols.</div>
+           <div class="password-requirements">
+                Password Requirements:
+                <ul>
+                    <li id="length-req">At least 12 characters</li>
+                    <li id="uppercase-req">One uppercase letter</li>
+                    <li id="lowercase-req">One lowercase letter</li>
+                    <li id="number-req">One number</li>
+                    <li id="symbol-req">One symbol</li>
+                </ul>
+            </div>
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
             <input type="email" id="email" name="email" placeholder="Email" required>
              <img src="/api/captcha" alt="CAPTCHA" id="captchaImage" onclick="refreshCaptcha()">
@@ -191,6 +225,7 @@
             const password = document.getElementById('password').value;
             const strength = calculatePasswordStrength(password);
             updatePasswordStrengthMeter(strength);
+            updatePasswordRequirements(password);
         }
 
         function calculatePasswordStrength(password) {
@@ -266,6 +301,20 @@
             text.textContent = textContent;
         }
 
+        function updatePasswordRequirements(password) {
+            const lengthReq = document.getElementById('length-req');
+            const uppercaseReq = document.getElementById('uppercase-req');
+            const lowercaseReq = document.getElementById('lowercase-req');
+            const numberReq = document.getElementById('number-req');
+            const symbolReq = document.getElementById('symbol-req');
+
+            (password.length >= 12) ? lengthReq.classList.add('met') : lengthReq.classList.remove('met');
+            (password.match(/[A-Z]+/)) ? uppercaseReq.classList.add('met') : uppercaseReq.classList.remove('met');
+            (password.match(/[a-z]+/)) ? lowercaseReq.classList.add('met') : lowercaseReq.classList.remove('met');
+            (password.match(/[0-9]+/)) ? numberReq.classList.add('met') : numberReq.classList.remove('met');
+            (password.match(/[$@#&!]+/)) ? symbolReq.classList.add('met') : symbolReq.classList.remove('met');
+        }
+
 
         document.getElementById('signupForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -291,6 +340,15 @@
             if (password.length < 12) {
               errorMessage.textContent = 'Password must be at least 12 characters long.';
               return;
+            }
+
+             if (!document.getElementById('length-req').classList.contains('met') ||
+                !document.getElementById('uppercase-req').classList.contains('met') ||
+                !document.getElementById('lowercase-req').classList.contains('met') ||
+                !document.getElementById('number-req').classList.contains('met') ||
+                !document.getElementById('symbol-req').classList.contains('met')) {
+                errorMessage.textContent = 'Password does not meet all requirements.';
+                return;
             }
 
             encryptionAnimation.style.display = 'block';
