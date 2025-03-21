@@ -526,16 +526,11 @@ const encryptStream = (inputStream, aad = null) => {
             }
         }
     });
-    inputStream.pipe(transformStream);
 
+    const ivAuthTagHeader = Buffer.concat([iv, authTag]);
     const combinedStream = new require('stream').PassThrough();
-    combinedStream.write(iv);
-    combinedStream.write(authTag);
-    transformStream.pipe(combinedStream, { end: false });
-
-    transformStream.on('end', () => {
-        combinedStream.end();
-    });
+    combinedStream.write(ivAuthTagHeader);
+    inputStream.pipe(cipher).pipe(combinedStream);
 
     return combinedStream;
 };
@@ -548,68 +543,55 @@ const decryptStream = (inputStream, aad = null) => {
 
     let iv = null;
     let authTag = null;
-    let dataStarted = false;
+    let headerReceived = false;
 
     const transformStream = new require('stream').Transform({
         transform(chunk, encoding, callback) {
             try {
-                if (!dataStarted) {
+                if (!headerReceived) {
                     if (!iv) {
                         iv = chunk.slice(0, IV_LENGTH);
-                        chunk = chunk.slice(IV_LENGTH);
                     }
-                    if (iv && !authTag && chunk.length >= AUTH_TAG_LENGTH) {
-                        authTag = chunk.slice(0, AUTH_TAG_LENGTH);
-                        chunk = chunk.slice(AUTH_TAG_LENGTH);
-                        dataStarted = true;
-
-                        const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-                        if (aad) {
-                            decipher.setAAD(Buffer.from(aad, 'utf8'));
-                        }
-                        decipher.setAuthTag(authTag);
-
-                        const decryptedChunk = decipher.update(chunk);
-                        callback(null, decryptedChunk);
-                    } else if (iv && !authTag && chunk.length < AUTH_TAG_LENGTH){
-                        //Accumulate more data for authTag.
+                    if (!authTag && chunk.length >= IV_LENGTH + AUTH_TAG_LENGTH) {
+                        authTag = chunk.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+                        chunk = chunk.slice(IV_LENGTH + AUTH_TAG_LENGTH);
+                        headerReceived = true;
+                    } else {
                         return callback(null, null);
                     }
-                     else {
-                        return callback(new Error("Invalid data format."));
+                    if (!iv || !authTag) {
+                         return callback(new Error("Invalid data format."));
                     }
-                } else {
-                    const decipher = this.decipher || crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-                    if(aad && !this.aadSet) {
-                         decipher.setAAD(Buffer.from(aad, 'utf8'));
-                         this.aadSet = true;
-                    }
-
-                    this.decipher = decipher;
-                    const decryptedChunk = decipher.update(chunk);
-                    callback(null, decryptedChunk);
                 }
+
+                const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+                if (aad) {
+                    decipher.setAAD(Buffer.from(aad, 'utf8'));
+                }
+                decipher.setAuthTag(authTag);
+                const decryptedChunk = decipher.update(chunk);
+                callback(null, decryptedChunk);
+
             } catch (error) {
                 callback(error);
             }
         },
         flush(callback) {
             try {
-                 const decipher = this.decipher;
-                if(decipher){
-                    const finalChunk = decipher.final();
-                     callback(null, finalChunk);
-                } else {
-                    callback(null, null); //No data received
-                }
-
+                const finalChunk = this.decipher ? this.decipher.final() : Buffer.alloc(0);
+                callback(null, finalChunk);
             } catch (error) {
                 callback(error);
             }
         }
     });
-
+    const decipher = crypto.createDecipheriv(algorithm, key, Buffer.alloc(IV_LENGTH), { authTagLength: AUTH_TAG_LENGTH });
+    transformStream.decipher = decipher;
+    if (aad) {
+        transformStream.decipher.setAAD(Buffer.from(aad, 'utf8'));
+    }
     inputStream.pipe(transformStream);
+
     return transformStream;
 };
 
