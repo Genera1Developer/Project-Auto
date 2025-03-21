@@ -143,6 +143,9 @@ const verifyCredentials = async (username, password) => {
                 }
 
                 try {
+                    const ivBuffer = Buffer.from(row.iv, 'hex');
+                    const authTagBuffer = Buffer.from(row.authTag, 'hex');
+
                     const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
                     if (decryptedUsername === null) {
                         return resolve(false);
