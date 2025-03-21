@@ -705,11 +705,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to check if the user is using a VPN
     async function detectVPN() {
-        try {
-            const response = await fetch('https://vpnapi.io/api/v1?key=YOUR_VPNAPI_KEY');
+       try {
+            const response = await fetch('https://api.ipify.org?format=json');
             const data = await response.json();
-            if (data.security.vpn) {
-                showAlert('VPN detected. For enhanced security, consider disabling it during login.', 'warning');
+            const ipAddress = data.ip;
+
+            const vpnCheckResponse = await fetch(`https://vpnapi.io/api/v1?key=EA2E54D360B847F7B7B7191871370E5F&ip=${ipAddress}`);
+            const vpnCheckData = await vpnCheckResponse.json();
+
+            if (vpnCheckData.security.vpn) {
+               showAlert('VPN detected. For enhanced security, consider disabling it during login.', 'warning');
             }
         } catch (error) {
             console.error('VPN detection error:', error);
@@ -717,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Call VPN detection function (if needed)
-    //detectVPN();
+    detectVPN();
 
     // Mitigate BREACH attack
     function addRandomPadding() {
