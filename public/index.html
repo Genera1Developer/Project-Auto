@@ -115,7 +115,11 @@
                 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 let nonce = '';
                 for (let i = 0; i < length; i++) {
-                    nonce += characters.charAt(Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * characters.length));
+                    //Use window.crypto.getRandomValues for more secure nonce generation
+                    const randomValues = new Uint32Array(1);
+                    window.crypto.getRandomValues(randomValues);
+                    const randomIndex = Math.floor(randomValues[0] / (0xffffffff + 1) * characters.length);
+                    nonce += characters.charAt(randomIndex);
                 }
                 return nonce;
             }
@@ -149,7 +153,10 @@
               const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
               let salt = '';
               for (let i = 0; i < length; i++) {
-                  salt += characters.charAt(Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * characters.length));
+                  const randomValues = new Uint32Array(1);
+                  window.crypto.getRandomValues(randomValues);
+                  const randomIndex = Math.floor(randomValues[0] / (0xffffffff + 1) * characters.length);
+                  salt += characters.charAt(randomIndex);
               }
               return salt;
             }
@@ -281,6 +288,11 @@
                             proxyFrame.src = ''; // Clear the iframe to stop the request
                         }
                     }, 30000); // Timeout after 30 seconds
+
+                     //Clear sensitive information from sessionStorage after a delay.
+                    setTimeout(() => {
+                        sessionStorage.removeItem('hashedKey'); //Remove the hashedKey
+                    }, 60000); //Clear after 60 seconds
 
                 } catch (e) {
                     handleErrors(e); // Use the error handling function
