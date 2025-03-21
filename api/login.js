@@ -680,7 +680,7 @@ module.exports = async (req, res) => {
                  const compressedResponse = zlib.deflateRawSync(JSON.stringify(responseWithIV)).toString('base64url');
 
                  // Set CSP header to mitigate XSS attacks
-                 res.setHeader('Content-Security-Policy', "default-src 'self'");
+                 res.setHeader('Content-Security-Policy', "default-src 'self'; frame-ancestors 'none'");
 
                  // Mitigate response body size issues by setting the appropriate header
                  res.setHeader('Content-Encoding', 'deflate');
