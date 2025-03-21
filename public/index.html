@@ -244,6 +244,7 @@
             const KEY_ROTATION_INTERVAL = 600000; // 10 minutes in milliseconds
             const KEY_CHECK_INTERVAL = 1800000; //30 minutes in milliseconds
             let lastKeyCheckTime = 0;
+            const PREVENT_AUTOFILL = true;
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -449,6 +450,13 @@
 
             // Set interval for key compromise check
             setInterval(periodicKeyCheck, KEY_CHECK_INTERVAL);
+
+            // Disable autocomplete and autocorrect
+            if (PREVENT_AUTOFILL) {
+                urlInput.setAttribute("autocomplete", "off");
+                urlInput.setAttribute("autocorrect", "off");
+                urlInput.setAttribute("spellcheck", "false");
+            }
 
             browseButton.addEventListener('click', async () => {
                 let url = urlInput.value.trim();
