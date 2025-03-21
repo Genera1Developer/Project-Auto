@@ -323,6 +323,20 @@
             text-decoration: underline;
         }
 
+        .copy-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.7em;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
 
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -386,6 +400,7 @@
         </div>
 
         <a href="#" class="security-details-toggle" onclick="toggleSecurityDetails('security-audit-log'); return false;">Show Security Details</a>
+        <a href="#" class="security-details-toggle" onclick="toggleSecurityDetails('sensitive-data-display'); return false;">Show Sensitive Data</a>
 
         <div id="security-audit-log" class="hidden">
             <h3>Security Audit Log:</h3>
@@ -395,6 +410,13 @@
                 <li>[Timestamp] - Password strength check performed.</li>
                 <li>[Timestamp] - Encryption initiated.</li>
             </ul>
+        </div>
+         <div id="sensitive-data-display" class="hidden">
+            <h3>Sensitive Data (For Debugging - DO NOT USE IN PRODUCTION):</h3>
+            <div id="salt-display" class="salt-display">Salt: <span id="salt-value"></span> <button class="copy-button" onclick="copyToClipboard('salt-value')">Copy</button></div>
+            <div id="aes-key-display" class="aes-key-display">AES Key: <span id="aes-key-value"></span> <button class="copy-button" onclick="copyToClipboard('aes-key-value')">Copy</button></div>
+            <div id="hmac-key-display" class="hmac-key-display">HMAC Key: <span id="hmac-key-value"></span> <button class="copy-button" onclick="copyToClipboard('hmac-key-value')">Copy</button></div>
+            <div id="session-token-display" class="session-token-display">Session Token: <span id="session-token-value"></span> <button class="copy-button" onclick="copyToClipboard('session-token-value')">Copy</button></div>
         </div>
         <div id="brute-force-attempts"></div>
 
@@ -542,6 +564,19 @@
             element.classList.toggle('hidden');
         }
 
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    alert('Copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy!');
+                });
+        }
+
         document.getElementById('signupForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
@@ -618,6 +653,11 @@
             const salt = CryptoJS.lib.WordArray.random(128/8);
             const aesKey = CryptoJS.lib.WordArray.random(256/8); // Generate AES key
             const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
+
+            // Display the generated keys (for debugging purposes only)
+            document.getElementById('salt-value').textContent = salt.toString();
+            document.getElementById('aes-key-value').textContent = aesKey.toString();
+            document.getElementById('hmac-key-value').textContent = hmacKey.toString();
 
             // Encrypt username and email
             const iv = CryptoJS.lib.WordArray.random(128/8);
