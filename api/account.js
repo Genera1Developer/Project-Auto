@@ -152,7 +152,7 @@ const encryptSensitiveData = (data) => {
     }
 };
 
-const decryptSensitiveData = (encryptedDataB64, ivB64, authTagB64) => {
+const decryptSensitiveData = (ivB64, authTagB64,encryptedDataB64) => {
     if (!encryptedDataB64 || !ivB64 || !authTagB64) {
         return null;
     }
@@ -195,8 +195,7 @@ exports.createUser = async (username, password, callback) => {
             saltEncryption.encryptedData,
             PBKDF2_ITERATIONS,
             usernameEncryption.iv,
-            usernameEncryption.authTag
-            ,
+            usernameEncryption.authTag,
             passwordEncryption.iv,
             passwordEncryption.authTag,
             saltEncryption.iv,
