@@ -405,22 +405,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // No longer scheduling cleanup tasks as sessionStorage is used
-    //scheduleCleanupTasks();
-
-    //function scheduleCleanupTasks() {
-    //    const now = new Date();
-    //    const dayOfWeek = now.getDay();
-    //    const millisTillNextSunday = (7 - dayOfWeek) % 7 * 24 * 60 * 60 * 1000 +
-    //        new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0).getTime() -
-    //        now.getTime();
-
-    //    setTimeout(function() {
-    //        clearEncryptionData();
-    //        setInterval(clearEncryptionData, 7 * 24 * 60 * 60 * 1000);
-    //    }, millisTillNextSunday);
-    //}
-
     function clearEncryptionData() {
         sessionStorage.removeItem('encryptionSalt');
         sessionStorage.removeItem('keyPrefix');
@@ -573,12 +557,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Removed Local Storage check as we are using sessionStorage now.
-    //if (!localStorageAvailable()) {
-    //    console.warn("Local Storage is disabled. Some security features may be affected.");
-    //    showAlert("Local Storage is disabled. Some security features may be affected.", 'warning');
-    //}
-
     const usernameField = getElement('username');
     const passwordField = getElement('password');
     const captchaField = getElement('captcha');
@@ -683,4 +661,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         return strength;
     }
+
+    // Implement Key Rotation
+    async function rotateEncryptionKeys() {
+        clearEncryptionData(); // Clear old keys
+        await generateAndStoreSalt();
+        getKeyPrefix();
+        getIVPrefix();
+        await getHmacSecret();
+    }
+
+    // Schedule Key Rotation (e.g., daily)
+    function scheduleKeyRotation() {
+        const now = new Date();
+        const millisTillNextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0, 0).getTime() - now.getTime();
+
+        setTimeout(function() {
+            rotateEncryptionKeys();
+            setInterval(rotateEncryptionKeys, 24 * 60 * 60 * 1000); // Daily rotation
+        }, millisTillNextMidnight);
+    }
+
+    scheduleKeyRotation(); // Initialize key rotation scheduling
 });
