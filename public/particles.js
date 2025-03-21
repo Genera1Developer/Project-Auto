@@ -184,10 +184,15 @@
                     var initialLinkedColorSeed = "9b59b6";
                     var localStorageKeyPrefix = "particlesJS_";
                     var sessionKeyPrefix = "sessionParticlesJS_";
+                    var encryptionRounds = 3;
 
-                    var generateKey = function(seed, salt) {
+                    var generateKey = function(seed, salt, rounds) {
                       var keyMaterial = seed + salt;
-                      return CryptoJS.SHA256(keyMaterial).toString();
+                      var derivedKey = keyMaterial;
+                      for (var i = 0; i < rounds; i++) {
+                        derivedKey = CryptoJS.SHA256(derivedKey).toString();
+                      }
+                      return derivedKey;
                     };
 
                     var encryptData = function(data, secret) {
@@ -302,8 +307,8 @@
                     var linkedColorSalt = localStorage.getItem(localStorageKeyPrefix + "linkedColorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
                     localStorage.setItem(localStorageKeyPrefix + "linkedColorSalt", linkedColorSalt);
 
-                    var colorSecret = generateKey("color_secret", colorSalt);
-                    var linkedColorSecret = generateKey("linked_secret", linkedColorSalt);
+                    var colorSecret = generateKey("color_secret", colorSalt, encryptionRounds);
+                    var linkedColorSecret = generateKey("linked_secret", linkedColorSalt, encryptionRounds);
 
                     var storedColorData = retrieveEncryptedData("colorData", null);
                     var storedLinkedColorData = retrieveEncryptedData("linkedLinkedColorData", null);
@@ -326,8 +331,8 @@
                             var newLinkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
                             localStorage.setItem(localStorageKeyPrefix + "linkedColorSalt", newLinkedColorSalt);
 
-                            var newColorSecret = generateKey("color_secret", newColorSalt);
-                            var newLinkedColorSecret = generateKey("linked_secret", newLinkedColorSalt);
+                            var newColorSecret = generateKey("color_secret", newColorSalt, encryptionRounds);
+                            var newLinkedColorSecret = generateKey("linked_secret", newLinkedColorSalt, encryptionRounds);
 
                             var newColor = getRandomHexColor();
                             var newStrokeColor = getRandomHexColor();
