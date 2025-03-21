@@ -152,30 +152,27 @@ exports.verifyUser = (username, password, callback) => {
 };
 
 exports.closeDatabase = () => {
-    db.close((err) => {
-        if (err) {
-            console.error(err.message);
-        }
-        console.log('Closed the database connection.');
-    });
+    if (db) {
+        db.close((err) => {
+            if (err) {
+                console.error(err.message);
+            }
+            console.log('Closed the database connection.');
+        });
+        db = null;
+    }
 };
 
 process.on('exit', () => {
-    if (db) {
-        exports.closeDatabase();
-    }
+    exports.closeDatabase();
 });
 
 process.on('SIGINT', () => {
-    if (db) {
-        exports.closeDatabase();
-    }
+    exports.closeDatabase();
     process.exit();
 });
 
 process.on('SIGTERM', () => {
-    if (db) {
-        exports.closeDatabase();
-    }
+    exports.closeDatabase();
     process.exit();
 });
