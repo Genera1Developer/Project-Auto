@@ -173,6 +173,39 @@ const hkdfExpand = (secret, info, length) => {
     }
 };
 
+const encryptCookie = (cookieValue, encryptionKey) => {
+    try {
+        const iv = crypto.randomBytes(12);
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
+        const cookieBuffer = Buffer.from(cookieValue, 'utf8');
+        let encrypted = cipher.update(cookieBuffer);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        return Buffer.concat([iv, authTag, encrypted]).toString('hex');
+    } catch (error) {
+        console.error('Cookie encryption error:', error);
+        return null;
+    }
+};
+
+const decryptCookie = (encryptedCookie, encryptionKey) => {
+    try {
+        const encryptedCookieBuffer = Buffer.from(encryptedCookie, 'hex');
+        const iv = encryptedCookieBuffer.slice(0, 12);
+        const authTag = encryptedCookieBuffer.slice(12, 28);
+        const encryptedData = encryptedCookieBuffer.slice(28);
+
+        const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
+        decipher.setAuthTag(authTag);
+        let decrypted = decipher.update(encryptedData);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return decrypted.toString('utf8');
+    } catch (error) {
+        console.error('Cookie decryption error:', error);
+        return null;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -228,8 +261,15 @@ module.exports = async (req, res) => {
         const encryptedSession = encryptSession(sessionData, encryptionKey.toString('hex'));
 
         if (encryptedSession) {
-          res.setHeader('Set-Cookie', `session=${encryptedSession}; HttpOnly; Secure; SameSite=Strict`);
-          res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId });
+            const encryptedSessionCookie = encryptCookie(encryptedSession, encryptionKey.toString('hex'));
+
+            if (encryptedSessionCookie) {
+                res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
+                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId });
+            } else {
+                res.status(500).json({ message: 'Session cookie encryption failed' });
+            }
+
         } else {
           res.status(500).json({ message: 'Session encryption failed' });
         }
