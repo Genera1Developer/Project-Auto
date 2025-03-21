@@ -424,7 +424,10 @@
                 if (!response.ok) {
                    sessionStorage.removeItem('encryptionKey'); // Remove key on error
                    sessionStorage.removeItem('serverPublicKey');
-                   throw new Error('Network response was not ok');
+                    // Attempt to parse the error message from the response
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || 'Network response was not ok');
+                    });
                 }
                 return response.json();
             })
@@ -445,7 +448,7 @@
             .catch(error => {
                 encryptionAnimation.style.display = 'none'; // Hide animation on error
                 console.error('Error:', error);
-                errorMessage.textContent = 'An error occurred during login.';
+                errorMessage.textContent = error.message || 'An error occurred during login.'; // Display error message
                 encryptionStatus.textContent = 'Connection error.';
                 sessionStorage.removeItem('encryptionKey'); // Remove the key on error
                 sessionStorage.removeItem('serverPublicKey');
