@@ -264,14 +264,16 @@ particlesJS('particles-js', {
                         let originalValue = target[lastPart];
 
                         if (Array.isArray(originalValue)) {
-                          originalValue = [...originalValue];
-                          const encryptedArray = await Promise.all(originalValue.map(async item => {
+                          const encryptedArray = [];
+                          for(let i = 0; i < originalValue.length; i++){
+                            const item = originalValue[i];
                             if (typeof item === 'string') {
-                              return await encryptPlugin.customEncrypt(item, key, iv, algorithm)
+                              encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm);
                             } else {
-                              return item;
+                              encryptedArray[i] = item;
                             }
-                          }));
+                          }
+
                           target[lastPart] = encryptedArray;
 
                         } else if(typeof originalValue === 'string'){
@@ -312,15 +314,15 @@ particlesJS('particles-js', {
                         let encryptedValue = target[lastPart];
 
                         if (Array.isArray(encryptedValue)) {
-                          encryptedValue = [...encryptedValue];
-
-                          const decryptedArray = await Promise.all(encryptedValue.map(async item => {
+                          const decryptedArray = [];
+                          for(let i = 0; i < encryptedValue.length; i++){
+                            const item = encryptedValue[i];
                             if (typeof item === 'string') {
-                              return await encryptPlugin.decrypt(item, key, iv, algorithm);
+                              decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm);
                             } else {
-                              return item;
+                              decryptedArray[i] = item;
                             }
-                          }));
+                          }
                           target[lastPart] = decryptedArray;
                         } else if(typeof encryptedValue === 'string'){
                             target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
