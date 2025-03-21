@@ -427,6 +427,7 @@ async function proxyRequest(req, res) {
 
             // Encrypt the response body
             let encryptedStream = null; // Initialize to null
+            let responseCipher = null;
             try {
 
               const streamNonce = crypto.randomBytes(8).toString('hex');
@@ -441,7 +442,7 @@ async function proxyRequest(req, res) {
               res.setHeader('x-stream-nonce', streamNonce);
               res.setHeader('x-stream-timestamp', streamTimestamp);
 
-              const responseCipher = encryptStream(encryptionKey, resIv);
+              responseCipher = encryptStream(encryptionKey, resIv);
               if(!responseCipher){
                 return earlyReject(res, 500, 'Failed to create response cipher.');
               }
@@ -468,6 +469,9 @@ async function proxyRequest(req, res) {
                     encryptedStream.on('close', () => {
                         // Clean up resources if needed.
                     });
+                }
+                if (responseCipher) {
+                  responseCipher.destroy(); // Explicitly destroy the cipher
                 }
             }
         });
