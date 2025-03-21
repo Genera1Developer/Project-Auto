@@ -383,29 +383,65 @@
             const combinedPasswordCiphertext = encryptedPassword.iv + encryptedPassword.ciphertext;
             const combinedCaptchaCiphertext = encryptedCaptcha.iv + encryptedCaptcha.ciphertext;
 
-            // Base64 encode the ciphertext
-            const base64UsernameCiphertext = btoa(combinedUsernameCiphertext);
-            const base64PasswordCiphertext = btoa(combinedPasswordCiphertext);
-            const base64CaptchaCiphertext = btoa(combinedCaptchaCiphertext);
+             // Convert to byte array
+            function stringToByteArray(str) {
+                const byteArray = [];
+                for (let i = 0; i < str.length; i++) {
+                    byteArray.push(str.charCodeAt(i) & 0xFF); // Ensure it's an unsigned byte
+                }
+                return byteArray;
+            }
 
-            // Generate a one-time pad (OTP) for an additional layer of encryption
-            const otpUsername = CryptoJS.lib.WordArray.random(base64UsernameCiphertext.length / 2).toString();
-            const otpPassword = CryptoJS.lib.WordArray.random(base64PasswordCiphertext.length / 2).toString();
-            const otpCaptcha = CryptoJS.lib.WordArray.random(base64CaptchaCiphertext.length / 2).toString();
+            function byteArrayToString(byteArray) {
+                let str = "";
+                for (let i = 0; i < byteArray.length; i++) {
+                    str += String.fromCharCode(byteArray[i]);
+                }
+                return str;
+            }
 
-            // XOR the ciphertext with the OTP
-            const xorUsername = xorEncrypt(base64UsernameCiphertext, otpUsername);
-            const xorPassword = xorEncrypt(base64PasswordCiphertext, otpPassword);
-            const xorCaptcha = xorEncrypt(base64CaptchaCiphertext, otpCaptcha);
+
+            // Modified Base64 encoding/decoding
+            function customEncode(input) {
+                const key = generateEncryptionKey(); // Get encryption key
+                const keyBytes = stringToByteArray(key); // convert key to byte array
+
+                const inputBytes = stringToByteArray(input); // Convert input to byte array
+                const encryptedBytes = [];
+
+                for (let i = 0; i < inputBytes.length; i++) {
+                    encryptedBytes.push(inputBytes[i] ^ keyBytes[i % keyBytes.length]); // XOR encryption with the key
+                }
+                const encryptedString = byteArrayToString(encryptedBytes);
+                return btoa(encryptedString); // Return Base64 encoded result
+            }
+
+            function customDecode(input) {
+                const key = generateEncryptionKey();
+                 const keyBytes = stringToByteArray(key);
+                const decodedString = atob(input);
+
+                const decodedBytes = stringToByteArray(decodedString); // Convert input to byte array
+                const decryptedBytes = [];
+
+                for (let i = 0; i < decodedBytes.length; i++) {
+                    decryptedBytes.push(decodedBytes[i] ^ keyBytes[i % keyBytes.length]);
+                }
+                const decryptedString = byteArrayToString(decryptedBytes);
+                return decryptedString;
+            }
+
+            // Apply the custom encoding
+            const encodedUsernameCiphertext = customEncode(combinedUsernameCiphertext);
+            const encodedPasswordCiphertext = customEncode(combinedPasswordCiphertext);
+            const encodedCaptchaCiphertext = customEncode(combinedCaptchaCiphertext);
+
 
             const requestBody = {
-                    username: xorUsername,
-                    password: xorPassword,
-                    captcha: xorCaptcha,
+                    username: encodedUsernameCiphertext,
+                    password: encodedPasswordCiphertext,
+                    captcha: encodedCaptchaCiphertext,
                     salt: salt,
-                    otpUsername: btoa(otpUsername), // Base64 encode for transmission
-                    otpPassword: btoa(otpPassword),
-                    otpCaptcha: btoa(otpCaptcha)
                 };
 
             const jsonBody = JSON.stringify(requestBody);
@@ -458,19 +494,6 @@
                 sessionStorage.removeItem('serverPublicKey');
             });
         });
-
-         function xorEncrypt(data, key) {
-             if (!data || !key) {
-                console.error("Invalid input for XOR encryption.");
-                return "";
-             }
-            let result = '';
-            for (let i = 0; i < data.length; i++) {
-                result += String.fromCharCode(data.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-            }
-            return btoa(result); // Base64 encode the XORed result
-        }
-
 
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
