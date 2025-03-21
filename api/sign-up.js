@@ -97,6 +97,7 @@ module.exports = async (req, res) => {
     }
 
     let hashedPassword, salt = null;
+    let derivedEncryptionKey = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -112,17 +113,15 @@ module.exports = async (req, res) => {
 
       // Securely store data (e.g., in a database):
 
-      // 1. Generate a unique encryption key per user.
-      const encryptionKey = await generateEncryptionKey(); // Generate strong key
+      // 1. Generate a unique encryption key per user, derived from password and salt.
+      derivedEncryptionKey = await deriveKey(password, salt);
 
       // 2. Encrypt the username and salt
-      const encryptedUsername = await encryptData(username, encryptionKey.toString('hex'));
-      const encryptedSalt = salt ? await encryptData(salt, encryptionKey.toString('hex')) : null;
+      const encryptedUsername = await encryptData(username, derivedEncryptionKey.toString('hex'));
+      const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey.toString('hex')) : null;
 
-      // 3. Store the encryptionKey, encryptedUsername, encryptedSalt, and hashedPassword.
+      // 3. Store the encryptedUsername, encryptedSalt, and hashedPassword.
       // For demonstration, we log them. NEVER log sensitive data in production.
-      // Consider storing the derived encryption key securely (e.g., with KMS)
-      // It should NOT be stored directly in the database
 
       const userRecord = {
         hashedPassword: hashedPassword,
