@@ -84,8 +84,7 @@ const encryptData = (data) => {
     return {
         encryptedData: encryptedData.toString('hex'),
         iv: iv.toString('hex'),
-        authTag: authTag.toString('hex'),
-        initializationVector: iv.toString('hex')
+        authTag: authTag.toString('hex')
     };
 };
 
@@ -118,7 +117,7 @@ exports.createUser = async (username, password, callback) => {
         const passwordEncryption = encryptData(hashedPassword);
         const saltEncryption = encryptData(salt);
 
-        db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [usernameEncryption.encryptedData, passwordEncryption.encryptedData, saltEncryption.encryptedData, PBKDF2_ITERATIONS, usernameEncryption.initializationVector, usernameEncryption.authTag], function(err) {
+        db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [usernameEncryption.encryptedData, passwordEncryption.encryptedData, saltEncryption.encryptedData, PBKDF2_ITERATIONS, usernameEncryption.iv, usernameEncryption.authTag], function(err) {
             if (err) {
                 console.error(err.message);
                 return callback(err);
