@@ -126,16 +126,20 @@ particlesJS('particles-js', {
             const encryptValue = async (text, secretKey, iv) => {
               try {
                 const enc = new TextEncoder();
+
+                const keyBytes = enc.encode(secretKey);
+                const ivBytes = enc.encode(iv);
+
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
-                  enc.encode(secretKey),
+                  keyBytes,
                   { name: "AES-CBC", length: 256 },
                   false,
                   ["encrypt", "decrypt"]
                 );
 
                 const encryptedData = await crypto.subtle.encrypt(
-                  { name: "AES-CBC", iv: enc.encode(iv), },
+                  { name: "AES-CBC", iv: ivBytes, },
                   keyMaterial,
                   enc.encode(text)
                 );
@@ -175,9 +179,11 @@ particlesJS('particles-js', {
             const decryptValue = async (encryptedBase64, secretKey, iv) => {
               try {
                 const enc = new TextEncoder();
+                const keyBytes = enc.encode(secretKey);
+                const ivBytes = enc.encode(iv);
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
-                  enc.encode(secretKey),
+                  keyBytes,
                   { name: "AES-CBC", length: 256 },
                   false,
                   ["encrypt", "decrypt"]
@@ -190,7 +196,7 @@ particlesJS('particles-js', {
                 }
 
                 const decryptedData = await crypto.subtle.decrypt(
-                  { name: "AES-CBC", iv: enc.encode(iv) },
+                  { name: "AES-CBC", iv: ivBytes },
                   keyMaterial,
                   encryptedArray
                 );
@@ -237,19 +243,27 @@ particlesJS('particles-js', {
                     let target = config;
                     const pathParts = fieldPath.split('.');
                     for (let i = 0; i < pathParts.length - 1; i++) {
+                        if(!target || typeof target !== 'object') break;
                         target = target[pathParts[i]];
-                        if (!target) break;
                     }
+                    if(!target) continue;
+
                     const lastPart = pathParts[pathParts.length - 1];
 
-                    if (target && target[lastPart]) {
+                    if (target && target.hasOwnProperty(lastPart)) {
                       try{
                         const originalValue = target[lastPart];
                         if (Array.isArray(originalValue)) {
-                          const encryptedArray = await Promise.all(originalValue.map(item => encryptPlugin.customEncrypt(item, key, iv, algorithm)));
+                          const encryptedArray = await Promise.all(originalValue.map(async item => {
+                            if (typeof item === 'string') {
+                              return await encryptPlugin.customEncrypt(item, key, iv, algorithm)
+                            } else {
+                              return item;
+                            }
+                          }));
                           target[lastPart] = encryptedArray;
 
-                        } else {
+                        } else if(typeof originalValue === 'string'){
                           target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
                         }
                       } catch (error) {
@@ -277,18 +291,25 @@ particlesJS('particles-js', {
                     let target = config;
                     const pathParts = fieldPath.split('.');
                     for (let i = 0; i < pathParts.length - 1; i++) {
+                        if(!target || typeof target !== 'object') break;
                         target = target[pathParts[i]];
-                        if (!target) break;
                     }
+                     if(!target) continue;
                     const lastPart = pathParts[pathParts.length - 1];
 
-                    if (target && target[lastPart]) {
+                    if (target && target.hasOwnProperty(lastPart)) {
                       try{
                         const encryptedValue = target[lastPart];
                         if (Array.isArray(encryptedValue)) {
-                          const decryptedArray = await Promise.all(encryptedValue.map(item => encryptPlugin.decrypt(item, key, iv, algorithm)));
+                          const decryptedArray = await Promise.all(encryptedValue.map(async item => {
+                            if (typeof item === 'string') {
+                              return await encryptPlugin.decrypt(item, key, iv, algorithm);
+                            } else {
+                              return item;
+                            }
+                          }));
                           target[lastPart] = decryptedArray;
-                        } else {
+                        } else if(typeof encryptedValue === 'string'){
                             target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
                         }
                       } catch (error) {
