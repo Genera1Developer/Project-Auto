@@ -17,7 +17,7 @@ const DIGEST = process.env.PBKDF2_DIGEST || 'sha512';
 
 const SENSITIVE_HEADERS = ['authorization', 'cookie', 'proxy-authorization'];
 const MAX_ENCRYPTED_HEADER_LENGTH = 2048; // Limit header size to prevent DoS
-const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date', 'x-encryption-salt', 'x-cipher-algorithm'];
+const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date', 'x-encryption-salt', 'x-cipher-algorithm', 'content-type'];
 const ENCRYPT_HEADER_PREFIX = 'enc_';
 
 // Store derived keys in a cache to avoid repeated derivation
@@ -142,8 +142,9 @@ function transformHeaders(headers, encryptFlag, encryptionKey, iv) {
                     transformedHeaders[key] = headers[key];
                     continue; // Skip to the next header
                 }
+            } else {
+              transformedHeaders[key] = headers[key];
             }
-
             transformedHeaders[transformedKey] = transformedValue;
         }
     }
@@ -161,6 +162,23 @@ function safeHeaderValue(value) {
 
     // Prevent header injection attacks
     return value.replace(/[\r\n]+/g, '');
+}
+
+function maybeDecompress(proxyRes) {
+  let encoding = proxyRes.headers['content-encoding'];
+  let raw = proxyRes;
+
+  if (encoding == 'gzip' || encoding == 'deflate') {
+      let gunzip = zlib.createUnzip();
+      proxyRes.pipe(gunzip);
+      raw = gunzip;
+  } else if (encoding == 'br') {
+      let brotliDecompress = zlib.createBrotliDecompress();
+      proxyRes.pipe(brotliDecompress);
+      raw = brotliDecompress;
+  }
+
+  return raw;
 }
 
 // Function to handle the proxy request
@@ -198,24 +216,13 @@ function proxyRequest(req, res) {
         const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
         const proxyReq = protocol.request(options, (proxyRes) => {
-            // Handle compressed responses
-            let encoding = proxyRes.headers['content-encoding'];
-            let raw = proxyRes;
+            let raw = maybeDecompress(proxyRes);
 
-            if (encoding == 'gzip' || encoding == 'deflate') {
-                let gunzip = zlib.createUnzip();
-                proxyRes.pipe(gunzip);
-                raw = gunzip;
-            } else if (encoding == 'br') {
-                let brotliDecompress = zlib.createBrotliDecompress();
-                proxyRes.pipe(brotliDecompress);
-                raw = brotliDecompress;
-            }
-
-             // Generate IV for response encryption
+            // Generate IV for response encryption
             const iv = crypto.randomBytes(IV_LENGTH);
             let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, iv); // Encrypt outgoing headers, using salt
             delete resHeaders['content-encoding'];
+            delete resHeaders['content-length'];
 
              // Sanitize header values before sending them to the client
             for (const key in resHeaders) {
