@@ -12,9 +12,9 @@
             background-color: #1a1a1a;
             color: #eee;
             font-family: sans-serif;
-            margin: 0; /* Reset default body margin */
-            overflow: hidden; /* Hide scrollbars */
-            height: 100vh; /* Make body take up full viewport height */
+            margin: 0;
+            overflow: hidden;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -36,14 +36,14 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             width: 80%;
             max-width: 600px;
-            z-index: 1; /* Ensure container is above particles */
+            z-index: 1;
         }
         h1 {
-            color: #00bcd4; /* A cyan/blue shade */
+            color: #00bcd4;
             text-align: center;
         }
         .security-info {
-            color: #4caf50; /* A green shade indicating security */
+            color: #4caf50;
             text-align: center;
             margin-top: 10px;
         }
@@ -56,10 +56,10 @@
             background-color: #333;
             color: #eee;
             border: 1px solid #555;
-            padding: 10px 40px 10px 40px; /* Padding for icon and text */
+            padding: 10px 40px 10px 40px;
             border-radius: 5px;
-            width: 100%; /* Take full width of the input-group */
-            box-sizing: border-box; /* Include padding and border in the element's total width */
+            width: 100%;
+            box-sizing: border-box;
         }
         .input-group button {
             background-color: #00bcd4;
@@ -82,16 +82,15 @@
         }
         #proxyFrame {
             width: 100%;
-            height: 600px; /* Adjust as needed */
+            height: 600px;
             border: none;
-            display: none; /* Initially hide the iframe */
+            display: none;
             margin-top: 20px;
         }
 
-        /* Add a key icon to the URL input */
         .input-group {
             position: relative;
-            margin-bottom: 10px; /* Add some spacing below the input group */
+            margin-bottom: 10px;
         }
 
         .input-group i.fa-key {
@@ -103,24 +102,21 @@
         }
 
         .input-group input {
-            padding-left: 30px; /* Adjust to accommodate the key icon */
+            padding-left: 30px;
         }
 
-        /* Enhanced security message */
         .enhanced-security {
-            background-color: #33691e; /* Darker green */
+            background-color: #33691e;
             padding: 10px;
             border-radius: 5px;
             margin-top: 10px;
             text-align: center;
             font-weight: bold;
         }
-        /* Added class for disabled button */
         .input-group button:disabled {
-            background-color: #607d8b; /* Grey color */
+            background-color: #607d8b;
             cursor: not-allowed;
         }
-        /* Lock icon animation */
         .fa-lock {
             animation: rotateLock 2s linear infinite;
             display: inline-block;
@@ -134,7 +130,6 @@
                 transform: rotate(360deg);
             }
         }
-        /* Added styling for key icon animation */
         .fa-key {
             animation: pulseKey 3s linear infinite;
         }
@@ -153,27 +148,24 @@
                 opacity: 0.8;
             }
         }
-        /* Info message style */
         .info {
-            color: #2196F3; /* A blue shade for informational messages */
+            color: #2196F3;
             margin-top: 10px;
             text-align: center;
         }
         .key-expired {
-            color: #ffc107; /* Amber color for warning/expired */
+            color: #ffc107;
             font-weight: bold;
         }
-        /* Added subtle shadow to the container */
         .container {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Increased intensity */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             transition: box-shadow 0.3s ease;
         }
 
         .container:hover {
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5); /* Further increased intensity */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
         }
 
-        /* Fading animation for the iframe */
         #proxyFrame {
             animation: fadeIn 0.5s ease-in-out;
         }
@@ -184,6 +176,42 @@
             }
             to {
                 opacity: 1;
+            }
+        }
+        /* Styles for responsive design */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%; /* Take up more width on smaller screens */
+                max-width: none; /* Remove max-width to fill available space */
+                padding: 15px; /* Reduce padding for smaller screens */
+            }
+
+            .input-group {
+                flex-direction: column; /* Stack input and button vertically */
+            }
+
+            .input-group input {
+                width: 100%; /* Input takes full width */
+                margin-bottom: 10px; /* Add spacing between input and button */
+                padding: 10px 30px; /* Adjust padding to keep icon visible */
+            }
+
+            .input-group button {
+                width: 100%; /* Button takes full width */
+                margin-left: 0; /* Remove left margin */
+            }
+
+            h1 {
+                font-size: 1.5em; /* Reduce heading size for smaller screens */
+            }
+
+            .security-info,
+            .enhanced-security {
+                font-size: 0.9em; /* Reduce font size for smaller screens */
+            }
+
+            #proxyFrame {
+                height: 400px; /* Reduce iframe height for smaller screens */
             }
         }
     </style>
@@ -223,39 +251,37 @@
             const proxyFrame = document.getElementById('proxyFrame');
             const infoDiv = document.getElementById('info');
             const keyExpiryWarningDiv = document.getElementById('keyExpiryWarning');
-            const HASH_ITERATIONS = 100000; // Define constant for iterations
-            const NONCE_LENGTH = 16; // Define constant for nonce length
-            const KEY_CHECK_URL = '/api/checkKey'; //Endpoint to check key
-            const AES_KEY_LENGTH = 256; // Define AES key length in bits
-            const KEY_STORAGE_DURATION = 300000; // 5 minutes in milliseconds
-            const LOAD_TIMEOUT = 30000; // 30 seconds
-            const IV_LENGTH = 12; // Standard IV length for AES-GCM
-            const SALT_LENGTH = 16; // Recommended salt length
+            const HASH_ITERATIONS = 100000;
+            const NONCE_LENGTH = 16;
+            const KEY_CHECK_URL = '/api/checkKey';
+            const AES_KEY_LENGTH = 256;
+            const KEY_STORAGE_DURATION = 300000;
+            const LOAD_TIMEOUT = 30000;
+            const IV_LENGTH = 12;
+            const SALT_LENGTH = 16;
             const PROXY_URL = '/api/proxy';
-            const KEY_EXPIRY_CHECK_INTERVAL = 60000; // 60 seconds
-            const ALLOWED_FRAME_ORIGIN = window.location.origin; // Ideally, this should be your server's origin.
+            const KEY_EXPIRY_CHECK_INTERVAL = 60000;
+            const ALLOWED_FRAME_ORIGIN = window.location.origin;
             const REDIRECT_STATUS_CODES = [301, 302, 307, 308];
-            const SERVICE_WORKER_URL = '/sw.js'; // Service worker URL
-            const URL_PARAM_NAME = 'd'; // Name for the encrypted URL parameter
+            const SERVICE_WORKER_URL = '/sw.js';
+            const URL_PARAM_NAME = 'd';
             const PREFETCH_SUBRESOURCES = true;
-            const ENCRYPT_REDIRECTS = true; //Enable/Disable encrypting redirects
-            const ENABLE_KEY_ROTATION = true; // Enable or disable key rotation
-            const KEY_ROTATION_INTERVAL = 600000; // 10 minutes in milliseconds
-            const KEY_CHECK_INTERVAL = 1800000; //30 minutes in milliseconds
+            const ENCRYPT_REDIRECTS = true;
+            const ENABLE_KEY_ROTATION = true;
+            const KEY_ROTATION_INTERVAL = 600000;
+            const KEY_CHECK_INTERVAL = 1800000;
             let lastKeyCheckTime = 0;
             const PREVENT_AUTOFILL = true;
             const MAX_URL_LENGTH = 2048;
-            const ENABLE_CSP = true; // Enable/disable Content Security Policy
+            const ENABLE_CSP = true;
             const SUBRESOURCE_INTEGRITY = true;
 
-            // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
                 window.crypto.getRandomValues(randomBuffer);
                 return Array.from(randomBuffer).map(b => b.toString(16).padStart(2, '0')).join('');
             }
 
-              // Function to decrypt the URL using AES (for potential future use)
             async function decryptURL(ciphertext, key, iv) {
                 try {
                     const encryptedData = Uint8Array.from(atob(ciphertext), c => c.charCodeAt(0));
@@ -266,11 +292,10 @@
                     return new TextDecoder().decode(decrypted);
                 } catch (error) {
                     console.error("Decryption failed:", error);
-                    return null; // Or throw the error, depending on your needs
+                    return null;
                 }
             }
 
-             // Function to hash the encryption key (SHA-256)
             async function hashKey(key) {
                 const encodedKey = new TextEncoder().encode(key);
                 const hashBuffer = await window.crypto.subtle.digest('SHA-256', encodedKey);
@@ -279,15 +304,12 @@
                 return hashHex;
             }
 
-            // Function to generate a cryptographically secure salt
             function generateSalt(length) {
               const randomBuffer = new Uint8Array(length);
               window.crypto.getRandomValues(randomBuffer);
               return Array.from(randomBuffer).map(b => b.toString(16).padStart(2, '0')).join('');
             }
 
-
-            // Function to derive a key from the password and salt using PBKDF2
             async function deriveKey(password, salt) {
                 const encodedPassword = new TextEncoder().encode(password);
                 const encodedSalt = new TextEncoder().encode(salt);
@@ -296,7 +318,7 @@
                     name: 'PBKDF2',
                     hash: 'SHA-256',
                     salt: encodedSalt,
-                    iterations: HASH_ITERATIONS // Use the constant
+                    iterations: HASH_ITERATIONS
                 };
 
                 const key = await window.crypto.subtle.importKey(
@@ -307,7 +329,7 @@
                     ['deriveKey']
                 );
 
-                const keyAlgorithm = { name: 'AES-GCM', length: 256 }; // Key length can be adjusted
+                const keyAlgorithm = { name: 'AES-GCM', length: 256 };
                 const derivedKey = await window.crypto.subtle.deriveKey(
                     algorithm,
                     key,
@@ -316,10 +338,9 @@
                     ['encrypt', 'decrypt']
                 );
 
-                return derivedKey; // Return the CryptoKey object
+                return derivedKey;
             }
 
-            // Function to encrypt the URL using AES-GCM
             async function encryptURL(url, key) {
                 const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
                 const encodedText = new TextEncoder().encode(url);
@@ -332,7 +353,6 @@
                 return { ciphertext: encryptedData, iv: ivData };
             }
 
-             // Function to generate a random AES key.
             async function generateAESKey() {
                 return await window.crypto.subtle.generateKey(
                     {
@@ -344,24 +364,20 @@
                 );
             }
 
-            // Function to handle errors and display them to the user
             function handleErrors(error) {
                 console.error(error);
                 errorDiv.textContent = 'An unexpected error occurred. Please try again.';
             }
 
-            // Function to check if the user is using HTTPS
             function isSecureContext() {
                 return window.isSecureContext;
             }
 
-            // Warn the user if they are not using HTTPS
             if (!isSecureContext()) {
                 errorDiv.textContent = "Warning: You are not using a secure (HTTPS) connection. Encryption may not be fully effective.";
-                errorDiv.style.color = '#ff9800'; // Amber color
+                errorDiv.style.color = '#ff9800';
             }
 
-            // Function to perform a check for compromised keys
             async function checkKeyCompromise(keyHash) {
               try {
                 const response = await fetch(KEY_CHECK_URL, {
@@ -374,18 +390,17 @@
 
                 if (!response.ok) {
                     console.error('Key check request failed:', response.status);
-                    return false; // Treat failure as not compromised, or handle differently
+                    return false;
                 }
 
                 const data = await response.json();
                 return data.isCompromised;
               } catch (error) {
                 console.error('Error during key check:', error);
-                return false; // Treat error as not compromised, or handle differently
+                return false;
               }
             }
 
-             // Function to register service worker
             async function registerServiceWorker() {
                 if ('serviceWorker' in navigator) {
                     try {
@@ -402,10 +417,8 @@
                 }
             }
 
-            // Call service worker registration on page load
             registerServiceWorker();
 
-            // Function to rotate the AES key
             async function rotateAESKey() {
               console.log('Rotating AES key...');
               const newAesKey = await generateAESKey();
@@ -419,15 +432,13 @@
               sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
               sessionStorage.setItem('hashedKey', hashedKey);
               console.log('AES key rotated successfully.');
-              displayKeyExpiryWarning(); //Update expiry warning message.
+              displayKeyExpiryWarning();
             }
 
-            // Key rotation interval
             if (ENABLE_KEY_ROTATION) {
                 setInterval(rotateAESKey, KEY_ROTATION_INTERVAL);
             }
 
-            // Function to periodically check for key compromise
             async function periodicKeyCheck() {
                 const currentTime = Date.now();
                 if (currentTime - lastKeyCheckTime >= KEY_CHECK_INTERVAL) {
@@ -438,7 +449,6 @@
                         const isCompromised = await checkKeyCompromise(hashedKey);
                         if (isCompromised) {
                             errorDiv.textContent = 'Potential security risk: Key compromise detected. Please refresh the page to generate a new key.';
-                            // Optionally, clear the key to force a new one on refresh
                             sessionStorage.removeItem('aesKey');
                             sessionStorage.removeItem('aesIV');
                             sessionStorage.removeItem('aesKeyTimestamp');
@@ -448,10 +458,8 @@
                 }
             }
 
-            // Set interval for key compromise check
             setInterval(periodicKeyCheck, KEY_CHECK_INTERVAL);
 
-            // Disable autocomplete and autocorrect
             if (PREVENT_AUTOFILL) {
                 urlInput.setAttribute("autocomplete", "off");
                 urlInput.setAttribute("autocorrect", "off");
@@ -472,17 +480,14 @@
                 }
 
                 try {
-                  // Disable the browse button while processing
                   browseButton.disabled = true;
                   browseButton.classList.add('disabled');
 
-                  // Normalize URL by adding https:// if no protocol specified
                   if (!url.startsWith('http://') && !url.startsWith('https://')) {
                       url = 'https://' + url;
-                      urlInput.value = url; // Update the input field
+                      urlInput.value = url;
                   }
 
-                    // Improved URL validation
                     try {
                         new URL(url);
                     } catch (_) {
@@ -490,22 +495,18 @@
                         return;
                     }
 
-                    // Generate a nonce for request tracking (example)
                     const nonce = generateNonce(NONCE_LENGTH);
-                    console.log("Request Nonce:", nonce); // Log nonce for debugging
+                    console.log("Request Nonce:", nonce);
 
-                    // Attempt to retrieve existing AES Key
                     let aesKeyHex = sessionStorage.getItem('aesKey');
                     let aesKey;
 
                     if (!aesKeyHex) {
-                        // Generate an AES Key if one doesn't exist
                         aesKey = await generateAESKey();
                         const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
                         const keyArray = Array.from(new Uint8Array(rawKey));
                         aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
                     } else {
-                        // Import key from sessionStorage
                         const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
                         aesKey = await window.crypto.subtle.importKey(
                             "raw",
@@ -516,61 +517,50 @@
                         );
                     }
 
-                    // Encrypt the URL
                     const { ciphertext, iv } = await encryptURL(url, aesKey);
 
-                    // Hash the derived key
                     const hashedKey = await hashKey(aesKeyHex);
-                    console.log("Hashed Key:", hashedKey); // Log the hashed key
+                    console.log("Hashed Key:", hashedKey);
 
-                     // Check for compromised key *before* proceeding
                     const isCompromised = await checkKeyCompromise(hashedKey);
                     if (isCompromised) {
                         errorDiv.textContent = 'Potential security risk: Key compromise detected.';
                         return;
                     }
 
-                    // Store IV in session storage
                     sessionStorage.setItem('aesIV', iv);
 
-                    // Store key in session storage *before* passing parameters
                     sessionStorage.setItem('aesKey', aesKeyHex);
-                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
+                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
                     sessionStorage.setItem('hashedKey',hashedKey);
 
-                    // Construct the URL with encrypted parameters.  Don't send IV in URL.
                     const formData = new FormData();
                     formData.append('ciphertext', ciphertext);
                     formData.append('nonce', nonce);
                     formData.append('keyHash', hashedKey);
 
-                    // Show loading indicator
                     loadingDiv.style.display = 'block';
-                    errorDiv.textContent = ''; // Clear any previous errors
+                    errorDiv.textContent = '';
                     proxyFrame.style.display = 'block';
 
-                    // Add CSP to the iframe to prevent mixed content issues
                     proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
                     let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
                     if (ENABLE_CSP) {
                         proxyFrame.setAttribute('csp', cspValue);
                     }
 
-                    // Use POST request for better security and to avoid URL length limits
                     fetch(PROXY_URL, {
                         method: 'POST',
                         body: formData,
-                        redirect: 'manual' // Prevent automatic redirects
+                        redirect: 'manual'
                     })
                     .then(response => {
                         if (REDIRECT_STATUS_CODES.includes(response.status)) {
                             const redirectUrl = response.headers.get('Location');
                             console.log("Redirect detected:", redirectUrl);
                             if (ENCRYPT_REDIRECTS) {
-                                // Encrypt and proxy the redirect URL
                                 return encryptAndProxy(redirectUrl);
                             } else {
-                                // Load redirect directly without encryption
                                 proxyFrame.src = redirectUrl;
                                 return;
                             }
@@ -581,17 +571,14 @@
                         return response.text();
                     })
                     .then(html => {
-                        // Load the HTML content directly into the iframe
                         proxyFrame.contentWindow.document.open();
                         proxyFrame.contentWindow.document.write(html);
                         proxyFrame.contentWindow.document.close();
 
-                        // Prefetch subresources
                         if (PREFETCH_SUBRESOURCES) {
                             prefetchSubresources(html);
                         }
 
-                        // Post message to the iframe to notify about successful load
                         proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
 
                     })
@@ -604,16 +591,14 @@
                         loadingDiv.style.display = 'none';
                     });
 
-                     // Set a timeout to prevent indefinite loading
                     const timeoutId = setTimeout(() => {
                         if (loadingDiv.style.display === 'block') {
                             loadingDiv.style.display = 'none';
                             errorDiv.textContent = 'Request timed out. Please try again.';
-                            proxyFrame.src = ''; // Clear the iframe to stop the request
+                            proxyFrame.src = '';
                         }
-                    }, LOAD_TIMEOUT); // Timeout after 30 seconds
+                    }, LOAD_TIMEOUT);
 
-                    // Function to clear sensitive information after delay
                     function clearSensitiveData() {
                         sessionStorage.removeItem('aesKey');
                         sessionStorage.removeItem('aesIV');
@@ -621,31 +606,27 @@
                         sessionStorage.removeItem('hashedKey');
                     }
 
-                     //Clear sensitive information from sessionStorage after a delay.
                     setTimeout(() => {
                         clearSensitiveData();
-                    }, KEY_STORAGE_DURATION); //Clear after 5 minutes
+                    }, KEY_STORAGE_DURATION);
 
                 } catch (e) {
-                    handleErrors(e); // Use the error handling function
+                    handleErrors(e);
                 } finally {
-                    // Re-enable the browse button
                     browseButton.disabled = false;
                     browseButton.classList.remove('disabled');
-                    // Hide loading indicator (in case of immediate errors)
                     setTimeout(() => {
                         loadingDiv.style.display = 'none';
-                    }, 500); // Small delay to ensure the loading indicator is shown briefly
+                    }, 500);
                 }
             });
 
-            // Function to display key expiry warning
             function displayKeyExpiryWarning() {
                 const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
                 if (storedTimestamp) {
                     const timestamp = parseInt(storedTimestamp, 10);
                     const timeLeft = KEY_STORAGE_DURATION - (Date.now() - timestamp);
-                    if (timeLeft <= 60000) { // Show warning if key expires in 1 minute or less
+                    if (timeLeft <= 60000) {
                         keyExpiryWarningDiv.style.display = 'block';
                     } else {
                         keyExpiryWarningDiv.style.display = 'none';
@@ -655,54 +636,45 @@
                 }
             }
 
-            // Periodically check and clear key if expired
             setInterval(() => {
                 const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
                 if (storedTimestamp) {
                     const timestamp = parseInt(storedTimestamp, 10);
                     if (Date.now() - timestamp > KEY_STORAGE_DURATION) {
-                        // Key has expired, clear it
                         console.log("AES Key expired. Clearing from sessionStorage.");
                         sessionStorage.removeItem('aesKey');
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
                         sessionStorage.removeItem('hashedKey');
-                         keyExpiryWarningDiv.style.display = 'none'; // Hide expiry warning
+                         keyExpiryWarningDiv.style.display = 'none';
                     } else {
-                         displayKeyExpiryWarning();// Check if warning needs to be displayed
+                         displayKeyExpiryWarning();
                     }
                 }
             }, KEY_EXPIRY_CHECK_INTERVAL);
 
-            // Display initial key expiry warning
             displayKeyExpiryWarning();
 
-             // Add event listener for iframe loaded message
             window.addEventListener('message', function(event) {
                 if (event.origin === ALLOWED_FRAME_ORIGIN && event.data.type === 'proxyLoaded') {
                     console.log('Iframe proxy loaded successfully.');
                 }
             });
 
-             // Function to handle encryption and proxying of redirect URLs
             async function encryptAndProxy(redirectUrl) {
                 try {
-                  // Generate a nonce for request tracking (example)
                   const nonce = generateNonce(NONCE_LENGTH);
-                  console.log("Redirect Nonce:", nonce); // Log nonce for debugging
+                  console.log("Redirect Nonce:", nonce);
 
-                  // Attempt to retrieve existing AES Key
                   let aesKeyHex = sessionStorage.getItem('aesKey');
                   let aesKey;
 
                   if (!aesKeyHex) {
-                      // Generate an AES Key if one doesn't exist
                       aesKey = await generateAESKey();
                       const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
                       const keyArray = Array.from(new Uint8Array(rawKey));
                       aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
                   } else {
-                      // Import key from sessionStorage
                       const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
                       aesKey = await window.crypto.subtle.importKey(
                           "raw",
@@ -713,47 +685,38 @@
                       );
                   }
 
-                  // Encrypt the URL
                   const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
 
-                  // Hash the derived key
                   const hashedKey = await hashKey(aesKeyHex);
-                  console.log("Hashed Key:", hashedKey); // Log the hashed key
+                  console.log("Hashed Key:", hashedKey);
 
-                   // Check for compromised key *before* proceeding
-                  const isCompromised = await checkKeyCompromise(hashedKey);
+                   const isCompromised = await checkKeyCompromise(hashedKey);
                   if (isCompromised) {
                       errorDiv.textContent = 'Potential security risk: Key compromise detected.';
                       return;
                   }
 
-                  // Store IV in session storage
                   sessionStorage.setItem('aesIV', iv);
 
-                  // Store key in session storage *before* passing parameters
                   sessionStorage.setItem('aesKey', aesKeyHex);
-                  sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
+                  sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
                   sessionStorage.setItem('hashedKey',hashedKey);
 
-                  // Construct the URL with encrypted parameters.  Don't send IV in URL.
                   const formData = new FormData();
                   formData.append('ciphertext', ciphertext);
                   formData.append('nonce', nonce);
                   formData.append('keyHash', hashedKey);
 
-                  // Show loading indicator
                   loadingDiv.style.display = 'block';
-                  errorDiv.textContent = ''; // Clear any previous errors
+                  errorDiv.textContent = '';
                   proxyFrame.style.display = 'block';
 
-                  // Add CSP to the iframe to prevent mixed content issues
                   proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
                     let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
                     if (ENABLE_CSP) {
                         proxyFrame.setAttribute('csp', cspValue);
                     }
 
-                  // Use POST request for better security and to avoid URL length limits
                   return fetch(PROXY_URL, {
                       method: 'POST',
                       body: formData,
@@ -765,17 +728,14 @@
                       return response.text();
                   })
                   .then(html => {
-                      // Load the HTML content directly into the iframe
                       proxyFrame.contentWindow.document.open();
                       proxyFrame.contentWindow.document.write(html);
                       proxyFrame.contentWindow.document.close();
 
-                      // Prefetch subresources
                       if (PREFETCH_SUBRESOURCES) {
                           prefetchSubresources(html);
                       }
 
-                      // Post message to the iframe to notify about successful load
                       proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
                   });
                 } catch (error) {
@@ -787,7 +747,6 @@
                 }
             }
 
-            // Function to prefetch subresources from the HTML
            async function prefetchSubresources(html) {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
@@ -808,7 +767,6 @@
                             prefetchLink.rel = 'prefetch';
                             prefetchLink.href = url;
 
-                            // Subresource Integrity (SRI)
                             if (SUBRESOURCE_INTEGRITY && element.tagName === 'SCRIPT' && element.integrity) {
                                 prefetchLink.integrity = element.integrity;
                                 prefetchLink.crossOrigin = 'anonymous';
