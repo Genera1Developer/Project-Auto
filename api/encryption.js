@@ -16,6 +16,9 @@ let keyGenerated = false;
 // Flag to indicate if key derivation is being used
 let keyDerivationUsed = false;
 
+// Store initialization vector to prevent reuse
+let lastIV = null;
+
 function setDeriveKeySalt(salt) {
     deriveKeySalt = salt;
 }
@@ -71,7 +74,13 @@ function encrypt(text) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
-    const iv = crypto.randomBytes(IV_LENGTH);
+    let iv;
+    do {
+        iv = crypto.randomBytes(IV_LENGTH);
+    } while (lastIV && timingSafeEqual(iv, lastIV)); // Ensure IV is unique
+
+    lastIV = iv; // Store current iv to prevent reuse
+
     let cipher;
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
@@ -169,6 +178,7 @@ function rotateKey() {
     }
     keyGenerated = false;
     keyDerivationUsed = false; // Reset key derivation flag on rotation
+    lastIV = null; // Reset last IV on key rotation
     return generateEncryptionKey();
 }
 
