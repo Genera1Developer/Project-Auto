@@ -253,11 +253,11 @@
 
             document.getElementById('captcha-text').innerText = encryptedData.ciphertext;
 
-            // Store encryption parameters securely in session storage
-            sessionStorage.setItem('captchaSalt', salt);
-            sessionStorage.setItem('captchaCiphertext', encryptedData.ciphertext);
-            sessionStorage.setItem('captchaTag', encryptedData.tag);
-            sessionStorage.setItem('captchaIV', iv);
+            // Store encryption parameters securely in local storage
+            localStorage.setItem('captchaSalt', salt);
+            localStorage.setItem('captchaCiphertext', encryptedData.ciphertext);
+            localStorage.setItem('captchaTag', encryptedData.tag);
+            localStorage.setItem('captchaIV', iv);
 
             return {
                 original: captchaText,
@@ -271,7 +271,7 @@
 
 
         async function deriveKey(password, salt, iterations) {
-           const derivedKey = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+           const derivedKey = CryptoJS.PBKDF2(password, CryptoJS.enc.Utf8.parse(password), {
                 keySize: 256/32,   // Key size in bytes (256 bits)
                 iterations: iterations,
                 hasher: CryptoJS.algo.SHA256
@@ -282,7 +282,8 @@
         }
 
        async function encryptText(plainText, key, iv) {
-            const cipher = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
+            const cipher = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(plainText), {
+                key: CryptoJS.enc.Utf8.parse(key),
                 iv: CryptoJS.enc.Hex.parse(iv),
                 mode: CryptoJS.mode.GCM,
                 padding: CryptoJS.pad.Pkcs7,
@@ -327,10 +328,10 @@
         async function validateCaptcha() {
             const userInput = document.getElementById('captcha-input').value;
              const encryptedText = document.getElementById('captcha-text').innerText;
-             const storedSalt = sessionStorage.getItem('captchaSalt');
-             const storedCiphertext = sessionStorage.getItem('captchaCiphertext');
-             const storedTag = sessionStorage.getItem('captchaTag');
-             const storedIV = sessionStorage.getItem('captchaIV');
+             const storedSalt = localStorage.getItem('captchaSalt');
+             const storedCiphertext = localStorage.getItem('captchaCiphertext');
+             const storedTag = localStorage.getItem('captchaTag');
+             const storedIV = localStorage.getItem('captchaIV');
 
              if (!storedSalt || !storedCiphertext || !storedTag || !storedIV) {
                 document.getElementById('error-message').innerText = 'Session expired. Refresh the page.';
@@ -343,18 +344,18 @@
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
 
-                sessionStorage.removeItem('captchaSalt');
-                sessionStorage.removeItem('captchaCiphertext');
-                sessionStorage.removeItem('captchaTag');
-                sessionStorage.removeItem('captchaIV');
+                localStorage.removeItem('captchaSalt');
+                localStorage.removeItem('captchaCiphertext');
+                localStorage.removeItem('captchaTag');
+                localStorage.removeItem('captchaIV');
 
                 await generateCaptcha(); // Regenerate for next time
             } else {
                 document.getElementById('error-message').innerText = 'Captcha does not match. Please try again.';
-                sessionStorage.removeItem('captchaSalt');
-                sessionStorage.removeItem('captchaCiphertext');
-                sessionStorage.removeItem('captchaTag');
-                sessionStorage.removeItem('captchaIV');
+                localStorage.removeItem('captchaSalt');
+                localStorage.removeItem('captchaCiphertext');
+                localStorage.removeItem('captchaTag');
+                localStorage.removeItem('captchaIV');
                 await generateCaptcha(); // Regenerate on failure
             }
         }
