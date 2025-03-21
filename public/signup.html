@@ -138,6 +138,10 @@
             margin-top: 5px;
             text-align: left;
         }
+
+        #captchaImage {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -157,6 +161,8 @@
             <div id="password-hint">Password must be at least 12 characters. Use uppercase, lowercase, numbers, and symbols.</div>
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
             <input type="email" id="email" name="email" placeholder="Email" required>
+             <img src="/api/captcha" alt="CAPTCHA" id="captchaImage" onclick="refreshCaptcha()">
+            <input type="text" id="captcha" name="captcha" placeholder="Enter CAPTCHA" required>
             </div>
             <div class="encryption-animation" id="encryptionAnimation"></div>
             <button type="submit">Sign Up</button>
