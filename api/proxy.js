@@ -43,7 +43,7 @@ function deriveKey(password, salt) {
 function encrypt(text, key, iv) {
     if (!text) return text;
     try {
-        const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
+        const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
         const authTag = cipher.getAuthTag();
         const ciphertext = Buffer.concat([iv, authTag, encrypted]);
@@ -73,7 +73,7 @@ function decrypt(text, key) {
         const authTag = buffer.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encrypted = buffer.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv);
+        const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
 
         const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
@@ -183,12 +183,23 @@ function maybeDecompress(proxyRes) {
 
 function encryptStream(key, iv) {
   try {
-    const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
+    const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
     return cipher;
   } catch (error) {
     console.error("Stream encryption error:", error);
     return null;
   }
+}
+
+function decryptStream(key, iv, authTag) {
+    try {
+        const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher.setAuthTag(authTag);
+        return decipher;
+    } catch (error) {
+        console.error("Stream decryption error:", error);
+        return null;
+    }
 }
 
 // Function to handle the proxy request
@@ -260,8 +271,8 @@ function proxyRequest(req, res) {
             if(!responseCipher){
                 return res.status(500).send('Failed to create response cipher.');
             }
-            const authTag = responseCipher.getAuthTag();
 
+            const authTag = responseCipher.getAuthTag();
             res.setHeader('Content-Encoding', 'encrypted');
             res.setHeader('x-encryption-iv', iv.toString('hex'));
             res.setHeader('x-encryption-authtag', authTag.toString('hex'));
@@ -274,11 +285,14 @@ function proxyRequest(req, res) {
             res.status(500).send('Proxy error');
         });
 
+        // Encrypt the request body
         const requestCipher = encryptStream(encryptionKey, iv);
 
         if(!requestCipher){
             return res.status(500).send('Failed to create request cipher.');
         }
+
+        const authTag = requestCipher.getAuthTag();
 
         req.pipe(requestCipher).pipe(proxyReq);
 
