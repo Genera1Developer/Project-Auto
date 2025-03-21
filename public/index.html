@@ -156,6 +156,9 @@
             const IV_LENGTH = 12; // Standard IV length for AES-GCM
             const SALT_LENGTH = 16; // Recommended salt length
 
+            // CSP Nonce for inline scripts (for stricter CSP)
+            const cspNonce = generateNonce(16);
+
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
@@ -364,7 +367,7 @@
 
                     // Add CSP to the iframe to prevent mixed content issues
                     proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
-                    proxyFrame.setAttribute('csp', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
+                    proxyFrame.setAttribute('csp', `default-src 'self'; script-src 'self' 'unsafe-inline' 'nonce-${cspNonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
 
                     // Load the URL in the iframe
                     proxyFrame.src = proxyUrl;
