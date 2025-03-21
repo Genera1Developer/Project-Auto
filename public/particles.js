@@ -237,19 +237,23 @@
                     var encryptedLinkedColorData = encryptData(linkedColorData, linkedColorSecret);
 
                     var updateColors = function(encryptedColorData, encryptedLinkedColorData, colorSecret, linkedColorSecret) {
-                      var decryptedColorData = decryptData(encryptedColorData, colorSecret);
-                      var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
+                      try {
+                        var decryptedColorData = decryptData(encryptedColorData, colorSecret);
+                        var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
 
-                      if (decryptedColorData) {
-                        if(e.particles.color) e.particles.color.value = "#" + decryptedColorData.color;
-                        if (e.particles.shape && e.particles.shape.stroke) {
-                          e.particles.shape.stroke.color = "#" + decryptedColorData.strokeColor;
+                        if (decryptedColorData) {
+                          if(e.particles.color) e.particles.color.value = "#" + decryptedColorData.color;
+                          if (e.particles.shape && e.particles.shape.stroke) {
+                            e.particles.shape.stroke.color = "#" + decryptedColorData.strokeColor;
+                          }
                         }
-                      }
-                      if (decryptedLinkedColorData) {
-                        if (e.particles.line_linked) {
-                          e.particles.line_linked.color = "#" + decryptedLinkedColorData.linkColor;
+                        if (decryptedLinkedColorData) {
+                          if (e.particles.line_linked) {
+                            e.particles.line_linked.color = "#" + decryptedLinkedColorData.linkColor;
+                          }
                         }
+                      } catch (updateColorsError) {
+                        console.error("Color Update Error:", updateColorsError);
                       }
                     };
 
