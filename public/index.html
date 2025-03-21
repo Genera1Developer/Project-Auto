@@ -255,6 +255,15 @@
             margin-right: 10px;
             color: #4CAF50;
         }
+
+        /* Improved URL validation */
+        .input-group input:invalid {
+            border-color: #f44336;
+        }
+
+        .input-group input:valid {
+            border-color: #4CAF50;
+        }
     </style>
 </head>
 
@@ -266,7 +275,7 @@
         <p style="text-align: center;">Enter the URL to browse securely:</p>
         <div class="input-group">
             <i class="fas fa-key"></i>
-            <input type="url" id="url" placeholder="https://example.com">
+            <input type="url" id="url" placeholder="https://example.com" required>
             <button id="browse"><i class="fas fa-arrow-right"></i> Browse</button>
         </div>
         <div id="error" class="error"></div>
@@ -561,6 +570,11 @@
 
                 if (!url) {
                     errorDiv.textContent = 'Please enter a URL.';
+                    return;
+                }
+
+                if (!urlInput.checkValidity()) {
+                    errorDiv.textContent = 'Please enter a valid URL.';
                     return;
                 }
 
