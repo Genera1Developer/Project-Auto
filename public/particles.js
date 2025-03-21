@@ -199,9 +199,8 @@
 
                     var generateKey = function(seed) {
                       let keyMaterial = seed + encryptionKeySalt;
-                      let hash = CryptoJS.SHA256(keyMaterial);
-                      let key = CryptoJS.enc.Hex.stringify(hash);
-                      return key.substring(0, aesKeySize / 4);
+                      let hash = CryptoJS.SHA256(keyMaterial).toString();
+                      return hash.substring(0, aesKeySize / 4);
                     };
 
                     var encryptData = function(data, secret) {
@@ -312,7 +311,8 @@
                     };
 
                     var getRandomHexColor = function() {
-                        return Math.floor(Math.random() * 16777215).toString(16);
+                        let color = Math.floor(Math.random() * 16777215).toString(16);
+                        return color.length === 6 ? color : '0' + color;
                     };
 
                     var loadInitialColorData = function() {
