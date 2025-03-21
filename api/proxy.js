@@ -238,9 +238,9 @@ function proxyRequest(req, res) {
         const proxyReq = protocol.request(options, (proxyRes) => {
             let raw = maybeDecompress(proxyRes);
 
-            // Generate IV for response encryption
-            const iv = crypto.randomBytes(IV_LENGTH);
-            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, iv); // Encrypt outgoing headers, using salt
+            // Generate IV for response encryption - different IV each time.
+            const resIv = crypto.randomBytes(IV_LENGTH);
+            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, resIv); // Encrypt outgoing headers, using salt
             delete resHeaders['content-encoding'];
             delete resHeaders['content-length'];
 
@@ -254,7 +254,7 @@ function proxyRequest(req, res) {
             // Send the salt and algorithm to the client for decryption
             res.setHeader('x-encryption-salt', salt);
             res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
-            res.setHeader('x-encryption-iv', iv.toString('hex')); // Send IV
+            res.setHeader('x-encryption-iv', resIv.toString('hex')); // Send IV
             // Optional: Send PBKDF2 parameters to the client for key derivation if needed
             // res.setHeader('x-pbkdf2-iterations', ITERATIONS);
             // res.setHeader('x-pbkdf2-digest', DIGEST);
@@ -262,7 +262,7 @@ function proxyRequest(req, res) {
             res.writeHead(proxyRes.statusCode, resHeaders);
 
             // Encrypt the response body
-            const responseCipher = encryptStream(encryptionKey, iv);
+            const responseCipher = encryptStream(encryptionKey, resIv);
 
             if(!responseCipher){
                 return res.status(500).send('Failed to create response cipher.');
@@ -280,12 +280,17 @@ function proxyRequest(req, res) {
             res.status(500).send('Proxy error');
         });
 
+         // Generate IV for request encryption - different IV each time.
+        const reqIv = crypto.randomBytes(IV_LENGTH);
         // Encrypt the request body
-        const requestCipher = encryptStream(encryptionKey, iv);
+        const requestCipher = encryptStream(encryptionKey, reqIv);
 
         if(!requestCipher){
             return res.status(500).send('Failed to create request cipher.');
         }
+
+        // Send IV to the upstream server.
+        options.headers['x-request-encryption-iv'] = reqIv.toString('hex');
 
         req.pipe(requestCipher).pipe(proxyReq);
 
