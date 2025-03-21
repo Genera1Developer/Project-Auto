@@ -852,6 +852,10 @@ const encryptWithNonce = async (text, aad, nonce) => {
         throw new Error('Nonce is required for encryption with nonce.');
     }
 
+    if (nonce.length < 16) {
+        throw new Error('Nonce must be at least 16 bytes long.');
+    }
+
     const iv = Buffer.from(nonce, 'base64').slice(0, IV_LENGTH); // Use nonce as IV
 
     let cipher = null;
@@ -894,6 +898,11 @@ const decryptWithNonce = async (text, aad, nonce) => {
     if (!nonce) {
         throw new Error('Nonce is required for decryption with nonce.');
     }
+
+    if (nonce.length < 16) {
+        throw new Error('Nonce must be at least 16 bytes long.');
+    }
+
 
    const iv = Buffer.from(nonce, 'base64').slice(0, IV_LENGTH); // Use nonce as IV
 
