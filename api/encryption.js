@@ -773,11 +773,10 @@ function getSupportedCiphers() {
 
 // Function to switch to a new cipher
 function setAlgorithm(newAlgorithm) {
+     if (!crypto.getCiphers().includes(newAlgorithm)) {
+        throw new Error(`Algorithm "${newAlgorithm}" is not supported.`);
+    }
     try {
-        // Check if the new algorithm is supported
-        if (!crypto.getCiphers().includes(newAlgorithm)) {
-            throw new Error(`Algorithm "${newAlgorithm}" is not supported.`);
-        }
         //Test the cipher before switching. This is important.
         crypto.createCipheriv(newAlgorithm, key, generateSecureIV(), { authTagLength: AUTH_TAG_LENGTH });
         algorithm = newAlgorithm;
