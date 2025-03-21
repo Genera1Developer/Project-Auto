@@ -670,15 +670,6 @@ document.addEventListener('DOMContentLoaded', function() {
         getIVPrefix();
         await getHmacSecret();
         sessionStorage.setItem('keyRotationTimestamp', Date.now().toString());
-        // Optionally re-encrypt sensitive data stored in localStorage
-        // Re-encrypt stored tokens/data here.  Example:
-        // if (localStorageAvailable()) {
-        //     const storedToken = localStorage.getItem('authToken');
-        //     if (storedToken) {
-        //         const reEncryptedToken = await encryptData(storedToken, sessionStorage.getItem('encryptionSalt'));
-        //         localStorage.setItem('authToken', reEncryptedToken);
-        //     }
-        // }
     }
 
     // Schedule Key Rotation (e.g., daily)
