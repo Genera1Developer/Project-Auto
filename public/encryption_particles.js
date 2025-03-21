@@ -334,7 +334,11 @@ particlesJS('particles-js', {
             if (newKey) {
                 config.encrypt_config.key = newKey;
                 key = newKey;
-                sessionStorage.setItem('encryptionKey', newKey);
+                try {
+                    sessionStorage.setItem('encryptionKey', newKey);
+                } catch (e) {
+                    console.warn("SessionStorage not available. Key will not persist.");
+                }
                 console.log('New encryption key generated:', newKey);
             } else {
                 console.error('Failed to generate encryption key. Encryption disabled.');
@@ -342,7 +346,11 @@ particlesJS('particles-js', {
                 return;
             }
         } else {
-            key = sessionStorage.getItem('encryptionKey') || key;
+            try {
+                key = sessionStorage.getItem('encryptionKey') || key;
+            } catch (e) {
+                console.warn("SessionStorage not available. Using default key.");
+            }
             config.encrypt_config.key = key;
         }
 
@@ -352,7 +360,11 @@ particlesJS('particles-js', {
             if (newIV) {
                 config.encrypt_config.iv = newIV;
                 iv = newIV;
-                sessionStorage.setItem('encryptionIV', newIV);
+                try {
+                    sessionStorage.setItem('encryptionIV', newIV);
+                } catch (e) {
+                    console.warn("SessionStorage not available. IV will not persist.");
+                }
                 console.log('New encryption IV generated:', newIV);
             } else {
                 console.error('Failed to generate encryption IV. Encryption disabled.');
@@ -360,7 +372,11 @@ particlesJS('particles-js', {
                 return;
             }
         } else {
-            iv = sessionStorage.getItem('encryptionIV') || iv;
+            try {
+                iv = sessionStorage.getItem('encryptionIV') || iv;
+            } catch (e) {
+                console.warn("SessionStorage not available. Using default IV.");
+            }
             config.encrypt_config.iv = iv;
         }
 
@@ -418,8 +434,12 @@ particlesJS('particles-js', {
         const encryptPlugin = pJS.plugins;
         let { key, iv, algorithm } = config.encrypt_config;
 
-        key = sessionStorage.getItem('encryptionKey') || key;
-        iv = sessionStorage.getItem('encryptionIV') || iv;
+        try {
+            key = sessionStorage.getItem('encryptionKey') || key;
+            iv = sessionStorage.getItem('encryptionIV') || iv;
+        } catch (e) {
+            console.warn("SessionStorage not available. Using default key/iv.");
+        }
 
         if (config?.plugins?.encrypt?.dataFields) {
             const { dataFields } = config.plugins.encrypt;
