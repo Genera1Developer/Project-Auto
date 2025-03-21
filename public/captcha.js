@@ -60,7 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const dataToStore = {
             encryptedCaptcha: encryptedCaptcha,
             keyHash: CryptoJS.SHA256(encryptionKey + salt).toString(),
-            ivHash: CryptoJS.SHA256(encryptionIV + salt).toString()
+            ivHash: CryptoJS.SHA256(encryptionIV + salt).toString(),
+            saltHash: CryptoJS.SHA256(salt).toString()
         };
 
         const encryptedStorage = CryptoJS.AES.encrypt(JSON.stringify(dataToStore), CryptoJS.enc.Utf8.parse(encryptionKey),{
@@ -103,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const storedEncryptedCaptcha = storedData.encryptedCaptcha;
             const storedKeyHash = storedData.keyHash;
             const storedIvHash = storedData.ivHash;
+            const storedSaltHash = storedData.saltHash;
 
              if(CryptoJS.SHA256(encryptionKey + salt).toString() !== storedKeyHash){
               errorMessageElement.textContent = 'Key hashes do not match';
@@ -113,6 +115,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
            if(CryptoJS.SHA256(encryptionIV + salt).toString() !== storedIvHash){
               errorMessageElement.textContent = 'IV hashes do not match';
+              errorMessageElement.style.color = 'red';
+              displayEncryptedCaptcha();
+              captchaInputElement.value = '';
+              return;
+            }
+             if(CryptoJS.SHA256(salt).toString() !== storedSaltHash){
+              errorMessageElement.textContent = 'Salt hashes do not match';
               errorMessageElement.style.color = 'red';
               displayEncryptedCaptcha();
               captchaInputElement.value = '';
