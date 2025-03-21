@@ -13,13 +13,13 @@
                     }
                 },
                 color: {
-                    value: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("f5c3bb").toString().substring(0,6) : "2ecc71")
+                    value: ""
                 },
                 shape: {
                     type: "circle",
                     stroke: {
                         width: 0,
-                        color: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("f5c3bb").toString().substring(0,6) : "2ecc71")
+                        color: ""
                     },
                     polygon: {
                         nb_sides: 5
@@ -48,7 +48,7 @@
                 line_linked: {
                     enable: !0,
                     distance: 150,
-                    color: "#" + (typeof CryptoJS !== 'undefined' ? CryptoJS.MD5("9b59b6").toString().substring(0,6) : "3498db"),
+                    color: "",
                     opacity: .4,
                     width: 1
                 },
