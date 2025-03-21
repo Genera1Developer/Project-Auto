@@ -497,10 +497,11 @@ const generateRandomIV = () => {
 const encryptData = (data, key, iv) => {
     try {
         const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-        let encrypted = cipher.update(data, 'utf8', 'hex');
-        encrypted += cipher.final('hex');
+        const dataBuffer = Buffer.from(data, 'utf8');
+        let encrypted = cipher.update(dataBuffer);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
-        return { encryptedData: encrypted, authTag: authTag.toString('hex') };
+        return { encryptedData: encrypted.toString('hex'), authTag: authTag.toString('hex') };
     } catch (error) {
         console.error('Data encryption error:', error);
         return null;
@@ -512,8 +513,8 @@ const decryptData = (encryptedData, key, iv, authTag) => {
         const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
         decipher.setAuthTag(Buffer.from(authTag, 'hex'));
         let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
-        decrypted += decipher.final('utf8');
-        return decrypted;
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return decrypted.toString('utf8');
     } catch (error) {
         console.error('Data decryption error:', error);
         return null;
@@ -525,10 +526,11 @@ const encryptObject = (obj, key) => {
         const iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
         const jsonString = JSON.stringify(obj);
-        let encrypted = cipher.update(jsonString, 'utf8', 'hex');
-        encrypted += cipher.final('hex');
+        const dataBuffer = Buffer.from(jsonString, 'utf8');
+        let encrypted = cipher.update(dataBuffer);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
-        return { iv: iv.toString('hex'), encryptedData: encrypted, authTag: authTag.toString('hex') };
+        return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex'), authTag: authTag.toString('hex') };
     } catch (error) {
         console.error('Object encryption error:', error);
         return null;
@@ -542,8 +544,8 @@ const decryptObject = (encrypted, key) => {
         const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
         decipher.setAuthTag(authTag);
         let decrypted = decipher.update(encrypted.encryptedData, 'hex', 'utf8');
-        decrypted += decipher.final('utf8');
-        return JSON.parse(decrypted);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return JSON.parse(decrypted.toString('utf8'));
     } catch (error) {
         console.error('Object decryption error:', error);
         return null;
