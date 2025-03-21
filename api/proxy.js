@@ -213,13 +213,13 @@ async function handleRequestBody(req, encryptionKey, reqIv) {
 
         const encryptedChunks = [];
         req.on('data', chunk => {
-                encryptedChunks.push(chunk);
+                encryptedChunks.push(requestCipher.update(chunk));
             })
             .on('end', () => {
                 try {
+                    encryptedChunks.push(requestCipher.final());
                     const encryptedBody = Buffer.concat(encryptedChunks);
-                    const finalEncrypted = Buffer.concat([requestCipher.update(encryptedBody), requestCipher.final()]);
-                    resolve(finalEncrypted);
+                    resolve(encryptedBody);
                 } catch (err) {
                     console.error("Request body finalization error:", err);
                     reject(err);
