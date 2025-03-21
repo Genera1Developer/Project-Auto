@@ -451,6 +451,7 @@ async function proxyRequest(req, res) {
               res.setHeader('Content-Encoding', 'encrypted');
               res.setHeader('x-stream-nonce', streamNonce);
               res.setHeader('x-stream-timestamp', streamTimestamp);
+              res.setHeader('x-stream-auth-tag', responseCipher.getAuthTag().toString('hex'));
               encryptedStream.pipe(res);
 
             } catch (streamErr) {
