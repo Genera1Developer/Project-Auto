@@ -384,7 +384,8 @@
                     'X-Encrypted-Key': encryptedEncryptionKey, // Send the encrypted key
                     'X-Request-HMAC': hmac, // Send HMAC for integrity
                     'X-Request-Nonce': nonce, // Send nonce for replay attack protection,
-                    'X-Request-Version': '2.0' // Add version for future updates
+                    'X-Request-Version': '2.0' // Add version for future updates,
+                    'X-Content-Encryption': 'AES256' // Indicate encryption
                 },
                 body: JSON.stringify({
                     username: combinedUsernameCiphertext,
