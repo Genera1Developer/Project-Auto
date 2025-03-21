@@ -299,6 +299,9 @@ particlesJS('particles-js', {
               bytes[i] = binary_string.charCodeAt(i);
           }
           return bytes.buffer;
+        },
+        sanitizeString: function(str) {
+          return str.replace(/[^a-zA-Z0-9]/g, '');
         }
   },
   "fn": {
