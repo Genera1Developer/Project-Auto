@@ -252,19 +252,13 @@
             const encryptedData = await encryptText(captchaText, derivedKey.key, derivedKey.iv);
 
             document.getElementById('captcha-text').innerText = encryptedData.ciphertext;
-             // Store encryption parameters securely, use local storage
 
-            captchaData = {
-                original: captchaText,
-                encrypted: encryptedData.ciphertext,
-                key: derivedKey.key,
-                iv: derivedKey.iv,
-                salt: salt,
-                tag: encryptedData.tag
-            };
-             localStorage.setItem('captchaSalt', salt);
-             localStorage.setItem('captchaCiphertext', encryptedData.ciphertext);
-             localStorage.setItem('captchaTag', encryptedData.tag);
+            // Store encryption parameters securely in session storage
+            sessionStorage.setItem('captchaSalt', salt);
+            sessionStorage.setItem('captchaCiphertext', encryptedData.ciphertext);
+            sessionStorage.setItem('captchaTag', encryptedData.tag);
+            sessionStorage.setItem('captchaIV', derivedKey.iv); // Store IV
+            sessionStorage.setItem('captchaKey', derivedKey.key); // Store Key
 
             return {
                 original: captchaText,
@@ -284,17 +278,17 @@
                 hasher: CryptoJS.algo.SHA256
             });
 
-            let iv  = CryptoJS.lib.WordArray.random(IV_LENGTH).toString(CryptoJS.enc.Hex);
-            return { key: key.toString(), iv: iv };
+            return { key: key.toString() };
         }
 
        async function encryptText(plainText, key, iv) {
+            const ivWord = CryptoJS.lib.WordArray.random(128/8); // Generate a random IV
             const tag = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
 
             const cipher = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
-                iv: CryptoJS.enc.Hex.parse(iv),
+                iv: ivWord,
                 mode: CryptoJS.mode.GCM,
-                padding: CryptoJS.pad.NoPadding,
+                padding: CryptoJS.pad.Pkcs7,
                 authTagLength: 128
             });
 
@@ -310,7 +304,7 @@
                  const decrypted = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(cipherText) }, CryptoJS.enc.Utf8.parse(key), {
                      iv: CryptoJS.enc.Hex.parse(iv),
                      mode: CryptoJS.mode.GCM,
-                     padding: CryptoJS.pad.NoPadding,
+                     padding: CryptoJS.pad.Pkcs7,
                      authTag: CryptoJS.enc.Hex.parse(tag),
                      authTagLength: 128
                  });
@@ -336,30 +330,37 @@
         async function validateCaptcha() {
             const userInput = document.getElementById('captcha-input').value;
              const encryptedText = document.getElementById('captcha-text').innerText;
-             const storedSalt = localStorage.getItem('captchaSalt');
-             const storedCiphertext = localStorage.getItem('captchaCiphertext');
-             const storedTag = localStorage.getItem('captchaTag');
+             const storedSalt = sessionStorage.getItem('captchaSalt');
+             const storedCiphertext = sessionStorage.getItem('captchaCiphertext');
+             const storedTag = sessionStorage.getItem('captchaTag');
+             const storedIV = sessionStorage.getItem('captchaIV');
+             const storedKey = sessionStorage.getItem('captchaKey');
 
-             if (!storedSalt || !storedCiphertext || !storedTag) {
+             if (!storedSalt || !storedCiphertext || !storedTag || !storedIV || !storedKey) {
                 document.getElementById('error-message').innerText = 'Session expired. Refresh the page.';
                 return;
              }
 
             const derivedKey = await deriveKey(ENCRYPTION_KEY, storedSalt, HASH_ITERATIONS);
-            const decryptedText = await decryptText(storedCiphertext, derivedKey.key, derivedKey.iv, storedTag);
+            const decryptedText = await decryptText(storedCiphertext, derivedKey.key, storedIV, storedTag);
 
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
 
-                localStorage.removeItem('captchaSalt');
-                localStorage.removeItem('captchaCiphertext');
-                localStorage.removeItem('captchaTag');
+                sessionStorage.removeItem('captchaSalt');
+                sessionStorage.removeItem('captchaCiphertext');
+                sessionStorage.removeItem('captchaTag');
+                sessionStorage.removeItem('captchaIV');
+                sessionStorage.removeItem('captchaKey');
+
                 await generateCaptcha(); // Regenerate for next time
             } else {
                 document.getElementById('error-message').innerText = 'Captcha does not match. Please try again.';
-                 localStorage.removeItem('captchaSalt');
-                 localStorage.removeItem('captchaCiphertext');
-                 localStorage.removeItem('captchaTag');
+                 sessionStorage.removeItem('captchaSalt');
+                 sessionStorage.removeItem('captchaCiphertext');
+                 sessionStorage.removeItem('captchaTag');
+                 sessionStorage.removeItem('captchaIV');
+                 sessionStorage.removeItem('captchaKey');
                 await generateCaptcha(); // Regenerate on failure
             }
         }
