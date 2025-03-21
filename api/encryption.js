@@ -19,6 +19,10 @@ let keyDerivationUsed = false;
 // Store initialization vector to prevent reuse
 let lastIV = null;
 
+// Cache the cipher for potential performance improvement.
+let cachedCipher = null;
+let cachedDecipher = null;
+
 function setDeriveKeySalt(salt) {
     deriveKeySalt = salt;
 }
@@ -35,6 +39,8 @@ function deriveEncryptionKey(password) {
         key = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
         keyGenerated = true;
         keyDerivationUsed = true; //Mark that key derivation was used
+        cachedCipher = null; // Invalidate cached cipher on key change
+        cachedDecipher = null; // Invalidate cached decipher on key change
     } catch (error) {
         console.error("Key derivation failed:", error);
         throw new Error('Key derivation failed. Check password and salt.');
@@ -51,6 +57,8 @@ function setEncryptionKey(newKey) {
     key = newKey;
     keyGenerated = true;
     keyDerivationUsed = false; //Explicitly set to false when directly setting the key
+    cachedCipher = null; // Invalidate cached cipher on key change
+    cachedDecipher = null; // Invalidate cached decipher on key change
 }
 
 function generateEncryptionKey() {
@@ -62,6 +70,8 @@ function generateEncryptionKey() {
         key = newKey;
         keyGenerated = true;
         keyDerivationUsed = false; //Explicitly set to false when generating key
+        cachedCipher = null; // Invalidate cached cipher on key change
+        cachedDecipher = null; // Invalidate cached decipher on key change
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
@@ -82,6 +92,7 @@ function encrypt(text) {
     lastIV = iv; // Store current iv to prevent reuse
 
     let cipher;
+
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
     } catch (error) {
@@ -92,7 +103,7 @@ function encrypt(text) {
     let encrypted;
 
     try {
-        encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
+        encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
     } catch (error) {
         console.error("Encryption failed:", error);
         return null;
@@ -179,6 +190,8 @@ function rotateKey() {
     keyGenerated = false;
     keyDerivationUsed = false; // Reset key derivation flag on rotation
     lastIV = null; // Reset last IV on key rotation
+    cachedCipher = null;
+    cachedDecipher = null;
     return generateEncryptionKey();
 }
 
