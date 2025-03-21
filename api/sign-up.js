@@ -216,7 +216,7 @@ async function chachaEncrypt(data, key, nonce) {
 // Function to decrypt using Chacha20-Poly1305
 async function chachaDecrypt(encryptedData, key, nonce) {
   try {
-    const decipher = crypto.createDecipheriv('chacha20-poly1305', Buffer.from(key, 'hex'), Buffer.from(nonce, 'hex'));
+    const decipher = crypto.createCipheriv('chacha20-poly1305', Buffer.from(key, 'hex'), Buffer.from(nonce, 'hex'));
     const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedData, 'hex')), decipher.final()]);
     return decrypted.toString();
   } catch (error) {
@@ -256,6 +256,13 @@ async function encryptDerivedKey(derivedKey, sessionKey, iv = null) {
         console.error("Encryption error:", error);
         return null;
     }
+}
+
+// Function to apply a randomized salting method
+function randomizedSalt(input) {
+  const randomPrefix = crypto.randomBytes(8).toString('hex');
+  const randomSuffix = crypto.randomBytes(8).toString('hex');
+  return randomPrefix + input + randomSuffix;
 }
 
 module.exports = async (req, res) => {
