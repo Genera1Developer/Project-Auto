@@ -46,17 +46,22 @@ function timingSafeEqual(a, b) {
 
 // Function to encrypt data using AES-256-GCM
 async function encryptData(data, encryptionKey) {
-  const iv = await randomBytesAsync(16); // Initialization Vector
-  const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
-  let encrypted = cipher.update(data);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  const authTag = cipher.getAuthTag();
+  try {
+    const iv = await randomBytesAsync(16); // Initialization Vector
+    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
+    let encrypted = cipher.update(data);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const authTag = cipher.getAuthTag();
 
-  return {
-    encryptedData: encrypted.toString('hex'),
-    iv: iv.toString('hex'),
-    authTag: authTag.toString('hex')
-  };
+    return {
+      encryptedData: encrypted.toString('hex'),
+      iv: iv.toString('hex'),
+      authTag: authTag.toString('hex')
+    };
+  } catch (error) {
+    console.error("Encryption error:", error);
+    return null;
+  }
 }
 
 // Function to decrypt data using AES-256-GCM
@@ -107,16 +112,21 @@ async function generateRandomPassword() {
 
 // Function to encrypt sensitive user data before storing it
 async function encryptUserData(userData, masterKey) {
-    const iv = await randomBytesAsync(16);
-    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(masterKey, 'hex'), iv);
-    const encrypted = Buffer.concat([cipher.update(JSON.stringify(userData)), cipher.final()]);
-    const authTag = cipher.getAuthTag();
+    try {
+        const iv = await randomBytesAsync(16);
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(masterKey, 'hex'), iv);
+        const encrypted = Buffer.concat([cipher.update(JSON.stringify(userData)), cipher.final()]);
+        const authTag = cipher.getAuthTag();
 
-    return {
-        iv: iv.toString('hex'),
-        encryptedData: encrypted.toString('hex'),
-        authTag: authTag.toString('hex')
-    };
+        return {
+            iv: iv.toString('hex'),
+            encryptedData: encrypted.toString('hex'),
+            authTag: authTag.toString('hex')
+        };
+    } catch (error) {
+      console.error("Encryption error:", error);
+      return null;
+    }
 }
 
 // Function to decrypt sensitive user data after retrieving it
