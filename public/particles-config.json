@@ -177,7 +177,13 @@
             "interval": 1800
         },
         "xChaCha20Poly1305Fallback": true,
-         "encryptedNumberTolerance": 0.001
+         "encryptedNumberTolerance": 0.001,
+          "keyWrap": {
+            "enable": true,
+            "algorithm": "RSA-OAEP",
+            "publicKey": "ENC_PUBLIC_KEY_PLACEHOLDER",
+            "privateKey": "ENC_PRIVATE_KEY_PLACEHOLDER"
+          }
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
