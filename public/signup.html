@@ -326,11 +326,8 @@
 
                   // Encrypt the password using AES.  This is only for transport.
                   // The server should re-derive key and encrypt for storage.
-                  const encryptedPassword = CryptoJS.AES.encrypt(password, key, {
-                      iv: iv,
-                      mode: CryptoJS.mode.CBC,
-                      padding: CryptoJS.pad.Pkcs7
-                  }).toString();
+                  // Instead of encrypting the password, hash it using SHA-256
+                  const hashedPassword = CryptoJS.SHA256(password).toString();
 
                   // No longer send key to reduce vulnerability if intercepted.
                   const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
@@ -341,7 +338,7 @@
                       headers: {
                           'Content-Type': 'application/json'
                       },
-                      body: JSON.stringify({ username: usernameEncrypted, password: encryptedPassword, email: emailEncrypted, captcha: captcha, salt: encryptedSalt, iv: encryptedIV })
+                      body: JSON.stringify({ username: usernameEncrypted, password: hashedPassword, email: emailEncrypted, captcha: captcha, salt: encryptedSalt, iv: encryptedIV })
                   })
                   .then(response => {
                       encryptionAnimation.style.display = 'none';
