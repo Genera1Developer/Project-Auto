@@ -560,7 +560,73 @@ particlesJS('particles-js', {
             } catch (e) {
                 return false;
             }
-        }
+        },
+        deriveKeyFromPassword: async function(password, salt) {
+            if (!window.crypto || !window.crypto.subtle) {
+                console.warn('Web Crypto API not supported. Key derivation disabled.');
+                return null;
+            }
+            try {
+                const enc = new TextEncoder();
+                const passwordKey = await crypto.subtle.importKey(
+                    "raw",
+                    enc.encode(password),
+                    { name: "PBKDF2" },
+                    false,
+                    ["deriveKey", "deriveBits"]
+                );
+
+                const derivedKey = await crypto.subtle.deriveKey(
+                    {
+                        name: "PBKDF2",
+                        salt: this.base64ToArrayBuffer(salt),
+                        iterations: 10000,
+                        hash: "SHA-256"
+                    },
+                    passwordKey,
+                    { name: "AES-CBC", length: 256 },
+                    true,
+                    ["encrypt", "decrypt"]
+                );
+
+                const exported = await crypto.subtle.exportKey(
+                    "raw",
+                    derivedKey
+                );
+                return this.arrayBufferToBase64(exported);
+
+            } catch (error) {
+                console.error("Key derivation failed:", error);
+                return null;
+            }
+        },
+        storePasswordHash: async function(password) {
+          try {
+            const enc = new TextEncoder();
+            const data = enc.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            localStorage.setItem('passwordHash', hashHex);
+          } catch (e) {
+              console.warn("localStorage not available or hashing failed.", e);
+          }
+      },
+
+      verifyPassword: async function(password) {
+          try {
+            const enc = new TextEncoder();
+            const data = enc.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            const storedHash = localStorage.getItem('passwordHash');
+            return hashHex === storedHash;
+          } catch (e) {
+              console.warn("localStorage not available or hashing failed.", e);
+              return false;
+          }
+      }
   },
   "fn": {
     "update": async function() {
