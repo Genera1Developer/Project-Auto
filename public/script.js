@@ -68,17 +68,22 @@ document.addEventListener('DOMContentLoaded', function() {
                    return encryptHmac(hmac).then(encryptedHmac => [encryptedData, encryptedHmac]);
                 })
                 .then(([encryptedData, encryptedHmac]) => {
+                    const keyPrefix = sessionStorage.getItem('keyPrefix');
+                    const ivPrefix = sessionStorage.getItem('ivPrefix');
+                    const iv = sessionStorage.getItem('currentIV');
+                    const hmacIV = sessionStorage.getItem('hmacIV');
+                    const salt = sessionStorage.getItem('encryptionSalt');
                     return fetch('/api/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Encryption': 'true',
-                            'X-Salt': sessionStorage.getItem('encryptionSalt'),
+                            'X-Salt': salt,
                             'X-HMAC': encryptedHmac,
-                            'X-Key-Prefix': sessionStorage.getItem('keyPrefix'),
-                            'X-IV-Prefix': sessionStorage.getItem('ivPrefix'),
-                            'X-IV': sessionStorage.getItem('currentIV'),
-                            'X-HMAC-IV': sessionStorage.getItem('hmacIV')
+                            'X-Key-Prefix': keyPrefix,
+                            'X-IV-Prefix': ivPrefix,
+                            'X-IV': iv,
+                            'X-HMAC-IV': hmacIV,
                         },
                         body: JSON.stringify({ data: encryptedData })
                     });
@@ -132,12 +137,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generateKey(salt) {
+         if (!salt || typeof salt !== 'string') {
+            console.error("Invalid salt:", salt);
+            salt = 'default_salt';
+          }
         const combined =  salt + getKeyPrefix();
         const hash = CryptoJS.SHA256(combined).toString();
         return hash.substring(0, 32);
     }
 
     function generateIV(salt) {
+         if (!salt || typeof salt !== 'string') {
+           console.error("Invalid salt:", salt);
+           salt = 'default_salt';
+         }
         const combined = salt + getIVPrefix();
         const hash = CryptoJS.SHA256(combined).toString();
         return hash.substring(0, 16);
