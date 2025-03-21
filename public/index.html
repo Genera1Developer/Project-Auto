@@ -454,6 +454,12 @@
                 }
             }, KEY_EXPIRY_CHECK_INTERVAL);
 
+             // Add event listener for iframe loaded message
+            window.addEventListener('message', function(event) {
+                if (event.origin === window.location.origin && event.data.type === 'proxyLoaded') {
+                    console.log('Iframe proxy loaded successfully.');
+                }
+            });
 
         });
 
