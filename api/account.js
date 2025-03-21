@@ -92,7 +92,7 @@ function encrypt(text, iv) {
 
 function decrypt(encryptedData, iv, authTag) {
     try {
-        const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, encryptionKey, Buffer.from(iv, 'hex'));
+        const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, encryptionKey, Buffer.from(iv, 'hex'), { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(Buffer.from(authTag, 'hex'));
         let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
         decrypted += decipher.final('utf8');
@@ -128,11 +128,10 @@ const verifyCredentials = async (username, password) => {
         const salt = generateSalt();
         const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
-        const encryptedUsernameSearch = encrypt(username, iv);
-        const encryptedPasswordSearch = hashedPassword;
+        const encryptedUsername = encrypt(username, iv);
 
         return new Promise((resolve, reject) => {
-            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ? AND password = ?`, [encryptedUsernameSearch.encryptedData, encryptedPasswordSearch], async (err, row) => {
+            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
                 if (err) {
                     handleDatabaseError(err, null, "User verification query error:");
                     return reject(err);
@@ -146,6 +145,12 @@ const verifyCredentials = async (username, password) => {
                     const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
                      if (decryptedUsername === null) {
                            return resolve(false);
+                    }
+
+                    const hashedPasswordAttempt = await hashPassword(password, row.salt, row.password_version);
+
+                    if (hashedPasswordAttempt !== row.password) {
+                        return resolve(false);
                     }
 
                     return resolve({ id: row.id, username: decryptedUsername });
@@ -178,7 +183,7 @@ exports.createUser = async (username, password, callback) => {
         const iv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, iv);
 
-        db.run(`INSERT INTO users (username, password, salt, iv, password_version, authTag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, hashedPassword, salt, iv.toString('hex'), PBKDF2_ITERATIONS, encryptedUsername.authTag], function(err) {
+        db.run(`INSERT INTO users (username, password, salt, iv, password_version, authTag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, hashedPassword, salt, encryptedUsername.iv, PBKDF2_ITERATIONS, encryptedUsername.authTag], function(err) {
             if (err) {
                 return handleDatabaseError(err, callback, "User creation error:");
             }
