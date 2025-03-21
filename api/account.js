@@ -158,6 +158,14 @@ exports.createUser = async (username, password, callback) => {
             return callback(new Error("Encryption failed"));
         }
 
+        if (!usernameEncryption.encryptedData || !usernameEncryption.iv || !usernameEncryption.authTag ||
+            !passwordEncryption.encryptedData || !passwordEncryption.iv || !passwordEncryption.authTag ||
+            !saltEncryption.encryptedData || !saltEncryption.iv || !saltEncryption.authTag) {
+            console.error("Encryption data is missing.  Debug:", { usernameEncryption, passwordEncryption, saltEncryption });
+            return callback(new Error("Incomplete encryption data"));
+        }
+
+
         const values = [
             usernameEncryption.encryptedData,
             passwordEncryption.encryptedData,
@@ -191,6 +199,10 @@ exports.verifyUser = (username, password, callback) => {
     try {
         const usernameEncryption = encryptSensitiveData(username);
 
+        if (!usernameEncryption) {
+            return callback(new Error("Username encryption failed."));
+        }
+
         db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [usernameEncryption.encryptedData], async (err, row) => {
             if (err) {
                 return handleDatabaseError(err, callback, "User verification query error:");
@@ -207,9 +219,14 @@ exports.verifyUser = (username, password, callback) => {
                 if (!decryptedUsername || !decryptedSalt || !decryptedPassword) {
                     return callback(new Error("Decryption failed"));
                 }
+
+                if (username !== decryptedUsername) {
+                    return callback(null, false); // Username doesn't match. Prevent password check.
+                }
+
                 const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
 
-                if (username === decryptedUsername && hashedPassword === decryptedPassword) {
+                if (hashedPassword === decryptedPassword) {
                     return callback(null, { id: row.id, username: username });
                 } else {
                     return callback(null, false);
