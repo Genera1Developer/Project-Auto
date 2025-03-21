@@ -658,4 +658,14 @@ document.addEventListener('DOMContentLoaded', function() {
             location.reload(true);
         }
     }
+
+    // Check for secure random number generator
+    function isSecureContext() {
+        return window.isSecureContext;
+    }
+
+    if (!isSecureContext()) {
+        console.warn("Insecure context! Some security features might be affected.");
+        showAlert("Insecure context! Some security features might be affected.", 'warning');
+    }
 });
