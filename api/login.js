@@ -623,9 +623,6 @@ module.exports = async (req, res) => {
             return res.status(500).json({ message: 'Session encryption failed' });
         }
 
-        //const encryptedSessionCookieValue = JSON.stringify(encryptedSession);
-        //const encryptedSessionCookie = encryptCookie(encryptedSessionCookieValue, keyMaterial.toString('hex'));
-
         if (encryptedSession) {
                 const deviceSecret = generateDeviceSecret();
                 const encryptedDeviceSecret = encryptWithDeviceSecret({secret: deviceSecret}, keyMaterial.toString('hex'))
@@ -641,9 +638,6 @@ module.exports = async (req, res) => {
 
                 // Sign the session ID using HMAC
                 const sessionIdSignature = hmacSign(sessionId, keyMaterial.toString('hex'));
-
-                //const maxAge = 3600;
-                //res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`);
 
                 const responsePayload = {
                     message: 'Login successful!',
