@@ -493,8 +493,12 @@ function isEncrypted(text) {
             return false;
         }
         // Attempt to decrypt, if it fails, it's likely not encrypted
-        decrypt(text);
-        return true;
+        try {
+            decrypt(text);
+            return true;
+        } catch (e) {
+            return false;
+        }
     } catch (error) {
         return false;
     }
