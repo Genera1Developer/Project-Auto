@@ -727,6 +727,9 @@
               errorMessage.textContent = 'Encryption error. Please try again.';
               encryptionStatus.textContent = 'Encryption Failed.';
               logSecurityEvent('Encryption failure: ' + e.message);
+            } finally {
+                // Ensure the encryption animation is always hidden
+                encryptionAnimation.style.display = 'none';
             }
         });
     </script>
