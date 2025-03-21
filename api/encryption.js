@@ -105,10 +105,15 @@ function safeCompare(a, b) {
         return false;
     }
 
-    const aBuf = Buffer.from(a, 'utf8');
-    const bBuf = Buffer.from(b, 'utf8');
+    try {
+        const aBuf = Buffer.from(a, 'utf8');
+        const bBuf = Buffer.from(b, 'utf8');
 
-    return timingSafeEqual(aBuf, bBuf);
+        return timingSafeEqual(aBuf, bBuf);
+    } catch (error) {
+        console.error("Safe compare failed:", error);
+        return false;
+    }
 }
 
 module.exports = {
