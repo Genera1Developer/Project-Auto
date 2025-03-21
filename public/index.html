@@ -96,6 +96,25 @@
                 transform: rotate(360deg);
             }
         }
+        /* Added styling for key icon animation */
+        .fa-key {
+            animation: pulseKey 3s linear infinite;
+        }
+
+        @keyframes pulseKey {
+            0% {
+                transform: translateY(-50%) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50%) scale(1);
+                opacity: 0.8;
+            }
+        }
 
     </style>
 </head>
@@ -133,6 +152,7 @@
             const KEY_CHECK_URL = '/api/checkKey'; //Endpoint to check key
             const AES_KEY_LENGTH = 256; // Define AES key length in bits
             const SALT_LENGTH = 16;
+            const KEY_STORAGE_DURATION = 300000; // 5 minutes in milliseconds
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -344,6 +364,7 @@
 
                     // Store key in session storage *before* passing parameters
                     sessionStorage.setItem('aesKey', keyHex);
+                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
 
                     // Construct the URL with encrypted parameters.  Don't send IV in URL.
                     const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(ciphertext)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}`;
@@ -374,11 +395,17 @@
                         }
                     }, 30000); // Timeout after 30 seconds
 
+                    // Function to clear sensitive information after delay
+                    function clearSensitiveData() {
+                        sessionStorage.removeItem('aesKey');
+                        sessionStorage.removeItem('aesIV');
+                        sessionStorage.removeItem('aesKeyTimestamp');
+                    }
+
                      //Clear sensitive information from sessionStorage after a delay.
                     setTimeout(() => {
-                        sessionStorage.removeItem('aesKey'); //Remove the hashedKey
-                        sessionStorage.removeItem('aesIV'); // Remove the IV
-                    }, 60000); //Clear after 60 seconds
+                        clearSensitiveData();
+                    }, KEY_STORAGE_DURATION); //Clear after 5 minutes
 
                 } catch (e) {
                     handleErrors(e); // Use the error handling function
@@ -392,6 +419,23 @@
                     }, 500); // Small delay to ensure the loading indicator is shown briefly
                 }
             });
+
+            // Periodically check and clear key if expired
+            setInterval(() => {
+                const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
+                if (storedTimestamp) {
+                    const timestamp = parseInt(storedTimestamp, 10);
+                    if (Date.now() - timestamp > KEY_STORAGE_DURATION) {
+                        // Key has expired, clear it
+                        console.log("AES Key expired. Clearing from sessionStorage.");
+                        sessionStorage.removeItem('aesKey');
+                        sessionStorage.removeItem('aesIV');
+                        sessionStorage.removeItem('aesKeyTimestamp');
+                    }
+                }
+            }, 60000); // Check every 60 seconds
+
+
         });
 
         particlesJS.load('particles-js', 'particles-config.json', function() {
