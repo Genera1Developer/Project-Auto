@@ -199,7 +199,7 @@
               }
           },
        "cacheIntegrityAlgorithm": "SHA256",
-      "keyWrappingAlgorithm": "ECDH-ES+A256KW",
+        "keyWrappingAlgorithm": "ECDH-ES+A256KW",
         "keyWrappingPublicKey": "ENC_KEY_WRAPPING_PUBLIC_KEY_PLACEHOLDER",
         "keyWrappingPrivateKey": "ENC_KEY_WRAPPING_PRIVATE_KEY_PLACEHOLDER",
         "keyWrappingSalt": "ENC_KEY_WRAPPING_SALT_PLACEHOLDER",
