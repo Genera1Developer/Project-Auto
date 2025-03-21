@@ -374,9 +374,9 @@ particlesJS('particles-js', {
           return buf;
         },
       getCryptoDetails: function(){
-          let key = localStorage.getItem('encryptionKey') || sessionStorage.getItem('encryptionKey') || this.key;
-          let iv = localStorage.getItem('encryptionIV') || sessionStorage.getItem('encryptionIV') || this.iv;
-          let salt = localStorage.getItem('encryptionSalt') || sessionStorage.getItem('encryptionSalt') || this.salt;
+          let key = localStorage.getItem('encryptionKey') || sessionStorage.getItem('encryptionKey') || this.encrypt_config.key;
+          let iv = localStorage.getItem('encryptionIV') || sessionStorage.getItem('encryptionIV') || this.encrypt_config.iv;
+          let salt = localStorage.getItem('encryptionSalt') || sessionStorage.getItem('encryptionSalt') || this.encrypt_config.salt;
 
           return {
               key: key,
