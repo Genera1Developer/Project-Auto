@@ -691,7 +691,8 @@ module.exports = async (req, res) => {
                     httpOnly: true,
                     secure: true,
                     sameSite: 'Strict',
-                    signed: true
+                    signed: true,
+                    path: '/'
                  }
 
                  // Set cookie with the encrypted session ID, signing with serverSecret
