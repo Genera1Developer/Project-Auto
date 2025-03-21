@@ -107,16 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const keyPrefix = getKeyPrefix();
             const ivPrefix = getIVPrefix();
-            const key = await generateKey(saltValue);
-            const iv = await generateIV(saltValue);
-
-            const hmacKey = await generateHmacKey(saltValue);
-            const hmacIV = await generateHmacIV(saltValue);
-
-            sessionStorage.setItem('key', key);
-            sessionStorage.setItem('iv', iv);
-            sessionStorage.setItem('hmacKey', hmacKey);
-            sessionStorage.setItem('hmacIV', hmacIV);
 
             const response = await fetch('/api/login', {
                 method: 'POST',
@@ -127,10 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-HMAC': encryptedHmac,
                     'X-Key-Prefix': keyPrefix,
                     'X-IV-Prefix': ivPrefix,
-                    'X-Key': key,
-                    'X-IV': iv,
-                    'X-HMAC-Key': hmacKey,
-                    'X-HMAC-IV': hmacIV,
                     'X-Nonce': window.nonce,
                     'Cache-Control': 'no-cache',
                     'Pragma': 'no-cache',
@@ -185,13 +171,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function generateAndStoreSalt() {
-        let salt = sessionStorage.getItem('encryptionSalt');
+        let salt = localStorage.getItem('encryptionSalt');
         if (!salt) {
             try {
                 const saltBuffer = new Uint8Array(16);
                 window.crypto.getRandomValues(saltBuffer);
                 salt = arrayBufferToSafeBase64(saltBuffer.buffer);
-                sessionStorage.setItem('encryptionSalt', salt);
+                localStorage.setItem('encryptionSalt', salt);
             } catch (e) {
                 console.error("Salt generation error:", e);
                 showAlert('Salt Generation Failed. Secure login disabled.', 'error');
@@ -202,13 +188,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getKeyPrefix() {
-        let prefix = sessionStorage.getItem('keyPrefix');
+        let prefix = localStorage.getItem('keyPrefix');
         if (!prefix) {
             try{
                 const prefixBuffer = new Uint8Array(8);
                 window.crypto.getRandomValues(prefixBuffer);
                 prefix = arrayBufferToSafeBase64(prefixBuffer.buffer);
-                sessionStorage.setItem('keyPrefix', prefix);
+                localStorage.setItem('keyPrefix', prefix);
             } catch (e) {
                 console.error("Key Prefix generation error:", e);
                 showAlert('Key Prefix Generation Failed. Secure login disabled.', 'error');
@@ -219,13 +205,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getIVPrefix() {
-        let prefix = sessionStorage.getItem('ivPrefix');
+        let prefix = localStorage.getItem('ivPrefix');
         if (!prefix) {
             try{
                 const prefixBuffer = new Uint8Array(8);
                 window.crypto.getRandomValues(prefixBuffer);
                 prefix = arrayBufferToSafeBase64(prefixBuffer.buffer);
-                sessionStorage.setItem('ivPrefix', prefix);
+                localStorage.setItem('ivPrefix', prefix);
             } catch (e) {
                 console.error("IV Prefix generation error:", e);
                 showAlert('IV Prefix Generation Failed. Secure login disabled.', 'error');
@@ -236,13 +222,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function getHmacSecret() {
-        let secret = sessionStorage.getItem('hmacSecret');
+        let secret = localStorage.getItem('hmacSecret');
         if (!secret) {
             try {
                 const secretBuffer = new Uint8Array(32);
                 window.crypto.getRandomValues(secretBuffer);
                 secret = arrayBufferToSafeBase64(secretBuffer.buffer);
-                sessionStorage.setItem('hmacSecret', secret);
+                localStorage.setItem('hmacSecret', secret);
             } catch (e) {
                 console.error("HMAC secret generation error:", e);
                 showAlert('HMAC Secret Generation Failed. Secure login disabled.', 'error');
@@ -303,19 +289,19 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const derivedKey = await deriveKeyMaterial(salt);
 
-            let iv = sessionStorage.getItem('currentIV');
+            let iv = localStorage.getItem('currentIV');
             if (!iv){
                 try{
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
                     iv = arrayBufferToSafeBase64(ivBuffer.buffer);
-                    sessionStorage.setItem('currentIV', iv);
+                    localStorage.setItem('currentIV', iv);
                 } catch (e) {
                     console.error("IV generation error:", e);
                     showAlert('IV Generation Failed. Secure login disabled.', 'error');
                     throw new Error("IV generation failed");
                 }
             }
-            iv = safeBase64ToArrayBuffer(sessionStorage.getItem('currentIV'));
+            iv = safeBase64ToArrayBuffer(localStorage.getItem('currentIV'));
 
             const encodedData = new TextEncoder().encode(JSON.stringify(data));
 
@@ -379,19 +365,19 @@ document.addEventListener('DOMContentLoaded', function() {
     async function encryptHmacWebCrypto(hmac, salt) {
         try {
             const derivedKey = await deriveKeyMaterial(salt);
-            let iv = sessionStorage.getItem('hmacIV');
+            let iv = localStorage.getItem('hmacIV');
             if (!iv){
                 try {
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
                     iv = arrayBufferToSafeBase64(ivBuffer.buffer);
-                    sessionStorage.setItem('hmacIV', iv);
+                    localStorage.setItem('hmacIV', iv);
                 } catch (e) {
                     console.error("HMAC IV generation error:", e);
                     showAlert('HMAC IV Generation Failed. Secure login disabled.', 'error');
                     throw new Error("HMAC IV generation failed");
                 }
             }
-            iv = safeBase64ToArrayBuffer(sessionStorage.getItem('hmacIV'));
+            iv = safeBase64ToArrayBuffer(localStorage.getItem('hmacIV'));
 
             const encodedHmac = new TextEncoder().encode(hmac);
 
@@ -428,17 +414,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function clearEncryptionData() {
-        sessionStorage.removeItem('encryptionSalt');
-        sessionStorage.removeItem('keyPrefix');
-        sessionStorage.removeItem('ivPrefix');
-        sessionStorage.removeItem('hmacSecret');
-        sessionStorage.removeItem('currentIV');
-        sessionStorage.removeItem('hmacIV');
-        sessionStorage.removeItem('key');
-        sessionStorage.removeItem('iv');
-        sessionStorage.removeItem('hmacKey');
-        sessionStorage.removeItem('hmacIV');
-        console.log('Encryption data cleared from sessionStorage.');
+        localStorage.removeItem('encryptionSalt');
+        localStorage.removeItem('keyPrefix');
+        localStorage.removeItem('ivPrefix');
+        localStorage.removeItem('hmacSecret');
+        localStorage.removeItem('currentIV');
+        localStorage.removeItem('hmacIV');
+        console.log('Encryption data cleared from localStorage.');
     }
 
     if (!window.crypto || !window.crypto.subtle) {
@@ -470,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function deriveKeyMaterial(salt) {
         try {
-            const password = await generateKey(salt);
+            const password = await generateDerivedKey(salt, 'key');
 
             const enc = new TextEncoder();
             const keyMaterial = await window.crypto.subtle.importKey(
@@ -500,22 +482,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showAlert('Key derivation failed. Secure login disabled.', 'error');
             throw new Error("Key derivation failed: " + error.message);
         }
-    }
-
-    async function generateKey(salt) {
-        return await generateDerivedKey(salt, 'key');
-    }
-
-    async function generateIV(salt) {
-        return await generateDerivedKey(salt, 'iv');
-    }
-
-    async function generateHmacKey(salt) {
-        return await generateDerivedKey(salt, 'hmacKey');
-    }
-
-    async function generateHmacIV(salt) {
-        return await generateDerivedKey(salt, 'hmacIV');
     }
 
     async function generateDerivedKey(salt, type) {
