@@ -225,7 +225,8 @@
             "salt": "ENC_HKDF_PLACEHOLDER",
             "info": "particles-config",
             "length": 32
-          }
+          },
+       "entropyPoolSize": 256
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -561,6 +562,11 @@
           "salt": "ENC_HKDF_SECURITY_SALT_PLACEHOLDER",
           "info": "particles-config-security",
           "length": 32
-        }
+        },
+       "certificateTransparencyReportOnly": {
+          "enabled": false,
+          "reportUri": "/ct-report-only"
+       },
+       "reportUri": "/security-report"
   }
 }
