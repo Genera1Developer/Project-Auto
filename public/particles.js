@@ -187,31 +187,24 @@
                     var encryptionRounds = 3;
                     var colorUpdateInterval = 5000;
                     var useSessionStorage = false;
+                    var encryptionKeySalt = "particle_salt";
 
-                    var generateKey = function(seed, salt, rounds) {
-                      let keyMaterial = seed + salt;
-                      let derivedKey = keyMaterial;
-                      for (let i = 0; i < rounds; i++) {
-                        derivedKey = CryptoJS.SHA256(derivedKey).toString();
-                      }
-                      return derivedKey;
+                    var generateKey = function(seed) {
+                      let keyMaterial = seed + encryptionKeySalt;
+                      return CryptoJS.SHA256(keyMaterial).toString();
                     };
 
                     var encryptData = function(data, secret) {
                         try {
                             let iv = CryptoJS.lib.WordArray.random(128 / 8);
-                            let salt = CryptoJS.lib.WordArray.random(128 / 8);
-
                             let encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), secret, {
                                 iv: iv,
                                 mode: CryptoJS.mode.CBC,
-                                padding: CryptoJS.pad.Pkcs7,
-                                salt: salt
+                                padding: CryptoJS.pad.Pkcs7
                             });
                             return {
                                 ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
-                                iv: iv.toString(CryptoJS.enc.Hex),
-                                salt: salt.toString(CryptoJS.enc.Hex)
+                                iv: iv.toString(CryptoJS.enc.Hex)
                             };
                         } catch (err) {
                             console.error("Encrypt error:", err);
@@ -222,15 +215,12 @@
                     var decryptData = function(encryptedData, secret) {
                         try {
                             let iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
-                            let salt = CryptoJS.enc.Hex.parse(encryptedData.salt);
-
                             let decrypted = CryptoJS.AES.decrypt({
                                 ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext)
                             }, secret, {
                                 iv: iv,
                                 mode: CryptoJS.mode.CBC,
-                                padding: CryptoJS.pad.Pkcs7,
-                                salt: salt
+                                padding: CryptoJS.pad.Pkcs7
                             });
 
                             let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
@@ -266,7 +256,7 @@
 
                             try {
                                 var parsedData = JSON.parse(storedData);
-                                if (!parsedData || !parsedData.ciphertext || !parsedData.iv || !parsedData.salt) {
+                                if (!parsedData || !parsedData.ciphertext || !parsedData.iv) {
                                     storage.removeItem(storageKeyPrefixToUse + key);
                                     return defaultValue;
                                 }
@@ -288,7 +278,7 @@
                         var storage = useSessionStorage ? sessionStorage : localStorage;
                         var storageKeyPrefixToUse = useSessionStorage ? sessionKeyPrefix : localStorageKeyPrefix;
                         try {
-                            if (!data || !data.ciphertext || !data.iv || !data.salt) {
+                            if (!data || !data.ciphertext || !data.iv) {
                                 console.warn("Invalid data for storage:", data);
                                 return;
                             }
@@ -310,14 +300,8 @@
                         linkColor: initialLinkedColorSeed
                     };
 
-                    var colorSalt = localStorage.getItem(localStorageKeyPrefix + "colorSalt") || CryptoJS.lib.WordArray.random(128 / 8).toString();
-                    localStorage.setItem(localStorageKeyPrefix + "colorSalt", colorSalt);
-
-                    var linkedColorSalt = localStorage.getItem(localStorageKeyPrefix + "linkedColorSalt") || CryptoJS.lib.WordArray.random(128 / 8).toString();
-                    localStorage.setItem(localStorageKeyPrefix + "linkedColorSalt", linkedColorSalt);
-
-                    var colorSecret = generateKey("color_secret", colorSalt, encryptionRounds);
-                    var linkedColorSecret = generateKey("linked_secret", linkedColorSalt, encryptionRounds);
+                    var colorSecret = generateKey("color_secret");
+                    var linkedColorSecret = generateKey("linked_secret");
 
                     var storedColorData = retrieveEncryptedData("colorData", null);
                     var storedLinkedColorData = retrieveEncryptedData("linkedLinkedColorData", null);
@@ -331,15 +315,6 @@
 
                     var updateColorsAndSchedule = function() {
                         try {
-                            var newColorSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
-                            localStorage.setItem(localStorageKeyPrefix + "colorSalt", newColorSalt);
-
-                            var newLinkedColorSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
-                            localStorage.setItem(localStorageKeyPrefix + "linkedColorSalt", newLinkedColorSalt);
-
-                            var newColorSecret = generateKey("color_secret", newColorSalt, encryptionRounds);
-                            var newLinkedColorSecret = generateKey("linked_secret", newLinkedColorSalt, encryptionRounds);
-
                             var newColor = getRandomHexColor();
                             var newStrokeColor = getRandomHexColor();
                             var newLinkColor = getRandomHexColor();
@@ -359,14 +334,14 @@
                                 timestamp: Date.now()
                             });
 
-                            encryptedColorData = encryptData(colorDataToEncrypt, newColorSecret);
+                            encryptedColorData = encryptData(colorDataToEncrypt, colorSecret);
                             storeEncryptedData("colorData", encryptedColorData);
 
-                            encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, newLinkedColorSecret);
+                            encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, linkedColorSecret);
                             storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
 
-                            decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, newColorSecret) : null;
-                            decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, newLinkedColorSecret) : null;
+                            decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
+                            decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
 
                             if (decryptedColorData && decryptedLinkedColorData) {
                                 updateColors(decryptedColorData, decryptedLinkedColorData);
