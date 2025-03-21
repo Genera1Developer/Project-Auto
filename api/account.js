@@ -202,6 +202,11 @@ exports.createUser = async (username, password, callback) => {
 
 exports.verifyUser = async (username, password, callback) => {
     try {
+        const salt = generateSalt();
+        const hashedPassword = await hashPassword(password, salt);
+        const iv = crypto.randomBytes(ivLength);
+        const encryptedUsername = encrypt(username, iv);
+        const encryptedPassword = encrypt(hashedPassword, iv);
         const user = await verifyCredentials(username, password);
         if(user) {
             return callback(null, user);
