@@ -462,12 +462,6 @@
             setTimeout(() => {
                 // Generate a random key (AES key size should be 128, 192, or 256 bits)
                 const salt = CryptoJS.lib.WordArray.random(128/8);
-                // Derive key from password and salt
-                //removed key derivation function from client side
-                //const key = CryptoJS.PBKDF2(password, salt, {
-                //  keySize: 256/32,
-                //  iterations: 1000
-                //});
                 const aesKey = CryptoJS.lib.WordArray.random(256/8); // Generate AES key
                 const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
 
@@ -495,7 +489,6 @@
                     const hmacUsername = CryptoJS.HmacSHA256(usernameEncrypted, hmacKey).toString();
                     const hmacEmail = CryptoJS.HmacSHA256(emailEncrypted, hmacKey).toString();
 
-                  // No longer send key to reduce vulnerability if intercepted.
                   const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
                   const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
                   const encryptedAesKey = CryptoJS.enc.Base64.stringify(aesKey);
@@ -545,8 +538,6 @@
                       encryptionStatus.textContent = 'Connection error.';
                   });
 
-                   //Display the salt.  Important:  ONLY for testing purposes.
-                   // NEVER display the salt in a production environment.
                   // saltDisplay.textContent = "Salt: " + encryptedSalt;
                   // aesKeyDisplay.textContent = "AES Key: " + encryptedAesKey;
                   // hmacKeyDisplay.textContent = "HMAC Key: " + encryptedHmacKey;
