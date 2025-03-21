@@ -217,6 +217,8 @@ function proxyRequest(req, res) {
             res.writeHead(proxyRes.statusCode, resHeaders);
 
             // Consider encrypting the response body if needed
+            // const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, crypto.randomBytes(IV_LENGTH));
+            // proxyRes.pipe(cipher).pipe(res);
             raw.pipe(res);
         });
 
