@@ -114,11 +114,128 @@ particlesJS('particles-js', {
     },
   plugins: {
       encrypt: {
-          enable: false, // Initially disabled for testing/setup
-          dataFields: ['color.value', 'line_linked.color'],
+          enable: false,
+          dataFields: ['particles.color.value', 'particles.line_linked.color'],
           algorithm: 'encrypt_config.algorithm',
           key: 'encrypt_config.key',
           iv: 'encrypt_config.iv'
-      }
-  }
+      },
+      customEncrypt: function(data, key, iv, algorithm) {
+            // Placeholder for encryption logic
+            if (!window.crypto || !window.crypto.subtle) {
+                console.warn('Web Crypto API not supported. Encryption disabled.');
+                return data;
+            }
+
+            // Example Encryption function (replace with actual crypto calls)
+            const encryptValue = async (text, secretKey, iv) => {
+              try {
+                const enc = new TextEncoder();
+                const key = await crypto.subtle.importKey(
+                  "raw",
+                  enc.encode(secretKey),
+                  { name: "AES-CBC", length: 256 },
+                  false,
+                  ["encrypt", "decrypt"]
+                );
+
+                const encryptedData = await crypto.subtle.encrypt(
+                  { name: "AES-CBC", iv: enc.encode(iv) },
+                  key,
+                  enc.encode(text)
+                );
+
+                const encryptedArray = new Uint8Array(encryptedData);
+                const encryptedString = String.fromCharCode(...encryptedArray);
+                return btoa(encryptedString);
+
+              } catch (error) {
+                console.error("Encryption failed:", error);
+                return text;
+              }
+            };
+
+            if (Array.isArray(data)) {
+                return Promise.all(data.map(item => encryptValue(item, key, iv)));
+            } else {
+                return encryptValue(data, key, iv);
+            }
+        },
+        decrypt: function(encryptedData, key, iv, algorithm) {
+            if (!window.crypto || !window.crypto.subtle) {
+                console.warn('Web Crypto API not supported. Encryption disabled.');
+                return encryptedData;
+            }
+
+            const decryptValue = async (encryptedBase64, secretKey, iv) => {
+              try {
+                const enc = new TextEncoder();
+                const key = await crypto.subtle.importKey(
+                  "raw",
+                  enc.encode(secretKey),
+                  { name: "AES-CBC", length: 256 },
+                  false,
+                  ["encrypt", "decrypt"]
+                );
+
+                const encryptedString = atob(encryptedBase64);
+                const encryptedArray = new Uint8Array(encryptedString.length);
+                for (let i = 0; i < encryptedString.length; i++) {
+                  encryptedArray[i] = encryptedString.charCodeAt(i);
+                }
+
+                const decryptedData = await crypto.subtle.decrypt(
+                  { name: "AES-CBC", iv: enc.encode(iv) },
+                  key,
+                  encryptedArray
+                );
+
+                const dec = new TextDecoder();
+                return dec.decode(decryptedData);
+
+              } catch (error) {
+                console.error("Decryption failed:", error);
+                return encryptedBase64; // Return original if decryption fails
+              }
+            };
+
+            if (Array.isArray(encryptedData)) {
+                return Promise.all(encryptedData.map(item => decryptValue(item, key, iv)));
+            } else {
+                return decryptValue(encryptedData, key, iv);
+            }
+        }
+  },
+  "fn": {
+    "update": function() {
+        if (this.plugins.encrypt.enable) {
+            const config = this.actualOptions;
+            const encryptPlugin = this.plugins;
+
+            if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
+                const dataFields = config.plugins.encrypt.dataFields;
+                const key = config.encrypt_config.key;
+                const iv = config.encrypt_config.iv;
+                const algorithm = config.encrypt_config.algorithm;
+
+                dataFields.forEach(fieldPath => {
+                    let target = config;
+                    const pathParts = fieldPath.split('.');
+                    for (let i = 0; i < pathParts.length - 1; i++) {
+                        target = target[pathParts[i]];
+                        if (!target) return;
+                    }
+                    const lastPart = pathParts[pathParts.length - 1];
+
+                    if (target[lastPart]) {
+                      const originalValue = target[lastPart];
+                      encryptPlugin.customEncrypt(originalValue, key, iv, algorithm).then(encryptedValue => {
+                            target[lastPart] = encryptedValue;
+                        });
+                    }
+                });
+            }
+        }
+    }
+}
 });
