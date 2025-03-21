@@ -285,132 +285,132 @@ particlesJS('particles-js', {
   "fn": {
     "update": async function() {
         const pJS = this;
-        if (pJS.plugins.encrypt.enable) {
-            const config = pJS.actualOptions;
-            const encryptPlugin = pJS.plugins;
-            const { key, iv, algorithm } = config.encrypt_config;
+        if (!pJS.plugins.encrypt.enable) return;
 
-            if (!key || key === 'YOUR_SECURE_KEY') {
-                console.warn('Encryption key is not set. Generating a random key.');
-                const newKey = await encryptPlugin.generateRandomKey();
-                if (newKey) {
-                    config.encrypt_config.key = newKey;
-                    console.log('New encryption key generated:', newKey);
-                } else {
-                    console.error('Failed to generate encryption key. Encryption disabled.');
-                    pJS.plugins.encrypt.enable = false;
-                    return;
-                }
+        const config = pJS.actualOptions;
+        const encryptPlugin = pJS.plugins;
+        let { key, iv, algorithm } = config.encrypt_config;
+
+        if (!key || key === 'YOUR_SECURE_KEY') {
+            console.warn('Encryption key is not set. Generating a random key.');
+            const newKey = await encryptPlugin.generateRandomKey();
+            if (newKey) {
+                config.encrypt_config.key = newKey;
+                key = newKey;
+                console.log('New encryption key generated:', newKey);
+            } else {
+                console.error('Failed to generate encryption key. Encryption disabled.');
+                pJS.plugins.encrypt.enable = false;
+                return;
             }
+        }
 
-             if (!iv || iv === 'YOUR_IV_KEY') {
-                console.warn('Encryption IV is not set. Generating a random IV.');
-                const newIV = encryptPlugin.generateRandomIV();
-                if (newIV) {
-                    config.encrypt_config.iv = newIV;
-                    console.log('New encryption IV generated:', newIV);
-                } else {
-                    console.error('Failed to generate encryption IV. Encryption disabled.');
-                    pJS.plugins.encrypt.enable = false;
-                    return;
-                }
+        if (!iv || iv === 'YOUR_IV_KEY') {
+            console.warn('Encryption IV is not set. Generating a random IV.');
+            const newIV = encryptPlugin.generateRandomIV();
+            if (newIV) {
+                config.encrypt_config.iv = newIV;
+                iv = newIV;
+                console.log('New encryption IV generated:', newIV);
+            } else {
+                console.error('Failed to generate encryption IV. Encryption disabled.');
+                pJS.plugins.encrypt.enable = false;
+                return;
             }
+        }
 
-            if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
-                const { dataFields } = config.plugins.encrypt;
+        if (config?.plugins?.encrypt?.dataFields) {
+            const { dataFields } = config.plugins.encrypt;
 
-                for (const fieldPath of dataFields) {
-                    let target = config;
-                    const pathParts = fieldPath.split('.');
-                    for (let i = 0; i < pathParts.length - 1; i++) {
-                        if(!target || typeof target !== 'object') break;
-                        target = target[pathParts[i]];
-                    }
-                    if(!target) continue;
+            for (const fieldPath of dataFields) {
+                let target = config;
+                const pathParts = fieldPath.split('.');
+                for (let i = 0; i < pathParts.length - 1; i++) {
+                    if(!target || typeof target !== 'object') break;
+                    target = target[pathParts[i]];
+                }
+                if(!target) continue;
 
-                    const lastPart = pathParts[pathParts.length - 1];
+                const lastPart = pathParts[pathParts.length - 1];
 
-                    if (target && target.hasOwnProperty(lastPart)) {
-                      try{
+                if (target && target.hasOwnProperty(lastPart)) {
+                    try{
                         let originalValue = target[lastPart];
 
                         if (Array.isArray(originalValue)) {
-                          const encryptedArray = [];
-                          for(let i = 0; i < originalValue.length; i++){
-                            try {
-                              const item = originalValue[i];
-                              if (typeof item === 'string') {
-                                encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm);
-                              } else {
-                                encryptedArray[i] = item;
-                              }
-                            } catch (itemError) {
-                              console.warn(`Encryption of array item failed:`, itemError);
-                              encryptedArray[i] = originalValue[i];
+                            const encryptedArray = [];
+                            for(let i = 0; i < originalValue.length; i++){
+                                try {
+                                    const item = originalValue[i];
+                                    if (typeof item === 'string') {
+                                        encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm);
+                                    } else {
+                                        encryptedArray[i] = item;
+                                    }
+                                } catch (itemError) {
+                                    console.warn(`Encryption of array item failed:`, itemError);
+                                    encryptedArray[i] = originalValue[i];
+                                }
                             }
-                          }
 
-                          target[lastPart] = encryptedArray;
+                            target[lastPart] = encryptedArray;
 
                         } else if(typeof originalValue === 'string'){
-                          target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
+                            target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
                         }
-                      } catch (error) {
+                    } catch (error) {
                         console.error("Encryption update failed:", error);
-                      }
-
                     }
                 }
-
             }
         }
     },
     "draw": async function() {
         const pJS = this;
-        if (pJS.plugins.encrypt.enable) {
-            const config = pJS.actualOptions;
-            const encryptPlugin = pJS.plugins;
-            const { key, iv, algorithm } = config.encrypt_config;
+        if (!pJS.plugins.encrypt.enable) return;
 
-            if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
-                const { dataFields } = config.plugins.encrypt;
+        const config = pJS.actualOptions;
+        const encryptPlugin = pJS.plugins;
+        let { key, iv, algorithm } = config.encrypt_config;
 
-                for (const fieldPath of dataFields) {
-                    let target = config;
-                    const pathParts = fieldPath.split('.');
-                    for (let i = 0; i < pathParts.length - 1; i++) {
-                        if(!target || typeof target !== 'object') break;
-                        target = target[pathParts[i]];
-                    }
-                     if(!target) continue;
-                    const lastPart = pathParts[pathParts.length - 1];
+        if (config?.plugins?.encrypt?.dataFields) {
+            const { dataFields } = config.plugins.encrypt;
 
-                    if (target && target.hasOwnProperty(lastPart)) {
-                      try{
+            for (const fieldPath of dataFields) {
+                let target = config;
+                const pathParts = fieldPath.split('.');
+                for (let i = 0; i < pathParts.length - 1; i++) {
+                    if(!target || typeof target !== 'object') break;
+                    target = target[pathParts[i]];
+                }
+                 if(!target) continue;
+                const lastPart = pathParts[pathParts.length - 1];
+
+                if (target && target.hasOwnProperty(lastPart)) {
+                    try{
                         let encryptedValue = target[lastPart];
 
                         if (Array.isArray(encryptedValue)) {
-                          const decryptedArray = [];
-                          for(let i = 0; i < encryptedValue.length; i++){
-                            try {
-                              const item = encryptedValue[i];
-                              if (typeof item === 'string') {
-                                decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm);
-                              } else {
-                                decryptedArray[i] = item;
-                              }
-                            } catch (itemError) {
-                              console.warn("Decryption of array item failed:", itemError);
-                              decryptedArray[i] = encryptedValue[i];
+                            const decryptedArray = [];
+                            for(let i = 0; i < encryptedValue.length; i++){
+                                try {
+                                    const item = encryptedValue[i];
+                                    if (typeof item === 'string') {
+                                        decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm);
+                                    } else {
+                                        decryptedArray[i] = item;
+                                    }
+                                } catch (itemError) {
+                                    console.warn("Decryption of array item failed:", itemError);
+                                    decryptedArray[i] = encryptedValue[i];
+                                }
                             }
-                          }
-                          target[lastPart] = decryptedArray;
+                            target[lastPart] = decryptedArray;
                         } else if(typeof encryptedValue === 'string'){
                             target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
                         }
-                      } catch (error) {
-                          console.error("Decryption draw failed:", error);
-                      }
+                    } catch (error) {
+                        console.error("Decryption draw failed:", error);
                     }
                 }
             }
