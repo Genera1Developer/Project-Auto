@@ -694,12 +694,14 @@
                     .then(data => {
                         if (data.success) {
                             errorMessage.textContent = '';
-                            encryptionStatus.textContent = 'Encrypted account created.';
+                            encryptionStatus.textContent = 'Encrypted account created. Redirecting...';
                             logSecurityEvent('Successful signup.');
                             localStorage.removeItem('bruteForceAttempts');
                             localStorage.removeItem('lastAttemptTime');
                             Cookies.set('signupSuccess', 'true', { expires: 1 });
-                            window.location.href = 'login.html';
+							setTimeout(() => {
+								window.location.href = 'login.html';
+							}, 1500);
                         } else {
                             errorMessage.textContent = data.message || 'Signup failed.';
                             encryptionStatus.textContent = 'Signup attempt encrypted.';
