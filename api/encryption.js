@@ -115,9 +115,14 @@ const encrypt = (text) => {
         ivMap.set(key, iv);
     } else {
         let lastIVForKey = ivMap.get(key);
-        do {
+         iv = crypto.randomBytes(IV_LENGTH);
+        if (lastIVForKey && timingSafeEqual(iv, lastIVForKey)) {
+            console.warn("IV collision detected. Generating a new IV.");
+            // In rare cases, generate a new IV if a collision is detected.  This is unlikely
+            // but provides defense-in-depth.
             iv = crypto.randomBytes(IV_LENGTH);
-        } while (lastIVForKey && timingSafeEqual(iv, lastIVForKey)); // Ensure IV is unique
+
+        }
         ivMap.set(key, iv); // Store current iv to prevent reuse
     }
 
