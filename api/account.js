@@ -48,6 +48,7 @@ function connectToDatabase() {
                 password BLOB NOT NULL,
                 salt BLOB NOT NULL,
                 iv BLOB NOT NULL,
+                authTag BLOB NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 password_version INTEGER DEFAULT ${PBKDF2_ITERATIONS}
             )
@@ -85,11 +86,16 @@ function encrypt(text, iv) {
 }
 
 function decrypt(encryptedData, iv, authTag) {
-    const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, encryptionKey, Buffer.from(iv, 'hex'));
-    decipher.setAuthTag(Buffer.from(authTag, 'hex'));
-    let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
+    try {
+        const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, encryptionKey, Buffer.from(iv, 'hex'));
+        decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+        let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return decrypted.toString();
+    } catch (error) {
+        console.error("Decryption error:", error);
+        return null;
+    }
 }
 
 const validatePassword = (password) => {
@@ -115,7 +121,7 @@ const validatePassword = (password) => {
 const verifyCredentials = async (username, password) => {
     try {
         return new Promise((resolve, reject) => {
-            db.get(`SELECT id, username, password, salt, password_version, iv FROM users WHERE username = ?`, [username], async (err, row) => {
+            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [username], async (err, row) => {
                 if (err) {
                     handleDatabaseError(err, null, "User verification query error:");
                     return reject(err);
@@ -130,6 +136,9 @@ const verifyCredentials = async (username, password) => {
 
                     if (hashedPasswordFromDB === row.password) {
                         const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
+                        if (decryptedUsername === null) {
+                            return resolve(false);
+                        }
                         return resolve({ id: row.id, username: decryptedUsername });
                     } else {
                         return resolve(false);
@@ -161,15 +170,6 @@ exports.createUser = async (username, password, callback) => {
         const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, iv);
-
-        const values = [
-            encryptedUsername.encryptedData,
-            hashedPassword,
-            salt,
-            iv.toString('hex'),
-            PBKDF2_ITERATIONS,
-            encryptedUsername.authTag
-        ];
 
         db.run(`INSERT INTO users (username, password, salt, iv, password_version, authTag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, hashedPassword, salt, iv.toString('hex'), PBKDF2_ITERATIONS, encryptedUsername.authTag], function(err) {
             if (err) {
