@@ -1,23 +1,23 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 150,
+      value: 200,
       density: {
         enable: true,
         value_area: 800
       }
     },
     color: {
-      value: '#00FF00' // Green for encryption feel
+      value: ['#00FF00', '#0F0', '#00FA9A'] // Varying greens
     },
     shape: {
-      type: 'circle', // Could also try 'edge' or 'triangle'
+      type: 'circle',
       stroke: {
         width: 0,
         color: '#000000'
       },
       polygon: {
-        nb_sides: 5 // Pentagon - related to security
+        nb_sides: 6 // Hexagon - more secure feeling
       },
       image: {
         src: '',
@@ -26,17 +26,17 @@ particlesJS('particles-js', {
       }
     },
     opacity: {
-      value: 0.7,
+      value: 0.8,
       random: true,
       anim: {
         enable: true,
-        speed: 1,
+        speed: 0.7,
         opacity_min: 0.1,
         sync: false
       }
     },
     size: {
-      value: 2,
+      value: 2.5,
       random: true,
       anim: {
         enable: false,
@@ -47,14 +47,14 @@ particlesJS('particles-js', {
     },
     line_linked: {
       enable: true,
-      distance: 130,
-      color: '#009900', // Darker green
-      opacity: 0.4,
-      width: 1
+      distance: 150,
+      color: '#009900',
+      opacity: 0.5,
+      width: 1.2
     },
     move: {
       enable: true,
-      speed: 1.5,
+      speed: 2,
       direction: 'none',
       random: true,
       straight: false,
@@ -82,27 +82,27 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 170,
+        distance: 180,
         line_linked: {
-          opacity: 0.7
+          opacity: 0.8
         }
       },
       bubble: {
-        distance: 220,
+        distance: 230,
         size: 0,
         duration: 2,
         opacity: 0,
         speed: 3
       },
       repulse: {
-        distance: 250,
+        distance: 260,
         duration: 0.4
       },
       push: {
-        particles_nb: 3
+        particles_nb: 4
       },
       remove: {
-        particles_nb: 2
+        particles_nb: 3
       }
     }
   },
