@@ -47,6 +47,7 @@ function connectToDatabase() {
                 username BLOB NOT NULL,
                 password BLOB NOT NULL,
                 salt BLOB NOT NULL,
+                iv BLOB NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 password_version INTEGER DEFAULT ${PBKDF2_ITERATIONS}
             )
@@ -71,6 +72,26 @@ function generateSalt() {
     return crypto.randomBytes(SALT_LENGTH).toString('hex');
 }
 
+function encrypt(text, iv) {
+    const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    const authTag = cipher.getAuthTag();
+    return {
+        iv: iv.toString('hex'),
+        encryptedData: encrypted.toString('hex'),
+        authTag: authTag.toString('hex')
+    };
+}
+
+function decrypt(encryptedData, iv, authTag) {
+    const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, encryptionKey, Buffer.from(iv, 'hex'));
+    decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+    let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+}
+
 const validatePassword = (password) => {
     if (password.length < 8) {
         return "Password must be at least 8 characters long";
@@ -93,11 +114,8 @@ const validatePassword = (password) => {
 
 const verifyCredentials = async (username, password) => {
     try {
-        const salt = generateSalt();
-        const hashedPassword = await hashPassword(password, salt);
-
         return new Promise((resolve, reject) => {
-            db.get(`SELECT id, username, password, salt, password_version FROM users WHERE username = ?`, [username], async (err, row) => {
+            db.get(`SELECT id, username, password, salt, password_version, iv FROM users WHERE username = ?`, [username], async (err, row) => {
                 if (err) {
                     handleDatabaseError(err, null, "User verification query error:");
                     return reject(err);
@@ -108,11 +126,11 @@ const verifyCredentials = async (username, password) => {
                 }
 
                 try {
-                    // Compare the provided password with the stored hash
                     const hashedPasswordFromDB = await hashPassword(password, row.salt, row.password_version);
 
                     if (hashedPasswordFromDB === row.password) {
-                        return resolve({ id: row.id, username: username });
+                        const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
+                        return resolve({ id: row.id, username: decryptedUsername });
                     } else {
                         return resolve(false);
                     }
@@ -141,15 +159,19 @@ exports.createUser = async (username, password, callback) => {
     try {
         const salt = generateSalt();
         const hashedPassword = await hashPassword(password, salt);
+        const iv = crypto.randomBytes(ivLength);
+        const encryptedUsername = encrypt(username, iv);
 
         const values = [
-            username,
+            encryptedUsername.encryptedData,
             hashedPassword,
             salt,
+            iv.toString('hex'),
             PBKDF2_ITERATIONS,
+            encryptedUsername.authTag
         ];
 
-        db.run(`INSERT INTO users (username, password, salt, password_version) VALUES (?, ?, ?, ?)`, values, function(err) {
+        db.run(`INSERT INTO users (username, password, salt, iv, password_version, authTag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, hashedPassword, salt, iv.toString('hex'), PBKDF2_ITERATIONS, encryptedUsername.authTag], function(err) {
             if (err) {
                 return handleDatabaseError(err, callback, "User creation error:");
             }
