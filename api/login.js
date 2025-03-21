@@ -221,24 +221,26 @@ const isRateLimitedPerUser = (req, username) => {
     const now = Date.now();
     const windowMs = 60000;
     const maxRequests = 5;
+    const ipHashSalt = process.env.IP_HASH_SALT || crypto.randomBytes(16).toString('hex');
+    const hashedUsername = hashIpAddress(username + req.ip, ipHashSalt);
 
     if (!global.userRateLimits) {
         global.userRateLimits = {};
     }
 
-    if (!global.userRateLimits[username]) {
-        global.userRateLimits[username] = { requests: [] };
+    if (!global.userRateLimits[hashedUsername]) {
+        global.userRateLimits[hashedUsername] = { requests: [] };
     }
 
-    global.userRateLimits[username].requests = global.userRateLimits[username].requests.filter(
+    global.userRateLimits[hashedUsername].requests = global.userRateLimits[hashedUsername].requests.filter(
         (time) => time > now - windowMs
     );
 
-    if (global.userRateLimits[username].requests.length >= maxRequests) {
+    if (global.userRateLimits[hashedUsername].requests.length >= maxRequests) {
         return true;
     }
 
-    global.userRateLimits[username].requests.push(now);
+    global.userRateLimits[hashedUsername].requests.push(now);
     return false;
 };
 
