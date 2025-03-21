@@ -23,6 +23,11 @@ const ENCRYPT_HEADER_PREFIX = 'enc_';
 // Store derived keys in a cache to avoid repeated derivation
 const keyCache = new Map();
 
+// Rate Limiting - Added Simple Rate Limiter
+const requestCounts = new Map();
+const RATE_LIMIT_WINDOW = 60000; // 1 minute
+const RATE_LIMIT = 100; // 100 requests per minute
+
 // Function to derive a symmetric key using PBKDF2
 function deriveKey(password, salt) {
     const cacheKey = `${password}-${salt}`;
@@ -252,8 +257,35 @@ function earlyReject(res, statusCode, message) {
     }
 }
 
+function rateLimit(req, res) {
+    const ip = req.ip || req.socket.remoteAddress; // Get client IP
+
+    const now = Date.now();
+    const requests = requestCounts.get(ip) || [];
+
+    // Clean up old requests
+    while (requests.length > 0 && requests[0] <= now - RATE_LIMIT_WINDOW) {
+        requests.shift();
+    }
+
+    if (requests.length >= RATE_LIMIT) {
+        earlyReject(res, 429, 'Too many requests');
+        return true; // Indicate rate limit exceeded
+    }
+
+    requests.push(now);
+    requestCounts.set(ip, requests);
+    return false; // Indicate rate limit not exceeded
+}
+
 // Function to handle the proxy request
 async function proxyRequest(req, res) {
+
+    // Rate Limit Check
+    if (rateLimit(req, res)) {
+        return;
+    }
+
     const targetUrl = req.headers['x-target-url'];
     if (!targetUrl) {
         return earlyReject(res, 400, 'Target URL is missing.');
