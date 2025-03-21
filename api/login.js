@@ -603,7 +603,8 @@ module.exports = async (req, res) => {
           username: userData.username,
           loginTime: Date.now(),
           nonce: nonce,
-          sessionId: sessionId
+          sessionId: sessionId,
+          ipAddress: req.ip //Include IP
         };
 
         // Generate key material
