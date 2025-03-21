@@ -110,22 +110,7 @@ const encrypt = (text) => {
     }
 
     let iv;
-    if (!ivMap.has(key)) {
-        iv = crypto.randomBytes(IV_LENGTH);
-        ivMap.set(key, iv);
-    } else {
-        let lastIVForKey = ivMap.get(key);
-         iv = crypto.randomBytes(IV_LENGTH);
-        if (lastIVForKey && timingSafeEqual(iv, lastIVForKey)) {
-            console.warn("IV collision detected. Generating a new IV.");
-            // In rare cases, generate a new IV if a collision is detected.  This is unlikely
-            // but provides defense-in-depth.
-            iv = crypto.randomBytes(IV_LENGTH);
-
-        }
-        ivMap.set(key, iv); // Store current iv to prevent reuse
-    }
-
+    iv = generateSecureIV();
 
     let cipher = null;
     let encrypted = null; // Declare encrypted outside the try block
@@ -370,6 +355,17 @@ function safeBufferCompare(a, b) {
     return timingSafeEqual(a, b);
 }
 
+// Function to reset the key generation flag, for testing purposes
+function resetKeyGeneration() {
+    keyGenerated = false;
+    keyDerivationUsed = false;
+    if (key) {
+        zeroBuffer(key);
+        key = null;
+    }
+    ivMap.clear();
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -389,5 +385,6 @@ module.exports = {
     generateSecureRandomBytes,
     encryptSecure,
     decryptSecure,
-    safeBufferCompare
+    safeBufferCompare,
+    resetKeyGeneration
 };
