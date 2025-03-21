@@ -115,13 +115,16 @@ async function encryptUserData(userData, masterKey) {
     try {
         const iv = await randomBytesAsync(16);
         const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(masterKey, 'hex'), iv);
+        const aad = Buffer.from(process.env.AAD_FOR_ENCRYPTION || 'DefaultAad', 'utf8');
+        cipher.setAAD(aad);
         const encrypted = Buffer.concat([cipher.update(JSON.stringify(userData)), cipher.final()]);
         const authTag = cipher.getAuthTag();
 
         return {
             iv: iv.toString('hex'),
             encryptedData: encrypted.toString('hex'),
-            authTag: authTag.toString('hex')
+            authTag: authTag.toString('hex'),
+            aad: aad.toString('hex')
         };
     } catch (error) {
       console.error("Encryption error:", error);
@@ -130,9 +133,11 @@ async function encryptUserData(userData, masterKey) {
 }
 
 // Function to decrypt sensitive user data after retrieving it
-async function decryptUserData(encryptedData, iv, authTag, masterKey) {
+async function decryptUserData(encryptedData, iv, authTag, masterKey, aad) {
     try {
         const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(masterKey, 'hex'), Buffer.from(iv, 'hex'));
+        const associatedData = Buffer.from(aad, 'hex');
+        decipher.setAAD(associatedData);
         decipher.setAuthTag(Buffer.from(authTag, 'hex'));
         const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedData, 'hex')), decipher.final()]);
         return JSON.parse(decrypted.toString());
@@ -170,7 +175,7 @@ module.exports = async (req, res) => {
 
       // 1. Generate a unique encryption key per user, derived from password and salt.
       randomPassword = await generateRandomPassword();
-      derivedEncryptionKey = await deriveKey(password, salt);
+      derivedEncryptionKey = await deriveKey(randomPassword, salt);
 
       // 2. Encrypt the username and salt
       const saltedUsername = saltUsername(username, salt);
