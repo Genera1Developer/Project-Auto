@@ -220,12 +220,17 @@
                             return combinedData;
                         } catch (err) {
                             console.error("Encrypt error:", err);
-                            return null;
+                             return null;
                         }
                     };
 
                     var decryptData = function(combinedData, secret) {
                         try {
+                            if (!combinedData) {
+                                console.warn("No data to decrypt.");
+                                return null;
+                            }
+
                             let parts = combinedData.split('$');
                             if (parts.length !== 3) {
                               console.error("Invalid combined data format.");
@@ -257,7 +262,7 @@
                             return decryptedText ? JSON.parse(decryptedText) : null;
                         } catch (err) {
                             console.error("Decrypt error:", err);
-                            return null;
+                             return null;
                         }
                     };
 
@@ -347,23 +352,16 @@
                                 linkColor: newLinkColor
                             };
 
-                            var colorDataToEncrypt = Object.assign({}, newColorData, {
-                                timestamp: Date.now()
-                            });
-                            var linkedColorDataToEncrypt = Object.assign({}, newLinkedColorData, {
-                                timestamp: Date.now()
-                            });
-
                             var colorSecret = generateKey(newColor);
-                            encryptedColorData = encryptData(colorDataToEncrypt, colorSecret);
+                            encryptedColorData = encryptData(newColorData, colorSecret);
                             storeEncryptedData("colorData", encryptedColorData);
 
                             var linkedColorSecret = generateKey(newLinkColor);
-                            encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, linkedColorSecret);
+                            encryptedLinkedColorData = encryptData(newLinkedColorData, linkedColorSecret);
                             storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
 
-                            decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
-                            decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
+                            decryptedColorData = decryptData(encryptedColorData, colorSecret);
+                            decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
 
                             if (decryptedColorData && decryptedLinkedColorData) {
                                 updateColors(decryptedColorData, decryptedLinkedColorData);
@@ -393,23 +391,16 @@
                          linkColor: firstLinkColor
                      };
 
-                    var colorDataToEncrypt = Object.assign({}, firstColorData, {
-                        timestamp: Date.now()
-                    });
-                    var linkedColorDataToEncrypt = Object.assign({}, firstLinkedColorData, {
-                        timestamp: Date.now()
-                    });
-
                     var colorSecret = generateKey(firstColor);
-                    encryptedColorData = encryptData(colorDataToEncrypt, colorSecret);
+                    encryptedColorData = encryptData(firstColorData, colorSecret);
                     storeEncryptedData("colorData", encryptedColorData);
 
                     var linkedColorSecret = generateKey(firstLinkColor);
-                    encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, linkedColorSecret);
+                    encryptedLinkedColorData = encryptData(firstLinkedColorData, linkedColorSecret);
                     storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
 
-                    decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
-                    decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
+                    decryptedColorData = decryptData(encryptedColorData, colorSecret);
+                    decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
                     updateColors(decryptedColorData, decryptedLinkedColorData);
 
                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
