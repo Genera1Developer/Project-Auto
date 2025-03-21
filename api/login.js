@@ -147,6 +147,32 @@ const generateSessionId = () => {
     return crypto.randomBytes(32).toString('hex');
 };
 
+const hkdfExpand = (secret, info, length) => {
+    try {
+        const hmac = crypto.createHmac('sha256', secret);
+        hmac.update(info);
+        const prk = hmac.digest();
+
+        let t = Buffer.alloc(0);
+        let okm = Buffer.alloc(0);
+
+        for (let i = 1; okm.length < length; i++) {
+            const hmac = crypto.createHmac('sha256', prk);
+            hmac.update(t);
+            hmac.update(info);
+            hmac.update(Buffer.from([i]));
+            t = hmac.digest();
+            okm = Buffer.concat([okm, t]);
+        }
+
+        return okm.slice(0, length);
+
+    } catch (error) {
+        console.error('HKDF Expand Error:', error);
+        return null;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -190,11 +216,18 @@ module.exports = async (req, res) => {
           nonce: nonce
         };
 
-        const encryptionKey = process.env.SESSION_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
-        const encryptedSession = encryptSession(sessionData, encryptionKey);
+        const baseEncryptionKey = process.env.SESSION_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
+        const sessionId = generateSessionId();
+        const encryptionKeyInfo = `SessionKey-${sessionId}`;
+        const encryptionKey = hkdfExpand(Buffer.from(baseEncryptionKey, 'hex'), encryptionKeyInfo, 32);
+
+        if (!encryptionKey) {
+            return res.status(500).json({message: 'Failed to generate encryption key'});
+        }
+
+        const encryptedSession = encryptSession(sessionData, encryptionKey.toString('hex'));
 
         if (encryptedSession) {
-          const sessionId = generateSessionId();
           res.setHeader('Set-Cookie', `session=${encryptedSession}; HttpOnly; Secure; SameSite=Strict`);
           res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId });
         } else {
