@@ -47,7 +47,7 @@ function timingSafeEqual(a, b) {
 // Function to encrypt data using AES-256-GCM
 async function encryptData(data, encryptionKey) {
   const iv = await randomBytesAsync(16); // Initialization Vector
-  const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey), iv);
+  const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
   let encrypted = cipher.update(data);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   const authTag = cipher.getAuthTag();
@@ -62,7 +62,7 @@ async function encryptData(data, encryptionKey) {
 // Function to decrypt data using AES-256-GCM
 async function decryptData(encryptedData, encryptionKey, iv, authTag) {
   try {
-    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey), Buffer.from(iv, 'hex'));
+    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), Buffer.from(iv, 'hex'));
     decipher.setAuthTag(Buffer.from(authTag, 'hex'));
     let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
     decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -78,13 +78,14 @@ async function deriveKey(password, salt) {
     const iterations = 100000; // Adjust as needed
     const keyLength = 32; // 32 bytes for AES-256
     const digest = 'sha512';
-    return crypto.pbkdf2Sync(password, salt, iterations, keyLength, digest);
+    const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keyLength, digest);
+    return derivedKey.toString('hex');
 }
 
 // Function to generate a strong, random encryption key
 async function generateEncryptionKey() {
     const key = await randomBytesAsync(32); // 32 bytes for AES-256
-    return key;
+    return key.toString('hex');
 }
 
 // Function to apply salting to the username before encryption
@@ -107,7 +108,7 @@ async function generateRandomPassword() {
 // Function to encrypt sensitive user data before storing it
 async function encryptUserData(userData, masterKey) {
     const iv = await randomBytesAsync(16);
-    const cipher = crypto.createCipheriv('aes-256-gcm', masterKey, iv);
+    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(masterKey, 'hex'), iv);
     const encrypted = Buffer.concat([cipher.update(JSON.stringify(userData)), cipher.final()]);
     const authTag = cipher.getAuthTag();
 
@@ -121,7 +122,7 @@ async function encryptUserData(userData, masterKey) {
 // Function to decrypt sensitive user data after retrieving it
 async function decryptUserData(encryptedData, iv, authTag, masterKey) {
     try {
-        const decipher = crypto.createDecipheriv('aes-256-gcm', masterKey, Buffer.from(iv, 'hex'));
+        const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(masterKey, 'hex'), Buffer.from(iv, 'hex'));
         decipher.setAuthTag(Buffer.from(authTag, 'hex'));
         const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedData, 'hex')), decipher.final()]);
         return JSON.parse(decrypted.toString());
@@ -176,7 +177,7 @@ module.exports = async (req, res) => {
       };
 
       // Encrypt entire user record before storage using master key
-      const masterKey = Buffer.from(process.env.MASTER_ENCRYPTION_KEY || 'defaultinsecurekeythatmustbechanged', 'utf8');
+      const masterKey = process.env.MASTER_ENCRYPTION_KEY || 'defaultinsecurekeythatmustbechanged';
       const encryptedUserRecord = await encryptUserData(userRecord, masterKey);
 
       // Store encryptedUserRecord (instead of userRecord)
@@ -189,7 +190,7 @@ module.exports = async (req, res) => {
         secureErase(Buffer.from(salt, 'utf8'));
       }
       if (derivedEncryptionKey) {
-        secureErase(derivedEncryptionKey);
+        secureErase(Buffer.from(derivedEncryptionKey, 'utf8'));
       }
       if (randomPassword) {
         secureErase(Buffer.from(randomPassword, 'utf8'));
