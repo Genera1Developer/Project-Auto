@@ -88,7 +88,8 @@
       "adataEncoding": "base64",
       "randomizeIv": true,
       "hmacKey": "ENC_HMAC_KEY_PLACEHOLDER",
-      "adataHmac": true
+      "adataHmac": true,
+      "debug": false
     }
   },
   "interactivity": {
