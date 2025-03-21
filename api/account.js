@@ -200,12 +200,12 @@ const decryptWithPassword = async (encryptedData, iv, authTag, password, salt) =
 
 const verifyCredentials = async (username, password) => {
     try {
-        const encryptedUsernameData = encryptSensitiveData(username);
-        if (!encryptedUsernameData) {
+        const usernameEncryption = encryptSensitiveData(username);
+        if (!usernameEncryption) {
             throw new Error("Username encryption failed");
         }
 
-        const encryptedUsername = encryptedUsernameData.encryptedData;
+        const encryptedUsername = usernameEncryption.encryptedData;
 
         return new Promise((resolve, reject) => {
             db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [encryptedUsername], async (err, row) => {
@@ -314,15 +314,19 @@ exports.verifyUser = async (username, password, callback) => {
     }
 };
 
+let isDatabaseClosing = false;
+
 exports.closeDatabase = () => {
-    if (db) {
+    if (db && !isDatabaseClosing) {
+        isDatabaseClosing = true;
         db.close((err) => {
             if (err) {
                 console.error(err.message);
             }
             console.log('Closed the database connection.');
+            db = null;
+            isDatabaseClosing = false;
         });
-        db = null;
     }
 };
 
