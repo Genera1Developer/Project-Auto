@@ -117,24 +117,28 @@ function getCipher(currentKey) {
   if (!key) {
     throw new Error('Encryption key not set. Call setEncryptionKey() first.');
   }
-  if (!cipherMap.has(currentKey)) {
+  let cipherObj = cipherMap.get(currentKey);
+  if (!cipherObj) {
     const iv = generateSecureIV();
     const cipher = crypto.createCipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
-    cipherMap.set(currentKey, { cipher, iv });
+    cipherObj = { cipher, iv };
+    cipherMap.set(currentKey, cipherObj);
   }
-  return cipherMap.get(currentKey).cipher;
+  return cipherObj.cipher;
 }
 
 function getDecipher(currentKey) {
     if (!key) {
       throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
-    if (!decipherMap.has(currentKey)) {
+   let decipherObj = decipherMap.get(currentKey);
+    if (!decipherObj) {
         const iv = generateSecureIV();
-        const decipher = crypto.createCipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
-        decipherMap.set(currentKey, { decipher, iv });
+        const decipher = crypto.createDecipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipherObj = { decipher, iv };
+        decipherMap.set(currentKey, decipherObj);
     }
-    return decipherMap.get(currentKey).decipher;
+    return decipherObj.decipher;
 }
 
 const encrypt = (text) => {
@@ -789,6 +793,8 @@ function setAlgorithm(newAlgorithm) {
         crypto.createCipheriv(newAlgorithm, key, tryIV, { authTagLength: AUTH_TAG_LENGTH });
         algorithm = newAlgorithm;
         console.log(`Algorithm switched to ${newAlgorithm}`);
+        cipherMap.clear();
+        decipherMap.clear();
     } catch (error) {
         console.error(`Algorithm switch failed: ${error}`);
         throw new Error(`Algorithm switch failed: ${error}`);
