@@ -344,9 +344,9 @@ particlesJS('particles-js', {
                 config.encrypt_config.key = newKey;
                 key = newKey;
                 try {
-                    localStorage.setItem('encryptionKey', newKey); //Use localStorage
+                    sessionStorage.setItem('encryptionKey', newKey); //Use sessionStorage
                 } catch (e) {
-                    console.warn("LocalStorage not available. Key will not persist.");
+                    console.warn("sessionStorage not available. Key will not persist.");
                 }
                 console.log('New encryption key generated:', newKey);
             } else {
@@ -356,9 +356,9 @@ particlesJS('particles-js', {
             }
         } else {
             try {
-                key = localStorage.getItem('encryptionKey') || key; //Use localStorage
+                key = sessionStorage.getItem('encryptionKey') || key; //Use sessionStorage
             } catch (e) {
-                console.warn("LocalStorage not available. Using default key.");
+                console.warn("sessionStorage not available. Using default key.");
             }
             config.encrypt_config.key = key;
         }
@@ -370,9 +370,9 @@ particlesJS('particles-js', {
                 config.encrypt_config.iv = newIV;
                 iv = newIV;
                 try {
-                    localStorage.setItem('encryptionIV', newIV); //Use localStorage
+                    sessionStorage.setItem('encryptionIV', newIV); //Use sessionStorage
                 } catch (e) {
-                    console.warn("LocalStorage not available. IV will not persist.");
+                    console.warn("sessionStorage not available. IV will not persist.");
                 }
                 console.log('New encryption IV generated:', newIV);
             } else {
@@ -382,9 +382,9 @@ particlesJS('particles-js', {
             }
         } else {
             try {
-                iv = localStorage.getItem('encryptionIV') || iv; //Use localStorage
+                iv = sessionStorage.getItem('encryptionIV') || iv; //Use sessionStorage
             } catch (e) {
-                console.warn("LocalStorage not available. Using default IV.");
+                console.warn("sessionStorage not available. Using default IV.");
             }
             config.encrypt_config.iv = iv;
         }
@@ -448,10 +448,10 @@ particlesJS('particles-js', {
         }
 
         try {
-            key = localStorage.getItem('encryptionKey') || key; //Use localStorage
-            iv = localStorage.getItem('encryptionIV') || iv; //Use localStorage
+            key = sessionStorage.getItem('encryptionKey') || key; //Use sessionStorage
+            iv = sessionStorage.getItem('encryptionIV') || iv; //Use sessionStorage
         } catch (e) {
-            console.warn("LocalStorage not available. Using default key/iv.");
+            console.warn("sessionStorage not available. Using default key/iv.");
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
