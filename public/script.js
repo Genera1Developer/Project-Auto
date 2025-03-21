@@ -122,16 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return await encryptDataWebCrypto(data);
     }
 
-    async function generateHmac(data, salt) {
-        try {
-            const hmacKey = CryptoJS.SHA256(await getHmacSecret() + salt).toString();
-            const hmac = CryptoJS.HmacSHA256(JSON.stringify(data), hmacKey).toString();
-            return hmac;
-        } catch (e) {
-            console.error("HMAC generation error:", e);
-            throw new Error("HMAC generation failed");
-        }
-    }
 
     async function generateAndStoreHmac(data, salt) {
         return await generateAndStoreHmacWebCrypto(data, salt);
@@ -359,5 +349,32 @@ document.addEventListener('DOMContentLoaded', function() {
         bytes[i] = binary_string.charCodeAt(i);
       }
       return bytes.buffer;
+    }
+
+    // Schedule cleanup tasks.
+    scheduleCleanupTasks();
+
+    function scheduleCleanupTasks() {
+        // Clear session storage at 6 AM every day.
+        const now = new Date();
+        const millisTill6 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0).getTime() - now.getTime();
+        if (millisTill6 < 0) {
+            millisTill6 += 86400000; // it's after 6am, try 6am tomorrow.
+        }
+        setTimeout(function() {
+            clearEncryptionData();
+            setInterval(clearEncryptionData, 86400000); // Run every 24 hours.
+        }, millisTill6);
+    }
+
+    function clearEncryptionData() {
+        sessionStorage.removeItem('encryptionSalt');
+        sessionStorage.removeItem('keyPrefix');
+        sessionStorage.removeItem('ivPrefix');
+        sessionStorage.removeItem('hmacSecret');
+        sessionStorage.removeItem('currentIV');
+        sessionStorage.removeItem('hmacIV');
+        sessionStorage.removeItem('hmac');
+        console.log('Encryption data cleared from session storage.');
     }
 });
