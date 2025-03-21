@@ -137,12 +137,33 @@ const decryptSensitiveData = (ivB64, authTagB64, encryptedDataB64) => {
     }
 };
 
+const validatePassword = (password) => {
+    if (password.length < 8) {
+        return "Password must be at least 8 characters long";
+    }
+    if (!/[a-z]/.test(password)) {
+        return "Password must contain at least one lowercase letter";
+    }
+    if (!/[A-Z]/.test(password)) {
+        return "Password must contain at least one uppercase letter";
+    }
+    if (!/[0-9]/.test(password)) {
+        return "Password must contain at least one number";
+    }
+    if (!/[^a-zA-Z0-9\s]/.test(password)) {
+        return "Password must contain at least one special character";
+    }
+    return null;
+};
+
 exports.createUser = async (username, password, callback) => {
     if (!username || !password) {
         return callback(new Error("Username and password are required"));
     }
-    if (password.length < 8) {
-        return callback(new Error("Password must be at least 8 characters long"));
+
+    const passwordValidationMessage = validatePassword(password);
+    if (passwordValidationMessage) {
+        return callback(new Error(passwordValidationMessage));
     }
 
     const salt = generateSalt();
