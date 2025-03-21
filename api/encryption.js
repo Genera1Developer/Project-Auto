@@ -118,7 +118,8 @@ function getCipher(currentKey) {
     throw new Error('Encryption key not set. Call setEncryptionKey() first.');
   }
   if (!cipherMap.has(currentKey)) {
-    cipherMap.set(currentKey, crypto.createCipheriv(algorithm, currentKey, Buffer.alloc(IV_LENGTH, 0), { authTagLength: AUTH_TAG_LENGTH }));
+    const iv = generateSecureIV();
+    cipherMap.set(currentKey, crypto.createCipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH }));
   }
   return cipherMap.get(currentKey);
 }
@@ -128,7 +129,8 @@ function getDecipher(currentKey) {
       throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
     if (!decipherMap.has(currentKey)) {
-        decipherMap.set(currentKey, crypto.createDecipheriv(algorithm, currentKey, Buffer.alloc(IV_LENGTH, 0), { authTagLength: AUTH_TAG_LENGTH }));
+        const iv = generateSecureIV();
+        decipherMap.set(currentKey, crypto.createDecipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH }));
     }
     return decipherMap.get(currentKey);
 }
