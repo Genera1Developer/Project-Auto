@@ -216,9 +216,8 @@
         // Function to encrypt data
         function encryptData(data, key) {
             const iv = CryptoJS.lib.WordArray.random(16).toString();
-            const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(data), {
-                key: CryptoJS.enc.Utf8.parse(key),
-                iv: CryptoJS.enc.Utf8.parse(iv),
+            const encrypted = CryptoJS.AES.encrypt(data, key, {
+                iv: CryptoJS.enc.Utf8.parse(iv).toString(),
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
             });
@@ -242,6 +241,7 @@
         function encryptLocalKey(encryptionKey, serverPublicKey) {
             // Dummy implementation. Replace with proper public key encryption.
             // Use a more robust key exchange mechanism in production.
+            // Using a more secure public-key encryption library is recommended
             return btoa(encryptionKey);
         }
 
