@@ -184,20 +184,23 @@
                     var initialLinkedColorSeed = "9b59b6";
                     var localStorageKeyPrefix = "particlesJS_";
                     var sessionKeyPrefix = "sessionParticlesJS_";
-                    var encryptionRounds = 3;
                     var colorUpdateInterval = 5000;
                     var useSessionStorage = false;
                     var encryptionKeySalt = "particle_salt";
+                    var aesKeySize = 256;
 
                     var generateKey = function(seed) {
                       let keyMaterial = seed + encryptionKeySalt;
-                      return CryptoJS.SHA256(keyMaterial).toString();
+                      let hash = CryptoJS.SHA256(keyMaterial);
+                      let key = CryptoJS.enc.Hex.stringify(hash);
+                      return key.substring(0, aesKeySize / 4);
                     };
 
                     var encryptData = function(data, secret) {
                         try {
+                           let key = CryptoJS.enc.Utf8.parse(secret);
                             let iv = CryptoJS.lib.WordArray.random(128 / 8);
-                            let encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), secret, {
+                            let encrypted = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(JSON.stringify(data)), key, {
                                 iv: iv,
                                 mode: CryptoJS.mode.CBC,
                                 padding: CryptoJS.pad.Pkcs7
@@ -214,10 +217,11 @@
 
                     var decryptData = function(encryptedData, secret) {
                         try {
+                           let key = CryptoJS.enc.Utf8.parse(secret);
                             let iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
                             let decrypted = CryptoJS.AES.decrypt({
                                 ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext)
-                            }, secret, {
+                            }, key, {
                                 iv: iv,
                                 mode: CryptoJS.mode.CBC,
                                 padding: CryptoJS.pad.Pkcs7
