@@ -28,6 +28,10 @@ const requestCounts = new Map();
 const RATE_LIMIT_WINDOW = 60000; // 1 minute
 const RATE_LIMIT = 100; // 100 requests per minute
 
+// Define a nonce cache to prevent replay attacks.
+const nonceCache = new Set();
+const NONCE_CACHE_SIZE = 1000;
+
 // Function to derive a symmetric key using PBKDF2
 function deriveKey(password, salt) {
     const cacheKey = `${password}-${salt}`;
@@ -90,7 +94,7 @@ function decrypt(text, key) {
 }
 
 // Function to encrypt/decrypt headers
-function transformHeaders(headers, encryptFlag, encryptionKey, iv) {
+function transformHeaders(headers, encryptFlag, encryptionKey, iv, nonce) {
     const transformedHeaders = {};
     for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
@@ -278,6 +282,25 @@ function rateLimit(req, res) {
     return false; // Indicate rate limit not exceeded
 }
 
+function validateNonce(nonce) {
+    if (!nonce) {
+        return false;
+    }
+
+    if (nonceCache.has(nonce)) {
+        return false; // Nonce already used, possible replay attack
+    }
+
+    nonceCache.add(nonce);
+    if (nonceCache.size > NONCE_CACHE_SIZE) {
+        // Remove the oldest nonce to prevent unbounded growth
+        const oldestNonce = nonceCache.values().next().value;
+        nonceCache.delete(oldestNonce);
+    }
+
+    return true;
+}
+
 // Function to handle the proxy request
 async function proxyRequest(req, res) {
 
@@ -291,6 +314,12 @@ async function proxyRequest(req, res) {
         return earlyReject(res, 400, 'Target URL is missing.');
     }
 
+    // Check for replay attack
+    const nonce = req.headers['x-nonce'];
+    if (!validateNonce(nonce)) {
+        return earlyReject(res, 403, 'Invalid or missing nonce.');
+    }
+
     try {
         const parsedUrl = new url.URL(targetUrl);
         const salt = createSalt();
@@ -301,13 +330,13 @@ async function proxyRequest(req, res) {
         }
 
         const iv = crypto.randomBytes(IV_LENGTH); // Generate IV for request encryption
-        let reqHeaders = transformHeaders(req.headers, false, encryptionKey, iv); // Decrypt incoming headers, using salt
+        let reqHeaders = transformHeaders(req.headers, false, encryptionKey, iv, nonce); // Decrypt incoming headers, using salt
         const options = {
             hostname: parsedUrl.hostname,
             port: parsedUrl.port,
             path: parsedUrl.pathname + parsedUrl.search,
             method: req.method,
-            headers: transformHeaders(reqHeaders, true, encryptionKey, iv), // Encrypt outgoing headers
+            headers: transformHeaders(reqHeaders, true, encryptionKey, iv, nonce), // Encrypt outgoing headers
             rejectUnauthorized: false // Add this line.  Be careful using this in production without proper cert validation.
         };
 
@@ -322,7 +351,7 @@ async function proxyRequest(req, res) {
 
             // Generate IV for response encryption - different IV each time.
             const resIv = crypto.randomBytes(IV_LENGTH);
-            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, resIv); // Encrypt outgoing headers, using salt
+            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, resIv, nonce); // Encrypt outgoing headers, using salt
             delete resHeaders['content-encoding'];
             delete resHeaders['content-length'];
 
