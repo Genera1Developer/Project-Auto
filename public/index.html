@@ -393,6 +393,8 @@
             const ENABLE_WEBGPU = false;
             const ENABLE_SUBTLE_CRYPTO_LOGGING = false;
 			const ENABLE_DEFERRED_DECRYPTION = true;
+			const ENABLE_URL_SANITIZATION = true;
+			const REPORT_CSP_VIOLATIONS = true;
 
             // DOM Elements
             const urlInput = document.getElementById('url');
@@ -410,6 +412,23 @@
             let lastKeyCheckTime = 0;
 
             // Utility Functions
+
+			function sanitizeURL(url) {
+				try {
+					const urlObj = new URL(url);
+					urlObj.protocol = urlObj.protocol.replace(/[^a-zA-Z0-9]/g, '');
+					urlObj.hostname = urlObj.hostname.replace(/[^a-zA-Z0-9.-]/g, '');
+					urlObj.pathname = urlObj.pathname.replace(/[^a-zA-Z0-9/-_%]/g, '');
+					urlObj.search = urlObj.search.replace(/[^a-zA-Z0-9?=&]/g, '');
+					urlObj.hash = '';
+					return urlObj.toString();
+				} catch (e) {
+					console.error("URL sanitization failed:", e);
+					return null;
+				}
+			}
+
+
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
                 window.crypto.getRandomValues(randomBuffer);
@@ -645,6 +664,14 @@
 						return;
 					}
 
+					if (ENABLE_URL_SANITIZATION) {
+						url = sanitizeURL(url);
+						if (!url) {
+							errorDiv.textContent = 'Invalid URL after sanitization.';
+							return;
+						}
+					}
+
 					const { ciphertext, iv } = await encryptURL(url, aesKey);
 
 					const aesKeyHex = sessionStorage.getItem('aesKey');
@@ -679,6 +706,10 @@
 					let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
 					if (ENABLE_CSP) {
 						proxyFrame.setAttribute('csp', cspValue);
+						if (REPORT_CSP_VIOLATIONS) {
+							cspValue += ` report-uri /api/csp-report`;
+							proxyFrame.setAttribute('csp', cspValue);
+						}
 					}
 
 					return fetch(PROXY_URL, {
