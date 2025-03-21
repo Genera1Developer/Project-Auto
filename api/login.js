@@ -206,12 +206,44 @@ const decryptCookie = (encryptedCookie, encryptionKey) => {
     }
 };
 
+const hashIpAddress = (ipAddress, salt) => {
+    try {
+        const hmac = crypto.createHmac('sha256', salt);
+        hmac.update(ipAddress);
+        return hmac.digest('hex');
+    } catch (error) {
+        console.error('IP hashing error:', error);
+        return null;
+    }
+};
+
+const isRateLimitedPerUser = (req, username) => {
+    const now = Date.now();
+    const windowMs = 60000;
+    const maxRequests = 5;
+
+    if (!global.userRateLimits) {
+        global.userRateLimits = {};
+    }
+
+    if (!global.userRateLimits[username]) {
+        global.userRateLimits[username] = { requests: [] };
+    }
+
+    global.userRateLimits[username].requests = global.userRateLimits[username].requests.filter(
+        (time) => time > now - windowMs
+    );
+
+    if (global.userRateLimits[username].requests.length >= maxRequests) {
+        return true;
+    }
+
+    global.userRateLimits[username].requests.push(now);
+    return false;
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
-
-    if (isRateLimited(req)) {
-      return res.status(429).json({ message: 'Too many requests' });
-    }
 
     let { username, password } = req.body;
 
@@ -224,6 +256,10 @@ module.exports = async (req, res) => {
     const failedAttempts = checkFailedLoginAttempts(username);
     if (failedAttempts >= 3) {
         return res.status(429).json({ message: 'Account locked due to multiple failed login attempts.' });
+    }
+
+    if (isRateLimitedPerUser(req, username)) {
+      return res.status(429).json({ message: 'Too many requests for this user' });
     }
 
     try {
