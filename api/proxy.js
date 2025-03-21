@@ -202,8 +202,33 @@ function decryptStream(key, iv, authTag) {
     }
 }
 
+function handleRequestBody(req, encryptionKey, reqIv) {
+    return new Promise((resolve, reject) => {
+        const requestCipher = encryptStream(encryptionKey, reqIv);
+
+        if (!requestCipher) {
+            reject(new Error('Failed to create request cipher.'));
+            return;
+        }
+
+        const encryptedChunks = [];
+        req.pipe(requestCipher)
+            .on('data', chunk => {
+                encryptedChunks.push(chunk);
+            })
+            .on('end', () => {
+                const encryptedBody = Buffer.concat(encryptedChunks);
+                resolve(encryptedBody);
+            })
+            .on('error', err => {
+                console.error("Request body encryption error:", err);
+                reject(err);
+            });
+    });
+}
+
 // Function to handle the proxy request
-function proxyRequest(req, res) {
+async function proxyRequest(req, res) {
     const targetUrl = req.headers['x-target-url'];
     if (!targetUrl) {
         return res.status(400).send('Target URL is missing.');
@@ -282,22 +307,12 @@ function proxyRequest(req, res) {
 
          // Generate IV for request encryption - different IV each time.
         const reqIv = crypto.randomBytes(IV_LENGTH);
-        // Encrypt the request body
-        const requestCipher = encryptStream(encryptionKey, reqIv);
-
-        if(!requestCipher){
-            return res.status(500).send('Failed to create request cipher.');
-        }
-
-        // Send IV to the upstream server.
         options.headers['x-request-encryption-iv'] = reqIv.toString('hex');
 
-        req.pipe(requestCipher).pipe(proxyReq);
+        const encryptedRequestBody = await handleRequestBody(req, encryptionKey, reqIv);
+        proxyReq.write(encryptedRequestBody);
+        proxyReq.end();
 
-        req.on('error', (err) => {
-            console.error("Request error:", err);
-            proxyReq.destroy(err);
-        });
     } catch (error) {
         console.error("URL parsing or proxy error:", error);
         res.status(500).send('Internal server error.');
