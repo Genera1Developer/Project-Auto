@@ -113,34 +113,7 @@ function generateEncryptionKey() {
     }
 }
 
-function getCipher(currentKey) {
-  if (!key) {
-    throw new Error('Encryption key not set. Call setEncryptionKey() first.');
-  }
-  let cipherObj = cipherMap.get(currentKey);
-  if (!cipherObj) {
-    const iv = generateSecureIV();
-    const cipher = crypto.createCipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
-    cipherObj = { cipher, iv };
-    cipherMap.set(currentKey, cipherObj);
-  }
-  return cipherObj.cipher;
-}
-
-function getDecipher(currentKey) {
-    if (!key) {
-      throw new Error('Encryption key not set. Call setEncryptionKey() first.');
-    }
-   let decipherObj = decipherMap.get(currentKey);
-    if (!decipherObj) {
-        const iv = generateSecureIV();
-        const decipher = crypto.createDecipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
-        decipherObj = { decipher, iv };
-        decipherMap.set(currentKey, decipherObj);
-    }
-    return decipherObj.decipher;
-}
-
+// Removed getCipher and getDecipher functions as they were not being used correctly.  Replaced with direct calls to crypto.createCipheriv and crypto.createDecipheriv in encrypt and decrypt functions
 const encrypt = (text) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
@@ -193,7 +166,7 @@ const decrypt = (text) => {
         authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
