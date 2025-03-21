@@ -233,7 +233,7 @@
                 return { ciphertext: '', iv: '' }; // or throw an error
             }
             const iv = CryptoJS.lib.WordArray.random(16).toString();
-            const encrypted = CryptoJS.AES.encrypt(data, key, {
+            const encrypted = CryptoJS.AES.encrypt(data, data + key, { // Modified encryption
                 iv: CryptoJS.enc.Utf8.parse(iv),
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
@@ -246,7 +246,7 @@
 
         // Function to hash the encryption key for integrity check
         function hashKey(key) {
-            return CryptoJS.SHA256(key).toString();
+            return CryptoJS.SHA256(key + 'salty').toString(); // Added salt
         }
 
         // Function to generate a salt
@@ -258,7 +258,7 @@
         function encryptLocalKey(encryptionKey, serverPublicKey) {
             try {
                 const publicKey = forge.pki.publicKeyFromPem(atob(serverPublicKey));
-                const encryptedKey = publicKey.encrypt(encryptionKey, 'RSA-OAEP', {
+                const encryptedKey = publicKey.encrypt(encryptionKey + generateSalt(), 'RSA-OAEP', { // Added salt
                     md: forge.md.sha256.create(),
                     mgf1: forge.mgf1.create(forge.md.sha256.create())
                 });
@@ -271,8 +271,8 @@
 
         // Function to generate a HMAC for request integrity
         function generateHMAC(data, key) {
-            const hmac = CryptoJS.HmacSHA256(data, key);
-            return hmac.toString();
+            const hmac = CryptoJS.HmacSHA256(data, key + 'pepper').toString(); // Added pepper
+            return hmac;
         }
 
         document.getElementById('loginForm').addEventListener('submit', function(event) {
@@ -361,7 +361,8 @@
                     'X-Salt-Hash': saltHash, // Send Salt hash
                     'X-Encrypted-Key': encryptedEncryptionKey, // Send the encrypted key
                     'X-Request-HMAC': hmac, // Send HMAC for integrity
-                    'X-Request-Nonce': nonce // Send nonce for replay attack protection
+                    'X-Request-Nonce': nonce // Send nonce for replay attack protection,
+                    'X-Request-Version': '2.0' // Add version for future updates
                 },
                 body: JSON.stringify({ request: encryptedRequest.ciphertext })
             })
