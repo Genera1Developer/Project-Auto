@@ -294,7 +294,7 @@ async function proxyRequest(req, res) {
 
             // Encrypt the response body
             try {
-                const responseCipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, resIv, { authTagLength: AUTH_TAG_LENGTH });
+                const responseCipher = encryptStream(encryptionKey, resIv);
                 const authTag = responseCipher.getAuthTag();
 
                 // Send the auth tag to the client
