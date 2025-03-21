@@ -279,6 +279,7 @@
             const HSTS_INCLUDE_SUBDOMAINS = true;
             const ENABLE_HSTS = true;
             const ENABLE_WEBGPU = false;
+            const ENABLE_SUBTLE_CRYPTO_LOGGING = false;
 
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
@@ -292,7 +293,9 @@
                     const ivData = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
                     const alg = { name: 'AES-GCM', iv: ivData };
                     const jwk = await window.crypto.subtle.importKey('raw', new TextEncoder().encode(key), alg, false, ['decrypt']);
+                    if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("Key imported for decryption.");
                     const decrypted = await window.crypto.subtle.decrypt(alg, jwk, encryptedData);
+                    if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("URL decrypted.");
                     return new TextDecoder().decode(decrypted);
                 } catch (error) {
                     console.error("Decryption failed:", error);
@@ -305,6 +308,7 @@
                 const hashBuffer = await window.crypto.subtle.digest('SHA-256', encodedKey);
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("Key hashed.");
                 return hashHex;
             }
 
@@ -332,6 +336,7 @@
                     false,
                     ['deriveKey']
                 );
+                if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("PBKDF2 key imported.");
 
                 const keyAlgorithm = { name: 'AES-GCM', length: 256 };
                 const derivedKey = await window.crypto.subtle.deriveKey(
@@ -341,6 +346,7 @@
                     false,
                     ['encrypt', 'decrypt']
                 );
+                if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("AES Key derived from PBKDF2.");
 
                 return derivedKey;
             }
@@ -351,6 +357,7 @@
                 const alg = { name: 'AES-GCM', iv: iv };
 
                 const ciphertext = await window.crypto.subtle.encrypt(alg, key, encodedText);
+                if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("URL encrypted.");
 
                 const encryptedData = btoa(String.fromCharCode(...new Uint8Array(ciphertext)));
                 const ivData = btoa(String.fromCharCode(...iv));
@@ -358,7 +365,7 @@
             }
 
             async function generateAESKey() {
-                return await window.crypto.subtle.generateKey(
+                const key = await window.crypto.subtle.generateKey(
                     {
                         name: "AES-GCM",
                         length: AES_KEY_LENGTH,
@@ -366,6 +373,8 @@
                     true,
                     ["encrypt", "decrypt"]
                 );
+                 if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("AES Key generated.");
+                return key;
             }
 
             function handleErrors(error) {
