@@ -8,7 +8,7 @@ particlesJS('particles-js', {
       }
     },
     color: {
-      value: ['#00FF00', '#0F0', '#7CFC00', '#ADFF2F', '#32CD32']
+      value: ['#00FF00', '#0F0', '#7CFC00', '#ADFF2F', '#32CD32', '#00BCD4', '#FFEB3B']
     },
     shape: {
       type: 'polygon',
@@ -17,7 +17,7 @@ particlesJS('particles-js', {
         color: '#006400'
       },
       polygon: {
-        nb_sides: 6 // Hexagon for encryption key feel
+        nb_sides: 5 // Pentagon for representing block size
       },
       image: {
         src: '',
@@ -30,31 +30,31 @@ particlesJS('particles-js', {
       random: true,
       anim: {
         enable: true,
-        speed: 1.8,
+        speed: 2,
         opacity_min: 0.2,
         sync: false
       }
     },
     size: {
-      value: 2.5,
+      value: 3,
       random: true,
       anim: {
         enable: true,
-        speed: 2.5,
+        speed: 3,
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 150,
+      distance: 160,
       color: '#00C853',
-      opacity: 0.5,
-      width: 1.2
+      opacity: 0.6,
+      width: 1.3
     },
     move: {
       enable: true,
-      speed: 1.7,
+      speed: 2,
       direction: 'none',
       random: true,
       straight: false,
@@ -82,27 +82,27 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 170,
+        distance: 180,
         line_linked: {
-          opacity: 0.8
+          opacity: 0.9
         }
       },
       bubble: {
-        distance: 220,
+        distance: 230,
         size: 0,
         duration: 2,
         opacity: 0,
         speed: 3
       },
       repulse: {
-        distance: 250,
+        distance: 260,
         duration: 0.4
       },
       push: {
-        particles_nb: 4
+        particles_nb: 5
       },
       remove: {
-        particles_nb: 3
+        particles_nb: 4
       }
     }
   },
