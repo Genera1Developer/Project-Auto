@@ -129,11 +129,9 @@ const encrypt = (text) => {
         encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
         authTag = cipher.getAuthTag();
 
-        return {
-            iv: iv.toString('base64'),
-            encryptedData: encrypted.toString('base64'),
-            authTag: authTag.toString('base64')
-        };
+        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+        return ciphertext.toString('base64');
+
     } catch (error) {
         console.error("Encryption failed:", error);
         return null;
@@ -142,9 +140,9 @@ const encrypt = (text) => {
             cipher.destroy();
             zeroBuffer(cipher); //Zero out cipher for added security
         }
-        zeroBuffer(iv);         // Zero out IV after use.
-        zeroBuffer(encrypted);  // Zero out encrypted data
-        zeroBuffer(authTag);    // Zero out authTag after use.
+        zeroBuffer(iv);
+        zeroBuffer(encrypted);
+        zeroBuffer(authTag);
     }
 };
 
@@ -154,11 +152,12 @@ const decrypt = (text) => {
     }
 
     let decipher = null;
-    let decrypted = null; // Declare decrypted outside the try block
+    let decrypted = null;
     try {
-        const iv = Buffer.from(text.iv, 'base64');
-        const encryptedData = Buffer.from(text.encryptedData, 'base64');
-        const authTag = Buffer.from(text.authTag, 'base64');
+        const ciphertext = Buffer.from(text, 'base64');
+        const iv = ciphertext.slice(0, IV_LENGTH);
+        const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
         decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
@@ -170,9 +169,9 @@ const decrypt = (text) => {
     } finally {
         if (decipher) {
             decipher.destroy();
-            zeroBuffer(decipher); //Zero out decipher for added security
+            zeroBuffer(decipher);
         }
-        zeroBuffer(decrypted);  // Zero out decrypted data after use
+        zeroBuffer(decrypted);
     }
 };
 
