@@ -544,6 +544,19 @@ async function generateUniqueUserId() {
     return buffer.toString('hex');
 }
 
+// Function to generate a new key using X25519 Key Exchange
+async function generateX25519KeyPair() {
+    return crypto.generateKeyPairSync('x25519');
+}
+
+// Function to perform X25519 Key Agreement
+async function performX25519KeyAgreement(privateKey, publicKey) {
+  return crypto.diffieHellman({
+    privateKey: privateKey,
+    publicKey: publicKey
+  });
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -573,6 +586,7 @@ module.exports = async (req, res) => {
     let usernameHash = null;
     let sessionKey = null;
     let aad = null;
+    let x25519KeyPair = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -646,6 +660,12 @@ module.exports = async (req, res) => {
       totpKey = await generateEncryptionKey();
       const totp = generateTOTP(totpKey);
 
+      // Generate X25519 Key Pair
+      x25519KeyPair = await generateX25519KeyPair();
+
+      // Perform X25519 Key Agreement (example with another key)
+      const sharedSecret = await performX25519KeyAgreement(x25519KeyPair.privateKey, x25519KeyPair.publicKey);
+
       const userRecord = {
         userId: encryptedUserId, // Store encrypted UserId
         passwordHash: passwordHash, // Store password hash
@@ -657,7 +677,8 @@ module.exports = async (req, res) => {
         derivedKeyAuthTag: derivedKeyAuthTag,    // Store authentication tag
         totpKey: totpKey, // Store TOTP key
         usernameIv: usernameIv,
-        saltIv: saltIv
+        saltIv: saltIv,
+        x25519PublicKey: x25519KeyPair.publicKey.toString('hex') //Store X25519 Public Key
       };
 
       // Add Jitter before Encrypt user record
@@ -751,6 +772,10 @@ module.exports = async (req, res) => {
       secureErase(Buffer.from(obfuscationKey, 'utf8'));
       secureErase(Buffer.from(dataIntegrityKey, 'utf8'));
       secureErase(Buffer.from(totpKey, 'utf8'));
+       if(x25519KeyPair){
+        secureErase(x25519KeyPair.privateKey);
+        secureErase(x25519KeyPair.publicKey);
+      }
 
       // Mask sensitive data before logging it
       const maskedTotpKey = maskData(totpKey, process.env.LOG_MASKING_KEY || 'defaultinsecuremask');
