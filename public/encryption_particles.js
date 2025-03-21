@@ -733,11 +733,40 @@ particlesJS('particles-js', {
                 return false;
             }
         },
+        isEncryptionEnabled: function(){
+            return this.encrypt.enable;
+        },
+        toggleEncryption: function(enable){
+          this.encrypt.enable = enable;
+          if(!enable) {
+            this.clearCryptoDetails();
+          }
+        },
+        throttleDecryption: function(func, limit) {
+            let lastFunc;
+            let lastRan;
+            return function() {
+                const context = this;
+                const args = arguments;
+                if (!lastRan) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                } else {
+                    clearTimeout(lastFunc);
+                    lastFunc = setTimeout(function() {
+                        if ((Date.now() - lastRan) >= limit) {
+                            func.apply(context, args);
+                            lastRan = Date.now();
+                        }
+                    }, limit - (Date.now() - lastRan));
+                }
+            }
+        },
   },
   "fn": {
     "update": async function() {
         const pJS = this;
-        if (!pJS.plugins.encrypt.enable) return;
+        if (!pJS.plugins.isEncryptionEnabled()) return;
 
         const config = pJS.actualOptions;
         const encryptPlugin = pJS.plugins;
@@ -745,7 +774,7 @@ particlesJS('particles-js', {
 
         if (!encryptPlugin.isEncryptionSupported()) {
           console.warn('Web Crypto API not supported. Encryption disabled.');
-          pJS.plugins.encrypt.enable = false;
+          encryptPlugin.toggleEncryption(false);
           return;
         }
 
@@ -776,13 +805,13 @@ particlesJS('particles-js', {
                     console.log('New encryption key/IV/Salt generated and stored.');
                 } else {
                     console.error('Failed to generate encryption key/IV/Salt. Encryption disabled.');
-                    pJS.plugins.encrypt.enable = false;
+                    encryptPlugin.toggleEncryption(false);
                     return;
                 }
             }
         } catch (err) {
             console.error("Error setting up encryption:", err);
-            pJS.plugins.encrypt.enable = false;
+            encryptPlugin.toggleEncryption(false);
             return;
         }
 
@@ -796,14 +825,14 @@ particlesJS('particles-js', {
     },
     "draw": async function() {
         const pJS = this;
-        if (!pJS.plugins.encrypt.enable) return;
+        if (!pJS.plugins.isEncryptionEnabled()) return;
 
         const config = pJS.actualOptions;
         const encryptPlugin = pJS.plugins;
         let { key, iv, algorithm, salt } = config.encrypt_config;
 
         if (!encryptPlugin.isEncryptionSupported()) {
-          return;
+            return;
         }
 
          try {
@@ -825,7 +854,11 @@ particlesJS('particles-js', {
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
-            await encryptPlugin.decryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
+            const decryptFunc = async () => {
+                await encryptPlugin.decryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
+            };
+            const throttledDecrypt = encryptPlugin.throttleDecryption(decryptFunc, 500);
+            await throttledDecrypt();
         }
     },
      "destroy": function() {
