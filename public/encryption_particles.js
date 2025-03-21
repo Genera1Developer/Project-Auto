@@ -214,14 +214,24 @@ particlesJS('particles-js', {
                 const decryptedArray = [];
                 for (const item of encryptedData) {
                     if (typeof item === 'string') {
-                      decryptedArray.push(await decryptValue(item, key, iv));
+                      try {
+                        decryptedArray.push(await decryptValue(item, key, iv));
+                      } catch (err) {
+                        console.error("Decryption issue", err);
+                        decryptedArray.push(item);
+                      }
                     } else {
                       decryptedArray.push(item);
                     }
                 }
                 return decryptedArray;
             } else if (typeof encryptedData === 'string'){
-                return await decryptValue(encryptedData, key, iv);
+                try{
+                  return await decryptValue(encryptedData, key, iv);
+                } catch(err) {
+                  console.error("Decryption issue", err);
+                  return encryptedData;
+                }
             } else {
                 return encryptedData;
             }
@@ -252,8 +262,10 @@ particlesJS('particles-js', {
 
                     if (target && target.hasOwnProperty(lastPart)) {
                       try{
-                        const originalValue = target[lastPart];
+                        let originalValue = target[lastPart];
+
                         if (Array.isArray(originalValue)) {
+                          originalValue = [...originalValue];
                           const encryptedArray = await Promise.all(originalValue.map(async item => {
                             if (typeof item === 'string') {
                               return await encryptPlugin.customEncrypt(item, key, iv, algorithm)
@@ -299,8 +311,11 @@ particlesJS('particles-js', {
 
                     if (target && target.hasOwnProperty(lastPart)) {
                       try{
-                        const encryptedValue = target[lastPart];
+                        let encryptedValue = target[lastPart];
+
                         if (Array.isArray(encryptedValue)) {
+                          encryptedValue = [...encryptedValue];
+
                           const decryptedArray = await Promise.all(encryptedValue.map(async item => {
                             if (typeof item === 'string') {
                               return await encryptPlugin.decrypt(item, key, iv, algorithm);
