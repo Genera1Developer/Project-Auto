@@ -815,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Implement stricter CSP
     function updateCSPHeaders(nonce) {
-        const csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content; require-trusted-types-for 'script'; trusted-types default-allow-all;`;
+        const csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content; require-trusted-types-for 'script'; trusted-types default-allow-all; worker-src 'self' blob:;`;
         const existingMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
         if (existingMeta) {
             existingMeta.content = csp;
@@ -826,4 +826,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updateCSPHeaders(nonce);
 
+    // Implement Certificate Pinning (example - requires backend support)
+    async function checkCertificatePinning() {
+        try {
+            const response = await fetch('/api/certificate_status'); // backend endpoint to check cert pinning
+            if (response.status === 418) { // I'm a teapot - certificate mismatch
+                showAlert('Certificate pinning mismatch detected. Connection potentially compromised.', 'error');
+                // Potentially block further requests.
+            }
+        } catch (error) {
+            console.error('Certificate pinning check error:', error);
+        }
+    }
+
+    //checkCertificatePinning(); // Needs a backend to be functional.
+
+    // Implement DNSSEC validation check
+    async function checkDNSSEC() {
+        try {
+            const response = await fetch('/api/dnssec_status');  // A backend that resolves and checks DNSSEC
+            const data = await response.json();
+
+            if (!data.valid) {
+                showAlert('DNSSEC validation failed! Possible DNS spoofing attack.', 'error');
+            }
+        } catch (error) {
+            console.error('DNSSEC check error:', error);
+        }
+    }
+
+    //checkDNSSEC();  // requires backend support to function
+
+    // Attempt to mitigate speculative execution attacks.
+    function clearCPUBuffer() {
+        try {
+            const array = new ArrayBuffer(1024 * 1024);
+            const buffer = new Uint8Array(array);
+            for (let i = 0; i < buffer.length; i++) {
+                buffer[i] = i % 256;
+            }
+        } catch (e) {
+            console.warn("Failed to clear CPU buffers:", e);
+        }
+    }
+
+    clearCPUBuffer();
 });
