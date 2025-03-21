@@ -291,6 +291,32 @@ function homomorphicDecrypt(encryptedValue, publicKey) {
     return decryptedValue;
 }
 
+// Function to encrypt a password with extra rounds
+async function encryptPasswordWithRounds(password, rounds = 3) {
+    let encryptedPassword = password;
+    for (let i = 0; i < rounds; i++) {
+        const opSalt = await generateOperationSalt();
+        encryptedPassword = await encryptData(encryptedPassword, process.env.MASTER_ENCRYPTION_KEY + opSalt);
+        encryptedPassword = encryptedPassword.encryptedData;
+    }
+    return encryptedPassword;
+}
+
+// Function to encrypt user data with multiple keys
+async function multiKeyEncrypt(data, keys) {
+    let encryptedData = data;
+    for (const key of keys) {
+        const opSalt = await generateOperationSalt();
+        const encryptionResult = await encryptData(encryptedData, key + opSalt);
+        if (encryptionResult) {
+            encryptedData = encryptionResult.encryptedData;
+        } else {
+            throw new Error("Encryption failed");
+        }
+    }
+    return encryptedData;
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
