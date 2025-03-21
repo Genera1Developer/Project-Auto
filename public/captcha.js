@@ -98,14 +98,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const storageKey = compositeKey.substring(0, 32);
             const storageIv = CryptoJS.SHA256(encryptionIV + salt).toString().substring(0, 16);
 
-            if(compositeKey != keyHash){
+            if(compositeKey !== keyHash){
               errorMessageElement.textContent = 'Key hashes do not match';
               errorMessageElement.style.color = 'red';
               displayEncryptedCaptcha();
               captchaInputElement.value = '';
               return;
             }
-           if(CryptoJS.SHA256(encryptionIV + salt).toString() != ivHash){
+           if(CryptoJS.SHA256(encryptionIV + salt).toString() !== ivHash){
               errorMessageElement.textContent = 'IV hashes do not match';
               errorMessageElement.style.color = 'red';
               displayEncryptedCaptcha();
