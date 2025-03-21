@@ -156,7 +156,22 @@
         "adataCacheIntegrityAlgorithm": "SHA256",
         "hmacCacheIntegrityAlgorithm": "SHA256",
         "keyCacheIntegrityAlgorithm": "SHA256",
-        "cacheIntegrityCheck": true
+        "cacheIntegrityCheck": true,
+        "keyCacheIntegrityCheck": true,
+        "adataCacheIntegrityCheck": true,
+        "hmacCacheIntegrityCheck": true,
+         "entropyInjection": {
+            "enable": true,
+            "interval": 1000,
+            "amount": 0.01
+         },
+         "keyEncodingRounds": 5,
+         "adataEncodingRounds": 5,
+         "hmacEncodingRounds": 5,
+         "enableAdataHmacCache": true,
+         "enableKeyCache": true,
+         "hmacKeyRotationInterval": 43200,
+         "adataKeyRotationInterval": 43200
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -293,6 +308,16 @@
          "timingAttackMitigation": {
            "enabled": true,
            "sleepTime": 10
-         }
+         },
+        "httpPublicKeyPinning": {
+            "enabled": false,
+            "maxAge": 31536000,
+            "includeSubDomains": true,
+            "reportUri": "/hppp-report"
+        },
+        "permissionsPolicy": {
+            "enabled": false,
+            "directives": {}
+        }
   }
 }
