@@ -142,7 +142,8 @@
         "dataIntegrityAlgorithm": "SHA256",
         "adataCacheTtl": 7200,
         "hmacCacheTtl": 7200,
-        "keyCacheTtl": 7200
+        "keyCacheTtl": 7200,
+        "trustedOrigin": "self"
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -249,6 +250,19 @@
                "vibrate": "'none'",
                "payment": "'none'"
            }
-       }
+       },
+       "contentSecurityPolicyReportOnly": {
+            "enabled": false,
+            "reportUri": "/csp-report"
+       },
+        "dnsPrefetchControl": {
+            "enabled": true,
+            "policy": "on"
+        },
+        "expectCt": {
+            "enabled": true,
+            "maxAge": 86400,
+            "enforce": true
+        }
   }
 }
