@@ -247,15 +247,15 @@
 
                     var updateColorsAndSchedule = function() {
                         try {
-                            var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                            var keyMaterial = initialColorSeed + Date.now() + salt;
+                            var newSalt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
+                            var keyMaterial = initialColorSeed + Date.now() + newSalt;
                             var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
 
                             colorData = { color: derivedKey.substring(0,6), strokeColor: derivedKey.substring(6,12) };
                             encryptedColorData = encryptData(colorData, masterKey);
 
-                            salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                            keyMaterial = initialLinkedColorSeed + Date.now() + salt;
+                            newSalt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
+                            keyMaterial = initialLinkedColorSeed + Date.now() + newSalt;
                             derivedKey = CryptoJS.SHA256(keyMaterial).toString();
                             linkedColorData = { linkColor: derivedKey.substring(0,6) };
                             encryptedLinkedColorData = encryptData(linkedColorData, masterKey);
