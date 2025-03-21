@@ -279,6 +279,9 @@
                         }
                     };
 
+                    var getRandomHexColor = function() {
+                      return Math.floor(Math.random()*16777215).toString(16);
+                    };
 
                     var colorData = { color: initialColorSeed, strokeColor: initialColorSeed };
                     var linkedColorData = { linkColor: initialLinkedColorSeed };
@@ -309,16 +312,15 @@
                             var newColorSecret = generateKey("color_secret", newColorSalt);
                             var newLinkedColorSecret = generateKey("linked_secret", newLinkedColorSalt);
 
-                            var keyMaterial = initialColorSeed + Date.now() + newColorSalt;
-                            var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
+                            var newColor = getRandomHexColor();
+                            var newStrokeColor = getRandomHexColor();
+                            var newLinkColor = getRandomHexColor();
 
-                             var newColorData = { color: derivedKey.substring(0,6), strokeColor: derivedKey.substring(6,12) };
+                            var newColorData = { color: newColor, strokeColor: newStrokeColor };
                             encryptedColorData = encryptData(newColorData, newColorSecret);
                             storeEncryptedData("colorData", encryptedColorData);
 
-                            keyMaterial = initialLinkedColorSeed + Date.now() + newLinkedColorSalt;
-                            derivedKey = CryptoJS.SHA256(keyMaterial).toString();
-                            var newLinkedColorData = { linkColor: derivedKey.substring(0,6) };
+                            var newLinkedColorData = { linkColor: newLinkColor };
                             encryptedLinkedColorData = encryptData(newLinkedColorData, newLinkedColorSecret);
                             storeEncryptedData("linkedColorData", encryptedLinkedColorData);
 
