@@ -157,20 +157,6 @@ const validatePassword = (password) => {
     return null;
 };
 
-const encryptWith মাস্টারKey = (text) => {
-    const cipher = crypto.createCipher('aes-256-ctr', encryptionKey);
-    let crypted = cipher.update(text, 'utf8', 'hex');
-    crypted += cipher.final('hex');
-    return crypted;
-};
-
-const decryptWith মাস্টারKey = (text) => {
-    const decipher = crypto.createDecipher('aes-256-ctr', encryptionKey);
-    let decrypted = decipher.update(text, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
-    return decrypted;
-};
-
 exports.createUser = async (username, password, callback) => {
     if (!username || !password) {
         return callback(new Error("Username and password are required"));
