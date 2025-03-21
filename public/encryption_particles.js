@@ -506,6 +506,23 @@ particlesJS('particles-js', {
               console.warn("localStorage not available.")
           }
       },
+      generateKeyAndIV: async function() {
+          try {
+              const key = await this.generateRandomKey();
+              const iv = this.generateRandomIV();
+              const salt = this.generateRandomSalt();
+              return { key, iv, salt };
+          } catch (error) {
+              console.error("Failed to generate key and IV:", error);
+              return null;
+          }
+      },
+      areCryptoDetailsValid: function(key, iv, salt) {
+          return key && key !== 'YOUR_SECURE_KEY' &&
+                 iv && iv !== 'YOUR_IV_KEY' &&
+                 salt && salt !== 'YOUR_SALT' &&
+                 this.isValidBase64(key) && this.isValidBase64(iv) && this.isValidBase64(salt);
+      }
   },
   "fn": {
     "update": async function() {
@@ -523,73 +540,32 @@ particlesJS('particles-js', {
         }
 
         try {
-            if (!key || key === 'YOUR_SECURE_KEY') {
-                console.warn('Encryption key is not set. Generating a random key.');
-                const newKey = await encryptPlugin.generateRandomKey();
-                if (newKey) {
-                    config.encrypt_config.key = newKey;
-                    key = newKey;
-                    encryptPlugin.storeCryptoDetails(newKey, iv, salt);
+            let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage();
+            let storedKey = cryptoDetails?.key;
+            let storedIv = cryptoDetails?.iv;
+            let storedSalt = cryptoDetails?.salt;
 
-                    console.log('New encryption key generated:', newKey);
+            if (encryptPlugin.areCryptoDetailsValid(storedKey, storedIv, storedSalt)) {
+              key = storedKey;
+              iv = storedIv;
+              salt = storedSalt;
+              config.encrypt_config.key = key;
+              config.encrypt_config.iv = iv;
+              config.encrypt_config.salt = salt;
+            } else if (!encryptPlugin.areCryptoDetailsValid(key, iv, salt)) {
+                console.warn('Encryption key/IV/Salt are not set or invalid. Generating new ones.');
+                const newCrypto = await encryptPlugin.generateKeyAndIV();
+                if (newCrypto) {
+                    key = newCrypto.key;
+                    iv = newCrypto.iv;
+                    salt = newCrypto.salt;
+                    config.encrypt_config.key = key;
+                    config.encrypt_config.iv = iv;
+                    config.encrypt_config.salt = salt;
+                    encryptPlugin.storeCryptoDetails(key, iv, salt);
+                    console.log('New encryption key/IV/Salt generated and stored.');
                 } else {
-                    console.error('Failed to generate encryption key. Encryption disabled.');
-                    pJS.plugins.encrypt.enable = false;
-                    return;
-                }
-            } else {
-                try {
-                    let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage();
-                    let storedKey = cryptoDetails.key || key;
-                    let storedIv = cryptoDetails.iv || iv;
-                    let storedSalt = cryptoDetails.salt || salt;
-
-                    if(storedKey){
-                        key = storedKey;
-                        config.encrypt_config.key = key;
-                    }
-
-                     if(storedIv){
-                        iv = storedIv;
-                        config.encrypt_config.iv = iv;
-                    }
-
-                     if(storedSalt){
-                        salt = storedSalt;
-                        config.encrypt_config.salt = salt
-                    }
-
-                } catch (e) {
-                    console.warn("localStorage not available. Using default key.");
-                }
-
-            }
-
-            if (!iv || iv === 'YOUR_IV_KEY') {
-                console.warn('Encryption IV is not set. Generating a random IV.');
-                const newIV = encryptPlugin.generateRandomIV();
-                if (newIV) {
-                    config.encrypt_config.iv = newIV;
-                    iv = newIV;
-                    encryptPlugin.storeCryptoDetails(key, newIV, salt);
-                    console.log('New encryption IV generated:', newIV);
-                } else {
-                    console.error('Failed to generate encryption IV. Encryption disabled.');
-                    pJS.plugins.encrypt.enable = false;
-                    return;
-                }
-            }
-
-            if (!salt || salt === 'YOUR_SALT') {
-                console.warn('Encryption Salt is not set. Generating a random Salt.');
-                const newSalt = encryptPlugin.generateRandomSalt();
-                if (newSalt) {
-                    config.encrypt_config.salt = newSalt;
-                    salt = newSalt;
-                    encryptPlugin.storeCryptoDetails(key, iv, newSalt);
-                    console.log('New encryption salt generated:', newSalt);
-                } else {
-                    console.error('Failed to generate encryption salt. Encryption disabled.');
+                    console.error('Failed to generate encryption key/IV/Salt. Encryption disabled.');
                     pJS.plugins.encrypt.enable = false;
                     return;
                 }
@@ -618,23 +594,17 @@ particlesJS('particles-js', {
 
          try {
             let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage();
-            let storedKey = cryptoDetails.key || key;
-            let storedIv = cryptoDetails.iv || iv;
-            let storedSalt = cryptoDetails.salt || salt;
+            let storedKey = cryptoDetails?.key;
+            let storedIv = cryptoDetails?.iv;
+            let storedSalt = cryptoDetails?.salt;
 
-             if(storedKey){
-                key = storedKey;
-                config.encrypt_config.key = key;
-            }
-
-             if(storedIv){
-                iv = storedIv;
-                config.encrypt_config.iv = iv;
-            }
-
-             if(storedSalt){
-                salt = storedSalt;
-                config.encrypt_config.salt = salt
+            if (encryptPlugin.areCryptoDetailsValid(storedKey, storedIv, storedSalt)) {
+              key = storedKey;
+              iv = storedIv;
+              salt = storedSalt;
+              config.encrypt_config.key = key;
+              config.encrypt_config.iv = iv;
+              config.encrypt_config.salt = salt;
             }
         } catch (e) {
             console.warn("localStorage not available. Using default key.");
