@@ -417,6 +417,7 @@ async function proxyRequest(req, res) {
             res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
             res.setHeader('x-encryption-iv', resIv.toString('hex')); // Send IV
             res.setHeader('x-auth-tag-length', AUTH_TAG_LENGTH); // Send Auth Tag Length
+            res.setHeader('x-content-encoding', 'encrypted'); //Inform client content is encrypted
 
             // Optional: Send PBKDF2 parameters to the client for key derivation if needed
             // res.setHeader('x-pbkdf2-iterations', ITERATIONS);
@@ -448,7 +449,6 @@ async function proxyRequest(req, res) {
                 }
               });
 
-              res.setHeader('Content-Encoding', 'encrypted');
               res.setHeader('x-stream-nonce', streamNonce);
               res.setHeader('x-stream-timestamp', streamTimestamp);
               res.setHeader('x-stream-auth-tag', responseCipher.getAuthTag().toString('hex'));
