@@ -430,6 +430,15 @@
             // toggle the eye slash icon
             this.classList.toggle('fa-eye-slash');
         });
+
+         // Add event listener for visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                // Clear sensitive data when the page is hidden
+                sessionStorage.removeItem('encryptionKey');
+            }
+        });
+
     </script>
 </body>
 </html>
