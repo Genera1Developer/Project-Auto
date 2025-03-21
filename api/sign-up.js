@@ -183,12 +183,20 @@ const signupAttempts = new Map();
 const MAX_ATTEMPTS = 5;
 const BLOCK_DURATION = 60 * 60 * 1000; // 1 hour
 
+// In-memory nonce storage for demonstration purposes.  Replace with Redis.
+const storedNonces = new Set();
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
-    const { username, password, hashingAlgo = 'argon2' } = req.body;
+    const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ message: 'Missing username or password' });
+    }
+
+    // Nonce validation
+    if (!nonce || !isValidNonce(nonce, storedNonces)) {
+        return res.status(400).json({ message: 'Invalid or missing nonce. Replay attack?' });
     }
 
     const ip = req.ip || req.connection.remoteAddress;
