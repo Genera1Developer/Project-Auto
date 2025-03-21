@@ -141,8 +141,8 @@ particlesJS('particles-js', {
                 );
 
                 const encryptedArray = new Uint8Array(encryptedData);
-                const encryptedString = String.fromCharCode(...encryptedArray);
-                return btoa(encryptedString);
+                const encryptedString = btoa(String.fromCharCode(...encryptedArray));
+                return encryptedString;
 
               } catch (error) {
                 console.error("Encryption failed:", error);
@@ -223,9 +223,10 @@ particlesJS('particles-js', {
   },
   "fn": {
     "update": async function() {
-        if (this.plugins.encrypt.enable) {
-            const config = this.actualOptions;
-            const encryptPlugin = this.plugins;
+        const pJS = this;
+        if (pJS.plugins.encrypt.enable) {
+            const config = pJS.actualOptions;
+            const encryptPlugin = pJS.plugins;
 
             if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
                 const { dataFields } = config.plugins.encrypt;
@@ -257,9 +258,10 @@ particlesJS('particles-js', {
         }
     },
     "draw": async function() {
-        if (this.plugins.encrypt.enable) {
-            const config = this.actualOptions;
-            const encryptPlugin = this.plugins;
+        const pJS = this;
+        if (pJS.plugins.encrypt.enable) {
+            const config = pJS.actualOptions;
+            const encryptPlugin = pJS.plugins;
 
             if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
                 const { dataFields } = config.plugins.encrypt;
