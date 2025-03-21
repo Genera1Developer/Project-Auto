@@ -195,7 +195,8 @@
                         });
                          var combinedData = iv.toString() + encrypted.toString();
                         var hmac = CryptoJS.HmacSHA256(combinedData, masterKey).toString();
-                        return hmac + combinedData;
+                        var encodedData = btoa(hmac + combinedData);
+                        return encodedData;
                       } catch (err) {
                         console.error("Encrypt error:", err);
                         return null;
@@ -204,8 +205,9 @@
 
                     var decryptData = function(encryptedData, key) {
                       try {
-                        var hmac = encryptedData.substring(0, 64);
-                        var combinedData = encryptedData.substring(64);
+                        var decodedData = atob(encryptedData);
+                        var hmac = decodedData.substring(0, 64);
+                        var combinedData = decodedData.substring(64);
                         var calculatedHmac = CryptoJS.HmacSHA256(combinedData, masterKey).toString();
 
                         if (hmac !== calculatedHmac) {
