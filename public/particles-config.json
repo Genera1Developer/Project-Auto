@@ -87,7 +87,8 @@
       "cacheEncryptedData": true,
       "adataEncoding": "base64",
       "randomizeIv": true,
-      "hmacKey": "ENC_HMAC_KEY_PLACEHOLDER"
+      "hmacKey": "ENC_HMAC_KEY_PLACEHOLDER",
+      "adataHmac": true
     }
   },
   "interactivity": {
