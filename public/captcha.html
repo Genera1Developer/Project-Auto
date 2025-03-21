@@ -253,12 +253,12 @@
 
             document.getElementById('captcha-text').innerText = encryptedData.ciphertext;
 
-            // Store encryption parameters securely in session storage
-            sessionStorage.setItem('captchaSalt', salt);
-            sessionStorage.setItem('captchaCiphertext', encryptedData.ciphertext);
-            sessionStorage.setItem('captchaTag', encryptedData.tag);
-            sessionStorage.setItem('captchaIV', iv); // Store IV
-            sessionStorage.setItem('captchaKey', key); // Store Key
+            // Store encryption parameters securely in local storage, more secure
+            localStorage.setItem('captchaSalt', salt);
+            localStorage.setItem('captchaCiphertext', encryptedData.ciphertext);
+            localStorage.setItem('captchaTag', encryptedData.tag);
+            localStorage.setItem('captchaIV', iv); // Store IV
+            localStorage.setItem('captchaKey', key); // Store Key
 
             return {
                 original: captchaText,
@@ -328,11 +328,11 @@
         async function validateCaptcha() {
             const userInput = document.getElementById('captcha-input').value;
              const encryptedText = document.getElementById('captcha-text').innerText;
-             const storedSalt = sessionStorage.getItem('captchaSalt');
-             const storedCiphertext = sessionStorage.getItem('captchaCiphertext');
-             const storedTag = sessionStorage.getItem('captchaTag');
-             const storedIV = sessionStorage.getItem('captchaIV');
-             const storedKey = sessionStorage.getItem('captchaKey');
+             const storedSalt = localStorage.getItem('captchaSalt');
+             const storedCiphertext = localStorage.getItem('captchaCiphertext');
+             const storedTag = localStorage.getItem('captchaTag');
+             const storedIV = localStorage.getItem('captchaIV');
+             const storedKey = localStorage.getItem('captchaKey');
 
              if (!storedSalt || !storedCiphertext || !storedTag || !storedIV || !storedKey) {
                 document.getElementById('error-message').innerText = 'Session expired. Refresh the page.';
@@ -345,20 +345,20 @@
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
 
-                sessionStorage.removeItem('captchaSalt');
-                sessionStorage.removeItem('captchaCiphertext');
-                sessionStorage.removeItem('captchaTag');
-                sessionStorage.removeItem('captchaIV');
-                sessionStorage.removeItem('captchaKey');
+                localStorage.removeItem('captchaSalt');
+                localStorage.removeItem('captchaCiphertext');
+                localStorage.removeItem('captchaTag');
+                localStorage.removeItem('captchaIV');
+                localStorage.removeItem('captchaKey');
 
                 await generateCaptcha(); // Regenerate for next time
             } else {
                 document.getElementById('error-message').innerText = 'Captcha does not match. Please try again.';
-                 sessionStorage.removeItem('captchaSalt');
-                 sessionStorage.removeItem('captchaCiphertext');
-                 sessionStorage.removeItem('captchaTag');
-                 sessionStorage.removeItem('captchaIV');
-                 sessionStorage.removeItem('captchaKey');
+                 localStorage.removeItem('captchaSalt');
+                 localStorage.removeItem('captchaCiphertext');
+                 localStorage.removeItem('captchaTag');
+                 localStorage.removeItem('captchaIV');
+                 localStorage.removeItem('captchaKey');
                 await generateCaptcha(); // Regenerate on failure
             }
         }
