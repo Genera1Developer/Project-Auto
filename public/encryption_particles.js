@@ -8,16 +8,16 @@ particlesJS('particles-js', {
       }
     },
     color: {
-      value: '#00FF00'
+      value: '#00FF00' // Green for encryption feel
     },
     shape: {
-      type: 'circle',
+      type: 'circle', // Could also try 'edge' or 'triangle'
       stroke: {
         width: 0,
         color: '#000000'
       },
       polygon: {
-        nb_sides: 6
+        nb_sides: 5 // Pentagon - related to security
       },
       image: {
         src: '',
@@ -48,7 +48,7 @@ particlesJS('particles-js', {
     line_linked: {
       enable: true,
       distance: 130,
-      color: '#009900',
+      color: '#009900', // Darker green
       opacity: 0.4,
       width: 1
     },
