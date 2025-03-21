@@ -152,7 +152,11 @@
          "keyPrecomputeHashes": true,
          "deriveIvFromKey": true,
          "adataDerivationRounds": 3,
-         "hmacDerivationRounds": 3
+         "hmacDerivationRounds": 3,
+        "adataCacheIntegrityAlgorithm": "SHA256",
+        "hmacCacheIntegrityAlgorithm": "SHA256",
+        "keyCacheIntegrityAlgorithm": "SHA256",
+        "cacheIntegrityCheck": true
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
