@@ -74,13 +74,18 @@ document.addEventListener('DOMContentLoaded', function() {
             padding: CryptoJS.pad.Pkcs7
         }).toString();
         sessionStorage.setItem('encryptedData', encryptedStorage);
+        sessionStorage.setItem('keyHash',compositeKey)
+        sessionStorage.setItem('ivHash',CryptoJS.MD5(encryptionIV + salt).toString())
     }
 
     window.validateCaptcha = async function() {
         const userInput = captchaInputElement.value;
         const encryptedData = sessionStorage.getItem('encryptedData');
+        const keyHash = sessionStorage.getItem('keyHash');
+        const ivHash = sessionStorage.getItem('ivHash');
 
-        if (!encryptedData) {
+
+        if (!encryptedData || !keyHash || !ivHash) {
             errorMessageElement.textContent = 'Encryption keys missing. Refresh.';
             errorMessageElement.style.color = 'red';
             displayEncryptedCaptcha();
@@ -92,6 +97,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const compositeKey = CryptoJS.SHA256(encryptionKey + salt).toString();
             const storageKey = compositeKey.substring(0, 32);
             const storageIv = CryptoJS.MD5(encryptionIV + salt).toString().substring(0, 16);
+
+            if(compositeKey != keyHash){
+              errorMessageElement.textContent = 'Key hashes do not match';
+              errorMessageElement.style.color = 'red';
+              displayEncryptedCaptcha();
+              captchaInputElement.value = '';
+              return;
+            }
+           if(CryptoJS.MD5(encryptionIV + salt).toString() != ivHash){
+              errorMessageElement.textContent = 'IV hashes do not match';
+              errorMessageElement.style.color = 'red';
+              displayEncryptedCaptcha();
+              captchaInputElement.value = '';
+              return;
+            }
 
             const decryptedStorage = CryptoJS.AES.decrypt(encryptedData, CryptoJS.enc.Hex.parse(storageKey),{
                 iv: CryptoJS.enc.Hex.parse(storageIv),
