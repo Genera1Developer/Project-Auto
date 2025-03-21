@@ -157,7 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let salt = sessionStorage.getItem('encryptionSalt');
         if (!salt) {
             try {
-                salt = CryptoJS.lib.WordArray.random(16).toString();
+                const saltBuffer = new Uint8Array(16);
+                window.crypto.getRandomValues(saltBuffer);
+                salt = arrayBufferToBase64(saltBuffer.buffer);
                 sessionStorage.setItem('encryptionSalt', salt);
             } catch (e) {
                 console.error("Salt generation error:", e);
@@ -170,7 +172,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function getKeyPrefix() {
         let prefix = sessionStorage.getItem('keyPrefix');
         if (!prefix) {
-            prefix = CryptoJS.lib.WordArray.random(8).toString();
+            const prefixBuffer = new Uint8Array(8);
+            window.crypto.getRandomValues(prefixBuffer);
+            prefix = arrayBufferToBase64(prefixBuffer.buffer);
             sessionStorage.setItem('keyPrefix', prefix);
         }
         return prefix;
@@ -179,7 +183,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function getIVPrefix() {
         let prefix = sessionStorage.getItem('ivPrefix');
         if (!prefix) {
-            prefix = CryptoJS.lib.WordArray.random(8).toString();
+            const prefixBuffer = new Uint8Array(8);
+            window.crypto.getRandomValues(prefixBuffer);
+            prefix = arrayBufferToBase64(prefixBuffer.buffer);
             sessionStorage.setItem('ivPrefix', prefix);
         }
         return prefix;
@@ -189,7 +195,9 @@ document.addEventListener('DOMContentLoaded', function() {
          let secret = sessionStorage.getItem('hmacSecret');
          if (!secret) {
              try {
-                  secret = CryptoJS.lib.WordArray.random(16).toString();
+                 const secretBuffer = new Uint8Array(16);
+                 window.crypto.getRandomValues(secretBuffer);
+                 secret = arrayBufferToBase64(secretBuffer.buffer);
                   sessionStorage.setItem('hmacSecret', secret);
              } catch (e) {
                  console.error("HMAC secret generation error:", e);
@@ -240,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const keyMaterial = await window.crypto.subtle.importKey(
                 "raw",
                 new TextEncoder().encode(generateKey(salt)),
-                "AES-CBC",
+                { name: "AES-CBC", length: 256 },
                 false,
                 ["encrypt"]
             );
@@ -308,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const hmacEncryptionKeyMaterial = await window.crypto.subtle.importKey(
                 "raw",
                 new TextEncoder().encode(generateKey(salt)),
-                "AES-CBC",
+                { name: "AES-CBC", length: 256 },
                 false,
                 ["encrypt"]
             );
