@@ -141,14 +141,20 @@ document.addEventListener('DOMContentLoaded', function() {
         return await encryptHmacWebCrypto(hmac, salt);
     }
 
-    function generateKey(salt) {
+    async function generateKey(salt) {
          if (!salt || typeof salt !== 'string') {
             console.error("Invalid salt:", salt);
             salt = 'default_salt';
           }
-        const combined =  salt + getKeyPrefix();
-        const hash = CryptoJS.SHA256(combined).toString();
-        return hash.substring(0, 32);
+         const combined = salt + getKeyPrefix();
+         const keyMaterial = await window.crypto.subtle.importKey(
+             "raw",
+             new TextEncoder().encode(combined),
+             { name: "HMAC", hash: "SHA-256" },
+             false,
+             ["sign", "verify"]
+         );
+         return keyMaterial;
     }
 
     function generateIV(salt) {
@@ -311,17 +317,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     async function generateHmacWebCrypto(data, salt) {
         try {
-            const hmacKeyMaterial = await window.crypto.subtle.importKey(
-                "raw",
-                new TextEncoder().encode(await getHmacSecret() + salt),
-                { name: "HMAC", hash: "SHA-256" },
-                false,
-                ["sign"]
-            );
+             const secret = await getHmacSecret();
+             const keyMaterial = await window.crypto.subtle.importKey(
+                 "raw",
+                 new TextEncoder().encode(secret),
+                 { name: "HMAC", hash: "SHA-256" },
+                 false,
+                 ["sign"]
+             );
 
             const hmac = await window.crypto.subtle.sign(
                 "HMAC",
-                hmacKeyMaterial,
+                keyMaterial,
                 new TextEncoder().encode(JSON.stringify(data))
             );
 
@@ -348,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function encryptHmacWebCrypto(hmac, salt) {
         try {
-            const hmacEncryptionKeyMaterial = await window.crypto.subtle.importKey(
+            const keyMaterial = await window.crypto.subtle.importKey(
                 "raw",
                 new TextEncoder().encode(generateKey(salt)),
                 { name: "AES-CBC", length: 256 },
@@ -375,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     name: "AES-CBC",
                     iv: new Uint8Array(iv)
                 },
-                hmacEncryptionKeyMaterial,
+                keyMaterial,
                 new TextEncoder().encode(hmac)
             );
 
