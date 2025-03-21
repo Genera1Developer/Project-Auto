@@ -615,13 +615,18 @@ particlesJS('particles-js', {
         }
     },
      "destroy": function() {
-            const localStorageKey = 'encryptionKey';
-            const localStorageIV = 'encryptionIV';
-            const localStorageSalt = 'encryptionSalt';
+            try{
+              const localStorageKey = 'encryptionKey';
+              const localStorageIV = 'encryptionIV';
+              const localStorageSalt = 'encryptionSalt';
 
-            localStorage.removeItem(localStorageKey);
-            localStorage.removeItem(localStorageIV);
-            localStorage.removeItem(localStorageSalt);
+              localStorage.removeItem(localStorageKey);
+              localStorage.removeItem(localStorageIV);
+              localStorage.removeItem(localStorageSalt);
+            } catch(e){
+                console.warn("localStorage not available.");
+            }
+
         }
 },
   "tmp": {}
