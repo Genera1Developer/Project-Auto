@@ -5,9 +5,8 @@ body {
     background-color: #111;
     color: #00FFFF;
     overflow: hidden;
-    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, decryptBackground 15s steps(10) infinite, bitRotation 8s linear infinite;
+    animation: glitch 2s linear infinite, matrix 10s linear infinite, scanlines 5s linear infinite, decryptBackground 15s steps(10) infinite, bitRotation 8s linear infinite, encryptionNoise 3s steps(5) infinite;
     --encryption-color: #00FFFF;
-    /* Add a subtle gradient for depth */
     background: linear-gradient(to bottom, #111 0%, #222 100%);
 }
 
@@ -35,7 +34,7 @@ body {
         background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpiYGBgYJjEwMDAYAAUYAAAGwMAAVYAAAFkAMAAwADAAQCLWQAlKAAKAAAAAElFTkSuQmCC');
         background-size: 20px 20px;
         opacity: 0.7;
-        background-position: 0 0; /* Reset to initial position */
+        background-position: 0 0;
     }
     100% {
         background-color: rgba(0, 0, 0, 0.8);
@@ -76,11 +75,11 @@ body {
 @keyframes decryptBackground {
     0%,
     100% {
-        filter: blur(5px) brightness(0.8) contrast(1.1);
+        filter: blur(5px) brightness(0.8) contrast(1.1) grayscale(0.2);
     }
 
     50% {
-        filter: blur(0px) brightness(1.2) contrast(1.3);
+        filter: blur(0px) brightness(1.2) contrast(1.3) grayscale(0);
     }
 }
 
@@ -94,6 +93,17 @@ body {
     }
 }
 
+@keyframes encryptionNoise {
+    0%, 100% {
+        opacity: 0.1;
+    }
+
+    50% {
+        opacity: 0.3;
+        background-color: rgba(0, 255, 255, 0.05);
+    }
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -101,7 +111,6 @@ body {
     justify-content: center;
     height: 100vh;
     text-align: center;
-    /* Add some padding to avoid content touching the edges */
     padding: 20px;
     box-sizing: border-box;
 }
@@ -110,11 +119,10 @@ h1 {
     font-size: 3.5em;
     margin-bottom: 20px;
     text-shadow: 0 0 15px var(--encryption-color), 0 0 5px var(--encryption-color);
-    animation: flicker 1.5s infinite alternate;
+    animation: flicker 1.5s infinite alternate, encryptionNoise 3s steps(5) infinite;
     position: relative;
     letter-spacing: 2px;
     text-transform: uppercase;
-    /* Add slightly more contrast for better readability */
     color: #00ffff;
 }
 
@@ -127,7 +135,7 @@ h1::before {
     height: 100%;
     color: var(--encryption-color);
     overflow: hidden;
-    animation: encrypt 5s steps(4, end) infinite;
+    animation: encrypt 5s steps(4, end) infinite, encryptionNoise 3s steps(5) infinite;
 }
 
 @keyframes flicker {
@@ -147,10 +155,9 @@ p {
     font-size: 1.3em;
     margin-bottom: 30px;
     text-shadow: 0 0 8px var(--encryption-color);
-    animation: pulse 8s infinite alternate, encryptText 12s steps(8, end) infinite;
+    animation: pulse 8s infinite alternate, encryptText 12s steps(8, end) infinite, encryptionNoise 3s steps(5) infinite;
     line-height: 1.6;
     position: relative;
-    /* Improve readability by reducing text-shadow intensity */
     text-shadow: 0 0 5px var(--encryption-color);
 }
 
@@ -163,7 +170,7 @@ p::before {
     height: 100%;
     color: var(--encryption-color);
     overflow: hidden;
-    animation: encrypt 10s steps(6, end) infinite;
+    animation: encrypt 10s steps(6, end) infinite, encryptionNoise 3s steps(5) infinite;
 }
 
 @keyframes pulse {
@@ -207,7 +214,6 @@ input[type="password"] {
     width: 320px;
     transition: all 0.3s ease;
     filter: blur(2px) opacity(0.7);
-    /* Add a more subtle box-shadow for depth */
     box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
 }
 
@@ -231,7 +237,6 @@ button {
     text-transform: uppercase;
     letter-spacing: 1px;
     filter: blur(1px);
-    /* More prominent shadow */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
@@ -260,7 +265,6 @@ button:hover {
     border: 1px dashed var(--encryption-color);
     filter: blur(3px);
     transition: all 0.3s ease;
-    /* More subtle shadow */
     box-shadow: 0 4px 12px rgba(0, 255, 255, 0.3);
 }
 
@@ -274,7 +278,7 @@ button:hover {
     text-shadow: 0 0 8px var(--encryption-color);
     text-transform: uppercase;
     letter-spacing: 1px;
-    animation: encrypt 5s steps(5, end) infinite;
+    animation: encrypt 5s steps(5, end) infinite, encryptionNoise 3s steps(5) infinite;
 }
 
 .link-to-register,
@@ -282,7 +286,7 @@ button:hover {
     margin-top: 20px;
     font-size: 1em;
     animation: blink 1s step-end infinite;
-    text-align: center; /* Added to center the links */
+    text-align: center;
 }
 
 @keyframes blink {
@@ -304,7 +308,6 @@ button:hover {
     color: var(--encryption-color);
 }
 
-/* Add some media queries for responsiveness */
 @media (max-width: 768px) {
     .form-container {
         width: 90%;
