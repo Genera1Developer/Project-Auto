@@ -156,6 +156,22 @@ async function stretchKey(key, salt, iterations = 3) {
     return stretchedKey;
 }
 
+// Function to protect against replay attacks using a nonce
+async function generateNonce() {
+    const buffer = await randomBytesAsync(16);
+    return buffer.toString('hex');
+}
+
+// Function to validate the nonce to prevent replay attacks
+function isValidNonce(nonce, storedNonces) {
+    if (!nonce || storedNonces.has(nonce)) {
+        return false;
+    }
+    storedNonces.add(nonce);
+    // Optionally, limit the size of storedNonces and remove older nonces
+    return true;
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2' } = req.body;
@@ -167,6 +183,7 @@ module.exports = async (req, res) => {
     let hashedPassword, salt = null;
     let derivedEncryptionKey = null;
     let randomPassword = null;
+    let nonce = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
