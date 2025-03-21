@@ -389,12 +389,21 @@
                   const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
                   const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
 
+                 const signupData = {
+                    username: usernameEncrypted,
+                    password: hashedPassword,
+                    email: emailEncrypted,
+                    captcha: captcha,
+                    salt: encryptedSalt,
+                    iv: encryptedIV
+                 };
+
                   fetch('/api/sign-up', {
                       method: 'POST',
                       headers: {
                           'Content-Type': 'application/json'
                       },
-                      body: JSON.stringify({ username: usernameEncrypted, password: hashedPassword, email: emailEncrypted, captcha: captcha, salt: encryptedSalt, iv: encryptedIV })
+                      body: JSON.stringify(signupData)
                   })
                   .then(response => {
                       encryptionAnimation.style.display = 'none';
