@@ -656,7 +656,7 @@ module.exports = async (req, res) => {
                 };
 
                 // Securely erase key material after use
-                keyMaterial.fill(0);
+                crypto.randomFillSync(keyMaterial, 0, keyMaterial.length);
 
                  // Generate a random IV for the final encryption
                  const finalEncryptionIV = generateRandomIV();
@@ -707,7 +707,7 @@ module.exports = async (req, res) => {
                  res.status(200).json({ data: compressedResponse });
 
                 // Securely erase encryption key after use
-                finalEncryptionKey.fill(0);
+                crypto.randomFillSync(finalEncryptionKey, 0, finalEncryptionKey.length);
 
 
             } else {
