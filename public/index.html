@@ -185,6 +185,19 @@
                 return { ciphertext: encryptedData, iv: ivData };
             }
 
+             // Function to generate a random AES key.
+            async function generateAESKey() {
+                return await window.crypto.subtle.generateKey(
+                    {
+                        name: "AES-GCM",
+                        length: 256,
+                    },
+                    true,
+                    ["encrypt", "decrypt"]
+                );
+            }
+
+
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
                 if (!url) {
@@ -204,21 +217,14 @@
                     const nonce = generateNonce(16);
                     console.log("Request Nonce:", nonce); // Log nonce for debugging
 
-                    // Generate a salt
-                    const salt = generateSalt(16);
-
-                     // For demonstration, use a fixed password. In a real application,
-                     // the user should provide a strong password.
-                    const password = generateNonce(32); // Replace with user-provided password
-
-                    // Derive the key from the password and salt
-                    const derivedKey = await deriveKey(password, salt);
+                    // Generate an AES Key
+                    const aesKey = await generateAESKey();
 
                     // Encrypt the URL
-                    const { ciphertext, iv } = await encryptURL(url, derivedKey);
+                    const { ciphertext, iv } = await encryptURL(url, aesKey);
 
                     // Export the key to raw format to hash it
-                    const rawKey = await window.crypto.subtle.exportKey("raw", derivedKey);
+                    const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
                     const keyArray = Array.from(new Uint8Array(rawKey));
                     const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
@@ -228,7 +234,7 @@
                     console.log("Hashed Key:", hashedKey); // Log the hashed key
 
                     // Construct the URL with encrypted parameters.  Send IV.
-                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(ciphertext)}&iv=${encodeURIComponent(iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}&salt=${encodeURIComponent(salt)}`;
+                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(ciphertext)}&iv=${encodeURIComponent(iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}`;
 
                     // Show loading indicator
                     loadingDiv.style.display = 'block';
