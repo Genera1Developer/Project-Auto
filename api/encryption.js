@@ -108,7 +108,7 @@ function generateEncryptionKey() {
         keyDerivationUsed = false; //Explicitly set to false when generating key
         ivMap.delete(key); // Clear IV map on key change
         cipherMap.delete(key); // Clear cipher map on key change
-        decipherMap.delete(key); // Clear cipher map on key change
+        decipherMap.delete(key); // Clear decipher map on key change
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
@@ -327,7 +327,7 @@ const encryptSecure = (text, aad = null) => {
         }
 
         // Compress the data before encryption
-        zlib.deflate(Buffer.from(text, 'utf8'), (err, result) => {
+        zlib.deflate(Buffer.from(text, 'utf8'), { level: zlib.constants.Z_BEST_COMPRESSION }, (err, result) => {
             if (err) {
                 console.error("Compression failed:", err);
                 return null; //Or throw an error, depending on your needs
@@ -453,7 +453,7 @@ const encryptBuffer = (buffer, aad = null) => {
         }
 
         // Compress the data before encryption
-        zlib.deflate(buffer, (err, result) => {
+        zlib.deflate(buffer, { level: zlib.constants.Z_BEST_COMPRESSION }, (err, result) => {
              if (err) {
                 console.error("Compression failed:", err);
                 return null; //Or throw an error, depending on your needs
@@ -606,7 +606,7 @@ const encryptStream = (inputStream, aad = null) => {
     }
 
     // Create a gzip stream for compression
-    const gzip = zlib.createGzip();
+    const gzip = zlib.createGzip({ level: zlib.constants.Z_BEST_COMPRESSION });
     const authTag = cipher.getAuthTag();
 
     const prepend = Buffer.concat([iv, authTag]);
@@ -786,6 +786,23 @@ async function deleteKeySecurely() {
     }
 }
 
+// Function to get the list of supported ciphers
+function getSupportedCiphers() {
+    return crypto.getCiphers();
+}
+
+// Function to switch to a new cipher
+function setAlgorithm(newAlgorithm) {
+    try {
+        crypto.createCipheriv(newAlgorithm, key, generateSecureIV(), { authTagLength: AUTH_TAG_LENGTH });
+        algorithm = newAlgorithm;
+        console.log(`Algorithm switched to ${newAlgorithm}`);
+    } catch (error) {
+        console.error(`Algorithm switch failed: ${error}`);
+        throw new Error(`Algorithm switch failed: ${error}`);
+    }
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -820,5 +837,7 @@ module.exports = {
     computeSharedSecret,
     storeKeySecurely,
     retrieveKeySecurely,
-    deleteKeySecurely
+    deleteKeySecurely,
+    getSupportedCiphers,
+    setAlgorithm
 };
