@@ -400,6 +400,10 @@
                 salt: salt,
                 usernameIV: usernameIV,
                 passwordIV: passwordIV,
+                encryptedKey: encryptedEncryptionKey,
+                hmac: hmac,
+                nonce: nonce,
+                timestamp: timestamp
             };
 
             const jsonBody = JSON.stringify(requestBody);
