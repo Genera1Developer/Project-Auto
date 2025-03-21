@@ -171,14 +171,21 @@
          "enableAdataHmacCache": true,
          "enableKeyCache": true,
          "hmacKeyRotationInterval": 43200,
-         "adataKeyRotationInterval": 43200
+         "adataKeyRotationInterval": 43200,
+        "sessionKeyRotation": {
+            "enable": true,
+            "interval": 1800
+        },
+        "xChaCha20Poly1305Fallback": true
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
         "fallbackUrl": "wasm/encryption.js",
          "integrity": "ENC_WASM_INTEGRITY_PLACEHOLDER",
          "fallbackIntegrity": "ENC_WASM_FALLBACK_INTEGRITY_PLACEHOLDER",
-          "crossOrigin": "anonymous"
+          "crossOrigin": "anonymous",
+          "workerUrl": "wasm/encryption.worker.js",
+          "workerIntegrity": "ENC_WASM_WORKER_INTEGRITY_PLACEHOLDER"
     }
   },
   "interactivity": {
@@ -318,6 +325,14 @@
         "permissionsPolicy": {
             "enabled": false,
             "directives": {}
+        },
+        "publicKeyCredentialOptions": {
+            "enabled": false,
+            "challengeLength": 32,
+            "timeout": 60000,
+            "rpId": "example.com",
+            "rpName": "Example",
+            "userVerification": "preferred"
         }
   }
 }
