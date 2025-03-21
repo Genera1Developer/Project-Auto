@@ -315,6 +315,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -699,6 +700,7 @@
                             logSecurityEvent('Successful signup.');
                             localStorage.removeItem('bruteForceAttempts');
                             localStorage.removeItem('lastAttemptTime');
+                            Cookies.set('signupSuccess', 'true', { expires: 1 });
                             window.location.href = 'login.html';
                         } else {
                             errorMessage.textContent = data.message || 'Signup failed.';
