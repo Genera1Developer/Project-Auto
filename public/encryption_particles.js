@@ -110,24 +110,26 @@ particlesJS('particles-js', {
   encrypt_config: {
         algorithm: 'AES-256-CBC',
         key: 'YOUR_SECURE_KEY',
-        iv: 'YOUR_IV_KEY'
+        iv: 'YOUR_IV_KEY',
+        salt: 'YOUR_SALT'
     },
   plugins: {
       encrypt: {
           enable: false,
           dataFields: ['particles.color.value', 'particles.line_linked.color']
       },
-      customEncrypt: async function(data, key, iv, algorithm) {
+      customEncrypt: async function(data, key, iv, algorithm, salt) {
             if (!window.crypto || !window.crypto.subtle) {
                 console.warn('Web Crypto API not supported. Encryption disabled.');
                 return data;
             }
 
-            const encryptValue = async (text, secretKey, iv) => {
+            const encryptValue = async (text, secretKey, iv, salt) => {
               try {
                 const enc = new TextEncoder();
                 const keyBytes = this.stringToUint8Array(secretKey);
                 const ivBytes = this.stringToUint8Array(iv);
+                const saltBytes = this.stringToUint8Array(salt);
 
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
@@ -137,10 +139,12 @@ particlesJS('particles-js', {
                   ["encrypt", "decrypt"]
                 );
 
+                const combinedData = new Uint8Array([...saltBytes, ...enc.encode(text)]);
+
                 const encryptedData = await crypto.subtle.encrypt(
                   { name: algorithm, iv: ivBytes },
                   keyMaterial,
-                  enc.encode(text)
+                  combinedData
                 );
 
                 return this.arrayBufferToBase64(encryptedData);
@@ -156,14 +160,14 @@ particlesJS('particles-js', {
                   const encryptedArray = [];
                   for (const item of data) {
                       if (typeof item === 'string') {
-                          encryptedArray.push(await encryptValue(item, key, iv));
+                          encryptedArray.push(await encryptValue(item, key, iv, salt));
                       } else {
                           encryptedArray.push(item);
                       }
                   }
                   return encryptedArray;
               } else if (typeof data === 'string'){
-                  return await encryptValue(data, key, iv);
+                  return await encryptValue(data, key, iv, salt);
               } else {
                   return data;
               }
@@ -172,17 +176,18 @@ particlesJS('particles-js', {
                 return data;
             }
         },
-        decrypt: async function(encryptedData, key, iv, algorithm) {
+        decrypt: async function(encryptedData, key, iv, algorithm, salt) {
             if (!window.crypto || !window.crypto.subtle) {
                 console.warn('Web Crypto API not supported. Encryption disabled.');
                 return encryptedData;
             }
 
-            const decryptValue = async (encryptedBase64, secretKey, iv) => {
+            const decryptValue = async (encryptedBase64, secretKey, iv, salt) => {
               try {
 
                 const keyBytes = this.stringToUint8Array(secretKey);
                 const ivBytes = this.stringToUint8Array(iv);
+                const saltBytes = this.stringToUint8Array(salt);
 
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
@@ -198,8 +203,11 @@ particlesJS('particles-js', {
                   this.base64ToArrayBuffer(encryptedBase64)
                 );
 
+                const saltLength = saltBytes.length;
+                const originalData = decryptedData.slice(saltLength);
+
                 const dec = new TextDecoder();
-                return dec.decode(decryptedData);
+                return dec.decode(originalData);
 
               } catch (error) {
                 console.error("Decryption failed:", error);
@@ -212,7 +220,7 @@ particlesJS('particles-js', {
                     for (const item of encryptedData) {
                         if (typeof item === 'string') {
                           try {
-                            decryptedArray.push(await decryptValue(item, key, iv));
+                            decryptedArray.push(await decryptValue(item, key, iv, salt));
                           } catch (err) {
                             console.warn("Decryption issue", err);
                             decryptedArray.push(item);
@@ -224,7 +232,7 @@ particlesJS('particles-js', {
                     return decryptedArray;
                 } else if (typeof encryptedData === 'string'){
                     try{
-                      return await decryptValue(encryptedData, key, iv);
+                      return await decryptValue(encryptedData, key, iv, salt);
                     } catch(err) {
                       console.warn("Decryption issue", err);
                       return encryptedData;
@@ -269,6 +277,15 @@ particlesJS('particles-js', {
             const iv = new Uint8Array(16);
             window.crypto.getRandomValues(iv);
             return this.arrayBufferToBase64(iv.buffer);
+        },
+        generateRandomSalt: function() {
+          if (!window.crypto || !window.crypto.getRandomValues) {
+              console.warn('Web Crypto API not supported. Salt generation disabled.');
+              return null;
+          }
+            const salt = new Uint8Array(16);
+            window.crypto.getRandomValues(salt);
+            return this.arrayBufferToBase64(salt.buffer);
         },
         arrayBufferToBase64: function(buffer) {
           let binary = '';
@@ -318,7 +335,7 @@ particlesJS('particles-js', {
 
         const config = pJS.actualOptions;
         const encryptPlugin = pJS.plugins;
-        let { key, iv, algorithm } = config.encrypt_config;
+        let { key, iv, algorithm, salt } = config.encrypt_config;
 
         if (!encryptPlugin.isEncryptionSupported()) {
           console.warn('Web Crypto API not supported. Encryption disabled.');
@@ -378,6 +395,32 @@ particlesJS('particles-js', {
             config.encrypt_config.iv = iv;
         }
 
+        if (!salt || salt === 'YOUR_SALT') {
+            console.warn('Encryption Salt is not set. Generating a random Salt.');
+            const newSalt = encryptPlugin.generateRandomSalt();
+            if (newSalt) {
+                config.encrypt_config.salt = newSalt;
+                salt = newSalt;
+                try {
+                    sessionStorage.setItem('encryptionSalt', newSalt); //Use sessionStorage
+                } catch (e) {
+                    console.warn("sessionStorage not available. Salt will not persist.");
+                }
+                console.log('New encryption salt generated:', newSalt);
+            } else {
+                console.error('Failed to generate encryption salt. Encryption disabled.');
+                pJS.plugins.encrypt.enable = false;
+                return;
+            }
+        } else {
+            try {
+                salt = sessionStorage.getItem('encryptionSalt') || salt; //Use sessionStorage
+            } catch (e) {
+                console.warn("sessionStorage not available. Using default salt.");
+            }
+            config.encrypt_config.salt = salt;
+        }
+
         if (config?.plugins?.encrypt?.dataFields) {
             const { dataFields } = config.plugins.encrypt;
 
@@ -402,7 +445,7 @@ particlesJS('particles-js', {
                                 try {
                                     const item = originalValue[i];
                                     if (typeof item === 'string') {
-                                        encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm);
+                                        encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm, salt);
                                     } else {
                                         encryptedArray[i] = item;
                                     }
@@ -415,7 +458,7 @@ particlesJS('particles-js', {
                             target[lastPart] = encryptedArray;
 
                         } else if(typeof originalValue === 'string'){
-                            target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
+                            target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm, salt);
                         }
                     } catch (error) {
                         console.error("Encryption update failed:", error);
@@ -430,7 +473,7 @@ particlesJS('particles-js', {
 
         const config = pJS.actualOptions;
         const encryptPlugin = pJS.plugins;
-        let { key, iv, algorithm } = config.encrypt_config;
+        let { key, iv, algorithm, salt } = config.encrypt_config;
 
         if (!encryptPlugin.isEncryptionSupported()) {
           return;
@@ -439,8 +482,9 @@ particlesJS('particles-js', {
         try {
             key = sessionStorage.getItem('encryptionKey') || key; //Use sessionStorage
             iv = sessionStorage.getItem('encryptionIV') || iv; //Use sessionStorage
+            salt = sessionStorage.getItem('encryptionSalt') || salt; //Use sessionStorage
         } catch (e) {
-            console.warn("sessionStorage not available. Using default key/iv.");
+            console.warn("sessionStorage not available. Using default key/iv/salt.");
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
@@ -467,7 +511,7 @@ particlesJS('particles-js', {
                                     const item = encryptedValue[i];
                                     if (typeof item === 'string') {
                                       if(encryptPlugin.isValidBase64(item)){
-                                        decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm);
+                                        decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm, salt);
                                       } else {
                                         decryptedArray[i] = item;
                                       }
@@ -483,7 +527,7 @@ particlesJS('particles-js', {
                             target[lastPart] = decryptedArray;
                         } else if(typeof encryptedValue === 'string'){
                            if(encryptPlugin.isValidBase64(encryptedValue)){
-                              target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
+                              target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm, salt);
                            } else {
                              target[lastPart] = encryptedValue;
                            }
