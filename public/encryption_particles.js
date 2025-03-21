@@ -311,7 +311,9 @@ particlesJS('particles-js', {
         },
         isValidBase64: function(str) {
             try {
-                return btoa(atob(str)) === str;
+                const decoded = atob(str);
+                const reencoded = btoa(decoded);
+                return reencoded === str;
             } catch (e) {
                 return false;
             }
@@ -482,23 +484,33 @@ particlesJS('particles-js', {
       },
       storeCryptoDetails: function(key, iv, salt) {
           try {
-              localStorage.setItem('encryptionKey', btoa(key));
-              localStorage.setItem('encryptionIV', btoa(iv));
-              localStorage.setItem('encryptionSalt', btoa(salt));
+            const safeKey = this.sanitizeString(key);
+            const safeIv = this.sanitizeString(iv);
+            const safeSalt = this.sanitizeString(salt);
+
+            localStorage.setItem('encryptionKey', btoa(safeKey));
+            localStorage.setItem('encryptionIV', btoa(safeIv));
+            localStorage.setItem('encryptionSalt', btoa(safeSalt));
           } catch (e) {
               console.warn("localStorage not available. Crypto details will not persist.");
           }
       },
       getCryptoFromLocalStorage: function(){
           try{
-              let key = localStorage.getItem('encryptionKey') || this.key;
-              let iv = localStorage.getItem('encryptionIV') || this.iv;
-              let salt = localStorage.getItem('encryptionSalt') || this.salt;
+              let key = localStorage.getItem('encryptionKey');
+              let iv = localStorage.getItem('encryptionIV');
+              let salt = localStorage.getItem('encryptionSalt');
+
+              if(key && iv && salt){
+                key = atob(key);
+                iv = atob(iv);
+                salt = atob(salt);
+              }
 
               return {
-                  key: atob(key),
-                  iv: atob(iv),
-                  salt: atob(salt)
+                  key: key,
+                  iv: iv,
+                  salt: salt
               }
           } catch(e){
               console.warn("localStorage not available.")
