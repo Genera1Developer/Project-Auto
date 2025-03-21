@@ -652,6 +652,20 @@
             "busyWaitThreshold": 100
         },
         "entropyPoolReseedInterval": 3600,
-        "entropyPoolReseedAmount": 64
+        "entropyPoolReseedAmount": 64,
+        "encryptedIndexedDB": {
+            "enabled": true,
+            "algorithm": "AES-256-GCM",
+            "key": "ENC_INDEXEDDB_KEY_PLACEHOLDER",
+            "iv": "ENC_INDEXEDDB_IV_PLACEHOLDER",
+            "salt": "ENC_INDEXEDDB_SALT_PLACEHOLDER",
+            "iterations": 10000,
+            "encoding": "base64",
+            "compression": {
+                "enabled": true,
+                "algorithm": "zlib",
+                "level": 6
+            }
+        }
   }
 }
