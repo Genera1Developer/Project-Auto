@@ -17,7 +17,7 @@ const DIGEST = process.env.PBKDF2_DIGEST || 'sha512';
 
 const SENSITIVE_HEADERS = ['authorization', 'cookie', 'proxy-authorization'];
 const MAX_ENCRYPTED_HEADER_LENGTH = 2048; // Limit header size to prevent DoS
-const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date', 'x-encryption-salt', 'x-cipher-algorithm', 'content-type'];
+const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date', 'x-encryption-salt', 'x-cipher-algorithm', 'content-type', 'x-encryption-iv', 'x-encryption-authtag'];
 const ENCRYPT_HEADER_PREFIX = 'enc_';
 
 // Store derived keys in a cache to avoid repeated derivation
@@ -197,13 +197,14 @@ function proxyRequest(req, res) {
             return res.status(500).send('Failed to derive encryption key.');
         }
 
+        const iv = crypto.randomBytes(IV_LENGTH); // Generate IV for request encryption
         let reqHeaders = transformHeaders(req.headers, false, encryptionKey); // Decrypt incoming headers, using salt
         const options = {
             hostname: parsedUrl.hostname,
             port: parsedUrl.port,
             path: parsedUrl.pathname + parsedUrl.search,
             method: req.method,
-            headers: reqHeaders,
+            headers: transformHeaders(reqHeaders, true, encryptionKey, iv), // Encrypt outgoing headers
             rejectUnauthorized: false // Add this line.  Be careful using this in production without proper cert validation.
         };
 
@@ -212,6 +213,8 @@ function proxyRequest(req, res) {
         delete options.headers['accept-encoding']; // Disable compression for proxy to handle it
         delete options.headers['x-encryption-salt'];
         delete options.headers['x-cipher-algorithm'];
+        delete options.headers['x-encryption-iv'];
+        delete options.headers['x-encryption-authtag'];
 
         const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
@@ -276,7 +279,28 @@ function proxyRequest(req, res) {
             res.status(500).send('Proxy error');
         });
 
-        req.pipe(proxyReq);
+        const requestCipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, iv);
+        const requestTransformStream = new stream.Transform({
+            transform(chunk, encoding, callback) {
+                try {
+                    const encryptedChunk = requestCipher.update(chunk);
+                    callback(null, encryptedChunk);
+                } catch (error) {
+                    callback(error);
+                }
+            },
+            flush(callback) {
+                try {
+                    const finalChunk = requestCipher.final();
+                    callback(null, finalChunk);
+                } catch (error) {
+                    callback(error);
+                }
+            }
+        });
+
+        req.pipe(requestTransformStream).pipe(proxyReq);
+
         req.on('error', (err) => {
             console.error("Request error:", err);
             proxyReq.destroy(err);
