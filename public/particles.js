@@ -289,8 +289,12 @@
 
                     var colorData = { color: initialColorSeed, strokeColor: initialColorSeed };
                     var linkedColorData = { linkColor: initialLinkedColorSeed };
-                    var colorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
-                    var linkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+
+                    var colorSalt = localStorage.getItem("colorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
+                    localStorage.setItem("colorSalt", colorSalt);
+
+                    var linkedColorSalt = localStorage.getItem("linkedColorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
+                    localStorage.setItem("linkedColorSalt", linkedColorSalt);
 
                     var colorSecret = generateKey("color_secret", colorSalt);
                     var linkedColorSecret = generateKey("linked_secret", linkedColorSalt);
@@ -311,7 +315,10 @@
                     var updateColorsAndSchedule = function() {
                         try {
                             var newColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                            localStorage.setItem("colorSalt", newColorSalt);
+
                             var newLinkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                            localStorage.setItem("linkedColorSalt", newLinkedColorSalt);
 
                             var newColorSecret = generateKey("color_secret", newColorSalt);
                             var newLinkedColorSecret = generateKey("linked_secret", newLinkedColorSalt);
