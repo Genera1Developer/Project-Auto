@@ -328,16 +328,20 @@
                             var newStrokeColor = getRandomHexColor();
                             var newLinkColor = getRandomHexColor();
 
-                            var newColorData = { color: newColor, strokeColor: newStrokeColor };
-                            encryptedColorData = encryptData(newColorData, newColorSecret);
-                            storeEncryptedData("colorData", encryptedColorData);
+                             var newColorData = { color: newColor, strokeColor: newStrokeColor };
+                             var newLinkedColorData = { linkColor: newLinkColor };
 
-                            var newLinkedColorData = { linkColor: newLinkColor };
-                            encryptedLinkedColorData = encryptData(newLinkedColorData, newLinkedColorSecret);
-                            storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
+                             var colorDataToEncrypt = Object.assign({}, newColorData, { timestamp: Date.now() });
+                             var linkedColorDataToEncrypt = Object.assign({}, newLinkedColorData, { timestamp: Date.now() });
 
-                            decryptedColorData = decryptData(encryptedColorData, newColorSecret);
-                            decryptedLinkedColorData = decryptData(encryptedLinkedColorData, newLinkedColorSecret);
+                             encryptedColorData = encryptData(colorDataToEncrypt, newColorSecret);
+                             storeEncryptedData("colorData", encryptedColorData);
+
+                             encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, newLinkedColorSecret);
+                             storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
+
+                            decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, newColorSecret) : null;
+                            decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, newLinkedColorSecret) : null;
 
                             if(decryptedColorData && decryptedLinkedColorData){
                               updateColors(decryptedColorData, decryptedLinkedColorData);
