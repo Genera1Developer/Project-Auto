@@ -238,10 +238,10 @@
 
         // Function to generate a cryptographically secure random key
         function generateEncryptionKey() {
-            let key = sessionStorage.getItem('encryptionKey'); // Use sessionStorage for key
+            let key = localStorage.getItem('encryptionKey'); // Use localStorage for key
             if(!key){
                 key = CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
-                sessionStorage.setItem('encryptionKey', key); // Use sessionStorage for key
+                localStorage.setItem('encryptionKey', key); // Use localStorage for key
             }
             return key;
         }
@@ -346,7 +346,7 @@
             const nonce = CryptoJS.lib.WordArray.random(16).toString(); // Generate a unique nonce
 
             // Get the server's public key (replace with actual method)
-            const serverPublicKey = sessionStorage.getItem('serverPublicKey'); // Replace with your actual public key retrieval method
+            const serverPublicKey = localStorage.getItem('serverPublicKey'); // Replace with your actual public key retrieval method
 
             if (!serverPublicKey) {
                 errorMessage.textContent = 'Server public key not available. Login aborted.';
@@ -405,11 +405,11 @@
                     errorMessage.textContent = '';
                     encryptionStatus.textContent = 'Encrypted connection established.';
                     window.location.href = '/index.html';
-                    sessionStorage.removeItem('encryptionKey');
+                    localStorage.removeItem('encryptionKey');
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
                     encryptionStatus.textContent = 'Login failed. Encryption in transit.';
-                    sessionStorage.removeItem('encryptionKey'); // Remove the key on failure
+                    localStorage.removeItem('encryptionKey'); // Remove the key on failure
                 }
             })
             .catch(error => {
@@ -417,7 +417,7 @@
                 console.error('Error:', error);
                 errorMessage.textContent = 'An error occurred during login.';
                 encryptionStatus.textContent = 'Connection error.';
-                sessionStorage.removeItem('encryptionKey'); // Remove the key on error
+                localStorage.removeItem('encryptionKey'); // Remove the key on error
             });
         });
 
@@ -436,16 +436,16 @@
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 // Clear sensitive data when the page is hidden
-                sessionStorage.removeItem('encryptionKey');
-                sessionStorage.removeItem('serverPublicKey');
+                localStorage.removeItem('encryptionKey');
+                localStorage.removeItem('serverPublicKey');
             }
         });
 
         // Add a beforeunload event listener
         window.addEventListener('beforeunload', function (e) {
             // Clear sensitive data before the page is unloaded
-           sessionStorage.removeItem('encryptionKey');
-           sessionStorage.removeItem('serverPublicKey');
+           localStorage.removeItem('encryptionKey');
+           localStorage.removeItem('serverPublicKey');
         });
 
     </script>
