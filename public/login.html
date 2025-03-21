@@ -383,10 +383,15 @@
             const combinedPasswordCiphertext = encryptedPassword.iv + encryptedPassword.ciphertext;
             const combinedCaptchaCiphertext = encryptedCaptcha.iv + encryptedCaptcha.ciphertext;
 
+            // Base64 encode the ciphertext
+            const base64UsernameCiphertext = btoa(combinedUsernameCiphertext);
+            const base64PasswordCiphertext = btoa(combinedPasswordCiphertext);
+            const base64CaptchaCiphertext = btoa(combinedCaptchaCiphertext);
+
             const requestBody = {
-                    username: combinedUsernameCiphertext,
-                    password: combinedPasswordCiphertext,
-                    captcha: combinedCaptchaCiphertext,
+                    username: base64UsernameCiphertext,
+                    password: base64PasswordCiphertext,
+                    captcha: base64CaptchaCiphertext,
                     salt: salt
                 };
 
