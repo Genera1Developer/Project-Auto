@@ -96,7 +96,7 @@ async function generateEncryptionKey() {
 // Function to apply salting to the username before encryption
 function saltUsername(username, salt) {
     const combined = username + salt;
-    return crypto.createHash('sha256').update(combined).digest('hex');
+    return crypto.createHmac('sha256').update(combined).digest('hex');
 }
 
 // Function to securely erase sensitive data from memory
@@ -178,12 +178,24 @@ function handleSignupError(res, error, message = 'Internal server error') {
   return res.status(500).json({ message });
 }
 
+// Rate Limiting
+const signupAttempts = new Map();
+const MAX_ATTEMPTS = 5;
+const BLOCK_DURATION = 60 * 60 * 1000; // 1 hour
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2' } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ message: 'Missing username or password' });
+    }
+
+    const ip = req.ip || req.connection.remoteAddress;
+    const attempts = signupAttempts.get(ip) || { count: 0, blockUntil: null };
+
+    if (attempts.blockUntil && Date.now() < attempts.blockUntil) {
+      return res.status(429).json({ message: 'Too many attempts. Try again later.' });
     }
 
     let hashedPassword, salt = null;
@@ -250,8 +262,14 @@ module.exports = async (req, res) => {
         console.log('User record (for demonstration only):', encryptedUserRecord);
       }
 
+      signupAttempts.delete(ip); // Reset attempts on successful signup
       return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
+      attempts.count++;
+      if (attempts.count >= MAX_ATTEMPTS) {
+        attempts.blockUntil = Date.now() + BLOCK_DURATION;
+      }
+      signupAttempts.set(ip, attempts);
       return handleSignupError(res, error);
     }
 
