@@ -162,7 +162,8 @@
         "url": "wasm/encryption.wasm",
         "fallbackUrl": "wasm/encryption.js",
          "integrity": "ENC_WASM_INTEGRITY_PLACEHOLDER",
-         "fallbackIntegrity": "ENC_WASM_FALLBACK_INTEGRITY_PLACEHOLDER"
+         "fallbackIntegrity": "ENC_WASM_FALLBACK_INTEGRITY_PLACEHOLDER",
+          "crossOrigin": "anonymous"
     }
   },
   "interactivity": {
@@ -288,6 +289,10 @@
          "requireTrustedTypesFor": {
                 "enabled": false,
                 "policyNames": ["default"]
+         },
+         "timingAttackMitigation": {
+           "enabled": true,
+           "sleepTime": 10
          }
   }
 }
