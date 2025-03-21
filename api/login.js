@@ -244,10 +244,27 @@ const isRateLimitedPerUser = (req, username) => {
     return false;
 };
 
+const generate2FASecret = () => {
+    return crypto.randomBytes(20).toString('base32');
+};
+
+const verify2FACode = (secret, token) => {
+    try {
+        const otplib = require('otplib');
+        otplib.authenticator.options = {
+            window: [1, 1]
+        };
+        return otplib.authenticator.verify({ secret, token });
+    } catch (error) {
+        console.error('2FA verification error:', error);
+        return false;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
-    let { username, password } = req.body;
+    let { username, password, twoFactorToken } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ message: 'Username and password required' });
@@ -279,6 +296,18 @@ module.exports = async (req, res) => {
 
       if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
         clearFailedLoginAttempts(username);
+
+        // 2FA Verification (Example)
+        if (userData.twoFactorSecret) {
+            if (!twoFactorToken) {
+                return res.status(401).json({ message: 'Two-factor authentication required' });
+            }
+
+            const is2FAValid = verify2FACode(userData.twoFactorSecret, twoFactorToken);
+            if (!is2FAValid) {
+                return res.status(401).json({ message: 'Invalid two-factor token' });
+            }
+        }
 
         const nonce = generateNonce();
         const sessionData = {
