@@ -191,16 +191,18 @@
                     var encryptData = function(data, secret) {
                       try {
                         var iv = CryptoJS.lib.WordArray.random(128/8);
+                        var salt = CryptoJS.lib.WordArray.random(128/8);
 
                         var encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), secret, {
                             iv: iv,
                             mode: CryptoJS.mode.CBC,
-                            padding: CryptoJS.pad.Pkcs7
+                            padding: CryptoJS.pad.Pkcs7,
+                            salt: salt
                         });
                         return {
                             ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
                             iv: iv.toString(CryptoJS.enc.Hex),
-                            salt: CryptoJS.enc.Base64.stringify(iv) // Use Base64 for salt
+                            salt: salt.toString(CryptoJS.enc.Hex)
                         };
                       } catch (err) {
                         console.error("Encrypt error:", err);
@@ -210,12 +212,14 @@
 
                     var decryptData = function(encryptedData, secret) {
                       try {
-                         var iv = CryptoJS.enc.Base64.parse(encryptedData.salt);  // Parse Base64 salt
+                        var iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
+                        var salt = CryptoJS.enc.Hex.parse(encryptedData.salt);
 
                         var decrypted = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext) }, secret, {
                             iv: iv,
                             mode: CryptoJS.mode.CBC,
-                            padding: CryptoJS.pad.Pkcs7
+                            padding: CryptoJS.pad.Pkcs7,
+                            salt: salt
                         });
 
                         var decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
