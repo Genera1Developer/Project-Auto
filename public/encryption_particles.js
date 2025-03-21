@@ -17,7 +17,7 @@ particlesJS('particles-js', {
         color: '#006400'
       },
       polygon: {
-        nb_sides: 5 // Pentagon for representing block size
+        nb_sides: 5
       },
       image: {
         src: '',
@@ -111,5 +111,14 @@ particlesJS('particles-js', {
         algorithm: 'AES-256-CBC',
         key: 'YOUR_SECURE_KEY',
         iv: 'YOUR_IV_KEY'
-    }
+    },
+  plugins: {
+      encrypt: {
+          enable: false, // Initially disabled for testing/setup
+          dataFields: ['color.value', 'line_linked.color'],
+          algorithm: 'encrypt_config.algorithm',
+          key: 'encrypt_config.key',
+          iv: 'encrypt_config.iv'
+      }
+  }
 });
