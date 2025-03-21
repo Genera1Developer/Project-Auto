@@ -11,13 +11,13 @@ particlesJS('particles-js', {
       value: ['#00FF00', '#0F0', '#00FA9A', '#00CED1', '#00BFFF']
     },
     shape: {
-      type: 'circle',
+      type: 'polygon',
       stroke: {
         width: 1,
         color: '#003300'
       },
       polygon: {
-        nb_sides: 4 // Square/Diamond for block encryption
+        nb_sides: 4
       },
       image: {
         src: '',
