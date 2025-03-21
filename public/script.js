@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const saltBuffer = new Uint8Array(16);
                 window.crypto.getRandomValues(saltBuffer);
-                salt = arrayBufferToBase64(saltBuffer.buffer);
+                salt = arrayBufferToSafeBase64(saltBuffer.buffer);
                 sessionStorage.setItem('encryptionSalt', salt);
             } catch (e) {
                 console.error("Salt generation error:", e);
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try{
                 const prefixBuffer = new Uint8Array(8);
                 window.crypto.getRandomValues(prefixBuffer);
-                prefix = arrayBufferToBase64(prefixBuffer.buffer);
+                prefix = arrayBufferToSafeBase64(prefixBuffer.buffer);
                 sessionStorage.setItem('keyPrefix', prefix);
             } catch (e) {
                 console.error("Key Prefix generation error:", e);
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
            try{
                 const prefixBuffer = new Uint8Array(8);
                 window.crypto.getRandomValues(prefixBuffer);
-                prefix = arrayBufferToBase64(prefixBuffer.buffer);
+                prefix = arrayBufferToSafeBase64(prefixBuffer.buffer);
                 sessionStorage.setItem('ivPrefix', prefix);
            } catch (e) {
                 console.error("IV Prefix generation error:", e);
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
              try {
                  const secretBuffer = new Uint8Array(32);
                  window.crypto.getRandomValues(secretBuffer);
-                 secret = arrayBufferToBase64(secretBuffer.buffer);
+                 secret = arrayBufferToSafeBase64(secretBuffer.buffer);
                   sessionStorage.setItem('hmacSecret', secret);
              } catch (e) {
                  console.error("HMAC secret generation error:", e);
@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!iv){
                  try{
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16)); // Generate a new IV
-                    iv = arrayBufferToBase64(ivBuffer.buffer);
+                    iv = arrayBufferToSafeBase64(ivBuffer.buffer);
                     localStorage.setItem('currentIV', iv);
                  } catch (e) {
                     console.error("IV generation error:", e);
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error("IV generation failed");
                 }
             }
-            iv = base64ToArrayBuffer(localStorage.getItem('currentIV'));
+            iv = safeBase64ToArrayBuffer(localStorage.getItem('currentIV'));
 
             const encodedData = new TextEncoder().encode(JSON.stringify(data));
 
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 encodedData
             );
 
-             const encryptedData = arrayBufferToBase64(result);
+             const encryptedData = arrayBufferToSafeBase64(result);
 
             return encryptedData;
 
@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 new TextEncoder().encode(JSON.stringify(data))
             );
 
-            return arrayBufferToBase64(hmac);
+            return arrayBufferToSafeBase64(hmac);
 
         } catch (error) {
             console.error("WebCrypto HMAC generation error:", error);
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!iv){
                 try {
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
-                    iv = arrayBufferToBase64(ivBuffer.buffer);
+                    iv = arrayBufferToSafeBase64(ivBuffer.buffer);
                     localStorage.setItem('hmacIV', iv);
                  } catch (e) {
                     console.error("HMAC IV generation error:", e);
@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error("HMAC IV generation failed");
                  }
             }
-            iv = base64ToArrayBuffer(localStorage.getItem('hmacIV'));
+            iv = safeBase64ToArrayBuffer(localStorage.getItem('hmacIV'));
 
             const encodedHmac = new TextEncoder().encode(hmac);
 
@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 encodedHmac
             );
 
-            return arrayBufferToBase64(encryptedHmacBuffer);
+            return arrayBufferToSafeBase64(encryptedHmacBuffer);
         } catch (e) {
             console.error("WebCrypto HMAC encryption error:", e);
             showAlert('HMAC Encryption Failed. Secure login disabled.', 'error');
@@ -603,118 +603,6 @@ document.addEventListener('DOMContentLoaded', function() {
             bytes[i] = binary_string.charCodeAt(i);
         }
         return bytes.buffer;
-    }
-
-    async function encryptDataWebCrypto(data, salt) {
-        try {
-            const derivedKey = await deriveKeyMaterial(salt);
-
-            let iv = localStorage.getItem('currentIV');
-            if (!iv) {
-                try {
-                    const ivBuffer = window.crypto.getRandomValues(new Uint8Array(16)); // Generate a new IV
-                    iv = arrayBufferToSafeBase64(ivBuffer.buffer);
-                    localStorage.setItem('currentIV', iv);
-                } catch (e) {
-                    console.error("IV generation error:", e);
-                    showAlert('IV Generation Failed. Secure login disabled.', 'error');
-                    throw new Error("IV generation failed");
-                }
-            }
-            iv = safeBase64ToArrayBuffer(localStorage.getItem('currentIV'));
-
-            const encodedData = new TextEncoder().encode(JSON.stringify(data));
-
-            const result = await window.crypto.subtle.encrypt(
-                {
-                    name: "AES-CBC",
-                    iv: new Uint8Array(iv)
-                },
-                derivedKey,
-                encodedData
-            );
-
-            const encryptedData = arrayBufferToSafeBase64(result);
-
-            return encryptedData;
-
-        } catch (error) {
-            console.error("WebCrypto encryption error:", error);
-            showAlert('Encryption Failed. Secure login disabled.', 'error');
-            throw new Error("WebCrypto encryption failed: " + error.message);
-        }
-    }
-
-    async function generateHmacWebCrypto(data, salt) {
-        try {
-            const secret = await getHmacSecret();
-            const keyMaterial = await window.crypto.subtle.importKey(
-                "raw",
-                new TextEncoder().encode(secret),
-                { name: "HMAC", hash: "SHA-256" },
-                false,
-                ["sign", "verify"]
-            );
-
-            const hmac = await window.crypto.subtle.sign(
-                "HMAC",
-                keyMaterial,
-                new TextEncoder().encode(JSON.stringify(data))
-            );
-
-            return arrayBufferToSafeBase64(hmac);
-
-        } catch (error) {
-            console.error("WebCrypto HMAC generation error:", error);
-            showAlert('HMAC Generation Failed. Secure login disabled.', 'error');
-            throw new Error("WebCrypto HMAC generation failed: " + error.message);
-        }
-    }
-
-    async function encryptHmacWebCrypto(hmac, salt) {
-        try {
-            const derivedKey = await deriveKeyMaterial(salt);
-            let iv = localStorage.getItem('hmacIV');
-            if (!iv) {
-                try {
-                    const ivBuffer = window.crypto.getRandomValues(new Uint8Array(16));
-                    iv = arrayBufferToSafeBase64(ivBuffer.buffer);
-                    localStorage.setItem('hmacIV', iv);
-                } catch (e) {
-                    console.error("HMAC IV generation error:", e);
-                    showAlert('HMAC IV Generation Failed. Secure login disabled.', 'error');
-                    throw new Error("HMAC IV generation failed");
-                }
-            }
-            iv = safeBase64ToArrayBuffer(localStorage.getItem('hmacIV'));
-
-            const encodedHmac = new TextEncoder().encode(hmac);
-
-            const encryptedHmacBuffer = await window.crypto.subtle.encrypt(
-                {
-                    name: "AES-CBC",
-                    iv: new Uint8Array(iv)
-                },
-                derivedKey,
-                encodedHmac
-            );
-
-            return arrayBufferToSafeBase64(encryptedHmacBuffer);
-        } catch (e) {
-            console.error("WebCrypto HMAC encryption error:", e);
-            showAlert('HMAC Encryption Failed. Secure login disabled.', 'error');
-            throw new Error("WebCrypto HMAC encryption failed");
-        }
-    }
-
-    function clearEncryptionData() {
-        sessionStorage.removeItem('encryptionSalt');
-        sessionStorage.removeItem('keyPrefix');
-        sessionStorage.removeItem('ivPrefix');
-        sessionStorage.removeItem('hmacSecret');
-        localStorage.removeItem('currentIV');
-        localStorage.removeItem('hmacIV');
-        console.log('Encryption data cleared from localStorage.');
     }
 
      // Prevent caching of login page
