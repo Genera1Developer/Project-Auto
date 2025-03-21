@@ -97,7 +97,8 @@
         "disableOnBattery": true
       },
       "hmacSalt": "ENC_HMAC_SALT_PLACEHOLDER",
-      "cacheTtl": 3600
+      "cacheTtl": 3600,
+      "entropyEnhancement": true
     }
   },
   "interactivity": {
