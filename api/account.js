@@ -143,13 +143,6 @@ const verifyCredentials = async (username, password) => {
                 }
 
                 try {
-                    const ivBuffer = Buffer.from(row.iv, 'hex');
-                    const authTagBuffer = Buffer.from(row.authTag, 'hex');
-
-                    const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
-                    if (decryptedUsername === null) {
-                        return resolve(false);
-                    }
                     const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
 
                     const hashedPasswordAttempt = await hashPassword(password, row.salt, row.password_version);
@@ -158,6 +151,11 @@ const verifyCredentials = async (username, password) => {
                     if (!passwordsMatch) {
                         return resolve(false);
                     }
+
+                    const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
+                        if (decryptedUsername === null) {
+                            return resolve(false);
+                        }
 
                     return resolve({ id: row.id, username: decryptedUsername });
 
