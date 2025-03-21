@@ -201,6 +201,11 @@ function decryptStream(key, iv) {
 
 async function handleRequestBody(req, encryptionKey, reqIv) {
     return new Promise((resolve, reject) => {
+        if (req.method === 'GET' || req.method === 'HEAD') {
+            resolve(Buffer.alloc(0)); // Resolve with empty buffer for GET/HEAD
+            return;
+        }
+
         const requestCipher = encryptStream(encryptionKey, reqIv);
 
         if (!requestCipher) {
@@ -335,8 +340,10 @@ async function proxyRequest(req, res) {
 
         try {
             const encryptedRequestBody = await handleRequestBody(req, encryptionKey, reqIv);
-            proxyReq.setHeader('Content-Length', encryptedRequestBody.length);
-            proxyReq.write(encryptedRequestBody);
+            if (req.method !== 'GET' && req.method !== 'HEAD') {
+                proxyReq.setHeader('Content-Length', encryptedRequestBody.length);
+                proxyReq.write(encryptedRequestBody);
+            }
             proxyReq.end();
         } catch (error) {
             console.error("Request body handling error:", error);
