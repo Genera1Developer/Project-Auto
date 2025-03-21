@@ -669,6 +669,8 @@ document.addEventListener('DOMContentLoaded', function() {
         getKeyPrefix();
         getIVPrefix();
         await getHmacSecret();
+        sessionStorage.setItem('keyRotationTimestamp', Date.now().toString());
+
     }
 
     // Schedule Key Rotation (e.g., daily)
@@ -682,5 +684,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }, millisTillNextMidnight);
     }
 
+    // Check if a key rotation is needed on page load
+    function checkAndRotateKeys() {
+        const lastRotationTimestamp = sessionStorage.getItem('keyRotationTimestamp');
+        if (lastRotationTimestamp) {
+            const lastRotationDate = new Date(parseInt(lastRotationTimestamp, 10));
+            const now = new Date();
+
+            if (now.getDate() !== lastRotationDate.getDate() ||
+                now.getMonth() !== lastRotationDate.getMonth() ||
+                now.getFullYear() !== lastRotationDate.getFullYear()) {
+                rotateEncryptionKeys();
+            }
+        } else {
+            rotateEncryptionKeys(); // If no timestamp, rotate keys immediately
+        }
+    }
+
+    checkAndRotateKeys();
     scheduleKeyRotation(); // Initialize key rotation scheduling
 });
