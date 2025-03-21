@@ -140,9 +140,6 @@ const encrypt = (text) => {
         if (cipher) {
             cipher.destroy();
         }
-        zeroBuffer(iv);
-        if(encrypted) zeroBuffer(encrypted);
-        if(authTag) zeroBuffer(authTag);
     }
 };
 
@@ -159,7 +156,7 @@ const decrypt = (text) => {
         const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
@@ -170,7 +167,6 @@ const decrypt = (text) => {
         if (decipher) {
             decipher.destroy();
         }
-        if(decrypted) zeroBuffer(decrypted);
     }
 };
 
