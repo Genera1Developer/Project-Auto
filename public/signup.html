@@ -110,9 +110,6 @@
             }
         }
 
-        #captcha-container {
-            margin-top: 15px;
-        }
 
         /* New styles for password strength meter */
         .password-strength {
@@ -160,10 +157,6 @@
             <div id="password-hint">Password must be at least 12 characters. Use uppercase, lowercase, numbers, and symbols.</div>
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
             <input type="email" id="email" name="email" placeholder="Email" required>
-            <div id="captcha-container">
-                <img src="/api/captcha" alt="CAPTCHA Image" id="captchaImage">
-                <input type="text" id="captcha" name="captcha" placeholder="Enter CAPTCHA" required>
-                <button type="button" onclick="refreshCaptcha()">Refresh CAPTCHA</button>
             </div>
             <div class="encryption-animation" id="encryptionAnimation"></div>
             <button type="submit">Sign Up</button>
