@@ -681,6 +681,9 @@ module.exports = async (req, res) => {
                  // Set CSP header to mitigate XSS attacks
                  res.setHeader('Content-Security-Policy', "default-src 'self'");
 
+                 // Mitigate response body size issues by setting the appropriate header
+                 res.setHeader('Content-Encoding', 'deflate');
+
                  res.status(200).json({ data: compressedResponse });
 
 
