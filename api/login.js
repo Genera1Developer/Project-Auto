@@ -672,13 +672,13 @@ module.exports = async (req, res) => {
                      authTag: finalEncryptedResponse.authTag
                  };
 
-                 // Encode the entire response with base64url
-                 const base64UrlEncodedResponse = Buffer.from(JSON.stringify(responseWithIV)).toString('base64url');
+                 // Encode the entire response with base64url and compress it
+                 const compressedResponse = zlib.deflateRawSync(JSON.stringify(responseWithIV)).toString('base64url');
 
                  // Set CSP header to mitigate XSS attacks
                  res.setHeader('Content-Security-Policy', "default-src 'self'");
 
-                 res.status(200).json({ data: base64UrlEncodedResponse });
+                 res.status(200).json({ data: compressedResponse });
 
 
             } else {
@@ -697,3 +697,4 @@ module.exports = async (req, res) => {
     res.status(405).json({ message: 'Method not allowed' });
   }
 };
+const zlib = require('zlib');
