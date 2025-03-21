@@ -54,7 +54,9 @@ function connectToDatabase() {
                 password_iv BLOB NOT NULL,
                 password_auth_tag BLOB NOT NULL,
                 salt_iv BLOB NOT NULL,
-                salt_auth_tag BLOB NOT NULL
+                salt_auth_tag BLOB NOT NULL,
+                account_iv BLOB NOT NULL,
+                account_auth_tag BLOB NOT NULL
             )
         `, (err) => {
             if (err) {
@@ -175,8 +177,9 @@ exports.createUser = async (username, password, callback) => {
         const usernameEncryption = encryptSensitiveData(username);
         const passwordEncryption = encryptSensitiveData(hashedPassword);
         const saltEncryption = encryptSensitiveData(salt);
+        const accountEncryption = encryptSensitiveData(username);
 
-        if (!usernameEncryption || !passwordEncryption || !saltEncryption) {
+        if (!usernameEncryption || !passwordEncryption || !saltEncryption || !accountEncryption) {
             return callback(new Error("Encryption failed"));
         }
 
@@ -190,10 +193,12 @@ exports.createUser = async (username, password, callback) => {
             passwordEncryption.iv,
             passwordEncryption.authTag,
             saltEncryption.iv,
-            saltEncryption.authTag
+            saltEncryption.authTag,
+            accountEncryption.iv,
+            accountEncryption.authTag
         ];
 
-        db.run(`INSERT INTO users (username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, values, function(err) {
+        db.run(`INSERT INTO users (username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag, account_iv, account_auth_tag) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, values, function(err) {
             if (err) {
                 return handleDatabaseError(err, callback, "User creation error:");
             }
@@ -217,7 +222,7 @@ exports.verifyUser = async (username, password, callback) => {
             return callback(new Error("Username encryption failed."));
         }
 
-        db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [usernameEncryption.encryptedData], async (err, row) => {
+        db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag, account_iv, account_auth_tag FROM users WHERE username = ?`, [usernameEncryption.encryptedData], async (err, row) => {
             if (err) {
                 return handleDatabaseError(err, callback, "User verification query error:");
             }
@@ -230,8 +235,9 @@ exports.verifyUser = async (username, password, callback) => {
                 const decryptedUsername = decryptSensitiveData(row.username_iv, row.username_auth_tag, row.username);
                 const decryptedSalt = decryptSensitiveData(row.salt_iv, row.salt_auth_tag, row.salt);
                 const decryptedPassword = decryptSensitiveData(row.password_iv, row.password_auth_tag, row.password);
+                const decryptedAccount = decryptSensitiveData(row.account_iv, row.account_auth_tag, usernameEncryption.encryptedData);
 
-                if (!decryptedUsername || !decryptedSalt || !decryptedPassword) {
+                if (!decryptedUsername || !decryptedSalt || !decryptedPassword || !decryptedAccount) {
                     return callback(new Error("Decryption failed"));
                 }
 
