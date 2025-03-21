@@ -222,6 +222,15 @@
             text-align: left;
         }
 
+        .rsa-key-display {
+            font-size: 0.7em;
+            color: #aaa;
+            margin-top: 5px;
+            text-align: left;
+            word-break: break-all;
+            display: none;
+        }
+
 
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -506,6 +515,10 @@
                     if (!encryptedAesKeyRSA) {
                         throw new Error('AES key encryption failed');
                     }
+
+                    // Zeroize sensitive data before sending
+                    aesKey.fill(0);
+                    hmacKey.fill(0);
 
                     const signupData = {
                        username: usernameEncrypted,
