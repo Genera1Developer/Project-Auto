@@ -134,6 +134,13 @@
             background-color: #00aaff;
             transition: width 0.3s ease;
         }
+
+        #password-hint {
+            font-size: 0.7em;
+            color: #aaa;
+            margin-top: 5px;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -150,6 +157,7 @@
                 </div>
                 <span id="password-strength-text"></span>
             </div>
+            <div id="password-hint">Password must be at least 12 characters. Use uppercase, lowercase, numbers, and symbols.</div>
             <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
             <input type="email" id="email" name="email" placeholder="Email" required>
             <div id="captcha-container">
