@@ -317,6 +317,9 @@ particlesJS('particles-js', {
         uint8ArrayToString: function(arr) {
           const dec = new TextDecoder();
           return dec.decode(arr);
+        },
+        isEncryptionSupported: function() {
+          return !!(window.crypto && window.crypto.subtle);
         }
   },
   "fn": {
@@ -328,6 +331,12 @@ particlesJS('particles-js', {
         const encryptPlugin = pJS.plugins;
         let { key, iv, algorithm } = config.encrypt_config;
 
+        if (!encryptPlugin.isEncryptionSupported()) {
+          console.warn('Web Crypto API not supported. Encryption disabled.');
+          pJS.plugins.encrypt.enable = false;
+          return;
+        }
+
         if (!key || key === 'YOUR_SECURE_KEY') {
             console.warn('Encryption key is not set. Generating a random key.');
             const newKey = await encryptPlugin.generateRandomKey();
@@ -335,9 +344,9 @@ particlesJS('particles-js', {
                 config.encrypt_config.key = newKey;
                 key = newKey;
                 try {
-                    sessionStorage.setItem('encryptionKey', newKey);
+                    localStorage.setItem('encryptionKey', newKey); //Use localStorage
                 } catch (e) {
-                    console.warn("SessionStorage not available. Key will not persist.");
+                    console.warn("LocalStorage not available. Key will not persist.");
                 }
                 console.log('New encryption key generated:', newKey);
             } else {
@@ -347,9 +356,9 @@ particlesJS('particles-js', {
             }
         } else {
             try {
-                key = sessionStorage.getItem('encryptionKey') || key;
+                key = localStorage.getItem('encryptionKey') || key; //Use localStorage
             } catch (e) {
-                console.warn("SessionStorage not available. Using default key.");
+                console.warn("LocalStorage not available. Using default key.");
             }
             config.encrypt_config.key = key;
         }
@@ -361,9 +370,9 @@ particlesJS('particles-js', {
                 config.encrypt_config.iv = newIV;
                 iv = newIV;
                 try {
-                    sessionStorage.setItem('encryptionIV', newIV);
+                    localStorage.setItem('encryptionIV', newIV); //Use localStorage
                 } catch (e) {
-                    console.warn("SessionStorage not available. IV will not persist.");
+                    console.warn("LocalStorage not available. IV will not persist.");
                 }
                 console.log('New encryption IV generated:', newIV);
             } else {
@@ -373,9 +382,9 @@ particlesJS('particles-js', {
             }
         } else {
             try {
-                iv = sessionStorage.getItem('encryptionIV') || iv;
+                iv = localStorage.getItem('encryptionIV') || iv; //Use localStorage
             } catch (e) {
-                console.warn("SessionStorage not available. Using default IV.");
+                console.warn("LocalStorage not available. Using default IV.");
             }
             config.encrypt_config.iv = iv;
         }
@@ -434,11 +443,15 @@ particlesJS('particles-js', {
         const encryptPlugin = pJS.plugins;
         let { key, iv, algorithm } = config.encrypt_config;
 
+        if (!encryptPlugin.isEncryptionSupported()) {
+          return;
+        }
+
         try {
-            key = sessionStorage.getItem('encryptionKey') || key;
-            iv = sessionStorage.getItem('encryptionIV') || iv;
+            key = localStorage.getItem('encryptionKey') || key; //Use localStorage
+            iv = localStorage.getItem('encryptionIV') || iv; //Use localStorage
         } catch (e) {
-            console.warn("SessionStorage not available. Using default key/iv.");
+            console.warn("LocalStorage not available. Using default key/iv.");
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
