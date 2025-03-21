@@ -152,6 +152,24 @@ function generateSalt(length = 32) {
     return crypto.randomBytes(length).toString('hex');
 }
 
+// Consider using a more robust method for key storage and management.
+// For example, consider using a hardware security module (HSM) or a key
+// management system (KMS) for production environments.
+
+// Added key rotation function.
+function rotateKey() {
+    if (keyGenerated) {
+      console.warn("Rotating encryption key. This will invalidate old data.");
+    }
+    keyGenerated = false;
+    return generateEncryptionKey();
+}
+
+// Added function to check if key is set.
+function isKeySet() {
+    return keyGenerated;
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -160,5 +178,7 @@ module.exports = {
     safeCompare,
     deriveEncryptionKey,
     setDeriveKeySalt,
-    generateSalt
+    generateSalt,
+    rotateKey, // Export the rotateKey function
+    isKeySet  // Export the isKeySet function
 };
