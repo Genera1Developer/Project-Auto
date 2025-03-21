@@ -191,6 +191,22 @@
     <script>
         window.onload = function() {
             document.getElementById('preloader').style.display = 'none';
+
+             // Fetch and store server's public key on page load
+            fetch('/api/public-key')
+            .then(response => response.json())
+            .then(data => {
+                if (data.publicKey) {
+                    sessionStorage.setItem('serverPublicKey', data.publicKey);
+                } else {
+                    console.error('Failed to retrieve server public key.');
+                    document.getElementById('error-message').textContent = 'Failed to retrieve server public key.';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching public key:', error);
+                document.getElementById('error-message').textContent = 'Error fetching server public key.';
+            });
         }
         particlesJS.load('particles-js', 'particles-config.json', function() {
           console.log('particles.js loaded - callback');
@@ -291,7 +307,14 @@
             const nonce = CryptoJS.lib.WordArray.random(16).toString(); // Generate a unique nonce
 
             // Get the server's public key (replace with actual method)
-            const serverPublicKey = sessionStorage.getItem('serverPublicKey') || "YOUR_SERVER_PUBLIC_KEY"; // Replace with your actual public key retrieval method
+            const serverPublicKey = sessionStorage.getItem('serverPublicKey'); // Replace with your actual public key retrieval method
+
+            if (!serverPublicKey) {
+                errorMessage.textContent = 'Server public key not available. Login aborted.';
+                encryptionAnimation.style.display = 'none';
+                encryptionStatus.textContent = 'Server public key missing.';
+                return;
+            }
 
             // Encrypt the encryption key with the server's public key
             const encryptedEncryptionKey = encryptLocalKey(encryptionKey, serverPublicKey);
