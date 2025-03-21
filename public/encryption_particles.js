@@ -129,13 +129,13 @@ particlesJS('particles-js', {
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
                   enc.encode(secretKey),
-                  { name: "AES-CBC", length: 256 },
+                  { name: algorithm, length: 256 },
                   false,
                   ["encrypt", "decrypt"]
                 );
 
                 const encryptedData = await crypto.subtle.encrypt(
-                  { name: "AES-CBC", iv: enc.encode(iv) },
+                  { name: algorithm, iv: enc.encode(iv) },
                   keyMaterial,
                   enc.encode(text)
                 );
@@ -178,7 +178,7 @@ particlesJS('particles-js', {
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
                   enc.encode(secretKey),
-                  { name: "AES-CBC", length: 256 },
+                  { name: algorithm, length: 256 },
                   false,
                   ["encrypt", "decrypt"]
                 );
@@ -190,7 +190,7 @@ particlesJS('particles-js', {
                 }
 
                 const decryptedData = await crypto.subtle.decrypt(
-                  { name: "AES-CBC", iv: enc.encode(iv) },
+                  { name: algorithm, iv: enc.encode(iv) },
                   keyMaterial,
                   encryptedArray
                 );
@@ -228,10 +228,8 @@ particlesJS('particles-js', {
             const encryptPlugin = this.plugins;
 
             if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
-                const dataFields = config.plugins.encrypt.dataFields;
-                const key = config.encrypt_config.key;
-                const iv = config.encrypt_config.iv;
-                const algorithm = config.encrypt_config.algorithm;
+                const { dataFields } = config.plugins.encrypt;
+                const { key, iv, algorithm } = config.encrypt_config;
 
                 for (const fieldPath of dataFields) {
                     let target = config;
@@ -245,10 +243,7 @@ particlesJS('particles-js', {
                     if (target && target[lastPart]) {
                       const originalValue = target[lastPart];
                       if (Array.isArray(originalValue)) {
-                        const encryptedArray = [];
-                        for (const item of originalValue) {
-                          encryptedArray.push(await encryptPlugin.customEncrypt(item, key, iv, algorithm));
-                        }
+                        const encryptedArray = await Promise.all(originalValue.map(item => encryptPlugin.customEncrypt(item, key, iv, algorithm)));
                         target[lastPart] = encryptedArray;
 
                       } else {
@@ -267,10 +262,8 @@ particlesJS('particles-js', {
             const encryptPlugin = this.plugins;
 
             if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
-                const dataFields = config.plugins.encrypt.dataFields;
-                const key = config.encrypt_config.key;
-                const iv = config.encrypt_config.iv;
-                const algorithm = config.encrypt_config.algorithm;
+                const { dataFields } = config.plugins.encrypt;
+                const { key, iv, algorithm } = config.encrypt_config;
 
                 for (const fieldPath of dataFields) {
                     let target = config;
@@ -284,10 +277,7 @@ particlesJS('particles-js', {
                     if (target && target[lastPart]) {
                       const encryptedValue = target[lastPart];
                       if (Array.isArray(encryptedValue)) {
-                        const decryptedArray = [];
-                        for (const item of encryptedValue) {
-                          decryptedArray.push(await encryptPlugin.decrypt(item, key, iv, algorithm));
-                        }
+                        const decryptedArray = await Promise.all(encryptedValue.map(item => encryptPlugin.decrypt(item, key, iv, algorithm)));
                         target[lastPart] = decryptedArray;
                       } else {
                           target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
