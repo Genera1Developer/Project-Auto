@@ -226,21 +226,8 @@
                       }
                     };
 
-                    var colorData = { color: initialColorSeed, strokeColor: initialColorSeed };
-                    var linkedColorData = { linkColor: initialLinkedColorSeed };
-                    var colorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
-                    var linkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
-
-                    var colorSecret = generateKey("color_secret", colorSalt);
-                    var linkedColorSecret = generateKey("linked_secret", linkedColorSalt);
-                    var encryptedColorData = encryptData(colorData, colorSecret);
-                    var encryptedLinkedColorData = encryptData(linkedColorData, linkedColorSecret);
-
-                    var updateColors = function(encryptedColorData, encryptedLinkedColorData, colorSecret, linkedColorSecret) {
+                    var updateColors = function(decryptedColorData, decryptedLinkedColorData) {
                       try {
-                        var decryptedColorData = decryptData(encryptedColorData, colorSecret);
-                        var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
-
                         if (decryptedColorData) {
                           if(e.particles.color) e.particles.color.value = "#" + decryptedColorData.color;
                           if (e.particles.shape && e.particles.shape.stroke) {
@@ -256,8 +243,42 @@
                         console.error("Color Update Error:", updateColorsError);
                       }
                     };
+                    var retrieveEncryptedData = function(key, defaultValue) {
+                        try {
+                            var storedData = localStorage.getItem(key);
+                            return storedData ? JSON.parse(storedData) : defaultValue;
+                        } catch (err) {
+                            console.error("Retrieve error:", err);
+                            return defaultValue;
+                        }
+                    };
+                    var storeEncryptedData = function(key, data) {
+                        try {
+                            localStorage.setItem(key, JSON.stringify(data));
+                        } catch (err) {
+                            console.error("Store error:", err);
+                        }
+                    };
 
-                    updateColors(encryptedColorData, encryptedLinkedColorData, colorSecret, linkedColorSecret);
+
+                    var colorData = { color: initialColorSeed, strokeColor: initialColorSeed };
+                    var linkedColorData = { linkColor: initialLinkedColorSeed };
+                    var colorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                    var linkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+
+                    var colorSecret = generateKey("color_secret", colorSalt);
+                    var linkedColorSecret = generateKey("linked_secret", linkedColorSalt);
+
+                    var storedColorData = retrieveEncryptedData("colorData", null);
+                    var storedLinkedColorData = retrieveEncryptedData("linkedColorData", null);
+                    var encryptedColorData = storedColorData || encryptData(colorData, colorSecret);
+                    var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
+
+
+                    var decryptedColorData = decryptData(encryptedColorData, colorSecret);
+                    var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
+
+                    updateColors(decryptedColorData, decryptedLinkedColorData);
 
                     var colorUpdateInterval = 5000;
 
@@ -274,13 +295,18 @@
 
                             colorData = { color: derivedKey.substring(0,6), strokeColor: derivedKey.substring(6,12) };
                             encryptedColorData = encryptData(colorData, newColorSecret);
+                            storeEncryptedData("colorData", encryptedColorData);
 
                             keyMaterial = initialLinkedColorSeed + Date.now() + newLinkedColorSalt;
                             derivedKey = CryptoJS.SHA256(keyMaterial).toString();
                             linkedColorData = { linkColor: derivedKey.substring(0,6) };
                             encryptedLinkedColorData = encryptData(linkedColorData, newLinkedColorSecret);
+                            storeEncryptedData("linkedColorData", encryptedLinkedColorData);
 
-                            updateColors(encryptedColorData, encryptedLinkedColorData, newColorSecret, newLinkedColorSecret);
+                            decryptedColorData = decryptData(encryptedColorData, newColorSecret);
+                            decryptedLinkedColorData = decryptData(encryptedLinkedColorData, newLinkedColorSecret);
+
+                            updateColors(decryptedColorData, decryptedLinkedColorData);
 
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         } catch (cryptoIntervalError) {
