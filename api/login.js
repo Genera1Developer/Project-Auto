@@ -670,7 +670,7 @@ module.exports = async (req, res) => {
                      return res.status(500).json({ message: "Final response encryption failed" });
                  }
 
-                 // Include the IV in the response
+                 // Include the IV and authTag in the response
                  const responseWithIV = {
                      iv: finalEncryptionIV.toString('hex'),
                      encryptedData: finalEncryptedResponse.encryptedData,
