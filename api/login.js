@@ -432,6 +432,52 @@ const generateEncryptionKey = () => {
     return crypto.randomBytes(32).toString('hex');
 };
 
+const generateKeyMaterial = (password, salt) => {
+    try {
+        const iterations = 3;
+        const keylen = 32;
+        const digest = 'sha256';
+        const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
+        return derivedKey;
+    } catch (error) {
+        console.error('Key material generation error:', error);
+        return null;
+    }
+};
+
+const encryptWithKeyMaterial = (data, keyMaterial) => {
+    try {
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv('aes-256-gcm', keyMaterial, iv);
+        const dataBuffer = Buffer.from(JSON.stringify(data), 'utf8');
+        let encrypted = cipher.update(dataBuffer);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        return Buffer.concat([iv, authTag, encrypted]).toString('hex');
+    } catch (error) {
+        console.error('Encryption with key material error:', error);
+        return null;
+    }
+};
+
+const decryptWithKeyMaterial = (encryptedData, keyMaterial) => {
+    try {
+        const encryptedDataBuffer = Buffer.from(encryptedData, 'hex');
+        const iv = encryptedDataBuffer.slice(0, 16);
+        const authTag = encryptedDataBuffer.slice(16, 32);
+        const data = encryptedDataBuffer.slice(32);
+
+        const decipher = crypto.createDecipheriv('aes-256-gcm', keyMaterial, iv);
+        decipher.setAuthTag(authTag);
+        let decrypted = decipher.update(data);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return JSON.parse(decrypted.toString('utf8'));
+    } catch (error) {
+        console.error('Decryption with key material error:', error);
+        return null;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -487,35 +533,30 @@ module.exports = async (req, res) => {
           nonce: nonce
         };
 
-        // Use a dynamically generated key for each login.
-        const baseEncryptionKey = generateEncryptionKey();
-        const sessionId = generateSessionId();
-        const encryptionKeyInfo = `SessionKey-${sessionId}`;
-        const encryptionKey = hkdfExpand(Buffer.from(baseEncryptionKey, 'hex'), encryptionKeyInfo, 32);
+        // Generate key material
+        const keyMaterial = generateKeyMaterial(password, userData.salt);
 
-        if (!encryptionKey) {
-            return res.status(500).json({message: 'Failed to generate encryption key'});
+        if (!keyMaterial) {
+            return res.status(500).json({ message: 'Failed to generate key material' });
         }
 
-        const encryptedSession = encryptSession(sessionData, encryptionKey.toString('hex'));
+        const encryptedSession = encryptWithKeyMaterial(sessionData, keyMaterial);
 
         if (encryptedSession) {
-            const encryptedSessionCookie = encryptCookie(encryptedSession, encryptionKey.toString('hex'));
+            const encryptedSessionCookie = encryptCookie(encryptedSession, keyMaterial.toString('hex'));
 
             if (encryptedSessionCookie) {
                 const deviceSecret = generateDeviceSecret();
-                const encryptedDeviceSecret = encryptWithDeviceSecret({secret: deviceSecret}, encryptionKey.toString('hex'))
+                const encryptedDeviceSecret = encryptWithDeviceSecret({secret: deviceSecret}, keyMaterial.toString('hex'))
 
                 // Generate a short-lived token
-                const shortLivedToken = generateShortLivedToken(userData.username, encryptionKey.toString('hex'));
+                const shortLivedToken = generateShortLivedToken(userData.username, keyMaterial.toString('hex'));
 
                 // Generate authentication token
-                const authToken = generateAuthenticationToken(userData.username, encryptionKey.toString('hex'));
+                const authToken = generateAuthenticationToken(userData.username, keyMaterial.toString('hex'));
 
                 const xorKey = crypto.randomBytes(16).toString('hex');
                 const xorEncryptedSessionId = xorEncrypt(sessionId, xorKey);
-
-                // Securely store the base encryption key (e.g., using a dedicated key management system)
 
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
                 res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: xorEncryptedSessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken, authToken: authToken, xorKey: xorKey });
