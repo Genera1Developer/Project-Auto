@@ -182,7 +182,9 @@
             "enable": true,
             "algorithm": "RSA-OAEP",
             "publicKey": "ENC_PUBLIC_KEY_PLACEHOLDER",
-            "privateKey": "ENC_PRIVATE_KEY_PLACEHOLDER"
+            "privateKey": "ENC_PRIVATE_KEY_PLACEHOLDER",
+            "adataWrap": true,
+            "hmacWrap": true
           }
     },
     "wasm": {
@@ -194,7 +196,30 @@
           "workerUrl": "wasm/encryption.worker.js",
           "workerIntegrity": "ENC_WASM_WORKER_INTEGRITY_PLACEHOLDER",
         "wasmCacheIntegrityAlgorithm": "SHA256",
-        "wasmCacheIntegrityCheck": true
+        "wasmCacheIntegrityCheck": true,
+        "wasmKey": "ENC_WASM_KEY_PLACEHOLDER",
+        "wasmIv": "ENC_WASM_IV_PLACEHOLDER",
+        "wasmEncryption": {
+          "enable": true,
+          "algorithm": "AES-256-GCM"
+        },
+        "wasmCacheKey": "ENC_WASM_CACHE_KEY_PLACEHOLDER",
+        "wasmCacheIv": "ENC_WASM_CACHE_IV_PLACEHOLDER",
+         "wasmCacheEncryption": {
+          "enable": true,
+          "algorithm": "AES-256-GCM"
+        },
+          "wasmCompression": {
+            "enable": true,
+            "algorithm": "zlib",
+            "level": 9
+          },
+          "wasmCacheCompression": {
+            "enable": true,
+            "algorithm": "zlib",
+            "level": 9
+          },
+          "wasmCacheTtl": 86400
     }
   },
   "interactivity": {
@@ -342,6 +367,25 @@
             "rpId": "example.com",
             "rpName": "Example",
             "userVerification": "preferred"
-        }
+        },
+       "dataEncryptionInTransit": {
+           "enabled": true,
+           "protocol": "TLSv1.3",
+           "cipherSuites": [
+               "TLS_AES_128_GCM_SHA256",
+               "TLS_AES_256_GCM_SHA384",
+               "TLS_CHACHA20_POLY1305_SHA256"
+           ]
+       },
+       "dataEncryptionAtRest": {
+           "enabled": true,
+           "algorithm": "AES-256-GCM",
+           "key": "ENC_DATA_AT_REST_KEY_PLACEHOLDER"
+       },
+       "serverSideEncryption": {
+           "enabled": true,
+           "algorithm": "AES-256-GCM",
+           "key": "ENC_SERVER_SIDE_KEY_PLACEHOLDER"
+       }
   }
 }
