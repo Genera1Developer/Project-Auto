@@ -390,7 +390,7 @@ particlesJS('particles-js', {
               let target = data;
               const pathParts = fieldPath.split('.');
               for (let i = 0; i < pathParts.length - 1; i++) {
-                  if(!target || typeof target !== 'object') break;
+                  if(!target || typeof target !== 'object') continue;
                   target = target[pathParts[i]];
               }
               if(!target) continue;
