@@ -500,11 +500,11 @@ particlesJS('particles-js', {
       },
       storeCryptoDetails: function(key, iv, salt) {
           try {
-            sessionStorage.setItem('encryptionKey', key);
-            sessionStorage.setItem('encryptionIV', iv);
-            sessionStorage.setItem('encryptionSalt', salt);
+            localStorage.setItem('encryptionKey', key);
+            localStorage.setItem('encryptionIV', iv);
+            localStorage.setItem('encryptionSalt', salt);
           } catch (e) {
-              console.warn("sessionStorage not available. Crypto details will not persist.");
+              console.warn("localStorage not available. Crypto details will not persist.");
           }
       },
       getCryptoFromLocalStorage: function(){
@@ -564,6 +564,7 @@ particlesJS('particles-js', {
               sessionStorage.removeItem('encryptionKey');
               sessionStorage.removeItem('encryptionIV');
               sessionStorage.removeItem('encryptionSalt');
+              sessionStorage.removeItem('passwordHash');
           } catch (e) {
               console.warn("localStorage or sessionStorage not available.");
           }
@@ -669,27 +670,44 @@ particlesJS('particles-js', {
               return false;
           }
 
-          let salt = sessionStorage.getItem('encryptionSalt');
+          let salt = localStorage.getItem('encryptionSalt') || sessionStorage.getItem('encryptionSalt');
           if (!salt) {
               salt = this.generateRandomSalt();
               if (!salt) return false; // Salt generation failed
-              this.storeCryptoDetails('', '', salt); // Store the salt
+              if (this.isLocalStorageAvailable()) {
+                  this.storeCryptoDetails('', '', salt); // Store the salt in localStorage
+              } else if (this.isSessionStorageAvailable()){
+                  try{
+                      sessionStorage.setItem('encryptionSalt', salt);
+                  } catch(e) {
+                      console.warn("Session storage failed")
+                  }
+              }
+
           }
 
-
-          const key = await this.deriveKeyFromPassword(password, salt);
+          let key = await this.deriveKeyFromPassword(password, salt);
           if (!key) {
               console.error('Failed to derive key from password.');
               return false;
           }
 
-          const iv = this.generateRandomIV();
+          let iv = this.generateRandomIV();
           if (!iv) {
               console.error('Failed to generate IV.');
               return false;
           }
 
-          this.storeCryptoDetails(key, iv, salt);
+          if (this.isLocalStorageAvailable()) {
+              this.storeCryptoDetails(key, iv, salt);
+          } else if (this.isSessionStorageAvailable()){
+              try{
+                 sessionStorage.setItem('encryptionKey', key);
+                 sessionStorage.setItem('encryptionIV', iv);
+              } catch(e){
+                  console.warn("Session Storage failed");
+              }
+          }
           await this.storePasswordHash(password); // Store the password hash
 
           return true;
@@ -720,7 +738,7 @@ particlesJS('particles-js', {
         }
 
         try {
-            let cryptoDetails = encryptPlugin.getCryptoFromSessionStorage();
+            let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage() || encryptPlugin.getCryptoFromSessionStorage();
             let storedKey = cryptoDetails?.key;
             let storedIv = cryptoDetails?.iv;
             let storedSalt = cryptoDetails?.salt;
@@ -742,7 +760,19 @@ particlesJS('particles-js', {
                     config.encrypt_config.key = key;
                     config.encrypt_config.iv = iv;
                     config.encrypt_config.salt = salt;
-                    encryptPlugin.storeCryptoDetails(key, iv, salt);
+                    if(encryptPlugin.isLocalStorageAvailable()){
+                        encryptPlugin.storeCryptoDetails(key, iv, salt);
+                    } else if(encryptPlugin.isSessionStorageAvailable()){
+                        try{
+                            sessionStorage.setItem('encryptionKey', key);
+                            sessionStorage.setItem('encryptionIV', iv);
+                            sessionStorage.setItem('encryptionSalt', salt);
+                        } catch(e){
+                            console.warn("Session storage failed");
+                        }
+
+                    }
+
                     console.log('New encryption key/IV/Salt generated and stored.');
                 } else {
                     console.error('Failed to generate encryption key/IV/Salt. Encryption disabled.');
@@ -777,7 +807,7 @@ particlesJS('particles-js', {
         }
 
          try {
-            let cryptoDetails = encryptPlugin.getCryptoFromSessionStorage();
+            let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage() || encryptPlugin.getCryptoFromSessionStorage();
             let storedKey = cryptoDetails?.key;
             let storedIv = cryptoDetails?.iv;
             let storedSalt = cryptoDetails?.salt;
@@ -791,7 +821,7 @@ particlesJS('particles-js', {
               config.encrypt_config.salt = salt;
             }
         } catch (e) {
-            console.warn("sessionStorage not available. Using default key.");
+            console.warn("localStorage/sessionStorage not available. Using default key.");
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
