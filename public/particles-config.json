@@ -143,7 +143,8 @@
         "adataCacheTtl": 7200,
         "hmacCacheTtl": 7200,
         "keyCacheTtl": 7200,
-        "trustedOrigin": "self"
+        "trustedOrigin": "self",
+        "adataEncryptionKey": "ENC_ADATA_ENCRYPTION_KEY_PLACEHOLDER"
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -263,6 +264,12 @@
             "enabled": true,
             "maxAge": 86400,
             "enforce": true
+        },
+        "certificateTransparency": {
+            "enabled": true,
+            "enforce": true,
+            "maxAge": 31536000,
+            "reportUri": "/ct-report"
         }
   }
 }
