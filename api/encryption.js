@@ -307,7 +307,7 @@ const encryptSecure = (text, aad = null) => {
         zlib.deflate(Buffer.from(text, 'utf8'), (err, compressedData) => {
             if (err) {
                 console.error("Compression failed:", err);
-                return null; //Or throw an error, depending on your needs
+                return; //Or throw an error, depending on your needs
             }
             encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
             authTag = cipher.getAuthTag();
@@ -352,7 +352,7 @@ const decryptSecure = (text, aad = null) => {
         zlib.inflate(decrypted, (err, decompressedData) => {
             if (err) {
                 console.error("Decompression failed:", err);
-                return null; //Or throw an error, depending on your needs
+                return; //Or throw an error, depending on your needs
             }
             return decompressedData.toString('utf8');
         });
@@ -413,7 +413,7 @@ const encryptBuffer = (buffer, aad = null) => {
         zlib.deflate(buffer, (err, compressedData) => {
              if (err) {
                 console.error("Compression failed:", err);
-                return null; //Or throw an error, depending on your needs
+                return; //Or throw an error, depending on your needs
             }
             encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
             authTag = cipher.getAuthTag();
@@ -458,7 +458,7 @@ const decryptBuffer = (ciphertext, aad = null) => {
         zlib.inflate(decrypted, (err, decompressedData) => {
              if (err) {
                 console.error("Decompression failed:", err);
-                return null; //Or throw an error, depending on your needs
+                return; //Or throw an error, depending on your needs
             }
             return decompressedData;
         });
@@ -580,12 +580,7 @@ const encryptStream = (inputStream, aad = null) => {
     prependStream.write(prepend);
 
     // Chain the streams together with compression
-    inputStream.pipe(gzip).pipe(transformStream).pipe(prependStream, { end: false });
-
-    // Signal end of prependStream after transformStream completes
-    transformStream.on('end', () => {
-        prependStream.end();
-    });
+    inputStream.pipe(gzip).pipe(transformStream).pipe(prependStream);
 
     return prependStream;
 };
