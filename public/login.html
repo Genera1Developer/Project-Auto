@@ -186,7 +186,7 @@
     </div>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script src="particles.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxrt+wFF5o6YvjjIKwu7Egxh1mxILgGbfT6n4WNHhwd6KtVvgjVU0fEqHjxtt49lcWZeg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/forge/1.3.0/forge.min.js" integrity="sha512-t7K94s4JQUB7BOJQFhcQYNFBL69b482jS+3ZTru9C7tY+F6I6Z7j2za4G5Qdgn7L3JZe+Q1ySgvdWntYKQp2HQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         window.onload = function() {
@@ -238,10 +238,10 @@
 
         // Function to generate a cryptographically secure random key
         function generateEncryptionKey() {
-            let key = localStorage.getItem('encryptionKey'); // Use localStorage for key
+            let key = sessionStorage.getItem('encryptionKey'); // Use sessionStorage
             if(!key){
                 key = CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
-                localStorage.setItem('encryptionKey', key); // Use localStorage for key
+                sessionStorage.setItem('encryptionKey', key); // Use sessionStorage
             }
             return key;
         }
@@ -346,7 +346,7 @@
             const nonce = CryptoJS.lib.WordArray.random(16).toString(); // Generate a unique nonce
 
             // Get the server's public key (replace with actual method)
-            const serverPublicKey = localStorage.getItem('serverPublicKey'); // Replace with your actual public key retrieval method
+            const serverPublicKey = sessionStorage.getItem('serverPublicKey'); // Replace with your actual public key retrieval method
 
             if (!serverPublicKey) {
                 errorMessage.textContent = 'Server public key not available. Login aborted.';
@@ -405,11 +405,11 @@
                     errorMessage.textContent = '';
                     encryptionStatus.textContent = 'Encrypted connection established.';
                     window.location.href = '/index.html';
-                    localStorage.removeItem('encryptionKey');
+                    sessionStorage.removeItem('encryptionKey');
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
                     encryptionStatus.textContent = 'Login failed. Encryption in transit.';
-                    localStorage.removeItem('encryptionKey'); // Remove the key on failure
+                    sessionStorage.removeItem('encryptionKey'); // Remove the key on failure
                 }
             })
             .catch(error => {
@@ -417,7 +417,7 @@
                 console.error('Error:', error);
                 errorMessage.textContent = 'An error occurred during login.';
                 encryptionStatus.textContent = 'Connection error.';
-                localStorage.removeItem('encryptionKey'); // Remove the key on error
+                sessionStorage.removeItem('encryptionKey'); // Remove the key on error
             });
         });
 
@@ -436,16 +436,16 @@
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 // Clear sensitive data when the page is hidden
-                localStorage.removeItem('encryptionKey');
-                localStorage.removeItem('serverPublicKey');
+                sessionStorage.removeItem('encryptionKey');
+                sessionStorage.removeItem('serverPublicKey');
             }
         });
 
         // Add a beforeunload event listener
         window.addEventListener('beforeunload', function (e) {
             // Clear sensitive data before the page is unloaded
-           localStorage.removeItem('encryptionKey');
-           localStorage.removeItem('serverPublicKey');
+           sessionStorage.removeItem('encryptionKey');
+           sessionStorage.removeItem('serverPublicKey');
         });
 
     </script>
