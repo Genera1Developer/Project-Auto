@@ -98,7 +98,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-Nonce': window.nonce,
                     'Cache-Control': 'no-cache',
                     'Pragma': 'no-cache',
-                    'Expires': '0'
+                    'Expires': '0',
+                    'X-CSRF-Token': getCSRFToken() // Include CSRF token
                 },
                 body: JSON.stringify({ data: encryptedData })
             });
@@ -134,13 +135,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
-
     async function encryptData(data, salt) {
         // Use Web Crypto API for encryption
         return await encryptDataWebCrypto(data, salt);
     }
-
 
     async function generateAndStoreHmac(data, salt) {
         return await generateAndStoreHmacWebCrypto(data, salt);
@@ -149,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
     async function encryptHmac(hmac, salt) {
         return await encryptHmacWebCrypto(hmac, salt);
     }
-
 
     async function generateAndStoreSalt() {
         let salt = sessionStorage.getItem('encryptionSalt');
@@ -218,6 +215,12 @@ document.addEventListener('DOMContentLoaded', function() {
          }
          return secret;
      }
+
+    // Function to get CSRF token from meta tag
+    function getCSRFToken() {
+        const metaTag = document.querySelector('meta[name="csrf-token"]');
+        return metaTag ? metaTag.content : null;
+    }
 
     // Particle.js Initialization
     if (typeof particlesJS === 'function') {
