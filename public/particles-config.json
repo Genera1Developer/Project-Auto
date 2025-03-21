@@ -94,7 +94,8 @@
         "disableEncryptionOnLowPerformance": true,
         "cpuUsageThreshold": 80,
         "memoryUsageThreshold": 90
-      }
+      },
+      "hmacSalt": "ENC_HMAC_SALT_PLACEHOLDER"
     }
   },
   "interactivity": {
