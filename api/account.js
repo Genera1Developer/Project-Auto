@@ -74,24 +74,29 @@ function generateSalt() {
 }
 
 function encrypt(text, iv) {
-    const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    return {
-        iv: iv.toString('hex'),
-        encryptedData: encrypted.toString('hex'),
-        authTag: authTag.toString('hex')
-    };
+    try {
+        const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
+        let encrypted = cipher.update(text, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        const authTag = cipher.getAuthTag();
+        return {
+            iv: iv.toString('hex'),
+            encryptedData: encrypted,
+            authTag: authTag.toString('hex')
+        };
+    } catch (error) {
+        console.error("Encryption error:", error);
+        throw error;
+    }
 }
 
 function decrypt(encryptedData, iv, authTag) {
     try {
         const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, encryptionKey, Buffer.from(iv, 'hex'));
         decipher.setAuthTag(Buffer.from(authTag, 'hex'));
-        let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
-        decrypted = Buffer.concat([decrypted, decipher.final()]);
-        return decrypted.toString();
+        let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
     } catch (error) {
         console.error("Decryption error:", error);
         return null;
@@ -120,8 +125,11 @@ const validatePassword = (password) => {
 
 const verifyCredentials = async (username, password) => {
     try {
+        const iv = crypto.randomBytes(ivLength);
+        const encryptedUsernameSearch = encrypt(username, iv).encryptedData;
+
         return new Promise((resolve, reject) => {
-            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encrypt(username, crypto.randomBytes(ivLength)).encryptedData], async (err, row) => {
+            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encryptedUsernameSearch], async (err, row) => {
                 if (err) {
                     handleDatabaseError(err, null, "User verification query error:");
                     return reject(err);
