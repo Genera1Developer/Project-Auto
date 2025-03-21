@@ -243,14 +243,14 @@
                       var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, masterKey, iv);
 
                       if (decryptedColorData) {
-                        if(e.particles.color) e.particles.color.value = "#" + CryptoJS.MD5(decryptedColorData.color).toString().substring(0,6);
+                        if(e.particles.color) e.particles.color.value = "#" + decryptedColorData.color;
                         if (e.particles.shape && e.particles.shape.stroke) {
-                          e.particles.shape.stroke.color = "#" + CryptoJS.MD5(decryptedColorData.strokeColor).toString().substring(0,6);
+                          e.particles.shape.stroke.color = "#" + decryptedColorData.strokeColor;
                         }
                       }
                       if (decryptedLinkedColorData) {
                         if (e.particles.line_linked) {
-                          e.particles.line_linked.color = "#" + CryptoJS.MD5(decryptedLinkedColorData.linkColor).toString().substring(0,6);
+                          e.particles.line_linked.color = "#" + decryptedLinkedColorData.linkColor;
                         }
                       }
                     };
