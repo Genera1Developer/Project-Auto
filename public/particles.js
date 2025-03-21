@@ -184,19 +184,16 @@
                     var initialLinkedColorSeed = "9b59b6";
                     var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
                     var masterKey = CryptoJS.SHA256("master_key_" + salt).toString();
+                    var iv = CryptoJS.lib.WordArray.random(128/8);
 
                     var encryptData = function(data, key) {
                       try {
-                        var iv = CryptoJS.lib.WordArray.random(128/8);
                         var encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
                             iv: iv,
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
                         });
-                         var combinedData = iv.toString() + encrypted.toString();
-                        var hmac = CryptoJS.HmacSHA256(combinedData, masterKey).toString();
-                        var encodedData = btoa(hmac + combinedData);
-                        return encodedData;
+                        return encrypted.toString();
                       } catch (err) {
                         console.error("Encrypt error:", err);
                         return null;
@@ -205,18 +202,7 @@
 
                     var decryptData = function(encryptedData, key) {
                       try {
-                        var decodedData = atob(encryptedData);
-                        var hmac = decodedData.substring(0, 64);
-                        var combinedData = decodedData.substring(64);
-                        var calculatedHmac = CryptoJS.HmacSHA256(combinedData, masterKey).toString();
-
-                        if (hmac !== calculatedHmac) {
-                            console.error("HMAC verification failed!");
-                            return null;
-                        }
-                        var iv = CryptoJS.enc.Hex.parse(combinedData.substring(0, 32));
-                        var encrypted = combinedData.substring(32);
-                        var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+                        var decrypted = CryptoJS.AES.decrypt(encryptedData, key, {
                             iv: iv,
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
