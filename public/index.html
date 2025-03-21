@@ -443,6 +443,7 @@
                             sessionStorage.removeItem('aesKey');
                             sessionStorage.removeItem('aesIV');
                             sessionStorage.removeItem('aesKeyTimestamp');
+                            sessionStorage.removeItem('hashedKey');
                         }
                     }
                 }
@@ -531,6 +532,7 @@
                     // Store key in session storage *before* passing parameters
                     sessionStorage.setItem('aesKey', aesKeyHex);
                     sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
+                    sessionStorage.setItem('hashedKey',hashedKey);
 
                     // Construct the URL with encrypted parameters.  Don't send IV in URL.
                     const formData = new FormData();
@@ -609,6 +611,7 @@
                         sessionStorage.removeItem('aesKey');
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
+                        sessionStorage.removeItem('hashedKey');
                     }
 
                      //Clear sensitive information from sessionStorage after a delay.
@@ -656,6 +659,7 @@
                         sessionStorage.removeItem('aesKey');
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
+                        sessionStorage.removeItem('hashedKey');
                          keyExpiryWarningDiv.style.display = 'none'; // Hide expiry warning
                     } else {
                          displayKeyExpiryWarning();// Check if warning needs to be displayed
@@ -722,6 +726,7 @@
                   // Store key in session storage *before* passing parameters
                   sessionStorage.setItem('aesKey', aesKeyHex);
                   sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
+                  sessionStorage.setItem('hashedKey',hashedKey);
 
                   // Construct the URL with encrypted parameters.  Don't send IV in URL.
                   const formData = new FormData();
