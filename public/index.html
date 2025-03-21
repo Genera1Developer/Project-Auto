@@ -235,6 +235,14 @@
                 errorDiv.style.color = '#ff9800'; // Amber color
             }
 
+            // Function to perform a check for compromised keys
+            async function checkKeyCompromise(keyHash) {
+                // Placeholder for a real-world key compromise check.
+                // This would involve comparing the keyHash against a database
+                // of known compromised keys.  For now, it just logs the hash.
+                console.log("Checking for compromised key:", keyHash);
+                return false; // Assume the key is not compromised for this example.
+            }
 
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
@@ -275,6 +283,13 @@
                     // Hash the derived key
                     const hashedKey = await hashKey(keyHex);
                     console.log("Hashed Key:", hashedKey); // Log the hashed key
+
+                     // Check for compromised key *before* proceeding
+                    const isCompromised = await checkKeyCompromise(hashedKey);
+                    if (isCompromised) {
+                        errorDiv.textContent = 'Potential security risk: Key compromise detected.';
+                        return;
+                    }
 
                     // Store key in session storage *before* passing parameters
                     sessionStorage.setItem('aesKey', keyHex);
