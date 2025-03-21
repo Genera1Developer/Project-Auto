@@ -100,7 +100,7 @@ function decrypt(text, key) {
 }
 
 // Function to encrypt/decrypt headers
-function transformHeaders(headers, encryptFlag, encryptionKey, iv, nonce) {
+function transformHeaders(headers, encryptFlag, encryptionKey, iv) {
     const transformedHeaders = {};
     for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
@@ -378,13 +378,13 @@ async function proxyRequest(req, res) {
         }
 
         const iv = crypto.randomBytes(IV_LENGTH); // Generate IV for request encryption
-        let reqHeaders = transformHeaders(req.headers, false, encryptionKey, iv, nonce); // Decrypt incoming headers, using salt
+        let reqHeaders = transformHeaders(req.headers, false, encryptionKey, iv); // Decrypt incoming headers, using salt
         const options = {
             hostname: parsedUrl.hostname,
             port: parsedUrl.port,
             path: parsedUrl.pathname + parsedUrl.search,
             method: req.method,
-            headers: transformHeaders(reqHeaders, true, encryptionKey, iv, nonce), // Encrypt outgoing headers
+            headers: transformHeaders(reqHeaders, true, encryptionKey, iv), // Encrypt outgoing headers
             rejectUnauthorized: false // Add this line.  Be careful using this in production without proper cert validation.
         };
 
@@ -401,7 +401,7 @@ async function proxyRequest(req, res) {
 
             // Generate IV for response encryption - different IV each time.
             const resIv = crypto.randomBytes(IV_LENGTH);
-            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, resIv, nonce); // Encrypt outgoing headers, using salt
+            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, resIv); // Encrypt outgoing headers, using salt
             delete resHeaders['content-encoding'];
             delete resHeaders['content-length'];
 
