@@ -215,23 +215,25 @@
                             });
                             let hmac = CryptoJS.HmacSHA256(encrypted.ciphertext.toString(), hmacKey);
                             let ivString = iv.toString(CryptoJS.enc.Base64);
-                            return {
-                                ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
-                                iv: ivString,
-                                hmac: hmac.toString()
-                            };
+                            let ciphertextString = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+                            let combinedData = ivString + '$' + ciphertextString + '$' + hmac.toString();
+                            return combinedData;
                         } catch (err) {
                             console.error("Encrypt error:", err);
                             return null;
                         }
                     };
 
-                    var decryptData = function(encryptedData, secret) {
+                    var decryptData = function(combinedData, secret) {
                         try {
+                            let parts = combinedData.split('$');
+                            let ivString = parts[0];
+                            let ciphertextString = parts[1];
+                            let hmac = parts[2];
+
                             let key = CryptoJS.enc.Utf8.parse(secret);
-                            let iv = CryptoJS.enc.Base64.parse(encryptedData.iv);
-                            let ciphertext = CryptoJS.enc.Base64.parse(encryptedData.ciphertext);
-                            let hmac = encryptedData.hmac;
+                            let iv = CryptoJS.enc.Base64.parse(ivString);
+                            let ciphertext = CryptoJS.enc.Base64.parse(ciphertextString);
 
                             let calculatedHmac = CryptoJS.HmacSHA256(ciphertext.toString(), hmacKey).toString();
                             if (calculatedHmac !== hmac) {
@@ -278,18 +280,7 @@
                             var storedData = storage.getItem(storageKeyPrefixToUse + key);
                             if (!storedData) return defaultValue;
 
-                            try {
-                                var parsedData = JSON.parse(storedData);
-                                if (!parsedData || !parsedData.ciphertext || !parsedData.iv || !parsedData.hmac) {
-                                    storage.removeItem(storageKeyPrefixToUse + key);
-                                    return defaultValue;
-                                }
-                                return parsedData;
-                            } catch (jsonError) {
-                                console.warn("Invalid JSON in storage, removing:", key);
-                                storage.removeItem(storageKeyPrefixToUse + key);
-                                return defaultValue;
-                            }
+                            return storedData;
 
                         } catch (err) {
                             console.error("Retrieve error:", err);
@@ -302,11 +293,11 @@
                         var storage = useSessionStorage ? sessionStorage : localStorage;
                         var storageKeyPrefixToUse = useSessionStorage ? sessionKeyPrefix : localStorageKeyPrefix;
                         try {
-                            if (!data || !data.ciphertext || !data.iv || !data.hmac) {
+                            if (!data) {
                                 console.warn("Invalid data for storage:", data);
                                 return;
                             }
-                            storage.setItem(storageKeyPrefixToUse + key, JSON.stringify(data));
+                            storage.setItem(storageKeyPrefixToUse + key, data);
                         } catch (err) {
                             console.error("Store error:", err);
                         }
