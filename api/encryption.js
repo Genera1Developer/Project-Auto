@@ -141,8 +141,8 @@ const encrypt = (text) => {
             cipher.destroy();
         }
         zeroBuffer(iv);
-        zeroBuffer(encrypted);
-        zeroBuffer(authTag);
+        if(encrypted) zeroBuffer(encrypted);
+        if(authTag) zeroBuffer(authTag);
     }
 };
 
@@ -170,7 +170,7 @@ const decrypt = (text) => {
         if (decipher) {
             decipher.destroy();
         }
-        zeroBuffer(decrypted);
+        if(decrypted) zeroBuffer(decrypted);
     }
 };
 
@@ -209,8 +209,8 @@ function safeCompare(a, b) {
         console.error("Safe compare failed:", error);
         return false;
     } finally {
-        zeroBuffer(aBuf);
-        zeroBuffer(bBuf);
+        if(aBuf) zeroBuffer(aBuf);
+        if(bBuf) zeroBuffer(bBuf);
     }
 }
 
