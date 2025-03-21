@@ -249,7 +249,12 @@
                         errorDiv.textContent = 'Please enter a valid URL starting with http:// or https://';
                         return;
                     }
-                    new URL(url);
+                    try {
+                        new URL(url);
+                    } catch (_) {
+                        errorDiv.textContent = 'Please enter a valid URL.';
+                        return;
+                    }
 
                     // Generate a nonce for request tracking (example)
                     const nonce = generateNonce(16);
