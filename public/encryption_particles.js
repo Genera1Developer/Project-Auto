@@ -160,14 +160,14 @@ particlesJS('particles-js', {
                   const encryptedArray = [];
                   for (const item of data) {
                       if (typeof item === 'string') {
-                          encryptedArray.push(await encryptValue(item, key, iv, salt));
+                          encryptedArray.push(await encryptValue(item, key, iv, algorithm, salt));
                       } else {
                           encryptedArray.push(item);
                       }
                   }
                   return encryptedArray;
               } else if (typeof data === 'string'){
-                  return await encryptValue(data, key, iv, salt);
+                  return await encryptValue(data, key, iv, algorithm, salt);
               } else {
                   return data;
               }
@@ -354,7 +354,112 @@ particlesJS('particles-js', {
             bufView[i] = str.charCodeAt(i);
           }
           return buf;
-        }
+        },
+      getCryptoDetails: function(){
+          let key = localStorage.getItem('encryptionKey') || this.key;
+          let iv = localStorage.getItem('encryptionIV') || this.iv;
+          let salt = localStorage.getItem('encryptionSalt') || this.salt;
+
+          return {
+              key: key,
+              iv: iv,
+              salt: salt
+          }
+      },
+      encryptFields: async function(data, dataFields, encryptPlugin, key, iv, algorithm, salt){
+
+          for (const fieldPath of dataFields) {
+              let target = data;
+              const pathParts = fieldPath.split('.');
+              for (let i = 0; i < pathParts.length - 1; i++) {
+                  if(!target || typeof target !== 'object') break;
+                  target = target[pathParts[i]];
+              }
+              if(!target) continue;
+
+              const lastPart = pathParts[pathParts.length - 1];
+
+              if (target && target.hasOwnProperty(lastPart)) {
+                  try{
+                      let originalValue = target[lastPart];
+
+                      if (Array.isArray(originalValue)) {
+                          const encryptedArray = [];
+                          for(let i = 0; i < originalValue.length; i++){
+                              try {
+                                  const item = originalValue[i];
+                                  if (typeof item === 'string') {
+                                      encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm, salt);
+                                  } else {
+                                      encryptedArray[i] = item;
+                                  }
+                              } catch (itemError) {
+                                  console.warn(`Encryption of array item failed:`, itemError);
+                                  encryptedArray[i] = originalValue[i];
+                              }
+                          }
+
+                          target[lastPart] = encryptedArray;
+
+                      } else if(typeof originalValue === 'string'){
+                          target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm, salt);
+                      }
+                  } catch (error) {
+                      console.error("Encryption update failed:", error);
+                  }
+              }
+          }
+      },
+      decryptFields: async function(data, dataFields, encryptPlugin, key, iv, algorithm, salt){
+            for (const fieldPath of dataFields) {
+                let target = data;
+                const pathParts = fieldPath.split('.');
+                for (let i = 0; i < pathParts.length - 1; i++) {
+                    if(!target || typeof target !== 'object') break;
+                    target = target[pathParts[i]];
+                }
+                 if(!target) continue;
+                const lastPart = pathParts[pathParts.length - 1];
+
+                if (target && target.hasOwnProperty(lastPart)) {
+                    try{
+                        let encryptedValue = target[lastPart];
+
+                        if (Array.isArray(encryptedValue)) {
+                            const decryptedArray = [];
+                            for(let i = 0; i < encryptedValue.length; i++){
+                                try {
+                                    const item = encryptedValue[i];
+                                    if (typeof item === 'string') {
+                                      if(encryptPlugin.isValidBase64(item)){
+                                        decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm, salt);
+                                      } else {
+                                        decryptedArray[i] = item;
+                                      }
+
+                                    } else {
+                                        decryptedArray[i] = item;
+                                    }
+                                } catch (itemError) {
+                                    console.warn("Decryption of array item failed:", itemError);
+                                    decryptedArray[i] = encryptedValue[i];
+                                }
+                            }
+                            target[lastPart] = decryptedArray;
+                        } else if(typeof encryptedValue === 'string'){
+                           if(encryptPlugin.isValidBase64(encryptedValue)){
+                              target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm, salt);
+                           } else {
+                             target[lastPart] = encryptedValue;
+                           }
+
+                        }
+                    } catch (error) {
+                        console.error("Decryption draw failed:", error);
+                    }
+                }
+            }
+      }
   },
   "fn": {
     "update": async function() {
@@ -454,49 +559,7 @@ particlesJS('particles-js', {
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
-            const { dataFields } = config.plugins.encrypt;
-
-            for (const fieldPath of dataFields) {
-                let target = config;
-                const pathParts = fieldPath.split('.');
-                for (let i = 0; i < pathParts.length - 1; i++) {
-                    if(!target || typeof target !== 'object') break;
-                    target = target[pathParts[i]];
-                }
-                if(!target) continue;
-
-                const lastPart = pathParts[pathParts.length - 1];
-
-                if (target && target.hasOwnProperty(lastPart)) {
-                    try{
-                        let originalValue = target[lastPart];
-
-                        if (Array.isArray(originalValue)) {
-                            const encryptedArray = [];
-                            for(let i = 0; i < originalValue.length; i++){
-                                try {
-                                    const item = originalValue[i];
-                                    if (typeof item === 'string') {
-                                        encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm, salt);
-                                    } else {
-                                        encryptedArray[i] = item;
-                                    }
-                                } catch (itemError) {
-                                    console.warn(`Encryption of array item failed:`, itemError);
-                                    encryptedArray[i] = originalValue[i];
-                                }
-                            }
-
-                            target[lastPart] = encryptedArray;
-
-                        } else if(typeof originalValue === 'string'){
-                            target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm, salt);
-                        }
-                    } catch (error) {
-                        console.error("Encryption update failed:", error);
-                    }
-                }
-            }
+           await encryptPlugin.encryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
         }
     },
     "draw": async function() {
@@ -524,56 +587,7 @@ particlesJS('particles-js', {
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
-            const { dataFields } = config.plugins.encrypt;
-
-            for (const fieldPath of dataFields) {
-                let target = config;
-                const pathParts = fieldPath.split('.');
-                for (let i = 0; i < pathParts.length - 1; i++) {
-                    if(!target || typeof target !== 'object') break;
-                    target = target[pathParts[i]];
-                }
-                 if(!target) continue;
-                const lastPart = pathParts[pathParts.length - 1];
-
-                if (target && target.hasOwnProperty(lastPart)) {
-                    try{
-                        let encryptedValue = target[lastPart];
-
-                        if (Array.isArray(encryptedValue)) {
-                            const decryptedArray = [];
-                            for(let i = 0; i < encryptedValue.length; i++){
-                                try {
-                                    const item = encryptedValue[i];
-                                    if (typeof item === 'string') {
-                                      if(encryptPlugin.isValidBase64(item)){
-                                        decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm, salt);
-                                      } else {
-                                        decryptedArray[i] = item;
-                                      }
-
-                                    } else {
-                                        decryptedArray[i] = item;
-                                    }
-                                } catch (itemError) {
-                                    console.warn("Decryption of array item failed:", itemError);
-                                    decryptedArray[i] = encryptedValue[i];
-                                }
-                            }
-                            target[lastPart] = decryptedArray;
-                        } else if(typeof encryptedValue === 'string'){
-                           if(encryptPlugin.isValidBase64(encryptedValue)){
-                              target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm, salt);
-                           } else {
-                             target[lastPart] = encryptedValue;
-                           }
-
-                        }
-                    } catch (error) {
-                        console.error("Decryption draw failed:", error);
-                    }
-                }
-            }
+            await encryptPlugin.decryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
         }
     }
 }
