@@ -384,6 +384,27 @@ const hsm = {
     }
 };
 
+// Function to add a keyed hash
+async function keyedHash(data, key) {
+  const hmac = crypto.createHmac('sha512', key);
+  hmac.update(data);
+  return hmac.digest('hex');
+}
+
+// Add time-based one-time password (TOTP)
+const generateTOTP = (key, timeStep = 30) => {
+  const time = Math.floor(Date.now() / 1000 / timeStep);
+  const timeBuffer = Buffer.alloc(8);
+  timeBuffer.writeUInt32BE(0, 0);
+  timeBuffer.writeUInt32BE(time, 4);
+  const hmac = crypto.createHmac('sha512', Buffer.from(key, 'hex'));
+  hmac.update(timeBuffer);
+  const hmacResult = hmac.digest();
+  const offset = hmacResult[hmacResult.length - 1] & 0x0F;
+  const code = (hmacResult.readUInt32BE(offset) & 0x7FFFFFFF) % 1000000; // 6 digits
+  return code.toString().padStart(6, '0');
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -408,6 +429,7 @@ module.exports = async (req, res) => {
     let derivedEncryptionKey = null;
     let randomPassword = null;
     let userId = null; // Unique user identifier
+    let totpKey = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -465,6 +487,10 @@ module.exports = async (req, res) => {
       // 3. Store the encryptedUsername, encryptedSalt, and hashedPassword.
       // For demonstration, we log them. NEVER log sensitive data in production.
 
+      //Generate TOTP Key
+      totpKey = await generateEncryptionKey();
+      const totp = generateTOTP(totpKey);
+
       const userRecord = {
         userId: encryptedUserId, // Store encrypted UserId
         hashedPassword: hashedPassword,
@@ -473,7 +499,8 @@ module.exports = async (req, res) => {
         usernameHash: hashWithSHA512(randomizedSalt(username)), // Store username hash
         encryptedDerivedKey: encryptedDerivedKey,  // Store encrypted key
         derivedKeyIv: derivedKeyIv,           // Store initialization vector
-        derivedKeyAuthTag: derivedKeyAuthTag    // Store authentication tag
+        derivedKeyAuthTag: derivedKeyAuthTag,    // Store authentication tag
+        totpKey: totpKey // Store TOTP key
       };
 
       // Add Jitter before Encrypt user record
@@ -513,6 +540,9 @@ module.exports = async (req, res) => {
       const dataIntegrityKey = await generateEncryptionKey();
       const mac = await generateMAC(obfuscatedUserRecord, dataIntegrityKey);
 
+       // Generate a keyed hash of the MAC
+       const keyedHashValue = await keyedHash(mac, sessionKey);
+
       // Simulate wrapping the master key using HSM
       const wrappingKey = process.env.HSM_WRAPPING_KEY || 'defaultinsecurewrappingkey'; // Store wrapping key securely
       const wrappedMasterKey = await hsm.wrapKey(masterKey, wrappingKey);
@@ -524,7 +554,8 @@ module.exports = async (req, res) => {
       const serverMetadata = {
         wrappedMasterKey: wrappedMasterKey,
         mac: mac,
-        obfuscatedUserRecord: obfuscatedUserRecord
+        obfuscatedUserRecord: obfuscatedUserRecord,
+        keyedHash: keyedHashValue
       }
 
       const serverMetadataString = JSON.stringify(serverMetadata);
@@ -548,15 +579,18 @@ module.exports = async (req, res) => {
       secureErase(Buffer.from(sessionKey, 'utf8'));
       secureErase(Buffer.from(obfuscationKey, 'utf8'));
       secureErase(Buffer.from(dataIntegrityKey, 'utf8'));
+      secureErase(Buffer.from(totpKey, 'utf8'));
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
         console.log('Compressed Server Metadata (for demonstration only):', compressedServerMetadata);
         console.log('Message Authentication Code (MAC):', mac);
+        console.log('Keyed Hash of MAC:', keyedHashValue);
+        console.log('Generated TOTP:', totp);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
-      return res.status(201).json({ message: 'User created successfully', userId: encryptedUserId, serverMetadata: compressedServerMetadata }); // Return encrypted userId
+      return res.status(201).json({ message: 'User created successfully', userId: encryptedUserId, serverMetadata: compressedServerMetadata, totp: totp }); // Return encrypted userId
     } catch (error) {
       attempts.count++;
       if (attempts.count >= MAX_ATTEMPTS) {
