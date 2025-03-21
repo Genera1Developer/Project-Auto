@@ -81,23 +81,34 @@ function decrypt(text) {
     }
 }
 
+let timingSafeEqual = null;
+if (crypto.timingSafeEqual) {
+    timingSafeEqual = crypto.timingSafeEqual;
+} else {
+    timingSafeEqual = (a, b) => {
+        if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+            return false;
+        }
+        if (a.length !== b.length) {
+            return false;
+        }
+        let result = 0;
+        for (let i = 0; i < a.length; i++) {
+            result |= a[i] ^ b[i];
+        }
+        return result === 0;
+    };
+}
+
 function safeCompare(a, b) {
     if (typeof a !== 'string' || typeof b !== 'string') {
         return false;
     }
 
-    const maxLength = Math.max(a.length, b.length);
-    if (maxLength > 512) {
-        return false;
-    }
+    const aBuf = Buffer.from(a, 'utf8');
+    const bBuf = Buffer.from(b, 'utf8');
 
-    let result = true;
-    for (let i = 0; i < maxLength; i++) {
-        const charCodeA = a.charCodeAt(i) || 0;
-        const charCodeB = b.charCodeAt(i) || 0;
-        result &= (charCodeA === charCodeB);
-    }
-    return result;
+    return timingSafeEqual(aBuf, bBuf);
 }
 
 module.exports = {
