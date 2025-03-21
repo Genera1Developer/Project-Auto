@@ -563,7 +563,7 @@ const encryptStream = (inputStream, aad = null) => {
         throw error;  //Re-throwing here is important
     }
 
-    const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+    const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH, }); // Use autoPadding: true
 
     if (aad) {
         cipher.setAAD(Buffer.from(aad, 'utf8'));
@@ -630,7 +630,7 @@ const decryptStream = (inputStream, aad = null) => {
                         chunk = chunk.slice(IV_LENGTH + AUTH_TAG_LENGTH);
                         headerReceived = true;
 
-                        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+                        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH, }); // Use autoPadding: true
                         if (aad) {
                             decipher.setAAD(Buffer.from(aad, 'utf8'));
                         }
@@ -868,7 +868,7 @@ const encryptWithNonce = async (text, aad, nonce) => {
     let ciphertextBase64 = null;
 
     try {
-        cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH, }); // Use autoPadding: true
         if (aad) {
             cipher.setAAD(Buffer.from(aad, 'utf8'));
         }
@@ -922,7 +922,7 @@ const decryptWithNonce = async (text, aad, nonce) => {
         authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH, }); // Use autoPadding: true
         if (aad) {
             decipher.setAAD(Buffer.from(aad, 'utf8'));
         }
