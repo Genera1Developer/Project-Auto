@@ -374,6 +374,15 @@
             const combinedPasswordCiphertext = encryptedPassword.iv + encryptedPassword.ciphertext;
             const combinedCaptchaCiphertext = encryptedCaptcha.iv + encryptedCaptcha.ciphertext;
 
+            const requestBody = {
+                    username: combinedUsernameCiphertext,
+                    password: combinedPasswordCiphertext,
+                    captcha: combinedCaptchaCiphertext,
+                    salt: salt
+                };
+
+            const jsonBody = JSON.stringify(requestBody);
+
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
@@ -387,12 +396,7 @@
                     'X-Request-Version': '2.0', // Add version for future updates,
                     'X-Content-Encryption': 'AES256' // Indicate encryption
                 },
-                body: JSON.stringify({
-                    username: combinedUsernameCiphertext,
-                    password: combinedPasswordCiphertext,
-                    captcha: combinedCaptchaCiphertext,
-                    salt: salt
-                })
+                body: jsonBody
             })
             .then(response => {
                 encryptionAnimation.style.display = 'none'; // Hide animation
