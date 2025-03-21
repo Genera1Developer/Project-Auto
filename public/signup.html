@@ -194,6 +194,7 @@
             margin-top: 5px;
             text-align: left;
             word-break: break-all; /* Prevent overflow */
+            display: none; /* Hide salt display by default */
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -483,7 +484,7 @@
 
                    //Display the salt.  Important:  ONLY for testing purposes.
                    // NEVER display the salt in a production environment.
-                  saltDisplay.textContent = "Salt: " + encryptedSalt;
+                  // saltDisplay.textContent = "Salt: " + encryptedSalt;
 
                 } catch (e) {
                   encryptionAnimation.style.display = 'none';
