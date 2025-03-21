@@ -238,10 +238,10 @@
 
         // Function to generate a cryptographically secure random key
         function generateEncryptionKey() {
-            let key = localStorage.getItem('encryptionKey'); // Use localStorage for persistence
+            let key = sessionStorage.getItem('encryptionKey'); // Use sessionStorage
             if(!key){
                 key = CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
-                localStorage.setItem('encryptionKey', key); // Use localStorage for persistence
+                sessionStorage.setItem('encryptionKey', key); // Use sessionStorage
             }
             return key;
         }
@@ -346,7 +346,7 @@
             const nonce = CryptoJS.lib.WordArray.random(16).toString(); // Generate a unique nonce
 
             // Get the server's public key (replace with actual method)
-            const serverPublicKey = localStorage.getItem('serverPublicKey'); // Replace with your actual public key retrieval method
+            const serverPublicKey = sessionStorage.getItem('serverPublicKey'); // Replace with your actual public key retrieval method
 
             if (!serverPublicKey) {
                 errorMessage.textContent = 'Server public key not available. Login aborted.';
@@ -408,7 +408,7 @@
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
                     encryptionStatus.textContent = 'Login failed. Encryption in transit.';
-                    localStorage.removeItem('encryptionKey'); // Remove the key on failure
+                    sessionStorage.removeItem('encryptionKey'); // Remove the key on failure
                 }
             })
             .catch(error => {
@@ -416,7 +416,7 @@
                 console.error('Error:', error);
                 errorMessage.textContent = 'An error occurred during login.';
                 encryptionStatus.textContent = 'Connection error.';
-                localStorage.removeItem('encryptionKey'); // Remove the key on error
+                sessionStorage.removeItem('encryptionKey'); // Remove the key on error
             });
         });
 
@@ -435,14 +435,14 @@
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 // Clear sensitive data when the page is hidden
-                localStorage.removeItem('encryptionKey');
+                sessionStorage.removeItem('encryptionKey');
             }
         });
 
         // Add a beforeunload event listener
         window.addEventListener('beforeunload', function (e) {
             // Clear sensitive data before the page is unloaded
-            localStorage.removeItem('encryptionKey');
+            sessionStorage.removeItem('encryptionKey');
         });
 
     </script>
