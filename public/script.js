@@ -456,31 +456,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Use more secure key derivation
     async function deriveKeyMaterial(salt) {
-        const password = await generateKey(salt);
+        try {
+            const password = await generateKey(salt);
 
-        const enc = new TextEncoder();
-        const keyMaterial = await window.crypto.subtle.importKey(
-            "raw",
-            enc.encode(password),
-            { name: "PBKDF2" },
-            false,
-            ["deriveKey", "deriveBits"]
-        );
+            const enc = new TextEncoder();
+            const keyMaterial = await window.crypto.subtle.importKey(
+                "raw",
+                enc.encode(password),
+                { name: "PBKDF2" },
+                false,
+                ["deriveKey", "deriveBits"]
+            );
 
-        const key = await window.crypto.subtle.deriveKey(
-            {
-                name: "PBKDF2",
-                salt: enc.encode(salt),
-                iterations: 100000,
-                hash: "SHA-256"
-            },
-            keyMaterial,
-            { name: "AES-CBC", length: 256 },
-            true,
-            ["encrypt", "decrypt"]
-        );
+            const key = await window.crypto.subtle.deriveKey(
+                {
+                    name: "PBKDF2",
+                    salt: enc.encode(salt),
+                    iterations: 100000,
+                    hash: "SHA-256"
+                },
+                keyMaterial,
+                { name: "AES-CBC", length: 256 },
+                true,
+                ["encrypt", "decrypt"]
+            );
 
-        return key;
+            return key;
+        } catch (error) {
+            console.error("Key derivation error:", error);
+            showAlert('Key derivation failed. Secure login disabled.', 'error');
+            throw new Error("Key derivation failed: " + error.message);
+        }
     }
 
     // Replace generateKey and generateIV with key derivation
@@ -559,6 +565,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('mousemove', resetTimeout);
     document.addEventListener('keydown', resetTimeout);
     document.addEventListener('click', resetTimeout);
+    document.addEventListener('touchstart', resetTimeout); // Add touchstart event
+    document.addEventListener('wheel', resetTimeout);        // Add wheel event
 
     // Check if the user has disabled localStorage
     function localStorageAvailable() {
