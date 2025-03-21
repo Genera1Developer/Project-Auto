@@ -271,6 +271,9 @@
                     const hashedKey = await hashKey(keyHex);
                     console.log("Hashed Key:", hashedKey); // Log the hashed key
 
+                    // Store key in session storage *before* passing parameters
+                    sessionStorage.setItem('aesKey', keyHex);
+
                     // Construct the URL with encrypted parameters.  Send IV.
                     const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(ciphertext)}&iv=${encodeURIComponent(iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}`;
 
@@ -289,7 +292,7 @@
                      // Potentially store the nonce in local storage or a cookie
                      // localStorage.setItem('lastRequestNonce', nonce); //Example
                      // Consider using sessionStorage to store the key temporarily
-                    sessionStorage.setItem('hashedKey', hashedKey);
+                     //sessionStorage.setItem('hashedKey', hashedKey);
 
                      // Set a timeout to prevent indefinite loading
                     setTimeout(() => {
@@ -302,7 +305,7 @@
 
                      //Clear sensitive information from sessionStorage after a delay.
                     setTimeout(() => {
-                        sessionStorage.removeItem('hashedKey'); //Remove the hashedKey
+                        sessionStorage.removeItem('aesKey'); //Remove the hashedKey
                     }, 60000); //Clear after 60 seconds
 
                 } catch (e) {
