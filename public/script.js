@@ -568,17 +568,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (usernameField) {
         usernameField.autocomplete = 'off';
-        usernameField.readOnly = false; // Prevent autofill
+        usernameField.readOnly = true; // Prevent autofill
     }
 
     if (passwordField) {
         passwordField.autocomplete = 'new-password';
-        passwordField.readOnly = false; // Prevent autofill
+        passwordField.readOnly = true; // Prevent autofill
     }
 
     if (captchaField) {
         captchaField.autocomplete = 'off';
-        captchaField.readOnly = false; // Prevent autofill
+        captchaField.readOnly = true; // Prevent autofill
     }
 
      // Replace base64 with URL-safe base64
