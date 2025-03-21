@@ -222,7 +222,7 @@
           "hkdf": {
             "enable": true,
             "hashAlgorithm": "SHA256",
-            "salt": "ENC_HKDF_SALT_PLACEHOLDER",
+            "salt": "ENC_HKDF_PLACEHOLDER",
             "info": "particles-config",
             "length": 32
           }
