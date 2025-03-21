@@ -384,6 +384,37 @@
                         }
                     };
 
+                     var firstColor = getRandomHexColor();
+                     var firstStrokeColor = getRandomHexColor();
+                     var firstLinkColor = getRandomHexColor();
+
+                     var firstColorData = {
+                         color: firstColor,
+                         strokeColor: firstStrokeColor
+                     };
+                     var firstLinkedColorData = {
+                         linkColor: firstLinkColor
+                     };
+
+                    var colorDataToEncrypt = Object.assign({}, firstColorData, {
+                        timestamp: Date.now()
+                    });
+                    var linkedColorDataToEncrypt = Object.assign({}, firstLinkedColorData, {
+                        timestamp: Date.now()
+                    });
+
+                    var colorSecret = generateKey(firstColor);
+                    encryptedColorData = encryptData(colorDataToEncrypt, colorSecret);
+                    storeEncryptedData("colorData", encryptedColorData);
+
+                    var linkedColorSecret = generateKey(firstLinkColor);
+                    encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, linkedColorSecret);
+                    storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
+
+                    decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
+                    decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
+                    updateColors(decryptedColorData, decryptedLinkedColorData);
+
                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
 
                 } catch (cryptoUpdateError) {
