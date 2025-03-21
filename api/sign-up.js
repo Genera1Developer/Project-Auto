@@ -265,6 +265,20 @@ function randomizedSalt(input) {
   return randomPrefix + input + randomSuffix;
 }
 
+// Function to encrypt a value with SHA-512 algorithm
+function hashWithSHA512(value) {
+    const hash = crypto.createHash('sha512');
+    hash.update(value);
+    return hash.digest('hex');
+}
+
+// Function to add a random padding
+function addRandomPadding(data, minPaddingLength = 8, maxPaddingLength = 32) {
+    const paddingLength = Math.floor(Math.random() * (maxPaddingLength - minPaddingLength + 1)) + minPaddingLength;
+    const padding = crypto.randomBytes(paddingLength).toString('hex');
+    return data + padding;
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -338,7 +352,7 @@ module.exports = async (req, res) => {
         hashedPassword: hashedPassword,
         encryptedUsername: encryptedUsername,
         encryptedSalt: encryptedSalt,
-        usernameHash: hashWithSHA384(username), // Store username hash
+        usernameHash: hashWithSHA512(randomizedSalt(username)), // Store username hash
         encryptedDerivedKey: encryptedDerivedKey,  // Store encrypted key
         derivedKeyIv: derivedKeyIv,           // Store initialization vector
         derivedKeyAuthTag: derivedKeyAuthTag    // Store authentication tag
@@ -352,6 +366,9 @@ module.exports = async (req, res) => {
       // Apply an extra layer of encryption with Chacha20
       const chachaNonce = await generateNonce();
       const doubleEncryptedUserRecord = await chachaEncrypt(JSON.stringify(encryptedUserRecord), masterKey, chachaNonce);
+
+      // Add Random Padding
+      const paddedEncryptedUserRecord = addRandomPadding(doubleEncryptedUserRecord);
 
       // Store doubleEncryptedUserRecord (instead of userRecord)
       // ...
@@ -372,7 +389,7 @@ module.exports = async (req, res) => {
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
-        console.log('User record (for demonstration only):', doubleEncryptedUserRecord);
+        console.log('User record (for demonstration only):', paddedEncryptedUserRecord);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
