@@ -185,76 +185,79 @@
                     var localStorageKeyPrefix = "particlesJS_";
                     var sessionKeyPrefix = "sessionParticlesJS_";
                     var encryptionRounds = 3;
+                    var colorUpdateInterval = 5000;
+                    var useSessionStorage = false;
 
                     var generateKey = function(seed, salt, rounds) {
-                      var keyMaterial = seed + salt;
-                      var derivedKey = keyMaterial;
-                      for (var i = 0; i < rounds; i++) {
+                      let keyMaterial = seed + salt;
+                      let derivedKey = keyMaterial;
+                      for (let i = 0; i < rounds; i++) {
                         derivedKey = CryptoJS.SHA256(derivedKey).toString();
                       }
                       return derivedKey;
                     };
 
                     var encryptData = function(data, secret) {
-                      try {
-                        var iv = CryptoJS.lib.WordArray.random(128/8);
-                        var salt = CryptoJS.lib.WordArray.random(128/8);
+                        try {
+                            let iv = CryptoJS.lib.WordArray.random(128 / 8);
+                            let salt = CryptoJS.lib.WordArray.random(128 / 8);
 
-                        var encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), secret, {
-                            iv: iv,
-                            mode: CryptoJS.mode.CBC,
-                            padding: CryptoJS.pad.Pkcs7,
-                            salt: salt
-                        });
-                        return {
-                            ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
-                            iv: iv.toString(CryptoJS.enc.Hex),
-                            salt: salt.toString(CryptoJS.enc.Hex)
-                        };
-                      } catch (err) {
-                        console.error("Encrypt error:", err);
-                        return null;
-                      }
+                            let encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), secret, {
+                                iv: iv,
+                                mode: CryptoJS.mode.CBC,
+                                padding: CryptoJS.pad.Pkcs7,
+                                salt: salt
+                            });
+                            return {
+                                ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
+                                iv: iv.toString(CryptoJS.enc.Hex),
+                                salt: salt.toString(CryptoJS.enc.Hex)
+                            };
+                        } catch (err) {
+                            console.error("Encrypt error:", err);
+                            return null;
+                        }
                     };
 
                     var decryptData = function(encryptedData, secret) {
-                      try {
-                        var iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
-                        var salt = CryptoJS.enc.Hex.parse(encryptedData.salt);
+                        try {
+                            let iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
+                            let salt = CryptoJS.enc.Hex.parse(encryptedData.salt);
 
-                        var decrypted = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext) }, secret, {
-                            iv: iv,
-                            mode: CryptoJS.mode.CBC,
-                            padding: CryptoJS.pad.Pkcs7,
-                            salt: salt
-                        });
+                            let decrypted = CryptoJS.AES.decrypt({
+                                ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext)
+                            }, secret, {
+                                iv: iv,
+                                mode: CryptoJS.mode.CBC,
+                                padding: CryptoJS.pad.Pkcs7,
+                                salt: salt
+                            });
 
-                        var decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
-                        return decryptedText ? JSON.parse(decryptedText) : null;
-                      } catch (err) {
-                        console.error("Decrypt error:", err);
-                        return null;
-                      }
+                            let decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+                            return decryptedText ? JSON.parse(decryptedText) : null;
+                        } catch (err) {
+                            console.error("Decrypt error:", err);
+                            return null;
+                        }
                     };
 
                     var updateColors = function(decryptedColorData, decryptedLinkedColorData) {
-                      try {
-                        if (decryptedColorData) {
-                          if(e.particles.color) e.particles.color.value = "#" + decryptedColorData.color;
-                          if (e.particles.shape && e.particles.shape.stroke) {
-                            e.particles.shape.stroke.color = "#" + decryptedColorData.strokeColor;
-                          }
+                        try {
+                            if (decryptedColorData && e.particles.color) {
+                                e.particles.color.value = "#" + decryptedColorData.color;
+                                if (e.particles.shape && e.particles.shape.stroke) {
+                                    e.particles.shape.stroke.color = "#" + decryptedColorData.strokeColor;
+                                }
+                            }
+                            if (decryptedLinkedColorData && e.particles.line_linked) {
+                                e.particles.line_linked.color = "#" + decryptedLinkedColorData.linkColor;
+                            }
+                        } catch (updateColorsError) {
+                            console.error("Color Update Error:", updateColorsError);
                         }
-                        if (decryptedLinkedColorData) {
-                          if (e.particles.line_linked) {
-                            e.particles.line_linked.color = "#" + decryptedLinkedColorData.linkColor;
-                          }
-                        }
-                      } catch (updateColorsError) {
-                        console.error("Color Update Error:", updateColorsError);
-                      }
                     };
-                    var retrieveEncryptedData = function(key, defaultValue, useSessionStorage) {
+
+                    var retrieveEncryptedData = function(key, defaultValue) {
                         var storage = useSessionStorage ? sessionStorage : localStorage;
                         var storageKeyPrefixToUse = useSessionStorage ? sessionKeyPrefix : localStorageKeyPrefix;
                         try {
@@ -262,16 +265,16 @@
                             if (!storedData) return defaultValue;
 
                             try {
-                              var parsedData = JSON.parse(storedData);
-                              if (!parsedData || !parsedData.ciphertext || !parsedData.iv || !parsedData.salt) {
+                                var parsedData = JSON.parse(storedData);
+                                if (!parsedData || !parsedData.ciphertext || !parsedData.iv || !parsedData.salt) {
+                                    storage.removeItem(storageKeyPrefixToUse + key);
+                                    return defaultValue;
+                                }
+                                return parsedData;
+                            } catch (jsonError) {
+                                console.warn("Invalid JSON in storage, removing:", key);
                                 storage.removeItem(storageKeyPrefixToUse + key);
                                 return defaultValue;
-                              }
-                              return parsedData;
-                            } catch (jsonError) {
-                              console.warn("Invalid JSON in storage, removing:", key);
-                              storage.removeItem(storageKeyPrefixToUse + key);
-                              return defaultValue;
                             }
 
                         } catch (err) {
@@ -280,14 +283,15 @@
                             return defaultValue;
                         }
                     };
-                    var storeEncryptedData = function(key, data, useSessionStorage) {
+
+                    var storeEncryptedData = function(key, data) {
                         var storage = useSessionStorage ? sessionStorage : localStorage;
                         var storageKeyPrefixToUse = useSessionStorage ? sessionKeyPrefix : localStorageKeyPrefix;
                         try {
-                           if (!data || !data.ciphertext || !data.iv || !data.salt) {
-                              console.warn("Invalid data for storage:", data);
-                              return;
-                           }
+                            if (!data || !data.ciphertext || !data.iv || !data.salt) {
+                                console.warn("Invalid data for storage:", data);
+                                return;
+                            }
                             storage.setItem(storageKeyPrefixToUse + key, JSON.stringify(data));
                         } catch (err) {
                             console.error("Store error:", err);
@@ -295,16 +299,21 @@
                     };
 
                     var getRandomHexColor = function() {
-                      return Math.floor(Math.random()*16777215).toString(16);
+                        return Math.floor(Math.random() * 16777215).toString(16);
                     };
 
-                    var colorData = { color: initialColorSeed, strokeColor: initialColorSeed };
-                    var linkedColorData = { linkColor: initialLinkedColorSeed };
+                    var colorData = {
+                        color: initialColorSeed,
+                        strokeColor: initialColorSeed
+                    };
+                    var linkedColorData = {
+                        linkColor: initialLinkedColorSeed
+                    };
 
-                    var colorSalt = localStorage.getItem(localStorageKeyPrefix + "colorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
+                    var colorSalt = localStorage.getItem(localStorageKeyPrefix + "colorSalt") || CryptoJS.lib.WordArray.random(128 / 8).toString();
                     localStorage.setItem(localStorageKeyPrefix + "colorSalt", colorSalt);
 
-                    var linkedColorSalt = localStorage.getItem(localStorageKeyPrefix + "linkedColorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
+                    var linkedColorSalt = localStorage.getItem(localStorageKeyPrefix + "linkedColorSalt") || CryptoJS.lib.WordArray.random(128 / 8).toString();
                     localStorage.setItem(localStorageKeyPrefix + "linkedColorSalt", linkedColorSalt);
 
                     var colorSecret = generateKey("color_secret", colorSalt, encryptionRounds);
@@ -315,20 +324,17 @@
                     var encryptedColorData = storedColorData || encryptData(colorData, colorSecret);
                     var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
 
-
                     var decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
                     var decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
 
                     updateColors(decryptedColorData, decryptedLinkedColorData);
 
-                    var colorUpdateInterval = 5000;
-
                     var updateColorsAndSchedule = function() {
                         try {
-                            var newColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                            var newColorSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
                             localStorage.setItem(localStorageKeyPrefix + "colorSalt", newColorSalt);
 
-                            var newLinkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                            var newLinkedColorSalt = CryptoJS.lib.WordArray.random(128 / 8).toString();
                             localStorage.setItem(localStorageKeyPrefix + "linkedColorSalt", newLinkedColorSalt);
 
                             var newColorSecret = generateKey("color_secret", newColorSalt, encryptionRounds);
@@ -338,27 +344,36 @@
                             var newStrokeColor = getRandomHexColor();
                             var newLinkColor = getRandomHexColor();
 
-                             var newColorData = { color: newColor, strokeColor: newStrokeColor };
-                             var newLinkedColorData = { linkColor: newLinkColor };
+                            var newColorData = {
+                                color: newColor,
+                                strokeColor: newStrokeColor
+                            };
+                            var newLinkedColorData = {
+                                linkColor: newLinkColor
+                            };
 
-                             var colorDataToEncrypt = Object.assign({}, newColorData, { timestamp: Date.now() });
-                             var linkedColorDataToEncrypt = Object.assign({}, newLinkedColorData, { timestamp: Date.now() });
+                            var colorDataToEncrypt = Object.assign({}, newColorData, {
+                                timestamp: Date.now()
+                            });
+                            var linkedColorDataToEncrypt = Object.assign({}, newLinkedColorData, {
+                                timestamp: Date.now()
+                            });
 
-                             encryptedColorData = encryptData(colorDataToEncrypt, newColorSecret);
-                             storeEncryptedData("colorData", encryptedColorData);
+                            encryptedColorData = encryptData(colorDataToEncrypt, newColorSecret);
+                            storeEncryptedData("colorData", encryptedColorData);
 
-                             encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, newLinkedColorSecret);
-                             storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
+                            encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, newLinkedColorSecret);
+                            storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
 
                             decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, newColorSecret) : null;
                             decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, newLinkedColorSecret) : null;
 
-                            if(decryptedColorData && decryptedLinkedColorData){
-                              updateColors(decryptedColorData, decryptedLinkedColorData);
+                            if (decryptedColorData && decryptedLinkedColorData) {
+                                updateColors(decryptedColorData, decryptedLinkedColorData);
                             } else {
                                 console.warn("Decryption failed, using previous color data");
-                                if(decryptedColorData) updateColors(decryptedColorData, null);
-                                if(decryptedLinkedColorData) updateColors(null, decryptedLinkedColorData);
+                                if (decryptedColorData) updateColors(decryptedColorData, null);
+                                if (decryptedLinkedColorData) updateColors(null, decryptedLinkedColorData);
                             }
 
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
@@ -369,11 +384,11 @@
                         }
                     };
 
-                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
+                    setTimeout(updateColorsAndSchedule, colorUpdateInterval);
 
-                 } catch (cryptoUpdateError) {
+                } catch (cryptoUpdateError) {
                     console.error("CryptoJS Update Error:", cryptoUpdateError);
-                 }
+                }
                 loadParticles();
             }
         };
