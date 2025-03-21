@@ -154,6 +154,7 @@
             const KEY_STORAGE_DURATION = 300000; // 5 minutes in milliseconds
             const LOAD_TIMEOUT = 30000; // 30 seconds
             const IV_LENGTH = 12; // Standard IV length for AES-GCM
+            const SALT_LENGTH = 16; // Recommended salt length
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
