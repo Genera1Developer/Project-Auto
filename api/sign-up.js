@@ -225,6 +225,13 @@ async function chachaDecrypt(encryptedData, key, nonce) {
   }
 }
 
+// Function to hash a value with SHA-384 algorithm
+function hashWithSHA384(value) {
+    const hash = crypto.createHash('sha384');
+    hash.update(value);
+    return hash.digest('hex');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -292,7 +299,7 @@ module.exports = async (req, res) => {
         hashedPassword: hashedPassword,
         encryptedUsername: encryptedUsername,
         encryptedSalt: encryptedSalt,
-        usernameHash: crypto.createHash('sha256').update(username).digest('hex'), // Store username hash
+        usernameHash: hashWithSHA384(username), // Store username hash
       };
 
       // Encrypt entire user record before storage using master key
