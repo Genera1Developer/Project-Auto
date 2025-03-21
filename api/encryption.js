@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const stream = require('stream');
 
 const algorithm = 'aes-256-gcm';
 let key = null;
@@ -77,6 +78,7 @@ function setEncryptionKey(newKey) {
     }
     if(key){
         zeroBuffer(key);
+        key = null;
     }
     key = Buffer.from(newKey);
     keyGenerated = true;
@@ -94,6 +96,7 @@ function generateEncryptionKey() {
         const newKey = crypto.generateKeySync('aes', { length: 256 });
         if(key){
             zeroBuffer(key);
+            key = null;
         }
         key = newKey;
         keyGenerated = true;
@@ -217,6 +220,7 @@ function rotateKey() {
     keyDerivationUsed = false; // Reset key derivation flag on rotation
     if(key){
         zeroBuffer(key);
+        key = null;
     }
     ivMap.delete(key); // Clear IV map on key rotation
     cipherMap.delete(key); // Clear cipher map on key rotation
@@ -506,9 +510,10 @@ const encryptStream = (inputStream, aad = null) => {
     if (aad) {
         cipher.setAAD(Buffer.from(aad, 'utf8'));
     }
-
     const authTag = cipher.getAuthTag();
-    const transformStream = new require('stream').Transform({
+
+    const prepend = Buffer.concat([iv, authTag]);
+    const transformStream = new stream.Transform({
         transform(chunk, encoding, callback) {
             try{
                 const encryptedChunk = cipher.update(chunk);
@@ -519,33 +524,42 @@ const encryptStream = (inputStream, aad = null) => {
         },
         flush(callback) {
             try {
-                const finalChunk = cipher.final();
-                callback(null, finalChunk);
+                 const finalChunk = cipher.final();
+                 callback(null, finalChunk);
+
             } catch (error){
                 callback(error);
             }
         }
     });
 
-    const ivAuthTagHeader = Buffer.concat([iv, authTag]);
-    const combinedStream = new require('stream').PassThrough();
-    combinedStream.write(ivAuthTagHeader);
-    inputStream.pipe(cipher).pipe(combinedStream);
+    // Create a PassThrough stream to prepend IV and AuthTag
+    const prependStream = new stream.PassThrough();
+    prependStream.write(prepend);
 
-    return combinedStream;
+    // Chain the streams together
+    inputStream.pipe(transformStream).pipe(prependStream, { end: false });
+
+    // Signal end of prependStream after transformStream completes
+    transformStream.on('end', () => {
+        prependStream.end();
+    });
+
+    return prependStream;
 };
 
 // Function to directly decrypt a stream
 const decryptStream = (inputStream, aad = null) => {
-    if (!key) {
+   if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
     let iv = null;
     let authTag = null;
     let headerReceived = false;
+    let decipher = null;
 
-    const transformStream = new require('stream').Transform({
+    const transformStream = new stream.Transform({
         transform(chunk, encoding, callback) {
             try {
                 if (!headerReceived) {
@@ -556,6 +570,12 @@ const decryptStream = (inputStream, aad = null) => {
                         authTag = chunk.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
                         chunk = chunk.slice(IV_LENGTH + AUTH_TAG_LENGTH);
                         headerReceived = true;
+
+                        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+                        if (aad) {
+                            decipher.setAAD(Buffer.from(aad, 'utf8'));
+                        }
+                        decipher.setAuthTag(authTag);
                     } else {
                         return callback(null, null);
                     }
@@ -564,11 +584,6 @@ const decryptStream = (inputStream, aad = null) => {
                     }
                 }
 
-                const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-                if (aad) {
-                    decipher.setAAD(Buffer.from(aad, 'utf8'));
-                }
-                decipher.setAuthTag(authTag);
                 const decryptedChunk = decipher.update(chunk);
                 callback(null, decryptedChunk);
 
@@ -578,18 +593,13 @@ const decryptStream = (inputStream, aad = null) => {
         },
         flush(callback) {
             try {
-                const finalChunk = this.decipher ? this.decipher.final() : Buffer.alloc(0);
+                const finalChunk = decipher ? decipher.final() : Buffer.alloc(0);
                 callback(null, finalChunk);
             } catch (error) {
                 callback(error);
             }
         }
     });
-    const decipher = crypto.createDecipheriv(algorithm, key, Buffer.alloc(IV_LENGTH), { authTagLength: AUTH_TAG_LENGTH });
-    transformStream.decipher = decipher;
-    if (aad) {
-        transformStream.decipher.setAAD(Buffer.from(aad, 'utf8'));
-    }
     inputStream.pipe(transformStream);
 
     return transformStream;
