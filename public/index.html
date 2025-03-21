@@ -224,6 +224,17 @@
                 errorDiv.textContent = 'An unexpected error occurred. Please try again.';
             }
 
+            // Function to check if the user is using HTTPS
+            function isSecureContext() {
+                return window.isSecureContext;
+            }
+
+            // Warn the user if they are not using HTTPS
+            if (!isSecureContext()) {
+                errorDiv.textContent = "Warning: You are not using a secure (HTTPS) connection. Encryption may not be fully effective.";
+                errorDiv.style.color = '#ff9800'; // Amber color
+            }
+
 
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
