@@ -502,6 +502,51 @@
           "minWait": 300,
           "maxWait": 3600,
           "lifetime": 600
-        }
+        },
+        "sessionKeyRotation": {
+            "enable": true,
+            "interval": 1800
+        },
+        "keyWrap": {
+            "enable": true,
+            "algorithm": "RSA-OAEP",
+            "publicKey": "ENC_PUBLIC_KEY_PLACEHOLDER",
+            "privateKey": "ENC_PRIVATE_KEY_PLACEHOLDER",
+            "adataWrap": true,
+            "hmacWrap": true,
+            "paddingScheme": "OAEP-SHA256",
+             "mgf1HashAlgorithm": "SHA256",
+             "oaepHashAlgorithm": "SHA256",
+              "sessionKeyCache": {
+                  "enable": true,
+                  "ttl": 3600
+              },
+              "sessionKeyCompression": {
+                "enable": true,
+                "algorithm": "zlib",
+                "level": 6
+              }
+          },
+       "cacheIntegrityAlgorithm": "SHA256",
+        "keyWrappingAlgorithm": "ECDH-ES+A256KW",
+        "keyWrappingPublicKey": "ENC_KEY_WRAPPING_PUBLIC_KEY_PLACEHOLDER",
+        "keyWrappingPrivateKey": "ENC_KEY_WRAPPING_PRIVATE_KEY_PLACEHOLDER",
+        "keyWrappingSalt": "ENC_KEY_WRAPPING_SALT_PLACEHOLDER",
+        "keyWrappingIterations": 5000,
+        "keyWrappingEncoding": "base64",
+        "cacheKeyRotation":{
+          "enable": true,
+          "interval": 21600,
+          "jitter": 0.1,
+          "keyCacheRotation": true,
+          "adataCacheRotation": true,
+          "hmacCacheRotation": true
+        },
+        "adataKeyWrapping": true,
+        "hmacKeyWrapping": true,
+        "cacheKeyDerivationRounds": 3,
+        "cacheAdataDerivationRounds": 3,
+        "cacheHmacDerivationRounds": 3,
+        "keyExchangeAlgorithm": "Curve25519"
   }
 }
