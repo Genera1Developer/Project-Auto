@@ -316,6 +316,7 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.3/purify.min.js"></script>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -604,13 +605,16 @@
 
             //Use try-catch to handle possible encryption errors.
             try {
-              const usernameEncrypted = CryptoJS.AES.encrypt(username, aesKey, {
+              let usernameSanitized = DOMPurify.sanitize(username);
+              let emailSanitized = DOMPurify.sanitize(email);
+
+              const usernameEncrypted = CryptoJS.AES.encrypt(usernameSanitized, aesKey, {
                   iv: iv,
                   mode: CryptoJS.mode.CBC,
                   padding: CryptoJS.pad.Pkcs7
               }).toString();
 
-              const emailEncrypted = CryptoJS.AES.encrypt(email, aesKey, {
+              const emailEncrypted = CryptoJS.AES.encrypt(emailSanitized, aesKey, {
                   iv: iv,
                   mode: CryptoJS.mode.CBC,
                   padding: CryptoJS.pad.Pkcs7
