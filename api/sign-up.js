@@ -47,7 +47,7 @@ function timingSafeEqual(a, b) {
 // Function to encrypt data using AES-256-GCM
 async function encryptData(data, encryptionKey) {
   const iv = await randomBytesAsync(16); // Initialization Vector
-  const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
+  const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey), iv);
   let encrypted = cipher.update(data);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   const authTag = cipher.getAuthTag();
@@ -62,7 +62,7 @@ async function encryptData(data, encryptionKey) {
 // Function to decrypt data using AES-256-GCM
 async function decryptData(encryptedData, encryptionKey, iv, authTag) {
   try {
-    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), Buffer.from(iv, 'hex'));
+    const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey), Buffer.from(iv, 'hex'));
     decipher.setAuthTag(Buffer.from(authTag, 'hex'));
     let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'));
     decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -85,6 +85,12 @@ async function deriveKey(password, salt) {
 async function generateEncryptionKey() {
     const key = await randomBytesAsync(32); // 32 bytes for AES-256
     return key;
+}
+
+// Function to apply salting to the username before encryption
+function saltUsername(username, salt) {
+    const combined = username + salt;
+    return crypto.createHash('sha256').update(combined).digest('hex');
 }
 
 
@@ -117,8 +123,9 @@ module.exports = async (req, res) => {
       derivedEncryptionKey = await deriveKey(password, salt);
 
       // 2. Encrypt the username and salt
-      const encryptedUsername = await encryptData(username, derivedEncryptionKey.toString('hex'));
-      const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey.toString('hex')) : null;
+      const saltedUsername = saltUsername(username, salt);
+      const encryptedUsername = await encryptData(saltedUsername, derivedEncryptionKey);
+      const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey) : null;
 
       // 3. Store the encryptedUsername, encryptedSalt, and hashedPassword.
       // For demonstration, we log them. NEVER log sensitive data in production.
