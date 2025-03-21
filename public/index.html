@@ -115,6 +115,7 @@
             const loadingDiv = document.getElementById('loading');
             const proxyFrame = document.getElementById('proxyFrame');
             const HASH_ITERATIONS = 100000; // Define constant for iterations
+            const NONCE_LENGTH = 16; // Define constant for nonce length
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -280,7 +281,7 @@
                     }
 
                     // Generate a nonce for request tracking (example)
-                    const nonce = generateNonce(16);
+                    const nonce = generateNonce(NONCE_LENGTH);
                     console.log("Request Nonce:", nonce); // Log nonce for debugging
 
                     // Generate an AES Key
