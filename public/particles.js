@@ -170,8 +170,11 @@
                 document.head.appendChild(script);
             } else {
                 try {
-                    var colorValue = CryptoJS.MD5("f5c3bb").toString().substring(0, 6);
-                    var linkedColorValue = CryptoJS.MD5("9b59b6").toString().substring(0, 6);
+                    var initialColorSeed = "f5c3bb";
+                    var initialLinkedColorSeed = "9b59b6";
+
+                    var colorValue = CryptoJS.MD5(initialColorSeed).toString().substring(0, 6);
+                    var linkedColorValue = CryptoJS.MD5(initialLinkedColorSeed).toString().substring(0, 6);
 
                     var updateColors = function(color, linkedColor) {
                         e.particles.color.value = "#" + color;
@@ -190,12 +193,12 @@
                     var updateColorsAndSchedule = function() {
                         try {
                              var salt = CryptoJS.lib.WordArray.random(16).toString();
-                             var keyMaterial = "f5c3bb" + Date.now() + salt;
+                             var keyMaterial = initialColorSeed + Date.now() + salt;
                              var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
                              colorValue = derivedKey.substring(0, 6);
 
                              salt = CryptoJS.lib.WordArray.random(16).toString();
-                             keyMaterial = "9b59b6" + Date.now() + salt;
+                             keyMaterial = initialLinkedColorSeed + Date.now() + salt;
                              derivedKey = CryptoJS.SHA256(keyMaterial).toString();
                              linkedColorValue = derivedKey.substring(0, 6);
                              updateColors(colorValue, linkedColorValue);
