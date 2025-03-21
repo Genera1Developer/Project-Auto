@@ -156,6 +156,7 @@
             const IV_LENGTH = 12; // Standard IV length for AES-GCM
             const SALT_LENGTH = 16; // Recommended salt length
             const PROXY_URL = '/api/proxy';
+            const KEY_EXPIRY_CHECK_INTERVAL = 60000; // 60 seconds
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -420,18 +421,6 @@
                         clearSensitiveData();
                     }, KEY_STORAGE_DURATION); //Clear after 5 minutes
 
-                    // Event listener for iframe load completion (or failure) - REMOVED
-                    // proxyFrame.onload = () => {
-                    //   clearTimeout(timeoutId); // Clear the timeout
-                    //   loadingDiv.style.display = 'none'; // Hide loading
-                    // };
-
-                    // proxyFrame.onerror = () => { - REMOVED
-                    //     clearTimeout(timeoutId);
-                    //     loadingDiv.style.display = 'none';
-                    //     errorDiv.textContent = 'Failed to load the page within the iframe.';
-                    // };
-
                 } catch (e) {
                     handleErrors(e); // Use the error handling function
                 } finally {
@@ -458,7 +447,7 @@
                         sessionStorage.removeItem('aesKeyTimestamp');
                     }
                 }
-            }, 60000); // Check every 60 seconds
+            }, KEY_EXPIRY_CHECK_INTERVAL);
 
 
         });
