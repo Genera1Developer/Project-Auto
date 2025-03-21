@@ -309,6 +309,14 @@ particlesJS('particles-js', {
             } catch (e) {
                 return false;
             }
+        },
+        stringToUint8Array: function(str) {
+          const enc = new TextEncoder();
+          return enc.encode(str);
+        },
+        uint8ArrayToString: function(arr) {
+          const dec = new TextDecoder();
+          return dec.decode(arr);
         }
   },
   "fn": {
