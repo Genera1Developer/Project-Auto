@@ -84,7 +84,9 @@ const encryptSession = (sessionData, encryptionKey) => {
     try {
         const iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
-        let encrypted = cipher.update(JSON.stringify(sessionData));
+        const sessionString = JSON.stringify(sessionData);
+        const cipherText = Buffer.from(sessionString, 'utf8');
+        let encrypted = cipher.update(cipherText);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
         return Buffer.concat([iv, authTag, encrypted]).toString('hex');
@@ -105,7 +107,7 @@ const decryptSession = (encryptedSession, encryptionKey) => {
         decipher.setAuthTag(authTag);
         let decrypted = decipher.update(encryptedData);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
-        return JSON.parse(decrypted.toString());
+        return JSON.parse(decrypted.toString('utf8'));
     } catch (error) {
         console.error('Session decryption error:', error);
         return null;
