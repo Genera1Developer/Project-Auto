@@ -106,37 +106,6 @@ function decrypt(encryptedData, iv, authTag) {
     }
 }
 
-const encryptData = (data) => {
-    try {
-        const iv = crypto.randomBytes(ivLength);
-        const { encryptedData, authTag } = encrypt(data, iv);
-        return {
-            encryptedData: encryptedData.toString('hex'),
-            iv: iv.toString('hex'),
-            authTag: authTag.toString('hex')
-        };
-    } catch (error) {
-        console.error("Encryption error:", error);
-        return null;
-    }
-};
-
-const decryptData = (encryptedDataHex, ivHex, authTagHex) => {
-    if (!encryptedDataHex || !ivHex || !authTagHex) {
-        return null;
-    }
-
-    try {
-        const encryptedData = Buffer.from(encryptedDataHex, 'hex');
-        const iv = Buffer.from(ivHex, 'hex');
-        const authTag = Buffer.from(authTagHex, 'hex');
-        return decrypt(encryptedData, iv, authTag);
-    } catch (error) {
-        console.error("Decryption error:", error);
-        return null;
-    }
-};
-
 const encryptSensitiveData = (data) => {
     try {
         const iv = crypto.randomBytes(ivLength);
@@ -152,7 +121,7 @@ const encryptSensitiveData = (data) => {
     }
 };
 
-const decryptSensitiveData = (ivB64, authTagB64,encryptedDataB64) => {
+const decryptSensitiveData = (ivB64, authTagB64, encryptedDataB64) => {
     if (!encryptedDataB64 || !ivB64 || !authTagB64) {
         return null;
     }
@@ -162,38 +131,6 @@ const decryptSensitiveData = (ivB64, authTagB64,encryptedDataB64) => {
         const iv = Buffer.from(ivB64, 'base64');
         const authTag = Buffer.from(authTagB64, 'base64');
         return decrypt(encryptedData, iv, authTag);
-    } catch (error) {
-        console.error("Decryption error:", error);
-        return null;
-    }
-};
-
-const transformSensitiveData = (data, transform) => {
-    try {
-        const iv = crypto.randomBytes(ivLength);
-        const { encryptedData, authTag } = encrypt(data, iv);
-        const transformedData = transform(encryptedData);
-        return {
-            encryptedData: transformedData,
-            iv: iv.toString('base64'),
-            authTag: authTag.toString('base64')
-        };
-    } catch (error) {
-        console.error("Encryption error:", error);
-        return null;
-    }
-};
-
-const untransformSensitiveData = (encryptedData, ivB64, authTagB64, untransform) => {
-    if (!encryptedData || !ivB64 || !authTagB64) {
-        return null;
-    }
-
-    try {
-        const untransformedData = untransform(encryptedData);
-        const iv = Buffer.from(ivB64, 'base64');
-        const authTag = Buffer.from(authTagB64, 'base64');
-        return decrypt(untransformedData, iv, authTag);
     } catch (error) {
         console.error("Decryption error:", error);
         return null;
