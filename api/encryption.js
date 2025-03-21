@@ -23,6 +23,11 @@ let lastIV = null;
 let cachedCipher = null;
 let cachedDecipher = null;
 
+// Function to clear sensitive data from memory
+function zeroBuffer(buf) {
+    buf.fill(0);
+}
+
 function setDeriveKeySalt(salt) {
     deriveKeySalt = salt;
 }
@@ -36,7 +41,11 @@ function deriveEncryptionKey(password) {
     }
 
     try {
-        key = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
+        const derivedKey = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
+        if(key){
+            zeroBuffer(key);
+        }
+        key = derivedKey;
         keyGenerated = true;
         keyDerivationUsed = true; //Mark that key derivation was used
         cachedCipher = null; // Invalidate cached cipher on key change
@@ -44,6 +53,9 @@ function deriveEncryptionKey(password) {
     } catch (error) {
         console.error("Key derivation failed:", error);
         throw new Error('Key derivation failed. Check password and salt.');
+    } finally {
+        // Zero out password after usage to prevent it lingering in memory.
+        zeroBuffer(Buffer.from(password, 'utf8')); // Assuming password is a string
     }
 }
 
@@ -54,7 +66,10 @@ function setEncryptionKey(newKey) {
     if (!Buffer.isBuffer(newKey) || newKey.length !== KEY_LENGTH) {
         throw new Error(`Invalid key. Key must be a ${KEY_LENGTH}-byte Buffer.`);
     }
-    key = newKey;
+    if(key){
+        zeroBuffer(key);
+    }
+    key = Buffer.from(newKey);
     keyGenerated = true;
     keyDerivationUsed = false; //Explicitly set to false when directly setting the key
     cachedCipher = null; // Invalidate cached cipher on key change
@@ -67,6 +82,9 @@ function generateEncryptionKey() {
     }
     try {
         const newKey = crypto.generateKeySync('aes', { length: 256 });
+        if(key){
+            zeroBuffer(key);
+        }
         key = newKey;
         keyGenerated = true;
         keyDerivationUsed = false; //Explicitly set to false when generating key
@@ -192,6 +210,9 @@ function rotateKey() {
     lastIV = null; // Reset last IV on key rotation
     cachedCipher = null;
     cachedDecipher = null;
+    if(key){
+        zeroBuffer(key);
+    }
     return generateEncryptionKey();
 }
 
@@ -216,5 +237,6 @@ module.exports = {
     generateSalt,
     rotateKey, // Export the rotateKey function
     isKeySet,  // Export the isKeySet function
-    isKeyDerived //Export the isKeyDerived function
+    isKeyDerived, //Export the isKeyDerived function
+    zeroBuffer
 };
