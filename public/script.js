@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 generateAndStoreHmac({ username: username, password: password, captcha: captcha }, saltValue)
             ]);
 
-            const encryptedHmac = await encryptHmac(hmac, saltValue);
+             const encryptedHmac = await encryptHmac(hmac, saltValue);
 
             const keyPrefix = getKeyPrefix();
             const ivPrefix = getIVPrefix();
@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    async function generateHmacWebCrypto(data, salt) {
+     async function generateHmacWebCrypto(data, salt) {
         try {
              const secret = await getHmacSecret();
              const keyMaterial = await window.crypto.subtle.importKey(
@@ -441,7 +441,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Use more secure key derivation
     async function deriveKeyMaterial(salt) {
-        const password = await generateKey(salt);
+         const password = await generateKey(salt);
 
         const enc = new TextEncoder();
         const keyMaterial = await window.crypto.subtle.importKey(
