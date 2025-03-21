@@ -296,8 +296,12 @@ async function encryptPasswordWithRounds(password, rounds = 3) {
     let encryptedPassword = password;
     for (let i = 0; i < rounds; i++) {
         const opSalt = await generateOperationSalt();
-        encryptedPassword = await encryptData(encryptedPassword, process.env.MASTER_ENCRYPTION_KEY + opSalt);
-        encryptedPassword = encryptedPassword.encryptedData;
+        const encryptionResult = await encryptData(encryptedPassword, process.env.MASTER_ENCRYPTION_KEY + opSalt);
+        if (encryptionResult) {
+            encryptedPassword = encryptionResult.encryptedData;
+        } else {
+            throw new Error("Encryption failed");
+        }
     }
     return encryptedPassword;
 }
@@ -315,6 +319,25 @@ async function multiKeyEncrypt(data, keys) {
         }
     }
     return encryptedData;
+}
+
+// Function to generate a random key for data obfuscation
+async function generateObfuscationKey() {
+  const buffer = await randomBytesAsync(32);
+  return buffer.toString('hex');
+}
+
+// Function to obfuscate data with a random key using XOR
+function obfuscateData(data, key) {
+    const dataBuffer = Buffer.from(data, 'hex');
+    const keyBuffer = Buffer.from(key, 'hex');
+    const result = Buffer.alloc(dataBuffer.length);
+
+    for (let i = 0; i < dataBuffer.length; i++) {
+        result[i] = dataBuffer[i] ^ keyBuffer[i % keyBuffer.length];
+    }
+
+    return result.toString('hex');
 }
 
 module.exports = async (req, res) => {
@@ -412,6 +435,12 @@ module.exports = async (req, res) => {
       // Add Random Padding
       const paddedEncryptedUserRecord = addRandomPadding(doubleEncryptedUserRecord);
 
+      // Generate obfuscation key
+      const obfuscationKey = await generateObfuscationKey();
+
+      // Obfuscate the padded and encrypted user record
+      const obfuscatedUserRecord = obfuscateData(paddedEncryptedUserRecord, obfuscationKey);
+
       // Store doubleEncryptedUserRecord (instead of userRecord)
       // ...
 
@@ -428,10 +457,11 @@ module.exports = async (req, res) => {
         secureErase(Buffer.from(randomPassword, 'utf8'));
       }
       secureErase(Buffer.from(sessionKey, 'utf8'));
+      secureErase(Buffer.from(obfuscationKey, 'utf8'));
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
-        console.log('User record (for demonstration only):', paddedEncryptedUserRecord);
+        console.log('User record (for demonstration only):', obfuscatedUserRecord);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
