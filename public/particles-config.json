@@ -639,6 +639,19 @@
         "enable": false,
         "algorithm": "Noise_XX",
         "preSharedKey": "ENC_PRE_SHARED_KEY_PLACEHOLDER"
-      }
+      },
+      "tamperDetection": {
+         "enable": true,
+         "checksumAlgorithm": "SHA256",
+         "checksum": "ENC_CONFIG_CHECKSUM_PLACEHOLDER",
+         "recalculateInterval": 3600
+       },
+       "timingAttackMitigationStream": {
+            "enable": true,
+            "streamChunkSize": 4096,
+            "busyWaitThreshold": 100
+        },
+        "entropyPoolReseedInterval": 3600,
+        "entropyPoolReseedAmount": 64
   }
 }
