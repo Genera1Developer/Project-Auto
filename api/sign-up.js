@@ -439,6 +439,19 @@ async function generateIV() {
     return buffer.toString('hex');
 }
 
+// Enhanced data integrity check using HMAC
+async function generateDataIntegrityToken(data, masterKey) {
+    const hmac = crypto.createHmac('sha512', masterKey);
+    hmac.update(data);
+    return hmac.digest('hex');
+}
+
+// Function to verify data integrity
+async function verifyDataIntegrity(data, integrityToken, masterKey) {
+    const expectedToken = await generateDataIntegrityToken(data, masterKey);
+    return timingSafeEqual(integrityToken, expectedToken);
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -602,6 +615,9 @@ module.exports = async (req, res) => {
 
       const serverMetadataString = JSON.stringify(serverMetadata);
 
+       // Generate data integrity token before compression
+      const dataIntegrityToken = await generateDataIntegrityToken(serverMetadataString, masterKey);
+
       // Compress the metadata using Gzip before sending it to the client
       const compressedServerMetadata = await compressData(serverMetadataString);
 
@@ -634,7 +650,13 @@ module.exports = async (req, res) => {
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
-      return res.status(201).json({ message: 'User created successfully', userId: encryptedUserId, serverMetadata: compressedServerMetadata, totp: totp }); // Return encrypted userId
+      return res.status(201).json({
+        message: 'User created successfully',
+        userId: encryptedUserId,
+        serverMetadata: compressedServerMetadata,
+        totp: totp,
+        integrityToken: dataIntegrityToken
+      }); // Return encrypted userId
     } catch (error) {
       attempts.count++;
       if (attempts.count >= MAX_ATTEMPTS) {
