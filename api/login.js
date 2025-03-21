@@ -695,8 +695,9 @@ module.exports = async (req, res) => {
                     secure: true,
                     sameSite: 'Strict',
                     signed: true,
-                    path: '/'
-                 }
+                    path: '/',
+                    maxAge: 3600000, // Cookie expires after 1 hour (1hr * 60min * 60sec * 1000ms)
+                  };
 
                  // Set cookie with the encrypted session ID, signing with serverSecret
                  const cookieValue = encryptCookie(sessionId, serverSecret);
