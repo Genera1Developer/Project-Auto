@@ -206,10 +206,10 @@ module.exports = async (req, res) => {
 
       // 1. Generate a unique encryption key per user, derived from password and salt.
       randomPassword = await generateRandomPassword();
-      derivedEncryptionKey = await deriveKey(randomPassword, salt);
+      derivedEncryptionKey = await deriveKey(password, salt); //Derive key from user's pw
 
       // Stretch the derived encryption key for added security
-      derivedEncryptionKey = await stretchKey(derivedEncryptionKey, salt);
+      derivedEncryptionKey = await stretchKey(derivedEncryptionKey, salt, 5);
 
       // 2. Encrypt the username and salt
       const saltedUsername = saltUsername(username, salt);
