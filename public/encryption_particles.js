@@ -1,23 +1,23 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 200,
+      value: 160,
       density: {
         enable: true,
         value_area: 800
       }
     },
     color: {
-      value: '#00FF00'
+      value: '#00FF00' //Green, crypto color
     },
     shape: {
-      type: 'polygon',
+      type: 'circle', //Simpler shape
       stroke: {
-        width: 1,
-        color: '#004000'
+        width: 0,
+        color: '#000000'
       },
       polygon: {
-        nb_sides: 6 // Hexagon - stronger crypto
+        nb_sides: 4 // Square shape, block-like
       },
       image: {
         src: '',
@@ -26,12 +26,12 @@ particlesJS('particles-js', {
       }
     },
     opacity: {
-      value: 0.8,
+      value: 0.7,
       random: true,
       anim: {
         enable: true,
-        speed: 1.2,
-        opacity_min: 0.3,
+        speed: 1,
+        opacity_min: 0.1,
         sync: false
       }
     },
@@ -39,26 +39,27 @@ particlesJS('particles-js', {
       value: 3,
       random: true,
       anim: {
-        enable: true,
-        speed: 7,
+        enable: false,
+        speed: 40,
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 140,
-      color: '#00C000',
-      opacity: 0.6,
-      width: 1.6
+      distance: 150,
+      color: '#009900',
+      opacity: 0.4,
+      width: 1
     },
     move: {
       enable: true,
-      speed: 2.7,
+      speed: 3,
       direction: 'none',
       random: true,
       straight: false,
       out_mode: 'out',
+      bounce: false,
       attract: {
         enable: false,
         rotateX: 600,
@@ -71,47 +72,40 @@ particlesJS('particles-js', {
     events: {
       onhover: {
         enable: true,
-        mode: 'grab'
+        mode: 'bubble'
       },
       onclick: {
         enable: true,
-        mode: 'push'
+        mode: 'repulse'
       },
       resize: true
     },
     modes: {
       grab: {
-        distance: 130,
+        distance: 400,
         line_linked: {
-          opacity: 0.8
+          opacity: 1
         }
       },
       bubble: {
-        distance: 400,
-        size: 40,
-        duration: 0.3,
-        opacity: 8,
+        distance: 250,
+        size: 0,
+        duration: 2,
+        opacity: 0,
         speed: 3
       },
       repulse: {
-        distance: 100,
+        distance: 400,
         duration: 0.4
       },
       push: {
-        particles_nb: 5
+        particles_nb: 4
       },
       remove: {
-        particles_nb: 3
+        particles_nb: 2
       }
     }
   },
-  retina_detect: true,
-  config_demo: {
-    hide_card: false,
-    background_color: '#000000',
-    background_image: '',
-    background_position: '50% 50%',
-    background_repeat: 'no-repeat',
-    background_size: 'cover'
-  }
+  retina_detect: true
 });
+edit filepath: public/encryption_particles.js
