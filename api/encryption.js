@@ -97,7 +97,7 @@ function generateEncryptionKey() {
     }
 }
 
-function encrypt(text) {
+const encrypt = (text) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
@@ -109,39 +109,23 @@ function encrypt(text) {
 
     lastIV = iv; // Store current iv to prevent reuse
 
-    let cipher;
-
     try {
-       if (!cachedCipher) {
-            cachedCipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-        } else {
-            cachedCipher.setIV(iv); //Reuse cipher object, just update the IV
-        }
-        cipher = cachedCipher;
-    } catch (error) {
-        console.error("Cipher creation failed:", error);
-        return null;
-    }
+        const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        let encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
+        const authTag = cipher.getAuthTag();
 
-    let encrypted;
-
-    try {
-        encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
+        return {
+            iv: iv.toString('base64'),
+            encryptedData: encrypted.toString('base64'),
+            authTag: authTag.toString('base64')
+        };
     } catch (error) {
         console.error("Encryption failed:", error);
         return null;
     }
+};
 
-    const authTag = cipher.getAuthTag();
-
-    return {
-        iv: iv.toString('base64'),
-        encryptedData: encrypted.toString('base64'),
-        authTag: authTag.toString('base64')
-    };
-}
-
-function decrypt(text) {
+const decrypt = (text) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
@@ -151,24 +135,15 @@ function decrypt(text) {
         const encryptedData = Buffer.from(text.encryptedData, 'base64');
         const authTag = Buffer.from(text.authTag, 'base64');
 
-        let decipher;
-        if(!cachedDecipher){
-            decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-            cachedDecipher = decipher;
-        } else {
-            decipher = cachedDecipher;
-            decipher.setIV(iv);
-        }
-
+        const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
-
         const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
     } catch (error) {
         console.error("Decryption failed:", error);
         return null;
     }
-}
+};
 
 let timingSafeEqual = null;
 if (crypto.timingSafeEqual) {
