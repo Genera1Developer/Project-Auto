@@ -227,6 +227,10 @@
                     var decryptData = function(combinedData, secret) {
                         try {
                             let parts = combinedData.split('$');
+                            if (parts.length !== 3) {
+                              console.error("Invalid combined data format.");
+                              return null;
+                            }
                             let ivString = parts[0];
                             let ciphertextString = parts[1];
                             let hmac = parts[2];
