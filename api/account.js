@@ -186,9 +186,9 @@ exports.verifyUser = (username, password, callback) => {
             }
 
             try {
-                const decryptedUsername = decryptData(row.username, row.username_iv, row.username_auth_tag);
-                const decryptedSalt = decryptData(row.salt, row.salt_iv, row.salt_auth_tag);
-                const decryptedPassword = decryptData(row.password, row.password_iv, row.password_auth_tag);
+                const decryptedUsername = decryptData(row.username_iv, row.username_auth_tag, row.username);
+                const decryptedSalt = decryptData(row.salt_iv, row.salt_auth_tag, row.salt);
+                const decryptedPassword = decryptData(row.password_iv, row.password_auth_tag, row.password);
 
                 const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
 
