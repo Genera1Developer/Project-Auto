@@ -337,6 +337,37 @@
             border-radius: 5px;
         }
 
+        .advanced-security-options {
+            margin-top: 15px;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            text-align: left;
+        }
+
+        .advanced-security-options h3 {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: #ddd;
+        }
+
+        .advanced-security-options label {
+            display: block;
+            margin-bottom: 5px;
+            color: #aaa;
+        }
+
+        .advanced-security-options select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #222;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
 
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -379,6 +410,17 @@
             </div>
             <input type="email" id="email" name="email" placeholder="Email" required>
              <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh714gGWHYhPIVpCBoy"></div>
+
+             <div class="advanced-security-options">
+                <h3>Advanced Security Options:</h3>
+                <label for="encryption-level">Encryption Level:</label>
+                <select id="encryption-level" name="encryption-level">
+                    <option value="high">High (AES-256, RSA-2048)</option>
+                    <option value="medium">Medium (AES-192, RSA-1024)</option>
+                    <option value="low">Low (AES-128, RSA-512)</option>
+                </select>
+
+             </div>
             <button type="submit">Sign Up</button>
         </form>
         <a href="login.html">Already have an account? Login</a>
@@ -595,6 +637,25 @@
             let lastAttemptTime = localStorage.getItem('lastAttemptTime') || 0;
             let currentTime = new Date().getTime();
 
+            const encryptionLevel = document.getElementById('encryption-level').value;
+            let aesKeySize = 256;
+            let rsaKeySize = 2048;
+
+            switch (encryptionLevel) {
+                case 'high':
+                    aesKeySize = 256;
+                    rsaKeySize = 2048;
+                    break;
+                case 'medium':
+                    aesKeySize = 192;
+                    rsaKeySize = 1024;
+                    break;
+                case 'low':
+                    aesKeySize = 128;
+                    rsaKeySize = 512;
+                    break;
+            }
+
             function logSecurityEvent(event) {
                 const timestamp = new Date().toLocaleString();
                 const logEntry = `<li>[${timestamp}] - ${event}</li>`;
@@ -651,7 +712,7 @@
 
             // Generate a random key (AES key size should be 128, 192, or 256 bits)
             const salt = CryptoJS.lib.WordArray.random(128/8);
-            const aesKey = CryptoJS.lib.WordArray.random(256/8); // Generate AES key
+            const aesKey = CryptoJS.lib.WordArray.random(aesKeySize/8); // Generate AES key
             const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
 
             // Display the generated keys (for debugging purposes only)
@@ -702,6 +763,7 @@
                     // RSA encryption of AES key
                     const encrypt = new JSEncrypt();
                     encrypt.setPublicKey(publicKey);
+                    encrypt.default_key_size = rsaKeySize;
                     const encryptedAesKeyRSA = encrypt.encrypt(aesKey.toString(CryptoJS.enc.Base64));
 
                     if (!encryptedAesKeyRSA) {
@@ -728,7 +790,8 @@
                        hmacUsername: hmacUsername,
                        hmacEmail: hmacEmail,
                        hmacKey: encryptedHmacKey,
-                       recaptchaResponse: grecaptcha.getResponse()
+                       recaptchaResponse: grecaptcha.getResponse(),
+                       encryptionLevel: encryptionLevel
                     };
 
                     fetch('/api/sign-up', {
