@@ -241,11 +241,20 @@ async function handleRequestBody(req, encryptionKey, reqIv) {
     });
 }
 
+function earlyReject(res, statusCode, message) {
+    if (!res.headersSent) {
+        res.status(statusCode).send(message);
+    } else {
+        console.error(`Cannot send ${statusCode} - ${message} because headers are already sent.`);
+        res.end();
+    }
+}
+
 // Function to handle the proxy request
 async function proxyRequest(req, res) {
     const targetUrl = req.headers['x-target-url'];
     if (!targetUrl) {
-        return res.status(400).send('Target URL is missing.');
+        return earlyReject(res, 400, 'Target URL is missing.');
     }
 
     try {
@@ -254,7 +263,7 @@ async function proxyRequest(req, res) {
         const encryptionKey = deriveKey(ENCRYPTION_KEY, salt);
 
         if (!encryptionKey) {
-            return res.status(500).send('Failed to derive encryption key.');
+            return earlyReject(res, 500, 'Failed to derive encryption key.');
         }
 
         const iv = crypto.randomBytes(IV_LENGTH); // Generate IV for request encryption
@@ -306,14 +315,14 @@ async function proxyRequest(req, res) {
             try {
                 const responseCipher = encryptStream(encryptionKey, resIv);
                 if(!responseCipher){
-                  return res.status(500).send('Failed to create response cipher.');
+                  return earlyReject(res, 500, 'Failed to create response cipher.');
                 }
 
                 const encryptedStream = raw.pipe(responseCipher);
 
                 encryptedStream.on('error', (streamErr) => {
                   console.error("Response stream encryption error:", streamErr);
-                  res.status(500).send('Failed to encrypt response stream.');
+                   return earlyReject(res, 500, 'Failed to encrypt response stream.');
                 });
 
                 res.setHeader('Content-Encoding', 'encrypted');
@@ -321,13 +330,13 @@ async function proxyRequest(req, res) {
 
             } catch (streamErr) {
                 console.error("Response stream encryption error:", streamErr);
-                return res.status(500).send('Failed to encrypt response stream.');
+                return earlyReject(res, 500, 'Failed to encrypt response stream.');
             }
         });
 
         proxyReq.on('error', (err) => {
             console.error('Proxy request error:', err);
-            res.status(500).send('Proxy error');
+            return earlyReject(res, 500, 'Proxy error.');
         });
 
         req.on('aborted', () => {
@@ -347,12 +356,12 @@ async function proxyRequest(req, res) {
             proxyReq.end();
         } catch (error) {
             console.error("Request body handling error:", error);
-            return res.status(500).send('Failed to process request body.');
+            return earlyReject(res, 500, 'Failed to process request body.');
         }
 
     } catch (error) {
         console.error("URL parsing or proxy error:", error);
-        res.status(500).send('Internal server error.');
+        return earlyReject(res, 500, 'Internal server error.');
     }
 }
 
