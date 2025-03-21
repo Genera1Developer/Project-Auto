@@ -318,6 +318,36 @@ function validateNonce(nonce, timestamp) {
     return true;
 }
 
+function validateStreamNonce(nonce, timestamp) {
+  if (!nonce || !timestamp) {
+      return false;
+  }
+
+  const now = Date.now();
+  const timeDiff = now - timestamp;
+
+  if (timeDiff > REPLAY_PROTECTION_WINDOW || timeDiff < -REPLAY_PROTECTION_WINDOW) {
+      console.warn("Stream Replay attack: timestamp out of range");
+      return false; // Timestamp out of range.
+  }
+
+  const combinedNonce = `${nonce}-${timestamp}`;
+
+  if (streamNonceCache.has(combinedNonce)) {
+      console.warn("Stream Replay attack: nonce already used");
+      return false; // Nonce already used, possible replay attack
+  }
+
+  streamNonceCache.add(combinedNonce);
+  if (streamNonceCache.size > STREAM_NONCE_CACHE_SIZE) {
+      // Remove the oldest nonce to prevent unbounded growth
+      const oldestNonce = streamNonceCache.values().next().value;
+      streamNonceCache.delete(oldestNonce);
+  }
+
+  return true;
+}
+
 // Function to handle the proxy request
 async function proxyRequest(req, res) {
 
@@ -397,22 +427,31 @@ async function proxyRequest(req, res) {
             // Encrypt the response body
             let encryptedStream = null; // Initialize to null
             try {
-                const responseCipher = encryptStream(encryptionKey, resIv);
-                if(!responseCipher){
-                  return earlyReject(res, 500, 'Failed to create response cipher.');
+
+              const streamNonce = crypto.randomBytes(8).toString('hex');
+              const streamTimestamp = Date.now();
+              if (!validateStreamNonce(streamNonce, streamTimestamp)) {
+                  return earlyReject(res, 403, 'Invalid or missing stream nonce.');
+              }
+
+              const responseCipher = encryptStream(encryptionKey, resIv);
+              if(!responseCipher){
+                return earlyReject(res, 500, 'Failed to create response cipher.');
+              }
+
+              encryptedStream = raw.pipe(responseCipher);
+
+              encryptedStream.on('error', (streamErr) => {
+                console.error("Response stream encryption error:", streamErr);
+                if (!res.writableEnded) { // Check if response has already ended
+                     return earlyReject(res, 500, 'Failed to encrypt response stream.');
                 }
+              });
 
-                encryptedStream = raw.pipe(responseCipher);
-
-                encryptedStream.on('error', (streamErr) => {
-                  console.error("Response stream encryption error:", streamErr);
-                  if (!res.writableEnded) { // Check if response has already ended
-                       return earlyReject(res, 500, 'Failed to encrypt response stream.');
-                  }
-                });
-
-                res.setHeader('Content-Encoding', 'encrypted');
-                encryptedStream.pipe(res);
+              res.setHeader('Content-Encoding', 'encrypted');
+              res.setHeader('x-stream-nonce', streamNonce);
+              res.setHeader('x-stream-timestamp', streamTimestamp);
+              encryptedStream.pipe(res);
 
             } catch (streamErr) {
                 console.error("Response stream encryption error:", streamErr);
