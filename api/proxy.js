@@ -457,8 +457,6 @@ async function proxyRequest(req, res) {
                 return earlyReject(res, 500, 'Failed to create response cipher.');
               }
 
-              const authTagCache = new Map(); // Local auth tag cache per response
-
               encryptedStream = raw.pipe(responseCipher);
 
               encryptedStream.on('error', (streamErr) => {
