@@ -62,16 +62,18 @@ document.addEventListener('DOMContentLoaded', function() {
             encryptionIV: encryptionIV,
             salt: salt,
             encryptedCaptcha: encryptedCaptcha,
-        }
+        };
 
-        const encryptedStorage = CryptoJS.AES.encrypt(JSON.stringify(dataToStore), CryptoJS.enc.Utf8.parse(encryptionKey.substring(0,16)),{
-            iv: CryptoJS.enc.Hex.parse(encryptionIV.substring(0,16)),
+        const compositeKey = CryptoJS.SHA256(encryptionKey + salt).toString();
+        const storageKey = compositeKey.substring(0, 32);
+        const storageIv = CryptoJS.MD5(encryptionIV + salt).toString().substring(0, 16);
+
+        const encryptedStorage = CryptoJS.AES.encrypt(JSON.stringify(dataToStore), CryptoJS.enc.Hex.parse(storageKey),{
+            iv: CryptoJS.enc.Hex.parse(storageIv),
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7
         }).toString();
         sessionStorage.setItem('encryptedData', encryptedStorage);
-
-
     }
 
     window.validateCaptcha = async function() {
@@ -87,8 +89,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
          try {
-            const decryptedStorage = CryptoJS.AES.decrypt(encryptedData, CryptoJS.enc.Utf8.parse(encryptionKey.substring(0,16)),{
-                iv: CryptoJS.enc.Hex.parse(encryptionIV.substring(0,16)),
+            const compositeKey = CryptoJS.SHA256(encryptionKey + salt).toString();
+            const storageKey = compositeKey.substring(0, 32);
+            const storageIv = CryptoJS.MD5(encryptionIV + salt).toString().substring(0, 16);
+
+            const decryptedStorage = CryptoJS.AES.decrypt(encryptedData, CryptoJS.enc.Hex.parse(storageKey),{
+                iv: CryptoJS.enc.Hex.parse(storageIv),
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
             }).toString(CryptoJS.enc.Utf8);
