@@ -343,13 +343,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             iv = base64ToArrayBuffer(sessionStorage.getItem('hmacIV'));
 
+            const encodedHmac = new TextEncoder().encode(hmac);
+
             const encryptedHmacBuffer = await window.crypto.subtle.encrypt(
                 {
                     name: "AES-CBC",
                     iv: new Uint8Array(iv)
                 },
                 derivedKey,
-                new TextEncoder().encode(hmac)
+                encodedHmac
             );
 
             return arrayBufferToBase64(encryptedHmacBuffer);
@@ -461,7 +463,12 @@ document.addEventListener('DOMContentLoaded', function() {
             salt = 'default_salt';
         }
         const combined = salt + getKeyPrefix() + getIVPrefix();
-        return combined;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(combined);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
     }
 
     // Prevent form resubmission
