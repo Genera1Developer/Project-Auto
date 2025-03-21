@@ -19,7 +19,12 @@ function deriveEncryptionKey(password) {
         throw new Error('Derive key salt not set.');
     }
 
-    key = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
+    try {
+        key = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
+    } catch (error) {
+        console.error("Key derivation failed:", error);
+        throw new Error('Key derivation failed. Check password and salt.');
+    }
 }
 
 function setEncryptionKey(newKey) {
@@ -30,9 +35,14 @@ function setEncryptionKey(newKey) {
 }
 
 function generateEncryptionKey() {
-    const newKey = crypto.generateKeySync('aes', { length: 256 });
-    key = newKey;
-    return newKey.toString('hex');
+    try {
+        const newKey = crypto.generateKeySync('aes', { length: 256 });
+        key = newKey;
+        return newKey.toString('hex');
+    } catch (error) {
+        console.error("Key generation failed:", error);
+        throw new Error('Key generation failed.');
+    }
 }
 
 function encrypt(text) {
@@ -41,7 +51,14 @@ function encrypt(text) {
     }
 
     const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+    let cipher;
+    try {
+        cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+    } catch (error) {
+        console.error("Cipher creation failed:", error);
+        return null;
+    }
+
     let encrypted;
 
     try {
@@ -106,8 +123,8 @@ function safeCompare(a, b) {
     }
 
     try {
-        const aBuf = Buffer.from(a, 'utf8');
-        const bBuf = Buffer.from(b, 'utf8');
+        const aBuf = Buffer.from(a);
+        const bBuf = Buffer.from(b);
 
         return timingSafeEqual(aBuf, bBuf);
     } catch (error) {
