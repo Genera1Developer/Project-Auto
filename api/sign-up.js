@@ -465,6 +465,79 @@ function maskData(data, maskKey) {
   return result.toString('hex');
 }
 
+//New function to derive a key using HKDF algorithm
+async function deriveKeyHKDF(ikm, salt, info, keyLength = 32) {
+    try {
+      const hkdf = crypto.hkdfSync('sha512', ikm, salt, info, keyLength);
+      return hkdf.toString('hex');
+    } catch (error) {
+      console.error("HKDF derivation error:", error);
+      return null;
+    }
+  }
+
+// New function to implement authenticated encryption with associated data (AEAD)
+async function authenticatedEncrypt(plaintext, key, aad) {
+    try {
+        const iv = await generateIV();
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+        cipher.setAAD(Buffer.from(aad, 'utf8'));
+        let encrypted = cipher.update(plaintext, 'utf8');
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        const authTag = cipher.getAuthTag();
+
+        return {
+            ciphertext: encrypted.toString('hex'),
+            iv: iv,
+            authTag: authTag.toString('hex')
+        };
+    } catch (error) {
+        console.error("AEAD Encryption error:", error);
+        return null;
+    }
+}
+
+// New function to implement authenticated decryption with associated data (AEAD)
+async function authenticatedDecrypt(ciphertext, key, iv, authTag, aad) {
+    try {
+        const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+        decipher.setAAD(Buffer.from(aad, 'utf8'));
+        decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+        let decrypted = decipher.update(Buffer.from(ciphertext, 'hex'));
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return decrypted.toString('utf8');
+    } catch (error) {
+        console.error("AEAD Decryption error:", error);
+        return null;
+    }
+}
+
+// Function to encrypt session data using AES-CBC
+async function encryptSessionData(data, sessionKey, iv) {
+    try {
+        const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(sessionKey, 'hex'), Buffer.from(iv, 'hex'));
+        let encrypted = cipher.update(data, 'utf8');
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        return encrypted.toString('hex');
+    } catch (error) {
+        console.error("AES-CBC Encryption error:", error);
+        return null;
+    }
+}
+
+// Function to decrypt session data using AES-CBC
+async function decryptSessionData(encryptedData, sessionKey, iv) {
+    try {
+        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(sessionKey, 'hex'), Buffer.from(iv, 'hex'));
+        let decrypted = decipher.update(Buffer.from(encryptedData, 'hex'), 'hex');
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return decrypted.toString('utf8');
+    } catch (error) {
+        console.error("AES-CBC Decryption error:", error);
+        return null;
+    }
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
