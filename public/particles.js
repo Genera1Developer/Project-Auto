@@ -182,6 +182,7 @@
                 try {
                     var initialColorSeed = "f5c3bb";
                     var initialLinkedColorSeed = "9b59b6";
+                    var localStorageKeyPrefix = "particlesJS_";
 
                     var generateKey = function(seed, salt) {
                       var keyMaterial = seed + salt;
@@ -249,25 +250,25 @@
                     };
                     var retrieveEncryptedData = function(key, defaultValue) {
                         try {
-                            var storedData = localStorage.getItem(key);
+                            var storedData = localStorage.getItem(localStorageKeyPrefix + key);
                             if (!storedData) return defaultValue;
 
                             try {
                               var parsedData = JSON.parse(storedData);
                               if (!parsedData || !parsedData.ciphertext || !parsedData.iv || !parsedData.salt) {
-                                localStorage.removeItem(key);
+                                localStorage.removeItem(localStorageKeyPrefix + key);
                                 return defaultValue;
                               }
                               return parsedData;
                             } catch (jsonError) {
                               console.warn("Invalid JSON in localStorage, removing:", key);
-                              localStorage.removeItem(key);
+                              localStorage.removeItem(localStorageKeyPrefix + key);
                               return defaultValue;
                             }
 
                         } catch (err) {
                             console.error("Retrieve error:", err);
-                            localStorage.removeItem(key);
+                            localStorage.removeItem(localStorageKeyPrefix + key);
                             return defaultValue;
                         }
                     };
@@ -277,7 +278,7 @@
                               console.warn("Invalid data for storage:", data);
                               return;
                            }
-                            localStorage.setItem(key, JSON.stringify(data));
+                            localStorage.setItem(localStorageKeyPrefix + key, JSON.stringify(data));
                         } catch (err) {
                             console.error("Store error:", err);
                         }
@@ -290,11 +291,11 @@
                     var colorData = { color: initialColorSeed, strokeColor: initialColorSeed };
                     var linkedColorData = { linkColor: initialLinkedColorSeed };
 
-                    var colorSalt = localStorage.getItem("colorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
-                    localStorage.setItem("colorSalt", colorSalt);
+                    var colorSalt = localStorage.getItem(localStorageKeyPrefix + "colorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
+                    localStorage.setItem(localStorageKeyPrefix + "colorSalt", colorSalt);
 
-                    var linkedColorSalt = localStorage.getItem("linkedColorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
-                    localStorage.setItem("linkedColorSalt", linkedColorSalt);
+                    var linkedColorSalt = localStorage.getItem(localStorageKeyPrefix + "linkedColorSalt") || CryptoJS.lib.WordArray.random(128/8).toString();
+                    localStorage.setItem(localStorageKeyPrefix + "linkedColorSalt", linkedColorSalt);
 
                     var colorSecret = generateKey("color_secret", colorSalt);
                     var linkedColorSecret = generateKey("linked_secret", linkedColorSalt);
@@ -315,10 +316,10 @@
                     var updateColorsAndSchedule = function() {
                         try {
                             var newColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
-                            localStorage.setItem("colorSalt", newColorSalt);
+                            localStorage.setItem(localStorageKeyPrefix + "colorSalt", newColorSalt);
 
                             var newLinkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
-                            localStorage.setItem("linkedColorSalt", newLinkedColorSalt);
+                            localStorage.setItem(localStorageKeyPrefix + "linkedColorSalt", newLinkedColorSalt);
 
                             var newColorSecret = generateKey("color_secret", newColorSalt);
                             var newLinkedColorSecret = generateKey("linked_secret", newLinkedColorSalt);
