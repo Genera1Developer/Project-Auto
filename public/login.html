@@ -238,10 +238,10 @@
 
         // Function to generate a cryptographically secure random key
         function generateEncryptionKey() {
-            let key = sessionStorage.getItem('encryptionKey'); // Use sessionStorage
+            let key = localStorage.getItem('encryptionKey'); // Use localStorage instead of sessionStorage
             if(!key){
                 key = CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
-                sessionStorage.setItem('encryptionKey', key); // Use sessionStorage
+                localStorage.setItem('encryptionKey', key); // Store in localStorage
             }
             return key;
         }
@@ -384,7 +384,7 @@
                     'X-Encrypted-Key': encryptedEncryptionKey, // Send the encrypted key
                     'X-Request-HMAC': hmac, // Send HMAC for integrity
                     'X-Request-Nonce': nonce, // Send nonce for replay attack protection,
-                    'X-Request-Version': '2.0' // Add version for future updates,
+                    'X-Request-Version': '2.0', // Add version for future updates,
                     'X-Content-Encryption': 'AES256' // Indicate encryption
                 },
                 body: JSON.stringify({
@@ -406,12 +406,12 @@
                     errorMessage.textContent = '';
                     encryptionStatus.textContent = 'Encrypted connection established.';
                     window.location.href = '/index.html';
-                    sessionStorage.removeItem('encryptionKey');
+                    localStorage.removeItem('encryptionKey');
                     sessionStorage.removeItem('serverPublicKey');
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
                     encryptionStatus.textContent = 'Login failed. Encryption in transit.';
-                    sessionStorage.removeItem('encryptionKey'); // Remove the key on failure
+                    localStorage.removeItem('encryptionKey'); // Remove the key on failure
                     sessionStorage.removeItem('serverPublicKey');
                 }
             })
@@ -420,7 +420,7 @@
                 console.error('Error:', error);
                 errorMessage.textContent = 'An error occurred during login.';
                 encryptionStatus.textContent = 'Connection error.';
-                sessionStorage.removeItem('encryptionKey'); // Remove the key on error
+                localStorage.removeItem('encryptionKey'); // Remove the key on error
                 sessionStorage.removeItem('serverPublicKey');
             });
         });
@@ -440,7 +440,7 @@
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
                 // Clear sensitive data when the page is hidden
-                sessionStorage.removeItem('encryptionKey');
+                localStorage.removeItem('encryptionKey');
                 sessionStorage.removeItem('serverPublicKey');
             }
         });
@@ -448,7 +448,7 @@
         // Add a beforeunload event listener
         window.addEventListener('beforeunload', function (e) {
             // Clear sensitive data before the page is unloaded
-           sessionStorage.removeItem('encryptionKey');
+           localStorage.removeItem('encryptionKey');
            sessionStorage.removeItem('serverPublicKey');
         });
 
