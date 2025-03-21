@@ -234,7 +234,16 @@
           "wasmCacheTtl": 86400,
           "wasmStreamingMode": true,
           "wasmMemoryLimit": "256MB",
-          "wasmThreads": 4
+          "wasmThreads": 4,
+          "wasmPresharding": true,
+          "wasmShardingKey": "ENC_WASM_SHARDING_KEY_PLACEHOLDER",
+          "wasmShardingIv": "ENC_WASM_SHARDING_IV_PLACEHOLDER",
+           "wasmShardingAlgorithm": "AES-256-GCM",
+           "wasmShardCount": 4,
+           "wasmKeyEncoding": "base64",
+           "wasmIvEncoding": "base64",
+           "wasmShardingKeyEncoding": "base64",
+           "wasmShardingIvEncoding": "base64"
     }
   },
   "interactivity": {
@@ -405,6 +414,7 @@
         "keyVersion": 1,
         "ocspStapling": {
           "enabled": true
-        }
+        },
+         "disableEntropyCollection": false
   }
 }
