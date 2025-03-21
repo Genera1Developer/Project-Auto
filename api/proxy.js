@@ -36,6 +36,8 @@ const NONCE_CACHE_SIZE = 1000;
 const streamNonceCache = new Set();
 const STREAM_NONCE_CACHE_SIZE = 1000;
 
+const REPLAY_PROTECTION_WINDOW = 60000; // 1 minute
+
 // Function to derive a symmetric key using PBKDF2
 function deriveKey(password, salt) {
     const cacheKey = `${password}-${salt}`;
@@ -286,16 +288,27 @@ function rateLimit(req, res) {
     return false; // Indicate rate limit not exceeded
 }
 
-function validateNonce(nonce) {
-    if (!nonce) {
+function validateNonce(nonce, timestamp) {
+    if (!nonce || !timestamp) {
         return false;
     }
 
-    if (nonceCache.has(nonce)) {
+    const now = Date.now();
+    const timeDiff = now - timestamp;
+
+    if (timeDiff > REPLAY_PROTECTION_WINDOW || timeDiff < -REPLAY_PROTECTION_WINDOW) {
+        console.warn("Replay attack: timestamp out of range");
+        return false; // Timestamp out of range.
+    }
+
+    const combinedNonce = `${nonce}-${timestamp}`;
+
+    if (nonceCache.has(combinedNonce)) {
+        console.warn("Replay attack: nonce already used");
         return false; // Nonce already used, possible replay attack
     }
 
-    nonceCache.add(nonce);
+    nonceCache.add(combinedNonce);
     if (nonceCache.size > NONCE_CACHE_SIZE) {
         // Remove the oldest nonce to prevent unbounded growth
         const oldestNonce = nonceCache.values().next().value;
@@ -320,7 +333,8 @@ async function proxyRequest(req, res) {
 
     // Check for replay attack
     const nonce = req.headers['x-nonce'];
-    if (!validateNonce(nonce)) {
+    const timestamp = req.headers['x-timestamp'];
+    if (!validateNonce(nonce, timestamp)) {
         return earlyReject(res, 403, 'Invalid or missing nonce.');
     }
 
@@ -347,6 +361,8 @@ async function proxyRequest(req, res) {
         delete options.headers['x-target-url']; // Prevent loop
         delete options.headers['host']; // Ensure correct host
         delete options.headers['accept-encoding']; // Disable compression for proxy to handle it
+        delete options.headers['x-nonce']; // Remove nonce
+        delete options.headers['x-timestamp']; // Remove timestamp
 
         const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
