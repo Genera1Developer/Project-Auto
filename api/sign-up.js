@@ -491,6 +491,7 @@ module.exports = async (req, res) => {
     let userId = null; // Unique user identifier
     let totpKey = null;
     let passwordHash = null; // Hash of the user's password
+    let usernameHash = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -511,13 +512,16 @@ module.exports = async (req, res) => {
 
       // 1. Generate a unique encryption key per user, derived from password and salt.
       randomPassword = await generateRandomPassword();
-      derivedEncryptionKey = await deriveKey(password, salt); //Derive key from user's pw
+      derivedEncryptionKey = await deriveKey(randomPassword, salt); //Derive key from random pw
 
        // Add Jitter before Password hashing
       await addJitter(50);
 
       // Hash the user's password
       passwordHash = hashWithSHA512(randomizedSalt(password));
+
+      // Hash username
+      usernameHash = hashWithSHA512(randomizedSalt(username));
 
       // Add Jitter before Key stretching
       await addJitter(50);
@@ -566,7 +570,7 @@ module.exports = async (req, res) => {
         passwordHash: passwordHash, // Store password hash
         encryptedUsername: encryptedUsername ? encryptedUsername.encryptedData : null,
         encryptedSalt: encryptedSalt ? encryptedSalt.encryptedData : null,
-        usernameHash: hashWithSHA512(randomizedSalt(username)), // Store username hash
+        usernameHash: usernameHash, // Store username hash
         encryptedDerivedKey: encryptedDerivedKey,  // Store encrypted key
         derivedKeyIv: actualDerivedKeyIv,           // Store initialization vector
         derivedKeyAuthTag: derivedKeyAuthTag,    // Store authentication tag
@@ -664,6 +668,7 @@ module.exports = async (req, res) => {
       // Mask sensitive data before logging it
       const maskedTotpKey = maskData(totpKey, process.env.LOG_MASKING_KEY || 'defaultinsecuremask');
       const maskedPasswordHash = maskData(passwordHash, process.env.LOG_MASKING_KEY || 'defaultinsecuremask');
+      const maskedUsernameHash = maskData(usernameHash, process.env.LOG_MASKING_KEY || 'defaultinsecuremask');
 
       // NEVER log sensitive data in production. Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
@@ -672,6 +677,7 @@ module.exports = async (req, res) => {
         console.log('Keyed Hash of MAC:', keyedHashValue);
         console.log('Generated TOTP (masked):', maskedTotpKey);
         console.log('Password Hash (masked):', maskedPasswordHash);
+        console.log('Username Hash (masked):', maskedUsernameHash);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
