@@ -148,6 +148,10 @@ function safeCompare(a, b) {
     }
 }
 
+function generateSalt(length = 32) {
+    return crypto.randomBytes(length).toString('hex');
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -155,5 +159,6 @@ module.exports = {
     generateEncryptionKey,
     safeCompare,
     deriveEncryptionKey,
-    setDeriveKeySalt
+    setDeriveKeySalt,
+    generateSalt
 };
