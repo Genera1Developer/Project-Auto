@@ -125,11 +125,14 @@ const validatePassword = (password) => {
 
 const verifyCredentials = async (username, password) => {
     try {
+        const salt = generateSalt();
+        const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
-        const encryptedUsernameSearch = encrypt(username, iv).encryptedData;
+        const encryptedUsernameSearch = encrypt(username, iv);
+        const encryptedPasswordSearch = hashedPassword;
 
         return new Promise((resolve, reject) => {
-            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encryptedUsernameSearch], async (err, row) => {
+            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ? AND password = ?`, [encryptedUsernameSearch.encryptedData, encryptedPasswordSearch], async (err, row) => {
                 if (err) {
                     handleDatabaseError(err, null, "User verification query error:");
                     return reject(err);
@@ -140,19 +143,15 @@ const verifyCredentials = async (username, password) => {
                 }
 
                 try {
-                    const hashedPasswordFromDB = await hashPassword(password, row.salt, row.password_version);
-
-                    if (hashedPasswordFromDB === row.password) {
-                        const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
-                        if (decryptedUsername === null) {
-                            return resolve(false);
-                        }
-                        return resolve({ id: row.id, username: decryptedUsername });
-                    } else {
-                        return resolve(false);
+                    const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
+                     if (decryptedUsername === null) {
+                           return resolve(false);
                     }
+
+                    return resolve({ id: row.id, username: decryptedUsername });
+
                 } catch (error) {
-                    console.error("Password verification error:", error);
+                    console.error("Decryption error:", error);
                     return reject(error);
                 }
             });
