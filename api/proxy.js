@@ -242,8 +242,10 @@ async function handleRequestBody(req, encryptionKey, reqIv) {
 }
 
 function earlyReject(res, statusCode, message) {
+  console.warn(`Early rejection: ${statusCode} - ${message}`);
     if (!res.headersSent) {
-        res.status(statusCode).send(message);
+        res.writeHead(statusCode, { 'Content-Type': 'text/plain' });
+        res.end(message);
     } else {
         console.error(`Cannot send ${statusCode} - ${message} because headers are already sent.`);
         res.end();
