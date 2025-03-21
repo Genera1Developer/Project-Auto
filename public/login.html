@@ -407,6 +407,7 @@
                     encryptionStatus.textContent = 'Encrypted connection established.';
                     window.location.href = '/index.html';
                     sessionStorage.removeItem('encryptionKey');
+                     sessionStorage.removeItem('serverPublicKey');
 
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
