@@ -110,7 +110,8 @@
       "adataHmacAlgorithm": "SHA256",
       "encryptedNumberPrecision": 3,
       "enableWebAssembly": true,
-      "webAssemblyThreads": 2
+      "webAssemblyThreads": 2,
+      "entropySeed": "ENC_ENTROPY_SEED_PLACEHOLDER"
     }
   },
   "interactivity": {
