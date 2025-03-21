@@ -184,11 +184,21 @@ function maybeDecompress(proxyRes) {
   let raw = proxyRes;
 
   if (encoding == 'gzip' || encoding == 'deflate') {
-      let gunzip = zlib.createUnzip();
-      raw = proxyRes.pipe(gunzip);
+      try {
+          let gunzip = zlib.createUnzip();
+          raw = proxyRes.pipe(gunzip);
+      } catch (err) {
+          console.error("Gunzip creation error:", err);
+          raw = proxyRes; // Fallback to original stream
+      }
   } else if (encoding == 'br') {
-      let brotliDecompress = zlib.createBrotliDecompress();
-      raw = proxyRes.pipe(brotliDecompress);
+      try {
+          let brotliDecompress = zlib.createBrotliDecompress();
+          raw = proxyRes.pipe(brotliDecompress);
+      } catch (err) {
+          console.error("Brotli decompress creation error:", err);
+          raw = proxyRes; // Fallback to original stream
+      }
   }
 
   return raw;
@@ -269,7 +279,6 @@ function earlyReject(res, statusCode, message) {
 
 function rateLimit(req, res) {
     const ip = req.ip || req.socket.remoteAddress; // Get client IP
-
     const now = Date.now();
     const requests = requestCounts.get(ip) || [];
 
