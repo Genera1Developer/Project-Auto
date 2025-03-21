@@ -684,6 +684,11 @@ module.exports = async (req, res) => {
                  // Mitigate response body size issues by setting the appropriate header
                  res.setHeader('Content-Encoding', 'deflate');
 
+                 // Set Cache-Control to prevent caching of sensitive data
+                 res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+                 res.setHeader('Pragma', 'no-cache');
+                 res.setHeader('Expires', '0');
+
                  res.status(200).json({ data: compressedResponse });
 
 
