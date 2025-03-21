@@ -278,6 +278,7 @@
             const HSTS_MAX_AGE = 31536000;
             const HSTS_INCLUDE_SUBDOMAINS = true;
             const ENABLE_HSTS = true;
+            const ENABLE_WEBGPU = false;
 
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
@@ -795,6 +796,12 @@
                 } else {
                     console.warn("HSTS is enabled but not using HTTPS. HSTS will not be effective.");
                 }
+            }
+
+            if (ENABLE_WEBGPU && navigator.gpu) {
+                console.log("WebGPU is supported!");
+            } else {
+                console.log("WebGPU is not supported or disabled.");
             }
         });
 
