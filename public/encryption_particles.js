@@ -8,7 +8,7 @@ particlesJS('particles-js', {
       }
     },
     color: {
-      value: ['#00FF00', '#0F0', '#00FA9A', '#00CED1', '#00BFFF'] // Added more teal
+      value: ['#00FF00', '#0F0', '#00FA9A', '#00CED1', '#00BFFF']
     },
     shape: {
       type: 'circle',
@@ -17,7 +17,7 @@ particlesJS('particles-js', {
         color: '#003300'
       },
       polygon: {
-        nb_sides: 5
+        nb_sides: 6 // Hexagon for encryption/hash theme
       },
       image: {
         src: '',
