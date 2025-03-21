@@ -56,23 +56,29 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         captchaTextElement.textContent = encryptedCaptcha;
-        sessionStorage.setItem('encryptionKey', encryptionKey);
-        sessionStorage.setItem('encryptionIV', encryptionIV);
-        sessionStorage.setItem('salt', salt);
-        const hash = CryptoJS.SHA256(encryptedCaptcha + salt).toString();
-        sessionStorage.setItem('encryptedCaptchaHash', hash);
-        sessionStorage.setItem('encryptedCaptcha', encryptedCaptcha);
+
+        const dataToStore = {
+            encryptionKey: encryptionKey,
+            encryptionIV: encryptionIV,
+            salt: salt,
+            encryptedCaptcha: encryptedCaptcha,
+        }
+
+        const encryptedStorage = CryptoJS.AES.encrypt(JSON.stringify(dataToStore), CryptoJS.enc.Utf8.parse(encryptionKey.substring(0,16)),{
+            iv: CryptoJS.enc.Hex.parse(encryptionIV.substring(0,16)),
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.Pkcs7
+        }).toString();
+        sessionStorage.setItem('encryptedData', encryptedStorage);
+
+
     }
 
     window.validateCaptcha = async function() {
         const userInput = captchaInputElement.value;
-        const storedKey = sessionStorage.getItem('encryptionKey');
-        const storedIV = sessionStorage.getItem('encryptionIV');
-        const encryptedCaptchaHash = sessionStorage.getItem('encryptedCaptchaHash');
-        const storedSalt = sessionStorage.getItem('salt');
-        const storedEncryptedCaptcha = sessionStorage.getItem('encryptedCaptcha');
+        const encryptedData = sessionStorage.getItem('encryptedData');
 
-        if (!storedKey || !storedIV || !encryptedCaptchaHash || !storedSalt || !storedEncryptedCaptcha) {
+        if (!encryptedData) {
             errorMessageElement.textContent = 'Encryption keys missing. Refresh.';
             errorMessageElement.style.color = 'red';
             displayEncryptedCaptcha();
@@ -80,7 +86,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        try {
+         try {
+            const decryptedStorage = CryptoJS.AES.decrypt(encryptedData, CryptoJS.enc.Utf8.parse(encryptionKey.substring(0,16)),{
+                iv: CryptoJS.enc.Hex.parse(encryptionIV.substring(0,16)),
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            }).toString(CryptoJS.enc.Utf8);
+
+            const storedData = JSON.parse(decryptedStorage);
+            const storedKey = storedData.encryptionKey;
+            const storedIV = storedData.encryptionIV;
+            const storedSalt = storedData.salt;
+            const storedEncryptedCaptcha = storedData.encryptedCaptcha;
+
             const encryptedUserInput = await encryptCaptcha(userInput, storedKey, storedIV);
              if (encryptedUserInput === null) {
                 errorMessageElement.textContent = 'Encryption failed. Please try again.';
@@ -89,8 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 captchaInputElement.value = '';
                 return;
             }
-            const userInputHash = CryptoJS.SHA256(encryptedUserInput + storedSalt).toString();
-            if (userInputHash === encryptedCaptchaHash) {
+
+           if (encryptedUserInput === storedEncryptedCaptcha) {
                  errorMessageElement.textContent = 'Captcha verified!';
                  errorMessageElement.style.color = 'green';
             } else {
