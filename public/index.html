@@ -77,6 +77,11 @@
             text-align: center;
             font-weight: bold;
         }
+        /* Added class for disabled button */
+        .input-group button:disabled {
+            background-color: #607d8b; /* Grey color */
+            cursor: not-allowed;
+        }
 
     </style>
 </head>
@@ -109,7 +114,6 @@
             const errorDiv = document.getElementById('error');
             const loadingDiv = document.getElementById('loading');
             const proxyFrame = document.getElementById('proxyFrame');
-            const maxRetries = 3;
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -249,7 +253,6 @@
 
             browseButton.addEventListener('click', async () => {
                 let url = urlInput.value.trim();
-                let retries = 0;
 
                 if (!url) {
                     errorDiv.textContent = 'Please enter a URL.';
@@ -257,6 +260,10 @@
                 }
 
                 try {
+                  // Disable the browse button while processing
+                  browseButton.disabled = true;
+                  browseButton.classList.add('disabled');
+
                   // Normalize URL by adding https:// if no protocol specified
                   if (!url.startsWith('http://') && !url.startsWith('https://')) {
                       url = 'https://' + url;
@@ -338,6 +345,9 @@
                 } catch (e) {
                     handleErrors(e); // Use the error handling function
                 } finally {
+                    // Re-enable the browse button
+                    browseButton.disabled = false;
+                    browseButton.classList.remove('disabled');
                     // Hide loading indicator (in case of immediate errors)
                     setTimeout(() => {
                         loadingDiv.style.display = 'none';
