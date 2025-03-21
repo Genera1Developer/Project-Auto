@@ -19,10 +19,8 @@ let keyGenerated = false;
 // Flag to indicate if key derivation is being used
 let keyDerivationUsed = false;
 
-// Use a WeakMap to prevent IV reuse with specific keys
-const ivMap = new WeakMap();
-
-// Use a WeakMap to store cipher instances to prevent options pollution
+// Use a WeakMap to prevent IV reuse with specific keys (not practically useful, removing)
+// Use WeakMaps to store cipher/decipher instances instead
 const cipherMap = new WeakMap();
 const decipherMap = new WeakMap();
 
@@ -59,7 +57,6 @@ function deriveEncryptionKey(password) {
         key = derivedKey;
         keyGenerated = true;
         keyDerivationUsed = true; //Mark that key derivation was used
-        ivMap.delete(key); // Clear IV map on key change
         cipherMap.delete(key); // Clear cipher map on key change
         decipherMap.delete(key); // Clear decipher map on key change
     } catch (error) {
@@ -88,7 +85,6 @@ function setEncryptionKey(newKey) {
     key = Buffer.from(newKey);
     keyGenerated = true;
     keyDerivationUsed = false; //Explicitly set to false when directly setting the key
-    ivMap.delete(key); // Clear IV map on key change
     cipherMap.delete(key); // Clear cipher map on key change
     decipherMap.delete(key); // Clear decipher map on key change
 }
@@ -107,7 +103,6 @@ function generateEncryptionKey() {
         key = newKey;
         keyGenerated = true;
         keyDerivationUsed = false; //Explicitly set to false when generating key
-        ivMap.delete(key); // Clear IV map on key change
         cipherMap.delete(key); // Clear cipher map on key change
         decipherMap.delete(key); // Clear decipher map on key change
         return newKey.toString('hex');
@@ -119,17 +114,36 @@ function generateEncryptionKey() {
     }
 }
 
+function getCipher(key) {
+  if (!cipherMap.has(key)) {
+    cipherMap.set(key, {}); // Initialize object to hold options
+  }
+  return cipherMap.get(key);
+}
+
+function getDecipher(key) {
+    if (!decipherMap.has(key)) {
+        decipherMap.set(key, {}); // Initialize object to hold options
+    }
+    return decipherMap.get(key);
+}
+
 const encrypt = (text) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
     let iv;
-    iv = generateSecureIV();
+    try {
+        iv = generateSecureIV();
+    } catch (error) {
+        console.error("IV generation failed:", error);
+        return null;
+    }
 
     let cipher = null;
-    let encrypted = null; // Declare encrypted outside the try block
-    let authTag = null;     // Declare authTag outside the try block
+    let encrypted = null;
+    let authTag = null;
     let ciphertext = null;
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
@@ -146,10 +160,6 @@ const encrypt = (text) => {
         if (cipher) {
             cipher.destroy();
         }
-        iv = null;
-        encrypted = null;
-        authTag = null;
-        ciphertext = null;
     }
 };
 
@@ -181,11 +191,6 @@ const decrypt = (text) => {
         if (decipher) {
             decipher.destroy();
         }
-        ciphertext = null;
-        iv = null;
-        authTag = null;
-        encryptedData = null;
-        decrypted = null;
     }
 };
 
@@ -228,8 +233,6 @@ function safeCompare(a, b) {
     } finally {
         if(aBuf) zeroBuffer(aBuf);
         if(bBuf) zeroBuffer(bBuf);
-        aBuf = null;
-        bBuf = null;
     }
 }
 
@@ -248,7 +251,6 @@ function rotateKey() {
         zeroBuffer(key);
         key = null;
     }
-    ivMap.delete(key); // Clear IV map on key rotation
     cipherMap.delete(key); // Clear cipher map on key rotation
     decipherMap.delete(key); // Clear decipher map on key rotation
     return generateEncryptionKey();
@@ -313,7 +315,13 @@ const encryptSecure = async (text, aad = null) => {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
-    let iv = generateSecureIV();
+    let iv;
+    try {
+        iv = generateSecureIV();
+    } catch (error) {
+        console.error("IV generation failed:", error);
+        return null;
+    }
 
     let cipher = null;
     let encrypted = null;
@@ -343,10 +351,6 @@ const encryptSecure = async (text, aad = null) => {
         if (cipher) {
             cipher.destroy();
         }
-        iv = null;
-        encrypted = null;
-        authTag = null;
-        compressedData = null;
     }
 };
 
@@ -389,12 +393,6 @@ const decryptSecure = async (text, aad = null) => {
         if (decipher) {
             decipher.destroy();
         }
-        ciphertext = null;
-        iv = null;
-        authTag = null;
-        encryptedData = null;
-        decrypted = null;
-        decompressedData = null;
     }
 };
 
@@ -417,7 +415,6 @@ function resetKeyGeneration() {
         zeroBuffer(key);
         key = null;
     }
-    ivMap.clear();
     cipherMap.clear();
     decipherMap.clear();
 }
@@ -428,7 +425,14 @@ const encryptBuffer = async (buffer, aad = null) => {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
-    let iv = generateSecureIV();
+    let iv;
+    try {
+        iv = generateSecureIV();
+    } catch (error) {
+        console.error("IV generation failed:", error);
+        return null;
+    }
+
     let cipher = null;
     let encrypted = null;
     let authTag = null;
@@ -456,10 +460,6 @@ const encryptBuffer = async (buffer, aad = null) => {
         if (cipher) {
             cipher.destroy();
         }
-        iv = null;
-        encrypted = null;
-        authTag = null;
-        compressedData = null;
     }
 };
 
@@ -498,10 +498,6 @@ const decryptBuffer = async (ciphertext, aad = null) => {
         if (decipher) {
             decipher.destroy();
         }
-        iv = null;
-        authTag = null;
-        encryptedData = null;
-        decrypted = null;
     }
 };
 
@@ -575,7 +571,14 @@ const encryptStream = (inputStream, aad = null) => {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
-    const iv = generateSecureIV();
+    let iv;
+    try {
+        iv = generateSecureIV();
+    } catch (error) {
+        console.error("IV generation failed:", error);
+        throw error;  //Re-throwing here is important
+    }
+
     const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
 
     if (aad) {
@@ -777,8 +780,9 @@ function setAlgorithm(newAlgorithm) {
         throw new Error(`Algorithm "${newAlgorithm}" is not supported.`);
     }
     try {
-        //Test the cipher before switching. This is important.
-        crypto.createCipheriv(newAlgorithm, key, generateSecureIV(), { authTagLength: AUTH_TAG_LENGTH });
+        //Test the cipher before switching. This is important.  Using tryCipher constant to scope the new IV to within this try block.
+        const tryIV = generateSecureIV();
+        crypto.createCipheriv(newAlgorithm, key, tryIV, { authTagLength: AUTH_TAG_LENGTH });
         algorithm = newAlgorithm;
         console.log(`Algorithm switched to ${newAlgorithm}`);
     } catch (error) {
@@ -895,9 +899,6 @@ const encryptWithNonce = async (text, aad, nonce) => {
         if (cipher) {
             cipher.destroy();
         }
-        encrypted = null;
-        authTag = null;
-        compressedData = null;
     }
 };
 
@@ -945,11 +946,6 @@ const decryptWithNonce = async (text, aad, nonce) => {
         if (decipher) {
             decipher.destroy();
         }
-        ciphertext = null;
-        authTag = null;
-        encryptedData = null;
-        decrypted = null;
-        decompressedData = null;
     }
 };
 
