@@ -95,7 +95,7 @@ function saltUsername(username, salt) {
 
 // Function to securely erase sensitive data from memory
 function secureErase(buffer) {
-    buffer.fill(0);
+    crypto.randomFillSync(buffer);
 }
 
 module.exports = async (req, res) => {
@@ -145,6 +145,9 @@ module.exports = async (req, res) => {
       secureErase(Buffer.from(password, 'utf8'));
       if(salt){
         secureErase(Buffer.from(salt, 'utf8'));
+      }
+      if (derivedEncryptionKey) {
+        secureErase(derivedEncryptionKey);
       }
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
