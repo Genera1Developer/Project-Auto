@@ -119,9 +119,10 @@ function getCipher(currentKey) {
   }
   if (!cipherMap.has(currentKey)) {
     const iv = generateSecureIV();
-    cipherMap.set(currentKey, crypto.createCipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH }));
+    const cipher = crypto.createCipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
+    cipherMap.set(currentKey, { cipher, iv });
   }
-  return cipherMap.get(currentKey);
+  return cipherMap.get(currentKey).cipher;
 }
 
 function getDecipher(currentKey) {
@@ -130,9 +131,10 @@ function getDecipher(currentKey) {
     }
     if (!decipherMap.has(currentKey)) {
         const iv = generateSecureIV();
-        decipherMap.set(currentKey, crypto.createDecipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH }));
+        const decipher = crypto.createDecipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipherMap.set(currentKey, { decipher, iv });
     }
-    return decipherMap.get(currentKey);
+    return decipherMap.get(currentKey).decipher;
 }
 
 const encrypt = (text) => {
