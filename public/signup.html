@@ -517,8 +517,10 @@
                     }
 
                     // Zeroize sensitive data before sending
-                    aesKey.fill(0);
-                    hmacKey.fill(0);
+                    aesKey.words.fill(0);
+                    aesKey.sigBytes = 0;
+                    hmacKey.words.fill(0);
+                    hmacKey.sigBytes = 0;
 
                     const signupData = {
                        username: usernameEncrypted,
