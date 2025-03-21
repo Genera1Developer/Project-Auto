@@ -153,6 +153,7 @@
             const AES_KEY_LENGTH = 256; // Define AES key length in bits
             const SALT_LENGTH = 16;
             const KEY_STORAGE_DURATION = 300000; // 5 minutes in milliseconds
+            const LOAD_TIMEOUT = 30000; // 30 seconds
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -393,7 +394,7 @@
                             errorDiv.textContent = 'Request timed out. Please try again.';
                             proxyFrame.src = ''; // Clear the iframe to stop the request
                         }
-                    }, 30000); // Timeout after 30 seconds
+                    }, LOAD_TIMEOUT); // Timeout after 30 seconds
 
                     // Function to clear sensitive information after delay
                     function clearSensitiveData() {
@@ -406,6 +407,18 @@
                     setTimeout(() => {
                         clearSensitiveData();
                     }, KEY_STORAGE_DURATION); //Clear after 5 minutes
+
+                    // Event listener for iframe load completion (or failure)
+                    proxyFrame.onload = () => {
+                      clearTimeout(timeoutId); // Clear the timeout
+                      loadingDiv.style.display = 'none'; // Hide loading
+                    };
+
+                    proxyFrame.onerror = () => {
+                        clearTimeout(timeoutId);
+                        loadingDiv.style.display = 'none';
+                        errorDiv.textContent = 'Failed to load the page within the iframe.';
+                    };
 
                 } catch (e) {
                     handleErrors(e); // Use the error handling function
