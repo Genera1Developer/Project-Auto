@@ -394,13 +394,13 @@
             const usernameIV = encryptedUsername.iv;
             const passwordIV = encryptedPassword.iv;
 
-            const requestBody = {
-                    username: encodedUsernameCiphertext,
-                    password: encodedPasswordCiphertext,
-                    usernameIV: usernameIV,
-                    passwordIV: passwordIV,
-                    salt: salt,
-                };
+             const requestBody = {
+                username: encodedUsernameCiphertext,
+                password: encodedPasswordCiphertext,
+                salt: salt,
+                usernameIV: usernameIV,
+                passwordIV: passwordIV,
+            };
 
             const jsonBody = JSON.stringify(requestBody);
 
