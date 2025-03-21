@@ -115,29 +115,32 @@ const decryptSession = (encryptedSession, encryptionKey) => {
 };
 
 const storeFailedLoginAttempt = (username) => {
-    //In-memory store for demonstration purposes
     if (!global.failedLoginAttempts) {
         global.failedLoginAttempts = {};
     }
 
-    if (!global.failedLoginAttempts[username]) {
-        global.failedLoginAttempts[username] = 0;
-    }
-
-    global.failedLoginAttempts[username]++;
+    global.failedLoginAttempts[username] = (global.failedLoginAttempts[username] || 0) + 1;
 };
 
 const checkFailedLoginAttempts = (username) => {
-    if (!global.failedLoginAttempts || !global.failedLoginAttempts[username]) {
-        return 0;
-    }
-    return global.failedLoginAttempts[username];
+    return (global.failedLoginAttempts && global.failedLoginAttempts[username]) || 0;
 };
 
 const clearFailedLoginAttempts = (username) => {
     if (global.failedLoginAttempts && global.failedLoginAttempts[username]) {
         delete global.failedLoginAttempts[username];
     }
+};
+
+const generateNonce = () => {
+    return crypto.randomBytes(16).toString('hex');
+};
+
+const verifyNonce = (nonce, session) => {
+    if (!session || session.nonce !== nonce) {
+        return false;
+    }
+    return true;
 };
 
 module.exports = async (req, res) => {
@@ -175,9 +178,12 @@ module.exports = async (req, res) => {
 
       if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
         clearFailedLoginAttempts(username);
+
+        const nonce = generateNonce();
         const sessionData = {
           username: userData.username,
           loginTime: Date.now(),
+          nonce: nonce
         };
 
         const encryptionKey = process.env.SESSION_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
@@ -185,7 +191,7 @@ module.exports = async (req, res) => {
 
         if (encryptedSession) {
           res.setHeader('Set-Cookie', `session=${encryptedSession}; HttpOnly; Secure`);
-          res.status(200).json({ message: 'Login successful!' });
+          res.status(200).json({ message: 'Login successful!', nonce: nonce });
         } else {
           res.status(500).json({ message: 'Session encryption failed' });
         }
