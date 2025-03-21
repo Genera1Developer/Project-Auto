@@ -818,6 +818,7 @@
 					// Clear password from memory
 					document.getElementById('password').value = '';
 					document.getElementById('confirmPassword').value = '';
+          grecaptcha.reset();
 
                     const signupData = {
                        username: usernameEncrypted,
