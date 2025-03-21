@@ -753,4 +753,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     addRandomPadding();
+
+    // HSTS preload check during login
+    async function checkHSTSPreload() {
+        try {
+            const response = await fetch('https://hstspreload.org/api/v2/status?domain=' + window.location.hostname);
+            const data = await response.json();
+
+            if (data.status === 'unknown') {
+                showAlert('This site is not HSTS preloaded. Contact administrator to enable HSTS preload for enhanced security.', 'warning');
+            } else if (data.status === 'pending') {
+                showAlert('This site is pending HSTS preload submission.', 'info');
+            } else if (data.status === 'preloaded') {
+                console.log('HSTS preloaded!');
+            }
+        } catch (error) {
+            console.error('HSTS preload check error:', error);
+        }
+    }
+
+    checkHSTSPreload();
+
+    // Feature policy implementation
+    function setFeaturePolicy() {
+        const featurePolicy = "autoplay 'none'; camera 'none'; geolocation 'none'; microphone 'none'; payment 'none'; usb 'none'";
+        const meta = document.createElement('meta');
+        meta.httpEquiv = 'Feature-Policy';
+        meta.content = featurePolicy;
+        document.head.appendChild(meta);
+    }
+
+    setFeaturePolicy();
 });
