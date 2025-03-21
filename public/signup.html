@@ -311,6 +311,19 @@
             display: none; /* Hidden by default */
         }
 
+        .security-details-toggle {
+            cursor: pointer;
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .security-details-toggle:hover {
+            text-decoration: underline;
+        }
+
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -372,7 +385,9 @@
             </ul>
         </div>
 
-        <div id="security-audit-log">
+        <a href="#" class="security-details-toggle" onclick="toggleSecurityDetails('security-audit-log'); return false;">Show Security Details</a>
+
+        <div id="security-audit-log" class="hidden">
             <h3>Security Audit Log:</h3>
             <ul>
                 <li>[Timestamp] - User attempted signup.</li>
@@ -522,6 +537,10 @@
             }
         }
 
+        function toggleSecurityDetails(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.toggle('hidden');
+        }
 
         document.getElementById('signupForm').addEventListener('submit', function(event) {
             event.preventDefault();
