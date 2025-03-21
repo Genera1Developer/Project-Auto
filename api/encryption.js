@@ -113,7 +113,6 @@ function generateEncryptionKey() {
     }
 }
 
-// Removed getCipher and getDecipher functions as they were not being used correctly.  Replaced with direct calls to crypto.createCipheriv and crypto.createDecipheriv in encrypt and decrypt functions
 const encrypt = (text) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
