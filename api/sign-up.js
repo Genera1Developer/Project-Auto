@@ -232,6 +232,32 @@ function hashWithSHA384(value) {
     return hash.digest('hex');
 }
 
+// New function to generate a session key
+async function generateSessionKey() {
+    const key = await randomBytesAsync(32); // 32 bytes for AES-256
+    return key.toString('hex');
+}
+
+// Function to encrypt the derived encryption key with a session key
+async function encryptDerivedKey(derivedKey, sessionKey, iv = null) {
+    try {
+        const actualIv = iv ? Buffer.from(iv, 'hex') : await randomBytesAsync(16);
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(sessionKey, 'hex'), actualIv);
+        let encrypted = cipher.update(derivedKey);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        const authTag = cipher.getAuthTag();
+
+        return {
+            encryptedDerivedKey: encrypted.toString('hex'),
+            iv: actualIv.toString('hex'),
+            authTag: authTag.toString('hex')
+        };
+    } catch (error) {
+        console.error("Encryption error:", error);
+        return null;
+    }
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -281,6 +307,12 @@ module.exports = async (req, res) => {
       // Stretch the derived encryption key for added security
       derivedEncryptionKey = await stretchKey(derivedEncryptionKey, salt, 5);
 
+      // Generate a session key
+      const sessionKey = await generateSessionKey();
+
+      // Encrypt derived key using session key
+      const { encryptedDerivedKey, iv: derivedKeyIv, authTag: derivedKeyAuthTag } = await encryptDerivedKey(derivedEncryptionKey, sessionKey);
+
       // 2. Encrypt the username and salt
       const saltedUsername = saltUsername(username, salt);
 
@@ -300,6 +332,9 @@ module.exports = async (req, res) => {
         encryptedUsername: encryptedUsername,
         encryptedSalt: encryptedSalt,
         usernameHash: hashWithSHA384(username), // Store username hash
+        encryptedDerivedKey: encryptedDerivedKey,  // Store encrypted key
+        derivedKeyIv: derivedKeyIv,           // Store initialization vector
+        derivedKeyAuthTag: derivedKeyAuthTag    // Store authentication tag
       };
 
       // Encrypt entire user record before storage using master key
@@ -326,6 +361,7 @@ module.exports = async (req, res) => {
       if (randomPassword) {
         secureErase(Buffer.from(randomPassword, 'utf8'));
       }
+      secureErase(Buffer.from(sessionKey, 'utf8'));
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
