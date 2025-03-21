@@ -87,7 +87,7 @@ const encryptSession = (sessionData, encryptionKey) => {
         let encrypted = cipher.update(JSON.stringify(sessionData));
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
-        return iv.toString('hex') + ':' + authTag.toString('hex') + ':' + encrypted.toString('hex');
+        return Buffer.concat([iv, authTag, encrypted]).toString('hex');
     } catch (error) {
         console.error('Session encryption error:', error);
         return null;
@@ -96,14 +96,10 @@ const encryptSession = (sessionData, encryptionKey) => {
 
 const decryptSession = (encryptedSession, encryptionKey) => {
     try {
-        const parts = encryptedSession.split(':');
-        if (parts.length !== 3) {
-            console.error('Invalid session format');
-            return null;
-        }
-        const iv = Buffer.from(parts[0], 'hex');
-        const authTag = Buffer.from(parts[1], 'hex');
-        const encryptedData = Buffer.from(parts[2], 'hex');
+        const encryptedSessionBuffer = Buffer.from(encryptedSession, 'hex');
+        const iv = encryptedSessionBuffer.slice(0, 16);
+        const authTag = encryptedSessionBuffer.slice(16, 32);
+        const encryptedData = encryptedSessionBuffer.slice(32);
 
         const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
         decipher.setAuthTag(authTag);
