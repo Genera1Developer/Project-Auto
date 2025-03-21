@@ -131,6 +131,7 @@
             const HASH_ITERATIONS = 100000; // Define constant for iterations
             const NONCE_LENGTH = 16; // Define constant for nonce length
             const KEY_CHECK_URL = '/api/checkKey'; //Endpoint to check key
+            const AES_KEY_LENGTH = 256; // Define AES key length in bits
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -235,7 +236,7 @@
                 return await window.crypto.subtle.generateKey(
                     {
                         name: "AES-GCM",
-                        length: 256,
+                        length: AES_KEY_LENGTH,
                     },
                     true,
                     ["encrypt", "decrypt"]
@@ -335,6 +336,11 @@
                     if (isCompromised) {
                         errorDiv.textContent = 'Potential security risk: Key compromise detected.';
                         return;
+                    }
+
+                    // Remove key from session storage if it exists, before setting a new one.
+                    if (sessionStorage.getItem('aesKey')) {
+                        sessionStorage.removeItem('aesKey');
                     }
 
                     // Store key in session storage *before* passing parameters
