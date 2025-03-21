@@ -197,6 +197,12 @@
                 );
             }
 
+            // Function to handle errors and display them to the user
+            function handleErrors(error) {
+                console.error(error);
+                errorDiv.textContent = 'An unexpected error occurred. Please try again.';
+            }
+
 
             browseButton.addEventListener('click', async () => {
                 const url = urlInput.value.trim();
@@ -249,9 +255,17 @@
                      // Consider using sessionStorage to store the key temporarily
                     sessionStorage.setItem('hashedKey', hashedKey);
 
+                     // Set a timeout to prevent indefinite loading
+                    setTimeout(() => {
+                        if (loadingDiv.style.display === 'block') {
+                            loadingDiv.style.display = 'none';
+                            errorDiv.textContent = 'Request timed out. Please try again.';
+                            proxyFrame.src = ''; // Clear the iframe to stop the request
+                        }
+                    }, 30000); // Timeout after 30 seconds
+
                 } catch (e) {
-                    errorDiv.textContent = 'Invalid URL or Encryption Error.';
-                    console.error("Error:", e);
+                    handleErrors(e); // Use the error handling function
                 } finally {
                     // Hide loading indicator (in case of immediate errors)
                     setTimeout(() => {
