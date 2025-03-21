@@ -189,7 +189,7 @@ function encryptStream(key, iv) {
   }
 }
 
-function decryptStream(key, iv, authTag) {
+function decryptStream(key, iv) {
     try {
         const decipher = crypto.createDecipheriv(CIPHER_ALGORITHM, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         return decipher;
@@ -297,11 +297,6 @@ async function proxyRequest(req, res) {
                 if(!responseCipher){
                   return res.status(500).send('Failed to create response cipher.');
                 }
-                const authTag = responseCipher.getAuthTag();
-
-                // Send the auth tag to the client
-                res.setHeader('Content-Encoding', 'encrypted');
-                res.setHeader('x-encryption-authtag', authTag.toString('hex'));
 
                 const encryptedStream = raw.pipe(responseCipher);
 
@@ -310,8 +305,8 @@ async function proxyRequest(req, res) {
                   res.status(500).send('Failed to encrypt response stream.');
                 });
 
+                res.setHeader('Content-Encoding', 'encrypted');
                 encryptedStream.pipe(res);
-
 
             } catch (streamErr) {
                 console.error("Response stream encryption error:", streamErr);
@@ -330,7 +325,7 @@ async function proxyRequest(req, res) {
 
         try {
             const encryptedRequestBody = await handleRequestBody(req, encryptionKey, reqIv);
-             proxyReq.setHeader('Content-Length', encryptedRequestBody.length);
+            proxyReq.setHeader('Content-Length', encryptedRequestBody.length);
             proxyReq.write(encryptedRequestBody);
             proxyReq.end();
         } catch (error) {
