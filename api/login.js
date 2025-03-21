@@ -659,7 +659,13 @@ module.exports = async (req, res) => {
                     return res.status(500).json({message: "Response encryption failed"});
                 }
 
-                res.status(200).json(encryptedResponse);
+                const finalEncryptedResponse = encryptData(JSON.stringify(encryptedResponse), keyMaterial, generateRandomIV());
+
+                if(!finalEncryptedResponse) {
+                    return res.status(500).json({message: "Final response encryption failed"});
+                }
+
+                res.status(200).json(finalEncryptedResponse);
 
 
             } else {
