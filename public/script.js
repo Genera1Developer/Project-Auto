@@ -501,4 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const nonce = generateNonce();
     setCSPHeaders(nonce);
     window.nonce = nonce;
+
+     // Clear sensitive data on unload
+    window.addEventListener('beforeunload', clearEncryptionData);
 });
