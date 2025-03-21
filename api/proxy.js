@@ -40,10 +40,9 @@ function deriveKey(password, salt) {
     }
 }
 
-function encrypt(text, key) {
+function encrypt(text, key, iv) {
     if (!text) return text;
     try {
-        let iv = crypto.randomBytes(IV_LENGTH);
         const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
         const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
         const authTag = cipher.getAuthTag();
@@ -86,7 +85,7 @@ function decrypt(text, key) {
 }
 
 // Function to encrypt/decrypt headers
-function transformHeaders(headers, encryptFlag, encryptionKey) {
+function transformHeaders(headers, encryptFlag, encryptionKey, iv) {
     const transformedHeaders = {};
     for (const key in headers) {
         if (headers.hasOwnProperty(key)) {
@@ -113,7 +112,7 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
                       if (SENSITIVE_HEADERS.includes(lowerKey)) {
                         transformedKey = ENCRYPT_HEADER_PREFIX + key;
                       }
-                      transformedValue = encrypt(value, encryptionKey);
+                      transformedValue = encrypt(value, encryptionKey, iv);
                        if (transformedValue === null) {
                           console.warn(`Skipping header value for ${key} due to encryption failure.`);
                           continue;
@@ -204,7 +203,9 @@ function proxyRequest(req, res) {
                 raw = brotliDecompress;
             }
 
-            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey); // Encrypt outgoing headers, using salt
+             // Generate IV for response encryption
+            const iv = crypto.randomBytes(IV_LENGTH);
+            let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, iv); // Encrypt outgoing headers, using salt
             delete resHeaders['content-encoding'];
 
             // Send the salt and algorithm to the client for decryption
@@ -218,7 +219,6 @@ function proxyRequest(req, res) {
             res.writeHead(proxyRes.statusCode, resHeaders);
 
             // Encrypt the response body
-            const iv = crypto.randomBytes(IV_LENGTH);
             const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, iv);
             const authTag = cipher.getAuthTag();
 
