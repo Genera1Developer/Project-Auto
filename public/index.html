@@ -11,7 +11,7 @@
         integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* Added styling to visually emphasize encryption theme */
+        /* General Styles */
         body {
             background-color: #1a1a1a;
             color: #eee;
@@ -24,6 +24,7 @@
             align-items: center;
         }
 
+        /* Particles Background */
         #particles-js {
             position: fixed;
             width: 100%;
@@ -33,6 +34,7 @@
             z-index: 0;
         }
 
+        /* Container Styles */
         .container {
             background-color: #222;
             border-radius: 8px;
@@ -48,17 +50,25 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
         }
 
+        /* Header and Text Styles */
         h1 {
             color: #00bcd4;
             text-align: center;
         }
 
+        p {
+            text-align: center;
+            color: #eee;
+        }
+
+        /* Security Info */
         .security-info {
             color: #4caf50;
             text-align: center;
             margin-top: 10px;
         }
 
+        /* Input Group Styles */
         .input-group {
             position: relative;
             display: flex;
@@ -106,6 +116,7 @@
             cursor: not-allowed;
         }
 
+        /* Error and Loading Styles */
         .error {
             color: #f44336;
             text-align: center;
@@ -118,6 +129,7 @@
             margin-top: 10px;
         }
 
+        /* Iframe Styles */
         #proxyFrame {
             width: 100%;
             height: 600px;
@@ -137,6 +149,7 @@
             }
         }
 
+        /* Enhanced Security */
         .enhanced-security {
             background-color: #33691e;
             padding: 10px;
@@ -146,6 +159,7 @@
             font-weight: bold;
         }
 
+        /* Animations */
         .fa-lock {
             animation: rotateLock 2s linear infinite;
             display: inline-block;
@@ -182,6 +196,7 @@
             }
         }
 
+        /* Info Messages */
         .info {
             color: #2196F3;
             margin-top: 10px;
@@ -193,7 +208,75 @@
             font-weight: bold;
         }
 
-        /* Styles for responsive design */
+        /* Key Generation and Compromise */
+        .key-generation-info {
+            color: #2196F3;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .key-compromised {
+            color: #f44336;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Features List */
+        .features-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #eee;
+        }
+
+        .features-list li i {
+            margin-right: 10px;
+            color: #4CAF50;
+        }
+
+        /* URL Validation */
+        .input-group input:invalid {
+            border-color: #f44336;
+        }
+
+        .input-group input:valid {
+            border-color: #4CAF50;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Hidden Class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 width: 95%;
@@ -229,72 +312,6 @@
                 height: 400px;
             }
         }
-
-        /* Additional styles for key generation and compromise alerts */
-        .key-generation-info {
-            color: #2196F3;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .key-compromised {
-            color: #f44336;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .features-list {
-            list-style-type: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        .features-list li {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-            color: #eee;
-        }
-
-        .features-list li i {
-            margin-right: 10px;
-            color: #4CAF50;
-        }
-
-        /* Improved URL validation */
-        .input-group input:invalid {
-            border-color: #f44336;
-        }
-
-        .input-group input:valid {
-            border-color: #4CAF50;
-        }
-
-        /* Additional styling for enhanced user experience */
-        .loading-spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 2s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .hidden {
-            display: none !important;
-        }
     </style>
 </head>
 
@@ -303,7 +320,7 @@
 
     <div class="container">
         <h1><i class="fas fa-lock"></i> Encrypted Web Proxy</h1>
-        <p style="text-align: center;">Enter the URL to browse securely:</p>
+        <p>Enter the URL to browse securely:</p>
         <div class="input-group">
             <i class="fas fa-key"></i>
             <input type="url" id="url" placeholder="https://example.com" required>
@@ -344,15 +361,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const urlInput = document.getElementById('url');
-            const browseButton = document.getElementById('browse');
-            const errorDiv = document.getElementById('error');
-            const loadingDiv = document.getElementById('loading');
-            const proxyFrame = document.getElementById('proxyFrame');
-            const infoDiv = document.getElementById('info');
-            const keyExpiryWarningDiv = document.getElementById('keyExpiryWarning');
-            const keyGenerationInfoDiv = document.getElementById('keyGenerationInfo');
-            const keyCompromisedAlertDiv = document.getElementById('keyCompromisedAlert');
+            // Constants
             const HASH_ITERATIONS = 100000;
             const NONCE_LENGTH = 16;
             const KEY_CHECK_URL = '/api/checkKey';
@@ -365,12 +374,13 @@
             const ALLOWED_FRAME_ORIGIN = window.location.origin;
             const REDIRECT_STATUS_CODES = [301, 302, 307, 308];
             const SERVICE_WORKER_URL = '/sw.js';
+
+            // Feature Flags
             const PREFETCH_SUBRESOURCES = true;
             const ENCRYPT_REDIRECTS = true;
             const ENABLE_KEY_ROTATION = true;
             const KEY_ROTATION_INTERVAL = 600000;
             const KEY_CHECK_INTERVAL = 1800000;
-            let lastKeyCheckTime = 0;
             const PREVENT_AUTOFILL = true;
             const MAX_URL_LENGTH = 2048;
             const ENABLE_CSP = true;
@@ -380,8 +390,23 @@
             const ENABLE_HSTS = true;
             const ENABLE_WEBGPU = false;
             const ENABLE_SUBTLE_CRYPTO_LOGGING = false;
-            let aesKey;
 
+            // DOM Elements
+            const urlInput = document.getElementById('url');
+            const browseButton = document.getElementById('browse');
+            const errorDiv = document.getElementById('error');
+            const loadingDiv = document.getElementById('loading');
+            const proxyFrame = document.getElementById('proxyFrame');
+            const infoDiv = document.getElementById('info');
+            const keyExpiryWarningDiv = document.getElementById('keyExpiryWarning');
+            const keyGenerationInfoDiv = document.getElementById('keyGenerationInfo');
+            const keyCompromisedAlertDiv = document.getElementById('keyCompromisedAlert');
+
+            // State Variables
+            let aesKey;
+            let lastKeyCheckTime = 0;
+
+            // Utility Functions
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
                 window.crypto.getRandomValues(randomBuffer);
@@ -457,11 +482,6 @@
                 return window.isSecureContext;
             }
 
-            if (!isSecureContext()) {
-                errorDiv.textContent = "Warning: You are not using a secure (HTTPS) connection. Encryption may not be fully effective.";
-                errorDiv.style.color = '#ff9800';
-            }
-
             async function checkKeyCompromise(keyHash) {
                 try {
                     const response = await fetch(KEY_CHECK_URL, {
@@ -501,8 +521,6 @@
                 }
             }
 
-            registerServiceWorker();
-
             async function rotateAESKey() {
                 console.log('Rotating AES key...');
                 try {
@@ -528,10 +546,6 @@
                 }
             }
 
-            if (ENABLE_KEY_ROTATION) {
-                setInterval(rotateAESKey, KEY_ROTATION_INTERVAL);
-            }
-
             async function periodicKeyCheck() {
                 const currentTime = Date.now();
                 if (currentTime - lastKeyCheckTime >= KEY_CHECK_INTERVAL) {
@@ -553,14 +567,6 @@
                         }
                     }
                 }
-            }
-
-            setInterval(periodicKeyCheck, KEY_CHECK_INTERVAL);
-
-            if (PREVENT_AUTOFILL) {
-                urlInput.setAttribute("autocomplete", "off");
-                urlInput.setAttribute("autocorrect", "off");
-                urlInput.setAttribute("spellcheck", "false");
             }
 
             async function getOrCreateAESKey() {
@@ -596,6 +602,138 @@
                 return aesKey;
             }
 
+            function displayKeyExpiryWarning() {
+                const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
+                if (storedTimestamp) {
+                    const timestamp = parseInt(storedTimestamp, 10);
+                    const timeLeft = KEY_STORAGE_DURATION - (Date.now() - timestamp);
+                    if (timeLeft <= 60000) {
+                        keyExpiryWarningDiv.classList.remove('hidden');
+                    } else {
+                        keyExpiryWarningDiv.classList.add('hidden');
+                    }
+                } else {
+                    keyExpiryWarningDiv.classList.add('hidden');
+                }
+            }
+
+            function clearSensitiveData() {
+                sessionStorage.removeItem('aesKey');
+                sessionStorage.removeItem('aesIV');
+                sessionStorage.removeItem('aesKeyTimestamp');
+                sessionStorage.removeItem('hashedKey');
+                aesKey = null;
+            }
+
+            async function encryptAndProxy(redirectUrl) {
+                try {
+                    const nonce = generateNonce(NONCE_LENGTH);
+                    console.log("Redirect Nonce:", nonce);
+
+                    aesKey = await getOrCreateAESKey();
+                    if (!aesKey) {
+                        return;
+                    }
+
+                    const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
+
+                    const aesKeyHex = sessionStorage.getItem('aesKey');
+                    const hashedKey = await hashKey(aesKeyHex);
+                    console.log("Hashed Key:", hashedKey);
+
+                    const isCompromised = await checkKeyCompromise(hashedKey);
+                    if (isCompromised) {
+                        keyCompromisedAlertDiv.classList.remove('hidden');
+                        errorDiv.textContent = 'Potential security risk: Key compromise detected.';
+                        return;
+                    } else {
+                        keyCompromisedAlertDiv.classList.add('hidden');
+                    }
+
+                    sessionStorage.setItem('aesIV', iv);
+
+                    sessionStorage.setItem('aesKey', aesKeyHex);
+                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
+                    sessionStorage.setItem('hashedKey', hashedKey);
+
+                    const formData = new FormData();
+                    formData.append('ciphertext', ciphertext);
+                    formData.append('nonce', nonce);
+                    formData.append('keyHash', hashedKey);
+
+                    loadingDiv.style.display = 'block';
+                    errorDiv.textContent = '';
+                    proxyFrame.classList.remove('hidden');
+
+                    proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
+                    let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
+                    if (ENABLE_CSP) {
+                        proxyFrame.setAttribute('csp', cspValue);
+                    }
+
+                    return fetch(PROXY_URL, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.text();
+                        })
+                        .then(html => {
+                            proxyFrame.contentWindow.document.open();
+                            proxyFrame.contentWindow.document.write(html);
+                            proxyFrame.contentWindow.document.close();
+
+                            if (PREFETCH_SUBRESOURCES) {
+                                prefetchSubresources(html);
+                            }
+
+                            proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
+                        });
+                } catch (error) {
+                    console.error("Error handling redirect:", error);
+                    errorDiv.textContent = 'Failed to load the redirect page.';
+                } finally {
+                    clearTimeout(timeoutId);
+                    loadingDiv.style.display = 'none';
+                }
+            }
+
+            async function prefetchSubresources(html) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const subresourceTypes = ['link[rel="stylesheet"]', 'script[src]', 'img[src]'];
+
+                for (const selector of subresourceTypes) {
+                    const elements = doc.querySelectorAll(selector);
+                    for (const element of elements) {
+                        let url;
+                        if (element.tagName === 'LINK') {
+                            url = element.href;
+                        } else if (element.tagName === 'SCRIPT' || element.tagName === 'IMG') {
+                            url = element.src;
+                        }
+
+                        if (url) {
+                            const prefetchLink = document.createElement('link');
+                            prefetchLink.rel = 'prefetch';
+                            prefetchLink.href = url;
+
+                            if (SUBRESOURCE_INTEGRITY && element.tagName === 'SCRIPT' && element.integrity) {
+                                prefetchLink.integrity = element.integrity;
+                                prefetchLink.crossOrigin = 'anonymous';
+                            }
+
+                            document.head.appendChild(prefetchLink);
+                            console.log('Prefetching:', url);
+                        }
+                    }
+                }
+            }
+
+            // Event Listeners and Initialization
 
             browseButton.addEventListener('click', async () => {
                 let url = urlInput.value.trim();
@@ -725,19 +863,6 @@
                             proxyFrame.src = '';
                         }
                     }, LOAD_TIMEOUT);
-
-                    function clearSensitiveData() {
-                        sessionStorage.removeItem('aesKey');
-                        sessionStorage.removeItem('aesIV');
-                        sessionStorage.removeItem('aesKeyTimestamp');
-                        sessionStorage.removeItem('hashedKey');
-                        aesKey = null;
-                    }
-
-                    setTimeout(() => {
-                        clearSensitiveData();
-                    }, KEY_STORAGE_DURATION);
-
                 } catch (e) {
                     handleErrors(e);
                 } finally {
@@ -749,154 +874,11 @@
                 }
             });
 
-            function displayKeyExpiryWarning() {
-                const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
-                if (storedTimestamp) {
-                    const timestamp = parseInt(storedTimestamp, 10);
-                    const timeLeft = KEY_STORAGE_DURATION - (Date.now() - timestamp);
-                    if (timeLeft <= 60000) {
-                        keyExpiryWarningDiv.classList.remove('hidden');
-                    } else {
-                        keyExpiryWarningDiv.classList.add('hidden');
-                    }
-                } else {
-                    keyExpiryWarningDiv.classList.add('hidden');
-                }
-            }
-
-            setInterval(() => {
-                const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
-                if (storedTimestamp) {
-                    const timestamp = parseInt(storedTimestamp, 10);
-                    if (Date.now() - timestamp > KEY_STORAGE_DURATION) {
-                        console.log("AES Key expired. Clearing from sessionStorage.");
-                        sessionStorage.removeItem('aesKey');
-                        sessionStorage.removeItem('aesIV');
-                        sessionStorage.removeItem('aesKeyTimestamp');
-                        sessionStorage.removeItem('hashedKey');
-                        aesKey = null;
-                        keyExpiryWarningDiv.classList.add('hidden');
-                    } else {
-                        displayKeyExpiryWarning();
-                    }
-                }
-            }, KEY_EXPIRY_CHECK_INTERVAL);
-
-            displayKeyExpiryWarning();
-
             window.addEventListener('message', function (event) {
                 if (event.origin === ALLOWED_FRAME_ORIGIN && event.data.type === 'proxyLoaded') {
                     console.log('Iframe proxy loaded successfully.');
                 }
             });
-
-            async function encryptAndProxy(redirectUrl) {
-                try {
-                    const nonce = generateNonce(NONCE_LENGTH);
-                    console.log("Redirect Nonce:", nonce);
-
-                    aesKey = await getOrCreateAESKey();
-                    if (!aesKey) {
-                        return;
-                    }
-
-                    const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
-
-                    const aesKeyHex = sessionStorage.getItem('aesKey');
-                    const hashedKey = await hashKey(aesKeyHex);
-                    console.log("Hashed Key:", hashedKey);
-
-                    const isCompromised = await checkKeyCompromise(hashedKey);
-                    if (isCompromised) {
-                        keyCompromisedAlertDiv.classList.remove('hidden');
-                        errorDiv.textContent = 'Potential security risk: Key compromise detected.';
-                        return;
-                    } else {
-                        keyCompromisedAlertDiv.classList.add('hidden');
-                    }
-
-                    sessionStorage.setItem('aesIV', iv);
-
-                    sessionStorage.setItem('aesKey', aesKeyHex);
-                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
-                    sessionStorage.setItem('hashedKey', hashedKey);
-
-                    const formData = new FormData();
-                    formData.append('ciphertext', ciphertext);
-                    formData.append('nonce', nonce);
-                    formData.append('keyHash', hashedKey);
-
-                    loadingDiv.style.display = 'block';
-                    errorDiv.textContent = '';
-                    proxyFrame.classList.remove('hidden');
-
-                    proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
-                    let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
-                    if (ENABLE_CSP) {
-                        proxyFrame.setAttribute('csp', cspValue);
-                    }
-
-                    return fetch(PROXY_URL, {
-                        method: 'POST',
-                        body: formData,
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.text();
-                        })
-                        .then(html => {
-                            proxyFrame.contentWindow.document.open();
-                            proxyFrame.contentWindow.document.write(html);
-                            proxyFrame.contentWindow.document.close();
-
-                            if (PREFETCH_SUBRESOURCES) {
-                                prefetchSubresources(html);
-                            }
-
-                            proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
-                        });
-                } catch (error) {
-                    console.error("Error handling redirect:", error);
-                    errorDiv.textContent = 'Failed to load the redirect page.';
-                } finally {
-                    clearTimeout(timeoutId);
-                    loadingDiv.style.display = 'none';
-                }
-            }
-
-            async function prefetchSubresources(html) {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const subresourceTypes = ['link[rel="stylesheet"]', 'script[src]', 'img[src]'];
-
-                for (const selector of subresourceTypes) {
-                    const elements = doc.querySelectorAll(selector);
-                    for (const element of elements) {
-                        let url;
-                        if (element.tagName === 'LINK') {
-                            url = element.href;
-                        } else if (element.tagName === 'SCRIPT' || element.tagName === 'IMG') {
-                            url = element.src;
-                        }
-
-                        if (url) {
-                            const prefetchLink = document.createElement('link');
-                            prefetchLink.rel = 'prefetch';
-                            prefetchLink.href = url;
-
-                            if (SUBRESOURCE_INTEGRITY && element.tagName === 'SCRIPT' && element.integrity) {
-                                prefetchLink.integrity = element.integrity;
-                                prefetchLink.crossOrigin = 'anonymous';
-                            }
-
-                            document.head.appendChild(prefetchLink);
-                            console.log('Prefetching:', url);
-                        }
-                    }
-                }
-            }
 
             if (ENABLE_HSTS) {
                 if (window.location.protocol === 'https:') {
@@ -916,9 +898,37 @@
                 console.log("WebGPU is not supported or disabled.");
             }
 
+            if (PREVENT_AUTOFILL) {
+                urlInput.setAttribute("autocomplete", "off");
+                urlInput.setAttribute("autocorrect", "off");
+                urlInput.setAttribute("spellcheck", "false");
+            }
+
+            // Periodic tasks and initializations
+            setInterval(() => {
+                const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
+                if (storedTimestamp) {
+                    const timestamp = parseInt(storedTimestamp, 10);
+                    if (Date.now() - timestamp > KEY_STORAGE_DURATION) {
+                        console.log("AES Key expired. Clearing from sessionStorage.");
+                        clearSensitiveData();
+                        keyExpiryWarningDiv.classList.add('hidden');
+                    } else {
+                        displayKeyExpiryWarning();
+                    }
+                }
+            }, KEY_EXPIRY_CHECK_INTERVAL);
+
+            if (ENABLE_KEY_ROTATION) {
+                setInterval(rotateAESKey, KEY_ROTATION_INTERVAL);
+            }
+
+            setInterval(periodicKeyCheck, KEY_CHECK_INTERVAL);
+
             (async () => {
                 await getOrCreateAESKey();
                 displayKeyExpiryWarning();
+                registerServiceWorker(); // Call service worker registration here
             })();
         });
 
