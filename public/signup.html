@@ -226,6 +226,7 @@
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js"></script>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -507,42 +508,67 @@
                     recaptchaResponse: grecaptcha.getResponse()
                  };
 
-                  fetch('/api/sign-up', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify(signupData)
-                  })
-                  .then(response => {
-                      encryptionAnimation.style.display = 'none';
-                      if (!response.ok) {
-                          throw new Error('Network response was not ok');
-                      }
-                      return response.json();
-                  })
-                  .then(data => {
-                      if (data.success) {
-                          errorMessage.textContent = '';
-                          encryptionStatus.textContent = 'Encrypted account created.';
-                          window.location.href = 'login.html';
-                      } else {
-                          errorMessage.textContent = data.message || 'Signup failed.';
-                          encryptionStatus.textContent = 'Signup attempt encrypted.';
-                      }
-                  })
-                  .catch(error => {
-                      encryptionAnimation.style.display = 'none';
-                      console.error('Error:', error);
-                      errorMessage.textContent = 'An error occurred during signup.';
-                      encryptionStatus.textContent = 'Connection error.';
-                  });
+                  // Public key retrieval
+                  fetch('/api/public-key')
+                      .then(response => response.json())
+                      .then(data => {
+                        const publicKey = data.publicKey;
 
-                  // saltDisplay.textContent = "Salt: " + encryptedSalt;
-                  // aesKeyDisplay.textContent = "AES Key: " + encryptedAesKey;
-                  // hmacKeyDisplay.textContent = "HMAC Key: " + encryptedHmacKey;
+                        // RSA encryption of AES key
+                        const encrypt = new JSEncrypt();
+                        encrypt.setPublicKey(publicKey);
+                        const encryptedAesKeyRSA = encrypt.encrypt(aesKey.toString());
 
+                        const signupData = {
+                           username: usernameEncrypted,
+                           password: hashedPassword,
+                           email: emailEncrypted,
+                           salt: encryptedSalt,
+                           iv: encryptedIV,
+                           encryptedAesKey: encryptedAesKeyRSA,
+                           hmacUsername: hmacUsername,
+                           hmacEmail: hmacEmail,
+                           hmacKey: encryptedHmacKey,
+                           recaptchaResponse: grecaptcha.getResponse()
+                        };
 
+                        fetch('/api/sign-up', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(signupData)
+                        })
+                        .then(response => {
+                            encryptionAnimation.style.display = 'none';
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                errorMessage.textContent = '';
+                                encryptionStatus.textContent = 'Encrypted account created.';
+                                window.location.href = 'login.html';
+                            } else {
+                                errorMessage.textContent = data.message || 'Signup failed.';
+                                encryptionStatus.textContent = 'Signup attempt encrypted.';
+                            }
+                        })
+                        .catch(error => {
+                            encryptionAnimation.style.display = 'none';
+                            console.error('Error:', error);
+                            errorMessage.textContent = 'An error occurred during signup.';
+                            encryptionStatus.textContent = 'Connection error.';
+                        });
+                      })
+                      .catch(error => {
+                          encryptionAnimation.style.display = 'none';
+                          console.error('Error:', error);
+                          errorMessage.textContent = 'Failed to retrieve public key.';
+                          encryptionStatus.textContent = 'Key retrieval error.';
+                      });
                 } catch (e) {
                   encryptionAnimation.style.display = 'none';
                   console.error('Encryption Error:', e);
