@@ -689,6 +689,13 @@ module.exports = async (req, res) => {
                  res.setHeader('Pragma', 'no-cache');
                  res.setHeader('Expires', '0');
 
+                 const secureCookieOptions = {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'Strict'
+                 }
+
+                 res.cookie('session_id', sessionId, secureCookieOptions);
                  res.status(200).json({ data: compressedResponse });
 
 
