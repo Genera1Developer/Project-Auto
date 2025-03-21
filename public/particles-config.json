@@ -198,7 +198,13 @@
                 "level": 6
               }
           },
-       "cacheIntegrityAlgorithm": "SHA256"
+       "cacheIntegrityAlgorithm": "SHA256",
+      "keyWrappingAlgorithm": "ECDH-ES+A256KW",
+        "keyWrappingPublicKey": "ENC_KEY_WRAPPING_PUBLIC_KEY_PLACEHOLDER",
+        "keyWrappingPrivateKey": "ENC_KEY_WRAPPING_PRIVATE_KEY_PLACEHOLDER",
+        "keyWrappingSalt": "ENC_KEY_WRAPPING_SALT_PLACEHOLDER",
+        "keyWrappingIterations": 5000,
+        "keyWrappingEncoding": "base64"
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -465,12 +471,22 @@
           "jwtSecret": "ENC_JWT_SECRET_PLACEHOLDER",
           "tokenExpiration": 3600,
           "refreshTokenExpiration": 86400,
-          "algorithm": "HS256"
+          "algorithm": "HS256",
+           "secureCookies": true,
+           "sameSite": "strict",
+           "httpOnly": true
       },
        "automaticUpdates": {
             "enabled": false,
             "serverUrl": "ENC_UPDATE_SERVER_URL_PLACEHOLDER",
             "publicKey": "ENC_UPDATE_PUBLIC_KEY_PLACEHOLDER"
+        },
+        "bruteForceProtection": {
+          "enabled": true,
+          "freeRetries": 5,
+          "minWait": 300,
+          "maxWait": 3600,
+          "lifetime": 600
         }
   }
 }
