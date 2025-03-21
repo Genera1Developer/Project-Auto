@@ -944,6 +944,15 @@ const decryptWithNonce = async (text, aad, nonce) => {
     }
 };
 
+// Function to check for hardware acceleration
+function isHardwareAccelerationEnabled() {
+    // This is a placeholder and requires platform-specific checks.
+    // For example, on some systems, you can check for the existence of
+    // specific CPU features (e.g., AES-NI on x86) using a native addon.
+    // This implementation always returns false for safety.
+    return false;
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -986,5 +995,6 @@ module.exports = {
     deriveSigningKey,
     generateNonce,
     encryptWithNonce,
-    decryptWithNonce
+    decryptWithNonce,
+    isHardwareAccelerationEnabled
 };
