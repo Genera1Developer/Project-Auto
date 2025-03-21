@@ -124,7 +124,7 @@ particlesJS('particles-js', {
                 return data;
             }
 
-            const encryptValue = async (text, secretKey, iv, salt) => {
+            const encryptValue = async (text, secretKey, iv, algorithm, salt) => {
               try {
                 const enc = new TextEncoder();
                 const keyBytes = this.stringToUint8Array(secretKey);
@@ -343,6 +343,17 @@ particlesJS('particles-js', {
             }
 
             return uint8Array;
+        },
+        bufferToString: function(buf) {
+          return String.fromCharCode.apply(null, new Uint16Array(buf));
+        },
+        stringToBuffer: function(str) {
+          const buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+          const bufView = new Uint16Array(buf);
+          for (let i=0, strLen=str.length; i < strLen; i++) {
+            bufView[i] = str.charCodeAt(i);
+          }
+          return buf;
         }
   },
   "fn": {
