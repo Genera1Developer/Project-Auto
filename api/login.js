@@ -489,6 +489,36 @@ const hmacSign = (data, key) => {
     }
 };
 
+const generateRandomIV = () => {
+    return crypto.randomBytes(16);
+};
+
+const encryptData = (data, key, iv) => {
+    try {
+        const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+        let encrypted = cipher.update(data, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        const authTag = cipher.getAuthTag();
+        return { encryptedData: encrypted, authTag: authTag.toString('hex') };
+    } catch (error) {
+        console.error('Data encryption error:', error);
+        return null;
+    }
+};
+
+const decryptData = (encryptedData, key, iv, authTag) => {
+    try {
+        const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+        decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+        let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
+    } catch (error) {
+        console.error('Data decryption error:', error);
+        return null;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -553,12 +583,18 @@ module.exports = async (req, res) => {
             return res.status(500).json({ message: 'Failed to generate key material' });
         }
 
-        const encryptedSession = encryptWithKeyMaterial(sessionData, keyMaterial);
+        // Enhanced session encryption
+        const sessionIV = generateRandomIV();
+        const { encryptedData: encryptedSession, authTag: sessionAuthTag } = encryptData(JSON.stringify(sessionData), keyMaterial, sessionIV);
+        const encryptedSessionCookieValue = JSON.stringify({
+            iv: sessionIV.toString('hex'),
+            authTag: sessionAuthTag,
+            data: encryptedSession
+        });
 
-        if (encryptedSession) {
-            const encryptedSessionCookie = encryptCookie(encryptedSession, keyMaterial.toString('hex'));
+        const encryptedSessionCookie = encryptCookie(encryptedSessionCookieValue, keyMaterial.toString('hex'));
 
-            if (encryptedSessionCookie) {
+        if (encryptedSessionCookie) {
                 const deviceSecret = generateDeviceSecret();
                 const encryptedDeviceSecret = encryptWithDeviceSecret({secret: deviceSecret}, keyMaterial.toString('hex'))
 
@@ -579,10 +615,6 @@ module.exports = async (req, res) => {
             } else {
                 res.status(500).json({ message: 'Session cookie encryption failed' });
             }
-
-        } else {
-          res.status(500).json({ message: 'Session encryption failed' });
-        }
 
       } else {
         storeFailedLoginAttempt(username);
