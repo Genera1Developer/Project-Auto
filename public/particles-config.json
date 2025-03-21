@@ -144,11 +144,18 @@
         "hmacCacheTtl": 7200,
         "keyCacheTtl": 7200,
         "trustedOrigin": "self",
-        "adataEncryptionKey": "ENC_ADATA_ENCRYPTION_KEY_PLACEHOLDER"
+        "adataEncryptionKey": "ENC_ADATA_ENCRYPTION_KEY_PLACEHOLDER",
+        "disableCacheOnLowMemory": true,
+         "memoryThresholdForCacheDisable": 80,
+         "adataPrecomputeHashes": true,
+         "hmacPrecomputeHashes": true,
+         "keyPrecomputeHashes": true
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
-        "fallbackUrl": "wasm/encryption.js"
+        "fallbackUrl": "wasm/encryption.js",
+         "integrity": "ENC_WASM_INTEGRITY_PLACEHOLDER",
+         "fallbackIntegrity": "ENC_WASM_FALLBACK_INTEGRITY_PLACEHOLDER"
     }
   },
   "interactivity": {
@@ -270,6 +277,10 @@
             "enforce": true,
             "maxAge": 31536000,
             "reportUri": "/ct-report"
-        }
+        },
+         "requireTrustedTypesFor": {
+                "enabled": false,
+                "policyNames": ["default"]
+         }
   }
 }
