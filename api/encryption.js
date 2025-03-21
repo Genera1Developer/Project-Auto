@@ -463,12 +463,156 @@ const encryptJSON = (obj, aad = null) => {
 const decryptJSON = (text, aad = null) => {
     try {
         const decryptedText = decryptSecure(text, aad);
+        if (!decryptedText) return null;
         return JSON.parse(decryptedText);
     } catch (error) {
         console.error("JSON Decryption failed:", error);
         return null;
     }
 };
+
+// Function to encrypt an object with custom serialization
+const encryptObject = (obj, serialize, aad = null) => {
+    try {
+        const text = serialize(obj);
+        return encryptSecure(text, aad);
+    } catch (error) {
+        console.error("Object Encryption failed:", error);
+        return null;
+    }
+};
+
+// Function to decrypt an object with custom deserialization
+const decryptObject = (text, deserialize, aad = null) => {
+    try {
+        const decryptedText = decryptSecure(text, aad);
+         if (!decryptedText) return null;
+        return deserialize(decryptedText);
+    } catch (error) {
+        console.error("Object Decryption failed:", error);
+        return null;
+    }
+};
+
+// Function to directly encrypt a stream
+const encryptStream = (inputStream, aad = null) => {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
+
+    const iv = generateSecureIV();
+    const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+
+    if (aad) {
+        cipher.setAAD(Buffer.from(aad, 'utf8'));
+    }
+
+    const authTag = cipher.getAuthTag();
+    const transformStream = new require('stream').Transform({
+        transform(chunk, encoding, callback) {
+            try{
+                const encryptedChunk = cipher.update(chunk);
+                callback(null, encryptedChunk);
+            } catch (error) {
+                callback(error);
+            }
+        },
+        flush(callback) {
+            try {
+                const finalChunk = cipher.final();
+                callback(null, finalChunk);
+            } catch (error){
+                callback(error);
+            }
+        }
+    });
+    inputStream.pipe(transformStream);
+
+    const combinedStream = new require('stream').PassThrough();
+    combinedStream.write(iv);
+    combinedStream.write(authTag);
+    transformStream.pipe(combinedStream, { end: false });
+
+    transformStream.on('end', () => {
+        combinedStream.end();
+    });
+
+    return combinedStream;
+};
+
+// Function to directly decrypt a stream
+const decryptStream = (inputStream, aad = null) => {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
+
+    let iv = null;
+    let authTag = null;
+    let dataStarted = false;
+
+    const transformStream = new require('stream').Transform({
+        transform(chunk, encoding, callback) {
+            try {
+                if (!dataStarted) {
+                    if (!iv) {
+                        iv = chunk.slice(0, IV_LENGTH);
+                        chunk = chunk.slice(IV_LENGTH);
+                    }
+                    if (iv && !authTag && chunk.length >= AUTH_TAG_LENGTH) {
+                        authTag = chunk.slice(0, AUTH_TAG_LENGTH);
+                        chunk = chunk.slice(AUTH_TAG_LENGTH);
+                        dataStarted = true;
+
+                        const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+                        if (aad) {
+                            decipher.setAAD(Buffer.from(aad, 'utf8'));
+                        }
+                        decipher.setAuthTag(authTag);
+
+                        const decryptedChunk = decipher.update(chunk);
+                        callback(null, decryptedChunk);
+                    } else if (iv && !authTag && chunk.length < AUTH_TAG_LENGTH){
+                        //Accumulate more data for authTag.
+                        return callback(null, null);
+                    }
+                     else {
+                        return callback(new Error("Invalid data format."));
+                    }
+                } else {
+                    const decipher = this.decipher || crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+                    if(aad && !this.aadSet) {
+                         decipher.setAAD(Buffer.from(aad, 'utf8'));
+                         this.aadSet = true;
+                    }
+
+                    this.decipher = decipher;
+                    const decryptedChunk = decipher.update(chunk);
+                    callback(null, decryptedChunk);
+                }
+            } catch (error) {
+                callback(error);
+            }
+        },
+        flush(callback) {
+            try {
+                 const decipher = this.decipher;
+                if(decipher){
+                    const finalChunk = decipher.final();
+                     callback(null, finalChunk);
+                } else {
+                    callback(null, null); //No data received
+                }
+
+            } catch (error) {
+                callback(error);
+            }
+        }
+    });
+
+    inputStream.pipe(transformStream);
+    return transformStream;
+};
+
 
 module.exports = {
     encrypt,
@@ -495,5 +639,9 @@ module.exports = {
     decryptBuffer,
     isEncrypted,
     encryptJSON,
-    decryptJSON
+    decryptJSON,
+    encryptObject,
+    decryptObject,
+    encryptStream,
+    decryptStream
 };
