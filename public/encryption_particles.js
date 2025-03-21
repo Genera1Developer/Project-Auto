@@ -326,12 +326,16 @@ particlesJS('particles-js', {
             if (newKey) {
                 config.encrypt_config.key = newKey;
                 key = newKey;
+                sessionStorage.setItem('encryptionKey', newKey);
                 console.log('New encryption key generated:', newKey);
             } else {
                 console.error('Failed to generate encryption key. Encryption disabled.');
                 pJS.plugins.encrypt.enable = false;
                 return;
             }
+        } else {
+            key = sessionStorage.getItem('encryptionKey') || key;
+            config.encrypt_config.key = key;
         }
 
         if (!iv || iv === 'YOUR_IV_KEY') {
@@ -340,12 +344,16 @@ particlesJS('particles-js', {
             if (newIV) {
                 config.encrypt_config.iv = newIV;
                 iv = newIV;
+                sessionStorage.setItem('encryptionIV', newIV);
                 console.log('New encryption IV generated:', newIV);
             } else {
                 console.error('Failed to generate encryption IV. Encryption disabled.');
                 pJS.plugins.encrypt.enable = false;
                 return;
             }
+        } else {
+            iv = sessionStorage.getItem('encryptionIV') || iv;
+            config.encrypt_config.iv = iv;
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
@@ -401,6 +409,9 @@ particlesJS('particles-js', {
         const config = pJS.actualOptions;
         const encryptPlugin = pJS.plugins;
         let { key, iv, algorithm } = config.encrypt_config;
+
+        key = sessionStorage.getItem('encryptionKey') || key;
+        iv = sessionStorage.getItem('encryptionIV') || iv;
 
         if (config?.plugins?.encrypt?.dataFields) {
             const { dataFields } = config.plugins.encrypt;
