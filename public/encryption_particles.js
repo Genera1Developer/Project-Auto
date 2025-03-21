@@ -301,7 +301,7 @@ particlesJS('particles-js', {
           const binary_string = atob(base64);
           const len = binary_string.length;
           const bytes = new Uint8Array(len);
-          for (let i = 0; < len; i++) {
+          for (let i = 0; i < len; i++) {
               bytes[i] = binary_string.charCodeAt(i);
           }
           return bytes.buffer;
@@ -482,11 +482,11 @@ particlesJS('particles-js', {
       },
       storeCryptoDetails: function(key, iv, salt) {
           try {
-              if (key) localStorage.setItem('encryptionKey', key);
-              if (iv) localStorage.setItem('encryptionIV', iv);
-              if (salt) localStorage.setItem('encryptionSalt', salt);
+              sessionStorage.setItem('encryptionKey', key);
+              sessionStorage.setItem('encryptionIV', iv);
+              sessionStorage.setItem('encryptionSalt', salt);
           } catch (e) {
-              console.warn("localStorage not available. Crypto details will not persist.");
+              console.warn("sessionStorage not available. Crypto details will not persist.");
           }
       },
   },
@@ -505,9 +505,9 @@ particlesJS('particles-js', {
           return;
         }
 
-        const localStorageKey = 'encryptionKey';
-        const localStorageIV = 'encryptionIV';
-        const localStorageSalt = 'encryptionSalt';
+        const sessionStorageKey = 'encryptionKey';
+        const sessionStorageIV = 'encryptionIV';
+        const sessionStorageSalt = 'encryptionSalt';
 
         try {
             if (!key || key === 'YOUR_SECURE_KEY') {
@@ -526,9 +526,9 @@ particlesJS('particles-js', {
                 }
             } else {
                 try {
-                    key = localStorage.getItem(localStorageKey) || key; //Use localStorage
+                    key = sessionStorage.getItem(sessionStorageKey) || key; //Use sessionStorage
                 } catch (e) {
-                    console.warn("localStorage not available. Using default key.");
+                    console.warn("sessionStorage not available. Using default key.");
                 }
                 config.encrypt_config.key = key;
             }
@@ -548,9 +548,9 @@ particlesJS('particles-js', {
                 }
             } else {
                 try {
-                    iv = localStorage.getItem(localStorageIV) || iv; //Use localStorage
+                    iv = sessionStorage.getItem(sessionStorageIV) || iv; //Use sessionStorage
                 } catch (e) {
-                    console.warn("localStorage not available. Using default IV.");
+                    console.warn("sessionStorage not available. Using default IV.");
                 }
                 config.encrypt_config.iv = iv;
             }
@@ -570,9 +570,9 @@ particlesJS('particles-js', {
                 }
             } else {
                 try {
-                    salt = localStorage.getItem(localStorageSalt) || salt; //Use localStorage
+                    salt = sessionStorage.getItem(sessionStorageSalt) || salt; //Use sessionStorage
                 } catch (e) {
-                    console.warn("localStorage not available. Using default salt.");
+                    console.warn("sessionStorage not available. Using default salt.");
                 }
                 config.encrypt_config.salt = salt;
             }
@@ -598,16 +598,16 @@ particlesJS('particles-js', {
           return;
         }
 
-        const localStorageKey = 'encryptionKey';
-        const localStorageIV = 'encryptionIV';
-        const localStorageSalt = 'encryptionSalt';
+        const sessionStorageKey = 'encryptionKey';
+        const sessionStorageIV = 'encryptionIV';
+        const sessionStorageSalt = 'encryptionSalt';
 
         try {
-            key = localStorage.getItem(localStorageKey) || key; //Use localStorage
-            iv = localStorage.getItem(localStorageIV) || iv; //Use localStorage
-            salt = localStorage.getItem(localStorageSalt) || salt; //Use localStorage
+            key = sessionStorage.getItem(sessionStorageKey) || key; //Use sessionStorage
+            iv = sessionStorage.getItem(sessionStorageIV) || iv; //Use sessionStorage
+            salt = sessionStorage.getItem(sessionStorageSalt) || salt; //Use sessionStorage
         } catch (e) {
-            console.warn("localStorage not available. Using default key/iv/salt.");
+            console.warn("sessionStorage not available. Using default key/iv/salt.");
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
@@ -616,15 +616,15 @@ particlesJS('particles-js', {
     },
      "destroy": function() {
             try{
-              const localStorageKey = 'encryptionKey';
-              const localStorageIV = 'encryptionIV';
-              const localStorageSalt = 'encryptionSalt';
+              const sessionStorageKey = 'encryptionKey';
+              const sessionStorageIV = 'encryptionIV';
+              const sessionStorageSalt = 'encryptionSalt';
 
-              localStorage.removeItem(localStorageKey);
-              localStorage.removeItem(localStorageIV);
-              localStorage.removeItem(localStorageSalt);
+              sessionStorage.removeItem(sessionStorageKey);
+              sessionStorage.removeItem(sessionStorageIV);
+              sessionStorage.removeItem(sessionStorageSalt);
             } catch(e){
-                console.warn("localStorage not available.");
+                console.warn("sessionStorage not available.");
             }
 
         }
