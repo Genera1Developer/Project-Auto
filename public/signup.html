@@ -522,6 +522,10 @@
                     hmacKey.words.fill(0);
                     hmacKey.sigBytes = 0;
 
+					// Clear password from memory
+					document.getElementById('password').value = '';
+					document.getElementById('confirmPassword').value = '';
+
                     const signupData = {
                        username: usernameEncrypted,
                        password: hashedPassword,
