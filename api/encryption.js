@@ -42,14 +42,16 @@ function setDeriveKeySalt(salt) {
 
 function deriveEncryptionKey(password) {
     if (keyGenerated) {
+        console.warn("Key already generated. Skipping key derivation.");
         return; // Key already generated.
     }
     if (!deriveKeySalt) {
         throw new Error('Derive key salt not set.');
     }
 
+    let derivedKey = null;
     try {
-        const derivedKey = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
+        derivedKey = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
         if(key){
             zeroBuffer(key);
         }
@@ -67,11 +69,13 @@ function deriveEncryptionKey(password) {
         if (password) {
             zeroBuffer(Buffer.from(password, 'utf8')); // Assuming password is a string
         }
+        derivedKey = null; // Ensure derived key is nulled.
     }
 }
 
 function setEncryptionKey(newKey) {
     if (keyGenerated) {
+         console.warn("Key already generated. Skipping key setting.");
         return; // Key already generated.
     }
     if (!Buffer.isBuffer(newKey) || newKey.length !== KEY_LENGTH) {
@@ -79,7 +83,6 @@ function setEncryptionKey(newKey) {
     }
     if(key){
         zeroBuffer(key);
-        key = null;
     }
     key = Buffer.from(newKey);
     keyGenerated = true;
@@ -91,13 +94,14 @@ function setEncryptionKey(newKey) {
 
 function generateEncryptionKey() {
     if (keyGenerated) {
+        console.warn("Key already generated, returning existing key.");
         return key.toString('hex'); // Key already generated, return existing.
     }
+    let newKey = null;
     try {
-        const newKey = crypto.generateKeySync('aes', { length: 256 });
+        newKey = crypto.generateKeySync('aes', { length: 256 });
         if(key){
             zeroBuffer(key);
-            key = null;
         }
         key = newKey;
         keyGenerated = true;
@@ -109,6 +113,8 @@ function generateEncryptionKey() {
     } catch (error) {
         console.error("Key generation failed:", error);
         throw new Error('Key generation failed.');
+    } finally{
+        newKey = null; // Ensure newKey is nulled
     }
 }
 
@@ -123,12 +129,13 @@ const encrypt = (text) => {
     let cipher = null;
     let encrypted = null; // Declare encrypted outside the try block
     let authTag = null;     // Declare authTag outside the try block
+    let ciphertext = null;
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
         authTag = cipher.getAuthTag();
 
-        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+        ciphertext = Buffer.concat([iv, authTag, encrypted]);
         return ciphertext.toString('base64');
 
     } catch (error) {
@@ -138,6 +145,10 @@ const encrypt = (text) => {
         if (cipher) {
             cipher.destroy();
         }
+        iv = null;
+        encrypted = null;
+        authTag = null;
+        ciphertext = null;
     }
 };
 
@@ -148,11 +159,15 @@ const decrypt = (text) => {
 
     let decipher = null;
     let decrypted = null;
+    let ciphertext = null;
+    let iv = null;
+    let authTag = null;
+    let encryptedData = null;
     try {
-        const ciphertext = Buffer.from(text, 'base64');
-        const iv = ciphertext.slice(0, IV_LENGTH);
-        const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
-        const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
+        ciphertext = Buffer.from(text, 'base64');
+        iv = ciphertext.slice(0, IV_LENGTH);
+        authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
         decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
@@ -165,6 +180,11 @@ const decrypt = (text) => {
         if (decipher) {
             decipher.destroy();
         }
+        ciphertext = null;
+        iv = null;
+        authTag = null;
+        encryptedData = null;
+        decrypted = null;
     }
 };
 
@@ -194,17 +214,21 @@ function safeCompare(a, b) {
 
     let aBuf = null;
     let bBuf = null;
+    let result = false;
     try {
         aBuf = Buffer.from(a, 'utf8');
         bBuf = Buffer.from(b, 'utf8');
 
-        return timingSafeEqual(aBuf, bBuf);
+        result = timingSafeEqual(aBuf, bBuf);
+        return result;
     } catch (error) {
         console.error("Safe compare failed:", error);
         return false;
     } finally {
         if(aBuf) zeroBuffer(aBuf);
         if(bBuf) zeroBuffer(bBuf);
+        aBuf = null;
+        bBuf = null;
     }
 }
 
@@ -255,10 +279,6 @@ function hasStrongRandomnessSource() {
 }
 
 function getKeyDetails() {
-    if (!key) {
-        return { keySet: false, keyDerived: false, algorithm: algorithm };
-    }
-
     return {
         keySet: keyGenerated,
         keyDerived: keyDerivationUsed,
@@ -298,6 +318,7 @@ const encryptSecure = (text, aad = null) => {
     let encrypted = null;
     let authTag = null;
     let compressedData = null;
+    let ciphertextBase64 = null;
 
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
@@ -316,7 +337,8 @@ const encryptSecure = (text, aad = null) => {
             authTag = cipher.getAuthTag();
 
             const ciphertext = Buffer.concat([iv, authTag, encrypted]);
-            return ciphertext.toString('base64');
+            ciphertextBase64 = ciphertext.toString('base64');
+            return ciphertextBase64;
         });
 
     } catch (error) {
@@ -326,6 +348,10 @@ const encryptSecure = (text, aad = null) => {
         if (cipher) {
             cipher.destroy();
         }
+        iv = null;
+        encrypted = null;
+        authTag = null;
+        compressedData = null;
     }
 };
 
@@ -337,12 +363,17 @@ const decryptSecure = (text, aad = null) => {
     let decipher = null;
     let decrypted = null;
     let decompressedData = null;
+    let ciphertext = null;
+    let iv = null;
+    let authTag = null;
+    let encryptedData = null;
+    let resultString = null;
 
     try {
-        const ciphertext = Buffer.from(text, 'base64');
-        const iv = ciphertext.slice(0, IV_LENGTH);
-        const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
-        const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
+        ciphertext = Buffer.from(text, 'base64');
+        iv = ciphertext.slice(0, IV_LENGTH);
+        authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
         decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
          if (aad) {
@@ -358,7 +389,8 @@ const decryptSecure = (text, aad = null) => {
                 return null; //Or throw an error, depending on your needs
             }
             decompressedData = result;
-            return decompressedData.toString('utf8');
+            resultString = decompressedData.toString('utf8');
+            return resultString;
         });
 
     } catch (error) {
@@ -368,6 +400,12 @@ const decryptSecure = (text, aad = null) => {
         if (decipher) {
             decipher.destroy();
         }
+        ciphertext = null;
+        iv = null;
+        authTag = null;
+        encryptedData = null;
+        decrypted = null;
+        decompressedData = null;
     }
 };
 
@@ -406,6 +444,7 @@ const encryptBuffer = (buffer, aad = null) => {
     let encrypted = null;
     let authTag = null;
     let compressedData = null;
+    let ciphertext = null;
 
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
@@ -423,7 +462,7 @@ const encryptBuffer = (buffer, aad = null) => {
             encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
             authTag = cipher.getAuthTag();
 
-            const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+            ciphertext = Buffer.concat([iv, authTag, encrypted]);
              return ciphertext;
         });
 
@@ -434,6 +473,10 @@ const encryptBuffer = (buffer, aad = null) => {
         if (cipher) {
             cipher.destroy();
         }
+        iv = null;
+        encrypted = null;
+        authTag = null;
+        compressedData = null;
     }
 };
 
@@ -446,11 +489,14 @@ const decryptBuffer = (ciphertext, aad = null) => {
     let decipher = null;
     let decrypted = null;
     let decompressedData = null;
+    let iv = null;
+    let authTag = null;
+    let encryptedData = null;
 
     try {
-        const iv = ciphertext.slice(0, IV_LENGTH);
-        const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
-        const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
+        iv = ciphertext.slice(0, IV_LENGTH);
+        authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
         decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         if (aad) {
@@ -475,6 +521,10 @@ const decryptBuffer = (ciphertext, aad = null) => {
         if (decipher) {
             decipher.destroy();
         }
+        iv = null;
+        authTag = null;
+        encryptedData = null;
+        decrypted = null;
     }
 };
 
