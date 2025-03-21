@@ -198,6 +198,56 @@ const decryptWithPassword = async (encryptedData, iv, authTag, password, salt) =
     }
 };
 
+const verifyCredentials = async (username, password) => {
+    try {
+        const encryptedUsernameData = encryptSensitiveData(username);
+        if (!encryptedUsernameData) {
+            throw new Error("Username encryption failed");
+        }
+
+        return new Promise((resolve, reject) => {
+            db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [encryptedUsernameData.encryptedData], async (err, row) => {
+                if (err) {
+                    handleDatabaseError(err, null, "User verification query error:");
+                    return reject(err);
+                }
+
+                if (!row) {
+                    return resolve(false);
+                }
+
+                try {
+                    const decryptedUsername = decryptSensitiveData(row.username_iv, row.username_auth_tag, row.username);
+                    const decryptedSalt = decryptSensitiveData(row.salt_iv, row.salt_auth_tag, row.salt);
+                    const decryptedPassword = decryptSensitiveData(row.password_iv, row.password_auth_tag, row.password);
+
+                    if (!decryptedUsername || !decryptedSalt || !decryptedPassword) {
+                        return reject(new Error("Decryption failed"));
+                    }
+
+                    if (username !== decryptedUsername) {
+                        return resolve(false); // Username doesn't match. Prevent password check.
+                    }
+
+                    const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
+
+                    if (hashedPassword === decryptedPassword) {
+                        return resolve({ id: row.id, username: username });
+                    } else {
+                        return resolve(false);
+                    }
+                } catch (error) {
+                    console.error("Password verification error:", error);
+                    return reject(error);
+                }
+            });
+        });
+    } catch (error) {
+        console.error("Encryption error:", error);
+        throw error;
+    }
+};
+
 exports.createUser = async (username, password, callback) => {
     if (!username || !password) {
         return callback(new Error("Username and password are required"));
@@ -250,52 +300,15 @@ exports.createUser = async (username, password, callback) => {
 };
 
 exports.verifyUser = async (username, password, callback) => {
-    if (!username || !password) {
-        return callback(new Error("Username and password are required"));
-    }
-
     try {
-        const encryptedUsernameData = encryptSensitiveData(username);
-        if (!encryptedUsernameData) {
-            return callback(new Error("Username encryption failed"));
+        const user = await verifyCredentials(username, password);
+        if(user) {
+            return callback(null, user);
+        } else {
+            return callback(null, false);
         }
-
-        db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [encryptedUsernameData.encryptedData], async (err, row) => {
-            if (err) {
-                return handleDatabaseError(err, callback, "User verification query error:");
-            }
-
-            if (!row) {
-                return callback(null, false);
-            }
-
-            try {
-                const decryptedUsername = decryptSensitiveData(row.username_iv, row.username_auth_tag, row.username);
-                const decryptedSalt = decryptSensitiveData(row.salt_iv, row.salt_auth_tag, row.salt);
-                const decryptedPassword = decryptSensitiveData(row.password_iv, row.password_auth_tag, row.password);
-
-                if (!decryptedUsername || !decryptedSalt || !decryptedPassword) {
-                    return callback(new Error("Decryption failed"));
-                }
-
-                if (username !== decryptedUsername) {
-                    return callback(null, false); // Username doesn't match. Prevent password check.
-                }
-
-                const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
-
-                if (hashedPassword === decryptedPassword) {
-                    return callback(null, { id: row.id, username: username });
-                } else {
-                    return callback(null, false);
-                }
-            } catch (error) {
-                console.error("Password verification error:", error);
-                return callback(error);
-            }
-        });
     } catch (error) {
-        console.error("Encryption error:", error);
+        console.error("Verification failed:", error);
         return callback(error);
     }
 };
