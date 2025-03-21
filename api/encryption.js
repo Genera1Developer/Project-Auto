@@ -95,7 +95,7 @@ function generateEncryptionKey() {
         keyGenerated = true;
         keyDerivationUsed = false; //Explicitly set to false when generating key
         //cachedCipher = null; // Invalidate cached cipher on key change
-        //cachedDecipher = null; // Invalidate cached decipher on key change
+        //cachedDecipher = null; // Invalidate cached cipher on key change
         ivMap.delete(key); // Clear IV map on key change
         return newKey.toString('hex');
     } catch (error) {
@@ -146,7 +146,7 @@ const decrypt = (text) => {
         const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
@@ -230,7 +230,7 @@ function isKeySet() {
     return keyGenerated;
 }
 
-// Function to check if key derivation was used.
+// Added function to check if key derivation was used.
 function isKeyDerived() {
     return keyDerivationUsed;
 }
@@ -366,6 +366,69 @@ function resetKeyGeneration() {
     ivMap.clear();
 }
 
+// Function to encrypt a buffer directly.
+const encryptBuffer = (buffer, aad = null) => {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
+
+    let iv = generateSecureIV();
+    let cipher = null;
+    let encrypted = null;
+    let authTag = null;
+
+    try {
+        cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        if (aad) {
+            cipher.setAAD(Buffer.from(aad, 'utf8'));
+        }
+        encrypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
+        authTag = cipher.getAuthTag();
+
+        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+        return ciphertext;
+
+    } catch (error) {
+        console.error("Buffer encryption failed:", error);
+        return null;
+    } finally {
+        if (cipher) {
+            cipher.destroy();
+        }
+    }
+};
+
+// Function to decrypt a buffer directly.
+const decryptBuffer = (ciphertext, aad = null) => {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
+
+    let decipher = null;
+    let decrypted = null;
+
+    try {
+        const iv = ciphertext.slice(0, IV_LENGTH);
+        const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
+
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        if (aad) {
+            decipher.setAAD(Buffer.from(aad, 'utf8'));
+        }
+        decipher.setAuthTag(authTag);
+        decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
+        return decrypted;
+    } catch (error) {
+        console.error("Buffer decryption failed:", error);
+        return null;
+    } finally {
+        if (decipher) {
+            decipher.destroy();
+        }
+    }
+};
+
 module.exports = {
     encrypt,
     decrypt,
@@ -386,5 +449,7 @@ module.exports = {
     encryptSecure,
     decryptSecure,
     safeBufferCompare,
-    resetKeyGeneration
+    resetKeyGeneration,
+    encryptBuffer,
+    decryptBuffer
 };
