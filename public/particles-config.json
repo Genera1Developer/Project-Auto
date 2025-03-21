@@ -184,7 +184,19 @@
             "publicKey": "ENC_PUBLIC_KEY_PLACEHOLDER",
             "privateKey": "ENC_PRIVATE_KEY_PLACEHOLDER",
             "adataWrap": true,
-            "hmacWrap": true
+            "hmacWrap": true,
+            "paddingScheme": "OAEP-SHA256",
+             "mgf1HashAlgorithm": "SHA256",
+             "oaepHashAlgorithm": "SHA256",
+              "sessionKeyCache": {
+                  "enable": true,
+                  "ttl": 3600
+              },
+              "sessionKeyCompression": {
+                "enable": true,
+                "algorithm": "zlib",
+                "level": 6
+              }
           }
     },
     "wasm": {
@@ -219,7 +231,10 @@
             "algorithm": "zlib",
             "level": 9
           },
-          "wasmCacheTtl": 86400
+          "wasmCacheTtl": 86400,
+          "wasmStreamingMode": true,
+          "wasmMemoryLimit": "256MB",
+          "wasmThreads": 4
     }
   },
   "interactivity": {
@@ -387,6 +402,9 @@
            "algorithm": "AES-256-GCM",
            "key": "ENC_SERVER_SIDE_KEY_PLACEHOLDER"
        },
-        "keyVersion": 1
+        "keyVersion": 1,
+        "ocspStapling": {
+          "enabled": true
+        }
   }
 }
