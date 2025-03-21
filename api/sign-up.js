@@ -538,6 +538,12 @@ async function decryptSessionData(encryptedData, sessionKey, iv) {
     }
 }
 
+// Function to generate a unique user ID
+async function generateUniqueUserId() {
+    const buffer = await randomBytesAsync(32);
+    return buffer.toString('hex');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -580,7 +586,7 @@ module.exports = async (req, res) => {
       }
 
       // 0. Generate a unique User ID
-      userId = await generateUserId();
+      userId = await generateUniqueUserId();
 
       //Securely store data (e.g., in a database):
 
