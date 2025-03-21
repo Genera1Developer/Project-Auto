@@ -161,7 +161,7 @@ const decrypt = (text) => {
         const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
@@ -298,7 +298,7 @@ function generateSecureIV() {
     return generateSecureRandomBytes(IV_LENGTH);
 }
 
-const encryptSecure = (text) => {
+const encryptSecure = (text, aad = null) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
@@ -310,6 +310,9 @@ const encryptSecure = (text) => {
     let authTag = null;
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        if (aad) {
+            cipher.setAAD(Buffer.from(aad, 'utf8'));
+        }
         encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
         authTag = cipher.getAuthTag();
 
@@ -326,7 +329,7 @@ const encryptSecure = (text) => {
     }
 };
 
-const decryptSecure = (text) => {
+const decryptSecure = (text, aad = null) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
@@ -339,7 +342,10 @@ const decryptSecure = (text) => {
         const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+         if (aad) {
+            decipher.setAAD(Buffer.from(aad, 'utf8'));
+        }
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
