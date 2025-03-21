@@ -250,6 +250,16 @@ function getAlgorithm() {
     return algorithm;
 }
 
+//Function to check for strong randomness source availability
+function hasStrongRandomnessSource() {
+    try {
+        crypto.randomBytes(1);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -263,5 +273,6 @@ module.exports = {
     isKeySet,  // Export the isKeySet function
     isKeyDerived, //Export the isKeyDerived function
     zeroBuffer,
-    getAlgorithm // Export the getAlgorithm function
+    getAlgorithm, // Export the getAlgorithm function
+    hasStrongRandomnessSource //Export function
 };
