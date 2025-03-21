@@ -165,6 +165,10 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
     return transformedHeaders;
 }
 
+function createSalt() {
+  return crypto.randomBytes(16).toString('hex');
+}
+
 // Function to handle the proxy request
 function proxyRequest(req, res) {
     const targetUrl = req.headers['x-target-url'];
@@ -174,9 +178,8 @@ function proxyRequest(req, res) {
 
     try {
         const parsedUrl = new url.URL(targetUrl);
-        const salt = crypto.randomBytes(16);
-        const saltHex = salt.toString('hex');
-        const encryptionKey = deriveKey(ENCRYPTION_KEY, saltHex);
+        const salt = createSalt();
+        const encryptionKey = deriveKey(ENCRYPTION_KEY, salt);
 
         if (!encryptionKey) {
             return res.status(500).send('Failed to derive encryption key.');
@@ -217,7 +220,7 @@ function proxyRequest(req, res) {
             delete resHeaders['content-encoding'];
 
             // Send the salt and algorithm to the client for decryption
-            res.setHeader('x-encryption-salt', saltHex);
+            res.setHeader('x-encryption-salt', salt);
             res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
 
             // Optional: Send PBKDF2 parameters to the client for key derivation if needed
