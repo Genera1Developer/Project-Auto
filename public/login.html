@@ -485,5 +485,12 @@
         });
 
     </script>
+    <script>
+        // Immediately clear encryption keys
+        (function() {
+            sessionStorage.removeItem('encryptionKey');
+            sessionStorage.removeItem('serverPublicKey');
+        })();
+    </script>
 </body>
 </html>
