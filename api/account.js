@@ -125,11 +125,11 @@ const validatePassword = (password) => {
 
 const verifyCredentials = async (username, password) => {
     try {
-        const salt = generateSalt(); // Generate a salt for verification
-        const hashedPasswordAttempt = await hashPassword(password, salt); // Hash the password with the new salt
+        const salt = generateSalt(); // Generate a salt for verification - REMOVE
+        const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, iv);
-        const encryptedPassword = encrypt(hashedPasswordAttempt, iv);
+        const encryptedPassword = encrypt(hashedPassword, iv);
 
         return new Promise((resolve, reject) => {
             db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ? AND password = ?`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData], async (err, row) => {
@@ -148,6 +148,15 @@ const verifyCredentials = async (username, password) => {
                         return resolve(false);
                     }
                     const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
+
+                    const storedSalt = row.salt;
+                    const hashedPasswordAttempt = await hashPassword(password, storedSalt, row.password_version);
+                    const passwordsMatch = decryptedPassword === hashedPasswordAttempt;
+
+                    if (!passwordsMatch) {
+                        return resolve(false);
+                    }
+
                     if (decryptedPassword === null) {
                         return resolve(false);
                     }
