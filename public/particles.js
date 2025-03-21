@@ -214,9 +214,10 @@
                                 padding: CryptoJS.pad.Pkcs7
                             });
                             let hmac = CryptoJS.HmacSHA256(encrypted.ciphertext.toString(), hmacKey);
+                            let ivString = iv.toString(CryptoJS.enc.Base64);
                             return {
                                 ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
-                                iv: iv.toString(CryptoJS.enc.Hex),
+                                iv: ivString,
                                 hmac: hmac.toString()
                             };
                         } catch (err) {
@@ -228,7 +229,7 @@
                     var decryptData = function(encryptedData, secret) {
                         try {
                             let key = CryptoJS.enc.Utf8.parse(secret);
-                            let iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
+                            let iv = CryptoJS.enc.Base64.parse(encryptedData.iv);
                             let ciphertext = CryptoJS.enc.Base64.parse(encryptedData.ciphertext);
                             let hmac = encryptedData.hmac;
 
