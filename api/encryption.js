@@ -112,13 +112,7 @@ function encrypt(text) {
     let cipher;
 
     try {
-         // Cache cipher instance for performance if key hasn't changed.
-        if (cachedCipher === null) {
-          cachedCipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-        } else {
-            cachedCipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH }); //recreate for new IV
-        }
-        cipher = cachedCipher;
+        cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
     } catch (error) {
         console.error("Cipher creation failed:", error);
         return null;
@@ -127,7 +121,6 @@ function encrypt(text) {
     let encrypted;
 
     try {
-        cipher.setIV(iv); // Set IV for each encryption
         encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
     } catch (error) {
         console.error("Encryption failed:", error);
@@ -153,14 +146,7 @@ function decrypt(text) {
         const encryptedData = Buffer.from(text.encryptedData, 'base64');
         const authTag = Buffer.from(text.authTag, 'base64');
 
-        let decipher;
-
-         // Cache decipher instance for performance if key hasn't changed.
-        if (cachedDecipher === null) {
-          decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-        } else {
-            decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });//recreate for new IV
-        }
+        const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
 
         decipher.setAuthTag(authTag);
         decipher.setIV(iv);
