@@ -435,6 +435,10 @@ async function proxyRequest(req, res) {
                   return earlyReject(res, 403, 'Invalid or missing stream nonce.');
               }
 
+              // Send stream nonce and timestamp to client.
+              res.setHeader('x-stream-nonce', streamNonce);
+              res.setHeader('x-stream-timestamp', streamTimestamp);
+
               const responseCipher = encryptStream(encryptionKey, resIv);
               if(!responseCipher){
                 return earlyReject(res, 500, 'Failed to create response cipher.');
@@ -449,9 +453,6 @@ async function proxyRequest(req, res) {
                 }
               });
 
-              res.setHeader('x-stream-nonce', streamNonce);
-              res.setHeader('x-stream-timestamp', streamTimestamp);
-              res.setHeader('x-stream-auth-tag', responseCipher.getAuthTag().toString('hex'));
               encryptedStream.pipe(res);
 
             } catch (streamErr) {
