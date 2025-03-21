@@ -575,6 +575,7 @@ module.exports = async (req, res) => {
 
       if (!userData) {
           storeFailedLoginAttempt(username);
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Add a 1-second delay
           return res.status(401).json({ message: 'Invalid credentials' });
       }
 
@@ -689,6 +690,7 @@ module.exports = async (req, res) => {
 
       } else {
         storeFailedLoginAttempt(username);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Add a 1-second delay
         res.status(401).json({ message: 'Invalid credentials' });
       }
     } catch (error) {
