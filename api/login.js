@@ -299,6 +299,55 @@ const decryptWithDeviceSecret = (encryptedData, deviceSecret) => {
     }
 };
 
+const generateShortLivedToken = (username, secret) => {
+    const payload = {
+        username: username,
+        timestamp: Date.now()
+    };
+    const payloadString = JSON.stringify(payload);
+
+    try {
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(secret, 'hex'), iv);
+        const dataBuffer = Buffer.from(payloadString, 'utf8');
+        let encrypted = cipher.update(dataBuffer);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        return Buffer.concat([iv, authTag, encrypted]).toString('hex');
+    } catch (error) {
+        console.error('Short lived token generation error:', error);
+        return null;
+    }
+};
+
+const verifyShortLivedToken = (token, secret) => {
+    try {
+        const encryptedDataBuffer = Buffer.from(token, 'hex');
+        const iv = encryptedDataBuffer.slice(0, 16);
+        const authTag = encryptedDataBuffer.slice(16, 32);
+        const data = encryptedDataBuffer.slice(32);
+
+        const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(secret, 'hex'), iv);
+        decipher.setAuthTag(authTag);
+        let decrypted = decipher.update(data);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        const payload = JSON.parse(decrypted.toString('utf8'));
+
+        const now = Date.now();
+        const tokenAge = now - payload.timestamp;
+        const maxTokenAge = 60000; // 1 minute
+
+        if (tokenAge > maxTokenAge) {
+            return false;
+        }
+
+        return payload.username; // Return username if valid
+    } catch (error) {
+        console.error('Short lived token verification error:', error);
+        return null;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -371,8 +420,12 @@ module.exports = async (req, res) => {
             if (encryptedSessionCookie) {
                 const deviceSecret = generateDeviceSecret();
                 const encryptedDeviceSecret = encryptWithDeviceSecret({secret: deviceSecret}, encryptionKey.toString('hex'))
+
+                // Generate a short-lived token
+                const shortLivedToken = generateShortLivedToken(userData.username, encryptionKey.toString('hex'));
+
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
-                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId, deviceSecret: encryptedDeviceSecret });
+                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken });
             } else {
                 res.status(500).json({ message: 'Session cookie encryption failed' });
             }
