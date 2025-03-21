@@ -112,7 +112,8 @@
       "enableWebAssembly": true,
       "webAssemblyThreads": 2,
       "entropySeed": "ENC_ENTROPY_SEED_PLACEHOLDER",
-      "hmacIterationOffset": 10
+      "hmacIterationOffset": 10,
+      "adataIterationOffset": 5
     },
     "wasm": {
         "url": "wasm/encryption.wasm"
