@@ -192,6 +192,12 @@ async function generateUserId() {
     return buffer.toString('hex');
 }
 
+// Function to generate a new random salt for each encryption operation
+async function generateOperationSalt() {
+  const buffer = await randomBytesAsync(16);
+  return buffer.toString('hex');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -243,8 +249,13 @@ module.exports = async (req, res) => {
 
       // 2. Encrypt the username and salt
       const saltedUsername = saltUsername(username, salt);
-      const encryptedUsername = await encryptData(saltedUsername, derivedEncryptionKey);
-      const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey) : null;
+
+      // Generate operation salts
+      const usernameOpSalt = await generateOperationSalt();
+      const saltOpSalt = await generateOperationSalt();
+
+      const encryptedUsername = await encryptData(saltedUsername, derivedEncryptionKey + usernameOpSalt); // Use operation salt
+      const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey + saltOpSalt) : null; // Use operation salt
 
       // 3. Store the encryptedUsername, encryptedSalt, and hashedPassword.
       // For demonstration, we log them. NEVER log sensitive data in production.
@@ -259,7 +270,8 @@ module.exports = async (req, res) => {
 
       // Encrypt entire user record before storage using master key
       const masterKey = process.env.MASTER_ENCRYPTION_KEY || 'defaultinsecurekeythatmustbechanged';
-      const encryptedUserRecord = await encryptUserData(userRecord, masterKey);
+      const userRecordOpSalt = await generateOperationSalt();
+      const encryptedUserRecord = await encryptUserData(userRecord, masterKey + userRecordOpSalt);
 
       // Store encryptedUserRecord (instead of userRecord)
       // ...
