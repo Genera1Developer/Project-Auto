@@ -84,7 +84,8 @@
         "level": 9
       },
       "keyEncoding": "base64",
-      "cacheEncryptedData": true
+      "cacheEncryptedData": true,
+      "adataEncoding": "base64"
     }
   },
   "interactivity": {
