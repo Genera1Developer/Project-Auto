@@ -126,8 +126,8 @@ particlesJS('particles-js', {
             const encryptValue = async (text, secretKey, iv) => {
               try {
                 const enc = new TextEncoder();
-                const keyBytes = enc.encode(secretKey);
-                const ivBytes = enc.encode(iv);
+                const keyBytes = this.stringToUint8Array(secretKey);
+                const ivBytes = this.stringToUint8Array(iv);
 
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
@@ -143,9 +143,7 @@ particlesJS('particles-js', {
                   enc.encode(text)
                 );
 
-                const encryptedArray = new Uint8Array(encryptedData);
-                const encryptedString = btoa(String.fromCharCode(...encryptedArray));
-                return encryptedString;
+                return this.arrayBufferToBase64(encryptedData);
 
               } catch (error) {
                 console.error("Encryption failed:", error);
@@ -182,9 +180,9 @@ particlesJS('particles-js', {
 
             const decryptValue = async (encryptedBase64, secretKey, iv) => {
               try {
-                const enc = new TextEncoder();
-                const keyBytes = enc.encode(secretKey);
-                const ivBytes = enc.encode(iv);
+
+                const keyBytes = this.stringToUint8Array(secretKey);
+                const ivBytes = this.stringToUint8Array(iv);
 
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
@@ -194,16 +192,10 @@ particlesJS('particles-js', {
                   ["encrypt", "decrypt"]
                 );
 
-                const encryptedString = atob(encryptedBase64);
-                const encryptedArray = new Uint8Array(encryptedString.length);
-                for (let i = 0; i < encryptedString.length; i++) {
-                  encryptedArray[i] = encryptedString.charCodeAt(i);
-                }
-
                 const decryptedData = await crypto.subtle.decrypt(
                   { name: algorithm, iv: ivBytes },
                   keyMaterial,
-                  encryptedArray
+                  this.base64ToArrayBuffer(encryptedBase64)
                 );
 
                 const dec = new TextDecoder();
@@ -263,9 +255,7 @@ particlesJS('particles-js', {
                     "raw",
                     key
                 );
-                const keyArray = new Uint8Array(exported);
-                const keyString = btoa(String.fromCharCode(...keyArray));
-                return keyString;
+                return this.arrayBufferToBase64(exported);
             } catch (error) {
                 console.error("Key generation failed:", error);
                 return null;
@@ -278,8 +268,7 @@ particlesJS('particles-js', {
           }
             const iv = new Uint8Array(16);
             window.crypto.getRandomValues(iv);
-            const ivString = btoa(String.fromCharCode(...iv));
-            return ivString;
+            return this.arrayBufferToBase64(iv.buffer);
         },
         arrayBufferToBase64: function(buffer) {
           let binary = '';
@@ -344,9 +333,9 @@ particlesJS('particles-js', {
                 config.encrypt_config.key = newKey;
                 key = newKey;
                 try {
-                    sessionStorage.setItem('encryptionKey', newKey); //Use sessionStorage
+                    localStorage.setItem('encryptionKey', newKey); //Use localStorage
                 } catch (e) {
-                    console.warn("sessionStorage not available. Key will not persist.");
+                    console.warn("localStorage not available. Key will not persist.");
                 }
                 console.log('New encryption key generated:', newKey);
             } else {
@@ -356,9 +345,9 @@ particlesJS('particles-js', {
             }
         } else {
             try {
-                key = sessionStorage.getItem('encryptionKey') || key; //Use sessionStorage
+                key = localStorage.getItem('encryptionKey') || key; //Use localStorage
             } catch (e) {
-                console.warn("sessionStorage not available. Using default key.");
+                console.warn("localStorage not available. Using default key.");
             }
             config.encrypt_config.key = key;
         }
@@ -370,9 +359,9 @@ particlesJS('particles-js', {
                 config.encrypt_config.iv = newIV;
                 iv = newIV;
                 try {
-                    sessionStorage.setItem('encryptionIV', newIV); //Use sessionStorage
+                    localStorage.setItem('encryptionIV', newIV); //Use localStorage
                 } catch (e) {
-                    console.warn("sessionStorage not available. IV will not persist.");
+                    console.warn("localStorage not available. IV will not persist.");
                 }
                 console.log('New encryption IV generated:', newIV);
             } else {
@@ -382,9 +371,9 @@ particlesJS('particles-js', {
             }
         } else {
             try {
-                iv = sessionStorage.getItem('encryptionIV') || iv; //Use sessionStorage
+                iv = localStorage.getItem('encryptionIV') || iv; //Use localStorage
             } catch (e) {
-                console.warn("sessionStorage not available. Using default IV.");
+                console.warn("localStorage not available. Using default IV.");
             }
             config.encrypt_config.iv = iv;
         }
@@ -448,10 +437,10 @@ particlesJS('particles-js', {
         }
 
         try {
-            key = sessionStorage.getItem('encryptionKey') || key; //Use sessionStorage
-            iv = sessionStorage.getItem('encryptionIV') || iv; //Use sessionStorage
+            key = localStorage.getItem('encryptionKey') || key; //Use localStorage
+            iv = localStorage.getItem('encryptionIV') || iv; //Use localStorage
         } catch (e) {
-            console.warn("sessionStorage not available. Using default key/iv.");
+            console.warn("localStorage not available. Using default key/iv.");
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
