@@ -119,6 +119,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding: CryptoJS.pad.Pkcs7
             }).toString(CryptoJS.enc.Utf8);
 
+            if (!decryptedStorage) {
+                 errorMessageElement.textContent = 'Decryption failed. Corrupted data.';
+                 errorMessageElement.style.color = 'red';
+                 displayEncryptedCaptcha();
+                 captchaInputElement.value = '';
+                 return;
+            }
+
             const storedData = JSON.parse(decryptedStorage);
             const storedKey = storedData.encryptionKey;
             const storedIV = storedData.encryptionIV;
