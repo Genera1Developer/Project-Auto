@@ -17,7 +17,7 @@ const DIGEST = process.env.PBKDF2_DIGEST || 'sha512';
 
 const SENSITIVE_HEADERS = ['authorization', 'cookie', 'proxy-authorization'];
 const MAX_ENCRYPTED_HEADER_LENGTH = 2048; // Limit header size to prevent DoS
-const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date', 'x-encryption-salt', 'x-cipher-algorithm', 'content-type', 'x-encryption-iv', 'x-encryption-authtag'];
+const NON_ENCRYPTED_HEADERS = ['host', 'x-target-url', 'content-length', 'content-encoding', 'transfer-encoding', 'connection', 'proxy-connection', 'keep-alive', 'upgrade', 'date', 'content-type'];
 const ENCRYPT_HEADER_PREFIX = 'enc_';
 
 // Store derived keys in a cache to avoid repeated derivation
@@ -211,7 +211,7 @@ function proxyRequest(req, res) {
 
     try {
         const parsedUrl = new url.URL(targetUrl);
-        const salt = req.headers['x-encryption-salt'] || createSalt();
+        const salt = createSalt();
         const encryptionKey = deriveKey(ENCRYPTION_KEY, salt);
 
         if (!encryptionKey) {
@@ -232,10 +232,6 @@ function proxyRequest(req, res) {
         delete options.headers['x-target-url']; // Prevent loop
         delete options.headers['host']; // Ensure correct host
         delete options.headers['accept-encoding']; // Disable compression for proxy to handle it
-        delete options.headers['x-encryption-salt'];
-        delete options.headers['x-cipher-algorithm'];
-        delete options.headers['x-encryption-iv'];
-        delete options.headers['x-encryption-authtag'];
 
         const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
@@ -258,7 +254,7 @@ function proxyRequest(req, res) {
             // Send the salt and algorithm to the client for decryption
             res.setHeader('x-encryption-salt', salt);
             res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
-
+            res.setHeader('x-encryption-iv', iv.toString('hex')); // Send IV
             // Optional: Send PBKDF2 parameters to the client for key derivation if needed
             // res.setHeader('x-pbkdf2-iterations', ITERATIONS);
             // res.setHeader('x-pbkdf2-digest', DIGEST);
@@ -274,7 +270,6 @@ function proxyRequest(req, res) {
 
             const authTag = responseCipher.getAuthTag();
             res.setHeader('Content-Encoding', 'encrypted');
-            res.setHeader('x-encryption-iv', iv.toString('hex'));
             res.setHeader('x-encryption-authtag', authTag.toString('hex'));
 
             raw.pipe(responseCipher).pipe(res);
@@ -291,8 +286,6 @@ function proxyRequest(req, res) {
         if(!requestCipher){
             return res.status(500).send('Failed to create request cipher.');
         }
-
-        const authTag = requestCipher.getAuthTag();
 
         req.pipe(requestCipher).pipe(proxyReq);
 
