@@ -176,7 +176,8 @@
             "enable": true,
             "interval": 1800
         },
-        "xChaCha20Poly1305Fallback": true
+        "xChaCha20Poly1305Fallback": true,
+         "encryptedNumberTolerance": 0.001
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -185,7 +186,9 @@
          "fallbackIntegrity": "ENC_WASM_FALLBACK_INTEGRITY_PLACEHOLDER",
           "crossOrigin": "anonymous",
           "workerUrl": "wasm/encryption.worker.js",
-          "workerIntegrity": "ENC_WASM_WORKER_INTEGRITY_PLACEHOLDER"
+          "workerIntegrity": "ENC_WASM_WORKER_INTEGRITY_PLACEHOLDER",
+        "wasmCacheIntegrityAlgorithm": "SHA256",
+        "wasmCacheIntegrityCheck": true
     }
   },
   "interactivity": {
