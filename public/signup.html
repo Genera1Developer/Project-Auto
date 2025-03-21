@@ -183,8 +183,13 @@
         .password-input-wrapper {
             position: relative;
         }
+
+        .g-recaptcha {
+            display: inline-block;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -218,8 +223,7 @@
                 <i class="fas fa-eye password-toggle" id="confirm-password-toggle" onclick="togglePasswordVisibility('confirmPassword')"></i>
             </div>
             <input type="email" id="email" name="email" placeholder="Email" required>
-             <img src="/api/captcha" alt="CAPTCHA" id="captchaImage" onclick="refreshCaptcha()">
-            <input type="text" id="captcha" name="captcha" placeholder="Enter CAPTCHA" required>
+             <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh714gGWHYhPIVpCBoy"></div>
             </div>
             <div class="encryption-animation" id="encryptionAnimation"></div>
             <button type="submit">Sign Up</button>
@@ -356,12 +360,11 @@
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             const email = document.getElementById('email').value;
-            const captcha = document.getElementById('captcha').value;
             const errorMessage = document.getElementById('error-message');
             const encryptionStatus = document.getElementById('encryption-status');
             const encryptionAnimation = document.getElementById('encryptionAnimation');
 
-            if (!username || !password || !confirmPassword || !email || !captcha) {
+            if (!username || !password || !confirmPassword || !email) {
                 errorMessage.textContent = 'Please enter all fields.';
                 return;
             }
@@ -382,6 +385,11 @@
                 !document.getElementById('number-req').classList.contains('met') ||
                 !document.getElementById('symbol-req').classList.contains('met')) {
                 errorMessage.textContent = 'Password does not meet all requirements.';
+                return;
+            }
+
+            if (grecaptcha.getResponse().length === 0) {
+                errorMessage.textContent = 'Please complete the reCAPTCHA.';
                 return;
             }
 
@@ -427,9 +435,9 @@
                     username: usernameEncrypted,
                     password: hashedPassword,
                     email: emailEncrypted,
-                    captcha: captcha,
                     salt: encryptedSalt,
-                    iv: encryptedIV
+                    iv: encryptedIV,
+                    recaptchaResponse: grecaptcha.getResponse()
                  };
 
                   fetch('/api/sign-up', {
