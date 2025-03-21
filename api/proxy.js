@@ -480,7 +480,11 @@ async function proxyRequest(req, res) {
                     });
                 }
                 if (responseCipher) {
-                  responseCipher.destroy(); // Explicitly destroy the cipher
+                  try{
+                    responseCipher.destroy(); // Explicitly destroy the cipher
+                  } catch (e) {
+                    console.error("Error destroying cipher:", e)
+                  }
                 }
             }
         });
