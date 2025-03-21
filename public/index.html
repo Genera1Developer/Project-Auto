@@ -72,6 +72,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: #777;
+            pointer-events: none; /* Prevent icon from interfering with input */
         }
 
         .input-group input {
@@ -93,6 +94,11 @@
             border-radius: 5px;
             cursor: pointer;
             margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .input-group button:hover {
+            background-color: #0097a7;
         }
 
         .input-group button:disabled {
