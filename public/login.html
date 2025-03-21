@@ -199,10 +199,19 @@
                 if (data.publicKey) {
                      try {
                         // Basic validation of the public key format
-                        const isValidKey = data.publicKey.startsWith('-----BEGIN PUBLIC KEY-----') && data.publicKey.endsWith('-----END PUBLIC KEY-----');
-                        if (!isValidKey) {
-                            throw new Error('Invalid public key format');
+                        const publicKeyHeader = "-----BEGIN PUBLIC KEY-----";
+                        const publicKeyFooter = "-----END PUBLIC KEY-----";
+
+                        if (!data.publicKey.includes(publicKeyHeader) || !data.publicKey.includes(publicKeyFooter)) {
+                            throw new Error('Invalid server public key format');
                         }
+
+                        const keyContent = data.publicKey.replace(publicKeyHeader, '').replace(publicKeyFooter, '').trim();
+
+                        if (!keyContent) {
+                            throw new Error('Empty public key content');
+                        }
+
                         sessionStorage.setItem('serverPublicKey', data.publicKey);
                      } catch (error) {
                         console.error('Invalid server public key format:', error);
@@ -274,7 +283,9 @@
         // Function to encrypt the sessionStorage encryption key with a server key
         function encryptLocalKey(encryptionKey, serverPublicKey) {
             try {
-                const publicKey = forge.pki.publicKeyFromPem(atob(serverPublicKey));
+                const publicKeyPem = serverPublicKey;
+                const publicKey = forge.pki.publicKeyFromPem(publicKeyPem);
+
                 const encryptedKey = publicKey.encrypt(encryptionKey, 'RSA-OAEP', {
                     md: forge.md.sha256.create(),
                     mgf1: forge.mgf1.create(forge.md.sha256.create())
