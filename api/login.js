@@ -16,6 +16,8 @@ const encryptPassword = (password, salt) => {
   } catch (error) {
     console.error('Password encryption error:', error);
     return null;
+  } finally {
+    password = null; // Securely erase the password
   }
 };
 
@@ -35,7 +37,14 @@ const timingSafeCompare = (a, b) => {
   } catch (error) {
     console.error('Timing safe compare error:', error);
     return false;
-  }
+  } finally {
+        if (aBuff) {
+            aBuff.fill(0);
+        }
+        if (bBuff) {
+            bBuff.fill(0);
+        }
+    }
 };
 
 const fetchUser = async (username) => {
@@ -96,6 +105,10 @@ const encryptSession = (sessionData, encryptionKey) => {
     } catch (error) {
         console.error('Session encryption error:', error);
         return null;
+    } finally {
+        if (cipherText) {
+            cipherText.fill(0);
+        }
     }
 };
 
@@ -114,6 +127,10 @@ const decryptSession = (encryptedSession, encryptionKey) => {
     } catch (error) {
         console.error('Session decryption error:', error);
         return null;
+    } finally {
+        if(encryptedSessionBuffer){
+            encryptedSessionBuffer.fill(0)
+        }
     }
 };
 
@@ -173,6 +190,10 @@ const hkdfExpand = (secret, info, length) => {
     } catch (error) {
         console.error('HKDF Expand Error:', error);
         return null;
+    } finally {
+      if(prk){
+        prk.fill(0);
+      }
     }
 };
 
@@ -188,6 +209,10 @@ const encryptCookie = (cookieValue, encryptionKey) => {
     } catch (error) {
         console.error('Cookie encryption error:', error);
         return null;
+    } finally {
+        if(cookieBuffer){
+            cookieBuffer.fill(0)
+        }
     }
 };
 
@@ -206,6 +231,10 @@ const decryptCookie = (encryptedCookie, encryptionKey) => {
     } catch (error) {
         console.error('Cookie decryption error:', error);
         return null;
+    } finally {
+        if(encryptedCookieBuffer){
+            encryptedCookieBuffer.fill(0);
+        }
     }
 };
 
@@ -260,6 +289,9 @@ const verify2FACode = (secret, token) => {
     } catch (error) {
         console.error('2FA verification error:', error);
         return false;
+    } finally {
+        secret = null; // Securely erase the secret
+        token = null;  // Securely erase the token
     }
 };
 
@@ -279,6 +311,10 @@ const encryptWithDeviceSecret = (data, deviceSecret) => {
     } catch (error) {
         console.error('Encryption with device secret error:', error);
         return null;
+    } finally {
+        if (dataBuffer) {
+            dataBuffer.fill(0);
+        }
     }
 };
 
@@ -297,6 +333,10 @@ const decryptWithDeviceSecret = (encryptedData, deviceSecret) => {
     } catch (error) {
         console.error('Decryption with device secret error:', error);
         return null;
+    } finally {
+        if (encryptedDataBuffer) {
+            encryptedDataBuffer.fill(0);
+        }
     }
 };
 
@@ -318,6 +358,10 @@ const generateShortLivedToken = (username, secret) => {
     } catch (error) {
         console.error('Short lived token generation error:', error);
         return null;
+    } finally {
+        if (payloadString) {
+           // payloadString = null;
+        }
     }
 };
 
@@ -346,6 +390,10 @@ const verifyShortLivedToken = (token, secret) => {
     } catch (error) {
         console.error('Short lived token verification error:', error);
         return null;
+    } finally {
+        if (encryptedDataBuffer) {
+            encryptedDataBuffer.fill(0)
+        }
     }
 };
 
@@ -458,6 +506,10 @@ const encryptWithKeyMaterial = (data, keyMaterial) => {
     } catch (error) {
         console.error('Encryption with key material error:', error);
         return null;
+    } finally {
+        if(dataBuffer){
+            dataBuffer.fill(0);
+        }
     }
 };
 
@@ -476,6 +528,10 @@ const decryptWithKeyMaterial = (encryptedData, keyMaterial) => {
     } catch (error) {
         console.error('Decryption with key material error:', error);
         return null;
+    } finally {
+        if(encryptedDataBuffer){
+            encryptedDataBuffer.fill(0);
+        }
     }
 };
 
@@ -505,6 +561,10 @@ const encryptData = (data, key, iv) => {
     } catch (error) {
         console.error('Data encryption error:', error);
         return null;
+    } finally {
+        if(dataBuffer){
+            dataBuffer.fill(0);
+        }
     }
 };
 
@@ -534,6 +594,10 @@ const encryptObject = (obj, key) => {
     } catch (error) {
         console.error('Object encryption error:', error);
         return null;
+    } finally {
+        if (dataBuffer){
+            dataBuffer.fill(0);
+        }
     }
 };
 
@@ -710,6 +774,11 @@ module.exports = async (req, res) => {
                 // Securely erase encryption key after use
                 crypto.randomFillSync(finalEncryptionKey, 0, finalEncryptionKey.length);
 
+                 // Securely erase sensitive variables
+                 username = null;
+                 password = null;
+                 twoFactorToken = null;
+
 
             } else {
                 res.status(500).json({ message: 'Session encryption failed' });
@@ -722,6 +791,10 @@ module.exports = async (req, res) => {
       }
     } catch (error) {
       console.error('Login error:', error);
+       // Securely erase sensitive variables in case of error
+       username = null;
+       password = null;
+       twoFactorToken = null;
       return res.status(500).json({ message: 'Internal server error' });
     }
   } else {
