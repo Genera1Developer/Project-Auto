@@ -314,13 +314,14 @@ async function proxyRequest(req, res) {
             res.writeHead(proxyRes.statusCode, resHeaders);
 
             // Encrypt the response body
+            let encryptedStream;
             try {
                 const responseCipher = encryptStream(encryptionKey, resIv);
                 if(!responseCipher){
                   return earlyReject(res, 500, 'Failed to create response cipher.');
                 }
 
-                const encryptedStream = raw.pipe(responseCipher);
+                encryptedStream = raw.pipe(responseCipher);
 
                 encryptedStream.on('error', (streamErr) => {
                   console.error("Response stream encryption error:", streamErr);
@@ -333,6 +334,13 @@ async function proxyRequest(req, res) {
             } catch (streamErr) {
                 console.error("Response stream encryption error:", streamErr);
                 return earlyReject(res, 500, 'Failed to encrypt response stream.');
+            } finally {
+                // Ensure the stream is properly closed in case of errors
+                if (encryptedStream && encryptedStream.readable) {
+                    encryptedStream.on('close', () => {
+                        // Clean up resources if needed.
+                    });
+                }
             }
         });
 
