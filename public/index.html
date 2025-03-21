@@ -237,7 +237,7 @@
         <p style="text-align: center;">Enter the URL to browse securely:</p>
         <div class="input-group">
             <i class="fas fa-key"></i>
-            <input type="text" id="url" placeholder="https://example.com">
+            <input type="url" id="url" placeholder="https://example.com">
             <button id="browse"><i class="fas fa-arrow-right"></i> Browse</button>
         </div>
         <div id="error" class="error"></div>
@@ -301,6 +301,7 @@
             const ENABLE_HSTS = true;
             const ENABLE_WEBGPU = false;
             const ENABLE_SUBTLE_CRYPTO_LOGGING = false;
+            let aesKey; // Declare aesKey in a broader scope
 
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
@@ -387,16 +388,18 @@
 
             async function generateAESKey() {
                 keyGenerationInfoDiv.style.display = 'block';
-                return window.crypto.subtle.generateKey(
-                    {
-                        name: "AES-GCM",
-                        length: AES_KEY_LENGTH,
-                    },
-                    true,
-                    ["encrypt", "decrypt"]
-                ).finally(() => {
-                    keyGenerationInfoDiv.style.display = 'none';
-                });
+                try {
+                  return await window.crypto.subtle.generateKey(
+                      {
+                          name: "AES-GCM",
+                          length: AES_KEY_LENGTH,
+                      },
+                      true,
+                      ["encrypt", "decrypt"]
+                  );
+                } finally {
+                  keyGenerationInfoDiv.style.display = 'none';
+                }
             }
 
             function handleErrors(error) {
@@ -468,6 +471,7 @@
                     sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
                     sessionStorage.setItem('hashedKey', hashedKey);
                     console.log('AES key rotated successfully.');
+                    aesKey = newAesKey; // Update the global aesKey
                     displayKeyExpiryWarning();
                 } catch (error) {
                     console.error("Key rotation failed:", error);
@@ -493,6 +497,7 @@
                             sessionStorage.removeItem('aesIV');
                             sessionStorage.removeItem('aesKeyTimestamp');
                             sessionStorage.removeItem('hashedKey');
+                            aesKey = null;  // Invalidate the global aesKey
                         } else {
                             keyCompromisedAlertDiv.style.display = 'none';
                         }
@@ -507,6 +512,37 @@
                 urlInput.setAttribute("autocorrect", "off");
                 urlInput.setAttribute("spellcheck", "false");
             }
+
+            async function getOrCreateAESKey() {
+              let aesKeyHex = sessionStorage.getItem('aesKey');
+              if (!aesKeyHex) {
+                  aesKey = await generateAESKey();
+                  const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
+                  const keyArray = Array.from(new Uint8Array(rawKey));
+                  aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                  sessionStorage.setItem('aesKey', aesKeyHex);
+                  return aesKey;
+              } else if (!aesKey) {
+                  // If aesKeyHex exists but aesKey doesn't, import the key
+                  try {
+                      const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
+                      aesKey = await window.crypto.subtle.importKey(
+                          "raw",
+                          keyBytes,
+                          { name: "AES-GCM", length: AES_KEY_LENGTH },
+                          false,
+                          ["encrypt", "decrypt"]
+                      );
+                      return aesKey;
+                  } catch (keyImportError) {
+                      console.error("Error importing stored key:", keyImportError);
+                      errorDiv.textContent = 'Error importing stored encryption key. Please refresh the page.';
+                      return null;
+                  }
+              }
+              return aesKey;
+            }
+
 
             browseButton.addEventListener('click', async () => {
                 let url = urlInput.value.trim();
@@ -540,33 +576,15 @@
                     const nonce = generateNonce(NONCE_LENGTH);
                     console.log("Request Nonce:", nonce);
 
-                    let aesKeyHex = sessionStorage.getItem('aesKey');
-                    let aesKey;
 
-                    if (!aesKeyHex) {
-                        aesKey = await generateAESKey();
-                        const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
-                        const keyArray = Array.from(new Uint8Array(rawKey));
-                        aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                    } else {
-                        try {
-                            const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
-                            aesKey = await window.crypto.subtle.importKey(
-                                "raw",
-                                keyBytes,
-                                {name: "AES-GCM", length: AES_KEY_LENGTH},
-                                false,
-                                ["encrypt", "decrypt"]
-                            );
-                        } catch (keyImportError) {
-                            console.error("Error importing stored key:", keyImportError);
-                            errorDiv.textContent = 'Error importing stored encryption key. Please refresh the page.';
-                            return;
-                        }
+                    aesKey = await getOrCreateAESKey();
+                    if (!aesKey) {
+                      return; // getOrCreateAESKey handles error display
                     }
 
                     const {ciphertext, iv} = await encryptURL(url, aesKey);
 
+                    const aesKeyHex = sessionStorage.getItem('aesKey');  //Get the hex value after it might have been newly created.
                     const hashedKey = await hashKey(aesKeyHex);
                     console.log("Hashed Key:", hashedKey);
 
@@ -655,6 +673,7 @@
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
                         sessionStorage.removeItem('hashedKey');
+                        aesKey = null; // Invalidate the global aesKey
                     }
 
                     setTimeout(() => {
@@ -697,6 +716,7 @@
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
                         sessionStorage.removeItem('hashedKey');
+                        aesKey = null; // Invalidate the global aesKey
                         keyExpiryWarningDiv.style.display = 'none';
                     } else {
                         displayKeyExpiryWarning();
@@ -717,33 +737,14 @@
                     const nonce = generateNonce(NONCE_LENGTH);
                     console.log("Redirect Nonce:", nonce);
 
-                    let aesKeyHex = sessionStorage.getItem('aesKey');
-                    let aesKey;
-
-                    if (!aesKeyHex) {
-                        aesKey = await generateAESKey();
-                        const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
-                        const keyArray = Array.from(new Uint8Array(rawKey));
-                        aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                    } else {
-                        try {
-                            const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
-                            aesKey = await window.crypto.subtle.importKey(
-                                "raw",
-                                keyBytes,
-                                {name: "AES-GCM", length: AES_KEY_LENGTH},
-                                false,
-                                ["encrypt", "decrypt"]
-                            );
-                        } catch (keyImportError) {
-                            console.error("Error importing stored key during redirect:", keyImportError);
-                            errorDiv.textContent = 'Error importing stored encryption key for redirect. Please try again.';
-                            return;
-                        }
+                    aesKey = await getOrCreateAESKey();
+                    if (!aesKey) {
+                      return; // getOrCreateAESKey handles error display
                     }
 
                     const {ciphertext, iv} = await encryptURL(redirectUrl, aesKey);
 
+                    const aesKeyHex = sessionStorage.getItem('aesKey');  //Get the hex value after it might have been newly created.
                     const hashedKey = await hashKey(aesKeyHex);
                     console.log("Hashed Key:", hashedKey);
 
@@ -859,6 +860,12 @@
             } else {
                 console.log("WebGPU is not supported or disabled.");
             }
+
+            // Initialize AES key on page load
+            (async () => {
+                await getOrCreateAESKey();
+                displayKeyExpiryWarning();
+            })();
         });
 
         particlesJS.load('particles-js', 'particles-config.json', function () {
