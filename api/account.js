@@ -114,11 +114,11 @@ exports.createUser = async (username, password, callback) => {
     try {
         const hashedPassword = await hashPassword(password, salt);
 
-        const { encryptedData: usernameEncryptedData, iv: usernameIv, authTag: usernameAuthTag } = encryptData(username);
-        const { encryptedData: passwordEncryptedData, iv: passwordIv, authTag: passwordAuthTag } = encryptData(hashedPassword);
-        const { encryptedData: saltEncryptedData, iv: saltIv, authTag: saltAuthTag } = encryptData(salt);
+        const usernameEncryption = encryptData(username);
+        const passwordEncryption = encryptData(hashedPassword);
+        const saltEncryption = encryptData(salt);
 
-        db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [usernameEncryptedData, passwordEncryptedData, saltEncryptedData, PBKDF2_ITERATIONS, usernameIv, usernameAuthTag], function(err) {
+        db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [usernameEncryption.encryptedData, passwordEncryption.encryptedData, saltEncryption.encryptedData, PBKDF2_ITERATIONS, usernameEncryption.iv, usernameEncryption.authTag], function(err) {
             if (err) {
                 console.error(err.message);
                 return callback(err);
@@ -137,9 +137,9 @@ exports.verifyUser = (username, password, callback) => {
     }
 
     try {
-        const { encryptedData: usernameEncryptedData, iv: usernameIv, authTag: usernameAuthTag } = encryptData(username);
+        const usernameEncryption = encryptData(username);
 
-        db.get(`SELECT id, username, password, salt, password_version, encryption_iv, auth_tag FROM users WHERE username = ?`, [usernameEncryptedData], async (err, row) => {
+        db.get(`SELECT id, username, password, salt, password_version, encryption_iv, auth_tag FROM users WHERE username = ?`, [usernameEncryption.encryptedData], async (err, row) => {
             if (err) {
                 console.error(err.message);
                 return callback(err);
@@ -149,9 +149,7 @@ exports.verifyUser = (username, password, callback) => {
             }
 
             try {
-                const usernameIvBuffer = Buffer.from(row.encryption_iv, 'hex');
-                const usernameAuthTagBuffer = Buffer.from(row.auth_tag, 'hex');
-                const decryptedUsername = decrypt(Buffer.from(row.username, 'hex'), usernameIvBuffer, usernameAuthTagBuffer);
+                const decryptedUsername = decryptData(row.username, row.encryption_iv, row.auth_tag);
                 if (!decryptedUsername) {
                     return callback(new Error("Username decryption failed"));
                 }
@@ -160,18 +158,12 @@ exports.verifyUser = (username, password, callback) => {
                   return callback(null, false);
                 }
 
-                const saltIvBuffer = Buffer.from(row.encryption_iv, 'hex');
-                const saltAuthTagBuffer = Buffer.from(row.auth_tag, 'hex');
-                const decryptedSalt = decrypt(Buffer.from(row.salt, 'hex'), saltIvBuffer, saltAuthTagBuffer);
-
+                const decryptedSalt = decryptData(row.salt, row.encryption_iv, row.auth_tag);
                 if (!decryptedSalt) {
                     return callback(new Error("Salt decryption failed"));
                 }
 
-                const passwordIvBuffer = Buffer.from(row.encryption_iv, 'hex');
-                const passwordAuthTagBuffer = Buffer.from(row.auth_tag, 'hex');
-                const decryptedPassword = decrypt(Buffer.from(row.password, 'hex'), passwordIvBuffer, passwordAuthTagBuffer);
-
+                const decryptedPassword = decryptData(row.password, row.encryption_iv, row.auth_tag);
                 if (!decryptedPassword) {
                     return callback(new Error("Password decryption failed"));
                 }
