@@ -104,6 +104,9 @@ const decryptData = (encryptedDataHex, ivHex, authTagHex) => {
 };
 
 exports.createUser = async (username, password, callback) => {
+    if (!username || !password) {
+        return callback(new Error("Username and password are required"));
+    }
     const salt = generateSalt();
 
     try {
@@ -127,6 +130,10 @@ exports.createUser = async (username, password, callback) => {
 };
 
 exports.verifyUser = (username, password, callback) => {
+    if (!username || !password) {
+        return callback(new Error("Username and password are required"));
+    }
+
     try {
         const usernameEncryption = encryptData(username);
 
@@ -145,6 +152,10 @@ exports.verifyUser = (username, password, callback) => {
                     return callback(new Error("Username decryption failed"));
                 }
 
+                if (decryptedUsername !== username) {
+                  return callback(null, false);
+                }
+
                 const decryptedSalt = decryptData(row.salt, row.encryption_iv, row.auth_tag);
                 if (!decryptedSalt) {
                     return callback(new Error("Salt decryption failed"));
@@ -157,7 +168,7 @@ exports.verifyUser = (username, password, callback) => {
 
                 const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
 
-                if (hashedPassword === decryptedPassword && decryptedUsername === username) {
+                if (hashedPassword === decryptedPassword) {
                     callback(null, { id: row.id, username: decryptedUsername });
                 } else {
                     callback(null, false);
