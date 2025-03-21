@@ -105,7 +105,8 @@ exports.createUser = async (username, password, callback) => {
 
 exports.verifyUser = (username, password, callback) => {
     try {
-        const usernameEncryption = encrypt(username, crypto.randomBytes(ivLength));
+        const iv = crypto.randomBytes(ivLength);
+        const usernameEncryption = encrypt(username, iv);
 
         db.get(`SELECT id, username, password, salt, password_version, encryption_iv, auth_tag FROM users WHERE username = ?`, [usernameEncryption.encryptedData], async (err, row) => {
             if (err) {
