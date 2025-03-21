@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Particle.js Initialization
     if (typeof particlesJS === 'function') {
-        particlesJS.load('particles-js', 'public/particles-config.json', function() {
+        particlesJS.load('public/particles-js', 'public/particles-config.json', function() {
             console.log('particles.js loaded - callback');
         });
     } else {
@@ -451,7 +451,12 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Invalid salt:", salt);
             salt = 'default_salt';
         }
-        const combined = salt + getKeyPrefix();
+        const combined = salt + getKeyPrefix() + getIVPrefix();
         return combined;
+    }
+
+    // Prevent form resubmission
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
     }
 });
