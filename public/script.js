@@ -670,7 +670,15 @@ document.addEventListener('DOMContentLoaded', function() {
         getIVPrefix();
         await getHmacSecret();
         sessionStorage.setItem('keyRotationTimestamp', Date.now().toString());
-
+        // Optionally re-encrypt sensitive data stored in localStorage
+        // Re-encrypt stored tokens/data here.  Example:
+        // if (localStorageAvailable()) {
+        //     const storedToken = localStorage.getItem('authToken');
+        //     if (storedToken) {
+        //         const reEncryptedToken = await encryptData(storedToken, sessionStorage.getItem('encryptionSalt'));
+        //         localStorage.setItem('authToken', reEncryptedToken);
+        //     }
+        // }
     }
 
     // Schedule Key Rotation (e.g., daily)
@@ -734,6 +742,23 @@ document.addEventListener('DOMContentLoaded', function() {
         paddingElement.style.display = 'none';
         paddingElement.textContent = padding;
         document.body.appendChild(paddingElement);
+    }
+
+     // Implement defenses against timing attacks in sensitive operations
+    function timingSafeEquals(a, b) {
+        if (typeof a !== 'string' || typeof b !== 'string') {
+            return false;
+        }
+
+        if (a.length !== b.length) {
+            return false;
+        }
+
+        let result = 0;
+        for (let i = 0; i < a.length; i++) {
+            result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+        }
+        return result === 0;
     }
 
     addRandomPadding();
