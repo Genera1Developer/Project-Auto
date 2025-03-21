@@ -158,6 +158,7 @@
             const PROXY_URL = '/api/proxy';
             const KEY_EXPIRY_CHECK_INTERVAL = 60000; // 60 seconds
             const ALLOWED_FRAME_ORIGIN = '*'; // Ideally, this should be your server's origin.
+            const REDIRECT_STATUS_CODES = [301, 302, 307, 308];
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -379,8 +380,15 @@
                     fetch(PROXY_URL, {
                         method: 'POST',
                         body: formData,
+                        redirect: 'manual' // Prevent automatic redirects
                     })
                     .then(response => {
+                        if (REDIRECT_STATUS_CODES.includes(response.status)) {
+                            const redirectUrl = response.headers.get('Location');
+                            console.log("Redirect detected:", redirectUrl);
+                             // Encrypt and proxy the redirect URL
+                             return encryptAndProxy(redirectUrl);
+                        }
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
@@ -461,6 +469,85 @@
                 }
             });
 
+             // Function to handle encryption and proxying of redirect URLs
+            async function encryptAndProxy(redirectUrl) {
+                try {
+                  // Generate a nonce for request tracking (example)
+                  const nonce = generateNonce(NONCE_LENGTH);
+                  console.log("Redirect Nonce:", nonce); // Log nonce for debugging
+
+                  // Generate an AES Key
+                  const aesKey = await generateAESKey();
+
+                  // Encrypt the URL
+                  const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
+
+                  // Export the key to raw format to hash it
+                  const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
+                  const keyArray = Array.from(new Uint8Array(rawKey));
+                  const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                  // Hash the derived key
+                  const hashedKey = await hashKey(keyHex);
+                  console.log("Hashed Key:", hashedKey); // Log the hashed key
+
+                   // Check for compromised key *before* proceeding
+                  const isCompromised = await checkKeyCompromise(hashedKey);
+                  if (isCompromised) {
+                      errorDiv.textContent = 'Potential security risk: Key compromise detected.';
+                      return;
+                  }
+
+                  // Store IV in session storage
+                  sessionStorage.setItem('aesIV', iv);
+
+                  // Store key in session storage *before* passing parameters
+                  sessionStorage.setItem('aesKey', keyHex);
+                  sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
+
+                  // Construct the URL with encrypted parameters.  Don't send IV in URL.
+                  const formData = new FormData();
+                  formData.append('ciphertext', ciphertext);
+                  formData.append('nonce', nonce);
+                  formData.append('keyHash', hashedKey);
+
+                  // Show loading indicator
+                  loadingDiv.style.display = 'block';
+                  errorDiv.textContent = ''; // Clear any previous errors
+                  proxyFrame.style.display = 'block';
+
+                  // Add CSP to the iframe to prevent mixed content issues
+                  proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
+                  proxyFrame.setAttribute('csp', `default-src 'self'; script-src 'self' 'unsafe-inline' 'nonce-${cspNonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+
+                  // Use POST request for better security and to avoid URL length limits
+                  return fetch(PROXY_URL, {
+                      method: 'POST',
+                      body: formData,
+                  })
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error(`HTTP error! status: ${response.status}`);
+                      }
+                      return response.text();
+                  })
+                  .then(html => {
+                      // Load the HTML content directly into the iframe
+                      proxyFrame.contentWindow.document.open();
+                      proxyFrame.contentWindow.document.write(html);
+                      proxyFrame.contentWindow.document.close();
+
+                      // Post message to the iframe to notify about successful load
+                      proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
+                  });
+                } catch (error) {
+                  console.error("Error handling redirect:", error);
+                  errorDiv.textContent = 'Failed to load the redirect page.';
+                } finally {
+                    clearTimeout(timeoutId);
+                    loadingDiv.style.display = 'none';
+                }
+            }
         });
 
         particlesJS.load('particles-js', 'particles-config.json', function() {
