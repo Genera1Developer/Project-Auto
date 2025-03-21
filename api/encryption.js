@@ -297,6 +297,8 @@ const encryptSecure = (text, aad = null) => {
     let cipher = null;
     let encrypted = null;
     let authTag = null;
+    let compressedData = null;
+
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         if (aad) {
@@ -304,19 +306,18 @@ const encryptSecure = (text, aad = null) => {
         }
 
         // Compress the data before encryption
-        zlib.deflate(Buffer.from(text, 'utf8'), (err, compressedData) => {
+        zlib.deflate(Buffer.from(text, 'utf8'), (err, result) => {
             if (err) {
                 console.error("Compression failed:", err);
-                return; //Or throw an error, depending on your needs
+                return null; //Or throw an error, depending on your needs
             }
+            compressedData = result;
             encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
             authTag = cipher.getAuthTag();
 
             const ciphertext = Buffer.concat([iv, authTag, encrypted]);
             return ciphertext.toString('base64');
-
         });
-        return;
 
     } catch (error) {
         console.error("Encryption failed:", error);
@@ -335,6 +336,8 @@ const decryptSecure = (text, aad = null) => {
 
     let decipher = null;
     let decrypted = null;
+    let decompressedData = null;
+
     try {
         const ciphertext = Buffer.from(text, 'base64');
         const iv = ciphertext.slice(0, IV_LENGTH);
@@ -349,14 +352,14 @@ const decryptSecure = (text, aad = null) => {
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
 
         // Decompress the data after decryption
-        zlib.inflate(decrypted, (err, decompressedData) => {
+        zlib.inflate(decrypted, (err, result) => {
             if (err) {
                 console.error("Decompression failed:", err);
-                return; //Or throw an error, depending on your needs
+                return null; //Or throw an error, depending on your needs
             }
+            decompressedData = result;
             return decompressedData.toString('utf8');
         });
-        return;
 
     } catch (error) {
         console.error("Decryption failed:", error);
@@ -402,6 +405,7 @@ const encryptBuffer = (buffer, aad = null) => {
     let cipher = null;
     let encrypted = null;
     let authTag = null;
+    let compressedData = null;
 
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
@@ -410,18 +414,18 @@ const encryptBuffer = (buffer, aad = null) => {
         }
 
         // Compress the data before encryption
-        zlib.deflate(buffer, (err, compressedData) => {
+        zlib.deflate(buffer, (err, result) => {
              if (err) {
                 console.error("Compression failed:", err);
-                return; //Or throw an error, depending on your needs
+                return null; //Or throw an error, depending on your needs
             }
+            compressedData = result;
             encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
             authTag = cipher.getAuthTag();
 
             const ciphertext = Buffer.concat([iv, authTag, encrypted]);
              return ciphertext;
         });
-        return;
 
     } catch (error) {
         console.error("Buffer encryption failed:", error);
@@ -441,6 +445,7 @@ const decryptBuffer = (ciphertext, aad = null) => {
 
     let decipher = null;
     let decrypted = null;
+    let decompressedData = null;
 
     try {
         const iv = ciphertext.slice(0, IV_LENGTH);
@@ -455,14 +460,14 @@ const decryptBuffer = (ciphertext, aad = null) => {
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
 
         // Decompress the data after decryption
-        zlib.inflate(decrypted, (err, decompressedData) => {
+        zlib.inflate(decrypted, (err, result) => {
              if (err) {
                 console.error("Decompression failed:", err);
-                return; //Or throw an error, depending on your needs
+                return null; //Or throw an error, depending on your needs
             }
+            decompressedData = result;
             return decompressedData;
         });
-        return;
     } catch (error) {
         console.error("Buffer decryption failed:", error);
         return null;
