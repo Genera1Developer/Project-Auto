@@ -292,7 +292,7 @@
                     var linkedColorSecret = generateKey("linked_secret", linkedColorSalt);
 
                     var storedColorData = retrieveEncryptedData("colorData", null);
-                    var storedLinkedColorData = retrieveEncryptedData("linkedColorData", null);
+                    var storedLinkedColorData = retrieveEncryptedData("linkedLinkedColorData", null);
                     var encryptedColorData = storedColorData || encryptData(colorData, colorSecret);
                     var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
 
@@ -322,7 +322,7 @@
 
                             var newLinkedColorData = { linkColor: newLinkColor };
                             encryptedLinkedColorData = encryptData(newLinkedColorData, newLinkedColorSecret);
-                            storeEncryptedData("linkedColorData", encryptedLinkedColorData);
+                            storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
 
                             decryptedColorData = decryptData(encryptedColorData, newColorSecret);
                             decryptedLinkedColorData = decryptData(encryptedLinkedColorData, newLinkedColorSecret);
