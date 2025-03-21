@@ -199,7 +199,9 @@
 
                     var generateKey = function(seed) {
                       let keyMaterial = seed + encryptionKeySalt;
-                      return CryptoJS.SHA256(keyMaterial).toString().substring(0, aesKeySize / 4);
+                      let shaObj = CryptoJS.algo.SHA256.create();
+                      shaObj.update(keyMaterial);
+                      return shaObj.finalize().toString().substring(0, aesKeySize / 4);
                     };
 
                     var encryptData = function(data, secret) {
