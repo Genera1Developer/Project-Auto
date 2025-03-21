@@ -185,6 +185,7 @@
                     var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
                     var masterKey = CryptoJS.SHA256("master_key_" + salt).toString();
                     var iv = CryptoJS.lib.WordArray.random(128/8);
+										var sharedSecret = CryptoJS.SHA256("shared_secret_" + salt).toString();
 
                     var encryptData = function(data, key, iv) {
                       try {
@@ -193,7 +194,8 @@
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
                         });
-                        return encrypted.toString();
+												encrypted = CryptoJS.HmacSHA256(encrypted.toString(), sharedSecret).toString() + "$" + encrypted.toString();
+                        return encrypted;
                       } catch (err) {
                         console.error("Encrypt error:", err);
                         return null;
@@ -202,7 +204,21 @@
 
                     var decryptData = function(encryptedData, key, iv) {
                       try {
-                        var decrypted = CryptoJS.AES.decrypt(encryptedData, key, {
+												var components = encryptedData.split("$");
+												if (components.length !== 2) {
+													console.error("Invalid encrypted data format");
+													return null;
+												}
+												var hmac = components[0];
+												var ciphertext = components[1];
+
+												var calculatedHmac = CryptoJS.HmacSHA256(ciphertext, sharedSecret).toString();
+												if (calculatedHmac !== hmac) {
+													console.error("HMAC validation failed. Data may be tampered with.");
+													return null;
+												}
+
+                        var decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
                             iv: iv,
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
