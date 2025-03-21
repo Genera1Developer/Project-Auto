@@ -691,12 +691,11 @@ module.exports = async (req, res) => {
                     httpOnly: true,
                     secure: true,
                     sameSite: 'Strict',
-                    signed: true // Use signed cookie
+                    signed: true
                  }
 
                  // Set cookie with the encrypted session ID, signing with serverSecret
-                const encryptedSessionIdCookie = encryptData(sessionId, keyMaterial, generateRandomIV()).encryptedData
-                 res.cookie('session_id', encryptedSessionIdCookie, secureCookieOptions);
+                 res.cookie('session_id', sessionId, secureCookieOptions);
                  res.status(200).json({ data: compressedResponse });
 
 
