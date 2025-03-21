@@ -803,6 +803,42 @@ function setAlgorithm(newAlgorithm) {
     }
 }
 
+// Function to encrypt and sign data
+const encryptAndSign = (data, signingKey) => {
+    try {
+        const encryptedData = encryptSecure(data);
+        const hmac = crypto.createHmac('sha256', signingKey);
+        hmac.update(encryptedData);
+        const signature = hmac.digest('hex');
+        return {
+            ciphertext: encryptedData,
+            signature: signature
+        };
+    } catch (error) {
+        console.error("Encryption and signing failed:", error);
+        return null;
+    }
+};
+
+// Function to verify signature and decrypt data
+const verifyAndDecrypt = (ciphertext, signature, signingKey) => {
+    try {
+        const hmac = crypto.createHmac('sha256', signingKey);
+        hmac.update(ciphertext);
+        const expectedSignature = hmac.digest('hex');
+
+        if (!safeCompare(signature, expectedSignature)) {
+            console.error("Signature verification failed.");
+            return null;
+        }
+
+        return decryptSecure(ciphertext);
+    } catch (error) {
+        console.error("Verification and decryption failed:", error);
+        return null;
+    }
+};
+
 module.exports = {
     encrypt,
     decrypt,
@@ -839,5 +875,7 @@ module.exports = {
     retrieveKeySecurely,
     deleteKeySecurely,
     getSupportedCiphers,
-    setAlgorithm
+    setAlgorithm,
+    encryptAndSign,
+    verifyAndDecrypt
 };
