@@ -80,7 +80,7 @@ async function decryptData(encryptedData, encryptionKey, iv, authTag) {
 
 // Function to derive a key from a password using PBKDF2
 async function deriveKey(password, salt) {
-    const iterations = 100000; // Adjust as needed
+    const iterations = 200000; // Increased iterations
     const keyLength = 32; // 32 bytes for AES-256
     const digest = 'sha512';
     const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keyLength, digest);
@@ -102,6 +102,7 @@ function saltUsername(username, salt) {
 // Function to securely erase sensitive data from memory
 function secureErase(buffer) {
     crypto.randomFillSync(buffer);
+    buffer.fill(0); // Overwrite with zeros after random fill
 }
 
 // Function to generate a random password for key derivation
@@ -148,7 +149,7 @@ async function decryptUserData(encryptedData, iv, authTag, masterKey, aad) {
 }
 
 // Key stretching to improve key derivation robustness
-async function stretchKey(key, salt, iterations = 3) {
+async function stretchKey(key, salt, iterations = 5) { // Increased iterations
     let stretchedKey = key;
     for (let i = 0; i < iterations; i++) {
         stretchedKey = crypto.createHmac('sha512', salt).update(stretchedKey).digest('hex');
@@ -168,7 +169,9 @@ function isValidNonce(nonce, storedNonces) {
         return false;
     }
     storedNonces.add(nonce);
-    // Optionally, limit the size of storedNonces and remove older nonces
+    setTimeout(() => {
+        storedNonces.delete(nonce); // Remove nonce after a timeout
+    }, 60000); // Nonce valid for 60 seconds
     return true;
 }
 
