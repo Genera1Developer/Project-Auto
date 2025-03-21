@@ -10,6 +10,9 @@ const ivLength = 16;
 const AUTH_TAG_LENGTH = 16;
 const SALT_LENGTH = 64;
 const PBKDF2_ITERATIONS = 200000;
+const KEYLEN = 64;
+const DIGEST = 'sha512';
+const ENCRYPTION_ALGORITHM = 'aes-256-gcm';
 
 function connectToDatabase() {
     db = new sqlite3.Database(dbPath, (err) => {
@@ -43,9 +46,7 @@ connectToDatabase();
 const pbkdf2 = promisify(crypto.pbkdf2);
 
 async function hashPassword(password, salt, iterations = PBKDF2_ITERATIONS) {
-    const keylen = 64;
-    const digest = 'sha512';
-    const derivedKey = await pbkdf2(password, salt, iterations, keylen, digest);
+    const derivedKey = await pbkdf2(password, salt, iterations, KEYLEN, DIGEST);
     return derivedKey.toString('hex');
 }
 
@@ -54,7 +55,7 @@ function generateSalt() {
 }
 
 function encrypt(text, iv) {
-    const cipher = crypto.createCipheriv('aes-256-gcm', encryptionKey, iv);
+    const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
     let encrypted = cipher.update(text, 'utf8');
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     const authTag = cipher.getAuthTag();
@@ -67,7 +68,7 @@ function encrypt(text, iv) {
 
 function decrypt(encryptedData, iv, authTag) {
     try {
-        const decipher = crypto.createDecipheriv('aes-256-gcm', encryptionKey, iv);
+        const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
         decipher.setAuthTag(authTag);
         let decrypted = decipher.update(encryptedData);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
@@ -96,7 +97,8 @@ const decryptData = (encryptedDataHex, ivHex, authTagHex) => {
         const encryptedData = Buffer.from(encryptedDataHex, 'hex');
         const iv = Buffer.from(ivHex, 'hex');
         const authTag = Buffer.from(authTagHex, 'hex');
-        return decrypt(encryptedData, iv, authTag);
+        const decryptedText = decrypt(encryptedData, iv, authTag);
+        return decryptedText;
     } catch (error) {
         console.error("Decryption error:", error);
         return null;
