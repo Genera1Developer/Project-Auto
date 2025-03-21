@@ -157,6 +157,7 @@
             const SALT_LENGTH = 16; // Recommended salt length
             const PROXY_URL = '/api/proxy';
             const KEY_EXPIRY_CHECK_INTERVAL = 60000; // 60 seconds
+            const ALLOWED_FRAME_ORIGIN = '*'; // Ideally, this should be your server's origin.
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -390,6 +391,10 @@
                         proxyFrame.contentWindow.document.open();
                         proxyFrame.contentWindow.document.write(html);
                         proxyFrame.contentWindow.document.close();
+
+                        // Post message to the iframe to notify about successful load
+                        proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
+
                     })
                     .catch(error => {
                         console.error("Error loading proxy:", error);
