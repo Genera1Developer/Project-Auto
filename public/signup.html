@@ -740,9 +740,20 @@
             const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
 
             // Display the generated keys (for debugging purposes only)
-            document.getElementById('salt-value').textContent = salt.toString();
-            document.getElementById('aes-key-value').textContent = aesKey.toString();
-            document.getElementById('hmac-key-value').textContent = hmacKey.toString();
+            const saltValue = document.getElementById('salt-value');
+            if (saltValue) {
+                saltValue.textContent = salt.toString();
+            }
+
+            const aesKeyValue = document.getElementById('aes-key-value');
+            if (aesKeyValue) {
+                 aesKeyValue.textContent = aesKey.toString();
+            }
+
+            const hmacKeyValue = document.getElementById('hmac-key-value');
+            if (hmacKeyValue) {
+                hmacKeyValue.textContent = hmacKey.toString();
+            }
 
             // Encrypt username and email
             const iv = CryptoJS.lib.WordArray.random(128/8);
