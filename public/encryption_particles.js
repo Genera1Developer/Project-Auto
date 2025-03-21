@@ -191,7 +191,7 @@ particlesJS('particles-js', {
                 return encryptedData;
             }
 
-            const decryptValue = async (encryptedBase64, secretKey, iv, salt) => {
+            const decryptValue = async (encryptedBase64, secretKey, iv, algorithm, salt) => {
               try {
                  if (!secretKey || !iv || !algorithm || !salt) {
                   console.warn('Decryption parameters are missing. Decryption disabled.');
@@ -374,9 +374,9 @@ particlesJS('particles-js', {
           return buf;
         },
       getCryptoDetails: function(){
-          let key = localStorage.getItem('encryptionKey') || this.key;
-          let iv = localStorage.getItem('encryptionIV') || this.iv;
-          let salt = localStorage.getItem('encryptionSalt') || this.salt;
+          let key = localStorage.getItem('encryptionKey') || sessionStorage.getItem('encryptionKey') || this.key;
+          let iv = localStorage.getItem('encryptionIV') || sessionStorage.getItem('encryptionIV') || this.iv;
+          let salt = localStorage.getItem('encryptionSalt') || sessionStorage.getItem('encryptionSalt') || this.salt;
 
           return {
               key: key,
@@ -505,6 +505,13 @@ particlesJS('particles-js', {
             localStorage.setItem('encryptionSalt', salt);
           } catch (e) {
               console.warn("localStorage not available. Crypto details will not persist.");
+              try{
+                  sessionStorage.setItem('encryptionKey', key);
+                  sessionStorage.setItem('encryptionIV', iv);
+                  sessionStorage.setItem('encryptionSalt', salt);
+              } catch(e){
+                  console.warn("SessionStorage not available. Crypto details will not persist.");
+              }
           }
       },
       getCryptoFromLocalStorage: function(){
@@ -561,12 +568,16 @@ particlesJS('particles-js', {
               localStorage.removeItem('encryptionIV');
               localStorage.removeItem('encryptionSalt');
               localStorage.removeItem('passwordHash');
+          } catch (e) {
+              console.warn("localStorage not available.");
+          }
+          try {
               sessionStorage.removeItem('encryptionKey');
               sessionStorage.removeItem('encryptionIV');
               sessionStorage.removeItem('encryptionSalt');
               sessionStorage.removeItem('passwordHash');
           } catch (e) {
-              console.warn("localStorage or sessionStorage not available.");
+              console.warn("sessionStorage not available.");
           }
       },
       throttleEncryption: function(func, limit) {
@@ -704,6 +715,7 @@ particlesJS('particles-js', {
               try{
                  sessionStorage.setItem('encryptionKey', key);
                  sessionStorage.setItem('encryptionIV', iv);
+                 sessionStorage.setItem('encryptionSalt', salt);
               } catch(e){
                   console.warn("Session Storage failed");
               }
@@ -738,7 +750,7 @@ particlesJS('particles-js', {
         }
 
         try {
-            let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage() || encryptPlugin.getCryptoFromSessionStorage();
+            let cryptoDetails = encryptPlugin.getCryptoDetails();
             let storedKey = cryptoDetails?.key;
             let storedIv = cryptoDetails?.iv;
             let storedSalt = cryptoDetails?.salt;
@@ -760,19 +772,7 @@ particlesJS('particles-js', {
                     config.encrypt_config.key = key;
                     config.encrypt_config.iv = iv;
                     config.encrypt_config.salt = salt;
-                    if(encryptPlugin.isLocalStorageAvailable()){
-                        encryptPlugin.storeCryptoDetails(key, iv, salt);
-                    } else if(encryptPlugin.isSessionStorageAvailable()){
-                        try{
-                            sessionStorage.setItem('encryptionKey', key);
-                            sessionStorage.setItem('encryptionIV', iv);
-                            sessionStorage.setItem('encryptionSalt', salt);
-                        } catch(e){
-                            console.warn("Session storage failed");
-                        }
-
-                    }
-
+                    encryptPlugin.storeCryptoDetails(key, iv, salt);
                     console.log('New encryption key/IV/Salt generated and stored.');
                 } else {
                     console.error('Failed to generate encryption key/IV/Salt. Encryption disabled.');
@@ -807,7 +807,7 @@ particlesJS('particles-js', {
         }
 
          try {
-            let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage() || encryptPlugin.getCryptoFromSessionStorage();
+             let cryptoDetails = encryptPlugin.getCryptoDetails();
             let storedKey = cryptoDetails?.key;
             let storedIv = cryptoDetails?.iv;
             let storedSalt = cryptoDetails?.salt;
@@ -829,12 +829,7 @@ particlesJS('particles-js', {
         }
     },
      "destroy": function() {
-        if (this.plugins.isLocalStorageAvailable()) {
-           this.plugins.clearCryptoDetails();
-        }
-        if (this.plugins.isSessionStorageAvailable()) {
-          this.plugins.clearCryptoDetails();
-       }
+        this.plugins.clearCryptoDetails();
         }
 },
   "tmp": {}
