@@ -182,46 +182,38 @@
                 try {
                     var initialColorSeed = "f5c3bb";
                     var initialLinkedColorSeed = "9b59b6";
-                    var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                    var masterKey = CryptoJS.PBKDF2("master_key_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
-                    var iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                    var sharedSecret = CryptoJS.PBKDF2("shared_secret_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
 
-                    var encryptData = function(data, key, iv) {
+                    var generateKey = function(seed, salt) {
+                      var keyMaterial = seed + salt;
+                      return CryptoJS.SHA256(keyMaterial).toString();
+                    };
+
+                    var encryptData = function(data, secret) {
                       try {
-                        var encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
-                            iv: CryptoJS.enc.Hex.parse(iv),
+                        var iv = CryptoJS.lib.WordArray.random(128/8);
+
+                        var encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), secret, {
+                            iv: iv,
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
-                        }).toString();
-                         var b64 = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encrypted));
-                        encrypted = CryptoJS.HmacSHA256(b64, sharedSecret).toString() + "$" + b64;
-                        return encrypted;
+                        });
+                        return {
+                            ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
+                            iv: iv.toString()
+                        };
                       } catch (err) {
                         console.error("Encrypt error:", err);
                         return null;
                       }
                     };
 
-                    var decryptData = function(encryptedData, key, iv) {
+                    var decryptData = function(encryptedData, secret) {
                       try {
-                        var components = encryptedData.split("$");
-                        if (components.length !== 2) {
-                          console.error("Invalid encrypted data format");
-                          return null;
-                        }
-                        var hmac = components[0];
-                        var ciphertextB64 = components[1];
+                         var iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
+                         var ciphertext = CryptoJS.enc.Base64.parse(encryptedData.ciphertext).toString();
 
-                        var calculatedHmac = CryptoJS.HmacSHA256(ciphertextB64, sharedSecret).toString();
-                        if (calculatedHmac !== hmac) {
-                          console.error("HMAC validation failed. Data may be tampered with.");
-                          return null;
-                        }
-                        var ciphertext = CryptoJS.enc.Base64.parse(ciphertextB64).toString(CryptoJS.enc.Utf8);
-
-                        var decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
-                            iv: CryptoJS.enc.Hex.parse(iv),
+                        var decrypted = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext) }, secret, {
+                            iv: iv,
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
                         });
@@ -236,13 +228,17 @@
 
                     var colorData = { color: initialColorSeed, strokeColor: initialColorSeed };
                     var linkedColorData = { linkColor: initialLinkedColorSeed };
+                    var colorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                    var linkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
 
-                    var encryptedColorData = encryptData(colorData, masterKey, iv);
-                    var encryptedLinkedColorData = encryptData(linkedColorData, masterKey, iv);
+                    var colorSecret = generateKey("color_secret", colorSalt);
+                    var linkedColorSecret = generateKey("linked_secret", linkedColorSalt);
+                    var encryptedColorData = encryptData(colorData, colorSecret);
+                    var encryptedLinkedColorData = encryptData(linkedColorData, linkedColorSecret);
 
-                    var updateColors = function(encryptedColorData, encryptedLinkedColorData, iv, masterKey) {
-                      var decryptedColorData = decryptData(encryptedColorData, masterKey, iv);
-                      var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, masterKey, iv);
+                    var updateColors = function(encryptedColorData, encryptedLinkedColorData, colorSecret, linkedColorSecret) {
+                      var decryptedColorData = decryptData(encryptedColorData, colorSecret);
+                      var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
 
                       if (decryptedColorData) {
                         if(e.particles.color) e.particles.color.value = "#" + decryptedColorData.color;
@@ -257,28 +253,30 @@
                       }
                     };
 
-                    updateColors(encryptedColorData, encryptedLinkedColorData, iv, masterKey);
+                    updateColors(encryptedColorData, encryptedLinkedColorData, colorSecret, linkedColorSecret);
 
                     var colorUpdateInterval = 5000;
 
                     var updateColorsAndSchedule = function() {
                         try {
-                            var newSalt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                            var keyMaterial = initialColorSeed + Date.now() + newSalt;
+                            var newColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+                            var newLinkedColorSalt = CryptoJS.lib.WordArray.random(128/8).toString();
+
+                            var newColorSecret = generateKey("color_secret", newColorSalt);
+                            var newLinkedColorSecret = generateKey("linked_secret", newLinkedColorSalt);
+
+                            var keyMaterial = initialColorSeed + Date.now() + newColorSalt;
                             var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
 
                             colorData = { color: derivedKey.substring(0,6), strokeColor: derivedKey.substring(6,12) };
-                            iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                            encryptedColorData = encryptData(colorData, masterKey, iv);
+                            encryptedColorData = encryptData(colorData, newColorSecret);
 
-                            newSalt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                            keyMaterial = initialLinkedColorSeed + Date.now() + newSalt;
+                            keyMaterial = initialLinkedColorSeed + Date.now() + newLinkedColorSalt;
                             derivedKey = CryptoJS.SHA256(keyMaterial).toString();
                             linkedColorData = { linkColor: derivedKey.substring(0,6) };
-                            iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                            encryptedLinkedColorData = encryptData(linkedColorData, masterKey, iv);
+                            encryptedLinkedColorData = encryptData(linkedColorData, newLinkedColorSecret);
 
-                            updateColors(encryptedColorData, encryptedLinkedColorData, iv, masterKey);
+                            updateColors(encryptedColorData, encryptedLinkedColorData, newColorSecret, newLinkedColorSecret);
 
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         } catch (cryptoIntervalError) {
