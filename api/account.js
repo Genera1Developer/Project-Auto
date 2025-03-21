@@ -168,6 +168,38 @@ const decryptSensitiveData = (ivB64, authTagB64,encryptedDataB64) => {
     }
 };
 
+const transformSensitiveData = (data, transform) => {
+    try {
+        const iv = crypto.randomBytes(ivLength);
+        const { encryptedData, authTag } = encrypt(data, iv);
+        const transformedData = transform(encryptedData);
+        return {
+            encryptedData: transformedData,
+            iv: iv.toString('base64'),
+            authTag: authTag.toString('base64')
+        };
+    } catch (error) {
+        console.error("Encryption error:", error);
+        return null;
+    }
+};
+
+const untransformSensitiveData = (encryptedData, ivB64, authTagB64, untransform) => {
+    if (!encryptedData || !ivB64 || !authTagB64) {
+        return null;
+    }
+
+    try {
+        const untransformedData = untransform(encryptedData);
+        const iv = Buffer.from(ivB64, 'base64');
+        const authTag = Buffer.from(authTagB64, 'base64');
+        return decrypt(untransformedData, iv, authTag);
+    } catch (error) {
+        console.error("Decryption error:", error);
+        return null;
+    }
+};
+
 exports.createUser = async (username, password, callback) => {
     if (!username || !password) {
         return callback(new Error("Username and password are required"));
