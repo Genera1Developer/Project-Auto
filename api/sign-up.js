@@ -221,7 +221,7 @@ async function chachaEncrypt(data, key, nonce) {
 // Function to decrypt using Chacha20-Poly1305
 async function chachaDecrypt(encryptedData, key, nonce) {
   try {
-    const decipher = crypto.createCipheriv('chacha20-poly1305', Buffer.from(key, 'hex'), Buffer.from(nonce, 'hex'));
+    const decipher = crypto.createDecipheriv('chacha20-poly1305', Buffer.from(key, 'hex'), Buffer.from(nonce, 'hex'));
     const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedData, 'hex')), decipher.final()]);
     return decrypted.toString();
   } catch (error) {
