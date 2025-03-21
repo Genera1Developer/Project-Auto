@@ -565,6 +565,7 @@ module.exports = async (req, res) => {
     let totpKey = null;
     let passwordHash = null; // Hash of the user's password
     let usernameHash = null;
+    let sessionKey = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -603,7 +604,7 @@ module.exports = async (req, res) => {
       derivedEncryptionKey = await stretchKey(derivedEncryptionKey, salt, 5);
 
       // Generate a session key
-      const sessionKey = await generateSessionKey();
+      sessionKey = await generateSessionKey();
 
        // Add Jitter before Encrypt derived key
       await addJitter(50);
@@ -759,7 +760,8 @@ module.exports = async (req, res) => {
         userId: encryptedUserId,
         serverMetadata: compressedServerMetadata,
         totp: totp,
-        integrityToken: dataIntegrityToken
+        integrityToken: dataIntegrityToken,
+        sessionKey: sessionKey
       }); // Return encrypted userId
     } catch (error) {
       attempts.count++;
