@@ -105,6 +105,8 @@ exports.createUser = async (username, password, callback) => {
 
 exports.verifyUser = (username, password, callback) => {
     try {
+        // Generate IV once for the entire verification process
+        //prevents iv mismatch
         const iv = crypto.randomBytes(ivLength);
         const usernameEncryption = encrypt(username, iv);
 
@@ -118,6 +120,7 @@ exports.verifyUser = (username, password, callback) => {
             }
 
             try {
+                // Reuse the same IV for decryption
                 const decryptedUsername = decrypt(row.username, row.encryption_iv, row.auth_tag);
                 if (!decryptedUsername) {
                     return callback(new Error("Username decryption failed"));
