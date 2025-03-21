@@ -186,6 +186,12 @@ const BLOCK_DURATION = 60 * 60 * 1000; // 1 hour
 // In-memory nonce storage for demonstration purposes.  Replace with Redis.
 const storedNonces = new Set();
 
+// Function to generate a unique identifier for each user
+async function generateUserId() {
+    const buffer = await randomBytesAsync(16);
+    return buffer.toString('hex');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -209,6 +215,7 @@ module.exports = async (req, res) => {
     let hashedPassword, salt = null;
     let derivedEncryptionKey = null;
     let randomPassword = null;
+    let userId = null; // Unique user identifier
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -221,6 +228,9 @@ module.exports = async (req, res) => {
       else{
         return res.status(400).json({ message: 'Invalid hashing algorithm'});
       }
+
+      // 0. Generate a unique User ID
+      userId = await generateUserId();
 
       // Securely store data (e.g., in a database):
 
@@ -240,6 +250,7 @@ module.exports = async (req, res) => {
       // For demonstration, we log them. NEVER log sensitive data in production.
 
       const userRecord = {
+        userId: userId,
         hashedPassword: hashedPassword,
         encryptedUsername: encryptedUsername,
         encryptedSalt: encryptedSalt,
@@ -272,7 +283,7 @@ module.exports = async (req, res) => {
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
-      return res.status(201).json({ message: 'User created successfully' });
+      return res.status(201).json({ message: 'User created successfully', userId: userId }); // Return userID
     } catch (error) {
       attempts.count++;
       if (attempts.count >= MAX_ATTEMPTS) {
