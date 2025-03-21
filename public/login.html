@@ -326,9 +326,18 @@
             const salt = generateSalt(); // Generate a unique salt for this submission
 
             // Encrypt data before sending
-            const encryptedUsername = encryptData(username, encryptionKey);
-            const encryptedPassword = encryptData(password, encryptionKey);
-            const encryptedCaptcha = encryptData(captcha, encryptionKey);
+            let encryptedUsername, encryptedPassword, encryptedCaptcha;
+            try {
+                encryptedUsername = encryptData(username, encryptionKey);
+                encryptedPassword = encryptData(password, encryptionKey);
+                encryptedCaptcha = encryptData(captcha, encryptionKey);
+            } catch (error) {
+                console.error("Encryption setup error:", error);
+                errorMessage.textContent = 'Encryption setup failed. Please try again.';
+                encryptionAnimation.style.display = 'none';
+                encryptionStatus.textContent = 'Encryption setup failure.';
+                return;
+            }
 
             if (!encryptedUsername.ciphertext || !encryptedPassword.ciphertext || !encryptedCaptcha.ciphertext) {
                 errorMessage.textContent = 'Encryption failed. Please try again.';
@@ -401,7 +410,9 @@
             .then(response => {
                 encryptionAnimation.style.display = 'none'; // Hide animation
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                   sessionStorage.removeItem('encryptionKey'); // Remove key on error
+                   sessionStorage.removeItem('serverPublicKey');
+                   throw new Error('Network response was not ok');
                 }
                 return response.json();
             })
