@@ -147,6 +147,15 @@ async function decryptUserData(encryptedData, iv, authTag, masterKey, aad) {
     }
 }
 
+// Key stretching to improve key derivation robustness
+async function stretchKey(key, salt, iterations = 3) {
+    let stretchedKey = key;
+    for (let i = 0; i < iterations; i++) {
+        stretchedKey = crypto.createHmac('sha512', salt).update(stretchedKey).digest('hex');
+    }
+    return stretchedKey;
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2' } = req.body;
@@ -176,6 +185,9 @@ module.exports = async (req, res) => {
       // 1. Generate a unique encryption key per user, derived from password and salt.
       randomPassword = await generateRandomPassword();
       derivedEncryptionKey = await deriveKey(randomPassword, salt);
+
+      // Stretch the derived encryption key for added security
+      derivedEncryptionKey = await stretchKey(derivedEncryptionKey, salt);
 
       // 2. Encrypt the username and salt
       const saltedUsername = saltUsername(username, salt);
