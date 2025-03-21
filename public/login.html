@@ -330,24 +330,29 @@
             const hmacData = encryptedUsername.ciphertext + encryptedPassword.ciphertext + encryptedCaptcha.ciphertext + salt + timestamp + encryptedEncryptionKey + nonce;
             const hmac = generateHMAC(hmacData, encryptionKey);
 
+            // Prepare request body as a single encrypted blob
+            const requestData = JSON.stringify({
+                username: encryptedUsername.ciphertext,
+                password: encryptedPassword.ciphertext,
+                captcha: encryptedCaptcha.ciphertext,
+                salt: salt
+            });
+            const encryptedRequest = encryptData(requestData, encryptionKey);
+
+
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Encryption-Key-Hash': keyHash, // Send the key hash
-                    'X-Encryption-IV': encryptedUsername.iv, // Send IV in header
+                    'X-Encryption-IV': encryptedRequest.iv,
                     'X-Request-Timestamp': timestamp, // Send timestamp
                     'X-Salt-Hash': saltHash, // Send Salt hash
                     'X-Encrypted-Key': encryptedEncryptionKey, // Send the encrypted key
                     'X-Request-HMAC': hmac, // Send HMAC for integrity
                     'X-Request-Nonce': nonce // Send nonce for replay attack protection
                 },
-                body: JSON.stringify({
-                    username: encryptedUsername.ciphertext,
-                    password: encryptedPassword.ciphertext,
-                    captcha: encryptedCaptcha.ciphertext,
-                    salt: salt
-                })
+                body: JSON.stringify({ request: encryptedRequest.ciphertext })
             })
             .then(response => {
                 encryptionAnimation.style.display = 'none'; // Hide animation
