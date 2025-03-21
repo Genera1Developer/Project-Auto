@@ -252,7 +252,7 @@ async function proxyRequest(req, res) {
         }
 
         const iv = crypto.randomBytes(IV_LENGTH); // Generate IV for request encryption
-        let reqHeaders = transformHeaders(req.headers, false, encryptionKey); // Decrypt incoming headers, using salt
+        let reqHeaders = transformHeaders(req.headers, false, encryptionKey, iv); // Decrypt incoming headers, using salt
         const options = {
             hostname: parsedUrl.hostname,
             port: parsedUrl.port,
