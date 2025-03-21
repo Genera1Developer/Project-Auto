@@ -106,5 +106,10 @@ particlesJS('particles-js', {
       }
     }
   },
-  retina_detect: true
+  retina_detect: true,
+  encrypt_config: {
+        algorithm: 'AES-256-CBC',
+        key: 'YOUR_SECURE_KEY',
+        iv: 'YOUR_IV_KEY'
+    }
 });
