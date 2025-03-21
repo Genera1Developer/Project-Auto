@@ -589,6 +589,15 @@ particlesJS('particles-js', {
         if (config?.plugins?.encrypt?.dataFields) {
             await encryptPlugin.decryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
         }
-    }
+    },
+     "destroy": function() {
+            const localStorageKey = 'encryptionKey';
+            const localStorageIV = 'encryptionIV';
+            const localStorageSalt = 'encryptionSalt';
+
+            localStorage.removeItem(localStorageKey);
+            localStorage.removeItem(localStorageIV);
+            localStorage.removeItem(localStorageSalt);
+        }
 }
 });
