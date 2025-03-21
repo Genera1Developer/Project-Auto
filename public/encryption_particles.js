@@ -242,13 +242,17 @@ particlesJS('particles-js', {
                     const lastPart = pathParts[pathParts.length - 1];
 
                     if (target && target[lastPart]) {
-                      const originalValue = target[lastPart];
-                      if (Array.isArray(originalValue)) {
-                        const encryptedArray = await Promise.all(originalValue.map(item => encryptPlugin.customEncrypt(item, key, iv, algorithm)));
-                        target[lastPart] = encryptedArray;
+                      try{
+                        const originalValue = target[lastPart];
+                        if (Array.isArray(originalValue)) {
+                          const encryptedArray = await Promise.all(originalValue.map(item => encryptPlugin.customEncrypt(item, key, iv, algorithm)));
+                          target[lastPart] = encryptedArray;
 
-                      } else {
-                        target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
+                        } else {
+                          target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
+                        }
+                      } catch (error) {
+                        console.error("Encryption update failed:", error);
                       }
 
                     }
@@ -277,12 +281,16 @@ particlesJS('particles-js', {
                     const lastPart = pathParts[pathParts.length - 1];
 
                     if (target && target[lastPart]) {
-                      const encryptedValue = target[lastPart];
-                      if (Array.isArray(encryptedValue)) {
-                        const decryptedArray = await Promise.all(encryptedValue.map(item => encryptPlugin.decrypt(item, key, iv, algorithm)));
-                        target[lastPart] = decryptedArray;
-                      } else {
-                          target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
+                      try{
+                        const encryptedValue = target[lastPart];
+                        if (Array.isArray(encryptedValue)) {
+                          const decryptedArray = await Promise.all(encryptedValue.map(item => encryptPlugin.decrypt(item, key, iv, algorithm)));
+                          target[lastPart] = decryptedArray;
+                        } else {
+                            target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
+                        }
+                      } catch (error) {
+                          console.error("Decryption draw failed:", error);
                       }
                     }
                 }
