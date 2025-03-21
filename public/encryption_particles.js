@@ -1,7 +1,7 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 300,
+      value: 250,
       density: {
         enable: true,
         value_area: 800
@@ -17,7 +17,7 @@ particlesJS('particles-js', {
         color: '#003300'
       },
       polygon: {
-        nb_sides: 6 // Hexagon for encryption/hash theme
+        nb_sides: 4 // Square/Diamond for block encryption
       },
       image: {
         src: '',
@@ -26,35 +26,35 @@ particlesJS('particles-js', {
       }
     },
     opacity: {
-      value: 0.9,
+      value: 0.7,
       random: true,
       anim: {
         enable: true,
-        speed: 1.2,
+        speed: 1.5,
         opacity_min: 0.1,
         sync: false
       }
     },
     size: {
-      value: 2.5,
+      value: 2,
       random: true,
       anim: {
         enable: true,
-        speed: 2.5,
+        speed: 2,
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 150,
+      distance: 140,
       color: '#009900',
-      opacity: 0.5,
-      width: 1.2
+      opacity: 0.4,
+      width: 1
     },
     move: {
       enable: true,
-      speed: 2,
+      speed: 1.5,
       direction: 'none',
       random: true,
       straight: false,
@@ -82,9 +82,9 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 180,
+        distance: 160,
         line_linked: {
-          opacity: 0.8
+          opacity: 0.7
         }
       },
       bubble: {
@@ -99,10 +99,10 @@ particlesJS('particles-js', {
         duration: 0.4
       },
       push: {
-        particles_nb: 4
+        particles_nb: 3
       },
       remove: {
-        particles_nb: 3
+        particles_nb: 2
       }
     }
   },
