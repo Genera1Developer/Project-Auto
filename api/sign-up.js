@@ -45,17 +45,17 @@ function timingSafeEqual(a, b) {
 }
 
 // Function to encrypt data using AES-256-GCM
-async function encryptData(data, encryptionKey) {
+async function encryptData(data, encryptionKey, iv = null) {
   try {
-    const iv = await randomBytesAsync(16); // Initialization Vector
-    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
+    const actualIv = iv ? Buffer.from(iv, 'hex') : await randomBytesAsync(16); // Initialization Vector
+    const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), actualIv);
     let encrypted = cipher.update(data);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     const authTag = cipher.getAuthTag();
 
     return {
       encryptedData: encrypted.toString('hex'),
-      iv: iv.toString('hex'),
+      iv: actualIv.toString('hex'),
       authTag: authTag.toString('hex')
     };
   } catch (error) {
@@ -111,17 +111,17 @@ async function generateRandomPassword() {
 }
 
 // Function to encrypt sensitive user data before storing it
-async function encryptUserData(userData, masterKey) {
+async function encryptUserData(userData, masterKey, iv = null) {
     try {
-        const iv = await randomBytesAsync(16);
-        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(masterKey, 'hex'), iv);
+        const actualIv = iv ? Buffer.from(iv, 'hex') : await randomBytesAsync(16);
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(masterKey, 'hex'), actualIv);
         const aad = Buffer.from(process.env.AAD_FOR_ENCRYPTION || 'DefaultAad', 'utf8');
         cipher.setAAD(aad);
         const encrypted = Buffer.concat([cipher.update(JSON.stringify(userData)), cipher.final()]);
         const authTag = cipher.getAuthTag();
 
         return {
-            iv: iv.toString('hex'),
+            iv: actualIv.toString('hex'),
             encryptedData: encrypted.toString('hex'),
             authTag: authTag.toString('hex'),
             aad: aad.toString('hex')
