@@ -581,7 +581,143 @@ document.addEventListener('DOMContentLoaded', function() {
         captchaField.readOnly = false; // Prevent autofill
     }
 
-    // Prevent caching of login page
+     // Replace base64 with URL-safe base64
+    function arrayBufferToSafeBase64(buffer) {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function safeBase64ToArrayBuffer(safeBase64) {
+        const base64 = safeBase64.replace(/-/g, '+').replace(/_/g, '/');
+        const padding = '='.repeat((4 - base64.length % 4) % 4);
+        const base64Padded = base64 + padding;
+        const binary_string = window.atob(base64Padded);
+        const len = binary_string.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    async function encryptDataWebCrypto(data, salt) {
+        try {
+            const derivedKey = await deriveKeyMaterial(salt);
+
+            let iv = localStorage.getItem('currentIV');
+            if (!iv) {
+                try {
+                    const ivBuffer = window.crypto.getRandomValues(new Uint8Array(16)); // Generate a new IV
+                    iv = arrayBufferToSafeBase64(ivBuffer.buffer);
+                    localStorage.setItem('currentIV', iv);
+                } catch (e) {
+                    console.error("IV generation error:", e);
+                    showAlert('IV Generation Failed. Secure login disabled.', 'error');
+                    throw new Error("IV generation failed");
+                }
+            }
+            iv = safeBase64ToArrayBuffer(localStorage.getItem('currentIV'));
+
+            const encodedData = new TextEncoder().encode(JSON.stringify(data));
+
+            const result = await window.crypto.subtle.encrypt(
+                {
+                    name: "AES-CBC",
+                    iv: new Uint8Array(iv)
+                },
+                derivedKey,
+                encodedData
+            );
+
+            const encryptedData = arrayBufferToSafeBase64(result);
+
+            return encryptedData;
+
+        } catch (error) {
+            console.error("WebCrypto encryption error:", error);
+            showAlert('Encryption Failed. Secure login disabled.', 'error');
+            throw new Error("WebCrypto encryption failed: " + error.message);
+        }
+    }
+
+    async function generateHmacWebCrypto(data, salt) {
+        try {
+            const secret = await getHmacSecret();
+            const keyMaterial = await window.crypto.subtle.importKey(
+                "raw",
+                new TextEncoder().encode(secret),
+                { name: "HMAC", hash: "SHA-256" },
+                false,
+                ["sign", "verify"]
+            );
+
+            const hmac = await window.crypto.subtle.sign(
+                "HMAC",
+                keyMaterial,
+                new TextEncoder().encode(JSON.stringify(data))
+            );
+
+            return arrayBufferToSafeBase64(hmac);
+
+        } catch (error) {
+            console.error("WebCrypto HMAC generation error:", error);
+            showAlert('HMAC Generation Failed. Secure login disabled.', 'error');
+            throw new Error("WebCrypto HMAC generation failed: " + error.message);
+        }
+    }
+
+    async function encryptHmacWebCrypto(hmac, salt) {
+        try {
+            const derivedKey = await deriveKeyMaterial(salt);
+            let iv = localStorage.getItem('hmacIV');
+            if (!iv) {
+                try {
+                    const ivBuffer = window.crypto.getRandomValues(new Uint8Array(16));
+                    iv = arrayBufferToSafeBase64(ivBuffer.buffer);
+                    localStorage.setItem('hmacIV', iv);
+                } catch (e) {
+                    console.error("HMAC IV generation error:", e);
+                    showAlert('HMAC IV Generation Failed. Secure login disabled.', 'error');
+                    throw new Error("HMAC IV generation failed");
+                }
+            }
+            iv = safeBase64ToArrayBuffer(localStorage.getItem('hmacIV'));
+
+            const encodedHmac = new TextEncoder().encode(hmac);
+
+            const encryptedHmacBuffer = await window.crypto.subtle.encrypt(
+                {
+                    name: "AES-CBC",
+                    iv: new Uint8Array(iv)
+                },
+                derivedKey,
+                encodedHmac
+            );
+
+            return arrayBufferToSafeBase64(encryptedHmacBuffer);
+        } catch (e) {
+            console.error("WebCrypto HMAC encryption error:", e);
+            showAlert('HMAC Encryption Failed. Secure login disabled.', 'error');
+            throw new Error("WebCrypto HMAC encryption failed");
+        }
+    }
+
+    function clearEncryptionData() {
+        sessionStorage.removeItem('encryptionSalt');
+        sessionStorage.removeItem('keyPrefix');
+        sessionStorage.removeItem('ivPrefix');
+        sessionStorage.removeItem('hmacSecret');
+        localStorage.removeItem('currentIV');
+        localStorage.removeItem('hmacIV');
+        console.log('Encryption data cleared from localStorage.');
+    }
+
+     // Prevent caching of login page
     preventPageCaching();
 
     function preventPageCaching() {
@@ -591,9 +727,27 @@ document.addEventListener('DOMContentLoaded', function() {
         // Set HTTP headers to prevent caching
         window.addEventListener('load', function() {
             // Overwrite HTTP headers to prevent caching
-            document.querySelector('meta[http-equiv="Cache-Control"]')?.setAttribute('content', 'no-cache, no-store, must-revalidate');
-            document.querySelector('meta[http-equiv="Pragma"]')?.setAttribute('content', 'no-cache');
-            document.querySelector('meta[http-equiv="Expires"]')?.setAttribute('content', '0');
+            const cacheControlMeta = document.querySelector('meta[http-equiv="Cache-Control"]');
+            const pragmaMeta = document.querySelector('meta[http-equiv="Pragma"]');
+            const expiresMeta = document.querySelector('meta[http-equiv="Expires"]');
+
+            if (cacheControlMeta) {
+                cacheControlMeta.setAttribute('content', 'no-cache, no-store, must-revalidate');
+            } else {
+                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">');
+            }
+
+            if (pragmaMeta) {
+                pragmaMeta.setAttribute('content', 'no-cache');
+            } else {
+                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Pragma" content="no-cache">');
+            }
+
+            if (expiresMeta) {
+                expiresMeta.setAttribute('content', '0');
+            } else {
+                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Expires" content="0">');
+            }
         });
 
         // Check if the page is loaded from the cache. If so, reload it.
