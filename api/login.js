@@ -527,10 +527,12 @@ module.exports = async (req, res) => {
         }
 
         const nonce = generateNonce();
+        const sessionId = generateSessionId();
         const sessionData = {
           username: userData.username,
           loginTime: Date.now(),
-          nonce: nonce
+          nonce: nonce,
+          sessionId: sessionId
         };
 
         // Generate key material
@@ -555,7 +557,7 @@ module.exports = async (req, res) => {
                 // Generate authentication token
                 const authToken = generateAuthenticationToken(userData.username, keyMaterial.toString('hex'));
 
-                const xorKey = crypto.randomBytes(16).toString('hex');
+                const xorKey = generateEncryptionKey();
                 const xorEncryptedSessionId = xorEncrypt(sessionId, xorKey);
 
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
