@@ -340,6 +340,13 @@ function obfuscateData(data, key) {
     return result.toString('hex');
 }
 
+// Function to generate a MAC (Message Authentication Code)
+async function generateMAC(data, key) {
+    const hmac = crypto.createHmac('sha256', key);
+    hmac.update(data);
+    return hmac.digest('hex');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -441,6 +448,10 @@ module.exports = async (req, res) => {
       // Obfuscate the padded and encrypted user record
       const obfuscatedUserRecord = obfuscateData(paddedEncryptedUserRecord, obfuscationKey);
 
+      // Generate a MAC for data integrity
+      const dataIntegrityKey = await generateEncryptionKey();
+      const mac = await generateMAC(obfuscatedUserRecord, dataIntegrityKey);
+
       // Store doubleEncryptedUserRecord (instead of userRecord)
       // ...
 
@@ -458,10 +469,12 @@ module.exports = async (req, res) => {
       }
       secureErase(Buffer.from(sessionKey, 'utf8'));
       secureErase(Buffer.from(obfuscationKey, 'utf8'));
+      secureErase(Buffer.from(dataIntegrityKey, 'utf8'));
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
         console.log('User record (for demonstration only):', obfuscatedUserRecord);
+        console.log('Message Authentication Code (MAC):', mac);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
