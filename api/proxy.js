@@ -202,7 +202,7 @@ function decryptStream(key, iv, authTag) {
     }
 }
 
-function handleRequestBody(req, encryptionKey, reqIv) {
+async function handleRequestBody(req, encryptionKey, reqIv) {
     return new Promise((resolve, reject) => {
         const requestCipher = encryptStream(encryptionKey, reqIv);
 
@@ -212,18 +212,25 @@ function handleRequestBody(req, encryptionKey, reqIv) {
         }
 
         const encryptedChunks = [];
-        req.pipe(requestCipher)
-            .on('data', chunk => {
+        req.on('data', chunk => {
                 encryptedChunks.push(chunk);
             })
             .on('end', () => {
-                const encryptedBody = Buffer.concat(encryptedChunks);
-                resolve(encryptedBody);
+                try {
+                    const encryptedBody = Buffer.concat(encryptedChunks);
+                    const finalEncrypted = Buffer.concat([requestCipher.update(encryptedBody), requestCipher.final()]);
+                    resolve(finalEncrypted);
+                } catch (err) {
+                    console.error("Request body finalization error:", err);
+                    reject(err);
+                }
             })
             .on('error', err => {
                 console.error("Request body encryption error:", err);
                 reject(err);
             });
+
+        req.pipe(new stream.PassThrough());
     });
 }
 
@@ -309,9 +316,14 @@ async function proxyRequest(req, res) {
         const reqIv = crypto.randomBytes(IV_LENGTH);
         options.headers['x-request-encryption-iv'] = reqIv.toString('hex');
 
-        const encryptedRequestBody = await handleRequestBody(req, encryptionKey, reqIv);
-        proxyReq.write(encryptedRequestBody);
-        proxyReq.end();
+        try {
+            const encryptedRequestBody = await handleRequestBody(req, encryptionKey, reqIv);
+            proxyReq.write(encryptedRequestBody);
+            proxyReq.end();
+        } catch (error) {
+            console.error("Request body handling error:", error);
+            return res.status(500).send('Failed to process request body.');
+        }
 
     } catch (error) {
         console.error("URL parsing or proxy error:", error);
