@@ -1,23 +1,23 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 250,
+      value: 300,
       density: {
         enable: true,
         value_area: 800
       }
     },
     color: {
-      value: ['#00FF00', '#0F0', '#00FA9A', '#00CED1'] // More greens and teal
+      value: ['#00FF00', '#0F0', '#00FA9A', '#00CED1', '#00BFFF'] // Added more teal
     },
     shape: {
       type: 'circle',
       stroke: {
         width: 1,
-        color: '#003300' // Darker green stroke
+        color: '#003300'
       },
       polygon: {
-        nb_sides: 5 // Pentagon - a slightly different shape
+        nb_sides: 5
       },
       image: {
         src: '',
@@ -30,31 +30,31 @@ particlesJS('particles-js', {
       random: true,
       anim: {
         enable: true,
-        speed: 1, // Increased speed
-        opacity_min: 0.2, // Slightly higher min opacity
+        speed: 1.2,
+        opacity_min: 0.1,
         sync: false
       }
     },
     size: {
-      value: 3,
+      value: 2.5,
       random: true,
       anim: {
-        enable: true, // Enable size animation
-        speed: 3,
+        enable: true,
+        speed: 2.5,
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 160,
+      distance: 150,
       color: '#009900',
-      opacity: 0.6,
-      width: 1.5
+      opacity: 0.5,
+      width: 1.2
     },
     move: {
       enable: true,
-      speed: 2.5, // Slightly increased speed
+      speed: 2,
       direction: 'none',
       random: true,
       straight: false,
@@ -82,27 +82,27 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 200,
+        distance: 180,
         line_linked: {
-          opacity: 0.9
+          opacity: 0.8
         }
       },
       bubble: {
-        distance: 250,
+        distance: 220,
         size: 0,
         duration: 2,
         opacity: 0,
         speed: 3
       },
       repulse: {
-        distance: 280,
+        distance: 250,
         duration: 0.4
       },
       push: {
-        particles_nb: 5
+        particles_nb: 4
       },
       remove: {
-        particles_nb: 4
+        particles_nb: 3
       }
     }
   },
