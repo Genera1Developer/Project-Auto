@@ -303,6 +303,14 @@
             text-align: left;
         }
 
+        #account-lockout-message {
+            font-size: 0.8em;
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+            display: none; /* Hidden by default */
+        }
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -348,6 +356,7 @@
         <div id="error-message" class="error-message"></div>
         <div id="encryption-status"></div>
         <div id="encryptionAnimation" class="encryption-animation"></div>
+        <div id="account-lockout-message">Too many failed attempts. Account locked.</div>
 
         <div id="security-tips">
             <h3>Security Tips:</h3>
@@ -525,7 +534,12 @@
             const encryptionAnimation = document.getElementById('encryptionAnimation');
             const securityAuditLog = document.getElementById('security-audit-log').querySelector('ul');
             const bruteForceAttemptsDisplay = document.getElementById('brute-force-attempts');
-            let bruteForceAttempts = 0;
+            const accountLockoutMessage = document.getElementById('account-lockout-message');
+            let bruteForceAttempts = parseInt(localStorage.getItem('bruteForceAttempts')) || 0;
+            const maxAttempts = 5;
+            const lockoutDuration = 60 * 60 * 1000; // 1 hour
+            let lastAttemptTime = localStorage.getItem('lastAttemptTime') || 0;
+            let currentTime = new Date().getTime();
 
             function logSecurityEvent(event) {
                 const timestamp = new Date().toLocaleString();
@@ -534,6 +548,19 @@
             }
 
             logSecurityEvent('User attempted signup.');
+
+            if (currentTime - lastAttemptTime > lockoutDuration) {
+                bruteForceAttempts = 0;
+                localStorage.removeItem('lastAttemptTime');
+                localStorage.removeItem('bruteForceAttempts');
+                accountLockoutMessage.style.display = 'none';
+            }
+
+            if (bruteForceAttempts >= maxAttempts) {
+                accountLockoutMessage.style.display = 'block';
+                errorMessage.textContent = 'Too many failed attempts. Account locked.';
+                return;
+            }
 
             if (!username || !password || !confirmPassword || !email) {
                 errorMessage.textContent = 'Please enter all fields.';
@@ -653,7 +680,14 @@
                         encryptionAnimation.style.display = 'none';
                         if (!response.ok) {
                             bruteForceAttempts++;
+                            localStorage.setItem('bruteForceAttempts', bruteForceAttempts);
+                            localStorage.setItem('lastAttemptTime', new Date().getTime());
                             bruteForceAttemptsDisplay.textContent = `Brute-force attempts: ${bruteForceAttempts}`;
+
+                            if (bruteForceAttempts >= maxAttempts) {
+                                accountLockoutMessage.style.display = 'block';
+                                errorMessage.textContent = 'Too many failed attempts. Account locked.';
+                            }
                             throw new Error('Network response was not ok');
                         }
                         return response.json();
@@ -663,6 +697,8 @@
                             errorMessage.textContent = '';
                             encryptionStatus.textContent = 'Encrypted account created.';
                             logSecurityEvent('Successful signup.');
+                            localStorage.removeItem('bruteForceAttempts');
+                            localStorage.removeItem('lastAttemptTime');
                             window.location.href = 'login.html';
                         } else {
                             errorMessage.textContent = data.message || 'Signup failed.';
