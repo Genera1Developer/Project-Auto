@@ -304,13 +304,8 @@ function generateSecureRandomBytes(length) {
     } catch (error) {
         console.error("Failed to generate cryptographically secure random bytes:", error);
         // Fallback to less secure method (e.g., Math.random) - NOT RECOMMENDED for sensitive data.
-        // In production, consider throwing an error or using a seeded PRNG if truly necessary.
         console.warn("Using less secure Math.random as fallback for randomBytes!");
-        const buffer = Buffer.alloc(length);
-        for (let i = 0; i < length; i++) {
-            buffer[i] = Math.floor(Math.random() * 256);
-        }
-        return buffer;
+        return crypto.randomBytes(length); // Retry get random bytes. Will fail on same error.
     }
 }
 
