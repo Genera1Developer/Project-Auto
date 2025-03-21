@@ -164,9 +164,11 @@
             const SALT_LENGTH = 16; // Recommended salt length
             const PROXY_URL = '/api/proxy';
             const KEY_EXPIRY_CHECK_INTERVAL = 60000; // 60 seconds
-            const ALLOWED_FRAME_ORIGIN = '*'; // Ideally, this should be your server's origin.
+            const ALLOWED_FRAME_ORIGIN = window.location.origin; // Ideally, this should be your server's origin.
             const REDIRECT_STATUS_CODES = [301, 302, 307, 308];
             const SERVICE_WORKER_URL = '/sw.js'; // Service worker URL
+            const URL_PARAM_NAME = 'd'; // Name for the encrypted URL parameter
+            const PREFETCH_SUBRESOURCES = true;
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -428,6 +430,11 @@
                         proxyFrame.contentWindow.document.write(html);
                         proxyFrame.contentWindow.document.close();
 
+                        // Prefetch subresources
+                        if (PREFETCH_SUBRESOURCES) {
+                            prefetchSubresources(html);
+                        }
+
                         // Post message to the iframe to notify about successful load
                         proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
 
@@ -492,7 +499,7 @@
 
              // Add event listener for iframe loaded message
             window.addEventListener('message', function(event) {
-                if (event.origin === window.location.origin && event.data.type === 'proxyLoaded') {
+                if (event.origin === ALLOWED_FRAME_ORIGIN && event.data.type === 'proxyLoaded') {
                     console.log('Iframe proxy loaded successfully.');
                 }
             });
@@ -565,6 +572,11 @@
                       proxyFrame.contentWindow.document.write(html);
                       proxyFrame.contentWindow.document.close();
 
+                      // Prefetch subresources
+                      if (PREFETCH_SUBRESOURCES) {
+                          prefetchSubresources(html);
+                      }
+
                       // Post message to the iframe to notify about successful load
                       proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
                   });
@@ -575,6 +587,33 @@
                     clearTimeout(timeoutId);
                     loadingDiv.style.display = 'none';
                 }
+            }
+
+            // Function to prefetch subresources from the HTML
+            function prefetchSubresources(html) {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const subresourceTypes = ['link[rel="stylesheet"]', 'script[src]', 'img[src]'];
+
+                subresourceTypes.forEach(selector => {
+                    const elements = doc.querySelectorAll(selector);
+                    elements.forEach(element => {
+                        let url;
+                        if (element.tagName === 'LINK') {
+                            url = element.href;
+                        } else if (element.tagName === 'SCRIPT' || element.tagName === 'IMG') {
+                            url = element.src;
+                        }
+
+                        if (url) {
+                            const prefetchLink = document.createElement('link');
+                            prefetchLink.rel = 'prefetch';
+                            prefetchLink.href = url;
+                            document.head.appendChild(prefetchLink);
+                            console.log('Prefetching:', url);
+                        }
+                    });
+                });
             }
         });
 
