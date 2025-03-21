@@ -552,6 +552,8 @@ const decryptObject = (encrypted, key) => {
     }
 };
 
+const serverSecret = process.env.SERVER_SECRET || crypto.randomBytes(32).toString('hex');
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -638,8 +640,8 @@ module.exports = async (req, res) => {
                 const xorKey = generateEncryptionKey();
                 const xorEncryptedSessionId = xorEncrypt(sessionId, xorKey);
 
-                // Sign the session ID using HMAC
-                const sessionIdSignature = hmacSign(sessionId, keyMaterial.toString('hex'));
+                // Sign the session ID using HMAC with serverSecret
+                const sessionIdSignature = hmacSign(sessionId, serverSecret);
 
                 const responsePayload = {
                     message: 'Login successful!',
@@ -692,7 +694,7 @@ module.exports = async (req, res) => {
                     signed: true // Use signed cookie
                  }
 
-                 // Set cookie with the encrypted session ID
+                 // Set cookie with the encrypted session ID, signing with serverSecret
                 const encryptedSessionIdCookie = encryptData(sessionId, keyMaterial, generateRandomIV()).encryptedData
                  res.cookie('session_id', encryptedSessionIdCookie, secureCookieOptions);
                  res.status(200).json({ data: compressedResponse });
