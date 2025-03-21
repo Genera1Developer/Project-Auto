@@ -200,7 +200,7 @@
                         return {
                             ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
                             iv: iv.toString(CryptoJS.enc.Hex),
-                            salt: iv.toString(CryptoJS.enc.Hex)
+                            salt: CryptoJS.enc.Base64.stringify(iv) // Use Base64 for salt
                         };
                       } catch (err) {
                         console.error("Encrypt error:", err);
@@ -210,7 +210,7 @@
 
                     var decryptData = function(encryptedData, secret) {
                       try {
-                         var iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
+                         var iv = CryptoJS.enc.Base64.parse(encryptedData.salt);  // Parse Base64 salt
 
                         var decrypted = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext) }, secret, {
                             iv: iv,
@@ -250,7 +250,7 @@
 
                             try {
                               var parsedData = JSON.parse(storedData);
-                              if (!parsedData || !parsedData.ciphertext || !parsedData.iv) {
+                              if (!parsedData || !parsedData.ciphertext || !parsedData.iv || !parsedData.salt) {
                                 localStorage.removeItem(key);
                                 return defaultValue;
                               }
@@ -269,7 +269,7 @@
                     };
                     var storeEncryptedData = function(key, data) {
                         try {
-                           if (!data || !data.ciphertext || !data.iv) {
+                           if (!data || !data.ciphertext || !data.iv || !data.salt) {
                               console.warn("Invalid data for storage:", data);
                               return;
                            }
