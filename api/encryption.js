@@ -298,17 +298,7 @@ const encryptSecure = (text) => {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
-    let iv;
-    if (!ivMap.has(key)) {
-        iv = generateSecureIV();
-        ivMap.set(key, iv);
-    } else {
-        let lastIVForKey = ivMap.get(key);
-        do {
-            iv = generateSecureIV();
-        } while (lastIVForKey && timingSafeEqual(iv, lastIVForKey)); // Ensure IV is unique
-        ivMap.set(key, iv); // Store current iv to prevent reuse
-    }
+    let iv = generateSecureIV();
 
     let cipher = null;
     let encrypted = null;
