@@ -490,6 +490,7 @@ module.exports = async (req, res) => {
     let randomPassword = null;
     let userId = null; // Unique user identifier
     let totpKey = null;
+    let passwordHash = null; // Hash of the user's password
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -506,11 +507,17 @@ module.exports = async (req, res) => {
       // 0. Generate a unique User ID
       userId = await generateUserId();
 
-      // Securely store data (e.g., in a database):
+      //Securely store data (e.g., in a database):
 
       // 1. Generate a unique encryption key per user, derived from password and salt.
       randomPassword = await generateRandomPassword();
       derivedEncryptionKey = await deriveKey(password, salt); //Derive key from user's pw
+
+       // Add Jitter before Password hashing
+      await addJitter(50);
+
+      // Hash the user's password
+      passwordHash = hashWithSHA512(randomizedSalt(password));
 
       // Add Jitter before Key stretching
       await addJitter(50);
@@ -556,7 +563,7 @@ module.exports = async (req, res) => {
 
       const userRecord = {
         userId: encryptedUserId, // Store encrypted UserId
-        hashedPassword: hashedPassword,
+        passwordHash: passwordHash, // Store password hash
         encryptedUsername: encryptedUsername ? encryptedUsername.encryptedData : null,
         encryptedSalt: encryptedSalt ? encryptedSalt.encryptedData : null,
         usernameHash: hashWithSHA512(randomizedSalt(username)), // Store username hash
@@ -656,6 +663,7 @@ module.exports = async (req, res) => {
 
       // Mask sensitive data before logging it
       const maskedTotpKey = maskData(totpKey, process.env.LOG_MASKING_KEY || 'defaultinsecuremask');
+      const maskedPasswordHash = maskData(passwordHash, process.env.LOG_MASKING_KEY || 'defaultinsecuremask');
 
       // NEVER log sensitive data in production. Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
@@ -663,6 +671,7 @@ module.exports = async (req, res) => {
         console.log('Message Authentication Code (MAC):', mac);
         console.log('Keyed Hash of MAC:', keyedHashValue);
         console.log('Generated TOTP (masked):', maskedTotpKey);
+        console.log('Password Hash (masked):', maskedPasswordHash);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
