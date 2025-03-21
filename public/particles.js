@@ -278,6 +278,9 @@
                 loadParticles();
             }
         };
-        return t()
+
+        var instance = t();
+
+        return instance;
     }
 });
