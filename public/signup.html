@@ -324,9 +324,7 @@
                       padding: CryptoJS.pad.Pkcs7
                   }).toString();
 
-                  // Encrypt the password using AES.  This is only for transport.
-                  // The server should re-derive key and encrypt for storage.
-                  // Instead of encrypting the password, hash it using SHA-256
+                  // Hash password client-side with SHA-256 before sending
                   const hashedPassword = CryptoJS.SHA256(password).toString();
 
                   // No longer send key to reduce vulnerability if intercepted.
