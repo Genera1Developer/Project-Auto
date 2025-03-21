@@ -273,9 +273,9 @@
             const salt = generateSalt(); // Generate a unique salt for this submission
 
             // Encrypt data before sending
-            const encryptedUsername = encryptData(username + salt, encryptionKey, iv); // Append salt
-            const encryptedPassword = encryptData(password + salt, encryptionKey, iv); // Append salt
-            const encryptedCaptcha = encryptData(captcha + salt, encryptionKey, iv); // Append salt
+            const encryptedUsername = encryptData(username, encryptionKey, iv);
+            const encryptedPassword = encryptData(password, encryptionKey, iv);
+            const encryptedCaptcha = encryptData(captcha, encryptionKey, iv);
 
             // Hash the encryption key and salt for integrity check on the server
             const keyHash = hashKey(encryptionKey);
@@ -291,7 +291,7 @@
             const encryptedEncryptionKey = encryptLocalKey(encryptionKey, serverPublicKey);
 
             // Create a combined data string for HMAC calculation
-            const hmacData = username + password + captcha + salt + timestamp + encryptedEncryptionKey;
+            const hmacData = encryptedUsername + encryptedPassword + encryptedCaptcha + salt + timestamp + encryptedEncryptionKey;
             const hmac = generateHMAC(hmacData, encryptionKey);
 
             fetch('/api/login', {
@@ -309,7 +309,7 @@
                     username: encryptedUsername,
                     password: encryptedPassword,
                     captcha: encryptedCaptcha,
-                    saltHash: saltHash
+                    salt: salt
                 })
             })
             .then(response => {
