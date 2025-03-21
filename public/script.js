@@ -703,4 +703,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     checkAndRotateKeys();
     scheduleKeyRotation(); // Initialize key rotation scheduling
+
+    // Function to check if the user is using a VPN
+    async function detectVPN() {
+        try {
+            const response = await fetch('https://vpnapi.io/api/v1?key=YOUR_VPNAPI_KEY');
+            const data = await response.json();
+            if (data.security.vpn) {
+                showAlert('VPN detected. For enhanced security, consider disabling it during login.', 'warning');
+            }
+        } catch (error) {
+            console.error('VPN detection error:', error);
+        }
+    }
+
+    // Call VPN detection function (if needed)
+    //detectVPN();
+
+    // Mitigate BREACH attack
+    function addRandomPadding() {
+        const minPadding = 100;
+        const maxPadding = 300;
+        const paddingLength = Math.floor(Math.random() * (maxPadding - minPadding + 1)) + minPadding;
+        let padding = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        for (let i = 0; i < paddingLength; i++) {
+            padding += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+        const paddingElement = document.createElement('span');
+        paddingElement.style.display = 'none';
+        paddingElement.textContent = padding;
+        document.body.appendChild(paddingElement);
+    }
+
+    addRandomPadding();
 });
