@@ -122,6 +122,9 @@ const encrypt = (text) => {
     } catch (error) {
         console.error("Encryption failed:", error);
         return null;
+    } finally {
+         // Explicitly nullify the cipher object after use.
+        cipher = null;
     }
 };
 
@@ -142,6 +145,9 @@ const decrypt = (text) => {
     } catch (error) {
         console.error("Decryption failed:", error);
         return null;
+    } finally {
+        // Explicitly nullify the decipher object after use.
+        decipher = null;
     }
 };
 
@@ -177,6 +183,9 @@ function safeCompare(a, b) {
     } catch (error) {
         console.error("Safe compare failed:", error);
         return false;
+    } finally {
+        zeroBuffer(aBuf);
+        zeroBuffer(bBuf);
     }
 }
 
