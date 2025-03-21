@@ -1,7 +1,7 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 160,
+      value: 200,
       density: {
         enable: true,
         value_area: 800
@@ -11,13 +11,13 @@ particlesJS('particles-js', {
       value: '#00FF00' //Green, crypto color
     },
     shape: {
-      type: 'circle', //Simpler shape
+      type: 'edge',
       stroke: {
         width: 0,
         color: '#000000'
       },
       polygon: {
-        nb_sides: 4 // Square shape, block-like
+        nb_sides: 5
       },
       image: {
         src: '',
@@ -26,17 +26,17 @@ particlesJS('particles-js', {
       }
     },
     opacity: {
-      value: 0.7,
+      value: 0.8,
       random: true,
       anim: {
         enable: true,
-        speed: 1,
+        speed: 0.5,
         opacity_min: 0.1,
         sync: false
       }
     },
     size: {
-      value: 3,
+      value: 2.5,
       random: true,
       anim: {
         enable: false,
@@ -47,14 +47,14 @@ particlesJS('particles-js', {
     },
     line_linked: {
       enable: true,
-      distance: 150,
+      distance: 130,
       color: '#009900',
-      opacity: 0.4,
+      opacity: 0.3,
       width: 1
     },
     move: {
       enable: true,
-      speed: 3,
+      speed: 2,
       direction: 'none',
       random: true,
       straight: false,
@@ -72,11 +72,11 @@ particlesJS('particles-js', {
     events: {
       onhover: {
         enable: true,
-        mode: 'bubble'
+        mode: 'grab'
       },
       onclick: {
         enable: true,
-        mode: 'repulse'
+        mode: 'push'
       },
       resize: true
     },
@@ -99,13 +99,12 @@ particlesJS('particles-js', {
         duration: 0.4
       },
       push: {
-        particles_nb: 4
+        particles_nb: 2
       },
       remove: {
-        particles_nb: 2
+        particles_nb: 1
       }
     }
   },
   retina_detect: true
 });
-edit filepath: public/encryption_particles.js
