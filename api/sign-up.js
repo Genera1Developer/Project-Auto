@@ -104,6 +104,33 @@ async function generateRandomPassword() {
     return buffer.toString('hex');
 }
 
+// Function to encrypt sensitive user data before storing it
+async function encryptUserData(userData, masterKey) {
+    const iv = await randomBytesAsync(16);
+    const cipher = crypto.createCipheriv('aes-256-gcm', masterKey, iv);
+    const encrypted = Buffer.concat([cipher.update(JSON.stringify(userData)), cipher.final()]);
+    const authTag = cipher.getAuthTag();
+
+    return {
+        iv: iv.toString('hex'),
+        encryptedData: encrypted.toString('hex'),
+        authTag: authTag.toString('hex')
+    };
+}
+
+// Function to decrypt sensitive user data after retrieving it
+async function decryptUserData(encryptedData, iv, authTag, masterKey) {
+    try {
+        const decipher = crypto.createDecipheriv('aes-256-gcm', masterKey, Buffer.from(iv, 'hex'));
+        decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+        const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedData, 'hex')), decipher.final()]);
+        return JSON.parse(decrypted.toString());
+    } catch (error) {
+        console.error("Decryption error:", error);
+        return null;
+    }
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2' } = req.body;
@@ -148,6 +175,13 @@ module.exports = async (req, res) => {
         encryptedSalt: encryptedSalt,
       };
 
+      // Encrypt entire user record before storage using master key
+      const masterKey = Buffer.from(process.env.MASTER_ENCRYPTION_KEY || 'defaultinsecurekeythatmustbechanged', 'utf8');
+      const encryptedUserRecord = await encryptUserData(userRecord, masterKey);
+
+      // Store encryptedUserRecord (instead of userRecord)
+      // ...
+
       // Securely erase sensitive data from memory after usage
       secureErase(Buffer.from(username, 'utf8'));
       secureErase(Buffer.from(password, 'utf8'));
@@ -163,7 +197,7 @@ module.exports = async (req, res) => {
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
-        console.log('User record (for demonstration only):', userRecord);
+        console.log('User record (for demonstration only):', encryptedUserRecord);
       }
 
       return res.status(201).json({ message: 'User created successfully' });
