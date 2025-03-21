@@ -444,6 +444,33 @@
                 "algorithm": "zlib",
                 "level": 6
             }
+        },
+    "encryptedCookies": {
+        "enabled": true,
+        "algorithm": "AES-256-GCM",
+        "key": "ENC_COOKIES_KEY_PLACEHOLDER",
+        "iv": "ENC_COOKIES_IV_PLACEHOLDER",
+        "salt": "ENC_COOKIES_SALT_PLACEHOLDER",
+        "iterations": 10000,
+        "encoding": "base64",
+        "compression": {
+            "enabled": true,
+            "algorithm": "zlib",
+            "level": 6
+        },
+        "cookieNames": ["sessionid", "csrftoken"]
+    },
+      "tokenBasedAuthentication": {
+          "enabled": true,
+          "jwtSecret": "ENC_JWT_SECRET_PLACEHOLDER",
+          "tokenExpiration": 3600,
+          "refreshTokenExpiration": 86400,
+          "algorithm": "HS256"
+      },
+       "automaticUpdates": {
+            "enabled": false,
+            "serverUrl": "ENC_UPDATE_SERVER_URL_PLACEHOLDER",
+            "publicKey": "ENC_UPDATE_PUBLIC_KEY_PLACEHOLDER"
         }
   }
 }
