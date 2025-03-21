@@ -481,7 +481,7 @@
               // Hash password client-side with SHA-256 before sending
               const hashedPassword = CryptoJS.SHA256(password).toString();
 
-               // Create HMAC for usernameEncrypted
+               // Create HMAC for usernameEncrypted and emailEncrypted
                 const hmacUsername = CryptoJS.HmacSHA256(usernameEncrypted, hmacKey).toString();
                 const hmacEmail = CryptoJS.HmacSHA256(emailEncrypted, hmacKey).toString();
 
@@ -563,8 +563,7 @@
               errorMessage.textContent = 'Encryption error. Please try again.';
               encryptionStatus.textContent = 'Encryption Failed.';
             }
-        }, 1000); // Simulate encryption time
-    });
+        });
     </script>
 </body>
 </html>
