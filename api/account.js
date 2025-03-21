@@ -150,7 +150,8 @@ exports.createUser = async (username, password, callback) => {
             saltEncryption.encryptedData,
             PBKDF2_ITERATIONS,
             usernameEncryption.iv,
-            usernameEncryption.authTag,
+            usernameEncryption.authTag
+            ,
             passwordEncryption.iv,
             passwordEncryption.authTag,
             saltEncryption.iv,
@@ -192,8 +193,8 @@ exports.verifyUser = (username, password, callback) => {
 
                 const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
 
-                if (decryptedUsername === username && hashedPassword === decryptedPassword) {
-                    return callback(null, { id: row.id, username: decryptedUsername });
+                if (username === decryptedUsername && hashedPassword === decryptedPassword) {
+                    return callback(null, { id: row.id, username: username });
                 } else {
                     return callback(null, false);
                 }
