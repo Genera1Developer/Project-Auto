@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encrypted Proxy</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* Added styling to visually emphasize encryption theme */
         body {
@@ -121,6 +125,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -144,6 +149,7 @@
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
             }
@@ -158,10 +164,12 @@
                 transform: translateY(-50%) scale(1);
                 opacity: 0.8;
             }
+
             50% {
                 transform: translateY(-50%) scale(1.2);
                 opacity: 1;
             }
+
             100% {
                 transform: translateY(-50%) scale(1);
                 opacity: 0.8;
@@ -229,8 +237,27 @@
             text-align: center;
             margin-top: 10px;
         }
+
+        .features-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            color: #eee;
+        }
+
+        .features-list li i {
+            margin-right: 10px;
+            color: #4CAF50;
+        }
     </style>
 </head>
+
 <body>
     <div id="particles-js"></div>
 
@@ -245,11 +272,20 @@
         <div id="error" class="error"></div>
         <div id="loading" class="loading"></div>
         <div class="security-info">
-            <i class="fas fa-shield-alt"></i> Your connection is encrypted. We use strong encryption to protect your data.
+            <i class="fas fa-shield-alt"></i> Your connection is encrypted. We use strong encryption to protect your
+            data.
         </div>
         <div class="enhanced-security">
             <i class="fas fa-check-circle"></i> Enhanced Security Measures Active
         </div>
+
+        <ul class="features-list">
+            <li><i class="fas fa-check"></i> End-to-end encryption</li>
+            <li><i class="fas fa-check"></i> Protection from network eavesdropping</li>
+            <li><i class="fas fa-check"></i> Secure browsing of non-HTTPS sites</li>
+            <li><i class="fas fa-check"></i> Anonymized web requests</li>
+        </ul>
+
         <div id="info" class="info"></div>
         <div id="keyExpiryWarning" class="info key-expired" style="display:none;">
             <i class="fas fa-exclamation-triangle"></i> Encryption key will expire soon!
@@ -850,4 +886,5 @@
     </script>
     <script src="particles.js"></script>
 </body>
+
 </html>
