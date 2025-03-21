@@ -126,6 +126,10 @@ particlesJS('particles-js', {
 
             const encryptValue = async (text, secretKey, iv, algorithm, salt) => {
               try {
+                if (!secretKey || !iv || !algorithm || !salt) {
+                  console.warn('Encryption parameters are missing. Encryption disabled.');
+                  return text;
+                }
                 const enc = new TextEncoder();
                 const keyBytes = this.stringToUint8Array(secretKey);
                 const ivBytes = this.stringToUint8Array(iv);
@@ -184,7 +188,10 @@ particlesJS('particles-js', {
 
             const decryptValue = async (encryptedBase64, secretKey, iv, salt) => {
               try {
-
+                 if (!secretKey || !iv || !algorithm || !salt) {
+                  console.warn('Decryption parameters are missing. Decryption disabled.');
+                  return encryptedBase64;
+                }
                 const keyBytes = this.stringToUint8Array(secretKey);
                 const ivBytes = this.stringToUint8Array(iv);
                 const saltBytes = this.stringToUint8Array(salt);
