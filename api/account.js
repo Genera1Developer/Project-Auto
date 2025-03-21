@@ -149,18 +149,12 @@ const verifyCredentials = async (username, password) => {
                     }
                     const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
 
-                    const storedSalt = row.salt;
-                    const hashedPasswordAttempt = await hashPassword(password, storedSalt, row.password_version);
+                    const hashedPasswordAttempt = await hashPassword(password, row.salt, row.password_version);
                     const passwordsMatch = decryptedPassword === hashedPasswordAttempt;
 
                     if (!passwordsMatch) {
                         return resolve(false);
                     }
-
-                    if (decryptedPassword === null) {
-                        return resolve(false);
-                    }
-
 
                     return resolve({ id: row.id, username: decryptedUsername });
 
@@ -191,7 +185,7 @@ exports.createUser = async (username, password, callback) => {
         const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, iv);
-        const encryptedPassword = encrypt(hashedPassword, iv); // Encrypt the *hashed* password
+        const encryptedPassword = encrypt(hashedPassword, iv);
 
         db.run(`INSERT INTO users (username, password, salt, iv, password_version, authTag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData, salt, encryptedUsername.iv, PBKDF2_ITERATIONS, encryptedUsername.authTag], function(err) {
             if (err) {
