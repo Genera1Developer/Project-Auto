@@ -111,15 +111,16 @@ const encrypt = (text) => {
 
     let iv;
     if (!ivMap.has(key)) {
-        ivMap.set(key, null);
-    }
-    let lastIVForKey = ivMap.get(key);
-
-    do {
         iv = crypto.randomBytes(IV_LENGTH);
-    } while (lastIVForKey && timingSafeEqual(iv, lastIVForKey)); // Ensure IV is unique
+        ivMap.set(key, iv);
+    } else {
+        let lastIVForKey = ivMap.get(key);
+        do {
+            iv = crypto.randomBytes(IV_LENGTH);
+        } while (lastIVForKey && timingSafeEqual(iv, lastIVForKey)); // Ensure IV is unique
+        ivMap.set(key, iv); // Store current iv to prevent reuse
+    }
 
-    ivMap.set(key, iv); // Store current iv to prevent reuse
 
     let cipher = null;
     let encrypted = null; // Declare encrypted outside the try block
