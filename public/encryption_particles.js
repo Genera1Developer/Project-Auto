@@ -153,11 +153,17 @@ particlesJS('particles-js', {
             if (Array.isArray(data)) {
                 const encryptedArray = [];
                 for (const item of data) {
-                    encryptedArray.push(await encryptValue(item, key, iv));
+                    if (typeof item === 'string') {
+                        encryptedArray.push(await encryptValue(item, key, iv));
+                    } else {
+                        encryptedArray.push(item);
+                    }
                 }
                 return encryptedArray;
-            } else {
+            } else if (typeof data === 'string'){
                 return await encryptValue(data, key, iv);
+            } else {
+                return data;
             }
         },
         decrypt: async function(encryptedData, key, iv, algorithm) {
@@ -201,11 +207,17 @@ particlesJS('particles-js', {
             if (Array.isArray(encryptedData)) {
                 const decryptedArray = [];
                 for (const item of encryptedData) {
-                    decryptedArray.push(await decryptValue(item, key, iv));
+                    if (typeof item === 'string') {
+                      decryptedArray.push(await decryptValue(item, key, iv));
+                    } else {
+                      decryptedArray.push(item);
+                    }
                 }
                 return decryptedArray;
-            } else {
+            } else if (typeof encryptedData === 'string'){
                 return await decryptValue(encryptedData, key, iv);
+            } else {
+                return encryptedData;
             }
         }
   },
@@ -232,8 +244,54 @@ particlesJS('particles-js', {
 
                     if (target && target[lastPart]) {
                       const originalValue = target[lastPart];
-                      target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
+                      if (Array.isArray(originalValue)) {
+                        const encryptedArray = [];
+                        for (const item of originalValue) {
+                          encryptedArray.push(await encryptPlugin.customEncrypt(item, key, iv, algorithm));
+                        }
+                        target[lastPart] = encryptedArray;
 
+                      } else {
+                        target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
+                      }
+
+                    }
+                }
+
+            }
+        }
+    },
+    "draw": async function() {
+        if (this.plugins.encrypt.enable) {
+            const config = this.actualOptions;
+            const encryptPlugin = this.plugins;
+
+            if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
+                const dataFields = config.plugins.encrypt.dataFields;
+                const key = config.encrypt_config.key;
+                const iv = config.encrypt_config.iv;
+                const algorithm = config.encrypt_config.algorithm;
+
+                for (const fieldPath of dataFields) {
+                    let target = config;
+                    const pathParts = fieldPath.split('.');
+                    for (let i = 0; i < pathParts.length - 1; i++) {
+                        target = target[pathParts[i]];
+                        if (!target) break;
+                    }
+                    const lastPart = pathParts[pathParts.length - 1];
+
+                    if (target && target[lastPart]) {
+                      const encryptedValue = target[lastPart];
+                      if (Array.isArray(encryptedValue)) {
+                        const decryptedArray = [];
+                        for (const item of encryptedValue) {
+                          decryptedArray.push(await encryptPlugin.decrypt(item, key, iv, algorithm));
+                        }
+                        target[lastPart] = decryptedArray;
+                      } else {
+                          target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
+                      }
                     }
                 }
             }
