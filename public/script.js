@@ -141,32 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return await encryptHmacWebCrypto(hmac, salt);
     }
 
-    async function generateKey(salt) {
-         if (!salt || typeof salt !== 'string') {
-            console.error("Invalid salt:", salt);
-            salt = 'default_salt';
-          }
-         const combined = salt + getKeyPrefix();
-         const keyMaterial = await window.crypto.subtle.importKey(
-             "raw",
-             new TextEncoder().encode(combined),
-             { name: "HMAC", hash: "SHA-256" },
-             false,
-             ["sign", "verify"]
-         );
-         return keyMaterial;
-    }
 
-    function generateIV(salt) {
-         if (!salt || typeof salt !== 'string') {
-           console.error("Invalid salt:", salt);
-           salt = 'default_salt';
-         }
-        const combined = salt + getIVPrefix();
-        const hash = CryptoJS.SHA256(combined).toString();
-        return hash.substring(0, 16);
-
-    }
     async function generateAndStoreSalt() {
         let salt = sessionStorage.getItem('encryptionSalt');
         if (!salt) {
@@ -272,13 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function encryptDataWebCrypto(data, salt) {
         try {
-            const keyMaterial = await window.crypto.subtle.importKey(
-                "raw",
-                new TextEncoder().encode(generateKey(salt)),
-                { name: "AES-CBC", length: 256 },
-                false,
-                ["encrypt"]
-            );
+             const derivedKey = await deriveKeyMaterial(salt);
 
             let iv = sessionStorage.getItem('currentIV');
             if (!iv){
@@ -301,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     name: "AES-CBC",
                     iv: new Uint8Array(iv)
                 },
-                keyMaterial,
+                derivedKey,
                 encodedData
             );
 
@@ -323,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                  new TextEncoder().encode(secret),
                  { name: "HMAC", hash: "SHA-256" },
                  false,
-                 ["sign"]
+                 ["sign", "verify"]
              );
 
             const hmac = await window.crypto.subtle.sign(
@@ -355,14 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function encryptHmacWebCrypto(hmac, salt) {
         try {
-            const keyMaterial = await window.crypto.subtle.importKey(
-                "raw",
-                new TextEncoder().encode(generateKey(salt)),
-                { name: "AES-CBC", length: 256 },
-                false,
-                ["encrypt"]
-            );
-
+             const derivedKey = await deriveKeyMaterial(salt);
             let iv = sessionStorage.getItem('hmacIV');
             if (!iv){
                 try {
@@ -382,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     name: "AES-CBC",
                     iv: new Uint8Array(iv)
                 },
-                keyMaterial,
+                derivedKey,
                 new TextEncoder().encode(hmac)
             );
 
@@ -455,7 +417,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Use more secure key derivation
-    async function deriveKeyMaterial(password, salt) {
+    async function deriveKeyMaterial(salt) {
+        const password = await generateKey(salt);
+
         const enc = new TextEncoder();
         const keyMaterial = await window.crypto.subtle.importKey(
             "raw",
@@ -489,81 +453,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         const combined = salt + getKeyPrefix();
         return combined;
-    }
-    async function encryptDataWebCrypto(data, salt) {
-        try {
-            const password = await generateKey(salt);
-            const keyMaterial = await deriveKeyMaterial(password, salt);
-
-            let iv = sessionStorage.getItem('currentIV');
-            if (!iv) {
-                try {
-                    const ivBuffer = window.crypto.getRandomValues(new Uint8Array(16));
-                    iv = arrayBufferToBase64(ivBuffer.buffer);
-                    sessionStorage.setItem('currentIV', iv);
-                } catch (e) {
-                    console.error("IV generation error:", e);
-                    showAlert('IV Generation Failed. Secure login disabled.', 'error');
-                    throw new Error("IV generation failed");
-                }
-            }
-            iv = base64ToArrayBuffer(sessionStorage.getItem('currentIV'));
-
-            const encodedData = new TextEncoder().encode(JSON.stringify(data));
-
-            const result = await window.crypto.subtle.encrypt(
-                {
-                    name: "AES-CBC",
-                    iv: new Uint8Array(iv)
-                },
-                keyMaterial,
-                encodedData
-            );
-
-            const encryptedData = arrayBufferToBase64(result);
-
-            return encryptedData;
-
-        } catch (error) {
-            console.error("WebCrypto encryption error:", error);
-            showAlert('Encryption Failed. Secure login disabled.', 'error');
-            throw new Error("WebCrypto encryption failed: " + error.message);
-        }
-    }
-
-    async function encryptHmacWebCrypto(hmac, salt) {
-         try {
-            const password = await generateKey(salt);
-            const keyMaterial = await deriveKeyMaterial(password, salt);
-
-            let iv = sessionStorage.getItem('hmacIV');
-            if (!iv){
-                try {
-                    const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
-                    iv = arrayBufferToBase64(ivBuffer.buffer);
-                    sessionStorage.setItem('hmacIV', iv);
-                 } catch (e) {
-                    console.error("HMAC IV generation error:", e);
-                    showAlert('HMAC IV Generation Failed. Secure login disabled.', 'error');
-                    throw new Error("HMAC IV generation failed");
-                 }
-            }
-            iv = base64ToArrayBuffer(sessionStorage.getItem('hmacIV'));
-
-            const encryptedHmacBuffer = await window.crypto.subtle.encrypt(
-                {
-                    name: "AES-CBC",
-                    iv: new Uint8Array(iv)
-                },
-                keyMaterial,
-                new TextEncoder().encode(hmac)
-            );
-
-            return arrayBufferToBase64(encryptedHmacBuffer);
-        } catch (e) {
-            console.error("WebCrypto HMAC encryption error:", e);
-            showAlert('HMAC Encryption Failed. Secure login disabled.', 'error');
-            throw new Error("WebCrypto HMAC encryption failed");
-        }
     }
 });
