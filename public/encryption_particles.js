@@ -484,13 +484,9 @@ particlesJS('particles-js', {
       },
       storeCryptoDetails: function(key, iv, salt) {
           try {
-            const safeKey = this.sanitizeString(key);
-            const safeIv = this.sanitizeString(iv);
-            const safeSalt = this.sanitizeString(salt);
-
-            localStorage.setItem('encryptionKey', btoa(safeKey));
-            localStorage.setItem('encryptionIV', btoa(safeIv));
-            localStorage.setItem('encryptionSalt', btoa(safeSalt));
+            localStorage.setItem('encryptionKey', key);
+            localStorage.setItem('encryptionIV', iv);
+            localStorage.setItem('encryptionSalt', salt);
           } catch (e) {
               console.warn("localStorage not available. Crypto details will not persist.");
           }
@@ -500,12 +496,6 @@ particlesJS('particles-js', {
               let key = localStorage.getItem('encryptionKey');
               let iv = localStorage.getItem('encryptionIV');
               let salt = localStorage.getItem('encryptionSalt');
-
-              if(key && iv && salt){
-                key = atob(key);
-                iv = atob(iv);
-                salt = atob(salt);
-              }
 
               return {
                   key: key,
