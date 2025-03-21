@@ -184,13 +184,13 @@
                     var initialLinkedColorSeed = "9b59b6";
                     var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
                     var masterKey = CryptoJS.PBKDF2("master_key_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
-                    var iv = CryptoJS.lib.WordArray.random(128/8);
+                    var iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
 										var sharedSecret = CryptoJS.PBKDF2("shared_secret_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
 
                     var encryptData = function(data, key, iv) {
                       try {
                         var encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
-                            iv: iv,
+                            iv: CryptoJS.enc.Hex.parse(iv),
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
                         });
@@ -219,7 +219,7 @@
 												}
 
                         var decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
-                            iv: iv,
+                            iv: CryptoJS.enc.Hex.parse(iv),
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
                         });
@@ -266,14 +266,14 @@
                             var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
 
                             colorData = { color: derivedKey.substring(0,6), strokeColor: derivedKey.substring(6,12) };
-                            iv = CryptoJS.lib.WordArray.random(128/8);
+                            iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
                             encryptedColorData = encryptData(colorData, masterKey, iv);
 
                             newSalt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
                             keyMaterial = initialLinkedColorSeed + Date.now() + newSalt;
                             derivedKey = CryptoJS.SHA256(keyMaterial).toString();
                             linkedColorData = { linkColor: derivedKey.substring(0,6) };
-                            iv = CryptoJS.lib.WordArray.random(128/8);
+                            iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
                             encryptedLinkedColorData = encryptData(linkedColorData, masterKey, iv);
 
                             updateColors(encryptedColorData, encryptedLinkedColorData, iv, masterKey);
