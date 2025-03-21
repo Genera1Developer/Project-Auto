@@ -199,7 +199,8 @@
                         });
                         return {
                             ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
-                            iv: iv.toString(CryptoJS.enc.Hex)
+                            iv: iv.toString(CryptoJS.enc.Hex),
+                            salt: CryptoJS.enc.Hex.stringify(iv) // Include the salt in the encrypted data
                         };
                       } catch (err) {
                         console.error("Encrypt error:", err);
@@ -304,20 +305,26 @@
                             var keyMaterial = initialColorSeed + Date.now() + newColorSalt;
                             var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
 
-                            colorData = { color: derivedKey.substring(0,6), strokeColor: derivedKey.substring(6,12) };
-                            encryptedColorData = encryptData(colorData, newColorSecret);
+                             var newColorData = { color: derivedKey.substring(0,6), strokeColor: derivedKey.substring(6,12) };
+                            encryptedColorData = encryptData(newColorData, newColorSecret);
                             storeEncryptedData("colorData", encryptedColorData);
 
                             keyMaterial = initialLinkedColorSeed + Date.now() + newLinkedColorSalt;
                             derivedKey = CryptoJS.SHA256(keyMaterial).toString();
-                            linkedColorData = { linkColor: derivedKey.substring(0,6) };
-                            encryptedLinkedColorData = encryptData(linkedColorData, newLinkedColorSecret);
+                            var newLinkedColorData = { linkColor: derivedKey.substring(0,6) };
+                            encryptedLinkedColorData = encryptData(newLinkedColorData, newLinkedColorSecret);
                             storeEncryptedData("linkedColorData", encryptedLinkedColorData);
 
                             decryptedColorData = decryptData(encryptedColorData, newColorSecret);
                             decryptedLinkedColorData = decryptData(encryptedLinkedColorData, newLinkedColorSecret);
 
-                            updateColors(decryptedColorData, decryptedLinkedColorData);
+                            if(decryptedColorData && decryptedLinkedColorData){
+                              updateColors(decryptedColorData, decryptedLinkedColorData);
+                            } else {
+                                console.warn("Decryption failed, using previous color data");
+                                if(decryptedColorData) updateColors(decryptedColorData, null);
+                                if(decryptedLinkedColorData) updateColors(null, decryptedLinkedColorData);
+                            }
 
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         } catch (cryptoIntervalError) {
