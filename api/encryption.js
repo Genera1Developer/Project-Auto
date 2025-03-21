@@ -19,7 +19,6 @@ let keyGenerated = false;
 // Flag to indicate if key derivation is being used
 let keyDerivationUsed = false;
 
-// Use a WeakMap to prevent IV reuse with specific keys (not practically useful, removing)
 // Use WeakMaps to store cipher/decipher instances instead
 const cipherMap = new WeakMap();
 const decipherMap = new WeakMap();
@@ -114,18 +113,24 @@ function generateEncryptionKey() {
     }
 }
 
-function getCipher(key) {
-  if (!cipherMap.has(key)) {
-    cipherMap.set(key, {}); // Initialize object to hold options
+function getCipher(currentKey) {
+  if (!key) {
+    throw new Error('Encryption key not set. Call setEncryptionKey() first.');
   }
-  return cipherMap.get(key);
+  if (!cipherMap.has(currentKey)) {
+    cipherMap.set(currentKey, crypto.createCipheriv(algorithm, currentKey, Buffer.alloc(IV_LENGTH, 0), { authTagLength: AUTH_TAG_LENGTH }));
+  }
+  return cipherMap.get(currentKey);
 }
 
-function getDecipher(key) {
-    if (!decipherMap.has(key)) {
-        decipherMap.set(key, {}); // Initialize object to hold options
+function getDecipher(currentKey) {
+    if (!key) {
+      throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
-    return decipherMap.get(key);
+    if (!decipherMap.has(currentKey)) {
+        decipherMap.set(currentKey, crypto.createDecipheriv(algorithm, currentKey, Buffer.alloc(IV_LENGTH, 0), { authTagLength: AUTH_TAG_LENGTH }));
+    }
+    return decipherMap.get(currentKey);
 }
 
 const encrypt = (text) => {
@@ -251,8 +256,8 @@ function rotateKey() {
         zeroBuffer(key);
         key = null;
     }
-    cipherMap.delete(key); // Clear cipher map on key rotation
-    decipherMap.delete(key); // Clear decipher map on key rotation
+    cipherMap.clear();
+    decipherMap.clear();
     return generateEncryptionKey();
 }
 
