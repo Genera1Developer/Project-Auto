@@ -245,6 +245,7 @@
             const KEY_CHECK_INTERVAL = 1800000; //30 minutes in milliseconds
             let lastKeyCheckTime = 0;
             const PREVENT_AUTOFILL = true;
+            const MAX_URL_LENGTH = 2048;
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -464,6 +465,11 @@
 
                 if (!url) {
                     errorDiv.textContent = 'Please enter a URL.';
+                    return;
+                }
+
+                if (url.length > MAX_URL_LENGTH) {
+                    errorDiv.textContent = `URL exceeds maximum length of ${MAX_URL_LENGTH} characters.`;
                     return;
                 }
 
