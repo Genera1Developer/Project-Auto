@@ -205,8 +205,10 @@ const verifyCredentials = async (username, password) => {
             throw new Error("Username encryption failed");
         }
 
+        const encryptedUsername = encryptedUsernameData.encryptedData;
+
         return new Promise((resolve, reject) => {
-            db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [encryptedUsernameData.encryptedData], async (err, row) => {
+            db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [encryptedUsername], async (err, row) => {
                 if (err) {
                     handleDatabaseError(err, null, "User verification query error:");
                     return reject(err);
@@ -258,9 +260,8 @@ exports.createUser = async (username, password, callback) => {
         return callback(new Error(passwordValidationMessage));
     }
 
-    const salt = generateSalt();
-
     try {
+        const salt = generateSalt();
         const hashedPassword = await hashPassword(password, salt);
 
         const usernameEncryption = encryptSensitiveData(username);
