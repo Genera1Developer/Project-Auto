@@ -405,7 +405,7 @@
             const keyCompromisedAlertDiv = document.getElementById('keyCompromisedAlert');
 
             // State Variables
-            let aesKey;
+            let aesKey = null; // Initialize to null
             let lastKeyCheckTime = 0;
 
             // Utility Functions
@@ -531,15 +531,18 @@
                         console.error("Failed to generate new AES key during rotation.");
                         return;
                     }
+
                     const rawKey = await window.crypto.subtle.exportKey("raw", newAesKey);
                     const keyArray = Array.from(new Uint8Array(rawKey));
                     const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
                     const hashedKey = await hashKey(keyHex);
                     const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+
                     sessionStorage.setItem('aesIV', btoa(String.fromCharCode(...iv)));
                     sessionStorage.setItem('aesKey', keyHex);
                     sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
                     sessionStorage.setItem('hashedKey', hashedKey);
+
                     console.log('AES key rotated successfully.');
                     aesKey = newAesKey; // Update the global aesKey
                     displayKeyExpiryWarning();
@@ -547,6 +550,7 @@
                     console.error("Key rotation failed:", error);
                 }
             }
+
 
             async function periodicKeyCheck() {
                 const currentTime = Date.now();
@@ -573,6 +577,7 @@
 
             async function getOrCreateAESKey() {
                 let aesKeyHex = sessionStorage.getItem('aesKey');
+
                 if (!aesKeyHex) {
                     aesKey = await generateAESKey();
                     if (!aesKey) {
@@ -582,6 +587,7 @@
                     const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
                     const keyArray = Array.from(new Uint8Array(rawKey));
                     aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
                     sessionStorage.setItem('aesKey', aesKeyHex);
                     return aesKey;
                 } else if (!aesKey) {
@@ -603,6 +609,7 @@
                 }
                 return aesKey;
             }
+
 
             function displayKeyExpiryWarning() {
                 const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
