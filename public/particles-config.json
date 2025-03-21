@@ -218,7 +218,14 @@
         "cacheKeyDerivationRounds": 3,
         "cacheAdataDerivationRounds": 3,
         "cacheHmacDerivationRounds": 3,
-        "keyExchangeAlgorithm": "Curve25519"
+        "keyExchangeAlgorithm": "Curve25519",
+          "hkdf": {
+            "enable": true,
+            "hashAlgorithm": "SHA256",
+            "salt": "ENC_HKDF_SALT_PLACEHOLDER",
+            "info": "particles-config",
+            "length": 32
+          }
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -547,6 +554,13 @@
         "cacheKeyDerivationRounds": 3,
         "cacheAdataDerivationRounds": 3,
         "cacheHmacDerivationRounds": 3,
-        "keyExchangeAlgorithm": "Curve25519"
+        "keyExchangeAlgorithm": "Curve25519",
+        "hkdf": {
+          "enable": true,
+          "hashAlgorithm": "SHA256",
+          "salt": "ENC_HKDF_SECURITY_SALT_PLACEHOLDER",
+          "info": "particles-config-security",
+          "length": 32
+        }
   }
 }
