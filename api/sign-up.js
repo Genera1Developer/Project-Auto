@@ -359,7 +359,7 @@ const hsm = {
     wrapKey: async function(keyToWrap, wrappingKey) {
       const iv = await randomBytesAsync(16);
       const cipher = crypto.createCipheriv('aes-256-wrap', Buffer.from(wrappingKey, 'hex'), iv);
-      const wrappedKey = Buffer.concat([cipher.update(keyToWrap), cipher.final()]);
+      const wrappedKey = Buffer.concat([cipher.update(Buffer.from(keyToWrap, 'hex')), cipher.final()]);
       this.wrappedKey = {
         key: wrappedKey.toString('hex'),
         iv: iv.toString('hex'),
@@ -507,6 +507,15 @@ module.exports = async (req, res) => {
       const wrappingKey = process.env.HSM_WRAPPING_KEY || 'defaultinsecurewrappingkey'; // Store wrapping key securely
       const wrappedMasterKey = await hsm.wrapKey(masterKey, wrappingKey);
 
+      const serverMetadata = {
+        wrappedMasterKey: wrappedMasterKey,
+        mac: mac,
+        obfuscatedUserRecord: obfuscatedUserRecord
+      }
+
+      const serverMetadataString = JSON.stringify(serverMetadata);
+
+      const compressedServerMetadata = Buffer.from(serverMetadataString).toString('base64');
       // Store doubleEncryptedUserRecord, wrappedMasterKey, mac (instead of userRecord)
       // ...
 
@@ -528,12 +537,12 @@ module.exports = async (req, res) => {
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
-        console.log('User record (for demonstration only):', obfuscatedUserRecord);
+        console.log('Compressed Server Metadata (for demonstration only):', compressedServerMetadata);
         console.log('Message Authentication Code (MAC):', mac);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
-      return res.status(201).json({ message: 'User created successfully', userId: encryptedUserId }); // Return encrypted userId
+      return res.status(201).json({ message: 'User created successfully', userId: encryptedUserId, serverMetadata: compressedServerMetadata }); // Return encrypted userId
     } catch (error) {
       attempts.count++;
       if (attempts.count >= MAX_ATTEMPTS) {
