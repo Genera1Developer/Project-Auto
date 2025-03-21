@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const stream = require('stream');
+const zlib = require('zlib');
 
 const algorithm = 'aes-256-gcm';
 let key = null;
@@ -301,11 +302,21 @@ const encryptSecure = (text, aad = null) => {
         if (aad) {
             cipher.setAAD(Buffer.from(aad, 'utf8'));
         }
-        encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
-        authTag = cipher.getAuthTag();
 
-        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
-        return ciphertext.toString('base64');
+        // Compress the data before encryption
+        zlib.deflate(Buffer.from(text, 'utf8'), (err, compressedData) => {
+            if (err) {
+                console.error("Compression failed:", err);
+                return null; //Or throw an error, depending on your needs
+            }
+            encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
+            authTag = cipher.getAuthTag();
+
+            const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+            return ciphertext.toString('base64');
+
+        });
+        return;
 
     } catch (error) {
         console.error("Encryption failed:", error);
@@ -336,7 +347,17 @@ const decryptSecure = (text, aad = null) => {
         }
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
-        return decrypted.toString('utf8');
+
+        // Decompress the data after decryption
+        zlib.inflate(decrypted, (err, decompressedData) => {
+            if (err) {
+                console.error("Decompression failed:", err);
+                return null; //Or throw an error, depending on your needs
+            }
+            return decompressedData.toString('utf8');
+        });
+        return;
+
     } catch (error) {
         console.error("Decryption failed:", error);
         return null;
@@ -387,11 +408,20 @@ const encryptBuffer = (buffer, aad = null) => {
         if (aad) {
             cipher.setAAD(Buffer.from(aad, 'utf8'));
         }
-        encrypted = Buffer.concat([cipher.update(buffer), cipher.final()]);
-        authTag = cipher.getAuthTag();
 
-        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
-        return ciphertext;
+        // Compress the data before encryption
+        zlib.deflate(buffer, (err, compressedData) => {
+             if (err) {
+                console.error("Compression failed:", err);
+                return null; //Or throw an error, depending on your needs
+            }
+            encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
+            authTag = cipher.getAuthTag();
+
+            const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+             return ciphertext;
+        });
+        return;
 
     } catch (error) {
         console.error("Buffer encryption failed:", error);
@@ -423,7 +453,16 @@ const decryptBuffer = (ciphertext, aad = null) => {
         }
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
-        return decrypted;
+
+        // Decompress the data after decryption
+        zlib.inflate(decrypted, (err, decompressedData) => {
+             if (err) {
+                console.error("Decompression failed:", err);
+                return null; //Or throw an error, depending on your needs
+            }
+            return decompressedData;
+        });
+        return;
     } catch (error) {
         console.error("Buffer decryption failed:", error);
         return null;
@@ -510,6 +549,9 @@ const encryptStream = (inputStream, aad = null) => {
     if (aad) {
         cipher.setAAD(Buffer.from(aad, 'utf8'));
     }
+
+    // Create a gzip stream for compression
+    const gzip = zlib.createGzip();
     const authTag = cipher.getAuthTag();
 
     const prepend = Buffer.concat([iv, authTag]);
@@ -537,8 +579,8 @@ const encryptStream = (inputStream, aad = null) => {
     const prependStream = new stream.PassThrough();
     prependStream.write(prepend);
 
-    // Chain the streams together
-    inputStream.pipe(transformStream).pipe(prependStream, { end: false });
+    // Chain the streams together with compression
+    inputStream.pipe(gzip).pipe(transformStream).pipe(prependStream, { end: false });
 
     // Signal end of prependStream after transformStream completes
     transformStream.on('end', () => {
@@ -558,6 +600,9 @@ const decryptStream = (inputStream, aad = null) => {
     let authTag = null;
     let headerReceived = false;
     let decipher = null;
+
+    // Create a gunzip stream for decompression
+    const gunzip = zlib.createGunzip();
 
     const transformStream = new stream.Transform({
         transform(chunk, encoding, callback) {
@@ -600,9 +645,11 @@ const decryptStream = (inputStream, aad = null) => {
             }
         }
     });
-    inputStream.pipe(transformStream);
 
-    return transformStream;
+    // Chain streams together with decompression
+    inputStream.pipe(transformStream).pipe(gunzip);
+
+    return gunzip;
 };
 
 // Pre-compute prime and generator for DHKE
