@@ -37,59 +37,28 @@
             width: 80%;
             max-width: 600px;
             z-index: 1;
+            transition: box-shadow 0.3s ease;
         }
+
+        .container:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
         h1 {
             color: #00bcd4;
             text-align: center;
         }
+
         .security-info {
             color: #4caf50;
             text-align: center;
             margin-top: 10px;
         }
+
         .input-group {
             position: relative;
             display: flex;
             align-items: center;
-        }
-        .input-group input {
-            background-color: #333;
-            color: #eee;
-            border: 1px solid #555;
-            padding: 10px 40px 10px 40px;
-            border-radius: 5px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .input-group button {
-            background-color: #00bcd4;
-            color: #fff;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .error {
-            color: #f44336;
-            text-align: center;
-            margin-top: 10px;
-        }
-        #loading {
-            display: none;
-            text-align: center;
-            margin-top: 10px;
-        }
-        #proxyFrame {
-            width: 100%;
-            height: 600px;
-            border: none;
-            display: none;
-            margin-top: 20px;
-        }
-
-        .input-group {
-            position: relative;
             margin-bottom: 10px;
         }
 
@@ -102,7 +71,59 @@
         }
 
         .input-group input {
+            background-color: #333;
+            color: #eee;
+            border: 1px solid #555;
+            padding: 10px 40px 10px 40px;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
             padding-left: 30px;
+        }
+
+        .input-group button {
+            background-color: #00bcd4;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .input-group button:disabled {
+            background-color: #607d8b;
+            cursor: not-allowed;
+        }
+
+        .error {
+            color: #f44336;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #proxyFrame {
+            width: 100%;
+            height: 600px;
+            border: none;
+            display: none;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
         .enhanced-security {
@@ -113,10 +134,7 @@
             text-align: center;
             font-weight: bold;
         }
-        .input-group button:disabled {
-            background-color: #607d8b;
-            cursor: not-allowed;
-        }
+
         .fa-lock {
             animation: rotateLock 2s linear infinite;
             display: inline-block;
@@ -130,6 +148,7 @@
                 transform: rotate(360deg);
             }
         }
+
         .fa-key {
             animation: pulseKey 3s linear infinite;
         }
@@ -148,72 +167,55 @@
                 opacity: 0.8;
             }
         }
+
         .info {
             color: #2196F3;
             margin-top: 10px;
             text-align: center;
         }
+
         .key-expired {
             color: #ffc107;
             font-weight: bold;
         }
-        .container {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            transition: box-shadow 0.3s ease;
-        }
 
-        .container:hover {
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
-        }
-
-        #proxyFrame {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
         /* Styles for responsive design */
         @media (max-width: 768px) {
             .container {
-                width: 95%; /* Take up more width on smaller screens */
-                max-width: none; /* Remove max-width to fill available space */
-                padding: 15px; /* Reduce padding for smaller screens */
+                width: 95%;
+                max-width: none;
+                padding: 15px;
             }
 
             .input-group {
-                flex-direction: column; /* Stack input and button vertically */
+                flex-direction: column;
             }
 
             .input-group input {
-                width: 100%; /* Input takes full width */
-                margin-bottom: 10px; /* Add spacing between input and button */
-                padding: 10px 30px; /* Adjust padding to keep icon visible */
+                width: 100%;
+                margin-bottom: 10px;
+                padding: 10px 30px;
             }
 
             .input-group button {
-                width: 100%; /* Button takes full width */
-                margin-left: 0; /* Remove left margin */
+                width: 100%;
+                margin-left: 0;
             }
 
             h1 {
-                font-size: 1.5em; /* Reduce heading size for smaller screens */
+                font-size: 1.5em;
             }
 
             .security-info,
             .enhanced-security {
-                font-size: 0.9em; /* Reduce font size for smaller screens */
+                font-size: 0.9em;
             }
 
             #proxyFrame {
-                height: 400px; /* Reduce iframe height for smaller screens */
+                height: 400px;
             }
         }
+
         /* Additional styles for key generation and compromise alerts */
         .key-generation-info {
             color: #2196F3;
@@ -241,7 +243,7 @@
             <button id="browse"><i class="fas fa-arrow-right"></i> Browse</button>
         </div>
         <div id="error" class="error"></div>
-        <div id="loading" class="loading">Loading...</div>
+        <div id="loading" class="loading"></div>
         <div class="security-info">
             <i class="fas fa-shield-alt"></i> Your connection is encrypted. We use strong encryption to protect your data.
         </div>
@@ -267,6 +269,7 @@
             const browseButton = document.getElementById('browse');
             const errorDiv = document.getElementById('error');
             const loadingDiv = document.getElementById('loading');
+            loadingDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
             const proxyFrame = document.getElementById('proxyFrame');
             const infoDiv = document.getElementById('info');
             const keyExpiryWarningDiv = document.getElementById('keyExpiryWarning');
@@ -279,13 +282,11 @@
             const KEY_STORAGE_DURATION = 300000;
             const LOAD_TIMEOUT = 30000;
             const IV_LENGTH = 12;
-            const SALT_LENGTH = 16;
             const PROXY_URL = '/api/proxy';
             const KEY_EXPIRY_CHECK_INTERVAL = 60000;
             const ALLOWED_FRAME_ORIGIN = window.location.origin;
             const REDIRECT_STATUS_CODES = [301, 302, 307, 308];
             const SERVICE_WORKER_URL = '/sw.js';
-            const URL_PARAM_NAME = 'd';
             const PREFETCH_SUBRESOURCES = true;
             const ENCRYPT_REDIRECTS = true;
             const ENABLE_KEY_ROTATION = true;
@@ -334,45 +335,6 @@
                 return hashHex;
             }
 
-            function generateSalt(length) {
-              const randomBuffer = new Uint8Array(length);
-              window.crypto.getRandomValues(randomBuffer);
-              return Array.from(randomBuffer).map(b => b.toString(16).padStart(2, '0')).join('');
-            }
-
-            async function deriveKey(password, salt) {
-                const encodedPassword = new TextEncoder().encode(password);
-                const encodedSalt = new TextEncoder().encode(salt);
-
-                const algorithm = {
-                    name: 'PBKDF2',
-                    hash: 'SHA-256',
-                    salt: encodedSalt,
-                    iterations: HASH_ITERATIONS
-                };
-
-                const key = await window.crypto.subtle.importKey(
-                    'raw',
-                    encodedPassword,
-                    algorithm,
-                    false,
-                    ['deriveKey']
-                );
-                if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("PBKDF2 key imported.");
-
-                const keyAlgorithm = { name: 'AES-GCM', length: 256 };
-                const derivedKey = await window.crypto.subtle.deriveKey(
-                    algorithm,
-                    key,
-                    keyAlgorithm,
-                    false,
-                    ['encrypt', 'decrypt']
-                );
-                if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("AES Key derived from PBKDF2.");
-
-                return derivedKey;
-            }
-
             async function encryptURL(url, key) {
                 const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
                 const encodedText = new TextEncoder().encode(url);
@@ -389,16 +351,22 @@
             async function generateAESKey() {
                 keyGenerationInfoDiv.style.display = 'block';
                 try {
-                  return await window.crypto.subtle.generateKey(
-                      {
-                          name: "AES-GCM",
-                          length: AES_KEY_LENGTH,
-                      },
-                      true,
-                      ["encrypt", "decrypt"]
-                  );
+                    const key = await window.crypto.subtle.generateKey(
+                        {
+                            name: "AES-GCM",
+                            length: AES_KEY_LENGTH,
+                        },
+                        true,
+                        ["encrypt", "decrypt"]
+                    );
+                    if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("New AES key generated.");
+                    return key;
+                } catch (error) {
+                    console.error("Key generation failed:", error);
+                    errorDiv.textContent = 'Failed to generate encryption key. Please refresh the page.';
+                    return null;
                 } finally {
-                  keyGenerationInfoDiv.style.display = 'none';
+                    keyGenerationInfoDiv.style.display = 'none';
                 }
             }
 
@@ -461,6 +429,10 @@
                 console.log('Rotating AES key...');
                 try {
                     const newAesKey = await generateAESKey();
+                    if (!newAesKey) {
+                        console.error("Failed to generate new AES key during rotation.");
+                        return;
+                    }
                     const rawKey = await window.crypto.subtle.exportKey("raw", newAesKey);
                     const keyArray = Array.from(new Uint8Array(rawKey));
                     const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
@@ -514,33 +486,37 @@
             }
 
             async function getOrCreateAESKey() {
-              let aesKeyHex = sessionStorage.getItem('aesKey');
-              if (!aesKeyHex) {
-                  aesKey = await generateAESKey();
-                  const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
-                  const keyArray = Array.from(new Uint8Array(rawKey));
-                  aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                  sessionStorage.setItem('aesKey', aesKeyHex);
-                  return aesKey;
-              } else if (!aesKey) {
-                  // If aesKeyHex exists but aesKey doesn't, import the key
-                  try {
-                      const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
-                      aesKey = await window.crypto.subtle.importKey(
-                          "raw",
-                          keyBytes,
-                          { name: "AES-GCM", length: AES_KEY_LENGTH },
-                          false,
-                          ["encrypt", "decrypt"]
-                      );
-                      return aesKey;
-                  } catch (keyImportError) {
-                      console.error("Error importing stored key:", keyImportError);
-                      errorDiv.textContent = 'Error importing stored encryption key. Please refresh the page.';
-                      return null;
-                  }
-              }
-              return aesKey;
+                let aesKeyHex = sessionStorage.getItem('aesKey');
+                if (!aesKeyHex) {
+                    aesKey = await generateAESKey();
+                    if (!aesKey) {
+                        return null;  //generateAESKey handles error display
+                    }
+
+                    const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
+                    const keyArray = Array.from(new Uint8Array(rawKey));
+                    aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                    sessionStorage.setItem('aesKey', aesKeyHex);
+                    return aesKey;
+                } else if (!aesKey) {
+                    // If aesKeyHex exists but aesKey doesn't, import the key
+                    try {
+                        const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
+                        aesKey = await window.crypto.subtle.importKey(
+                            "raw",
+                            keyBytes,
+                            { name: "AES-GCM", length: AES_KEY_LENGTH },
+                            false,
+                            ["encrypt", "decrypt"]
+                        );
+                        return aesKey;
+                    } catch (keyImportError) {
+                        console.error("Error importing stored key:", keyImportError);
+                        errorDiv.textContent = 'Error importing stored encryption key. Please refresh the page.';
+                        return null;
+                    }
+                }
+                return aesKey;
             }
 
 
@@ -579,10 +555,10 @@
 
                     aesKey = await getOrCreateAESKey();
                     if (!aesKey) {
-                      return; // getOrCreateAESKey handles error display
+                        return; // getOrCreateAESKey handles error display
                     }
 
-                    const {ciphertext, iv} = await encryptURL(url, aesKey);
+                    const { ciphertext, iv } = await encryptURL(url, aesKey);
 
                     const aesKeyHex = sessionStorage.getItem('aesKey');  //Get the hex value after it might have been newly created.
                     const hashedKey = await hashKey(aesKeyHex);
@@ -648,7 +624,7 @@
                                 prefetchSubresources(html);
                             }
 
-                            proxyFrame.contentWindow.postMessage({type: 'proxyLoaded'}, ALLOWED_FRAME_ORIGIN);
+                            proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
 
                         })
                         .catch(error => {
@@ -739,10 +715,10 @@
 
                     aesKey = await getOrCreateAESKey();
                     if (!aesKey) {
-                      return; // getOrCreateAESKey handles error display
+                        return; // getOrCreateAESKey handles error display
                     }
 
-                    const {ciphertext, iv} = await encryptURL(redirectUrl, aesKey);
+                    const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
 
                     const aesKeyHex = sessionStorage.getItem('aesKey');  //Get the hex value after it might have been newly created.
                     const hashedKey = await hashKey(aesKeyHex);
@@ -797,7 +773,7 @@
                                 prefetchSubresources(html);
                             }
 
-                            proxyFrame.contentWindow.postMessage({type: 'proxyLoaded'}, ALLOWED_FRAME_ORIGIN);
+                            proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
                         });
                 } catch (error) {
                     console.error("Error handling redirect:", error);
