@@ -789,4 +789,39 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     setFeaturePolicy();
+
+     // Subresource Integrity (SRI) Check
+    async function checkSRI() {
+        const scripts = document.querySelectorAll('script[src]');
+        for (const script of scripts) {
+            if (!script.integrity) {
+                console.warn(`SRI missing for script: ${script.src}`);
+                showAlert(`SRI missing for script: ${script.src}. Contact administrator.`, 'warning');
+            }
+        }
+
+        const links = document.querySelectorAll('link[rel="stylesheet"][href]');
+         for (const link of links) {
+            if (!link.integrity) {
+                console.warn(`SRI missing for stylesheet: ${link.href}`);
+                showAlert(`SRI missing for stylesheet: ${link.href}. Contact administrator.`, 'warning');
+            }
+        }
+    }
+
+    checkSRI();
+
+    // Implement stricter CSP
+    function updateCSPHeaders(nonce) {
+        const csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content;`;
+        const existingMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
+        if (existingMeta) {
+            existingMeta.content = csp;
+        } else {
+            document.head.insertAdjacentHTML('beforeend', `<meta http-equiv="Content-Security-Policy" content="${csp}">`);
+        }
+    }
+
+    updateCSPHeaders(nonce);
+
 });
