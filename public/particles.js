@@ -185,7 +185,7 @@
                     var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
                     var masterKey = CryptoJS.PBKDF2("master_key_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
                     var iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-										var sharedSecret = CryptoJS.PBKDF2("shared_secret_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
+                    var sharedSecret = CryptoJS.PBKDF2("shared_secret_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
 
                     var encryptData = function(data, key, iv) {
                       try {
@@ -193,8 +193,8 @@
                             iv: CryptoJS.enc.Hex.parse(iv),
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
-                        });
-												encrypted = CryptoJS.HmacSHA256(encrypted.toString(), sharedSecret).toString() + "$" + encrypted.toString();
+                        }).toString();
+                        encrypted = CryptoJS.HmacSHA256(encrypted, sharedSecret).toString() + "$" + encrypted;
                         return encrypted;
                       } catch (err) {
                         console.error("Encrypt error:", err);
@@ -204,19 +204,19 @@
 
                     var decryptData = function(encryptedData, key, iv) {
                       try {
-												var components = encryptedData.split("$");
-												if (components.length !== 2) {
-													console.error("Invalid encrypted data format");
-													return null;
-												}
-												var hmac = components[0];
-												var ciphertext = components[1];
+                        var components = encryptedData.split("$");
+                        if (components.length !== 2) {
+                          console.error("Invalid encrypted data format");
+                          return null;
+                        }
+                        var hmac = components[0];
+                        var ciphertext = components[1];
 
-												var calculatedHmac = CryptoJS.HmacSHA256(ciphertext, sharedSecret).toString();
-												if (calculatedHmac !== hmac) {
-													console.error("HMAC validation failed. Data may be tampered with.");
-													return null;
-												}
+                        var calculatedHmac = CryptoJS.HmacSHA256(ciphertext, sharedSecret).toString();
+                        if (calculatedHmac !== hmac) {
+                          console.error("HMAC validation failed. Data may be tampered with.");
+                          return null;
+                        }
 
                         var decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
                             iv: CryptoJS.enc.Hex.parse(iv),
