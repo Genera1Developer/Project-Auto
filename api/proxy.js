@@ -170,12 +170,10 @@ function maybeDecompress(proxyRes) {
 
   if (encoding == 'gzip' || encoding == 'deflate') {
       let gunzip = zlib.createUnzip();
-      proxyRes.pipe(gunzip);
-      raw = gunzip;
+      raw = proxyRes.pipe(gunzip);
   } else if (encoding == 'br') {
       let brotliDecompress = zlib.createBrotliDecompress();
-      proxyRes.pipe(brotliDecompress);
-      raw = brotliDecompress;
+      raw = proxyRes.pipe(brotliDecompress);
   }
 
   return raw;
@@ -295,20 +293,18 @@ async function proxyRequest(req, res) {
             res.writeHead(proxyRes.statusCode, resHeaders);
 
             // Encrypt the response body
-            const responseCipher = encryptStream(encryptionKey, resIv);
+            try {
+                const responseCipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, resIv, { authTagLength: AUTH_TAG_LENGTH });
 
-            if(!responseCipher){
-                return res.status(500).send('Failed to create response cipher.');
+                const authTag = responseCipher.getAuthTag();
+                res.setHeader('Content-Encoding', 'encrypted');
+                res.setHeader('x-encryption-authtag', authTag.toString('hex'));
+
+                raw.pipe(responseCipher).pipe(res);
+            } catch (streamErr) {
+                console.error("Response stream encryption error:", streamErr);
+                return res.status(500).send('Failed to encrypt response stream.');
             }
-
-            const authTag = responseCipher.getAuthTag();
-            res.setHeader('Content-Encoding', 'encrypted');
-            res.setHeader('x-encryption-authtag', authTag.toString('hex'));
-
-            const combinedIvAuthTag = Buffer.concat([resIv, authTag]);
-            res.write(combinedIvAuthTag); // Prepend IV and AuthTag to the stream
-
-            raw.pipe(responseCipher).pipe(res);
         });
 
         proxyReq.on('error', (err) => {
