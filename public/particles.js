@@ -140,9 +140,9 @@
                     try {
                       var encryptionKey = CryptoJS.SHA256("fallback_key").toString();
                       var encrypted = CryptoJS.AES.encrypt(JSON.stringify(backupData), encryptionKey).toString();
-                      var decryptedString = CryptoJS.AES.decrypt(encrypted, encryptionKey).toString(CryptoJS.enc.Utf8);
-                      if (decryptedString) {
-                         backupData = JSON.parse(decryptedString);
+                      var decrypted = CryptoJS.AES.decrypt(encrypted, encryptionKey).toString(CryptoJS.enc.Utf8);
+                      if (decrypted) {
+                         backupData = JSON.parse(decrypted);
                       } else {
                         backupData = {
                             color: "cccccc",
