@@ -585,17 +585,20 @@ document.addEventListener('DOMContentLoaded', function() {
     preventPageCaching();
 
     function preventPageCaching() {
-        document.addEventListener('DOMContentLoaded', function() {
-            // Disable browser caching on page load
-            document.querySelector('body').classList.add('no-cache');
+         // Disable browser caching on page load
+         document.querySelector('body').classList.add('no-cache');
 
-            // Set HTTP headers to prevent caching
-            window.addEventListener('load', function() {
-                // Overwrite HTTP headers to prevent caching
-                document.querySelector('meta[http-equiv="Cache-Control"]')?.setAttribute('content', 'no-cache, no-store, must-revalidate');
-                document.querySelector('meta[http-equiv="Pragma"]')?.setAttribute('content', 'no-cache');
-                document.querySelector('meta[http-equiv="Expires"]')?.setAttribute('content', '0');
-            });
+        // Set HTTP headers to prevent caching
+        window.addEventListener('load', function() {
+            // Overwrite HTTP headers to prevent caching
+            document.querySelector('meta[http-equiv="Cache-Control"]')?.setAttribute('content', 'no-cache, no-store, must-revalidate');
+            document.querySelector('meta[http-equiv="Pragma"]')?.setAttribute('content', 'no-cache');
+            document.querySelector('meta[http-equiv="Expires"]')?.setAttribute('content', '0');
         });
+
+        // Check if the page is loaded from the cache. If so, reload it.
+        if (performance && performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
+            location.reload(true);
+        }
     }
 });
