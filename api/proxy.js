@@ -314,7 +314,7 @@ async function proxyRequest(req, res) {
             res.writeHead(proxyRes.statusCode, resHeaders);
 
             // Encrypt the response body
-            let encryptedStream;
+            let encryptedStream = null; // Initialize to null
             try {
                 const responseCipher = encryptStream(encryptionKey, resIv);
                 if(!responseCipher){
@@ -325,7 +325,9 @@ async function proxyRequest(req, res) {
 
                 encryptedStream.on('error', (streamErr) => {
                   console.error("Response stream encryption error:", streamErr);
-                   return earlyReject(res, 500, 'Failed to encrypt response stream.');
+                  if (!res.writableEnded) { // Check if response has already ended
+                       return earlyReject(res, 500, 'Failed to encrypt response stream.');
+                  }
                 });
 
                 res.setHeader('Content-Encoding', 'encrypted');
@@ -333,7 +335,9 @@ async function proxyRequest(req, res) {
 
             } catch (streamErr) {
                 console.error("Response stream encryption error:", streamErr);
-                return earlyReject(res, 500, 'Failed to encrypt response stream.');
+                if (!res.writableEnded) { // Check if response has already ended
+                     return earlyReject(res, 500, 'Failed to encrypt response stream.');
+                }
             } finally {
                 // Ensure the stream is properly closed in case of errors
                 if (encryptedStream && encryptedStream.readable) {
@@ -346,7 +350,11 @@ async function proxyRequest(req, res) {
 
         proxyReq.on('error', (err) => {
             console.error('Proxy request error:', err);
-            return earlyReject(res, 500, 'Proxy error.');
+            if (!res.headersSent) {
+              return earlyReject(res, 500, 'Proxy error.');
+            } else {
+              console.error("Headers already sent, cannot early reject.");
+            }
         });
 
         req.on('aborted', () => {
