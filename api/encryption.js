@@ -10,17 +10,24 @@ let deriveKeySalt = null;
 const PBKDF2_ITERATIONS = 100000;
 const PBKDF2_DIGEST = 'sha512';
 
+// Use a singleton pattern to ensure key is only generated/derived once.
+let keyGenerated = false;
+
 function setDeriveKeySalt(salt) {
     deriveKeySalt = salt;
 }
 
 function deriveEncryptionKey(password) {
+    if (keyGenerated) {
+        return; // Key already generated.
+    }
     if (!deriveKeySalt) {
         throw new Error('Derive key salt not set.');
     }
 
     try {
         key = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
+        keyGenerated = true;
     } catch (error) {
         console.error("Key derivation failed:", error);
         throw new Error('Key derivation failed. Check password and salt.');
@@ -28,16 +35,24 @@ function deriveEncryptionKey(password) {
 }
 
 function setEncryptionKey(newKey) {
+    if (keyGenerated) {
+        return; // Key already generated.
+    }
     if (!Buffer.isBuffer(newKey) || newKey.length !== KEY_LENGTH) {
         throw new Error(`Invalid key. Key must be a ${KEY_LENGTH}-byte Buffer.`);
     }
     key = newKey;
+    keyGenerated = true;
 }
 
 function generateEncryptionKey() {
+    if (keyGenerated) {
+        return key.toString('hex'); // Key already generated, return existing.
+    }
     try {
         const newKey = crypto.generateKeySync('aes', { length: 256 });
         key = newKey;
+        keyGenerated = true;
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
