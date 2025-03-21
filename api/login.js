@@ -348,6 +348,62 @@ const verifyShortLivedToken = (token, secret) => {
     }
 };
 
+const generateAuthenticationToken = (username, encryptionKey) => {
+    try {
+        const header = {
+            alg: 'HS256',
+            typ: 'JWT'
+        };
+        const payload = {
+            username: username,
+            iat: Date.now()
+        };
+
+        const headerString = JSON.stringify(header);
+        const payloadString = JSON.stringify(payload);
+
+        const encodedHeader = Buffer.from(headerString).toString('base64url');
+        const encodedPayload = Buffer.from(payloadString).toString('base64url');
+
+        const data = `${encodedHeader}.${encodedPayload}`;
+
+        const hmac = crypto.createHmac('sha256', encryptionKey);
+        hmac.update(data);
+        const signature = hmac.digest('base64url');
+
+        return `${data}.${signature}`;
+
+    } catch (error) {
+        console.error('Authentication token generation error:', error);
+        return null;
+    }
+};
+
+const verifyAuthenticationToken = (token, encryptionKey) => {
+    try {
+        const [encodedHeader, encodedPayload, signature] = token.split('.');
+
+        const data = `${encodedHeader}.${encodedPayload}`;
+
+        const hmac = crypto.createHmac('sha256', encryptionKey);
+        hmac.update(data);
+        const expectedSignature = hmac.digest('base64url');
+
+        if (signature !== expectedSignature) {
+            return null;
+        }
+
+        const payloadString = Buffer.from(encodedPayload, 'base64url').toString('utf8');
+        const payload = JSON.parse(payloadString);
+
+        return payload.username;
+
+    } catch (error) {
+        console.error('Authentication token verification error:', error);
+        return null;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -424,8 +480,11 @@ module.exports = async (req, res) => {
                 // Generate a short-lived token
                 const shortLivedToken = generateShortLivedToken(userData.username, encryptionKey.toString('hex'));
 
+                // Generate authentication token
+                const authToken = generateAuthenticationToken(userData.username, encryptionKey.toString('hex'));
+
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
-                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken });
+                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken, authToken: authToken });
             } else {
                 res.status(500).json({ message: 'Session cookie encryption failed' });
             }
