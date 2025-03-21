@@ -199,7 +199,7 @@
                         });
                         return {
                             ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
-                            iv: iv.toString()
+                            iv: iv.toString(CryptoJS.enc.Hex)
                         };
                       } catch (err) {
                         console.error("Encrypt error:", err);
@@ -210,7 +210,6 @@
                     var decryptData = function(encryptedData, secret) {
                       try {
                          var iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
-                         var ciphertext = CryptoJS.enc.Base64.parse(encryptedData.ciphertext).toString();
 
                         var decrypted = CryptoJS.AES.decrypt({ ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext) }, secret, {
                             iv: iv,
