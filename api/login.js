@@ -519,6 +519,36 @@ const decryptData = (encryptedData, key, iv, authTag) => {
     }
 };
 
+const encryptObject = (obj, key) => {
+    try {
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+        const jsonString = JSON.stringify(obj);
+        let encrypted = cipher.update(jsonString, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        const authTag = cipher.getAuthTag();
+        return { iv: iv.toString('hex'), encryptedData: encrypted, authTag: authTag.toString('hex') };
+    } catch (error) {
+        console.error('Object encryption error:', error);
+        return null;
+    }
+};
+
+const decryptObject = (encrypted, key) => {
+    try {
+        const iv = Buffer.from(encrypted.iv, 'hex');
+        const authTag = Buffer.from(encrypted.authTag, 'hex');
+        const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+        decipher.setAuthTag(authTag);
+        let decrypted = decipher.update(encrypted.encryptedData, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        return JSON.parse(decrypted);
+    } catch (error) {
+        console.error('Object decryption error:', error);
+        return null;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -583,15 +613,14 @@ module.exports = async (req, res) => {
             return res.status(500).json({ message: 'Failed to generate key material' });
         }
 
-        // Enhanced session encryption
-        const sessionIV = generateRandomIV();
-        const { encryptedData: encryptedSession, authTag: sessionAuthTag } = encryptData(JSON.stringify(sessionData), keyMaterial, sessionIV);
-        const encryptedSessionCookieValue = JSON.stringify({
-            iv: sessionIV.toString('hex'),
-            authTag: sessionAuthTag,
-            data: encryptedSession
-        });
+        // Enhanced session encryption using encryptObject
+        const encryptedSession = encryptObject(sessionData, keyMaterial);
 
+        if (!encryptedSession) {
+            return res.status(500).json({ message: 'Session encryption failed' });
+        }
+
+        const encryptedSessionCookieValue = JSON.stringify(encryptedSession);
         const encryptedSessionCookie = encryptCookie(encryptedSessionCookieValue, keyMaterial.toString('hex'));
 
         if (encryptedSessionCookie) {
@@ -611,7 +640,28 @@ module.exports = async (req, res) => {
                 const sessionIdSignature = hmacSign(sessionId, keyMaterial.toString('hex'));
 
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
-                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: xorEncryptedSessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken, authToken: authToken, xorKey: xorKey, sessionIdSignature: sessionIdSignature });
+
+                const responsePayload = {
+                    message: 'Login successful!',
+                    nonce: nonce,
+                    sessionId: xorEncryptedSessionId,
+                    deviceSecret: encryptedDeviceSecret,
+                    token: shortLivedToken,
+                    authToken: authToken,
+                    xorKey: xorKey,
+                    sessionIdSignature: sessionIdSignature
+                };
+
+                // Encrypt the response payload
+                const encryptedResponse = encryptObject(responsePayload, keyMaterial);
+
+                if(!encryptedResponse) {
+                    return res.status(500).json({message: "Response encryption failed"});
+                }
+
+                res.status(200).json(encryptedResponse);
+
+
             } else {
                 res.status(500).json({ message: 'Session cookie encryption failed' });
             }
