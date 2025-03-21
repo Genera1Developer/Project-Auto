@@ -181,6 +181,16 @@ function maybeDecompress(proxyRes) {
   return raw;
 }
 
+function encryptStream(key, iv) {
+  try {
+    const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, key, iv);
+    return cipher;
+  } catch (error) {
+    console.error("Stream encryption error:", error);
+    return null;
+  }
+}
+
 // Function to handle the proxy request
 function proxyRequest(req, res) {
     const targetUrl = req.headers['x-target-url'];
@@ -245,33 +255,18 @@ function proxyRequest(req, res) {
             res.writeHead(proxyRes.statusCode, resHeaders);
 
             // Encrypt the response body
-            const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, iv);
-            const authTag = cipher.getAuthTag();
+            const responseCipher = encryptStream(encryptionKey, iv);
+
+            if(!responseCipher){
+                return res.status(500).send('Failed to create response cipher.');
+            }
+            const authTag = responseCipher.getAuthTag();
 
             res.setHeader('Content-Encoding', 'encrypted');
             res.setHeader('x-encryption-iv', iv.toString('hex'));
             res.setHeader('x-encryption-authtag', authTag.toString('hex'));
 
-            const transformStream = new stream.Transform({
-              transform(chunk, encoding, callback) {
-                try {
-                  const encryptedChunk = cipher.update(chunk);
-                  callback(null, encryptedChunk);
-                } catch (error) {
-                  callback(error);
-                }
-              },
-              flush(callback) {
-                try {
-                  const finalChunk = cipher.final();
-                  callback(null, finalChunk);
-                } catch (error) {
-                  callback(error);
-                }
-              }
-            });
-
-            raw.pipe(transformStream).pipe(res);
+            raw.pipe(responseCipher).pipe(res);
         });
 
         proxyReq.on('error', (err) => {
@@ -279,27 +274,13 @@ function proxyRequest(req, res) {
             res.status(500).send('Proxy error');
         });
 
-        const requestCipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, iv);
-        const requestTransformStream = new stream.Transform({
-            transform(chunk, encoding, callback) {
-                try {
-                    const encryptedChunk = requestCipher.update(chunk);
-                    callback(null, encryptedChunk);
-                } catch (error) {
-                    callback(error);
-                }
-            },
-            flush(callback) {
-                try {
-                    const finalChunk = requestCipher.final();
-                    callback(null, finalChunk);
-                } catch (error) {
-                    callback(error);
-                }
-            }
-        });
+        const requestCipher = encryptStream(encryptionKey, iv);
 
-        req.pipe(requestTransformStream).pipe(proxyReq);
+        if(!requestCipher){
+            return res.status(500).send('Failed to create request cipher.');
+        }
+
+        req.pipe(requestCipher).pipe(proxyReq);
 
         req.on('error', (err) => {
             console.error("Request error:", err);
