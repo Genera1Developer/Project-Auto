@@ -111,7 +111,8 @@
       "encryptedNumberPrecision": 3,
       "enableWebAssembly": true,
       "webAssemblyThreads": 2,
-      "entropySeed": "ENC_ENTROPY_SEED_PLACEHOLDER"
+      "entropySeed": "ENC_ENTROPY_SEED_PLACEHOLDER",
+      "hmacIterationOffset": 10
     }
   },
   "interactivity": {
