@@ -1,23 +1,23 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 200,
+      value: 250,
       density: {
         enable: true,
         value_area: 800
       }
     },
     color: {
-      value: ['#00FF00', '#0F0', '#00FA9A'] // Varying greens
+      value: ['#00FF00', '#0F0', '#00FA9A', '#00CED1'] // More greens and teal
     },
     shape: {
       type: 'circle',
       stroke: {
-        width: 0,
-        color: '#000000'
+        width: 1,
+        color: '#003300' // Darker green stroke
       },
       polygon: {
-        nb_sides: 6 // Hexagon - more secure feeling
+        nb_sides: 5 // Pentagon - a slightly different shape
       },
       image: {
         src: '',
@@ -26,35 +26,35 @@ particlesJS('particles-js', {
       }
     },
     opacity: {
-      value: 0.8,
+      value: 0.9,
       random: true,
       anim: {
         enable: true,
-        speed: 0.7,
-        opacity_min: 0.1,
+        speed: 1, // Increased speed
+        opacity_min: 0.2, // Slightly higher min opacity
         sync: false
       }
     },
     size: {
-      value: 2.5,
+      value: 3,
       random: true,
       anim: {
-        enable: false,
-        speed: 40,
+        enable: true, // Enable size animation
+        speed: 3,
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 150,
+      distance: 160,
       color: '#009900',
-      opacity: 0.5,
-      width: 1.2
+      opacity: 0.6,
+      width: 1.5
     },
     move: {
       enable: true,
-      speed: 2,
+      speed: 2.5, // Slightly increased speed
       direction: 'none',
       random: true,
       straight: false,
@@ -82,27 +82,27 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 180,
+        distance: 200,
         line_linked: {
-          opacity: 0.8
+          opacity: 0.9
         }
       },
       bubble: {
-        distance: 230,
+        distance: 250,
         size: 0,
         duration: 2,
         opacity: 0,
         speed: 3
       },
       repulse: {
-        distance: 260,
+        distance: 280,
         duration: 0.4
       },
       push: {
-        particles_nb: 4
+        particles_nb: 5
       },
       remove: {
-        particles_nb: 3
+        particles_nb: 4
       }
     }
   },
