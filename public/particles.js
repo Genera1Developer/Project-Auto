@@ -200,7 +200,7 @@
                         return {
                             ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
                             iv: iv.toString(CryptoJS.enc.Hex),
-                            salt: CryptoJS.enc.Hex.stringify(iv) // Include the salt in the encrypted data
+                            salt: iv.toString(CryptoJS.enc.Hex)
                         };
                       } catch (err) {
                         console.error("Encrypt error:", err);
@@ -248,15 +248,22 @@
                             var storedData = localStorage.getItem(key);
                             if (!storedData) return defaultValue;
 
-                            var parsedData = JSON.parse(storedData);
-                            if (!parsedData || !parsedData.ciphertext || !parsedData.iv) {
-                              localStorage.removeItem(key); // Remove invalid data
+                            try {
+                              var parsedData = JSON.parse(storedData);
+                              if (!parsedData || !parsedData.ciphertext || !parsedData.iv) {
+                                localStorage.removeItem(key);
+                                return defaultValue;
+                              }
+                              return parsedData;
+                            } catch (jsonError) {
+                              console.warn("Invalid JSON in localStorage, removing:", key);
+                              localStorage.removeItem(key);
                               return defaultValue;
                             }
-                            return parsedData;
+
                         } catch (err) {
                             console.error("Retrieve error:", err);
-                            localStorage.removeItem(key); // Remove potentially corrupted data
+                            localStorage.removeItem(key);
                             return defaultValue;
                         }
                     };
