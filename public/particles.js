@@ -193,7 +193,9 @@
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
                         });
-                        return iv.toString() + encrypted.toString();
+                         var combinedData = iv.toString() + encrypted.toString();
+                        var hmac = CryptoJS.HmacSHA256(combinedData, masterKey).toString();
+                        return hmac + combinedData;
                       } catch (err) {
                         console.error("Encrypt error:", err);
                         return null;
@@ -202,8 +204,16 @@
 
                     var decryptData = function(encryptedData, key) {
                       try {
-                        var iv = CryptoJS.enc.Hex.parse(encryptedData.substring(0, 32));
-                        var encrypted = encryptedData.substring(32);
+                        var hmac = encryptedData.substring(0, 64);
+                        var combinedData = encryptedData.substring(64);
+                        var calculatedHmac = CryptoJS.HmacSHA256(combinedData, masterKey).toString();
+
+                        if (hmac !== calculatedHmac) {
+                            console.error("HMAC verification failed!");
+                            return null;
+                        }
+                        var iv = CryptoJS.enc.Hex.parse(combinedData.substring(0, 32));
+                        var encrypted = combinedData.substring(32);
                         var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
                             iv: iv,
                             mode: CryptoJS.mode.CBC,
