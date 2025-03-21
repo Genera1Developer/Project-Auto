@@ -115,23 +115,18 @@ particlesJS('particles-js', {
   plugins: {
       encrypt: {
           enable: false,
-          dataFields: ['particles.color.value', 'particles.line_linked.color'],
-          algorithm: 'encrypt_config.algorithm',
-          key: 'encrypt_config.key',
-          iv: 'encrypt_config.iv'
+          dataFields: ['particles.color.value', 'particles.line_linked.color']
       },
-      customEncrypt: function(data, key, iv, algorithm) {
-            // Placeholder for encryption logic
+      customEncrypt: async function(data, key, iv, algorithm) {
             if (!window.crypto || !window.crypto.subtle) {
                 console.warn('Web Crypto API not supported. Encryption disabled.');
                 return data;
             }
 
-            // Example Encryption function (replace with actual crypto calls)
             const encryptValue = async (text, secretKey, iv) => {
               try {
                 const enc = new TextEncoder();
-                const key = await crypto.subtle.importKey(
+                const keyMaterial = await crypto.subtle.importKey(
                   "raw",
                   enc.encode(secretKey),
                   { name: "AES-CBC", length: 256 },
@@ -141,7 +136,7 @@ particlesJS('particles-js', {
 
                 const encryptedData = await crypto.subtle.encrypt(
                   { name: "AES-CBC", iv: enc.encode(iv) },
-                  key,
+                  keyMaterial,
                   enc.encode(text)
                 );
 
@@ -156,12 +151,16 @@ particlesJS('particles-js', {
             };
 
             if (Array.isArray(data)) {
-                return Promise.all(data.map(item => encryptValue(item, key, iv)));
+                const encryptedArray = [];
+                for (const item of data) {
+                    encryptedArray.push(await encryptValue(item, key, iv));
+                }
+                return encryptedArray;
             } else {
-                return encryptValue(data, key, iv);
+                return await encryptValue(data, key, iv);
             }
         },
-        decrypt: function(encryptedData, key, iv, algorithm) {
+        decrypt: async function(encryptedData, key, iv, algorithm) {
             if (!window.crypto || !window.crypto.subtle) {
                 console.warn('Web Crypto API not supported. Encryption disabled.');
                 return encryptedData;
@@ -170,7 +169,7 @@ particlesJS('particles-js', {
             const decryptValue = async (encryptedBase64, secretKey, iv) => {
               try {
                 const enc = new TextEncoder();
-                const key = await crypto.subtle.importKey(
+                const keyMaterial = await crypto.subtle.importKey(
                   "raw",
                   enc.encode(secretKey),
                   { name: "AES-CBC", length: 256 },
@@ -186,7 +185,7 @@ particlesJS('particles-js', {
 
                 const decryptedData = await crypto.subtle.decrypt(
                   { name: "AES-CBC", iv: enc.encode(iv) },
-                  key,
+                  keyMaterial,
                   encryptedArray
                 );
 
@@ -195,19 +194,23 @@ particlesJS('particles-js', {
 
               } catch (error) {
                 console.error("Decryption failed:", error);
-                return encryptedBase64; // Return original if decryption fails
+                return encryptedBase64;
               }
             };
 
             if (Array.isArray(encryptedData)) {
-                return Promise.all(encryptedData.map(item => decryptValue(item, key, iv)));
+                const decryptedArray = [];
+                for (const item of encryptedData) {
+                    decryptedArray.push(await decryptValue(item, key, iv));
+                }
+                return decryptedArray;
             } else {
-                return decryptValue(encryptedData, key, iv);
+                return await decryptValue(encryptedData, key, iv);
             }
         }
   },
   "fn": {
-    "update": function() {
+    "update": async function() {
         if (this.plugins.encrypt.enable) {
             const config = this.actualOptions;
             const encryptPlugin = this.plugins;
@@ -218,22 +221,21 @@ particlesJS('particles-js', {
                 const iv = config.encrypt_config.iv;
                 const algorithm = config.encrypt_config.algorithm;
 
-                dataFields.forEach(fieldPath => {
+                for (const fieldPath of dataFields) {
                     let target = config;
                     const pathParts = fieldPath.split('.');
                     for (let i = 0; i < pathParts.length - 1; i++) {
                         target = target[pathParts[i]];
-                        if (!target) return;
+                        if (!target) break;
                     }
                     const lastPart = pathParts[pathParts.length - 1];
 
-                    if (target[lastPart]) {
+                    if (target && target[lastPart]) {
                       const originalValue = target[lastPart];
-                      encryptPlugin.customEncrypt(originalValue, key, iv, algorithm).then(encryptedValue => {
-                            target[lastPart] = encryptedValue;
-                        });
+                      target[lastPart] = await encryptPlugin.customEncrypt(originalValue, key, iv, algorithm);
+
                     }
-                });
+                }
             }
         }
     }
