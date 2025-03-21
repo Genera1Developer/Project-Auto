@@ -134,7 +134,12 @@
             "enable": true,
             "interval": 3600,
             "jitter": 0.1
-          }
+          },
+        "precomputeHashes": true,
+        "hashCacheSize": 1000,
+        "disableAdataEncryption": false,
+        "streamingMode": true,
+        "dataIntegrityAlgorithm": "SHA256"
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
