@@ -169,6 +169,9 @@
             const SERVICE_WORKER_URL = '/sw.js'; // Service worker URL
             const URL_PARAM_NAME = 'd'; // Name for the encrypted URL parameter
             const PREFETCH_SUBRESOURCES = true;
+            const ENCRYPT_REDIRECTS = true; //Enable/Disable encrypting redirects
+            const ENABLE_KEY_ROTATION = true; // Enable or disable key rotation
+            const KEY_ROTATION_INTERVAL = 600000; // 10 minutes in milliseconds
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -330,6 +333,27 @@
             // Call service worker registration on page load
             registerServiceWorker();
 
+            // Function to rotate the AES key
+            async function rotateAESKey() {
+              console.log('Rotating AES key...');
+              const newAesKey = await generateAESKey();
+              const rawKey = await window.crypto.subtle.exportKey("raw", newAesKey);
+              const keyArray = Array.from(new Uint8Array(rawKey));
+              const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+              const hashedKey = await hashKey(keyHex);
+              const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+              sessionStorage.setItem('aesIV', btoa(String.fromCharCode(...iv)));
+              sessionStorage.setItem('aesKey', keyHex);
+              sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
+              sessionStorage.setItem('hashedKey', hashedKey);
+              console.log('AES key rotated successfully.');
+            }
+
+            // Key rotation interval
+            if (ENABLE_KEY_ROTATION) {
+                setInterval(rotateAESKey, KEY_ROTATION_INTERVAL);
+            }
+
             browseButton.addEventListener('click', async () => {
                 let url = urlInput.value.trim();
 
@@ -361,20 +385,33 @@
                     const nonce = generateNonce(NONCE_LENGTH);
                     console.log("Request Nonce:", nonce); // Log nonce for debugging
 
-                    // Generate an AES Key
-                    const aesKey = await generateAESKey();
+                    // Attempt to retrieve existing AES Key
+                    let aesKeyHex = sessionStorage.getItem('aesKey');
+                    let aesKey;
+
+                    if (!aesKeyHex) {
+                        // Generate an AES Key if one doesn't exist
+                        aesKey = await generateAESKey();
+                        const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
+                        const keyArray = Array.from(new Uint8Array(rawKey));
+                        aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                    } else {
+                        // Import key from sessionStorage
+                        const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
+                        aesKey = await window.crypto.subtle.importKey(
+                            "raw",
+                            keyBytes,
+                            { name: "AES-GCM", length: AES_KEY_LENGTH },
+                            false,
+                            ["encrypt", "decrypt"]
+                        );
+                    }
 
                     // Encrypt the URL
                     const { ciphertext, iv } = await encryptURL(url, aesKey);
 
-                    // Export the key to raw format to hash it
-                    const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
-                    const keyArray = Array.from(new Uint8Array(rawKey));
-                    const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-
                     // Hash the derived key
-                    const hashedKey = await hashKey(keyHex);
+                    const hashedKey = await hashKey(aesKeyHex);
                     console.log("Hashed Key:", hashedKey); // Log the hashed key
 
                      // Check for compromised key *before* proceeding
@@ -388,7 +425,7 @@
                     sessionStorage.setItem('aesIV', iv);
 
                     // Store key in session storage *before* passing parameters
-                    sessionStorage.setItem('aesKey', keyHex);
+                    sessionStorage.setItem('aesKey', aesKeyHex);
                     sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
 
                     // Construct the URL with encrypted parameters.  Don't send IV in URL.
@@ -416,8 +453,14 @@
                         if (REDIRECT_STATUS_CODES.includes(response.status)) {
                             const redirectUrl = response.headers.get('Location');
                             console.log("Redirect detected:", redirectUrl);
-                             // Encrypt and proxy the redirect URL
-                             return encryptAndProxy(redirectUrl);
+                            if (ENCRYPT_REDIRECTS) {
+                                // Encrypt and proxy the redirect URL
+                                return encryptAndProxy(redirectUrl);
+                            } else {
+                                // Load redirect directly without encryption
+                                proxyFrame.src = redirectUrl;
+                                return;
+                            }
                         }
                         if (!response.ok) {
                             throw new Error(`HTTP error! status: ${response.status}`);
@@ -511,19 +554,33 @@
                   const nonce = generateNonce(NONCE_LENGTH);
                   console.log("Redirect Nonce:", nonce); // Log nonce for debugging
 
-                  // Generate an AES Key
-                  const aesKey = await generateAESKey();
+                  // Attempt to retrieve existing AES Key
+                  let aesKeyHex = sessionStorage.getItem('aesKey');
+                  let aesKey;
+
+                  if (!aesKeyHex) {
+                      // Generate an AES Key if one doesn't exist
+                      aesKey = await generateAESKey();
+                      const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
+                      const keyArray = Array.from(new Uint8Array(rawKey));
+                      aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                  } else {
+                      // Import key from sessionStorage
+                      const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
+                      aesKey = await window.crypto.subtle.importKey(
+                          "raw",
+                          keyBytes,
+                          { name: "AES-GCM", length: AES_KEY_LENGTH },
+                          false,
+                          ["encrypt", "decrypt"]
+                      );
+                  }
 
                   // Encrypt the URL
                   const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
 
-                  // Export the key to raw format to hash it
-                  const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
-                  const keyArray = Array.from(new Uint8Array(rawKey));
-                  const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
                   // Hash the derived key
-                  const hashedKey = await hashKey(keyHex);
+                  const hashedKey = await hashKey(aesKeyHex);
                   console.log("Hashed Key:", hashedKey); // Log the hashed key
 
                    // Check for compromised key *before* proceeding
@@ -537,7 +594,7 @@
                   sessionStorage.setItem('aesIV', iv);
 
                   // Store key in session storage *before* passing parameters
-                  sessionStorage.setItem('aesKey', keyHex);
+                  sessionStorage.setItem('aesKey', aesKeyHex);
                   sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
 
                   // Construct the URL with encrypted parameters.  Don't send IV in URL.
