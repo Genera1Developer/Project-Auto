@@ -279,6 +279,18 @@ function addRandomPadding(data, minPaddingLength = 8, maxPaddingLength = 32) {
     return data + padding;
 }
 
+// New function to implement homomorphic encryption (additively)
+function homomorphicEncrypt(plaintext, publicKey) {
+    const encryptedValue = plaintext + publicKey; // Simple addition for demonstration
+    return encryptedValue;
+}
+
+// New function to implement homomorphic decryption (additively)
+function homomorphicDecrypt(encryptedValue, publicKey) {
+    const decryptedValue = encryptedValue - publicKey; // Simple subtraction
+    return decryptedValue;
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -344,11 +356,15 @@ module.exports = async (req, res) => {
       const encryptedUsername = await encryptData(saltedUsername, derivedEncryptionKey + usernameOpSalt); // Use operation salt
       const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey + saltOpSalt) : null; // Use operation salt
 
+      // Homomorphic Encryption example (using userId as plaintext and sessionKey as publicKey):
+      const publicKey = parseInt(sessionKey.substring(0, 8), 16); // Use a portion of sessionKey as publicKey
+      const encryptedUserId = homomorphicEncrypt(parseInt(userId.substring(0, 8), 16), publicKey).toString(16);
+
       // 3. Store the encryptedUsername, encryptedSalt, and hashedPassword.
       // For demonstration, we log them. NEVER log sensitive data in production.
 
       const userRecord = {
-        userId: userId,
+        userId: encryptedUserId, // Store encrypted UserId
         hashedPassword: hashedPassword,
         encryptedUsername: encryptedUsername,
         encryptedSalt: encryptedSalt,
@@ -393,7 +409,7 @@ module.exports = async (req, res) => {
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
-      return res.status(201).json({ message: 'User created successfully', userId: userId }); // Return userID
+      return res.status(201).json({ message: 'User created successfully', userId: encryptedUserId }); // Return encrypted userId
     } catch (error) {
       attempts.count++;
       if (attempts.count >= MAX_ATTEMPTS) {
