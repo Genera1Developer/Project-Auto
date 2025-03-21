@@ -460,6 +460,10 @@
         });
 
          function xorEncrypt(data, key) {
+             if (!data || !key) {
+                console.error("Invalid input for XOR encryption.");
+                return "";
+             }
             let result = '';
             for (let i = 0; i < data.length; i++) {
                 result += String.fromCharCode(data.charCodeAt(i) ^ key.charCodeAt(i % key.length));
