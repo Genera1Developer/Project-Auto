@@ -452,6 +452,19 @@ async function verifyDataIntegrity(data, integrityToken, masterKey) {
     return timingSafeEqual(integrityToken, expectedToken);
 }
 
+// Function to mask sensitive data in logs (using XOR)
+function maskData(data, maskKey) {
+  const dataBuffer = Buffer.from(data, 'hex');
+  const maskKeyBuffer = Buffer.from(maskKey, 'hex');
+  const result = Buffer.alloc(dataBuffer.length);
+
+  for (let i = 0; i < dataBuffer.length; i++) {
+      result[i] = dataBuffer[i] ^ maskKeyBuffer[i % maskKeyBuffer.length];
+  }
+
+  return result.toString('hex');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -641,12 +654,15 @@ module.exports = async (req, res) => {
       secureErase(Buffer.from(dataIntegrityKey, 'utf8'));
       secureErase(Buffer.from(totpKey, 'utf8'));
 
-      // NEVER log sensitive data in production.  Instead, log the user ID after creation.
+      // Mask sensitive data before logging it
+      const maskedTotpKey = maskData(totpKey, process.env.LOG_MASKING_KEY || 'defaultinsecuremask');
+
+      // NEVER log sensitive data in production. Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
         console.log('Compressed Server Metadata (for demonstration only):', compressedServerMetadata);
         console.log('Message Authentication Code (MAC):', mac);
         console.log('Keyed Hash of MAC:', keyedHashValue);
-        console.log('Generated TOTP:', totp);
+        console.log('Generated TOTP (masked):', maskedTotpKey);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
