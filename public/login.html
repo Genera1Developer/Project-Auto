@@ -202,10 +202,10 @@
 
         // Function to generate a cryptographically secure random key
         function generateEncryptionKey() {
-            let key = localStorage.getItem('encryptionKey'); // Use localStorage for persistence
+            let key = sessionStorage.getItem('encryptionKey'); // Use sessionStorage
             if(!key){
                 key = CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
-                localStorage.setItem('encryptionKey', key); // Use localStorage for persistence
+                sessionStorage.setItem('encryptionKey', key); // Use sessionStorage
             }
             return key;
         }
@@ -234,7 +234,7 @@
             return CryptoJS.lib.WordArray.random(16).toString();
         }
 
-        // Function to encrypt the localStorage encryption key with a server key
+        // Function to encrypt the sessionStorage encryption key with a server key
         function encryptLocalKey(encryptionKey, serverPublicKey) {
             try {
                 const publicKey = forge.pki.publicKeyFromPem(atob(serverPublicKey));
@@ -291,7 +291,7 @@
             const nonce = CryptoJS.lib.WordArray.random(16).toString(); // Generate a unique nonce
 
             // Get the server's public key (replace with actual method)
-            const serverPublicKey = localStorage.getItem('serverPublicKey') || "YOUR_SERVER_PUBLIC_KEY"; // Replace with your actual public key retrieval method
+            const serverPublicKey = sessionStorage.getItem('serverPublicKey') || "YOUR_SERVER_PUBLIC_KEY"; // Replace with your actual public key retrieval method
 
             // Encrypt the encryption key with the server's public key
             const encryptedEncryptionKey = encryptLocalKey(encryptionKey, serverPublicKey);
@@ -341,7 +341,7 @@
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
                     encryptionStatus.textContent = 'Login failed. Encryption in transit.';
-                    localStorage.removeItem('encryptionKey'); // Remove the key on failure
+                    sessionStorage.removeItem('encryptionKey'); // Remove the key on failure
                 }
             })
             .catch(error => {
@@ -349,7 +349,7 @@
                 console.error('Error:', error);
                 errorMessage.textContent = 'An error occurred during login.';
                 encryptionStatus.textContent = 'Connection error.';
-                localStorage.removeItem('encryptionKey'); // Remove the key on error
+                sessionStorage.removeItem('encryptionKey'); // Remove the key on error
             });
         });
 
