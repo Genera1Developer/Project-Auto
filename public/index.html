@@ -13,31 +13,68 @@
             background-color: #1a1a1a;
             color: #eee;
             font-family: sans-serif;
+            margin: 0; /* Reset default body margin */
+            overflow: hidden; /* Hide scrollbars */
+            height: 100vh; /* Make body take up full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
         .container {
             background-color: #222;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 80%;
+            max-width: 600px;
+            z-index: 1; /* Ensure container is above particles */
         }
         h1 {
             color: #00bcd4; /* A cyan/blue shade */
+            text-align: center;
         }
         .security-info {
             color: #4caf50; /* A green shade indicating security */
+            text-align: center;
+            margin-top: 10px;
+        }
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
         }
         .input-group input {
             background-color: #333;
             color: #eee;
             border: 1px solid #555;
+            padding: 10px 40px 10px 40px; /* Padding for icon and text */
+            border-radius: 5px;
+            width: 100%; /* Take full width of the input-group */
+            box-sizing: border-box; /* Include padding and border in the element's total width */
         }
         .input-group button {
             background-color: #00bcd4;
             color: #fff;
             border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
         }
         .error {
             color: #f44336;
+            text-align: center;
+            margin-top: 10px;
         }
         #loading {
             display: none;
@@ -49,11 +86,13 @@
             height: 600px; /* Adjust as needed */
             border: none;
             display: none; /* Initially hide the iframe */
+            margin-top: 20px;
         }
 
         /* Add a key icon to the URL input */
         .input-group {
             position: relative;
+            margin-bottom: 10px; /* Add some spacing below the input group */
         }
 
         .input-group i.fa-key {
@@ -119,6 +158,7 @@
         .info {
             color: #2196F3; /* A blue shade for informational messages */
             margin-top: 10px;
+            text-align: center;
         }
 
     </style>
@@ -128,7 +168,7 @@
 
     <div class="container">
         <h1><i class="fas fa-lock"></i> Encrypted Web Proxy</h1>
-        <p>Enter the URL to browse securely:</p>
+        <p style="text-align: center;">Enter the URL to browse securely:</p>
         <div class="input-group">
             <i class="fas fa-key"></i>
             <input type="text" id="url" placeholder="https://example.com">
