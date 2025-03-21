@@ -21,7 +21,7 @@ function connectToDatabase() {
         db.run(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username BLOB UNIQUE NOT NULL,
+                username BLOB NOT NULL,
                 password BLOB NOT NULL,
                 salt BLOB NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -85,11 +85,12 @@ exports.createUser = async (username, password, callback) => {
 
     try {
         const hashedPassword = await hashPassword(password, salt);
+
+        const encryptedUsername = encrypt(username, iv);
         const encryptedPassword = encrypt(hashedPassword, iv);
         const encryptedSalt = encrypt(salt, iv);
-        const encryptedUsername = encrypt(username, iv);
 
-        db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData, encryptedSalt.encryptedData, PBKDF2_ITERATIONS, encryptedUsername.iv, encryptedUsername.authTag], function(err) {
+        db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData, encryptedSalt.encryptedData, PBKDF2_ITERATIONS, iv, encryptedUsername.authTag], function(err) {
             if (err) {
                 console.error(err.message);
                 return callback(err);
@@ -104,8 +105,8 @@ exports.createUser = async (username, password, callback) => {
 
 exports.verifyUser = (username, password, callback) => {
     try {
-        const verifyIv = crypto.randomBytes(ivLength);
-        const encryptedUsername = encrypt(username, verifyIv);
+        const iv = crypto.randomBytes(ivLength);
+        const encryptedUsername = encrypt(username, iv);
 
         db.get(`SELECT id, username, password, salt, password_version, encryption_iv, auth_tag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
             if (err) {
