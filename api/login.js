@@ -653,18 +653,12 @@ module.exports = async (req, res) => {
                     sessionIdSignature: sessionIdSignature
                 };
 
-                // Encrypt the response payload
-                const encryptedResponse = encryptObject(responsePayload, keyMaterial);
-
-                if(!encryptedResponse) {
-                    return res.status(500).json({message: "Response encryption failed"});
-                }
-
                  // Generate a random IV for the final encryption
                  const finalEncryptionIV = generateRandomIV();
+                 const finalEncryptionKey = keyMaterial;
 
                  // Encrypt the response payload with a new IV each time
-                 const finalEncryptedResponse = encryptData(JSON.stringify(encryptedResponse), keyMaterial, finalEncryptionIV);
+                 const finalEncryptedResponse = encryptData(JSON.stringify(responsePayload), finalEncryptionKey, finalEncryptionIV);
 
                  if (!finalEncryptedResponse) {
                      return res.status(500).json({ message: "Final response encryption failed" });
