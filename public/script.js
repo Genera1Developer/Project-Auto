@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
          let secret = sessionStorage.getItem('hmacSecret');
          if (!secret) {
              try {
-                 const secretBuffer = new Uint8Array(16);
+                 const secretBuffer = new Uint8Array(32);
                  window.crypto.getRandomValues(secretBuffer);
                  secret = arrayBufferToBase64(secretBuffer.buffer);
                   sessionStorage.setItem('hmacSecret', secret);
@@ -253,20 +253,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 ["encrypt"]
             );
 
-            const iv = window.crypto.getRandomValues(new Uint8Array(16)); // Generate a new IV
+            let iv = sessionStorage.getItem('currentIV');
+            if (!iv){
+                const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16)); // Generate a new IV
+                iv = arrayBufferToBase64(ivBuffer.buffer);
+                sessionStorage.setItem('currentIV', iv);
+            }
+            iv = base64ToArrayBuffer(sessionStorage.getItem('currentIV'));
+
             const encodedData = new TextEncoder().encode(JSON.stringify(data));
 
             const result = await window.crypto.subtle.encrypt(
                 {
                     name: "AES-CBC",
-                    iv: iv
+                    iv: new Uint8Array(iv)
                 },
                 keyMaterial,
                 encodedData
             );
 
              const encryptedData = arrayBufferToBase64(result);
-            sessionStorage.setItem('currentIV', arrayBufferToBase64(iv));
+
             return encryptedData;
 
         } catch (error) {
@@ -321,21 +328,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 ["encrypt"]
             );
 
-            const iv = window.crypto.getRandomValues(new Uint8Array(16));
+            let iv = sessionStorage.getItem('hmacIV');
+            if (!iv){
+                const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
+                iv = arrayBufferToBase64(ivBuffer.buffer);
+                sessionStorage.setItem('hmacIV', iv);
+            }
+            iv = base64ToArrayBuffer(sessionStorage.getItem('hmacIV'));
 
             const encryptedHmacBuffer = await window.crypto.subtle.encrypt(
                 {
                     name: "AES-CBC",
-                    iv: iv
+                    iv: new Uint8Array(iv)
                 },
                 hmacEncryptionKeyMaterial,
                 new TextEncoder().encode(hmac)
             );
-           sessionStorage.setItem('hmacIV', arrayBufferToBase64(iv));
+
             return arrayBufferToBase64(encryptedHmacBuffer);
         } catch (e) {
             console.error("WebCrypto HMAC encryption error:", e);
             throw new Error("WebCrypto HMAC encryption failed");
         }
+    }
+    function base64ToArrayBuffer(base64) {
+      const binary_string = window.atob(base64);
+      const len = binary_string.length;
+      const bytes = new Uint8Array(len);
+      for (let i =0; i < len; i++){
+        bytes[i] = binary_string.charCodeAt(i);
+      }
+      return bytes.buffer;
     }
 });
