@@ -98,6 +98,12 @@ function secureErase(buffer) {
     crypto.randomFillSync(buffer);
 }
 
+// Function to generate a random password for key derivation
+async function generateRandomPassword() {
+    const buffer = await randomBytesAsync(32);
+    return buffer.toString('hex');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2' } = req.body;
@@ -108,6 +114,7 @@ module.exports = async (req, res) => {
 
     let hashedPassword, salt = null;
     let derivedEncryptionKey = null;
+    let randomPassword = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -124,6 +131,7 @@ module.exports = async (req, res) => {
       // Securely store data (e.g., in a database):
 
       // 1. Generate a unique encryption key per user, derived from password and salt.
+      randomPassword = await generateRandomPassword();
       derivedEncryptionKey = await deriveKey(password, salt);
 
       // 2. Encrypt the username and salt
@@ -148,6 +156,9 @@ module.exports = async (req, res) => {
       }
       if (derivedEncryptionKey) {
         secureErase(derivedEncryptionKey);
+      }
+      if (randomPassword) {
+        secureErase(Buffer.from(randomPassword, 'utf8'));
       }
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
