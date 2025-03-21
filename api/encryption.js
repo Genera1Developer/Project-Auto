@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const stream = require('stream');
 const zlib = require('zlib');
+const { promisify } = require('util');
 
 const algorithm = 'aes-256-gcm';
 let key = null;
@@ -28,6 +29,10 @@ const ivMap = new WeakMap();
 // Use a WeakMap to store cipher instances to prevent options pollution
 const cipherMap = new WeakMap();
 const decipherMap = new WeakMap();
+
+// Promisify zlib functions
+const deflateAsync = promisify(zlib.deflate);
+const inflateAsync = promisify(zlib.inflate);
 
 // Function to clear sensitive data from memory
 function zeroBuffer(buf) {
@@ -108,7 +113,7 @@ function generateEncryptionKey() {
         keyDerivationUsed = false; //Explicitly set to false when generating key
         ivMap.delete(key); // Clear IV map on key change
         cipherMap.delete(key); // Clear cipher map on key change
-        decipherMap.delete(key); // Clear decipher map on key change
+        decipherMap.delete(key); // Clear cipher map on key change
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
@@ -307,7 +312,7 @@ function generateSecureIV() {
     return generateSecureRandomBytes(IV_LENGTH);
 }
 
-const encryptSecure = (text, aad = null) => {
+const encryptSecure = async (text, aad = null) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
@@ -327,19 +332,13 @@ const encryptSecure = (text, aad = null) => {
         }
 
         // Compress the data before encryption
-        zlib.deflate(Buffer.from(text, 'utf8'), { level: zlib.constants.Z_BEST_COMPRESSION }, (err, result) => {
-            if (err) {
-                console.error("Compression failed:", err);
-                return null; //Or throw an error, depending on your needs
-            }
-            compressedData = result;
-            encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
-            authTag = cipher.getAuthTag();
+        compressedData = await deflateAsync(Buffer.from(text, 'utf8'), { level: zlib.constants.Z_BEST_COMPRESSION });
+        encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
+        authTag = cipher.getAuthTag();
 
-            const ciphertext = Buffer.concat([iv, authTag, encrypted]);
-            ciphertextBase64 = ciphertext.toString('base64');
-            return ciphertextBase64;
-        });
+        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+        ciphertextBase64 = ciphertext.toString('base64');
+        return ciphertextBase64;
 
     } catch (error) {
         console.error("Encryption failed:", error);
@@ -355,7 +354,7 @@ const encryptSecure = (text, aad = null) => {
     }
 };
 
-const decryptSecure = (text, aad = null) => {
+const decryptSecure = async (text, aad = null) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
@@ -383,15 +382,9 @@ const decryptSecure = (text, aad = null) => {
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
 
         // Decompress the data after decryption
-        zlib.inflate(decrypted, (err, result) => {
-            if (err) {
-                console.error("Decompression failed:", err);
-                return null; //Or throw an error, depending on your needs
-            }
-            decompressedData = result;
-            resultString = decompressedData.toString('utf8');
-            return resultString;
-        });
+        decompressedData = await inflateAsync(decrypted);
+        resultString = decompressedData.toString('utf8');
+        return resultString;
 
     } catch (error) {
         console.error("Decryption failed:", error);
@@ -434,7 +427,7 @@ function resetKeyGeneration() {
 }
 
 // Function to encrypt a buffer directly.
-const encryptBuffer = (buffer, aad = null) => {
+const encryptBuffer = async (buffer, aad = null) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
@@ -453,18 +446,12 @@ const encryptBuffer = (buffer, aad = null) => {
         }
 
         // Compress the data before encryption
-        zlib.deflate(buffer, { level: zlib.constants.Z_BEST_COMPRESSION }, (err, result) => {
-             if (err) {
-                console.error("Compression failed:", err);
-                return null; //Or throw an error, depending on your needs
-            }
-            compressedData = result;
-            encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
-            authTag = cipher.getAuthTag();
+        compressedData = await deflateAsync(buffer, { level: zlib.constants.Z_BEST_COMPRESSION });
+        encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
+        authTag = cipher.getAuthTag();
 
-            ciphertext = Buffer.concat([iv, authTag, encrypted]);
-             return ciphertext;
-        });
+        ciphertext = Buffer.concat([iv, authTag, encrypted]);
+         return ciphertext;
 
     } catch (error) {
         console.error("Buffer encryption failed:", error);
@@ -481,7 +468,7 @@ const encryptBuffer = (buffer, aad = null) => {
 };
 
 // Function to decrypt a buffer directly.
-const decryptBuffer = (ciphertext, aad = null) => {
+const decryptBuffer = async (ciphertext, aad = null) => {
     if (!key) {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
@@ -506,14 +493,8 @@ const decryptBuffer = (ciphertext, aad = null) => {
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
 
         // Decompress the data after decryption
-        zlib.inflate(decrypted, (err, result) => {
-             if (err) {
-                console.error("Decompression failed:", err);
-                return null; //Or throw an error, depending on your needs
-            }
-            decompressedData = result;
-            return decompressedData;
-        });
+        decompressedData = await inflateAsync(decrypted);
+        return decompressedData;
     } catch (error) {
         console.error("Buffer decryption failed:", error);
         return null;
@@ -547,10 +528,10 @@ function isEncrypted(text) {
 }
 
 // Function to encrypt JSON object
-const encryptJSON = (obj, aad = null) => {
+const encryptJSON = async (obj, aad = null) => {
     try {
         const text = JSON.stringify(obj);
-        return encryptSecure(text, aad);
+        return await encryptSecure(text, aad);
     } catch (error) {
         console.error("JSON Encryption failed:", error);
         return null;
@@ -558,9 +539,9 @@ const encryptJSON = (obj, aad = null) => {
 };
 
 // Function to decrypt JSON object
-const decryptJSON = (text, aad = null) => {
+const decryptJSON = async (text, aad = null) => {
     try {
-        const decryptedText = decryptSecure(text, aad);
+        const decryptedText = await decryptSecure(text, aad);
         if (!decryptedText) return null;
         return JSON.parse(decryptedText);
     } catch (error) {
@@ -570,10 +551,10 @@ const decryptJSON = (text, aad = null) => {
 };
 
 // Function to encrypt an object with custom serialization
-const encryptObject = (obj, serialize, aad = null) => {
+const encryptObject = async (obj, serialize, aad = null) => {
     try {
         const text = serialize(obj);
-        return encryptSecure(text, aad);
+        return await encryptSecure(text, aad);
     } catch (error) {
         console.error("Object Encryption failed:", error);
         return null;
@@ -581,9 +562,9 @@ const encryptObject = (obj, serialize, aad = null) => {
 };
 
 // Function to decrypt an object with custom deserialization
-const decryptObject = (text, deserialize, aad = null) => {
+const decryptObject = async (text, deserialize, aad = null) => {
     try {
-        const decryptedText = decryptSecure(text, aad);
+        const decryptedText = await decryptSecure(text, aad);
          if (!decryptedText) return null;
         return deserialize(decryptedText);
     } catch (error) {
@@ -804,9 +785,9 @@ function setAlgorithm(newAlgorithm) {
 }
 
 // Function to encrypt and sign data
-const encryptAndSign = (data, signingKey) => {
+const encryptAndSign = async (data, signingKey) => {
     try {
-        const encryptedData = encryptSecure(data);
+        const encryptedData = await encryptSecure(data);
         const hmac = crypto.createHmac('sha256', signingKey);
         hmac.update(encryptedData);
         const signature = hmac.digest('hex');
@@ -821,7 +802,7 @@ const encryptAndSign = (data, signingKey) => {
 };
 
 // Function to verify signature and decrypt data
-const verifyAndDecrypt = (ciphertext, signature, signingKey) => {
+const verifyAndDecrypt = async (ciphertext, signature, signingKey) => {
     try {
         const hmac = crypto.createHmac('sha256', signingKey);
         hmac.update(ciphertext);
@@ -832,7 +813,7 @@ const verifyAndDecrypt = (ciphertext, signature, signingKey) => {
             return null;
         }
 
-        return decryptSecure(ciphertext);
+        return await decryptSecure(ciphertext);
     } catch (error) {
         console.error("Verification and decryption failed:", error);
         return null;
