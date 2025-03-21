@@ -98,7 +98,9 @@
       },
       "hmacSalt": "ENC_HMAC_SALT_PLACEHOLDER",
       "cacheTtl": 3600,
-      "entropyEnhancement": true
+      "entropyEnhancement": true,
+      "useHardwareAcceleration": true,
+      "adataCompression": true
     }
   },
   "interactivity": {
