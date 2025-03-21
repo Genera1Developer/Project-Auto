@@ -475,10 +475,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Replace generateKey and generateIV with key derivation
-
+    async function generateKey(salt) {
+        if (!salt || typeof salt !== 'string') {
+            console.error("Invalid salt:", salt);
+            salt = 'default_salt';
+        }
+        const combined = salt + getKeyPrefix();
+        return combined;
+    }
     async function encryptDataWebCrypto(data, salt) {
         try {
-            const password = generateKey(salt);
+            const password = await generateKey(salt);
             const keyMaterial = await deriveKeyMaterial(password, salt);
 
             let iv = sessionStorage.getItem('currentIV');
@@ -519,7 +526,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function encryptHmacWebCrypto(hmac, salt) {
          try {
-            const password = generateKey(salt);
+            const password = await generateKey(salt);
             const keyMaterial = await deriveKeyMaterial(password, salt);
 
             let iv = sessionStorage.getItem('hmacIV');
