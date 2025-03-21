@@ -353,7 +353,7 @@
   "retina_detect": true,
   "config_demo": {
     "hide_card": false,
-    "background_color": "#2c3e50",
+    "background_color": "ENC_BACKGROUND_COLOR",
     "background_image": "",
     "background_position": "50% 50%",
     "background_repeat": "no-repeat",
