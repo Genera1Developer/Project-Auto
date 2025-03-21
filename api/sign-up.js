@@ -572,6 +572,7 @@ module.exports = async (req, res) => {
     let passwordHash = null; // Hash of the user's password
     let usernameHash = null;
     let sessionKey = null;
+    let aad = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -662,11 +663,15 @@ module.exports = async (req, res) => {
       // Add Jitter before Encrypt user record
       await addJitter(50);
 
+       // Generate associated data (AAD)
+       aad = await generateEncryptionKey(); // Using randomly generated key as AAD.
+
       // Encrypt entire user record before storage using master key
       const masterKey = process.env.MASTER_ENCRYPTION_KEY || 'defaultinsecurekeythatmustbechanged';
-      const userRecordIv = await generateIV();
-      const userRecordOpSalt = await generateOperationSalt();
-      const encryptedUserRecord = await encryptUserData(userRecord, masterKey + userRecordOpSalt, userRecordIv);
+      const encryptedUserRecord = await authenticatedEncrypt(JSON.stringify(userRecord), masterKey, aad);
+      if (!encryptedUserRecord){
+        return handleSignupError(res, new Error("AEAD encryption failed"), "AEAD encryption failed");
+      }
 
       // Add Jitter before Chacha Encryption
       await addJitter(50);
@@ -713,8 +718,10 @@ module.exports = async (req, res) => {
         mac: mac,
         obfuscatedUserRecord: obfuscatedUserRecord,
         keyedHash: keyedHashValue,
-        userRecordIv: userRecordIv,
-        chachaNonce: chachaNonce
+        userRecordIv: encryptedUserRecord.iv,
+        userRecordAuthTag: encryptedUserRecord.authTag,
+        chachaNonce: chachaNonce,
+        aad: aad
       }
 
       const serverMetadataString = JSON.stringify(serverMetadata);
