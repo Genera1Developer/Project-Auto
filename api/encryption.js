@@ -613,6 +613,31 @@ const decryptStream = (inputStream, aad = null) => {
     return transformStream;
 };
 
+// Pre-compute prime and generator for DHKE
+const dhParams = crypto.getDiffieHellman(' Oakley-EC2N-Koblitz'); //Named curve
+const dhPrime = dhParams.getPrime();
+const dhGenerator = dhParams.getGenerator();
+
+// Function to generate Diffie-Hellman key exchange parameters
+function generateDHKEParams() {
+    const dh = crypto.createDiffieHellman(dhPrime, dhGenerator);
+    const publicKey = dh.generateKeys();
+    return {
+        publicKey: publicKey.toString('base64'),
+        dh: dh // Store the DH object in session or cache. Do not expose.
+    };
+}
+
+// Function to compute shared secret
+function computeSharedSecret(privateDH, otherPartyPublicKey) {
+    try {
+        const otherPartyPublicKeyBuffer = Buffer.from(otherPartyPublicKey, 'base64');
+        return privateDH.computeSecret(otherPartyPublicKeyBuffer);
+    } catch (error) {
+        console.error("Failed to compute shared secret:", error);
+        return null;
+    }
+}
 
 module.exports = {
     encrypt,
@@ -643,5 +668,7 @@ module.exports = {
     encryptObject,
     decryptObject,
     encryptStream,
-    decryptStream
+    decryptStream,
+    generateDHKEParams,
+    computeSharedSecret
 };
