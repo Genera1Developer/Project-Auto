@@ -8,16 +8,16 @@ particlesJS('particles-js', {
       }
     },
     color: {
-      value: '#00FF00'
+      value: '#00FF00' // Encryption green
     },
     shape: {
       type: 'circle',
       stroke: {
         width: 1,
-        color: '#004000'
+        color: '#004000' // Darker encryption green
       },
       polygon: {
-        nb_sides: 6
+        nb_sides: 5 // Pentagon shape to suggest cryptography
       },
       image: {
         src: '',
@@ -30,31 +30,31 @@ particlesJS('particles-js', {
       random: true,
       anim: {
         enable: true,
-        speed: 1,
+        speed: 1.5, //Slightly faster
         opacity_min: 0.4,
         sync: false
       }
     },
     size: {
-      value: 3,
+      value: 2.5, //Slightly smaller
       random: true,
       anim: {
         enable: true,
-        speed: 10,
+        speed: 8, //Slightly slower
         size_min: 0.1,
         sync: false
       }
     },
     line_linked: {
       enable: true,
-      distance: 160,
-      color: '#00C000',
-      opacity: 0.6,
-      width: 2
+      distance: 150, //Slightly shorter
+      color: '#00C000', //Bright green
+      opacity: 0.7, //Slightly more opaque
+      width: 1.5 //Slightly thinner
     },
     move: {
       enable: true,
-      speed: 2,
+      speed: 2.5, //Slightly faster
       direction: 'none',
       random: true,
       straight: false,
@@ -81,9 +81,9 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 150,
+        distance: 140, //Slightly shorter
         line_linked: {
-          opacity: 0.8
+          opacity: 0.9 //More opaque
         }
       },
       bubble: {
