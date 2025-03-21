@@ -245,6 +245,8 @@
             let lastKeyCheckTime = 0;
             const PREVENT_AUTOFILL = true;
             const MAX_URL_LENGTH = 2048;
+            const ENABLE_CSP = true; // Enable/disable Content Security Policy
+            const SUBRESOURCE_INTEGRITY = true;
 
             // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -549,7 +551,10 @@
 
                     // Add CSP to the iframe to prevent mixed content issues
                     proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
-                    proxyFrame.setAttribute('csp', `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+                    let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
+                    if (ENABLE_CSP) {
+                        proxyFrame.setAttribute('csp', cspValue);
+                    }
 
                     // Use POST request for better security and to avoid URL length limits
                     fetch(PROXY_URL, {
@@ -743,7 +748,10 @@
 
                   // Add CSP to the iframe to prevent mixed content issues
                   proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
-                  proxyFrame.setAttribute('csp', `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
+                    let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
+                    if (ENABLE_CSP) {
+                        proxyFrame.setAttribute('csp', cspValue);
+                    }
 
                   // Use POST request for better security and to avoid URL length limits
                   return fetch(PROXY_URL, {
@@ -780,14 +788,14 @@
             }
 
             // Function to prefetch subresources from the HTML
-            function prefetchSubresources(html) {
+           async function prefetchSubresources(html) {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const subresourceTypes = ['link[rel="stylesheet"]', 'script[src]', 'img[src]'];
 
-                subresourceTypes.forEach(selector => {
+                for (const selector of subresourceTypes) {
                     const elements = doc.querySelectorAll(selector);
-                    elements.forEach(element => {
+                    for (const element of elements) {
                         let url;
                         if (element.tagName === 'LINK') {
                             url = element.href;
@@ -799,11 +807,18 @@
                             const prefetchLink = document.createElement('link');
                             prefetchLink.rel = 'prefetch';
                             prefetchLink.href = url;
+
+                            // Subresource Integrity (SRI)
+                            if (SUBRESOURCE_INTEGRITY && element.tagName === 'SCRIPT' && element.integrity) {
+                                prefetchLink.integrity = element.integrity;
+                                prefetchLink.crossOrigin = 'anonymous';
+                            }
+
                             document.head.appendChild(prefetchLink);
                             console.log('Prefetching:', url);
                         }
-                    });
-                });
+                    }
+                }
             }
         });
 
