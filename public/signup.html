@@ -231,6 +231,27 @@
             display: none;
         }
 
+        #security-tips {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-top: 15px;
+            text-align: left;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+        }
+
+        #security-tips h3 {
+            font-size: 1em;
+            margin-bottom: 5px;
+            color: #ddd;
+        }
+
+        #security-tips ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+
 
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -280,6 +301,16 @@
         <a href="login.html">Already have an account? Login</a>
         <div id="error-message" class="error-message"></div>
         <div id="encryption-status"></div>
+
+        <div id="security-tips">
+            <h3>Security Tips:</h3>
+            <ul>
+                <li>Use a strong, unique password.</li>
+                <li>Enable two-factor authentication if available.</li>
+                <li>Be wary of phishing attempts.</li>
+                <li>Keep your software up to date.</li>
+            </ul>
+        </div>
     </div>
 
     <script src="particles.js"></script>
