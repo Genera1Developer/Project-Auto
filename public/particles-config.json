@@ -683,6 +683,105 @@
             "protocol": "zk-SNARKs",
             "provingKey": "ENC_PROVING_KEY_PLACEHOLDER",
             "verificationKey": "ENC_VERIFICATION_KEY_PLACEHOLDER"
-         }
+         },
+        "encryptedAeadData":{
+            "enable": false,
+            "algorithm": "chacha20-poly1305",
+            "key": "ENC_AEAD_KEY_PLACEHOLDER",
+            "nonce": "ENC_AEAD_NONCE_PLACEHOLDER",
+            "associatedData": "additional_data",
+            "dataFields": ["config_demo.background_color"],
+            "associatedDataEncryption": true,
+            "aadKey": "ENC_AAD_KEY_PLACEHOLDER",
+            "aadNonce": "ENC_AAD_NONCE_PLACEHOLDER",
+            "useHardwareAcceleration": true,
+            "hmacKey": "ENC_AEAD_HMAC_KEY_PLACEHOLDER",
+            "hmacAlgorithm": "SHA-256",
+            "hmacSalt": "ENC_AEAD_HMAC_SALT_PLACEHOLDER",
+            "hmacIterations": 10000,
+            "hmacCompression": {
+              "enable": true,
+              "algorithm": "zlib",
+              "level": 6
+            },
+            "hmacPrecomputeHashes": true,
+            "cacheAeadData": true,
+            "cacheTtl": 3600,
+            "cacheIntegrityAlgorithm": "SHA256",
+            "cacheIntegrityCheck": true
+        },
+        "fpe":{
+            "enable": false,
+            "algorithm": "FF1",
+            "key": "ENC_FPE_KEY_PLACEHOLDER",
+            "tweak": "ENC_FPE_TWEAK_PLACEHOLDER",
+            "radix": 10,
+            "dataFields": ["config_demo.background_color"],
+            "paddingCharacter": "0",
+            "paddingLength": 16,
+            "useHardwareAcceleration": true
+        },
+        "encryptedUrlParams":{
+            "enable": false,
+            "algorithm": "AES-256-GCM",
+            "key": "ENC_URL_KEY_PLACEHOLDER",
+            "iv": "ENC_URL_IV_PLACEHOLDER",
+            "params": ["param1", "param2"],
+            "encoding": "base64",
+            "compression": {
+              "enable": true,
+              "algorithm": "zlib",
+              "level": 6
+            },
+            "includeHmac": true,
+            "hmacKey": "ENC_URL_HMAC_KEY_PLACEHOLDER",
+            "hmacAlgorithm": "SHA256",
+            "hmacSalt": "ENC_URL_HMAC_SALT_PLACEHOLDER"
+        },
+        "obliviousTransfer": {
+              "enable": false,
+              "protocol": "OT Extension",
+              "baseOtCount": 128,
+              "receiverPrivateKey": "ENC_OT_RECEIVER_PRIVATE_KEY_PLACEHOLDER",
+              "senderPublicKeys": ["ENC_OT_SENDER_PUBLIC_KEY_1_PLACEHOLDER", "ENC_OT_SENDER_PUBLIC_KEY_2_PLACEHOLDER"]
+        },
+        "encryptedWebSockets": {
+            "enable": false,
+            "algorithm": "AES-256-GCM",
+            "key": "ENC_WEBSOCKET_KEY_PLACEHOLDER",
+            "iv": "ENC_WEBSOCKET_IV_PLACEHOLDER",
+            "encoding": "base64",
+            "compression": {
+              "enable": true,
+              "algorithm": "zlib",
+              "level": 6
+            }
+        },
+        "encryptedMediaStream":{
+           "enable": false,
+           "algorithm": "AES-256-CTR",
+           "key": "ENC_MEDIASTREAM_KEY_PLACEHOLDER",
+           "iv": "ENC_MEDIASTREAM_IV_PLACEHOLDER",
+           "chunkSize": 16384,
+           "hmac": {
+              "enable": true,
+              "algorithm": "SHA256",
+              "key": "ENC_MEDIASTREAM_HMAC_KEY_PLACEHOLDER"
+            },
+           "encryptedRtp": true
+        },
+        "encryptedCacheApi":{
+              "enable": false,
+              "algorithm": "AES-256-GCM",
+              "key": "ENC_CACHEAPI_KEY_PLACEHOLDER",
+              "iv": "ENC_CACHEAPI_IV_PLACEHOLDER",
+              "cacheName": "myCache",
+              "encoding": "base64",
+              "compression": {
+                "enable": true,
+                "algorithm": "zlib",
+                "level": 6
+              }
+        }
   }
 }
