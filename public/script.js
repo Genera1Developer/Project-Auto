@@ -813,7 +813,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Implement stricter CSP
     function updateCSPHeaders(nonce) {
-        const csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content;`;
+        const csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}' 'strict-dynamic'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests; block-all-mixed-content; require-trusted-types-for 'script'; trusted-types default-allow-all;`;
         const existingMeta = document.querySelector('meta[http-equiv="Content-Security-Policy"]');
         if (existingMeta) {
             existingMeta.content = csp;
