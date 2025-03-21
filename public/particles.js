@@ -188,6 +188,7 @@
                     var useSessionStorage = false;
                     var encryptionKeySalt = "particle_salt";
                     var aesKeySize = 256;
+                    var hmacKey = CryptoJS.lib.WordArray.random(aesKeySize / 8).toString();
 
                     var generateKey = function(seed) {
                       let keyMaterial = seed + encryptionKeySalt;
@@ -205,9 +206,11 @@
                                 mode: CryptoJS.mode.CBC,
                                 padding: CryptoJS.pad.Pkcs7
                             });
+                            let hmac = CryptoJS.HmacSHA256(encrypted.ciphertext.toString(), hmacKey);
                             return {
                                 ciphertext: encrypted.ciphertext.toString(CryptoJS.enc.Base64),
-                                iv: iv.toString(CryptoJS.enc.Hex)
+                                iv: iv.toString(CryptoJS.enc.Hex),
+                                hmac: hmac.toString()
                             };
                         } catch (err) {
                             console.error("Encrypt error:", err);
@@ -217,10 +220,19 @@
 
                     var decryptData = function(encryptedData, secret) {
                         try {
-                           let key = CryptoJS.enc.Utf8.parse(secret);
+                            let key = CryptoJS.enc.Utf8.parse(secret);
                             let iv = CryptoJS.enc.Hex.parse(encryptedData.iv);
+                            let ciphertext = CryptoJS.enc.Base64.parse(encryptedData.ciphertext);
+                            let hmac = encryptedData.hmac;
+
+                            let calculatedHmac = CryptoJS.HmacSHA256(ciphertext.toString(), hmacKey).toString();
+                            if (calculatedHmac !== hmac) {
+                                console.error("HMAC verification failed!");
+                                return null;
+                            }
+
                             let decrypted = CryptoJS.AES.decrypt({
-                                ciphertext: CryptoJS.enc.Base64.parse(encryptedData.ciphertext)
+                                ciphertext: ciphertext
                             }, key, {
                                 iv: iv,
                                 mode: CryptoJS.mode.CBC,
@@ -260,7 +272,7 @@
 
                             try {
                                 var parsedData = JSON.parse(storedData);
-                                if (!parsedData || !parsedData.ciphertext || !parsedData.iv) {
+                                if (!parsedData || !parsedData.ciphertext || !parsedData.iv || !parsedData.hmac) {
                                     storage.removeItem(storageKeyPrefixToUse + key);
                                     return defaultValue;
                                 }
@@ -282,7 +294,7 @@
                         var storage = useSessionStorage ? sessionStorage : localStorage;
                         var storageKeyPrefixToUse = useSessionStorage ? sessionKeyPrefix : localStorageKeyPrefix;
                         try {
-                            if (!data || !data.ciphertext || !data.iv) {
+                            if (!data || !data.ciphertext || !data.iv || !data.hmac) {
                                 console.warn("Invalid data for storage:", data);
                                 return;
                             }
