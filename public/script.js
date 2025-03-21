@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const hashedPassword = await hashPassword(password);
             passwordInput.value = ''; // Clear the password field immediately after hashing
 
-
             // Simulate encryption delay (for visual effect)
             setTimeout(() => {
                 performLogin(username, hashedPassword, captcha, errorMessage, encryptionStatus, encryptionAnimation);
@@ -150,13 +149,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     async function generateAndStoreSalt() {
-        let salt = localStorage.getItem('encryptionSalt');
+        let salt = sessionStorage.getItem('encryptionSalt');
         if (!salt) {
             try {
                 const saltBuffer = new Uint8Array(16);
                 window.crypto.getRandomValues(saltBuffer);
                 salt = arrayBufferToBase64(saltBuffer.buffer);
-                localStorage.setItem('encryptionSalt', salt); //Switch to localStorage for persistence
+                sessionStorage.setItem('encryptionSalt', salt); //Switch to sessionStorage for persistence
             } catch (e) {
                 console.error("Salt generation error:", e);
                  showAlert('Salt Generation Failed. Secure login disabled.', 'error');
@@ -167,13 +166,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getKeyPrefix() {
-        let prefix = localStorage.getItem('keyPrefix');
+        let prefix = sessionStorage.getItem('keyPrefix');
         if (!prefix) {
             try{
                 const prefixBuffer = new Uint8Array(8);
                 window.crypto.getRandomValues(prefixBuffer);
                 prefix = arrayBufferToBase64(prefixBuffer.buffer);
-                localStorage.setItem('keyPrefix', prefix);  //Switch to localStorage for persistence
+                sessionStorage.setItem('keyPrefix', prefix);  //Switch to sessionStorage for persistence
             } catch (e) {
                 console.error("Key Prefix generation error:", e);
                 showAlert('Key Prefix Generation Failed. Secure login disabled.', 'error');
@@ -184,13 +183,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getIVPrefix() {
-        let prefix = localStorage.getItem('ivPrefix');
+        let prefix = sessionStorage.getItem('ivPrefix');
         if (!prefix) {
            try{
                 const prefixBuffer = new Uint8Array(8);
                 window.crypto.getRandomValues(prefixBuffer);
                 prefix = arrayBufferToBase64(prefixBuffer.buffer);
-                localStorage.setItem('ivPrefix', prefix);  //Switch to localStorage for persistence
+                sessionStorage.setItem('ivPrefix', prefix);  //Switch to sessionStorage for persistence
            } catch (e) {
                 console.error("IV Prefix generation error:", e);
                 showAlert('IV Prefix Generation Failed. Secure login disabled.', 'error');
@@ -201,13 +200,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function getHmacSecret() {
-         let secret = localStorage.getItem('hmacSecret');
+         let secret = sessionStorage.getItem('hmacSecret');
          if (!secret) {
              try {
                  const secretBuffer = new Uint8Array(32);
                  window.crypto.getRandomValues(secretBuffer);
                  secret = arrayBufferToBase64(secretBuffer.buffer);
-                  localStorage.setItem('hmacSecret', secret);  //Switch to localStorage for persistence
+                  sessionStorage.setItem('hmacSecret', secret);  //Switch to sessionStorage for persistence
              } catch (e) {
                  console.error("HMAC secret generation error:", e);
                  showAlert('HMAC Secret Generation Failed. Secure login disabled.', 'error');
@@ -266,19 +265,19 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
              const derivedKey = await deriveKeyMaterial(salt);
 
-            let iv = localStorage.getItem('currentIV');
+            let iv = sessionStorage.getItem('currentIV');
             if (!iv){
                  try{
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16)); // Generate a new IV
                     iv = arrayBufferToBase64(ivBuffer.buffer);
-                    localStorage.setItem('currentIV', iv);
+                    sessionStorage.setItem('currentIV', iv);
                  } catch (e) {
                     console.error("IV generation error:", e);
                     showAlert('IV Generation Failed. Secure login disabled.', 'error');
                     throw new Error("IV generation failed");
                 }
             }
-            iv = base64ToArrayBuffer(localStorage.getItem('currentIV'));
+            iv = base64ToArrayBuffer(sessionStorage.getItem('currentIV'));
 
             const encodedData = new TextEncoder().encode(JSON.stringify(data));
 
@@ -343,19 +342,19 @@ document.addEventListener('DOMContentLoaded', function() {
     async function encryptHmacWebCrypto(hmac, salt) {
         try {
              const derivedKey = await deriveKeyMaterial(salt);
-            let iv = localStorage.getItem('hmacIV');
+            let iv = sessionStorage.getItem('hmacIV');
             if (!iv){
                 try {
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
                     iv = arrayBufferToBase64(ivBuffer.buffer);
-                    localStorage.setItem('hmacIV', iv);
+                    sessionStorage.setItem('hmacIV', iv);
                  } catch (e) {
                     console.error("HMAC IV generation error:", e);
                     showAlert('HMAC IV Generation Failed. Secure login disabled.', 'error');
                     throw new Error("HMAC IV generation failed");
                  }
             }
-            iv = base64ToArrayBuffer(localStorage.getItem('hmacIV'));
+            iv = base64ToArrayBuffer(sessionStorage.getItem('hmacIV'));
 
             const encodedHmac = new TextEncoder().encode(hmac);
 
@@ -380,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
     scheduleCleanupTasks();
 
     function scheduleCleanupTasks() {
-        // Clear localStorage weekly at 6 AM every Sunday
+        // Clear sessionStorage weekly at 6 AM every Sunday
         const now = new Date();
         const dayOfWeek = now.getDay(); // 0 (Sunday) to 6 (Saturday)
         const millisTillNextSunday = (7 - dayOfWeek) % 7 * 24 * 60 * 60 * 1000 +
@@ -395,13 +394,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function clearEncryptionData() {
-        localStorage.removeItem('encryptionSalt');
-        localStorage.removeItem('keyPrefix');
-        localStorage.removeItem('ivPrefix');
-        localStorage.removeItem('hmacSecret');
-        localStorage.removeItem('currentIV');
-        localStorage.removeItem('hmacIV');
-        console.log('Encryption data cleared from localStorage.');
+        sessionStorage.removeItem('encryptionSalt');
+        sessionStorage.removeItem('keyPrefix');
+        sessionStorage.removeItem('ivPrefix');
+        sessionStorage.removeItem('hmacSecret');
+        sessionStorage.removeItem('currentIV');
+        sessionStorage.removeItem('hmacIV');
+        console.log('Encryption data cleared from sessionStorage.');
     }
 
     // Add check for window.crypto
@@ -540,19 +539,39 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', resetTimeout);
     document.addEventListener('click', resetTimeout);
 
-    // Check if the user has disabled localStorage
-    function localStorageAvailable() {
+    // Check if the user has disabled sessionStorage
+    function sessionStorageAvailable() {
         try {
-            localStorage.setItem('test', 'test');
-            localStorage.removeItem('test');
+            sessionStorage.setItem('test', 'test');
+            sessionStorage.removeItem('test');
             return true;
         } catch (e) {
             return false;
         }
     }
 
-    if (!localStorageAvailable()) {
-        console.warn("Local Storage is disabled. Some security features may be affected.");
-        showAlert("Local Storage is disabled. Some security features may be affected.", 'warning');
+    if (!sessionStorageAvailable()) {
+        console.warn("Session Storage is disabled. Some security features may be affected.");
+        showAlert("Session Storage is disabled. Some security features may be affected.", 'warning');
+    }
+
+    // Disable autocomplete on sensitive fields
+    const usernameField = document.getElementById('username');
+    const passwordField = document.getElementById('password');
+    const captchaField = document.getElementById('captcha');
+
+    if (usernameField) {
+        usernameField.autocomplete = 'off';
+        usernameField.readOnly = false; // Prevent autofill
+    }
+
+    if (passwordField) {
+        passwordField.autocomplete = 'new-password';
+        passwordField.readOnly = false; // Prevent autofill
+    }
+
+    if (captchaField) {
+        captchaField.autocomplete = 'off';
+        captchaField.readOnly = false; // Prevent autofill
     }
 });
