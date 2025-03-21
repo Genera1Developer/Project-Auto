@@ -127,6 +127,32 @@ const decryptData = (encryptedDataHex, ivHex, authTagHex) => {
     }
 };
 
+const encryptSensitiveData = (data) => {
+    const iv = crypto.randomBytes(ivLength);
+    const { encryptedData, authTag } = encrypt(data, iv);
+    return {
+        encryptedData: encryptedData.toString('base64'),
+        iv: iv.toString('base64'),
+        authTag: authTag.toString('base64')
+    };
+};
+
+const decryptSensitiveData = (encryptedDataB64, ivB64, authTagB64) => {
+    if (!encryptedDataB64 || !ivB64 || !authTagB64) {
+        return null;
+    }
+
+    try {
+        const encryptedData = Buffer.from(encryptedDataB64, 'base64');
+        const iv = Buffer.from(ivB64, 'base64');
+        const authTag = Buffer.from(authTagB64, 'base64');
+        return decrypt(encryptedData, iv, authTag);
+    } catch (error) {
+        console.error("Decryption error:", error);
+        return null;
+    }
+};
+
 exports.createUser = async (username, password, callback) => {
     if (!username || !password) {
         return callback(new Error("Username and password are required"));
@@ -140,9 +166,9 @@ exports.createUser = async (username, password, callback) => {
     try {
         const hashedPassword = await hashPassword(password, salt);
 
-        const usernameEncryption = encryptData(username);
-        const passwordEncryption = encryptData(hashedPassword);
-        const saltEncryption = encryptData(salt);
+        const usernameEncryption = encryptSensitiveData(username);
+        const passwordEncryption = encryptSensitiveData(hashedPassword);
+        const saltEncryption = encryptSensitiveData(salt);
 
         const values = [
             usernameEncryption.encryptedData,
@@ -176,7 +202,7 @@ exports.verifyUser = (username, password, callback) => {
     }
 
     try {
-        const usernameEncryption = encryptData(username);
+        const usernameEncryption = encryptSensitiveData(username);
 
         db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [usernameEncryption.encryptedData], async (err, row) => {
             if (err) {
@@ -187,9 +213,9 @@ exports.verifyUser = (username, password, callback) => {
             }
 
             try {
-                const decryptedUsername = decryptData(row.username_iv, row.username_auth_tag, row.username);
-                const decryptedSalt = decryptData(row.salt_iv, row.salt_auth_tag, row.salt);
-                const decryptedPassword = decryptData(row.password_iv, row.password_auth_tag, row.password);
+                const decryptedUsername = decryptSensitiveData(row.username_iv, row.username_auth_tag, row.username);
+                const decryptedSalt = decryptSensitiveData(row.salt_iv, row.salt_auth_tag, row.salt);
+                const decryptedPassword = decryptSensitiveData(row.password_iv, row.password_auth_tag, row.password);
 
                 const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
 
