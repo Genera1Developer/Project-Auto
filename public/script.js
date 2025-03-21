@@ -484,4 +484,20 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error("Password hashing failed: " + error.message);
         }
     }
+
+     // CSP Nonce Management
+     function generateNonce() {
+        const nonceBytes = new Uint8Array(16);
+        window.crypto.getRandomValues(nonceBytes);
+        return btoa(String.fromCharCode.apply(null, nonceBytes));
+    }
+
+    function setCSPHeaders(nonce) {
+        const csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
+        document.head.insertAdjacentHTML('beforeend', `<meta http-equiv="Content-Security-Policy" content="${csp}">`);
+    }
+
+    const nonce = generateNonce();
+    setCSPHeaders(nonce);
+    window.nonce = nonce;
 });
