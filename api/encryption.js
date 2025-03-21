@@ -56,8 +56,8 @@ function deriveEncryptionKey(password) {
         key = derivedKey;
         keyGenerated = true;
         keyDerivationUsed = true; //Mark that key derivation was used
-        cipherMap.delete(key); // Clear cipher map on key change
-        decipherMap.delete(key); // Clear decipher map on key change
+        cipherMap.clear(); // Clear cipher map on key change - use clear() instead of delete()
+        decipherMap.clear(); // Clear decipher map on key change - use clear() instead of delete()
     } catch (error) {
         console.error("Key derivation failed:", error);
         throw new Error('Key derivation failed. Check password and salt.');
@@ -84,8 +84,8 @@ function setEncryptionKey(newKey) {
     key = Buffer.from(newKey);
     keyGenerated = true;
     keyDerivationUsed = false; //Explicitly set to false when directly setting the key
-    cipherMap.delete(key); // Clear cipher map on key change
-    decipherMap.delete(key); // Clear decipher map on key change
+    cipherMap.clear(); // Clear cipher map on key change - use clear() instead of delete()
+    decipherMap.clear(); // Clear decipher map on key change - use clear() instead of delete()
 }
 
 function generateEncryptionKey() {
@@ -102,8 +102,8 @@ function generateEncryptionKey() {
         key = newKey;
         keyGenerated = true;
         keyDerivationUsed = false; //Explicitly set to false when generating key
-        cipherMap.delete(key); // Clear cipher map on key change
-        decipherMap.delete(key); // Clear decipher map on key change
+        cipherMap.clear(); // Clear cipher map on key change - use clear() instead of delete()
+        decipherMap.clear(); // Clear decipher map on key change - use clear() instead of delete()
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
