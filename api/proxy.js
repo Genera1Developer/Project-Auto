@@ -294,7 +294,7 @@ async function proxyRequest(req, res) {
             res.setHeader('x-encryption-salt', salt);
             res.setHeader('x-cipher-algorithm', CIPHER_ALGORITHM);
             res.setHeader('x-encryption-iv', resIv.toString('hex')); // Send IV
-             res.setHeader('x-auth-tag-length', AUTH_TAG_LENGTH); // Send Auth Tag Length
+            res.setHeader('x-auth-tag-length', AUTH_TAG_LENGTH); // Send Auth Tag Length
 
             // Optional: Send PBKDF2 parameters to the client for key derivation if needed
             // res.setHeader('x-pbkdf2-iterations', ITERATIONS);
