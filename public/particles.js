@@ -189,6 +189,13 @@
                     var encryptionKeySalt = "particle_salt";
                     var aesKeySize = 256;
                     var hmacKey = CryptoJS.lib.WordArray.random(aesKeySize / 8).toString();
+                    var colorData = {
+                        color: initialColorSeed,
+                        strokeColor: initialColorSeed
+                    };
+                    var linkedColorData = {
+                        linkColor: initialLinkedColorSeed
+                    };
 
                     var generateKey = function(seed) {
                       let keyMaterial = seed + encryptionKeySalt;
@@ -308,24 +315,22 @@
                         return Math.floor(Math.random() * 16777215).toString(16);
                     };
 
-                    var colorData = {
-                        color: initialColorSeed,
-                        strokeColor: initialColorSeed
+                    var loadInitialColorData = function() {
+                        var storedColorData = retrieveEncryptedData("colorData", null);
+                        var encryptedColorData = storedColorData || encryptData(colorData, colorSecret);
+                        var decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
+                        return {encryptedColorData: encryptedColorData, decryptedColorData: decryptedColorData};
                     };
-                    var linkedColorData = {
-                        linkColor: initialLinkedColorSeed
+
+                    var loadInitialLinkedColorData = function() {
+                        var storedLinkedColorData = retrieveEncryptedData("linkedLinkedColorData", null);
+                        var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
+                        var decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
+                        return {encryptedLinkedColorData: encryptedLinkedColorData, decryptedLinkedColorData: decryptedLinkedColorData};
                     };
 
-                    var colorSecret = generateKey("color_secret");
-                    var linkedColorSecret = generateKey("linked_secret");
-
-                    var storedColorData = retrieveEncryptedData("colorData", null);
-                    var storedLinkedColorData = retrieveEncryptedData("linkedLinkedColorData", null);
-                    var encryptedColorData = storedColorData || encryptData(colorData, colorSecret);
-                    var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
-
-                    var decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
-                    var decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
+                    var {encryptedColorData, decryptedColorData} = loadInitialColorData();
+                    var {encryptedLinkedColorData, decryptedLinkedColorData} = loadInitialLinkedColorData();
 
                     updateColors(decryptedColorData, decryptedLinkedColorData);
 
