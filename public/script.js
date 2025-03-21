@@ -706,7 +706,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to check if the user is using a VPN
     async function detectVPN() {
        try {
-            const response = await fetch('https://api.ipify.org?format=json');
+            const response = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(5000) });
             const data = await response.json();
             const ipAddress = data.ip;
 
@@ -770,7 +770,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // HSTS preload check during login
     async function checkHSTSPreload() {
         try {
-            const response = await fetch('https://hstspreload.org/api/v2/status?domain=' + window.location.hostname);
+            const response = await fetch('https://hstspreload.org/api/v2/status?domain=' + window.location.hostname, { signal: AbortSignal.timeout(5000) });
             const data = await response.json();
 
             if (data.status === 'unknown') {
@@ -835,7 +835,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Implement Certificate Pinning (example - requires backend support)
     async function checkCertificatePinning() {
         try {
-            const response = await fetch('/api/certificate_status'); // backend endpoint to check cert pinning
+            const response = await fetch('/api/certificate_status', { signal: AbortSignal.timeout(5000) }); // backend endpoint to check cert pinning
             if (response.status === 418) { // I'm a teapot - certificate mismatch
                 showAlert('Certificate pinning mismatch detected. Connection potentially compromised.', 'error');
                 // Potentially block further requests.
@@ -850,7 +850,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Implement DNSSEC validation check
     async function checkDNSSEC() {
         try {
-            const response = await fetch('/api/dnssec_status');  // A backend that resolves and checks DNSSEC
+            const response = await fetch('/api/dnssec_status', { signal: AbortSignal.timeout(5000) });  // A backend that resolves and checks DNSSEC
             const data = await response.json();
 
             if (!data.valid) {
