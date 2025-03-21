@@ -138,7 +138,6 @@ const encrypt = (text) => {
     } finally {
         if (cipher) {
             cipher.destroy();
-            zeroBuffer(cipher); //Zero out cipher for added security
         }
         zeroBuffer(iv);
         zeroBuffer(encrypted);
@@ -169,7 +168,6 @@ const decrypt = (text) => {
     } finally {
         if (decipher) {
             decipher.destroy();
-            zeroBuffer(decipher);
         }
         zeroBuffer(decrypted);
     }
