@@ -183,16 +183,23 @@
                         }
                     }
 
-                    updateColors(colorValue, linkedColorValue);
+                     updateColors(colorValue, linkedColorValue);
 
                     var colorUpdateInterval = 5000;
 
                     var updateColorsAndSchedule = function() {
                         try {
-                            var salt = CryptoJS.lib.WordArray.random(16).toString();
-                            colorValue = CryptoJS.MD5("f5c3bb" + Date.now() + salt).toString().substring(0, 6);
-                            linkedColorValue = CryptoJS.MD5("9b59b6" + Date.now() + salt).toString().substring(0, 6);
-                            updateColors(colorValue, linkedColorValue);
+                             var salt = CryptoJS.lib.WordArray.random(16).toString();
+                             var keyMaterial = "f5c3bb" + Date.now() + salt;
+                             var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
+                             colorValue = derivedKey.substring(0, 6);
+
+                             salt = CryptoJS.lib.WordArray.random(16).toString();
+                             keyMaterial = "9b59b6" + Date.now() + salt;
+                             derivedKey = CryptoJS.SHA256(keyMaterial).toString();
+                             linkedColorValue = derivedKey.substring(0, 6);
+                             updateColors(colorValue, linkedColorValue);
+
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         } catch (cryptoIntervalError) {
                             console.error("CryptoJS Interval Error:", cryptoIntervalError);
@@ -201,7 +208,7 @@
                         }
                     };
 
-                    setTimeout(updateColorsAndSchedule, colorUpdateInterval);
+                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
 
                  } catch (cryptoUpdateError) {
                     console.error("CryptoJS Update Error:", cryptoUpdateError);
