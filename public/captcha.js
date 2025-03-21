@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let salt = '';
 
     function generateEncryptionKeys() {
-        const keyArray = new Uint8Array(16);
+        const keyArray = new Uint8Array(32);
         const ivArray = new Uint8Array(16);
         const saltArray = new Uint8Array(16);
         window.crypto.getRandomValues(keyArray);
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const compositeKey = CryptoJS.SHA256(encryptionKey + salt).toString();
         const storageKey = compositeKey.substring(0, 32);
-        const storageIv = CryptoJS.MD5(encryptionIV + salt).toString().substring(0, 16);
+        const storageIv = CryptoJS.SHA256(encryptionIV + salt).toString().substring(0, 16);
 
         const encryptedStorage = CryptoJS.AES.encrypt(JSON.stringify(dataToStore), CryptoJS.enc.Hex.parse(storageKey),{
             iv: CryptoJS.enc.Hex.parse(storageIv),
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }).toString();
         sessionStorage.setItem('encryptedData', encryptedStorage);
         sessionStorage.setItem('keyHash',compositeKey)
-        sessionStorage.setItem('ivHash',CryptoJS.MD5(encryptionIV + salt).toString())
+        sessionStorage.setItem('ivHash',CryptoJS.SHA256(encryptionIV + salt).toString())
     }
 
     window.validateCaptcha = async function() {
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
          try {
             const compositeKey = CryptoJS.SHA256(encryptionKey + salt).toString();
             const storageKey = compositeKey.substring(0, 32);
-            const storageIv = CryptoJS.MD5(encryptionIV + salt).toString().substring(0, 16);
+            const storageIv = CryptoJS.SHA256(encryptionIV + salt).toString().substring(0, 16);
 
             if(compositeKey != keyHash){
               errorMessageElement.textContent = 'Key hashes do not match';
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
               captchaInputElement.value = '';
               return;
             }
-           if(CryptoJS.MD5(encryptionIV + salt).toString() != ivHash){
+           if(CryptoJS.SHA256(encryptionIV + salt).toString() != ivHash){
               errorMessageElement.textContent = 'IV hashes do not match';
               errorMessageElement.style.color = 'red';
               displayEncryptedCaptcha();
