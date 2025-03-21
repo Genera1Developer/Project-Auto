@@ -693,7 +693,7 @@ module.exports = async (req, res) => {
                  }
 
                  // Set cookie with the encrypted session ID
-                 const encryptedSessionIdCookie = encryptCookie(sessionId, keyMaterial.toString('hex'));
+                const encryptedSessionIdCookie = encryptData(sessionId, keyMaterial, generateRandomIV()).encryptedData
                  res.cookie('session_id', encryptedSessionIdCookie, secureCookieOptions);
                  res.status(200).json({ data: compressedResponse });
 
