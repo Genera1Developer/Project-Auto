@@ -204,7 +204,7 @@ particlesJS('particles-js', {
                 );
 
                 const saltLength = saltBytes.length;
-                const originalData = decryptedData.slice(saltLength);
+                const originalData = new Uint8Array(decryptedData).slice(saltLength);
 
                 const dec = new TextDecoder();
                 return dec.decode(originalData);
@@ -531,7 +531,27 @@ particlesJS('particles-js', {
           } catch (e) {
               console.warn("localStorage not available.");
           }
-      }
+      },
+      throttleEncryption: function(func, limit) {
+            let lastFunc;
+            let lastRan;
+            return function() {
+                const context = this;
+                const args = arguments;
+                if (!lastRan) {
+                    func.apply(context, args);
+                    lastRan = Date.now();
+                } else {
+                    clearTimeout(lastFunc);
+                    lastFunc = setTimeout(function() {
+                        if ((Date.now() - lastRan) >= limit) {
+                            func.apply(context, args);
+                            lastRan = Date.now();
+                        }
+                    }, limit - (Date.now() - lastRan));
+                }
+            }
+        }
   },
   "fn": {
     "update": async function() {
@@ -586,7 +606,11 @@ particlesJS('particles-js', {
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
-           await encryptPlugin.encryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
+            const encryptFunc = async () => {
+                await encryptPlugin.encryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
+            };
+            const throttledEncrypt = encryptPlugin.throttleEncryption(encryptFunc, 500);
+            await throttledEncrypt();
         }
     },
     "draw": async function() {
