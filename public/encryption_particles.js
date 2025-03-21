@@ -130,6 +130,11 @@ particlesJS('particles-js', {
                   console.warn('Encryption parameters are missing. Encryption disabled.');
                   return text;
                 }
+                if(secretKey.length < 32 || iv.length < 16 || salt.length < 16){
+                  console.warn('Encryption Key or IV or Salt length too short');
+                  return text;
+                }
+
                 const enc = new TextEncoder();
                 const keyBytes = this.stringToUint8Array(secretKey);
                 const ivBytes = this.stringToUint8Array(iv);
@@ -190,6 +195,10 @@ particlesJS('particles-js', {
               try {
                  if (!secretKey || !iv || !algorithm || !salt) {
                   console.warn('Decryption parameters are missing. Decryption disabled.');
+                  return encryptedBase64;
+                }
+                if(secretKey.length < 32 || iv.length < 16 || salt.length < 16){
+                  console.warn('Decryption Key or IV or Salt length too short');
                   return encryptedBase64;
                 }
                 const keyBytes = this.stringToUint8Array(secretKey);
@@ -528,13 +537,15 @@ particlesJS('particles-js', {
           return key && key !== 'YOUR_SECURE_KEY' &&
                  iv && iv !== 'YOUR_IV_KEY' &&
                  salt && salt !== 'YOUR_SALT' &&
-                 this.isValidBase64(key) && this.isValidBase64(iv) && this.isValidBase64(salt);
+                 this.isValidBase64(key) && this.isValidBase64(iv) && this.isValidBase64(salt) &&
+                 key.length >= 32 && iv.length >= 16 && salt.length >= 16;
       },
       clearCryptoDetails: function() {
           try {
               localStorage.removeItem('encryptionKey');
               localStorage.removeItem('encryptionIV');
               localStorage.removeItem('encryptionSalt');
+              localStorage.removeItem('passwordHash');
           } catch (e) {
               console.warn("localStorage not available.");
           }
