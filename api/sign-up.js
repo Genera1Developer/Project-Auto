@@ -243,6 +243,7 @@ module.exports = async (req, res) => {
         hashedPassword: hashedPassword,
         encryptedUsername: encryptedUsername,
         encryptedSalt: encryptedSalt,
+        usernameHash: crypto.createHash('sha256').update(username).digest('hex'), // Store username hash
       };
 
       // Encrypt entire user record before storage using master key
