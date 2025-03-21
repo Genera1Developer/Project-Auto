@@ -456,110 +456,115 @@
             errorMessage.textContent = '';
             encryptionStatus.textContent = 'Encrypting...';
 
-            // Simulate encryption with a delay
-            setTimeout(() => {
-                // Generate a random key (AES key size should be 128, 192, or 256 bits)
-                const salt = CryptoJS.lib.WordArray.random(128/8);
-                const aesKey = CryptoJS.lib.WordArray.random(256/8); // Generate AES key
-                const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
+            // Generate a random key (AES key size should be 128, 192, or 256 bits)
+            const salt = CryptoJS.lib.WordArray.random(128/8);
+            const aesKey = CryptoJS.lib.WordArray.random(256/8); // Generate AES key
+            const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
 
-                // Encrypt username and email
-                const iv = CryptoJS.lib.WordArray.random(128/8);
+            // Encrypt username and email
+            const iv = CryptoJS.lib.WordArray.random(128/8);
 
-                //Use try-catch to handle possible encryption errors.
-                try {
-                  const usernameEncrypted = CryptoJS.AES.encrypt(username, aesKey, {
-                      iv: iv,
-                      mode: CryptoJS.mode.CBC,
-                      padding: CryptoJS.pad.Pkcs7
-                  }).toString();
+            //Use try-catch to handle possible encryption errors.
+            try {
+              const usernameEncrypted = CryptoJS.AES.encrypt(username, aesKey, {
+                  iv: iv,
+                  mode: CryptoJS.mode.CBC,
+                  padding: CryptoJS.pad.Pkcs7
+              }).toString();
 
-                  const emailEncrypted = CryptoJS.AES.encrypt(email, aesKey, {
-                      iv: iv,
-                      mode: CryptoJS.mode.CBC,
-                      padding: CryptoJS.pad.Pkcs7
-                  }).toString();
+              const emailEncrypted = CryptoJS.AES.encrypt(email, aesKey, {
+                  iv: iv,
+                  mode: CryptoJS.mode.CBC,
+                  padding: CryptoJS.pad.Pkcs7
+              }).toString();
 
-                  // Hash password client-side with SHA-256 before sending
-                  const hashedPassword = CryptoJS.SHA256(password).toString();
+              // Hash password client-side with SHA-256 before sending
+              const hashedPassword = CryptoJS.SHA256(password).toString();
 
-                   // Create HMAC for usernameEncrypted
-                    const hmacUsername = CryptoJS.HmacSHA256(usernameEncrypted, hmacKey).toString();
-                    const hmacEmail = CryptoJS.HmacSHA256(emailEncrypted, hmacKey).toString();
+               // Create HMAC for usernameEncrypted
+                const hmacUsername = CryptoJS.HmacSHA256(usernameEncrypted, hmacKey).toString();
+                const hmacEmail = CryptoJS.HmacSHA256(emailEncrypted, hmacKey).toString();
 
-                  const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
-                  const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
-                  const encryptedHmacKey = CryptoJS.enc.Base64.stringify(hmacKey);
+              const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
+              const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
+              const encryptedHmacKey = CryptoJS.enc.Base64.stringify(hmacKey);
 
-                  // Public key retrieval
-                  fetch('/api/public-key')
-                      .then(response => response.json())
-                      .then(data => {
-                        const publicKey = data.publicKey;
+              // Public key retrieval
+              fetch('/api/public-key')
+                  .then(response => response.json())
+                  .then(data => {
+                    if (!data.publicKey) {
+                        throw new Error('Public key not found');
+                    }
+                    const publicKey = data.publicKey;
 
-                        // RSA encryption of AES key
-                        const encrypt = new JSEncrypt();
-                        encrypt.setPublicKey(publicKey);
-                        const encryptedAesKeyRSA = encrypt.encrypt(aesKey.toString());
+                    // RSA encryption of AES key
+                    const encrypt = new JSEncrypt();
+                    encrypt.setPublicKey(publicKey);
+                    const encryptedAesKeyRSA = encrypt.encrypt(aesKey.toString());
 
-                        const signupData = {
-                           username: usernameEncrypted,
-                           password: hashedPassword,
-                           email: emailEncrypted,
-                           salt: encryptedSalt,
-                           iv: encryptedIV,
-                           encryptedAesKey: encryptedAesKeyRSA,
-                           hmacUsername: hmacUsername,
-                           hmacEmail: hmacEmail,
-                           hmacKey: encryptedHmacKey,
-                           recaptchaResponse: grecaptcha.getResponse()
-                        };
+                    if (!encryptedAesKeyRSA) {
+                        throw new Error('AES key encryption failed');
+                    }
 
-                        fetch('/api/sign-up', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(signupData)
-                        })
-                        .then(response => {
-                            encryptionAnimation.style.display = 'none';
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (data.success) {
-                                errorMessage.textContent = '';
-                                encryptionStatus.textContent = 'Encrypted account created.';
-                                window.location.href = 'login.html';
-                            } else {
-                                errorMessage.textContent = data.message || 'Signup failed.';
-                                encryptionStatus.textContent = 'Signup attempt encrypted.';
-                            }
-                        })
-                        .catch(error => {
-                            encryptionAnimation.style.display = 'none';
-                            console.error('Error:', error);
-                            errorMessage.textContent = 'An error occurred during signup.';
-                            encryptionStatus.textContent = 'Connection error.';
-                        });
-                      })
-                      .catch(error => {
-                          encryptionAnimation.style.display = 'none';
-                          console.error('Error:', error);
-                          errorMessage.textContent = 'Failed to retrieve public key.';
-                          encryptionStatus.textContent = 'Key retrieval error.';
-                      });
-                } catch (e) {
-                  encryptionAnimation.style.display = 'none';
-                  console.error('Encryption Error:', e);
-                  errorMessage.textContent = 'Encryption error. Please try again.';
-                  encryptionStatus.textContent = 'Encryption Failed.';
-                }
-            }, 1000); // Simulate encryption time
-        });
+                    const signupData = {
+                       username: usernameEncrypted,
+                       password: hashedPassword,
+                       email: emailEncrypted,
+                       salt: encryptedSalt,
+                       iv: encryptedIV,
+                       encryptedAesKey: encryptedAesKeyRSA,
+                       hmacUsername: hmacUsername,
+                       hmacEmail: hmacEmail,
+                       hmacKey: encryptedHmacKey,
+                       recaptchaResponse: grecaptcha.getResponse()
+                    };
+
+                    fetch('/api/sign-up', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(signupData)
+                    })
+                    .then(response => {
+                        encryptionAnimation.style.display = 'none';
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            errorMessage.textContent = '';
+                            encryptionStatus.textContent = 'Encrypted account created.';
+                            window.location.href = 'login.html';
+                        } else {
+                            errorMessage.textContent = data.message || 'Signup failed.';
+                            encryptionStatus.textContent = 'Signup attempt encrypted.';
+                        }
+                    })
+                    .catch(error => {
+                        encryptionAnimation.style.display = 'none';
+                        console.error('Error:', error);
+                        errorMessage.textContent = 'An error occurred during signup.';
+                        encryptionStatus.textContent = 'Connection error.';
+                    });
+                  })
+                  .catch(error => {
+                      encryptionAnimation.style.display = 'none';
+                      console.error('Error:', error);
+                      errorMessage.textContent = 'Failed to retrieve public key.';
+                      encryptionStatus.textContent = 'Key retrieval error.';
+                  });
+            } catch (e) {
+              encryptionAnimation.style.display = 'none';
+              console.error('Encryption Error:', e);
+              errorMessage.textContent = 'Encryption error. Please try again.';
+              encryptionStatus.textContent = 'Encryption Failed.';
+            }
+        }, 1000); // Simulate encryption time
+    });
     </script>
 </body>
 </html>
