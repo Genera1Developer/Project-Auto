@@ -357,20 +357,30 @@ function addJitter(milliseconds) {
 const hsm = {
     wrappedKey: null, // Holds the wrapped key
     wrapKey: async function(keyToWrap, wrappingKey) {
-      const iv = await randomBytesAsync(16);
-      const cipher = crypto.createCipheriv('aes-256-wrap', Buffer.from(wrappingKey, 'hex'), iv);
-      const wrappedKey = Buffer.concat([cipher.update(Buffer.from(keyToWrap, 'hex')), cipher.final()]);
-      this.wrappedKey = {
-        key: wrappedKey.toString('hex'),
-        iv: iv.toString('hex'),
-        wrappingKey: wrappingKey
-      };
-      return this.wrappedKey;
+      try {
+        const iv = await randomBytesAsync(16);
+        const cipher = crypto.createCipheriv('aes-256-wrap', Buffer.from(wrappingKey, 'hex'), iv);
+        const wrappedKey = Buffer.concat([cipher.update(Buffer.from(keyToWrap, 'hex')), cipher.final()]);
+        this.wrappedKey = {
+          key: wrappedKey.toString('hex'),
+          iv: iv.toString('hex'),
+          wrappingKey: wrappingKey
+        };
+        return this.wrappedKey;
+      } catch (error) {
+        console.error("HSM Wrap Key Error:", error);
+        return null;
+      }
     },
     unwrapKey: async function(wrappedKey, iv, wrappingKey) {
-      const decipher = crypto.createDecipheriv('aes-256-wrap', Buffer.from(wrappingKey, 'hex'), Buffer.from(iv, 'hex'));
-      const unwrappedKey = Buffer.concat([decipher.update(Buffer.from(wrappedKey, 'hex')), decipher.final()]);
-      return unwrappedKey.toString('hex');
+      try {
+        const decipher = crypto.createDecipheriv('aes-256-wrap', Buffer.from(wrappingKey, 'hex'), Buffer.from(iv, 'hex'));
+        const unwrappedKey = Buffer.concat([decipher.update(Buffer.from(wrappedKey, 'hex')), decipher.final()]);
+        return unwrappedKey.toString('hex');
+      } catch (error) {
+        console.error("HSM Unwrap Key Error:", error);
+        return null;
+      }
     }
 };
 
@@ -506,6 +516,10 @@ module.exports = async (req, res) => {
       // Simulate wrapping the master key using HSM
       const wrappingKey = process.env.HSM_WRAPPING_KEY || 'defaultinsecurewrappingkey'; // Store wrapping key securely
       const wrappedMasterKey = await hsm.wrapKey(masterKey, wrappingKey);
+
+       if (!wrappedMasterKey) {
+            return handleSignupError(res, new Error('HSM key wrapping failed'), 'Key wrapping error');
+        }
 
       const serverMetadata = {
         wrappedMasterKey: wrappedMasterKey,
