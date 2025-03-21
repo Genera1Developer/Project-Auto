@@ -114,6 +114,7 @@
             const errorDiv = document.getElementById('error');
             const loadingDiv = document.getElementById('loading');
             const proxyFrame = document.getElementById('proxyFrame');
+            const HASH_ITERATIONS = 100000; // Define constant for iterations
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -177,7 +178,7 @@
                     name: 'PBKDF2',
                     hash: 'SHA-256',
                     salt: encodedSalt,
-                    iterations: 100000 // Adjust the number of iterations based on security needs and performance
+                    iterations: HASH_ITERATIONS // Use the constant
                 };
 
                 const key = await window.crypto.subtle.importKey(
