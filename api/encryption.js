@@ -16,15 +16,12 @@ let keyGenerated = false;
 // Flag to indicate if key derivation is being used
 let keyDerivationUsed = false;
 
-// Store initialization vector to prevent reuse
-let lastIV = null;
-
-// Cache the cipher for potential performance improvement.
-let cachedCipher = null;
-let cachedDecipher = null;
-
 // Use a WeakMap to prevent IV reuse with specific keys
 const ivMap = new WeakMap();
+
+// Cache the cipher for potential performance improvement.  Consider removing for higher security if needed
+//let cachedCipher = null;
+//let cachedDecipher = null;
 
 // Function to clear sensitive data from memory
 function zeroBuffer(buf) {
@@ -53,8 +50,8 @@ function deriveEncryptionKey(password) {
         key = derivedKey;
         keyGenerated = true;
         keyDerivationUsed = true; //Mark that key derivation was used
-        cachedCipher = null; // Invalidate cached cipher on key change
-        cachedDecipher = null; // Invalidate cached decipher on key change
+        //cachedCipher = null; // Invalidate cached cipher on key change
+        //cachedDecipher = null; // Invalidate cached decipher on key change
         ivMap.delete(key); // Clear IV map on key change
     } catch (error) {
         console.error("Key derivation failed:", error);
@@ -80,8 +77,8 @@ function setEncryptionKey(newKey) {
     key = Buffer.from(newKey);
     keyGenerated = true;
     keyDerivationUsed = false; //Explicitly set to false when directly setting the key
-    cachedCipher = null; // Invalidate cached cipher on key change
-    cachedDecipher = null; // Invalidate cached decipher on key change
+    //cachedCipher = null; // Invalidate cached cipher on key change
+    //cachedDecipher = null; // Invalidate cached decipher on key change
     ivMap.delete(key); // Clear IV map on key change
 }
 
@@ -97,8 +94,8 @@ function generateEncryptionKey() {
         key = newKey;
         keyGenerated = true;
         keyDerivationUsed = false; //Explicitly set to false when generating key
-        cachedCipher = null; // Invalidate cached cipher on key change
-        cachedDecipher = null; // Invalidate cached decipher on key change
+        //cachedCipher = null; // Invalidate cached cipher on key change
+        //cachedDecipher = null; // Invalidate cached decipher on key change
         ivMap.delete(key); // Clear IV map on key change
         return newKey.toString('hex');
     } catch (error) {
@@ -123,7 +120,6 @@ const encrypt = (text) => {
     } while (lastIVForKey && timingSafeEqual(iv, lastIVForKey)); // Ensure IV is unique
 
     ivMap.set(key, iv); // Store current iv to prevent reuse
-    lastIV = iv; // Store current iv to prevent reuse
 
     let cipher = null;
     try {
@@ -142,6 +138,7 @@ const encrypt = (text) => {
     } finally {
         if (cipher) {
             cipher.destroy();
+            zeroBuffer(cipher); //Zero out cipher for added security
         }
     }
 };
@@ -167,6 +164,7 @@ const decrypt = (text) => {
     } finally {
         if (decipher) {
             decipher.destroy();
+            zeroBuffer(decipher); //Zero out decipher for added security
         }
     }
 };
@@ -226,9 +224,9 @@ function rotateKey() {
     }
     keyGenerated = false;
     keyDerivationUsed = false; // Reset key derivation flag on rotation
-    lastIV = null; // Reset last IV on key rotation
-    cachedCipher = null;
-    cachedDecipher = null;
+    //lastIV = null; // Reset last IV on key rotation - Not needed since IV map exists
+    //cachedCipher = null;
+    //cachedDecipher = null;
     if(key){
         zeroBuffer(key);
     }
