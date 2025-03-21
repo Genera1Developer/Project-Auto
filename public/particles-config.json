@@ -139,7 +139,10 @@
         "hashCacheSize": 1000,
         "disableAdataEncryption": false,
         "streamingMode": true,
-        "dataIntegrityAlgorithm": "SHA256"
+        "dataIntegrityAlgorithm": "SHA256",
+        "adataCacheTtl": 7200,
+        "hmacCacheTtl": 7200,
+        "keyCacheTtl": 7200
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
