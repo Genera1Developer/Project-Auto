@@ -125,14 +125,14 @@ const validatePassword = (password) => {
 
 const verifyCredentials = async (username, password) => {
     try {
-        const salt = generateSalt(); // Generate a salt for verification - REMOVE
+        const salt = generateSalt();
         const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, iv);
         const encryptedPassword = encrypt(hashedPassword, iv);
 
         return new Promise((resolve, reject) => {
-            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ? AND password = ?`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData], async (err, row) => {
+            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
                 if (err) {
                     handleDatabaseError(err, reject, "User verification query error:");
                     return;
