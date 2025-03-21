@@ -246,14 +246,26 @@
                     var retrieveEncryptedData = function(key, defaultValue) {
                         try {
                             var storedData = localStorage.getItem(key);
-                            return storedData ? JSON.parse(storedData) : defaultValue;
+                            if (!storedData) return defaultValue;
+
+                            var parsedData = JSON.parse(storedData);
+                            if (!parsedData || !parsedData.ciphertext || !parsedData.iv) {
+                              localStorage.removeItem(key); // Remove invalid data
+                              return defaultValue;
+                            }
+                            return parsedData;
                         } catch (err) {
                             console.error("Retrieve error:", err);
+                            localStorage.removeItem(key); // Remove potentially corrupted data
                             return defaultValue;
                         }
                     };
                     var storeEncryptedData = function(key, data) {
                         try {
+                           if (!data || !data.ciphertext || !data.iv) {
+                              console.warn("Invalid data for storage:", data);
+                              return;
+                           }
                             localStorage.setItem(key, JSON.stringify(data));
                         } catch (err) {
                             console.error("Store error:", err);
@@ -275,8 +287,8 @@
                     var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
 
 
-                    var decryptedColorData = decryptData(encryptedColorData, colorSecret);
-                    var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
+                    var decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
+                    var decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
 
                     updateColors(decryptedColorData, decryptedLinkedColorData);
 
