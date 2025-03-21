@@ -782,6 +782,19 @@
                 "algorithm": "zlib",
                 "level": 6
               }
+        },
+        "decryptionWorker":{
+          "enabled": true,
+          "workerUrl": "decryptionWorker.js",
+          "algorithm": "AES-256-GCM",
+          "key": "ENC_DECRYPTION_WORKER_KEY_PLACEHOLDER",
+          "iv": "ENC_DECRYPTION_WORKER_IV_PLACEHOLDER",
+           "messageQueueLimit": 100,
+           "workerCache": {
+             "enable": true,
+             "cacheName": "decryptionWorkerCache",
+             "ttl": 86400
+           }
         }
   }
 }
