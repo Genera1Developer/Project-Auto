@@ -7,6 +7,8 @@ const AUTH_TAG_LENGTH = 16;
 const KEY_LENGTH = 32; // 256 bits
 
 let deriveKeySalt = null;
+const PBKDF2_ITERATIONS = 100000;
+const PBKDF2_DIGEST = 'sha512';
 
 function setDeriveKeySalt(salt) {
     deriveKeySalt = salt;
@@ -17,7 +19,7 @@ function deriveEncryptionKey(password) {
         throw new Error('Derive key salt not set.');
     }
 
-    key = crypto.pbkdf2Sync(password, deriveKeySalt, 100000, KEY_LENGTH, 'sha512');
+    key = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
 }
 
 function setEncryptionKey(newKey) {
@@ -28,9 +30,8 @@ function setEncryptionKey(newKey) {
 }
 
 function generateEncryptionKey() {
-    const newKey = crypto.generateKeySync('aes', { length: 256 });
-    key = newKey;
-    return newKey.toString('hex');
+    key = crypto.generateKeySync('aes', { length: 256 });
+    return key.toString('hex');
 }
 
 function encrypt(text) {
@@ -90,8 +91,15 @@ function safeCompare(a, b) {
         return false;
     }
 
+    const bufferA = Buffer.from(a);
+    const bufferB = Buffer.from(b);
+
+    if (bufferA.length !== bufferB.length) {
+        return false;
+    }
+
     try {
-        return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+        return crypto.timingSafeEqual(bufferA, bufferB);
     } catch (error) {
         return false;
     }
