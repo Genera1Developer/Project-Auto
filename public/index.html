@@ -72,7 +72,7 @@
             top: 50%;
             transform: translateY(-50%);
             color: #777;
-            pointer-events: none; /* Prevent icon from interfering with input */
+            pointer-events: none;
         }
 
         .input-group input {
@@ -353,7 +353,7 @@
             const ENABLE_HSTS = true;
             const ENABLE_WEBGPU = false;
             const ENABLE_SUBTLE_CRYPTO_LOGGING = false;
-            let aesKey; // Declare aesKey in a broader scope
+            let aesKey;
 
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
@@ -520,7 +520,7 @@
                             sessionStorage.removeItem('aesIV');
                             sessionStorage.removeItem('aesKeyTimestamp');
                             sessionStorage.removeItem('hashedKey');
-                            aesKey = null;  // Invalidate the global aesKey
+                            aesKey = null;
                         } else {
                             keyCompromisedAlertDiv.style.display = 'none';
                         }
@@ -541,7 +541,7 @@
                 if (!aesKeyHex) {
                     aesKey = await generateAESKey();
                     if (!aesKey) {
-                        return null;  //generateAESKey handles error display
+                        return null;
                     }
 
                     const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
@@ -550,7 +550,6 @@
                     sessionStorage.setItem('aesKey', aesKeyHex);
                     return aesKey;
                 } else if (!aesKey) {
-                    // If aesKeyHex exists but aesKey doesn't, import the key
                     try {
                         const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
                         aesKey = await window.crypto.subtle.importKey(
@@ -611,12 +610,12 @@
 
                     aesKey = await getOrCreateAESKey();
                     if (!aesKey) {
-                        return; // getOrCreateAESKey handles error display
+                        return;
                     }
 
                     const { ciphertext, iv } = await encryptURL(url, aesKey);
 
-                    const aesKeyHex = sessionStorage.getItem('aesKey');  //Get the hex value after it might have been newly created.
+                    const aesKeyHex = sessionStorage.getItem('aesKey');
                     const hashedKey = await hashKey(aesKeyHex);
                     console.log("Hashed Key:", hashedKey);
 
@@ -705,7 +704,7 @@
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
                         sessionStorage.removeItem('hashedKey');
-                        aesKey = null; // Invalidate the global aesKey
+                        aesKey = null;
                     }
 
                     setTimeout(() => {
@@ -748,7 +747,7 @@
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
                         sessionStorage.removeItem('hashedKey');
-                        aesKey = null; // Invalidate the global aesKey
+                        aesKey = null;
                         keyExpiryWarningDiv.style.display = 'none';
                     } else {
                         displayKeyExpiryWarning();
@@ -771,12 +770,12 @@
 
                     aesKey = await getOrCreateAESKey();
                     if (!aesKey) {
-                        return; // getOrCreateAESKey handles error display
+                        return;
                     }
 
                     const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
 
-                    const aesKeyHex = sessionStorage.getItem('aesKey');  //Get the hex value after it might have been newly created.
+                    const aesKeyHex = sessionStorage.getItem('aesKey');
                     const hashedKey = await hashKey(aesKeyHex);
                     console.log("Hashed Key:", hashedKey);
 
@@ -879,9 +878,6 @@
                     const preload = '; preload';
                     const fullHstsHeader = hstsHeader + includeSubDomains + preload;
                     console.log("HSTS Header (Client-Side):", fullHstsHeader);
-
-                    // The actual HSTS header should be set by the server.
-                    // This client-side logging helps in debugging.
                 } else {
                     console.warn("HSTS is enabled but not using HTTPS. HSTS will not be effective.");
                 }
@@ -893,7 +889,6 @@
                 console.log("WebGPU is not supported or disabled.");
             }
 
-            // Initialize AES key on page load
             (async () => {
                 await getOrCreateAESKey();
                 displayKeyExpiryWarning();
