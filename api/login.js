@@ -655,9 +655,12 @@ module.exports = async (req, res) => {
                     encryptedSession: encryptedSession
                 };
 
+                // Securely erase key material after use
+                keyMaterial.fill(0);
+
                  // Generate a random IV for the final encryption
                  const finalEncryptionIV = generateRandomIV();
-                 const finalEncryptionKey = keyMaterial;
+                 const finalEncryptionKey = Buffer.from(generateEncryptionKey(), 'hex');
 
                  // Encrypt the response payload with a new IV each time
                  const finalEncryptedResponse = encryptData(JSON.stringify(responsePayload), finalEncryptionKey, finalEncryptionIV);
@@ -702,6 +705,9 @@ module.exports = async (req, res) => {
                  }
                  res.cookie('session_id', cookieValue, secureCookieOptions);
                  res.status(200).json({ data: compressedResponse });
+
+                // Securely erase encryption key after use
+                finalEncryptionKey.fill(0);
 
 
             } else {
