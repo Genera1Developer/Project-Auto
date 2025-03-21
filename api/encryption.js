@@ -13,6 +13,9 @@ const PBKDF2_DIGEST = 'sha512';
 // Use a singleton pattern to ensure key is only generated/derived once.
 let keyGenerated = false;
 
+// Flag to indicate if key derivation is being used
+let keyDerivationUsed = false;
+
 function setDeriveKeySalt(salt) {
     deriveKeySalt = salt;
 }
@@ -28,6 +31,7 @@ function deriveEncryptionKey(password) {
     try {
         key = crypto.pbkdf2Sync(password, deriveKeySalt, PBKDF2_ITERATIONS, KEY_LENGTH, PBKDF2_DIGEST);
         keyGenerated = true;
+        keyDerivationUsed = true; //Mark that key derivation was used
     } catch (error) {
         console.error("Key derivation failed:", error);
         throw new Error('Key derivation failed. Check password and salt.');
@@ -43,6 +47,7 @@ function setEncryptionKey(newKey) {
     }
     key = newKey;
     keyGenerated = true;
+    keyDerivationUsed = false; //Explicitly set to false when directly setting the key
 }
 
 function generateEncryptionKey() {
@@ -53,6 +58,7 @@ function generateEncryptionKey() {
         const newKey = crypto.generateKeySync('aes', { length: 256 });
         key = newKey;
         keyGenerated = true;
+        keyDerivationUsed = false; //Explicitly set to false when generating key
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
@@ -162,12 +168,18 @@ function rotateKey() {
       console.warn("Rotating encryption key. This will invalidate old data.");
     }
     keyGenerated = false;
+    keyDerivationUsed = false; // Reset key derivation flag on rotation
     return generateEncryptionKey();
 }
 
 // Added function to check if key is set.
 function isKeySet() {
     return keyGenerated;
+}
+
+// Function to check if key derivation was used.
+function isKeyDerived() {
+    return keyDerivationUsed;
 }
 
 module.exports = {
@@ -180,5 +192,6 @@ module.exports = {
     setDeriveKeySalt,
     generateSalt,
     rotateKey, // Export the rotateKey function
-    isKeySet  // Export the isKeySet function
+    isKeySet,  // Export the isKeySet function
+    isKeyDerived //Export the isKeyDerived function
 };
