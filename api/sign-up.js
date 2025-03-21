@@ -4,6 +4,7 @@ const scrypt = require('scrypt-kdf');
 const argon2 = require('argon2');
 const timingSafeCompare = require('tsscmp');
 const { promisify } = require('util');
+const zlib = require('zlib');
 
 const SCRYPT_CONFIG = {
   cost: 16384,
@@ -13,6 +14,10 @@ const SCRYPT_CONFIG = {
 };
 
 const randomBytesAsync = promisify(crypto.randomBytes);
+const gzip = promisify(zlib.gzip);
+const deflate = promisify(zlib.deflate);
+const gunzip = promisify(zlib.gunzip);
+const inflate = promisify(zlib.inflate);
 
 async function hashPasswordScrypt(password, salt) {
   const derivedKey = await scrypt.scrypt(password, salt, SCRYPT_CONFIG);
@@ -405,6 +410,29 @@ const generateTOTP = (key, timeStep = 30) => {
   return code.toString().padStart(6, '0');
 };
 
+// Function to compress data using Gzip
+async function compressData(data) {
+  try {
+    const compressedData = await gzip(data);
+    return compressedData.toString('hex');
+  } catch (error) {
+    console.error("Gzip compression error:", error);
+    return null;
+  }
+}
+
+// Function to decompress data using Gzip
+async function decompressData(compressedData) {
+  try {
+    const buffer = Buffer.from(compressedData, 'hex');
+    const decompressedData = await gunzip(buffer);
+    return decompressedData.toString();
+  } catch (error) {
+    console.error("Gzip decompression error:", error);
+    return null;
+  }
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -560,7 +588,9 @@ module.exports = async (req, res) => {
 
       const serverMetadataString = JSON.stringify(serverMetadata);
 
-      const compressedServerMetadata = Buffer.from(serverMetadataString).toString('base64');
+      // Compress the metadata using Gzip before sending it to the client
+      const compressedServerMetadata = await compressData(serverMetadataString);
+
       // Store doubleEncryptedUserRecord, wrappedMasterKey, mac (instead of userRecord)
       // ...
 
