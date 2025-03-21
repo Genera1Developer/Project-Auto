@@ -640,7 +640,8 @@ module.exports = async (req, res) => {
                 // Sign the session ID using HMAC
                 const sessionIdSignature = hmacSign(sessionId, keyMaterial.toString('hex'));
 
-                res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
+                const maxAge = 3600;
+                res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`);
 
                 const responsePayload = {
                     message: 'Login successful!',
