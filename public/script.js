@@ -400,10 +400,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function clearEncryptionData() {
-        localStorage.removeItem('encryptionSalt');
-        localStorage.removeItem('keyPrefix');
-        localStorage.removeItem('ivPrefix');
-        localStorage.removeItem('hmacSecret');
+        sessionStorage.removeItem('encryptionSalt');
+        sessionStorage.removeItem('keyPrefix');
+        sessionStorage.removeItem('ivPrefix');
+        sessionStorage.removeItem('hmacSecret');
         localStorage.removeItem('currentIV');
         localStorage.removeItem('hmacIV');
         console.log('Encryption data cleared from localStorage.');
