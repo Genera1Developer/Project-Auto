@@ -121,7 +121,7 @@ const validatePassword = (password) => {
 const verifyCredentials = async (username, password) => {
     try {
         return new Promise((resolve, reject) => {
-            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [username], async (err, row) => {
+            db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encrypt(username, crypto.randomBytes(ivLength)).encryptedData], async (err, row) => {
                 if (err) {
                     handleDatabaseError(err, null, "User verification query error:");
                     return reject(err);
