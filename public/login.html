@@ -228,6 +228,10 @@
 
         // Function to encrypt data
         function encryptData(data, key) {
+             if (!data || typeof data !== 'string') {
+                console.error('Invalid data for encryption:', data);
+                return { ciphertext: '', iv: '' }; // or throw an error
+            }
             const iv = CryptoJS.lib.WordArray.random(16).toString();
             const encrypted = CryptoJS.AES.encrypt(data, key, {
                 iv: CryptoJS.enc.Utf8.parse(iv),
@@ -297,6 +301,13 @@
             const encryptedUsername = encryptData(username, encryptionKey);
             const encryptedPassword = encryptData(password, encryptionKey);
             const encryptedCaptcha = encryptData(captcha, encryptionKey);
+
+            if (!encryptedUsername || !encryptedPassword || !encryptedCaptcha) {
+                errorMessage.textContent = 'Encryption failed. Please try again.';
+                encryptionAnimation.style.display = 'none';
+                encryptionStatus.textContent = 'Encryption failure.';
+                return;
+            }
 
             // Hash the encryption key and salt for integrity check on the server
             const keyHash = hashKey(encryptionKey);
