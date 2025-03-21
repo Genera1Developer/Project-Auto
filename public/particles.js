@@ -222,7 +222,7 @@
                     var encryptedColorData = encryptData(colorData, masterKey, iv);
                     var encryptedLinkedColorData = encryptData(linkedColorData, masterKey, iv);
 
-                    var updateColors = function(encryptedColorData, encryptedLinkedColorData, iv) {
+                    var updateColors = function(encryptedColorData, encryptedLinkedColorData, iv, masterKey) {
                       var decryptedColorData = decryptData(encryptedColorData, masterKey, iv);
                       var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, masterKey, iv);
 
@@ -239,7 +239,7 @@
                       }
                     };
 
-                    updateColors(encryptedColorData, encryptedLinkedColorData, iv);
+                    updateColors(encryptedColorData, encryptedLinkedColorData, iv, masterKey);
 
                     var colorUpdateInterval = 5000;
 
@@ -260,7 +260,7 @@
                             iv = CryptoJS.lib.WordArray.random(128/8);
                             encryptedLinkedColorData = encryptData(linkedColorData, masterKey, iv);
 
-                            updateColors(encryptedColorData, encryptedLinkedColorData, iv);
+                            updateColors(encryptedColorData, encryptedLinkedColorData, iv, masterKey);
 
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         } catch (cryptoIntervalError) {
