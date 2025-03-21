@@ -676,9 +676,6 @@ module.exports = async (req, res) => {
                  // Encode the entire response with base64url and compress it
                  const compressedResponse = zlib.deflateRawSync(JSON.stringify(responseWithIV)).toString('base64url');
 
-                 // Decompress the compressed response
-                //const decompressedResponse = zlib.inflateRawSync(Buffer.from(compressedResponse, 'base64url')).toString('utf8');
-
                  // Set CSP header to mitigate XSS attacks
                  res.setHeader('Content-Security-Policy', "default-src 'self'");
 
