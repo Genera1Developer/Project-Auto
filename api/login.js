@@ -10,14 +10,15 @@ const encryptPassword = (password, salt) => {
   const iterations = 310000;
   const keylen = 64;
   const digest = 'sha512';
+  let derivedKey = null;
   try {
-    const derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
+    derivedKey = crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
     return derivedKey.toString('hex');
   } catch (error) {
     console.error('Password encryption error:', error);
     return null;
   } finally {
-    password = null; // Securely erase the password
+    password = null;
   }
 };
 
@@ -30,9 +31,12 @@ const timingSafeCompare = (a, b) => {
     return false;
   }
 
+  let aBuff = null;
+  let bBuff = null;
+
   try {
-    const aBuff = Buffer.from(a, 'utf-8');
-    const bBuff = Buffer.from(b, 'utf-8');
+    aBuff = Buffer.from(a, 'utf-8');
+    bBuff = Buffer.from(b, 'utf-8');
     return crypto.timingSafeEqual(aBuff, bBuff);
   } catch (error) {
     console.error('Timing safe compare error:', error);
@@ -93,11 +97,12 @@ const isRateLimited = (req) => {
 };
 
 const encryptSession = (sessionData, encryptionKey) => {
+    let cipherText = null;
     try {
         const iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
         const sessionString = JSON.stringify(sessionData);
-        const cipherText = Buffer.from(sessionString, 'utf8');
+        cipherText = Buffer.from(sessionString, 'utf8');
         let encrypted = cipher.update(cipherText);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
@@ -113,8 +118,9 @@ const encryptSession = (sessionData, encryptionKey) => {
 };
 
 const decryptSession = (encryptedSession, encryptionKey) => {
+    let encryptedSessionBuffer = null;
     try {
-        const encryptedSessionBuffer = Buffer.from(encryptedSession, 'hex');
+        encryptedSessionBuffer = Buffer.from(encryptedSession, 'hex');
         const iv = encryptedSessionBuffer.slice(0, 16);
         const authTag = encryptedSessionBuffer.slice(16, 32);
         const encryptedData = encryptedSessionBuffer.slice(32);
@@ -168,10 +174,11 @@ const generateSessionId = () => {
 };
 
 const hkdfExpand = (secret, info, length) => {
+    let prk = null;
     try {
         const hmac = crypto.createHmac('sha256', secret);
         hmac.update(info);
-        const prk = hmac.digest();
+        prk = hmac.digest();
 
         let t = Buffer.alloc(0);
         let okm = Buffer.alloc(0);
@@ -198,10 +205,11 @@ const hkdfExpand = (secret, info, length) => {
 };
 
 const encryptCookie = (cookieValue, encryptionKey) => {
+    let cookieBuffer = null;
     try {
         const iv = crypto.randomBytes(12);
         const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(encryptionKey, 'hex'), iv);
-        const cookieBuffer = Buffer.from(cookieValue, 'utf8');
+        cookieBuffer = Buffer.from(cookieValue, 'utf8');
         let encrypted = cipher.update(cookieBuffer);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
@@ -217,8 +225,9 @@ const encryptCookie = (cookieValue, encryptionKey) => {
 };
 
 const decryptCookie = (encryptedCookie, encryptionKey) => {
+    let encryptedCookieBuffer = null;
     try {
-        const encryptedCookieBuffer = Buffer.from(encryptedCookie, 'hex');
+        encryptedCookieBuffer = Buffer.from(encryptedCookie, 'hex');
         const iv = encryptedCookieBuffer.slice(0, 12);
         const authTag = encryptedCookieBuffer.slice(12, 28);
         const encryptedData = encryptedCookieBuffer.slice(28);
@@ -285,13 +294,11 @@ const verify2FACode = (secret, token) => {
         otplib.authenticator.options = {
             window: [1, 1]
         };
-        return otplib.authenticator.verify({ secret, token });
+        const isValid = otplib.authenticator.verify({ secret, token });
+	return isValid;
     } catch (error) {
         console.error('2FA verification error:', error);
         return false;
-    } finally {
-        secret = null; // Securely erase the secret
-        token = null;  // Securely erase the token
     }
 };
 
@@ -300,10 +307,11 @@ const generateDeviceSecret = () => {
 };
 
 const encryptWithDeviceSecret = (data, deviceSecret) => {
+    let dataBuffer = null;
     try {
         const iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(deviceSecret, 'hex'), iv);
-        const dataBuffer = Buffer.from(JSON.stringify(data), 'utf8');
+        dataBuffer = Buffer.from(JSON.stringify(data), 'utf8');
         let encrypted = cipher.update(dataBuffer);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
@@ -319,8 +327,9 @@ const encryptWithDeviceSecret = (data, deviceSecret) => {
 };
 
 const decryptWithDeviceSecret = (encryptedData, deviceSecret) => {
+    let encryptedDataBuffer = null;
     try {
-        const encryptedDataBuffer = Buffer.from(encryptedData, 'hex');
+        encryptedDataBuffer = Buffer.from(encryptedData, 'hex');
         const iv = encryptedDataBuffer.slice(0, 16);
         const authTag = encryptedDataBuffer.slice(16, 32);
         const data = encryptedDataBuffer.slice(32);
@@ -358,16 +367,13 @@ const generateShortLivedToken = (username, secret) => {
     } catch (error) {
         console.error('Short lived token generation error:', error);
         return null;
-    } finally {
-        if (payloadString) {
-           // payloadString = null;
-        }
     }
 };
 
 const verifyShortLivedToken = (token, secret) => {
+    let encryptedDataBuffer = null;
     try {
-        const encryptedDataBuffer = Buffer.from(token, 'hex');
+        encryptedDataBuffer = Buffer.from(token, 'hex');
         const iv = encryptedDataBuffer.slice(0, 16);
         const authTag = encryptedDataBuffer.slice(16, 32);
         const data = encryptedDataBuffer.slice(32);
@@ -495,10 +501,11 @@ const generateKeyMaterial = (password, salt) => {
 };
 
 const encryptWithKeyMaterial = (data, keyMaterial) => {
+    let dataBuffer = null;
     try {
         const iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv('aes-256-gcm', keyMaterial, iv);
-        const dataBuffer = Buffer.from(JSON.stringify(data), 'utf8');
+        dataBuffer = Buffer.from(JSON.stringify(data), 'utf8');
         let encrypted = cipher.update(dataBuffer);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
@@ -514,8 +521,9 @@ const encryptWithKeyMaterial = (data, keyMaterial) => {
 };
 
 const decryptWithKeyMaterial = (encryptedData, keyMaterial) => {
+    let encryptedDataBuffer = null;
     try {
-        const encryptedDataBuffer = Buffer.from(encryptedData, 'hex');
+        encryptedDataBuffer = Buffer.from(encryptedData, 'hex');
         const iv = encryptedDataBuffer.slice(0, 16);
         const authTag = encryptedDataBuffer.slice(16, 32);
         const data = encryptedDataBuffer.slice(32);
@@ -551,9 +559,10 @@ const generateRandomIV = () => {
 };
 
 const encryptData = (data, key, iv) => {
+    let dataBuffer = null;
     try {
         const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
-        const dataBuffer = Buffer.from(data, 'utf8');
+        dataBuffer = Buffer.from(data, 'utf8');
         let encrypted = cipher.update(dataBuffer);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
@@ -582,11 +591,12 @@ const decryptData = (encryptedData, key, iv, authTag) => {
 };
 
 const encryptObject = (obj, key) => {
+    let dataBuffer = null;
     try {
         const iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
         const jsonString = JSON.stringify(obj);
-        const dataBuffer = Buffer.from(jsonString, 'utf8');
+        dataBuffer = Buffer.from(jsonString, 'utf8');
         let encrypted = cipher.update(dataBuffer);
         encrypted = Buffer.concat([encrypted, cipher.final()]);
         const authTag = cipher.getAuthTag();
