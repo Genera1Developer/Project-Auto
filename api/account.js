@@ -130,7 +130,8 @@ const decryptSensitiveData = (ivB64, authTagB64, encryptedDataB64) => {
         const encryptedData = Buffer.from(encryptedDataB64, 'base64');
         const iv = Buffer.from(ivB64, 'base64');
         const authTag = Buffer.from(authTagB64, 'base64');
-        return decrypt(encryptedData, iv, authTag);
+        const decrypted = decrypt(encryptedData, iv, authTag);
+        return decrypted;
     } catch (error) {
         console.error("Decryption error:", error);
         return null;
