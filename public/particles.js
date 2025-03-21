@@ -183,9 +183,9 @@
                     var initialColorSeed = "f5c3bb";
                     var initialLinkedColorSeed = "9b59b6";
                     var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                    var masterKey = CryptoJS.SHA256("master_key_" + salt).toString();
+                    var masterKey = CryptoJS.PBKDF2("master_key_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
                     var iv = CryptoJS.lib.WordArray.random(128/8);
-										var sharedSecret = CryptoJS.SHA256("shared_secret_" + salt).toString();
+										var sharedSecret = CryptoJS.PBKDF2("shared_secret_" + salt, salt, { keySize: 256/32, iterations: 1000 }).toString();
 
                     var encryptData = function(data, key, iv) {
                       try {
