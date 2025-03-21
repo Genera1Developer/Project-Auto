@@ -140,7 +140,7 @@
         <iframe id="proxyFrame"></iframe>
     </div>
 
-    <script>
+    <script nonce="${cspNonce}">
         document.addEventListener('DOMContentLoaded', () => {
             const urlInput = document.getElementById('url');
             const browseButton = document.getElementById('browse');
@@ -155,6 +155,7 @@
             const LOAD_TIMEOUT = 30000; // 30 seconds
             const IV_LENGTH = 12; // Standard IV length for AES-GCM
             const SALT_LENGTH = 16; // Recommended salt length
+            const PROXY_URL = '/api/proxy';
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -358,7 +359,10 @@
                     sessionStorage.setItem('aesKeyTimestamp', Date.now().toString()); // Store timestamp
 
                     // Construct the URL with encrypted parameters.  Don't send IV in URL.
-                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(ciphertext)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}`;
+                    const formData = new FormData();
+                    formData.append('ciphertext', ciphertext);
+                    formData.append('nonce', nonce);
+                    formData.append('keyHash', hashedKey);
 
                     // Show loading indicator
                     loadingDiv.style.display = 'block';
@@ -369,8 +373,31 @@
                     proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
                     proxyFrame.setAttribute('csp', `default-src 'self'; script-src 'self' 'unsafe-inline' 'nonce-${cspNonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`);
 
-                    // Load the URL in the iframe
-                    proxyFrame.src = proxyUrl;
+                    // Use POST request for better security and to avoid URL length limits
+                    fetch(PROXY_URL, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        // Load the HTML content directly into the iframe
+                        proxyFrame.contentWindow.document.open();
+                        proxyFrame.contentWindow.document.write(html);
+                        proxyFrame.contentWindow.document.close();
+                    })
+                    .catch(error => {
+                        console.error("Error loading proxy:", error);
+                        errorDiv.textContent = 'Failed to load the page within the iframe.';
+                    })
+                    .finally(() => {
+                        clearTimeout(timeoutId);
+                        loadingDiv.style.display = 'none';
+                    });
 
                      // Set a timeout to prevent indefinite loading
                     const timeoutId = setTimeout(() => {
@@ -393,17 +420,17 @@
                         clearSensitiveData();
                     }, KEY_STORAGE_DURATION); //Clear after 5 minutes
 
-                    // Event listener for iframe load completion (or failure)
-                    proxyFrame.onload = () => {
-                      clearTimeout(timeoutId); // Clear the timeout
-                      loadingDiv.style.display = 'none'; // Hide loading
-                    };
+                    // Event listener for iframe load completion (or failure) - REMOVED
+                    // proxyFrame.onload = () => {
+                    //   clearTimeout(timeoutId); // Clear the timeout
+                    //   loadingDiv.style.display = 'none'; // Hide loading
+                    // };
 
-                    proxyFrame.onerror = () => {
-                        clearTimeout(timeoutId);
-                        loadingDiv.style.display = 'none';
-                        errorDiv.textContent = 'Failed to load the page within the iframe.';
-                    };
+                    // proxyFrame.onerror = () => { - REMOVED
+                    //     clearTimeout(timeoutId);
+                    //     loadingDiv.style.display = 'none';
+                    //     errorDiv.textContent = 'Failed to load the page within the iframe.';
+                    // };
 
                 } catch (e) {
                     handleErrors(e); // Use the error handling function
