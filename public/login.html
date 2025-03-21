@@ -215,7 +215,7 @@
 
         // Function to encrypt data
         function encryptData(data, key, iv) {
-            const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(key), {
+            const encrypted = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(data), CryptoJS.enc.Utf8.parse(key), {
                 iv: CryptoJS.enc.Utf8.parse(iv),
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
@@ -236,7 +236,7 @@
         // Function to encrypt the localStorage encryption key with a server key
         function encryptLocalKey(encryptionKey, serverPublicKey) {
             const serverKey = CryptoJS.enc.Utf8.parse(serverPublicKey);
-            const encryptedKey = CryptoJS.AES.encrypt(encryptionKey, serverKey, {
+            const encryptedKey = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(encryptionKey), serverKey, {
                 mode: CryptoJS.mode.ECB,
                 padding: CryptoJS.pad.Pkcs7
             });
