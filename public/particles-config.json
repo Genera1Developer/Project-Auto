@@ -100,7 +100,11 @@
       "cacheTtl": 3600,
       "entropyEnhancement": true,
       "useHardwareAcceleration": true,
-      "adataCompression": true
+      "adataCompression": true,
+      "nonceLength": 12,
+      "tagLength": 16,
+      "keySize": 32,
+      "hmacKeySize": 32
     }
   },
   "interactivity": {
