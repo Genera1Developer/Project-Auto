@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-IV-Prefix': ivPrefix,
                     'X-IV': iv,
                     'X-HMAC-IV': hmacIV,
+                    'X-Nonce': window.nonce,
                 },
                 body: JSON.stringify({ data: encryptedData })
             });
