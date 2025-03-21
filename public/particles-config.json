@@ -248,7 +248,20 @@
        "nonceReuseDetection": {
          "enable": true,
          "maxNonces": 1000
-       }
+       },
+       "encryptedSharedWorker": {
+        "enable": false,
+        "workerUrl": "shared-worker.js",
+        "algorithm": "AES-256-GCM",
+        "key": "ENC_SHARED_WORKER_KEY_PLACEHOLDER",
+        "iv": "ENC_SHARED_WORKER_IV_PLACEHOLDER"
+      },
+      "encryptedMessagePort": {
+        "enable": false,
+        "algorithm": "AES-256-GCM",
+        "key": "ENC_MESSAGE_PORT_KEY_PLACEHOLDER",
+        "iv": "ENC_MESSAGE_PORT_IV_PLACEHOLDER"
+      }
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -621,6 +634,11 @@
               "algorithm": "SHA256",
               "key": "ENC_STREAMING_HMAC_KEY_PLACEHOLDER"
           }
+      },
+      "encryptedCommunicationChannel": {
+        "enable": false,
+        "algorithm": "Noise_XX",
+        "preSharedKey": "ENC_PRE_SHARED_KEY_PLACEHOLDER"
       }
   }
 }
