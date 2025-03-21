@@ -138,8 +138,8 @@ function safeCompare(a, b) {
     }
 
     try {
-        const aBuf = Buffer.from(a);
-        const bBuf = Buffer.from(b);
+        const aBuf = Buffer.from(a, 'utf8');
+        const bBuf = Buffer.from(b, 'utf8');
 
         return timingSafeEqual(aBuf, bBuf);
     } catch (error) {
