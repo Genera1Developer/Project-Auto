@@ -126,7 +126,6 @@ particlesJS('particles-js', {
             const encryptValue = async (text, secretKey, iv) => {
               try {
                 const enc = new TextEncoder();
-
                 const keyBytes = enc.encode(secretKey);
                 const ivBytes = enc.encode(iv);
 
@@ -139,7 +138,7 @@ particlesJS('particles-js', {
                 );
 
                 const encryptedData = await crypto.subtle.encrypt(
-                  { name: algorithm, iv: ivBytes, },
+                  { name: algorithm, iv: ivBytes },
                   keyMaterial,
                   enc.encode(text)
                 );
@@ -154,19 +153,24 @@ particlesJS('particles-js', {
               }
             };
 
-            if (Array.isArray(data)) {
-                const encryptedArray = [];
-                for (const item of data) {
-                    if (typeof item === 'string') {
-                        encryptedArray.push(await encryptValue(item, key, iv));
-                    } else {
-                        encryptedArray.push(item);
-                    }
-                }
-                return encryptedArray;
-            } else if (typeof data === 'string'){
-                return await encryptValue(data, key, iv);
-            } else {
+            try {
+              if (Array.isArray(data)) {
+                  const encryptedArray = [];
+                  for (const item of data) {
+                      if (typeof item === 'string') {
+                          encryptedArray.push(await encryptValue(item, key, iv));
+                      } else {
+                          encryptedArray.push(item);
+                      }
+                  }
+                  return encryptedArray;
+              } else if (typeof data === 'string'){
+                  return await encryptValue(data, key, iv);
+              } else {
+                  return data;
+              }
+            } catch (error) {
+                console.error("Encryption process failed:", error);
                 return data;
             }
         },
@@ -181,6 +185,7 @@ particlesJS('particles-js', {
                 const enc = new TextEncoder();
                 const keyBytes = enc.encode(secretKey);
                 const ivBytes = enc.encode(iv);
+
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
                   keyBytes,
@@ -209,30 +214,34 @@ particlesJS('particles-js', {
                 return encryptedBase64;
               }
             };
-
-            if (Array.isArray(encryptedData)) {
-                const decryptedArray = [];
-                for (const item of encryptedData) {
-                    if (typeof item === 'string') {
-                      try {
-                        decryptedArray.push(await decryptValue(item, key, iv));
-                      } catch (err) {
-                        console.error("Decryption issue", err);
-                        decryptedArray.push(item);
-                      }
-                    } else {
-                      decryptedArray.push(item);
+            try {
+                if (Array.isArray(encryptedData)) {
+                    const decryptedArray = [];
+                    for (const item of encryptedData) {
+                        if (typeof item === 'string') {
+                          try {
+                            decryptedArray.push(await decryptValue(item, key, iv));
+                          } catch (err) {
+                            console.warn("Decryption issue", err);
+                            decryptedArray.push(item);
+                          }
+                        } else {
+                          decryptedArray.push(item);
+                        }
                     }
+                    return decryptedArray;
+                } else if (typeof encryptedData === 'string'){
+                    try{
+                      return await decryptValue(encryptedData, key, iv);
+                    } catch(err) {
+                      console.warn("Decryption issue", err);
+                      return encryptedData;
+                    }
+                } else {
+                    return encryptedData;
                 }
-                return decryptedArray;
-            } else if (typeof encryptedData === 'string'){
-                try{
-                  return await decryptValue(encryptedData, key, iv);
-                } catch(err) {
-                  console.error("Decryption issue", err);
-                  return encryptedData;
-                }
-            } else {
+            } catch (error) {
+                console.error("Decryption process failed:", error);
                 return encryptedData;
             }
         }
@@ -266,11 +275,16 @@ particlesJS('particles-js', {
                         if (Array.isArray(originalValue)) {
                           const encryptedArray = [];
                           for(let i = 0; i < originalValue.length; i++){
-                            const item = originalValue[i];
-                            if (typeof item === 'string') {
-                              encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm);
-                            } else {
-                              encryptedArray[i] = item;
+                            try {
+                              const item = originalValue[i];
+                              if (typeof item === 'string') {
+                                encryptedArray[i] = await encryptPlugin.customEncrypt(item, key, iv, algorithm);
+                              } else {
+                                encryptedArray[i] = item;
+                              }
+                            } catch (itemError) {
+                              console.warn(`Encryption of array item failed:`, itemError);
+                              encryptedArray[i] = originalValue[i];
                             }
                           }
 
@@ -316,11 +330,16 @@ particlesJS('particles-js', {
                         if (Array.isArray(encryptedValue)) {
                           const decryptedArray = [];
                           for(let i = 0; i < encryptedValue.length; i++){
-                            const item = encryptedValue[i];
-                            if (typeof item === 'string') {
-                              decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm);
-                            } else {
-                              decryptedArray[i] = item;
+                            try {
+                              const item = encryptedValue[i];
+                              if (typeof item === 'string') {
+                                decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm);
+                              } else {
+                                decryptedArray[i] = item;
+                              }
+                            } catch (itemError) {
+                              console.warn("Decryption of array item failed:", itemError);
+                              decryptedArray[i] = encryptedValue[i];
                             }
                           }
                           target[lastPart] = decryptedArray;
