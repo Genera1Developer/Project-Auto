@@ -296,6 +296,13 @@
             padding-left: 20px;
         }
 
+        #brute-force-attempts {
+            font-size: 0.7em;
+            color: #aaa;
+            margin-top: 5px;
+            text-align: left;
+        }
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -359,9 +366,11 @@
             <ul>
                 <li>[Timestamp] - User attempted signup.</li>
                 <li>[Timestamp] - Password strength check performed.</li>
+                <li>[Timestamp] - Password strength check performed.</li>
                 <li>[Timestamp] - Encryption initiated.</li>
             </ul>
         </div>
+        <div id="brute-force-attempts"></div>
 
     </div>
 
@@ -515,6 +524,8 @@
             const encryptionStatus = document.getElementById('encryption-status');
             const encryptionAnimation = document.getElementById('encryptionAnimation');
             const securityAuditLog = document.getElementById('security-audit-log').querySelector('ul');
+            const bruteForceAttemptsDisplay = document.getElementById('brute-force-attempts');
+            let bruteForceAttempts = 0;
 
             function logSecurityEvent(event) {
                 const timestamp = new Date().toLocaleString();
@@ -641,6 +652,8 @@
                     .then(response => {
                         encryptionAnimation.style.display = 'none';
                         if (!response.ok) {
+                            bruteForceAttempts++;
+                            bruteForceAttemptsDisplay.textContent = `Brute-force attempts: ${bruteForceAttempts}`;
                             throw new Error('Network response was not ok');
                         }
                         return response.json();
