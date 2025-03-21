@@ -501,7 +501,7 @@
                     // RSA encryption of AES key
                     const encrypt = new JSEncrypt();
                     encrypt.setPublicKey(publicKey);
-                    const encryptedAesKeyRSA = encrypt.encrypt(aesKey.toString());
+                    const encryptedAesKeyRSA = encrypt.encrypt(aesKey.toString(CryptoJS.enc.Base64));
 
                     if (!encryptedAesKeyRSA) {
                         throw new Error('AES key encryption failed');
