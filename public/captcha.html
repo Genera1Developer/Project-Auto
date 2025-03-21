@@ -248,8 +248,8 @@
         async function generateCaptcha() {
             const captchaText = generateRandomString(6);
             const salt = CryptoJS.lib.WordArray.random(SALT_LENGTH).toString(CryptoJS.enc.Hex);
-            const derivedKey = await deriveKey(ENCRYPTION_KEY, salt, HASH_ITERATIONS);
-            const encryptedData = await encryptText(captchaText, derivedKey.key, derivedKey.iv);
+            const { key, iv } = await deriveKey(ENCRYPTION_KEY, salt, HASH_ITERATIONS);
+            const encryptedData = await encryptText(captchaText, key, iv);
 
             document.getElementById('captcha-text').innerText = encryptedData.ciphertext;
 
@@ -257,14 +257,14 @@
             sessionStorage.setItem('captchaSalt', salt);
             sessionStorage.setItem('captchaCiphertext', encryptedData.ciphertext);
             sessionStorage.setItem('captchaTag', encryptedData.tag);
-            sessionStorage.setItem('captchaIV', derivedKey.iv); // Store IV
-            sessionStorage.setItem('captchaKey', derivedKey.key); // Store Key
+            sessionStorage.setItem('captchaIV', iv); // Store IV
+            sessionStorage.setItem('captchaKey', key); // Store Key
 
             return {
                 original: captchaText,
                 encrypted: encryptedData.ciphertext,
-                key: derivedKey.key,
-                iv: derivedKey.iv,
+                key: key,
+                iv: iv,
                 salt: salt,
                 tag: encryptedData.tag
             };
@@ -272,21 +272,19 @@
 
 
         async function deriveKey(password, salt, iterations) {
-            let key = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
+           const derivedKey = CryptoJS.PBKDF2(password, CryptoJS.enc.Hex.parse(salt), {
                 keySize: 256/32,   // Key size in bytes (256 bits)
                 iterations: iterations,
                 hasher: CryptoJS.algo.SHA256
             });
+           const iv = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex); // Generate a random IV
 
-            return { key: key.toString() };
+            return { key: derivedKey.toString(), iv: iv };
         }
 
        async function encryptText(plainText, key, iv) {
-            const ivWord = CryptoJS.lib.WordArray.random(128/8); // Generate a random IV
-            const tag = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-
             const cipher = CryptoJS.AES.encrypt(plainText, CryptoJS.enc.Utf8.parse(key), {
-                iv: ivWord,
+                iv: CryptoJS.enc.Hex.parse(iv),
                 mode: CryptoJS.mode.GCM,
                 padding: CryptoJS.pad.Pkcs7,
                 authTagLength: 128
@@ -341,8 +339,8 @@
                 return;
              }
 
-            const derivedKey = await deriveKey(ENCRYPTION_KEY, storedSalt, HASH_ITERATIONS);
-            const decryptedText = await decryptText(storedCiphertext, derivedKey.key, storedIV, storedTag);
+            const {key, iv} = await deriveKey(ENCRYPTION_KEY, storedSalt, HASH_ITERATIONS);
+            const decryptedText = await decryptText(storedCiphertext, key, iv, storedTag);
 
             if (decryptedText && userInput === decryptedText) {
                 alert('Captcha Matched!');
