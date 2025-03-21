@@ -369,12 +369,16 @@
             const hmacData = encryptedUsername.ciphertext + encryptedPassword.ciphertext + encryptedCaptcha.ciphertext + salt + timestamp + encryptedEncryptionKey + nonce;
             const hmac = generateHMAC(hmacData, encryptionKey);
 
+             // Use a more secure method for storing the IV (e.g., prepending to the ciphertext)
+            const combinedUsernameCiphertext = encryptedUsername.iv + encryptedUsername.ciphertext;
+            const combinedPasswordCiphertext = encryptedPassword.iv + encryptedPassword.ciphertext;
+            const combinedCaptchaCiphertext = encryptedCaptcha.iv + encryptedCaptcha.ciphertext;
+
             fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Encryption-Key-Hash': keyHash, // Send the key hash
-                    'X-Encryption-IV': encryptedUsername.iv,
                     'X-Request-Timestamp': timestamp, // Send timestamp
                     'X-Salt-Hash': saltHash, // Send Salt hash
                     'X-Encrypted-Key': encryptedEncryptionKey, // Send the encrypted key
@@ -383,9 +387,9 @@
                     'X-Request-Version': '2.0' // Add version for future updates
                 },
                 body: JSON.stringify({
-                    username: encryptedUsername.ciphertext,
-                    password: encryptedPassword.ciphertext,
-                    captcha: encryptedCaptcha.ciphertext,
+                    username: combinedUsernameCiphertext,
+                    password: combinedPasswordCiphertext,
+                    captcha: combinedCaptchaCiphertext,
                     salt: salt
                 })
             })
