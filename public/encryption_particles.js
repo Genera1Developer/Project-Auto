@@ -551,6 +551,15 @@ particlesJS('particles-js', {
                     }, limit - (Date.now() - lastRan));
                 }
             }
+        },
+      isLocalStorageAvailable: function() {
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                return true;
+            } catch (e) {
+                return false;
+            }
         }
   },
   "fn": {
@@ -648,7 +657,9 @@ particlesJS('particles-js', {
         }
     },
      "destroy": function() {
+        if (this.plugins.isLocalStorageAvailable()) {
            this.plugins.clearCryptoDetails();
+        }
 
         }
 },
