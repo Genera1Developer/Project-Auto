@@ -204,7 +204,20 @@
         "keyWrappingPrivateKey": "ENC_KEY_WRAPPING_PRIVATE_KEY_PLACEHOLDER",
         "keyWrappingSalt": "ENC_KEY_WRAPPING_SALT_PLACEHOLDER",
         "keyWrappingIterations": 5000,
-        "keyWrappingEncoding": "base64"
+        "keyWrappingEncoding": "base64",
+        "cacheKeyRotation":{
+          "enable": true,
+          "interval": 21600,
+          "jitter": 0.1,
+          "keyCacheRotation": true,
+          "adataCacheRotation": true,
+          "hmacCacheRotation": true
+        },
+        "adataKeyWrapping": true,
+        "hmacKeyWrapping": true,
+        "cacheKeyDerivationRounds": 3,
+        "cacheAdataDerivationRounds": 3,
+        "cacheHmacDerivationRounds": 3
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -250,7 +263,8 @@
            "wasmKeyEncoding": "base64",
            "wasmIvEncoding": "base64",
            "wasmShardingKeyEncoding": "base64",
-           "wasmShardingIvEncoding": "base64"
+           "wasmShardingIvEncoding": "base64",
+           "wasmCacheIntegrity": "ENC_WASM_CACHE_INTEGRITY_PLACEHOLDER"
     }
   },
   "interactivity": {
