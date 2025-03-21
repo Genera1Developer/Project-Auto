@@ -239,6 +239,11 @@ function isKeyDerived() {
     return keyDerivationUsed;
 }
 
+// Function to get the current algorithm being used.
+function getAlgorithm() {
+    return algorithm;
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -251,5 +256,6 @@ module.exports = {
     rotateKey, // Export the rotateKey function
     isKeySet,  // Export the isKeySet function
     isKeyDerived, //Export the isKeyDerived function
-    zeroBuffer
+    zeroBuffer,
+    getAlgorithm // Export the getAlgorithm function
 };
