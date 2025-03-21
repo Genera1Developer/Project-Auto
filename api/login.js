@@ -478,6 +478,17 @@ const decryptWithKeyMaterial = (encryptedData, keyMaterial) => {
     }
 };
 
+const hmacSign = (data, key) => {
+    try {
+        const hmac = crypto.createHmac('sha256', key);
+        hmac.update(data);
+        return hmac.digest('hex');
+    } catch (error) {
+        console.error('HMAC signing error:', error);
+        return null;
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -560,8 +571,11 @@ module.exports = async (req, res) => {
                 const xorKey = generateEncryptionKey();
                 const xorEncryptedSessionId = xorEncrypt(sessionId, xorKey);
 
+                // Sign the session ID using HMAC
+                const sessionIdSignature = hmacSign(sessionId, keyMaterial.toString('hex'));
+
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
-                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: xorEncryptedSessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken, authToken: authToken, xorKey: xorKey });
+                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: xorEncryptedSessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken, authToken: authToken, xorKey: xorKey, sessionIdSignature: sessionIdSignature });
             } else {
                 res.status(500).json({ message: 'Session cookie encryption failed' });
             }
