@@ -430,6 +430,46 @@ const decryptBuffer = (ciphertext, aad = null) => {
     }
 };
 
+// Function to check if an object is encrypted
+function isEncrypted(text) {
+    if (typeof text !== 'string') {
+        return false;
+    }
+    try {
+        const ciphertext = Buffer.from(text, 'base64');
+        if (ciphertext.length <= IV_LENGTH + AUTH_TAG_LENGTH) {
+            return false;
+        }
+        // Attempt to decrypt, if it fails, it's likely not encrypted
+        decrypt(text);
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+// Function to encrypt JSON object
+const encryptJSON = (obj, aad = null) => {
+    try {
+        const text = JSON.stringify(obj);
+        return encryptSecure(text, aad);
+    } catch (error) {
+        console.error("JSON Encryption failed:", error);
+        return null;
+    }
+};
+
+// Function to decrypt JSON object
+const decryptJSON = (text, aad = null) => {
+    try {
+        const decryptedText = decryptSecure(text, aad);
+        return JSON.parse(decryptedText);
+    } catch (error) {
+        console.error("JSON Decryption failed:", error);
+        return null;
+    }
+};
+
 module.exports = {
     encrypt,
     decrypt,
@@ -452,5 +492,8 @@ module.exports = {
     safeBufferCompare,
     resetKeyGeneration,
     encryptBuffer,
-    decryptBuffer
+    decryptBuffer,
+    isEncrypted,
+    encryptJSON,
+    decryptJSON
 };
