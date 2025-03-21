@@ -133,13 +133,13 @@ particlesJS('particles-js', {
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
                   keyBytes,
-                  { name: "AES-CBC", length: 256 },
+                  { name: algorithm, length: 256 },
                   false,
                   ["encrypt", "decrypt"]
                 );
 
                 const encryptedData = await crypto.subtle.encrypt(
-                  { name: "AES-CBC", iv: ivBytes, },
+                  { name: algorithm, iv: ivBytes, },
                   keyMaterial,
                   enc.encode(text)
                 );
@@ -184,7 +184,7 @@ particlesJS('particles-js', {
                 const keyMaterial = await crypto.subtle.importKey(
                   "raw",
                   keyBytes,
-                  { name: "AES-CBC", length: 256 },
+                  { name: algorithm, length: 256 },
                   false,
                   ["encrypt", "decrypt"]
                 );
@@ -196,7 +196,7 @@ particlesJS('particles-js', {
                 }
 
                 const decryptedData = await crypto.subtle.decrypt(
-                  { name: "AES-CBC", iv: ivBytes },
+                  { name: algorithm, iv: ivBytes },
                   keyMaterial,
                   encryptedArray
                 );
@@ -243,11 +243,10 @@ particlesJS('particles-js', {
         if (pJS.plugins.encrypt.enable) {
             const config = pJS.actualOptions;
             const encryptPlugin = pJS.plugins;
+            const { key, iv, algorithm } = config.encrypt_config;
 
             if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
                 const { dataFields } = config.plugins.encrypt;
-                const { key, iv } = config.encrypt_config;
-                const algorithm = "AES-CBC";
 
                 for (const fieldPath of dataFields) {
                     let target = config;
@@ -293,11 +292,10 @@ particlesJS('particles-js', {
         if (pJS.plugins.encrypt.enable) {
             const config = pJS.actualOptions;
             const encryptPlugin = pJS.plugins;
+            const { key, iv, algorithm } = config.encrypt_config;
 
             if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
                 const { dataFields } = config.plugins.encrypt;
-                const { key, iv } = config.encrypt_config;
-                const algorithm = "AES-CBC";
 
                 for (const fieldPath of dataFields) {
                     let target = config;
