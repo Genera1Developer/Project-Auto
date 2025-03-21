@@ -326,6 +326,23 @@ particlesJS('particles-js', {
         },
         isEncryptionSupported: function() {
           return !!(window.crypto && window.crypto.subtle);
+        },
+         uint8ArrayToHexString: function(arr) {
+            return Array.from(arr, function(byte) {
+                return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+            }).join('');
+        },
+
+        hexStringTouint8Array: function(hexString) {
+            const byteLength = hexString.length / 2;
+            const uint8Array = new Uint8Array(byteLength);
+
+            for (let i = 0; i < byteLength; i++) {
+                const hexByte = hexString.substring(i * 2, i * 2 + 2);
+                uint8Array[i] = parseInt(hexByte, 16);
+            }
+
+            return uint8Array;
         }
   },
   "fn": {
