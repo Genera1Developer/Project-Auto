@@ -500,11 +500,11 @@ particlesJS('particles-js', {
       },
       storeCryptoDetails: function(key, iv, salt) {
           try {
-            localStorage.setItem('encryptionKey', key);
-            localStorage.setItem('encryptionIV', iv);
-            localStorage.setItem('encryptionSalt', salt);
+            sessionStorage.setItem('encryptionKey', key);
+            sessionStorage.setItem('encryptionIV', iv);
+            sessionStorage.setItem('encryptionSalt', salt);
           } catch (e) {
-              console.warn("localStorage not available. Crypto details will not persist.");
+              console.warn("sessionStorage not available. Crypto details will not persist.");
           }
       },
       getCryptoFromLocalStorage: function(){
@@ -520,6 +520,21 @@ particlesJS('particles-js', {
               }
           } catch(e){
               console.warn("localStorage not available.")
+          }
+      },
+       getCryptoFromSessionStorage: function(){
+          try{
+              let key = sessionStorage.getItem('encryptionKey');
+              let iv = sessionStorage.getItem('encryptionIV');
+              let salt = sessionStorage.getItem('encryptionSalt');
+
+              return {
+                  key: key,
+                  iv: iv,
+                  salt: salt
+              }
+          } catch(e){
+              console.warn("sessionStorage not available.")
           }
       },
       generateKeyAndIV: async function() {
@@ -546,8 +561,11 @@ particlesJS('particles-js', {
               localStorage.removeItem('encryptionIV');
               localStorage.removeItem('encryptionSalt');
               localStorage.removeItem('passwordHash');
+              sessionStorage.removeItem('encryptionKey');
+              sessionStorage.removeItem('encryptionIV');
+              sessionStorage.removeItem('encryptionSalt');
           } catch (e) {
-              console.warn("localStorage not available.");
+              console.warn("localStorage or sessionStorage not available.");
           }
       },
       throttleEncryption: function(func, limit) {
@@ -625,9 +643,9 @@ particlesJS('particles-js', {
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            localStorage.setItem('passwordHash', hashHex);
+            sessionStorage.setItem('passwordHash', hashHex);
           } catch (e) {
-              console.warn("localStorage not available or hashing failed.", e);
+              console.warn("sessionStorage not available or hashing failed.", e);
           }
       },
 
@@ -638,10 +656,10 @@ particlesJS('particles-js', {
             const hashBuffer = await crypto.subtle.digest('SHA-256', data);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            const storedHash = localStorage.getItem('passwordHash');
+            const storedHash = sessionStorage.getItem('passwordHash');
             return hashHex === storedHash;
           } catch (e) {
-              console.warn("localStorage not available or hashing failed.", e);
+              console.warn("sessionStorage not available or hashing failed.", e);
               return false;
           }
       },
@@ -651,7 +669,7 @@ particlesJS('particles-js', {
               return false;
           }
 
-          let salt = localStorage.getItem('encryptionSalt');
+          let salt = sessionStorage.getItem('encryptionSalt');
           if (!salt) {
               salt = this.generateRandomSalt();
               if (!salt) return false; // Salt generation failed
@@ -676,6 +694,15 @@ particlesJS('particles-js', {
 
           return true;
       },
+      isSessionStorageAvailable: function() {
+            try {
+                sessionStorage.setItem('test', 'test');
+                sessionStorage.removeItem('test');
+                return true;
+            } catch (e) {
+                return false;
+            }
+        },
   },
   "fn": {
     "update": async function() {
@@ -693,7 +720,7 @@ particlesJS('particles-js', {
         }
 
         try {
-            let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage();
+            let cryptoDetails = encryptPlugin.getCryptoFromSessionStorage();
             let storedKey = cryptoDetails?.key;
             let storedIv = cryptoDetails?.iv;
             let storedSalt = cryptoDetails?.salt;
@@ -750,7 +777,7 @@ particlesJS('particles-js', {
         }
 
          try {
-            let cryptoDetails = encryptPlugin.getCryptoFromLocalStorage();
+            let cryptoDetails = encryptPlugin.getCryptoFromSessionStorage();
             let storedKey = cryptoDetails?.key;
             let storedIv = cryptoDetails?.iv;
             let storedSalt = cryptoDetails?.salt;
@@ -764,7 +791,7 @@ particlesJS('particles-js', {
               config.encrypt_config.salt = salt;
             }
         } catch (e) {
-            console.warn("localStorage not available. Using default key.");
+            console.warn("sessionStorage not available. Using default key.");
         }
 
         if (config?.plugins?.encrypt?.dataFields) {
@@ -775,7 +802,9 @@ particlesJS('particles-js', {
         if (this.plugins.isLocalStorageAvailable()) {
            this.plugins.clearCryptoDetails();
         }
-
+        if (this.plugins.isSessionStorageAvailable()) {
+          this.plugins.clearCryptoDetails();
+       }
         }
 },
   "tmp": {}
