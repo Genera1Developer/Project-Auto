@@ -735,7 +735,7 @@
             errorMessage.textContent = '';
             encryptionStatus.textContent = 'Encrypting...';
 
-            // Generate a random key (AES key size should be 128, 192, or 256 bits)
+            // Generate a random salt
             const salt = CryptoJS.lib.WordArray.random(128/8);
             const aesKey = CryptoJS.lib.WordArray.random(aesKeySize/8); // Generate AES key
             const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
@@ -780,7 +780,7 @@
               }).toString();
 
               // Hash password client-side with SHA-256 before sending
-              const hashedPassword = CryptoJS.SHA256(password).toString();
+              const hashedPassword = CryptoJS.SHA256(password + salt.toString()).toString();
 
                // Create HMAC for usernameEncrypted and emailEncrypted
                 const hmacUsername = CryptoJS.HmacSHA256(usernameEncrypted, hmacKey).toString();
