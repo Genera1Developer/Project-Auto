@@ -185,48 +185,69 @@
                     var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
                     var masterKey = CryptoJS.SHA256("master_key_" + salt).toString();
 
-                    var colorValue = CryptoJS.AES.encrypt(initialColorSeed, masterKey).toString();
-                    var linkedColorValue = CryptoJS.AES.encrypt(initialLinkedColorSeed, masterKey).toString();
-
-                    var decryptColor = function(encryptedColor) {
+                    var encryptData = function(data, key) {
                       try {
-                        var bytes  = CryptoJS.AES.decrypt(encryptedColor, masterKey);
-                        return bytes.toString(CryptoJS.enc.Utf8);
-                      } catch(decryptError) {
-                        console.error("Decrypt Color Error:", decryptError);
-                        return "2ecc71";
+                        return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
+                      } catch (err) {
+                        console.error("Encrypt error:", err);
+                        return null;
                       }
                     };
 
-                    var updateColors = function(color, linkedColor) {
-                        var decryptedColor = decryptColor(color);
-                        var decryptedLinkedColor = decryptColor(linkedColor);
+                    var decryptData = function(encryptedData, key) {
+                      try {
+                        var bytes = CryptoJS.AES.decrypt(encryptedData, key);
+                        var decrypted = bytes.toString(CryptoJS.enc.Utf8);
+                        return decrypted ? JSON.parse(decrypted) : null;
+                      } catch (err) {
+                        console.error("Decrypt error:", err);
+                        return null;
+                      }
+                    };
 
-                        if(e.particles.color) e.particles.color.value = "#" + CryptoJS.MD5(decryptedColor).toString().substring(0,6);
+                    var colorData = { color: initialColorSeed, strokeColor: initialColorSeed };
+                    var linkedColorData = { linkColor: initialLinkedColorSeed };
+
+                    var encryptedColorData = encryptData(colorData, masterKey);
+                    var encryptedLinkedColorData = encryptData(linkedColorData, masterKey);
+
+                    var updateColors = function(encryptedColorData, encryptedLinkedColorData) {
+                      var decryptedColorData = decryptData(encryptedColorData, masterKey);
+                      var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, masterKey);
+
+                      if (decryptedColorData) {
+                        if(e.particles.color) e.particles.color.value = "#" + CryptoJS.MD5(decryptedColorData.color).toString().substring(0,6);
                         if (e.particles.shape && e.particles.shape.stroke) {
-                            e.particles.shape.stroke.color = "#" + CryptoJS.MD5(decryptedColor).toString().substring(0,6);
+                          e.particles.shape.stroke.color = "#" + CryptoJS.MD5(decryptedColorData.strokeColor).toString().substring(0,6);
                         }
+                      }
+                      if (decryptedLinkedColorData) {
                         if (e.particles.line_linked) {
-                            e.particles.line_linked.color = "#" + CryptoJS.MD5(decryptedLinkedColor).toString().substring(0,6);
+                          e.particles.line_linked.color = "#" + CryptoJS.MD5(decryptedLinkedColorData.linkColor).toString().substring(0,6);
                         }
-                    }
+                      }
+                    };
 
-                     updateColors(colorValue, linkedColorValue);
+                    updateColors(encryptedColorData, encryptedLinkedColorData);
 
                     var colorUpdateInterval = 5000;
 
                     var updateColorsAndSchedule = function() {
                         try {
-                             var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                             var keyMaterial = initialColorSeed + Date.now() + salt;
-                             var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
-                             colorValue = CryptoJS.AES.encrypt(derivedKey, masterKey).toString();
+                            var salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
+                            var keyMaterial = initialColorSeed + Date.now() + salt;
+                            var derivedKey = CryptoJS.SHA256(keyMaterial).toString();
 
-                             salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
-                             keyMaterial = initialLinkedColorSeed + Date.now() + salt;
-                             derivedKey = CryptoJS.SHA256(keyMaterial).toString();
-                             linkedColorValue = CryptoJS.AES.encrypt(derivedKey, masterKey).toString();
-                             updateColors(colorValue, linkedColorValue);
+                            colorData = { color: derivedKey.substring(0,6), strokeColor: derivedKey.substring(6,12) };
+                            encryptedColorData = encryptData(colorData, masterKey);
+
+                            salt = CryptoJS.lib.WordArray.random(128/8).toString(CryptoJS.enc.Hex);
+                            keyMaterial = initialLinkedColorSeed + Date.now() + salt;
+                            derivedKey = CryptoJS.SHA256(keyMaterial).toString();
+                            linkedColorData = { linkColor: derivedKey.substring(0,6) };
+                            encryptedLinkedColorData = encryptData(linkedColorData, masterKey);
+
+                            updateColors(encryptedColorData, encryptedLinkedColorData);
 
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         } catch (cryptoIntervalError) {
