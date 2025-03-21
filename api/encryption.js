@@ -122,10 +122,12 @@ const encrypt = (text) => {
     ivMap.set(key, iv); // Store current iv to prevent reuse
 
     let cipher = null;
+    let encrypted = null; // Declare encrypted outside the try block
+    let authTag = null;     // Declare authTag outside the try block
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-        let encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
-        const authTag = cipher.getAuthTag();
+        encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
+        authTag = cipher.getAuthTag();
 
         return {
             iv: iv.toString('base64'),
@@ -140,6 +142,9 @@ const encrypt = (text) => {
             cipher.destroy();
             zeroBuffer(cipher); //Zero out cipher for added security
         }
+        zeroBuffer(iv);         // Zero out IV after use.
+        zeroBuffer(encrypted);  // Zero out encrypted data
+        zeroBuffer(authTag);    // Zero out authTag after use.
     }
 };
 
@@ -149,6 +154,7 @@ const decrypt = (text) => {
     }
 
     let decipher = null;
+    let decrypted = null; // Declare decrypted outside the try block
     try {
         const iv = Buffer.from(text.iv, 'base64');
         const encryptedData = Buffer.from(text.encryptedData, 'base64');
@@ -156,7 +162,7 @@ const decrypt = (text) => {
 
         decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
-        const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
+        decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
     } catch (error) {
         console.error("Decryption failed:", error);
@@ -166,6 +172,7 @@ const decrypt = (text) => {
             decipher.destroy();
             zeroBuffer(decipher); //Zero out decipher for added security
         }
+        zeroBuffer(decrypted);  // Zero out decrypted data after use
     }
 };
 
