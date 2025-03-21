@@ -67,6 +67,17 @@
         .input-group input {
             padding-left: 30px; /* Adjust to accommodate the key icon */
         }
+
+        /* Enhanced security message */
+        .enhanced-security {
+            background-color: #33691e; /* Darker green */
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -84,6 +95,9 @@
         <div id="loading">Loading...</div>
         <div class="security-info">
             <i class="fas fa-shield-alt"></i> Your connection is encrypted. We use strong encryption to protect your data.
+        </div>
+        <div class="enhanced-security">
+            <i class="fas fa-check-circle"></i> Enhanced Security Measures Active
         </div>
         <iframe id="proxyFrame"></iframe>
     </div>
