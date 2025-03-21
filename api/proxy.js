@@ -230,6 +230,7 @@ async function handleRequestBody(req, encryptionKey, reqIv) {
                 reject(err);
             });
 
+        // Consume the request body to prevent issues with subsequent handlers
         req.pipe(new stream.PassThrough());
     });
 }
