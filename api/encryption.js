@@ -174,7 +174,7 @@ const decrypt = (text) => {
         authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
@@ -374,7 +374,7 @@ const decryptSecure = async (text, aad = null) => {
         authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
          if (aad) {
             decipher.setAAD(Buffer.from(aad, 'utf8'));
         }
@@ -485,7 +485,7 @@ const decryptBuffer = async (ciphertext, aad = null) => {
         authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         if (aad) {
             decipher.setAAD(Buffer.from(aad, 'utf8'));
         }
@@ -825,6 +825,114 @@ const verifyAndDecrypt = async (ciphertext, signature, signingKey) => {
     }
 };
 
+// Function to derive a signing key from a password
+function deriveSigningKey(password, salt) {
+    const SIGNING_KEY_LENGTH = 32; // 256 bits
+    const SIGNING_PBKDF2_ITERATIONS = 100000;
+    const SIGNING_PBKDF2_DIGEST = 'sha512';
+
+    try {
+        const derivedKey = crypto.pbkdf2Sync(password, salt, SIGNING_PBKDF2_ITERATIONS, SIGNING_KEY_LENGTH, SIGNING_PBKDF2_DIGEST);
+        return derivedKey.toString('hex');
+    } catch (error) {
+        console.error("Signing key derivation failed:", error);
+        throw new Error('Signing key derivation failed. Check password and salt.');
+    } finally {
+        zeroBuffer(Buffer.from(password, 'utf8'));
+    }
+}
+
+// Function to generate a secure nonce
+function generateNonce(length = 24) {
+    return crypto.randomBytes(length).toString('base64');
+}
+
+// Function to encrypt with associated data using a nonce
+const encryptWithNonce = async (text, aad, nonce) => {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
+
+    const iv = Buffer.from(nonce, 'base64').slice(0, IV_LENGTH); // Use nonce as IV
+
+    let cipher = null;
+    let encrypted = null;
+    let authTag = null;
+    let compressedData = null;
+    let ciphertextBase64 = null;
+
+    try {
+        cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        cipher.setAAD(Buffer.from(aad, 'utf8'));
+
+        // Compress the data before encryption
+        compressedData = await deflateAsync(Buffer.from(text, 'utf8'), { level: zlib.constants.Z_BEST_COMPRESSION });
+        encrypted = Buffer.concat([cipher.update(compressedData), cipher.final()]);
+        authTag = cipher.getAuthTag();
+
+        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+        ciphertextBase64 = ciphertext.toString('base64');
+        return ciphertextBase64;
+
+    } catch (error) {
+        console.error("Encryption failed:", error);
+        return null;
+    } finally {
+        if (cipher) {
+            cipher.destroy();
+        }
+        encrypted = null;
+        authTag = null;
+        compressedData = null;
+    }
+};
+
+// Function to decrypt with associated data using a nonce
+const decryptWithNonce = async (text, aad, nonce) => {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
+
+   const iv = Buffer.from(nonce, 'base64').slice(0, IV_LENGTH); // Use nonce as IV
+
+    let decipher = null;
+    let decrypted = null;
+    let decompressedData = null;
+    let ciphertext = null;
+    let authTag = null;
+    let encryptedData = null;
+    let resultString = null;
+
+    try {
+        ciphertext = Buffer.from(text, 'base64');
+        authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
+
+        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher.setAAD(Buffer.from(aad, 'utf8'));
+        decipher.setAuthTag(authTag);
+        decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
+
+        // Decompress the data after decryption
+        decompressedData = await inflateAsync(decrypted);
+        resultString = decompressedData.toString('utf8');
+        return resultString;
+
+    } catch (error) {
+        console.error("Decryption failed:", error);
+        return null;
+    } finally {
+        if (decipher) {
+            decipher.destroy();
+        }
+        ciphertext = null;
+        authTag = null;
+        encryptedData = null;
+        decrypted = null;
+        decompressedData = null;
+    }
+};
+
 module.exports = {
     encrypt,
     decrypt,
@@ -863,5 +971,9 @@ module.exports = {
     getSupportedCiphers,
     setAlgorithm,
     encryptAndSign,
-    verifyAndDecrypt
+    verifyAndDecrypt,
+    deriveSigningKey,
+    generateNonce,
+    encryptWithNonce,
+    decryptWithNonce
 };
