@@ -67,7 +67,7 @@ function encrypt(text, iv) {
 
 function decrypt(encryptedData, iv, authTag) {
     try {
-        const decipher = crypto.createCipheriv('aes-256-gcm', encryptionKey, iv);
+        const decipher = crypto.createDecipheriv('aes-256-gcm', encryptionKey, iv);
         decipher.setAuthTag(authTag);
 
         let decrypted = decipher.update(encryptedData);
@@ -86,11 +86,11 @@ exports.createUser = async (username, password, callback) => {
     try {
         const hashedPassword = await hashPassword(password, salt);
 
-        const encryptedUsername = encrypt(username, iv);
-        const encryptedPassword = encrypt(hashedPassword, iv);
-        const encryptedSalt = encrypt(salt, iv);
+        const usernameEncryption = encrypt(username, iv);
+        const passwordEncryption = encrypt(hashedPassword, iv);
+        const saltEncryption = encrypt(salt, iv);
 
-        db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData, encryptedSalt.encryptedData, PBKDF2_ITERATIONS, iv, encryptedUsername.authTag], function(err) {
+        db.run(`INSERT INTO users (username, password, salt, password_version, encryption_iv, auth_tag) VALUES (?, ?, ?, ?, ?, ?)`, [usernameEncryption.encryptedData, passwordEncryption.encryptedData, saltEncryption.encryptedData, PBKDF2_ITERATIONS, iv, usernameEncryption.authTag], function(err) {
             if (err) {
                 console.error(err.message);
                 return callback(err);
@@ -106,9 +106,9 @@ exports.createUser = async (username, password, callback) => {
 exports.verifyUser = (username, password, callback) => {
     try {
         const iv = crypto.randomBytes(ivLength);
-        const encryptedUsername = encrypt(username, iv);
+        const usernameEncryption = encrypt(username, iv);
 
-        db.get(`SELECT id, username, password, salt, password_version, encryption_iv, auth_tag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
+        db.get(`SELECT id, username, password, salt, password_version, encryption_iv, auth_tag FROM users WHERE username = ?`, [usernameEncryption.encryptedData], async (err, row) => {
             if (err) {
                 console.error(err.message);
                 return callback(err);
