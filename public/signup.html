@@ -132,6 +132,10 @@
             transition: width 0.3s ease;
         }
 
+        #password-strength-text {
+          font-size: 0.8em;
+        }
+
         #password-hint {
             font-size: 0.7em;
             color: #aaa;
@@ -306,60 +310,68 @@
                 // Encrypt username and email
                 const iv = CryptoJS.lib.WordArray.random(128/8);
 
-                const usernameEncrypted = CryptoJS.AES.encrypt(username, key, {
-                    iv: iv,
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
-                }).toString();
+                //Use try-catch to handle possible encryption errors.
+                try {
+                  const usernameEncrypted = CryptoJS.AES.encrypt(username, key, {
+                      iv: iv,
+                      mode: CryptoJS.mode.CBC,
+                      padding: CryptoJS.pad.Pkcs7
+                  }).toString();
 
-                const emailEncrypted = CryptoJS.AES.encrypt(email, key, {
-                    iv: iv,
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
-                }).toString();
+                  const emailEncrypted = CryptoJS.AES.encrypt(email, key, {
+                      iv: iv,
+                      mode: CryptoJS.mode.CBC,
+                      padding: CryptoJS.pad.Pkcs7
+                  }).toString();
 
-                // Encrypt the password using AES.  This is only for transport.
-                // The server should re-derive key and encrypt for storage.
-                const encryptedPassword = CryptoJS.AES.encrypt(password, key, {
-                    iv: iv,
-                    mode: CryptoJS.mode.CBC,
-                    padding: CryptoJS.pad.Pkcs7
-                }).toString();
+                  // Encrypt the password using AES.  This is only for transport.
+                  // The server should re-derive key and encrypt for storage.
+                  const encryptedPassword = CryptoJS.AES.encrypt(password, key, {
+                      iv: iv,
+                      mode: CryptoJS.mode.CBC,
+                      padding: CryptoJS.pad.Pkcs7
+                  }).toString();
 
-                // No longer send key to reduce vulnerability if intercepted.
-                const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
-                const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
+                  // No longer send key to reduce vulnerability if intercepted.
+                  const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
+                  const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
 
-              fetch('/api/sign-up', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({ username: usernameEncrypted, password: encryptedPassword, email: emailEncrypted, captcha: captcha, salt: encryptedSalt, iv: encryptedIV })
-              })
-              .then(response => {
+                  fetch('/api/sign-up', {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({ username: usernameEncrypted, password: encryptedPassword, email: emailEncrypted, captcha: captcha, salt: encryptedSalt, iv: encryptedIV })
+                  })
+                  .then(response => {
+                      encryptionAnimation.style.display = 'none';
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                      }
+                      return response.json();
+                  })
+                  .then(data => {
+                      if (data.success) {
+                          errorMessage.textContent = '';
+                          encryptionStatus.textContent = 'Encrypted account created.';
+                          window.location.href = 'login.html';
+                      } else {
+                          errorMessage.textContent = data.message || 'Signup failed.';
+                          encryptionStatus.textContent = 'Signup attempt encrypted.';
+                      }
+                  })
+                  .catch(error => {
+                      encryptionAnimation.style.display = 'none';
+                      console.error('Error:', error);
+                      errorMessage.textContent = 'An error occurred during signup.';
+                      encryptionStatus.textContent = 'Connection error.';
+                  });
+                } catch (e) {
                   encryptionAnimation.style.display = 'none';
-                  if (!response.ok) {
-                      throw new Error('Network response was not ok');
-                  }
-                  return response.json();
-              })
-              .then(data => {
-                  if (data.success) {
-                      errorMessage.textContent = '';
-                      encryptionStatus.textContent = 'Encrypted account created.';
-                      window.location.href = 'login.html';
-                  } else {
-                      errorMessage.textContent = data.message || 'Signup failed.';
-                      encryptionStatus.textContent = 'Signup attempt encrypted.';
-                  }
-              })
-              .catch(error => {
-                  encryptionAnimation.style.display = 'none';
-                  console.error('Error:', error);
-                  errorMessage.textContent = 'An error occurred during signup.';
-                  encryptionStatus.textContent = 'Connection error.';
-              });
+                  console.error('Encryption Error:', e);
+                  errorMessage.textContent = 'Encryption error. Please try again.';
+                  encryptionStatus.textContent = 'Encryption Failed.';
+                }
             }, 1000); // Simulate encryption time
         });
     </script>
