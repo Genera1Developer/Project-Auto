@@ -201,6 +201,30 @@ async function generateOperationSalt() {
   return buffer.toString('hex');
 }
 
+// Function to apply extra layer of encryption using Chacha20-Poly1305
+async function chachaEncrypt(data, key, nonce) {
+  try {
+    const cipher = crypto.createCipheriv('chacha20-poly1305', Buffer.from(key, 'hex'), Buffer.from(nonce, 'hex'));
+    const encrypted = Buffer.concat([cipher.update(data), cipher.final()]);
+    return encrypted.toString('hex');
+  } catch (error) {
+    console.error("Chacha20 encryption error:", error);
+    return null;
+  }
+}
+
+// Function to decrypt using Chacha20-Poly1305
+async function chachaDecrypt(encryptedData, key, nonce) {
+  try {
+    const decipher = crypto.createDecipheriv('chacha20-poly1305', Buffer.from(key, 'hex'), Buffer.from(nonce, 'hex'));
+    const decrypted = Buffer.concat([decipher.update(Buffer.from(encryptedData, 'hex')), decipher.final()]);
+    return decrypted.toString();
+  } catch (error) {
+    console.error("Chacha20 decryption error:", error);
+    return null;
+  }
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -276,7 +300,11 @@ module.exports = async (req, res) => {
       const userRecordOpSalt = await generateOperationSalt();
       const encryptedUserRecord = await encryptUserData(userRecord, masterKey + userRecordOpSalt);
 
-      // Store encryptedUserRecord (instead of userRecord)
+      // Apply an extra layer of encryption with Chacha20
+      const chachaNonce = await generateNonce();
+      const doubleEncryptedUserRecord = await chachaEncrypt(JSON.stringify(encryptedUserRecord), masterKey, chachaNonce);
+
+      // Store doubleEncryptedUserRecord (instead of userRecord)
       // ...
 
       // Securely erase sensitive data from memory after usage
@@ -294,7 +322,7 @@ module.exports = async (req, res) => {
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
-        console.log('User record (for demonstration only):', encryptedUserRecord);
+        console.log('User record (for demonstration only):', doubleEncryptedUserRecord);
       }
 
       signupAttempts.delete(ip); // Reset attempts on successful signup
