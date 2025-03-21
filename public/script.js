@@ -128,7 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 padding: CryptoJS.pad.Pkcs7
             });
 
-            return encrypted.toString();
+            const encryptedData = encrypted.toString();
+            return encryptedData;
         } catch (error) {
             console.error("Encryption error:", error);
             throw new Error("Encryption failed: " + error.message);
