@@ -187,7 +187,13 @@
 
                     var encryptData = function(data, key) {
                       try {
-                        return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
+                        var iv = CryptoJS.lib.WordArray.random(128/8);
+                        var encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
+                            iv: iv,
+                            mode: CryptoJS.mode.CBC,
+                            padding: CryptoJS.pad.Pkcs7
+                        });
+                        return iv.toString() + encrypted.toString();
                       } catch (err) {
                         console.error("Encrypt error:", err);
                         return null;
@@ -196,9 +202,16 @@
 
                     var decryptData = function(encryptedData, key) {
                       try {
-                        var bytes = CryptoJS.AES.decrypt(encryptedData, key);
-                        var decrypted = bytes.toString(CryptoJS.enc.Utf8);
-                        return decrypted ? JSON.parse(decrypted) : null;
+                        var iv = CryptoJS.enc.Hex.parse(encryptedData.substring(0, 32));
+                        var encrypted = encryptedData.substring(32);
+                        var decrypted = CryptoJS.AES.decrypt(encrypted, key, {
+                            iv: iv,
+                            mode: CryptoJS.mode.CBC,
+                            padding: CryptoJS.pad.Pkcs7
+                        });
+
+                        var decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+                        return decryptedText ? JSON.parse(decryptedText) : null;
                       } catch (err) {
                         console.error("Decrypt error:", err);
                         return null;
