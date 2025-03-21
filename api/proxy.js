@@ -109,12 +109,8 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
             if(useEncryption) {
                 try {
                     if(encryptFlag){
-                      const encryptedKey = encrypt(key, encryptionKey);
-                      if (encryptedKey) {
-                        transformedKey = ENCRYPT_HEADER_PREFIX + encryptedKey;
-                      } else {
-                        console.warn(`Skipping header ${key} due to key encryption failure.`);
-                        continue;
+                      if (SENSITIVE_HEADERS.includes(lowerKey)) {
+                        transformedKey = ENCRYPT_HEADER_PREFIX + key;
                       }
                       transformedValue = encrypt(value, encryptionKey);
                        if (transformedValue === null) {
@@ -123,18 +119,7 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
                         }
                     } else {
                       if (key.startsWith(ENCRYPT_HEADER_PREFIX)) {
-                        const encryptedKey = key.slice(ENCRYPT_HEADER_PREFIX.length);
-                         if (encryptedKey !== null && encryptedKey !== undefined && typeof encryptedKey === 'string') {
-                            transformedKey = decrypt(encryptedKey, encryptionKey);
-                            if (transformedKey === null) {
-                              console.warn(`Skipping header ${key} due to key decryption failure.`);
-                              continue;
-                            }
-                          } else {
-                            console.warn(`Skipping header ${key} due to invalid key type.`);
-                            continue;
-                          }
-
+                         transformedKey = key.slice(ENCRYPT_HEADER_PREFIX.length);
                           if (value !== null && value !== undefined && typeof value === 'string') {
                             transformedValue = decrypt(value, encryptionKey);
                             if (transformedValue === null) {
@@ -154,7 +139,6 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
 
                 } catch (err) {
                     console.error(`Header transformation error for key ${key}:`, err);
-                    //If encryption or decryption fails, keep the original value
                     transformedHeaders[key] = headers[key];
                     continue; // Skip to the next header
                 }
