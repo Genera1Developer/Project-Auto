@@ -433,6 +433,12 @@ async function decompressData(compressedData) {
   }
 }
 
+// Function to generate a random initialization vector
+async function generateIV() {
+    const buffer = await randomBytesAsync(16);
+    return buffer.toString('hex');
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -493,7 +499,8 @@ module.exports = async (req, res) => {
       await addJitter(50);
 
       // Encrypt derived key using session key
-      const { encryptedDerivedKey, iv: derivedKeyIv, authTag: derivedKeyAuthTag } = await encryptDerivedKey(derivedEncryptionKey, sessionKey);
+      const derivedKeyIv = await generateIV();
+      const { encryptedDerivedKey, iv: actualDerivedKeyIv, authTag: derivedKeyAuthTag } = await encryptDerivedKey(derivedEncryptionKey, sessionKey, derivedKeyIv);
 
       // 2. Encrypt the username and salt
       const saltedUsername = saltUsername(username, salt);
@@ -505,8 +512,10 @@ module.exports = async (req, res) => {
       // Add Jitter before Encrypt username and salt
       await addJitter(50);
 
-      const encryptedUsername = await encryptData(saltedUsername, derivedEncryptionKey + usernameOpSalt); // Use operation salt
-      const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey + saltOpSalt) : null; // Use operation salt
+      const usernameIv = await generateIV();
+      const encryptedUsername = await encryptData(saltedUsername, derivedEncryptionKey + usernameOpSalt, usernameIv); // Use operation salt
+      const saltIv = await generateIV();
+      const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey + saltOpSalt, saltIv) : null; // Use operation salt
 
       // Homomorphic Encryption example (using userId as plaintext and sessionKey as publicKey):
       const publicKey = parseInt(sessionKey.substring(0, 8), 16); // Use a portion of sessionKey as publicKey
@@ -522,13 +531,15 @@ module.exports = async (req, res) => {
       const userRecord = {
         userId: encryptedUserId, // Store encrypted UserId
         hashedPassword: hashedPassword,
-        encryptedUsername: encryptedUsername,
-        encryptedSalt: encryptedSalt,
+        encryptedUsername: encryptedUsername ? encryptedUsername.encryptedData : null,
+        encryptedSalt: encryptedSalt ? encryptedSalt.encryptedData : null,
         usernameHash: hashWithSHA512(randomizedSalt(username)), // Store username hash
         encryptedDerivedKey: encryptedDerivedKey,  // Store encrypted key
-        derivedKeyIv: derivedKeyIv,           // Store initialization vector
+        derivedKeyIv: actualDerivedKeyIv,           // Store initialization vector
         derivedKeyAuthTag: derivedKeyAuthTag,    // Store authentication tag
-        totpKey: totpKey // Store TOTP key
+        totpKey: totpKey, // Store TOTP key
+        usernameIv: usernameIv,
+        saltIv: saltIv
       };
 
       // Add Jitter before Encrypt user record
@@ -536,8 +547,9 @@ module.exports = async (req, res) => {
 
       // Encrypt entire user record before storage using master key
       const masterKey = process.env.MASTER_ENCRYPTION_KEY || 'defaultinsecurekeythatmustbechanged';
+      const userRecordIv = await generateIV();
       const userRecordOpSalt = await generateOperationSalt();
-      const encryptedUserRecord = await encryptUserData(userRecord, masterKey + userRecordOpSalt);
+      const encryptedUserRecord = await encryptUserData(userRecord, masterKey + userRecordOpSalt, userRecordIv);
 
       // Add Jitter before Chacha Encryption
       await addJitter(50);
@@ -583,7 +595,9 @@ module.exports = async (req, res) => {
         wrappedMasterKey: wrappedMasterKey,
         mac: mac,
         obfuscatedUserRecord: obfuscatedUserRecord,
-        keyedHash: keyedHashValue
+        keyedHash: keyedHashValue,
+        userRecordIv: userRecordIv,
+        chachaNonce: chachaNonce
       }
 
       const serverMetadataString = JSON.stringify(serverMetadata);
