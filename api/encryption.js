@@ -30,8 +30,9 @@ function setEncryptionKey(newKey) {
 }
 
 function generateEncryptionKey() {
-    key = crypto.generateKeySync('aes', { length: 256 });
-    return key.toString('hex');
+    const newKey = crypto.generateKeySync('aes', { length: 256 });
+    key = newKey;
+    return newKey.toString('hex');
 }
 
 function encrypt(text) {
@@ -80,29 +81,23 @@ function decrypt(text) {
     }
 }
 
-const SAFE_COMPARE_MAX_LENGTH = 512;
-
 function safeCompare(a, b) {
     if (typeof a !== 'string' || typeof b !== 'string') {
         return false;
     }
 
-    if (a.length > SAFE_COMPARE_MAX_LENGTH || b.length > SAFE_COMPARE_MAX_LENGTH) {
+    const maxLength = Math.max(a.length, b.length);
+    if (maxLength > 512) {
         return false;
     }
 
-    const bufferA = Buffer.from(a);
-    const bufferB = Buffer.from(b);
-
-    if (bufferA.length !== bufferB.length) {
-        return false;
+    let result = true;
+    for (let i = 0; i < maxLength; i++) {
+        const charCodeA = a.charCodeAt(i) || 0;
+        const charCodeB = b.charCodeAt(i) || 0;
+        result &= (charCodeA === charCodeB);
     }
-
-    try {
-        return crypto.timingSafeEqual(bufferA, bufferB);
-    } catch (error) {
-        return false;
-    }
+    return result;
 }
 
 module.exports = {
