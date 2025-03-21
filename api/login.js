@@ -660,7 +660,7 @@ module.exports = async (req, res) => {
 
                  // Generate a random IV for the final encryption
                  const finalEncryptionIV = generateRandomIV();
-                 const finalEncryptionKey = Buffer.from(generateEncryptionKey(), 'hex');
+                 const finalEncryptionKey = crypto.randomBytes(32);
 
                  // Encrypt the response payload with a new IV each time
                  const finalEncryptedResponse = encryptData(JSON.stringify(responsePayload), finalEncryptionKey, finalEncryptionIV);
