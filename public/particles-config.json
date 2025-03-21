@@ -217,7 +217,8 @@
         "hmacKeyWrapping": true,
         "cacheKeyDerivationRounds": 3,
         "cacheAdataDerivationRounds": 3,
-        "cacheHmacDerivationRounds": 3
+        "cacheHmacDerivationRounds": 3,
+        "keyExchangeAlgorithm": "Curve25519"
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
