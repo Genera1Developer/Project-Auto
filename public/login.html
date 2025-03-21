@@ -174,9 +174,6 @@
                 <input type="password" id="password" name="password" placeholder="Password" required>
                 <i class="fas fa-eye" id="togglePassword"></i>
             </div>
-            <input type="text" id="captcha" name="captcha" placeholder="Enter Captcha" required> <!-- REMOVE CAPTCHA PLEASE -->
-            <img src="/api/captcha" alt="Captcha" id="captchaImage" onclick="refreshCaptcha()" style="cursor: pointer;"> <!-- REMOVE CAPTCHA PLEASE -->
-            <a href="#" onclick="refreshCaptcha()">Refresh Captcha</a>
             <div class="encryption-animation" id="encryptionAnimation"></div>
             <button type="submit">Login</button>
         </form>
@@ -231,10 +228,6 @@
         particlesJS.load('particles-js', 'particles-config.json', function() {
           console.log('particles.js loaded - callback');
         });
-
-        function refreshCaptcha() {
-            document.getElementById('captchaImage').src = '/api/captcha?' + new Date().getTime();
-        }
 
         // Function to generate a cryptographically secure random key
         function generateEncryptionKey() {
@@ -307,12 +300,11 @@
             event.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const captcha = document.getElementById('captcha').value;
             const errorMessage = document.getElementById('error-message');
             const encryptionStatus = document.getElementById('encryption-status');
             const encryptionAnimation = document.getElementById('encryptionAnimation');
 
-            if (!username || !password || !captcha) {
+            if (!username || !password) {
                 errorMessage.textContent = 'Please enter all fields.';
                 return;
             }
@@ -326,11 +318,10 @@
             const salt = generateSalt(); // Generate a unique salt for this submission
 
             // Encrypt data before sending
-            let encryptedUsername, encryptedPassword, encryptedCaptcha;
+            let encryptedUsername, encryptedPassword;
             try {
                 encryptedUsername = encryptData(username, encryptionKey);
                 encryptedPassword = encryptData(password, encryptionKey);
-                encryptedCaptcha = encryptData(captcha, encryptionKey);
             } catch (error) {
                 console.error("Encryption setup error:", error);
                 errorMessage.textContent = 'Encryption setup failed. Please try again.';
@@ -339,7 +330,7 @@
                 return;
             }
 
-            if (!encryptedUsername.ciphertext || !encryptedPassword.ciphertext || !encryptedCaptcha.ciphertext) {
+            if (!encryptedUsername.ciphertext || !encryptedPassword.ciphertext) {
                 errorMessage.textContent = 'Encryption failed. Please try again.';
                 encryptionAnimation.style.display = 'none';
                 encryptionStatus.textContent = 'Encryption failure.';
@@ -375,13 +366,12 @@
             }
 
             // Create a combined data string for HMAC calculation
-            const hmacData = encryptedUsername.ciphertext + encryptedPassword.ciphertext + encryptedCaptcha.ciphertext + salt + timestamp + encryptedEncryptionKey + nonce;
+            const hmacData = encryptedUsername.ciphertext + encryptedPassword.ciphertext + salt + timestamp + encryptedEncryptionKey + nonce;
             const hmac = generateHMAC(hmacData, encryptionKey);
 
              // Use a more secure method for storing the IV (e.g., prepending to the ciphertext)
             const combinedUsernameCiphertext = encryptedUsername.iv + encryptedUsername.ciphertext;
             const combinedPasswordCiphertext = encryptedPassword.iv + encryptedPassword.ciphertext;
-            const combinedCaptchaCiphertext = encryptedCaptcha.iv + encryptedCaptcha.ciphertext;
 
             // Instead of Base64 encoding, use URL-safe encoding
             function urlEncodeB64(str) {
@@ -399,20 +389,16 @@
 
             const encodedUsernameCiphertext = urlEncodeB64(combinedUsernameCiphertext);
             const encodedPasswordCiphertext = urlEncodeB64(combinedPasswordCiphertext);
-            const encodedCaptchaCiphertext = urlEncodeB64(combinedCaptchaCiphertext);
 
             // Generate initialization vectors
             const usernameIV = encryptedUsername.iv;
             const passwordIV = encryptedPassword.iv;
-            const captchaIV = encryptedCaptcha.iv;
 
             const requestBody = {
                     username: encodedUsernameCiphertext,
                     password: encodedPasswordCiphertext,
-                    captcha: encodedCaptchaCiphertext,
                     usernameIV: usernameIV,
                     passwordIV: passwordIV,
-                    captchaIV: captchaIV,
                     salt: salt,
                 };
 
