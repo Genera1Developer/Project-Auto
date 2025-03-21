@@ -178,7 +178,7 @@
                     var linkedColorValue = CryptoJS.MD5(initialLinkedColorSeed + salt).toString().substring(0, 6);
 
                     var updateColors = function(color, linkedColor) {
-                        e.particles.color.value = "#" + color;
+                        if(e.particles.color) e.particles.color.value = "#" + color;
                         if (e.particles.shape && e.particles.shape.stroke) {
                             e.particles.shape.stroke.color = "#" + color;
                         }
