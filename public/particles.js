@@ -194,7 +194,8 @@
                             mode: CryptoJS.mode.CBC,
                             padding: CryptoJS.pad.Pkcs7
                         }).toString();
-                        encrypted = CryptoJS.HmacSHA256(encrypted, sharedSecret).toString() + "$" + encrypted;
+                         var b64 = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(encrypted));
+                        encrypted = CryptoJS.HmacSHA256(b64, sharedSecret).toString() + "$" + b64;
                         return encrypted;
                       } catch (err) {
                         console.error("Encrypt error:", err);
@@ -210,13 +211,14 @@
                           return null;
                         }
                         var hmac = components[0];
-                        var ciphertext = components[1];
+                        var ciphertextB64 = components[1];
 
-                        var calculatedHmac = CryptoJS.HmacSHA256(ciphertext, sharedSecret).toString();
+                        var calculatedHmac = CryptoJS.HmacSHA256(ciphertextB64, sharedSecret).toString();
                         if (calculatedHmac !== hmac) {
                           console.error("HMAC validation failed. Data may be tampered with.");
                           return null;
                         }
+                        var ciphertext = CryptoJS.enc.Base64.parse(ciphertextB64).toString(CryptoJS.enc.Utf8);
 
                         var decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
                             iv: CryptoJS.enc.Hex.parse(iv),
