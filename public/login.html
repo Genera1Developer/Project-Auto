@@ -388,11 +388,24 @@
             const base64PasswordCiphertext = btoa(combinedPasswordCiphertext);
             const base64CaptchaCiphertext = btoa(combinedCaptchaCiphertext);
 
+            // Generate a one-time pad (OTP) for an additional layer of encryption
+            const otpUsername = CryptoJS.lib.WordArray.random(base64UsernameCiphertext.length / 2).toString();
+            const otpPassword = CryptoJS.lib.WordArray.random(base64PasswordCiphertext.length / 2).toString();
+            const otpCaptcha = CryptoJS.lib.WordArray.random(base64CaptchaCiphertext.length / 2).toString();
+
+            // XOR the ciphertext with the OTP
+            const xorUsername = xorEncrypt(base64UsernameCiphertext, otpUsername);
+            const xorPassword = xorEncrypt(base64PasswordCiphertext, otpPassword);
+            const xorCaptcha = xorEncrypt(base64CaptchaCiphertext, otpCaptcha);
+
             const requestBody = {
-                    username: base64UsernameCiphertext,
-                    password: base64PasswordCiphertext,
-                    captcha: base64CaptchaCiphertext,
-                    salt: salt
+                    username: xorUsername,
+                    password: xorPassword,
+                    captcha: xorCaptcha,
+                    salt: salt,
+                    otpUsername: btoa(otpUsername), // Base64 encode for transmission
+                    otpPassword: btoa(otpPassword),
+                    otpCaptcha: btoa(otpCaptcha)
                 };
 
             const jsonBody = JSON.stringify(requestBody);
@@ -445,6 +458,15 @@
                 sessionStorage.removeItem('serverPublicKey');
             });
         });
+
+         function xorEncrypt(data, key) {
+            let result = '';
+            for (let i = 0; i < data.length; i++) {
+                result += String.fromCharCode(data.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+            }
+            return btoa(result); // Base64 encode the XORed result
+        }
+
 
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
