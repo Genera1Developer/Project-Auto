@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const otplib = require('otplib');
 
 const generateSalt = () => {
   return crypto.randomBytes(32).toString('hex');
@@ -44,6 +45,7 @@ const fetchUser = async (username) => {
       username: 'testuser',
       passwordHash: passwordHash,
       salt: salt,
+      twoFactorSecret: 'JBSWY3DPEHPKDDQMRGGEQSKF',
     };
   }
   return null;
@@ -250,7 +252,6 @@ const generate2FASecret = () => {
 
 const verify2FACode = (secret, token) => {
     try {
-        const otplib = require('otplib');
         otplib.authenticator.options = {
             window: [1, 1]
         };
@@ -258,6 +259,43 @@ const verify2FACode = (secret, token) => {
     } catch (error) {
         console.error('2FA verification error:', error);
         return false;
+    }
+};
+
+const generateDeviceSecret = () => {
+    return crypto.randomBytes(32).toString('hex');
+};
+
+const encryptWithDeviceSecret = (data, deviceSecret) => {
+    try {
+        const iv = crypto.randomBytes(16);
+        const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(deviceSecret, 'hex'), iv);
+        const dataBuffer = Buffer.from(JSON.stringify(data), 'utf8');
+        let encrypted = cipher.update(dataBuffer);
+        encrypted = Buffer.concat([encrypted, cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        return Buffer.concat([iv, authTag, encrypted]).toString('hex');
+    } catch (error) {
+        console.error('Encryption with device secret error:', error);
+        return null;
+    }
+};
+
+const decryptWithDeviceSecret = (encryptedData, deviceSecret) => {
+    try {
+        const encryptedDataBuffer = Buffer.from(encryptedData, 'hex');
+        const iv = encryptedDataBuffer.slice(0, 16);
+        const authTag = encryptedDataBuffer.slice(16, 32);
+        const data = encryptedDataBuffer.slice(32);
+
+        const decipher = crypto.createDecipheriv('aes-256-gcm', Buffer.from(deviceSecret, 'hex'), iv);
+        decipher.setAuthTag(authTag);
+        let decrypted = decipher.update(data);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+        return JSON.parse(decrypted.toString('utf8'));
+    } catch (error) {
+        console.error('Decryption with device secret error:', error);
+        return null;
     }
 };
 
@@ -297,7 +335,7 @@ module.exports = async (req, res) => {
       if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
         clearFailedLoginAttempts(username);
 
-        // 2FA Verification (Example)
+        // 2FA Verification
         if (userData.twoFactorSecret) {
             if (!twoFactorToken) {
                 return res.status(401).json({ message: 'Two-factor authentication required' });
@@ -331,8 +369,10 @@ module.exports = async (req, res) => {
             const encryptedSessionCookie = encryptCookie(encryptedSession, encryptionKey.toString('hex'));
 
             if (encryptedSessionCookie) {
+                const deviceSecret = generateDeviceSecret();
+                const encryptedDeviceSecret = encryptWithDeviceSecret({secret: deviceSecret}, encryptionKey.toString('hex'))
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
-                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId });
+                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId, deviceSecret: encryptedDeviceSecret });
             } else {
                 res.status(500).json({ message: 'Session cookie encryption failed' });
             }
