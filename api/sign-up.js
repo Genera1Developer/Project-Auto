@@ -172,6 +172,12 @@ function isValidNonce(nonce, storedNonces) {
     return true;
 }
 
+// Centralized error handling with logging
+function handleSignupError(res, error, message = 'Internal server error') {
+  console.error("Signup Error:", error);
+  return res.status(500).json({ message });
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2' } = req.body;
@@ -183,7 +189,6 @@ module.exports = async (req, res) => {
     let hashedPassword, salt = null;
     let derivedEncryptionKey = null;
     let randomPassword = null;
-    let nonce = null;
 
     try {
       if (hashingAlgo === 'scrypt') {
@@ -247,8 +252,7 @@ module.exports = async (req, res) => {
 
       return res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
-      console.error("Error during password hashing/encryption:", error);
-      return res.status(500).json({ message: 'Internal server error' });
+      return handleSignupError(res, error);
     }
 
   } else {
