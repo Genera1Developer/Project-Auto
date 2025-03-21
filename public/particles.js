@@ -317,6 +317,7 @@
 
                     var loadInitialColorData = function() {
                         var storedColorData = retrieveEncryptedData("colorData", null);
+                        var colorSecret = generateKey(initialColorSeed);
                         var encryptedColorData = storedColorData || encryptData(colorData, colorSecret);
                         var decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
                         return {encryptedColorData: encryptedColorData, decryptedColorData: decryptedColorData};
@@ -324,6 +325,7 @@
 
                     var loadInitialLinkedColorData = function() {
                         var storedLinkedColorData = retrieveEncryptedData("linkedLinkedColorData", null);
+                        var linkedColorSecret = generateKey(initialLinkedColorSeed);
                         var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
                         var decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
                         return {encryptedLinkedColorData: encryptedLinkedColorData, decryptedLinkedColorData: decryptedLinkedColorData};
@@ -355,9 +357,11 @@
                                 timestamp: Date.now()
                             });
 
+                            var colorSecret = generateKey(newColor);
                             encryptedColorData = encryptData(colorDataToEncrypt, colorSecret);
                             storeEncryptedData("colorData", encryptedColorData);
 
+                            var linkedColorSecret = generateKey(newLinkColor);
                             encryptedLinkedColorData = encryptData(linkedColorDataToEncrypt, linkedColorSecret);
                             storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
 
