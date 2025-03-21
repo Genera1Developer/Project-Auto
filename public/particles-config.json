@@ -197,7 +197,8 @@
                 "algorithm": "zlib",
                 "level": 6
               }
-          }
+          },
+       "cacheIntegrityAlgorithm": "SHA256"
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -415,6 +416,34 @@
         "ocspStapling": {
           "enabled": true
         },
-         "disableEntropyCollection": false
+         "disableEntropyCollection": false,
+       "encryptedLocalStorage": {
+          "enabled": true,
+          "algorithm": "AES-256-GCM",
+          "key": "ENC_LOCAL_STORAGE_KEY_PLACEHOLDER",
+          "iv": "ENC_LOCAL_STORAGE_IV_PLACEHOLDER",
+          "salt": "ENC_LOCAL_STORAGE_SALT_PLACEHOLDER",
+          "iterations": 10000,
+          "encoding": "base64",
+          "compression": {
+              "enabled": true,
+              "algorithm": "zlib",
+              "level": 6
+          }
+       },
+       "encryptedSessionStorage": {
+            "enabled": true,
+            "algorithm": "AES-256-GCM",
+            "key": "ENC_SESSION_STORAGE_KEY_PLACEHOLDER",
+            "iv": "ENC_SESSION_STORAGE_IV_PLACEHOLDER",
+            "salt": "ENC_SESSION_STORAGE_SALT_PLACEHOLDER",
+            "iterations": 10000,
+            "encoding": "base64",
+            "compression": {
+                "enabled": true,
+                "algorithm": "zlib",
+                "level": 6
+            }
+        }
   }
 }
