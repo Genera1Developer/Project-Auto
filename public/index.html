@@ -109,16 +109,17 @@
             const errorDiv = document.getElementById('error');
             const loadingDiv = document.getElementById('loading');
             const proxyFrame = document.getElementById('proxyFrame');
+            const maxRetries = 3;
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
                 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
                 let nonce = '';
+                const randomValues = new Uint32Array(length);
+                window.crypto.getRandomValues(randomValues); // Fill the array with random values at once
+
                 for (let i = 0; i < length; i++) {
-                    //Use window.crypto.getRandomValues for more secure nonce generation
-                    const randomValues = new Uint32Array(1);
-                    window.crypto.getRandomValues(randomValues);
-                    const randomIndex = Math.floor(randomValues[0] / (0xffffffff + 1) * characters.length);
+                    const randomIndex = Math.floor(randomValues[i] / (0xffffffff + 1) * characters.length);
                     nonce += characters.charAt(randomIndex);
                 }
                 return nonce;
@@ -150,16 +151,18 @@
 
             // Function to generate a cryptographically secure salt
             function generateSalt(length) {
-              const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-              let salt = '';
-              for (let i = 0; i < length; i++) {
-                  const randomValues = new Uint32Array(1);
-                  window.crypto.getRandomValues(randomValues);
-                  const randomIndex = Math.floor(randomValues[0] / (0xffffffff + 1) * characters.length);
-                  salt += characters.charAt(randomIndex);
-              }
-              return salt;
+                let salt = '';
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                const randomValues = new Uint32Array(length);
+                window.crypto.getRandomValues(randomValues);
+
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(randomValues[i] / (0xffffffff + 1) * characters.length);
+                    salt += characters.charAt(randomIndex);
+                }
+                return salt;
             }
+
 
             // Function to derive a key from the password and salt using PBKDF2
             async function deriveKey(password, salt) {
@@ -245,18 +248,22 @@
             }
 
             browseButton.addEventListener('click', async () => {
-                const url = urlInput.value.trim();
+                let url = urlInput.value.trim();
+                let retries = 0;
+
                 if (!url) {
                     errorDiv.textContent = 'Please enter a URL.';
                     return;
                 }
 
                 try {
+                  // Normalize URL by adding https:// if no protocol specified
+                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                      url = 'https://' + url;
+                      urlInput.value = url; // Update the input field
+                  }
+
                     // Improved URL validation
-                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                        errorDiv.textContent = 'Please enter a valid URL starting with http:// or https://';
-                        return;
-                    }
                     try {
                         new URL(url);
                     } catch (_) {
@@ -315,7 +322,7 @@
                      //sessionStorage.setItem('hashedKey', hashedKey);
 
                      // Set a timeout to prevent indefinite loading
-                    setTimeout(() => {
+                    const timeoutId = setTimeout(() => {
                         if (loadingDiv.style.display === 'block') {
                             loadingDiv.style.display = 'none';
                             errorDiv.textContent = 'Request timed out. Please try again.';
