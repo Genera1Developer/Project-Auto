@@ -736,6 +736,9 @@
             const aesKey = CryptoJS.lib.WordArray.random(aesKeySize/8); // Generate AES key
             const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
 
+			const aesKeyBase64 = CryptoJS.enc.Base64.stringify(aesKey);
+			const hmacKeyBase64 = CryptoJS.enc.Base64.stringify(hmacKey);
+
             // Display the generated keys (for debugging purposes only)
             const saltValue = document.getElementById('salt-value');
             if (saltValue) {
@@ -744,12 +747,12 @@
 
             const aesKeyValue = document.getElementById('aes-key-value');
             if (aesKeyValue) {
-                 aesKeyValue.textContent = aesKey.toString();
+                 aesKeyValue.textContent = aesKeyBase64;
             }
 
             const hmacKeyValue = document.getElementById('hmac-key-value');
             if (hmacKeyValue) {
-                hmacKeyValue.textContent = hmacKey.toString();
+                hmacKeyValue.textContent = hmacKeyBase64;
             }
 
             // Encrypt username and email
@@ -796,7 +799,7 @@
                     const encrypt = new JSEncrypt();
                     encrypt.setPublicKey(publicKey);
                     encrypt.default_key_size = rsaKeySize;
-                    const encryptedAesKeyRSA = encrypt.encrypt(aesKey.toString(CryptoJS.enc.Base64));
+                    const encryptedAesKeyRSA = encrypt.encrypt(aesKeyBase64);
 
                     if (!encryptedAesKeyRSA) {
                         throw new Error('AES key encryption failed');
