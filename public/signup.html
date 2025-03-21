@@ -186,6 +186,7 @@
 
         .g-recaptcha {
             display: inline-block;
+            margin-bottom: 10px;
         }
 
         .salt-display {
@@ -819,7 +820,7 @@
 					// Clear password from memory
 					document.getElementById('password').value = '';
 					document.getElementById('confirmPassword').value = '';
-          grecaptcha.reset();
+                    grecaptcha.reset();
 
                     const signupData = {
                        username: usernameEncrypted,
