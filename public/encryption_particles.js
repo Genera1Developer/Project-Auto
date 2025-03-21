@@ -302,6 +302,13 @@ particlesJS('particles-js', {
         },
         sanitizeString: function(str) {
           return str.replace(/[^a-zA-Z0-9]/g, '');
+        },
+        isValidBase64: function(str) {
+            try {
+                return btoa(atob(str)) === str;
+            } catch (e) {
+                return false;
+            }
         }
   },
   "fn": {
@@ -418,7 +425,12 @@ particlesJS('particles-js', {
                                 try {
                                     const item = encryptedValue[i];
                                     if (typeof item === 'string') {
+                                      if(encryptPlugin.isValidBase64(item)){
                                         decryptedArray[i] = await encryptPlugin.decrypt(item, key, iv, algorithm);
+                                      } else {
+                                        decryptedArray[i] = item;
+                                      }
+
                                     } else {
                                         decryptedArray[i] = item;
                                     }
@@ -429,7 +441,12 @@ particlesJS('particles-js', {
                             }
                             target[lastPart] = decryptedArray;
                         } else if(typeof encryptedValue === 'string'){
-                            target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
+                           if(encryptPlugin.isValidBase64(encryptedValue)){
+                              target[lastPart] = await encryptPlugin.decrypt(encryptedValue, key, iv, algorithm);
+                           } else {
+                             target[lastPart] = encryptedValue;
+                           }
+
                         }
                     } catch (error) {
                         console.error("Decryption draw failed:", error);
