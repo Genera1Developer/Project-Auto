@@ -401,10 +401,18 @@
             const encodedPasswordCiphertext = urlEncodeB64(combinedPasswordCiphertext);
             const encodedCaptchaCiphertext = urlEncodeB64(combinedCaptchaCiphertext);
 
+            // Generate initialization vectors
+            const usernameIV = encryptedUsername.iv;
+            const passwordIV = encryptedPassword.iv;
+            const captchaIV = encryptedCaptcha.iv;
+
             const requestBody = {
                     username: encodedUsernameCiphertext,
                     password: encodedPasswordCiphertext,
                     captcha: encodedCaptchaCiphertext,
+                    usernameIV: usernameIV,
+                    passwordIV: passwordIV,
+                    captchaIV: captchaIV,
                     salt: salt,
                 };
 
