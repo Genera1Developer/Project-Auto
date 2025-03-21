@@ -89,7 +89,12 @@
       "randomizeIv": true,
       "hmacKey": "ENC_HMAC_KEY_PLACEHOLDER",
       "adataHmac": true,
-      "debug": false
+      "debug": false,
+      "performanceOptimization": {
+        "disableEncryptionOnLowPerformance": true,
+        "cpuUsageThreshold": 80,
+        "memoryUsageThreshold": 90
+      }
     }
   },
   "interactivity": {
