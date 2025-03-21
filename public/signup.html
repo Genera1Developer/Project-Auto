@@ -368,6 +368,10 @@
             box-sizing: border-box;
         }
 
+		.show {
+			display: block !important;
+		}
+
 
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -442,7 +446,7 @@
         </div>
 
         <a href="#" class="security-details-toggle" onclick="toggleSecurityDetails('security-audit-log'); return false;">Show Security Details</a>
-        <a href="#" class="security-details-toggle" onclick="toggleSecurityDetails('sensitive-data-display'); return false;">Show Sensitive Data</a>
+		<a href="#" class="security-details-toggle" onclick="toggleSecurityDetails('advanced-debugging'); return false;">Advanced Debugging</a>
 
         <div id="security-audit-log" class="hidden">
             <h3>Security Audit Log:</h3>
@@ -453,13 +457,20 @@
                 <li>[Timestamp] - Encryption initiated.</li>
             </ul>
         </div>
-         <div id="sensitive-data-display" class="hidden">
-            <h3>Sensitive Data (For Debugging - DO NOT USE IN PRODUCTION):</h3>
-            <div id="salt-display" class="salt-display">Salt: <span id="salt-value"></span> <button class="copy-button" onclick="copyToClipboard('salt-value')">Copy</button></div>
-            <div id="aes-key-display" class="aes-key-display">AES Key: <span id="aes-key-value"></span> <button class="copy-button" onclick="copyToClipboard('aes-key-value')">Copy</button></div>
-            <div id="hmac-key-display" class="hmac-key-display">HMAC Key: <span id="hmac-key-value"></span> <button class="copy-button" onclick="copyToClipboard('hmac-key-value')">Copy</button></div>
-            <div id="session-token-display" class="session-token-display">Session Token: <span id="session-token-value"></span> <button class="copy-button" onclick="copyToClipboard('session-token-value')">Copy</button></div>
-        </div>
+         <div id="advanced-debugging" class="hidden">
+			<h3>Advanced Debugging (DO NOT USE IN PRODUCTION):</h3>
+			<p>These options can expose sensitive information. Use with caution and only for debugging purposes.</p>
+
+			<label><input type="checkbox" id="show-sensitive-data-checkbox" onclick="toggleSensitiveDataDisplay()"> Show Sensitive Data</label>
+
+			<div id="sensitive-data-display" class="hidden">
+				<h3>Sensitive Data (For Debugging - DO NOT USE IN PRODUCTION):</h3>
+				<div id="salt-display" class="salt-display">Salt: <span id="salt-value"></span> <button class="copy-button" onclick="copyToClipboard('salt-value')">Copy</button></div>
+				<div id="aes-key-display" class="aes-key-display">AES Key: <span id="aes-key-value"></span> <button class="copy-button" onclick="copyToClipboard('aes-key-value')">Copy</button></div>
+				<div id="hmac-key-display" class="hmac-key-display">HMAC Key: <span id="hmac-key-value"></span> <button class="copy-button" onclick="copyToClipboard('hmac-key-value')">Copy</button></div>
+				<div id="session-token-display" class="session-token-display">Session Token: <span id="session-token-value"></span> <button class="copy-button" onclick="copyToClipboard('session-token-value')">Copy</button></div>
+			</div>
+		</div>
         <div id="brute-force-attempts"></div>
 
     <script src="particles.js"></script>
@@ -605,6 +616,19 @@
             const element = document.getElementById(elementId);
             element.classList.toggle('hidden');
         }
+
+		function toggleSensitiveDataDisplay() {
+			const sensitiveDataDisplay = document.getElementById('sensitive-data-display');
+			const checkbox = document.getElementById('show-sensitive-data-checkbox');
+
+			if (checkbox.checked) {
+				sensitiveDataDisplay.classList.add('show');
+				sensitiveDataDisplay.classList.remove('hidden');
+			} else {
+				sensitiveDataDisplay.classList.add('hidden');
+				sensitiveDataDisplay.classList.remove('show');
+			}
+		}
 
         function copyToClipboard(elementId) {
             const element = document.getElementById(elementId);
