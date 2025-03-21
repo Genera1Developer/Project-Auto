@@ -84,6 +84,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function performLogin(username, password, captcha, errorMessage, encryptionStatus, encryptionAnimation) {
+        // Password Strength Check
+        const passwordStrength = checkPasswordStrength(password);
+        if (passwordStrength < 4) {
+            errorMessage.textContent = 'Password does not meet complexity requirements.';
+            encryptionStatus.textContent = 'Weak Password.';
+            showAlert('Password must be at least 8 characters and include upper case, lower case, numbers, and symbols.', 'error');
+            if (encryptionAnimation) {
+                encryptionAnimation.style.display = 'none';
+            }
+            return;
+        }
+
         try {
             const saltValue = await generateAndStoreSalt();
             const [encryptedData, hmac] = await Promise.all([
@@ -95,8 +107,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const keyPrefix = getKeyPrefix();
             const ivPrefix = getIVPrefix();
-            const iv = localStorage.getItem('currentIV');
-            const hmacIV = localStorage.getItem('hmacIV');
+            const key = await generateKey(saltValue);
+            const iv = await generateIV(saltValue);
+
+            const hmacKey = await generateHmacKey(saltValue);
+            const hmacIV = await generateHmacIV(saltValue);
+
+            sessionStorage.setItem('key', key);
+            sessionStorage.setItem('iv', iv);
+            sessionStorage.setItem('hmacKey', hmacKey);
+            sessionStorage.setItem('hmacIV', hmacIV);
 
             const response = await fetch('/api/login', {
                 method: 'POST',
@@ -107,7 +127,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-HMAC': encryptedHmac,
                     'X-Key-Prefix': keyPrefix,
                     'X-IV-Prefix': ivPrefix,
+                    'X-Key': key,
                     'X-IV': iv,
+                    'X-HMAC-Key': hmacKey,
                     'X-HMAC-IV': hmacIV,
                     'X-Nonce': window.nonce,
                     'Cache-Control': 'no-cache',
@@ -151,7 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function encryptData(data, salt) {
-        // Use Web Crypto API for encryption
         return await encryptDataWebCrypto(data, salt);
     }
 
@@ -231,13 +252,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return secret;
     }
 
-    // Function to get CSRF token from meta tag
     function getCSRFToken() {
         const metaTag = querySelector('meta[name="csrf-token"]');
         return metaTag ? metaTag.content : null;
     }
 
-    // Particle.js Initialization
     if (typeof particlesJS === 'function') {
         particlesJS.load('public/particles-js', 'public/particles-config.json', function() {
             console.log('particles.js loaded - callback');
@@ -246,14 +265,12 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn('particlesJS function not found. Ensure particles.js is loaded.');
     }
 
-    // Function to show a custom alert
     function showAlert(message, type = 'info') {
         const alertContainer = document.createElement('div');
         alertContainer.className = `custom-alert ${type}`;
         alertContainer.textContent = message;
         document.body.appendChild(alertContainer);
 
-        // Remove the alert after a few seconds
         setTimeout(() => {
             alertContainer.classList.add('fade-out');
             setTimeout(() => {
@@ -286,19 +303,19 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const derivedKey = await deriveKeyMaterial(salt);
 
-            let iv = localStorage.getItem('currentIV');
+            let iv = sessionStorage.getItem('currentIV');
             if (!iv){
                 try{
-                    const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16)); // Generate a new IV
+                    const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
                     iv = arrayBufferToSafeBase64(ivBuffer.buffer);
-                    localStorage.setItem('currentIV', iv);
+                    sessionStorage.setItem('currentIV', iv);
                 } catch (e) {
                     console.error("IV generation error:", e);
                     showAlert('IV Generation Failed. Secure login disabled.', 'error');
                     throw new Error("IV generation failed");
                 }
             }
-            iv = safeBase64ToArrayBuffer(localStorage.getItem('currentIV'));
+            iv = safeBase64ToArrayBuffer(sessionStorage.getItem('currentIV'));
 
             const encodedData = new TextEncoder().encode(JSON.stringify(data));
 
@@ -351,7 +368,6 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generateAndStoreHmacWebCrypto(data, salt) {
         try {
             const hmac = await generateHmacWebCrypto(data, salt);
-            // No need to store HMAC in localStorage, as it's immediately used
             return hmac;
         } catch (e) {
             console.error("WebCrypto HMAC generation error", e);
@@ -363,19 +379,19 @@ document.addEventListener('DOMContentLoaded', function() {
     async function encryptHmacWebCrypto(hmac, salt) {
         try {
             const derivedKey = await deriveKeyMaterial(salt);
-            let iv = localStorage.getItem('hmacIV');
+            let iv = sessionStorage.getItem('hmacIV');
             if (!iv){
                 try {
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
                     iv = arrayBufferToSafeBase64(ivBuffer.buffer);
-                    localStorage.setItem('hmacIV', iv);
+                    sessionStorage.setItem('hmacIV', iv);
                 } catch (e) {
                     console.error("HMAC IV generation error:", e);
                     showAlert('HMAC IV Generation Failed. Secure login disabled.', 'error');
                     throw new Error("HMAC IV generation failed");
                 }
             }
-            iv = safeBase64ToArrayBuffer(localStorage.getItem('hmacIV'));
+            iv = safeBase64ToArrayBuffer(sessionStorage.getItem('hmacIV'));
 
             const encodedHmac = new TextEncoder().encode(hmac);
 
@@ -396,20 +412,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Schedule cleanup tasks.
     scheduleCleanupTasks();
 
     function scheduleCleanupTasks() {
-        // Clear sessionStorage and localStorage weekly at 6 AM every Sunday
         const now = new Date();
-        const dayOfWeek = now.getDay(); // 0 (Sunday) to 6 (Saturday)
+        const dayOfWeek = now.getDay();
         const millisTillNextSunday = (7 - dayOfWeek) % 7 * 24 * 60 * 60 * 1000 +
             new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0).getTime() -
             now.getTime();
 
         setTimeout(function() {
             clearEncryptionData();
-            // Schedule the task to run every week (7 days)
             setInterval(clearEncryptionData, 7 * 24 * 60 * 60 * 1000);
         }, millisTillNextSunday);
     }
@@ -419,25 +432,26 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.removeItem('keyPrefix');
         sessionStorage.removeItem('ivPrefix');
         sessionStorage.removeItem('hmacSecret');
-        localStorage.removeItem('currentIV');
-        localStorage.removeItem('hmacIV');
-        console.log('Encryption data cleared from sessionStorage and localStorage.');
+        sessionStorage.removeItem('currentIV');
+        sessionStorage.removeItem('hmacIV');
+        sessionStorage.removeItem('key');
+        sessionStorage.removeItem('iv');
+        sessionStorage.removeItem('hmacKey');
+        sessionStorage.removeItem('hmacIV');
+        console.log('Encryption data cleared from sessionStorage.');
     }
 
-    // Add check for window.crypto
     if (!window.crypto || !window.crypto.subtle) {
         console.error("Web Crypto API not supported!");
         showAlert("Web Crypto API not supported. Secure login disabled.", 'error');
         return;
     }
 
-    // Check if running in a secure context (HTTPS)
     if (window.location.protocol !== 'https:') {
         console.warn("Website is not running on HTTPS. Encryption may not be fully secure.");
         showAlert("Website is not running on HTTPS. Encryption may not be fully secure.", 'warning');
     }
 
-    // Implement timing attack resistant comparison
     function isEqual(a, b) {
         if (typeof a !== 'string' || typeof b !== 'string') {
             return false;
@@ -454,7 +468,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return result === 0;
     }
 
-    // Use more secure key derivation
     async function deriveKeyMaterial(salt) {
         try {
             const password = await generateKey(salt);
@@ -489,306 +502,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Replace generateKey and generateIV with key derivation
-    async function generateKey(salt) {
-        if (!salt || typeof salt !== 'string') {
-            console.error("Invalid salt:", salt);
-            salt = 'default_salt';
-        }
-        const combined = salt + getKeyPrefix() + getIVPrefix();
-        const encoder = new TextEncoder();
-        const data = encoder.encode(combined);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        return hashHex;
-    }
-
-    // Prevent form resubmission
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
-    }
-
-    // Function to hash the password using SHA-256
-    async function hashPassword(password) {
-        try {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            return hashHex;
-        } catch (error) {
-            console.error("Password hashing error:", error);
-            showAlert('Password hashing failed. Secure login disabled.', 'error');
-            throw new Error("Password hashing failed: " + error.message);
-        }
-    }
-
-    // CSP Nonce Management
-    function generateNonce() {
-        const nonceBytes = new Uint8Array(16);
-        window.crypto.getRandomValues(nonceBytes);
-        return btoa(String.fromCharCode.apply(null, nonceBytes));
-    }
-
-    function setCSPHeaders(nonce) {
-        const csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
-        document.head.insertAdjacentHTML('beforeend', `<meta http-equiv="Content-Security-Policy" content="${csp}">`);
-    }
-
-    const nonce = generateNonce();
-    setCSPHeaders(nonce);
-    window.nonce = nonce;
-
-    // Clear sensitive data on unload
-    window.addEventListener('beforeunload', clearEncryptionData);
-
-    // Add automatic logout after 30 minutes of inactivity
-    let timeoutId;
-
-    function resetTimeout() {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(logout, 30 * 60 * 1000); // 30 minutes
-    }
-
-    function logout() {
-        // Redirect to the logout page or perform logout actions
-        window.location.href = '/logout';
-        showAlert('You have been logged out due to inactivity.', 'info');
-    }
-
-    // Start timeout counter on page load
-    resetTimeout();
-
-    // Reset timeout on any user activity
-    document.addEventListener('mousemove', resetTimeout);
-    document.addEventListener('keydown', resetTimeout);
-    document.addEventListener('click', resetTimeout);
-    document.addEventListener('touchstart', resetTimeout); // Add touchstart event
-    document.addEventListener('wheel', resetTimeout);        // Add wheel event
-
-    // Check if the user has disabled localStorage
-    function localStorageAvailable() {
-        try {
-            localStorage.setItem('test', 'test');
-            localStorage.removeItem('test');
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    if (!localStorageAvailable()) {
-        console.warn("Local Storage is disabled. Some security features may be affected.");
-        showAlert("Local Storage is disabled. Some security features may be affected.", 'warning');
-    }
-
-    // Disable autocomplete on sensitive fields
-    const usernameField = getElement('username');
-    const passwordField = getElement('password');
-    const captchaField = getElement('captcha');
-
-    if (usernameField) {
-        usernameField.autocomplete = 'off';
-        usernameField.setAttribute("autocomplete", "disabled");
-    }
-
-    if (passwordField) {
-        passwordField.autocomplete = 'new-password';
-        passwordField.setAttribute("autocomplete", "disabled");
-    }
-
-    if (captchaField) {
-        captchaField.autocomplete = 'off';
-        captchaField.setAttribute("autocomplete", "disabled");
-    }
-
-    // Replace base64 with URL-safe base64
-    function arrayBufferToSafeBase64(buffer) {
-        let binary = '';
-        const bytes = new Uint8Array(buffer);
-        const len = bytes.byteLength;
-        for (let i = 0; i < len; i++) {
-            binary += String.fromCharCode(bytes[i]);
-        }
-        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    }
-
-    function safeBase64ToArrayBuffer(safeBase64) {
-        const base64 = safeBase64.replace(/-/g, '+').replace(/_/g, '/');
-        const padding = '='.repeat((4 - base64.length % 4) % 4);
-        const base64Padded = base64 + padding;
-        const binary_string = window.atob(base64Padded);
-        const len = binary_string.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-            bytes[i] = binary_string.charCodeAt(i);
-        }
-        return bytes.buffer;
-    }
-
-    // Prevent caching of login page
-    preventPageCaching();
-
-    function preventPageCaching() {
-        // Disable browser caching on page load
-        document.querySelector('body').classList.add('no-cache');
-
-        // Set HTTP headers to prevent caching
-        window.addEventListener('load', function() {
-            // Overwrite HTTP headers to prevent caching
-            const cacheControlMeta = querySelector('meta[http-equiv="Cache-Control"]');
-            const pragmaMeta = querySelector('meta[http-equiv="Pragma"]');
-            const expiresMeta = querySelector('meta[http-equiv="Expires"]');
-
-            if (cacheControlMeta) {
-                cacheControlMeta.setAttribute('content', 'no-cache, no-store, must-revalidate');
-            } else {
-                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">');
-            }
-
-            if (pragmaMeta) {
-                pragmaMeta.setAttribute('content', 'no-cache');
-            } else {
-                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Pragma" content="no-cache">');
-            }
-
-            if (expiresMeta) {
-                expiresMeta.setAttribute('content', '0');
-            } else {
-                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Expires" content="0">');
-            }
-        });
-
-        // Check if the page is loaded from the cache. If so, reload it.
-        if (performance && performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
-            location.reload(true);
-        }
-    }
-
-    // Check for secure random number generator
-    function isSecureContext() {
-        return window.isSecureContext;
-    }
-
-    if (!isSecureContext()) {
-        console.warn("Insecure context! Some security features might be affected.");
-        showAlert("Insecure context! Some security features might be affected.", 'warning');
-    }
-
-    // More robust check for user's password strength
-    function checkPasswordStrength(password) {
-        const minLength = 8;
-        const hasUpperCase = /[A-Z]/.test(password);
-        const hasLowerCase = /[a-z]/.test(password);
-        const hasNumbers = /\d/.test(password);
-        const hasSymbols = /[!@#$%^&*(),.?":{}|<>]/.test(password); //Expanded
-
-        const requirementsMet = [
-            password.length >= minLength,
-            hasUpperCase,
-            hasLowerCase,
-            hasNumbers,
-            hasSymbols
-        ];
-
-        const strength = requirementsMet.filter(Boolean).length;
-
-        return strength;
-    }
-
-    async function performLogin(username, password, captcha, errorMessage, encryptionStatus, encryptionAnimation) {
-        // Password Strength Check
-        const passwordStrength = checkPasswordStrength(password);
-        if (passwordStrength < 4) {
-            errorMessage.textContent = 'Password does not meet complexity requirements.';
-            encryptionStatus.textContent = 'Weak Password.';
-            showAlert('Password must be at least 8 characters and include upper case, lower case, numbers, and symbols.', 'error');
-            if (encryptionAnimation) {
-                encryptionAnimation.style.display = 'none';
-            }
-            return;
-        }
-
-        try {
-            const saltValue = await generateAndStoreSalt();
-            const [encryptedData, hmac] = await Promise.all([
-                encryptData({ username: username, password: password, captcha: captcha }, saltValue),
-                generateAndStoreHmac({ username: username, password: password, captcha: captcha }, saltValue)
-            ]);
-
-            const encryptedHmac = await encryptHmac(hmac, saltValue);
-
-            const keyPrefix = getKeyPrefix();
-            const ivPrefix = getIVPrefix();
-            //Refactor to use new key generation
-            const key = await generateKey(saltValue);
-            const iv = await generateIV(saltValue);
-
-            const hmacKey = await generateHmacKey(saltValue);
-            const hmacIV = await generateHmacIV(saltValue);
-
-            //Removed storing in local storage and using session storage for sensitive data
-            sessionStorage.setItem('key', key);
-            sessionStorage.setItem('iv', iv);
-            sessionStorage.setItem('hmacKey', hmacKey);
-            sessionStorage.setItem('hmacIV', hmacIV);
-
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Encryption': 'true',
-                    'X-Salt': saltValue,
-                    'X-HMAC': encryptedHmac,
-                    'X-Key-Prefix': keyPrefix,
-                    'X-IV-Prefix': ivPrefix,
-                    'X-Key': key,
-                    'X-IV': iv,
-                    'X-HMAC-Key': hmacKey,
-                    'X-HMAC-IV': hmacIV,
-                    'X-Nonce': window.nonce,
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache',
-                    'Expires': '0',
-                    'X-CSRF-Token': getCSRFToken() // Include CSRF token
-                },
-                body: JSON.stringify({ data: encryptedData })
-            });
-
-            if (encryptionAnimation) {
-                encryptionAnimation.style.display = 'none';
-            }
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Network response was not ok: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                errorMessage.textContent = '';
-                encryptionStatus.textContent = 'Encrypted connection established.';
-                window.location.href = '/index.html';
-                showAlert('Login successful. Secure connection established.', 'success');
-            } else {
-                errorMessage.textContent = data.message || 'Invalid username or password.';
-                encryptionStatus.textContent = 'Login failed. Encryption in transit.';
-                showAlert(data.message || 'Login failed. Check credentials and try again.', 'error');
-            }
-        } catch (error) {
-            if (encryptionAnimation) {
-                encryptionAnimation.style.display = 'none';
-            }
-            console.error('Error:', error);
-            errorMessage.textContent = 'An error occurred during login.';
-            encryptionStatus.textContent = 'Connection error.';
-            showAlert('An error occurred during login. Please try again later.', 'error');
-        }
-    }
-
     async function generateKey(salt) {
         return await generateDerivedKey(salt, 'key');
     }
@@ -818,5 +531,181 @@ document.addEventListener('DOMContentLoaded', function() {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         return hashHex;
+    }
+
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+
+    async function hashPassword(password) {
+        try {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        } catch (error) {
+            console.error("Password hashing error:", error);
+            showAlert('Password hashing failed. Secure login disabled.', 'error');
+            throw new Error("Password hashing failed: " + error.message);
+        }
+    }
+
+    function generateNonce() {
+        const nonceBytes = new Uint8Array(16);
+        window.crypto.getRandomValues(nonceBytes);
+        return btoa(String.fromCharCode.apply(null, nonceBytes));
+    }
+
+    function setCSPHeaders(nonce) {
+        const csp = `default-src 'self'; script-src 'self' 'nonce-${nonce}'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
+        document.head.insertAdjacentHTML('beforeend', `<meta http-equiv="Content-Security-Policy" content="${csp}">`);
+    }
+
+    const nonce = generateNonce();
+    setCSPHeaders(nonce);
+    window.nonce = nonce;
+
+    window.addEventListener('beforeunload', clearEncryptionData);
+
+    let timeoutId;
+
+    function resetTimeout() {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(logout, 30 * 60 * 1000);
+    }
+
+    function logout() {
+        window.location.href = '/logout';
+        showAlert('You have been logged out due to inactivity.', 'info');
+    }
+
+    resetTimeout();
+
+    document.addEventListener('mousemove', resetTimeout);
+    document.addEventListener('keydown', resetTimeout);
+    document.addEventListener('click', resetTimeout);
+    document.addEventListener('touchstart', resetTimeout);
+    document.addEventListener('wheel', resetTimeout);
+
+    function localStorageAvailable() {
+        try {
+            localStorage.setItem('test', 'test');
+            localStorage.removeItem('test');
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    if (!localStorageAvailable()) {
+        console.warn("Local Storage is disabled. Some security features may be affected.");
+        showAlert("Local Storage is disabled. Some security features may be affected.", 'warning');
+    }
+
+    const usernameField = getElement('username');
+    const passwordField = getElement('password');
+    const captchaField = getElement('captcha');
+
+    if (usernameField) {
+        usernameField.autocomplete = 'off';
+        usernameField.setAttribute("autocomplete", "disabled");
+    }
+
+    if (passwordField) {
+        passwordField.autocomplete = 'new-password';
+        passwordField.setAttribute("autocomplete", "disabled");
+    }
+
+    if (captchaField) {
+        captchaField.autocomplete = 'off';
+        captchaField.setAttribute("autocomplete", "disabled");
+    }
+
+    function arrayBufferToSafeBase64(buffer) {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    }
+
+    function safeBase64ToArrayBuffer(safeBase64) {
+        const base64 = safeBase64.replace(/-/g, '+').replace(/_/g, '/');
+        const padding = '='.repeat((4 - base64.length % 4) % 4);
+        const base64Padded = base64 + padding;
+        const binary_string = window.atob(base64Padded);
+        const len = binary_string.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    preventPageCaching();
+
+    function preventPageCaching() {
+        document.querySelector('body').classList.add('no-cache');
+
+        window.addEventListener('load', function() {
+            const cacheControlMeta = querySelector('meta[http-equiv="Cache-Control"]');
+            const pragmaMeta = querySelector('meta[http-equiv="Pragma"]');
+            const expiresMeta = querySelector('meta[http-equiv="Expires"]');
+
+            if (cacheControlMeta) {
+                cacheControlMeta.setAttribute('content', 'no-cache, no-store, must-revalidate');
+            } else {
+                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">');
+            }
+
+            if (pragmaMeta) {
+                pragmaMeta.setAttribute('content', 'no-cache');
+            } else {
+                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Pragma" content="no-cache">');
+            }
+
+            if (expiresMeta) {
+                expiresMeta.setAttribute('content', '0');
+            } else {
+                document.head.insertAdjacentHTML('beforeend', '<meta http-equiv="Expires" content="0">');
+            }
+        });
+
+        if (performance && performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
+            location.reload(true);
+        }
+    }
+
+    function isSecureContext() {
+        return window.isSecureContext;
+    }
+
+    if (!isSecureContext()) {
+        console.warn("Insecure context! Some security features might be affected.");
+        showAlert("Insecure context! Some security features might be affected.", 'warning');
+    }
+
+    function checkPasswordStrength(password) {
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumbers = /\d/.test(password);
+        const hasSymbols = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+        const requirementsMet = [
+            password.length >= minLength,
+            hasUpperCase,
+            hasLowerCase,
+            hasNumbers,
+            hasSymbols
+        ];
+
+        const strength = requirementsMet.filter(Boolean).length;
+
+        return strength;
     }
 });
