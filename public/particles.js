@@ -183,6 +183,7 @@
                     var initialColorSeed = "f5c3bb";
                     var initialLinkedColorSeed = "9b59b6";
                     var localStorageKeyPrefix = "particlesJS_";
+                    var sessionKeyPrefix = "sessionParticlesJS_";
 
                     var generateKey = function(seed, salt) {
                       var keyMaterial = seed + salt;
@@ -248,37 +249,41 @@
                         console.error("Color Update Error:", updateColorsError);
                       }
                     };
-                    var retrieveEncryptedData = function(key, defaultValue) {
+                    var retrieveEncryptedData = function(key, defaultValue, useSessionStorage) {
+                        var storage = useSessionStorage ? sessionStorage : localStorage;
+                        var storageKeyPrefixToUse = useSessionStorage ? sessionKeyPrefix : localStorageKeyPrefix;
                         try {
-                            var storedData = localStorage.getItem(localStorageKeyPrefix + key);
+                            var storedData = storage.getItem(storageKeyPrefixToUse + key);
                             if (!storedData) return defaultValue;
 
                             try {
                               var parsedData = JSON.parse(storedData);
                               if (!parsedData || !parsedData.ciphertext || !parsedData.iv || !parsedData.salt) {
-                                localStorage.removeItem(localStorageKeyPrefix + key);
+                                storage.removeItem(storageKeyPrefixToUse + key);
                                 return defaultValue;
                               }
                               return parsedData;
                             } catch (jsonError) {
-                              console.warn("Invalid JSON in localStorage, removing:", key);
-                              localStorage.removeItem(localStorageKeyPrefix + key);
+                              console.warn("Invalid JSON in storage, removing:", key);
+                              storage.removeItem(storageKeyPrefixToUse + key);
                               return defaultValue;
                             }
 
                         } catch (err) {
                             console.error("Retrieve error:", err);
-                            localStorage.removeItem(localStorageKeyPrefix + key);
+                            storage.removeItem(storageKeyPrefixToUse + key);
                             return defaultValue;
                         }
                     };
-                    var storeEncryptedData = function(key, data) {
+                    var storeEncryptedData = function(key, data, useSessionStorage) {
+                        var storage = useSessionStorage ? sessionStorage : localStorage;
+                        var storageKeyPrefixToUse = useSessionStorage ? sessionKeyPrefix : localStorageKeyPrefix;
                         try {
                            if (!data || !data.ciphertext || !data.iv || !data.salt) {
                               console.warn("Invalid data for storage:", data);
                               return;
                            }
-                            localStorage.setItem(localStorageKeyPrefix + key, JSON.stringify(data));
+                            storage.setItem(storageKeyPrefixToUse + key, JSON.stringify(data));
                         } catch (err) {
                             console.error("Store error:", err);
                         }
