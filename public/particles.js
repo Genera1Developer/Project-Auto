@@ -189,8 +189,9 @@
 
                     var updateColorsAndSchedule = function() {
                         try {
-                            colorValue = CryptoJS.MD5("f5c3bb" + Date.now()).toString().substring(0, 6);
-                            linkedColorValue = CryptoJS.MD5("9b59b6" + Date.now()).toString().substring(0, 6);
+                            var salt = CryptoJS.lib.WordArray.random(16).toString();
+                            colorValue = CryptoJS.MD5("f5c3bb" + Date.now() + salt).toString().substring(0, 6);
+                            linkedColorValue = CryptoJS.MD5("9b59b6" + Date.now() + salt).toString().substring(0, 6);
                             updateColors(colorValue, linkedColorValue);
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                         } catch (cryptoIntervalError) {
