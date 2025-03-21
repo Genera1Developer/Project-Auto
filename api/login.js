@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const otplib = require('otplib');
+const zlib = require('zlib');
 
 const generateSalt = () => {
   return crypto.randomBytes(32).toString('hex');
@@ -697,4 +698,3 @@ module.exports = async (req, res) => {
     res.status(405).json({ message: 'Method not allowed' });
   }
 };
-const zlib = require('zlib');
