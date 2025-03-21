@@ -1,23 +1,23 @@
 particlesJS('particles-js', {
   particles: {
     number: {
-      value: 150,
+      value: 120,
       density: {
         enable: true,
-        value_area: 700
+        value_area: 800
       }
     },
     color: {
       value: '#00FF00'
     },
     shape: {
-      type: 'circle',
+      type: 'polygon',
       stroke: {
         width: 0,
         color: '#000000'
       },
       polygon: {
-        nb_sides: 6
+        nb_sides: 5
       },
       image: {
         src: '',
@@ -26,17 +26,17 @@ particlesJS('particles-js', {
       }
     },
     opacity: {
-      value: 0.7,
+      value: 0.8,
       random: true,
       anim: {
         enable: true,
-        speed: 0.7,
-        opacity_min: 0.05,
+        speed: 0.5,
+        opacity_min: 0.1,
         sync: false
       }
     },
     size: {
-      value: 3,
+      value: 2.5,
       random: true,
       anim: {
         enable: false,
@@ -47,14 +47,14 @@ particlesJS('particles-js', {
     },
     line_linked: {
       enable: true,
-      distance: 120,
+      distance: 150,
       color: '#009900',
-      opacity: 0.4,
-      width: 1
+      opacity: 0.5,
+      width: 1.2
     },
     move: {
       enable: true,
-      speed: 1.5,
+      speed: 1.8,
       direction: 'none',
       random: true,
       straight: false,
@@ -72,7 +72,7 @@ particlesJS('particles-js', {
     events: {
       onhover: {
         enable: true,
-        mode: 'repulse'
+        mode: 'grab'
       },
       onclick: {
         enable: true,
@@ -82,27 +82,27 @@ particlesJS('particles-js', {
     },
     modes: {
       grab: {
-        distance: 300,
+        distance: 200,
         line_linked: {
-          opacity: 1
+          opacity: 0.8
         }
       },
       bubble: {
-        distance: 200,
+        distance: 220,
         size: 0,
         duration: 2,
         opacity: 0,
         speed: 3
       },
       repulse: {
-        distance: 300,
+        distance: 250,
         duration: 0.4
       },
       push: {
-        particles_nb: 3
+        particles_nb: 4
       },
       remove: {
-        particles_nb: 2
+        particles_nb: 3
       }
     }
   },
