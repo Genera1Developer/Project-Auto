@@ -431,6 +431,8 @@ async function proxyRequest(req, res) {
 
               const streamNonce = crypto.randomBytes(8).toString('hex');
               const streamTimestamp = Date.now();
+              const combinedStreamNonce = `${streamNonce}-${streamTimestamp}`; // Correct combination
+
               if (!validateStreamNonce(streamNonce, streamTimestamp)) {
                   return earlyReject(res, 403, 'Invalid or missing stream nonce.');
               }
