@@ -131,7 +131,7 @@ function getDecipher(currentKey) {
     }
     if (!decipherMap.has(currentKey)) {
         const iv = generateSecureIV();
-        const decipher = crypto.createDecipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
+        const decipher = crypto.createCipheriv(algorithm, currentKey, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipherMap.set(currentKey, { decipher, iv });
     }
     return decipherMap.get(currentKey).decipher;
