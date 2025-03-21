@@ -187,7 +187,7 @@ exports.createUser = async (username, password, callback) => {
         const encryptedUsername = encrypt(username, iv);
         const encryptedPassword = encrypt(hashedPassword, iv);
 
-        db.run(`INSERT INTO users (username, password, salt, iv, password_version, authTag) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData, salt, encryptedUsername.iv, PBKDF2_ITERATIONS, encryptedUsername.authTag], function(err) {
+        db.run(`INSERT INTO users (username, password, salt, iv, authTag, password_version) VALUES (?, ?, ?, ?, ?, ?)`, [encryptedUsername.encryptedData, encryptedPassword.encryptedData, salt, encryptedUsername.iv, encryptedUsername.authTag, PBKDF2_ITERATIONS], function(err) {
             if (err) {
                 return handleDatabaseError(err, callback, "User creation error:");
             }
