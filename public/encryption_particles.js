@@ -244,6 +244,42 @@ particlesJS('particles-js', {
                 console.error("Decryption process failed:", error);
                 return encryptedData;
             }
+        },
+        generateRandomKey: async function() {
+            if (!window.crypto || !window.crypto.subtle) {
+                console.warn('Web Crypto API not supported. Key generation disabled.');
+                return null;
+            }
+             try {
+                const key = await window.crypto.subtle.generateKey(
+                    {
+                        name: "AES-CBC",
+                        length: 256,
+                    },
+                    true,
+                    ["encrypt", "decrypt"]
+                );
+                const exported = await window.crypto.subtle.exportKey(
+                    "raw",
+                    key
+                );
+                const keyArray = new Uint8Array(exported);
+                const keyString = btoa(String.fromCharCode(...keyArray));
+                return keyString;
+            } catch (error) {
+                console.error("Key generation failed:", error);
+                return null;
+            }
+        },
+        generateRandomIV: function() {
+          if (!window.crypto || !window.crypto.getRandomValues) {
+              console.warn('Web Crypto API not supported. IV generation disabled.');
+              return null;
+          }
+            const iv = new Uint8Array(16);
+            window.crypto.getRandomValues(iv);
+            const ivString = btoa(String.fromCharCode(...iv));
+            return ivString;
         }
   },
   "fn": {
@@ -253,6 +289,32 @@ particlesJS('particles-js', {
             const config = pJS.actualOptions;
             const encryptPlugin = pJS.plugins;
             const { key, iv, algorithm } = config.encrypt_config;
+
+            if (!key || key === 'YOUR_SECURE_KEY') {
+                console.warn('Encryption key is not set. Generating a random key.');
+                const newKey = await encryptPlugin.generateRandomKey();
+                if (newKey) {
+                    config.encrypt_config.key = newKey;
+                    console.log('New encryption key generated:', newKey);
+                } else {
+                    console.error('Failed to generate encryption key. Encryption disabled.');
+                    pJS.plugins.encrypt.enable = false;
+                    return;
+                }
+            }
+
+             if (!iv || iv === 'YOUR_IV_KEY') {
+                console.warn('Encryption IV is not set. Generating a random IV.');
+                const newIV = encryptPlugin.generateRandomIV();
+                if (newIV) {
+                    config.encrypt_config.iv = newIV;
+                    console.log('New encryption IV generated:', newIV);
+                } else {
+                    console.error('Failed to generate encryption IV. Encryption disabled.');
+                    pJS.plugins.encrypt.enable = false;
+                    return;
+                }
+            }
 
             if (config && config.plugins && config.plugins.encrypt && config.plugins.encrypt.dataFields) {
                 const { dataFields } = config.plugins.encrypt;
