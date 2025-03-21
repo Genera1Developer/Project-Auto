@@ -756,6 +756,12 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < a.length; i++) {
             result |= a.charCodeAt(i) ^ b.charCodeAt(i);
         }
+
+         // Ensure the loop is not optimized away by always using the result
+        if (result !== 0 && result !== 1) {
+            result = 1;
+        }
+
         return result === 0;
     }
 
