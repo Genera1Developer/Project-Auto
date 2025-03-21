@@ -232,6 +232,7 @@
             </div>
             <input type="email" id="email" name="email" placeholder="Email" required>
              <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh714gGWHYhPIVpCBoy"></div>
+            <div class="salt-display" id="saltDisplay"></div>
             </div>
             <div class="encryption-animation" id="encryptionAnimation"></div>
             <button type="submit">Sign Up</button>
@@ -371,6 +372,7 @@
             const errorMessage = document.getElementById('error-message');
             const encryptionStatus = document.getElementById('encryption-status');
             const encryptionAnimation = document.getElementById('encryptionAnimation');
+            const saltDisplay = document.getElementById('saltDisplay');
 
             if (!username || !password || !confirmPassword || !email) {
                 errorMessage.textContent = 'Please enter all fields.';
@@ -478,6 +480,11 @@
                       errorMessage.textContent = 'An error occurred during signup.';
                       encryptionStatus.textContent = 'Connection error.';
                   });
+
+                   //Display the salt.  Important:  ONLY for testing purposes.
+                   // NEVER display the salt in a production environment.
+                  saltDisplay.textContent = "Salt: " + encryptedSalt;
+
                 } catch (e) {
                   encryptionAnimation.style.display = 'none';
                   console.error('Encryption Error:', e);
