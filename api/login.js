@@ -143,6 +143,10 @@ const verifyNonce = (nonce, session) => {
     return true;
 };
 
+const generateSessionId = () => {
+    return crypto.randomBytes(32).toString('hex');
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -190,8 +194,9 @@ module.exports = async (req, res) => {
         const encryptedSession = encryptSession(sessionData, encryptionKey);
 
         if (encryptedSession) {
-          res.setHeader('Set-Cookie', `session=${encryptedSession}; HttpOnly; Secure`);
-          res.status(200).json({ message: 'Login successful!', nonce: nonce });
+          const sessionId = generateSessionId();
+          res.setHeader('Set-Cookie', `session=${encryptedSession}; HttpOnly; Secure; SameSite=Strict`);
+          res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId });
         } else {
           res.status(500).json({ message: 'Session encryption failed' });
         }
