@@ -676,4 +676,147 @@ document.addEventListener('DOMContentLoaded', function() {
         console.warn("Insecure context! Some security features might be affected.");
         showAlert("Insecure context! Some security features might be affected.", 'warning');
     }
+
+    // More robust check for user's password strength
+    function checkPasswordStrength(password) {
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumbers = /\d/.test(password);
+        const hasSymbols = /[!@#$%^&*(),.?":{}|<>]/.test(password); //Expanded
+
+        const requirementsMet = [
+            password.length >= minLength,
+            hasUpperCase,
+            hasLowerCase,
+            hasNumbers,
+            hasSymbols
+        ];
+
+        const strength = requirementsMet.filter(Boolean).length;
+
+        return strength;
+    }
+
+    async function performLogin(username, password, captcha, errorMessage, encryptionStatus, encryptionAnimation) {
+        // Password Strength Check
+        const passwordStrength = checkPasswordStrength(password);
+        if (passwordStrength < 4) {
+            errorMessage.textContent = 'Password does not meet complexity requirements.';
+            encryptionStatus.textContent = 'Weak Password.';
+            showAlert('Password must be at least 8 characters and include upper case, lower case, numbers, and symbols.', 'error');
+            if (encryptionAnimation) {
+                encryptionAnimation.style.display = 'none';
+            }
+            return;
+        }
+
+        try {
+            const saltValue = await generateAndStoreSalt();
+            const [encryptedData, hmac] = await Promise.all([
+                encryptData({ username: username, password: password, captcha: captcha }, saltValue),
+                generateAndStoreHmac({ username: username, password: password, captcha: captcha }, saltValue)
+            ]);
+
+            const encryptedHmac = await encryptHmac(hmac, saltValue);
+
+            const keyPrefix = getKeyPrefix();
+            const ivPrefix = getIVPrefix();
+            //Refactor to use new key generation
+            const key = await generateKey(saltValue);
+            const iv = await generateIV(saltValue);
+
+            const hmacKey = await generateHmacKey(saltValue);
+            const hmacIV = await generateHmacIV(saltValue);
+
+            //Removed storing in local storage and using session storage for sensitive data
+            sessionStorage.setItem('key', key);
+            sessionStorage.setItem('iv', iv);
+            sessionStorage.setItem('hmacKey', hmacKey);
+            sessionStorage.setItem('hmacIV', hmacIV);
+
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Encryption': 'true',
+                    'X-Salt': saltValue,
+                    'X-HMAC': encryptedHmac,
+                    'X-Key-Prefix': keyPrefix,
+                    'X-IV-Prefix': ivPrefix,
+                    'X-Key': key,
+                    'X-IV': iv,
+                    'X-HMAC-Key': hmacKey,
+                    'X-HMAC-IV': hmacIV,
+                    'X-Nonce': window.nonce,
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache',
+                    'Expires': '0',
+                    'X-CSRF-Token': getCSRFToken() // Include CSRF token
+                },
+                body: JSON.stringify({ data: encryptedData })
+            });
+
+            if (encryptionAnimation) {
+                encryptionAnimation.style.display = 'none';
+            }
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Network response was not ok: ${response.status} - ${errorText}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                errorMessage.textContent = '';
+                encryptionStatus.textContent = 'Encrypted connection established.';
+                window.location.href = '/index.html';
+                showAlert('Login successful. Secure connection established.', 'success');
+            } else {
+                errorMessage.textContent = data.message || 'Invalid username or password.';
+                encryptionStatus.textContent = 'Login failed. Encryption in transit.';
+                showAlert(data.message || 'Login failed. Check credentials and try again.', 'error');
+            }
+        } catch (error) {
+            if (encryptionAnimation) {
+                encryptionAnimation.style.display = 'none';
+            }
+            console.error('Error:', error);
+            errorMessage.textContent = 'An error occurred during login.';
+            encryptionStatus.textContent = 'Connection error.';
+            showAlert('An error occurred during login. Please try again later.', 'error');
+        }
+    }
+
+    async function generateKey(salt) {
+        return await generateDerivedKey(salt, 'key');
+    }
+
+    async function generateIV(salt) {
+        return await generateDerivedKey(salt, 'iv');
+    }
+
+    async function generateHmacKey(salt) {
+        return await generateDerivedKey(salt, 'hmacKey');
+    }
+
+    async function generateHmacIV(salt) {
+        return await generateDerivedKey(salt, 'hmacIV');
+    }
+
+    async function generateDerivedKey(salt, type) {
+        if (!salt || typeof salt !== 'string') {
+            console.error("Invalid salt:", salt);
+            salt = 'default_salt';
+        }
+
+        const combined = salt + getKeyPrefix() + getIVPrefix() + type;
+        const encoder = new TextEncoder();
+        const data = encoder.encode(combined);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
 });
