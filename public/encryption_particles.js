@@ -644,7 +644,38 @@ particlesJS('particles-js', {
               console.warn("localStorage not available or hashing failed.", e);
               return false;
           }
-      }
+      },
+      async initializeEncryption(password) {
+          if (!password) {
+              console.warn('Password is required to initialize encryption.');
+              return false;
+          }
+
+          let salt = localStorage.getItem('encryptionSalt');
+          if (!salt) {
+              salt = this.generateRandomSalt();
+              if (!salt) return false; // Salt generation failed
+              this.storeCryptoDetails('', '', salt); // Store the salt
+          }
+
+
+          const key = await this.deriveKeyFromPassword(password, salt);
+          if (!key) {
+              console.error('Failed to derive key from password.');
+              return false;
+          }
+
+          const iv = this.generateRandomIV();
+          if (!iv) {
+              console.error('Failed to generate IV.');
+              return false;
+          }
+
+          this.storeCryptoDetails(key, iv, salt);
+          await this.storePasswordHash(password); // Store the password hash
+
+          return true;
+      },
   },
   "fn": {
     "update": async function() {
