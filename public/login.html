@@ -174,8 +174,8 @@
                 <input type="password" id="password" name="password" placeholder="Password" required>
                 <i class="fas fa-eye" id="togglePassword"></i>
             </div>
-            <input type="text" id="captcha" name="captcha" placeholder="Enter Captcha" required>
-            <img src="/api/captcha" alt="Captcha" id="captchaImage" onclick="refreshCaptcha()" style="cursor: pointer;">
+            <input type="text" id="captcha" name="captcha" placeholder="Enter Captcha" required> <!-- REMOVE CAPTCHA PLEASE -->
+            <img src="/api/captcha" alt="Captcha" id="captchaImage" onclick="refreshCaptcha()" style="cursor: pointer;"> <!-- REMOVE CAPTCHA PLEASE -->
             <a href="#" onclick="refreshCaptcha()">Refresh Captcha</a>
             <div class="encryption-animation" id="encryptionAnimation"></div>
             <button type="submit">Login</button>
@@ -193,7 +193,7 @@
             document.getElementById('preloader').style.display = 'none';
 
              // Fetch and store server's public key on page load
-            fetch('/api/public-key')
+            fetch('/api/public-key') // GEMINI CHECK ENDPOINTS PLEASE
             .then(response => response.json())
             .then(data => {
                 if (data.publicKey) {
