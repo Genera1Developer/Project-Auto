@@ -347,6 +347,12 @@ async function generateMAC(data, key) {
     return hmac.digest('hex');
 }
 
+// New function to add Jitter to encryption processes
+function addJitter(milliseconds) {
+  const jitter = Math.floor(Math.random() * milliseconds);
+  return new Promise(resolve => setTimeout(resolve, jitter));
+}
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -393,11 +399,17 @@ module.exports = async (req, res) => {
       randomPassword = await generateRandomPassword();
       derivedEncryptionKey = await deriveKey(password, salt); //Derive key from user's pw
 
+      // Add Jitter before Key stretching
+      await addJitter(50);
+
       // Stretch the derived encryption key for added security
       derivedEncryptionKey = await stretchKey(derivedEncryptionKey, salt, 5);
 
       // Generate a session key
       const sessionKey = await generateSessionKey();
+
+       // Add Jitter before Encrypt derived key
+      await addJitter(50);
 
       // Encrypt derived key using session key
       const { encryptedDerivedKey, iv: derivedKeyIv, authTag: derivedKeyAuthTag } = await encryptDerivedKey(derivedEncryptionKey, sessionKey);
@@ -408,6 +420,9 @@ module.exports = async (req, res) => {
       // Generate operation salts
       const usernameOpSalt = await generateOperationSalt();
       const saltOpSalt = await generateOperationSalt();
+
+      // Add Jitter before Encrypt username and salt
+      await addJitter(50);
 
       const encryptedUsername = await encryptData(saltedUsername, derivedEncryptionKey + usernameOpSalt); // Use operation salt
       const encryptedSalt = salt ? await encryptData(salt, derivedEncryptionKey + saltOpSalt) : null; // Use operation salt
@@ -430,23 +445,38 @@ module.exports = async (req, res) => {
         derivedKeyAuthTag: derivedKeyAuthTag    // Store authentication tag
       };
 
+      // Add Jitter before Encrypt user record
+      await addJitter(50);
+
       // Encrypt entire user record before storage using master key
       const masterKey = process.env.MASTER_ENCRYPTION_KEY || 'defaultinsecurekeythatmustbechanged';
       const userRecordOpSalt = await generateOperationSalt();
       const encryptedUserRecord = await encryptUserData(userRecord, masterKey + userRecordOpSalt);
 
+      // Add Jitter before Chacha Encryption
+      await addJitter(50);
+
       // Apply an extra layer of encryption with Chacha20
       const chachaNonce = await generateNonce();
       const doubleEncryptedUserRecord = await chachaEncrypt(JSON.stringify(encryptedUserRecord), masterKey, chachaNonce);
 
+      // Add Jitter before Random Padding
+      await addJitter(50);
+
       // Add Random Padding
       const paddedEncryptedUserRecord = addRandomPadding(doubleEncryptedUserRecord);
+
+      // Add Jitter before Data Obfuscation
+       await addJitter(50);
 
       // Generate obfuscation key
       const obfuscationKey = await generateObfuscationKey();
 
       // Obfuscate the padded and encrypted user record
       const obfuscatedUserRecord = obfuscateData(paddedEncryptedUserRecord, obfuscationKey);
+
+      // Add Jitter before Generating MAC
+      await addJitter(50);
 
       // Generate a MAC for data integrity
       const dataIntegrityKey = await generateEncryptionKey();
