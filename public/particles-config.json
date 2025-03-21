@@ -250,7 +250,7 @@
          "maxNonces": 1000
        },
        "encryptedSharedWorker": {
-        "enable": false,
+        "enable": true,
         "workerUrl": "shared-worker.js",
         "algorithm": "AES-256-GCM",
         "key": "ENC_SHARED_WORKER_KEY_PLACEHOLDER",
