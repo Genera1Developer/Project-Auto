@@ -23,6 +23,9 @@ let lastIV = null;
 let cachedCipher = null;
 let cachedDecipher = null;
 
+// Use a WeakMap to prevent IV reuse with specific keys
+const ivMap = new WeakMap();
+
 // Function to clear sensitive data from memory
 function zeroBuffer(buf) {
     buf.fill(0);
@@ -50,6 +53,7 @@ function deriveEncryptionKey(password) {
         keyDerivationUsed = true; //Mark that key derivation was used
         cachedCipher = null; // Invalidate cached cipher on key change
         cachedDecipher = null; // Invalidate cached decipher on key change
+        ivMap.delete(key); // Clear IV map on key change
     } catch (error) {
         console.error("Key derivation failed:", error);
         throw new Error('Key derivation failed. Check password and salt.');
@@ -74,6 +78,7 @@ function setEncryptionKey(newKey) {
     keyDerivationUsed = false; //Explicitly set to false when directly setting the key
     cachedCipher = null; // Invalidate cached cipher on key change
     cachedDecipher = null; // Invalidate cached decipher on key change
+    ivMap.delete(key); // Clear IV map on key change
 }
 
 function generateEncryptionKey() {
@@ -90,6 +95,7 @@ function generateEncryptionKey() {
         keyDerivationUsed = false; //Explicitly set to false when generating key
         cachedCipher = null; // Invalidate cached cipher on key change
         cachedDecipher = null; // Invalidate cached decipher on key change
+        ivMap.delete(key); // Clear IV map on key change
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
@@ -103,10 +109,16 @@ const encrypt = (text) => {
     }
 
     let iv;
+    if (!ivMap.has(key)) {
+        ivMap.set(key, null);
+    }
+    let lastIVForKey = ivMap.get(key);
+
     do {
         iv = crypto.randomBytes(IV_LENGTH);
-    } while (lastIV && timingSafeEqual(iv, lastIV)); // Ensure IV is unique
+    } while (lastIVForKey && timingSafeEqual(iv, lastIVForKey)); // Ensure IV is unique
 
+    ivMap.set(key, iv); // Store current iv to prevent reuse
     lastIV = iv; // Store current iv to prevent reuse
 
     try {
@@ -210,6 +222,7 @@ function rotateKey() {
     if(key){
         zeroBuffer(key);
     }
+    ivMap.delete(key); // Clear IV map on key rotation
     return generateEncryptionKey();
 }
 
