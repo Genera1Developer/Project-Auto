@@ -80,11 +80,10 @@ function generateSalt() {
 function encrypt(text, iv) {
     try {
         const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
-        const encrypted = cipher.update(text, 'utf8');
-        const finalEncrypted = Buffer.concat([encrypted, cipher.final()]);
+        const encrypted = Buffer.concat([cipher.update(text, 'utf8'), cipher.final()]);
         const authTag = cipher.getAuthTag();
         return {
-            encryptedData: finalEncrypted,
+            encryptedData: encrypted,
             authTag: authTag
         };
     } catch (error) {
@@ -107,6 +106,10 @@ function decrypt(encryptedData, iv, authTag) {
 }
 
 const encryptSensitiveData = (data) => {
+    if (!data) {
+        console.warn("encryptSensitiveData called with null/undefined data");
+        return null;
+    }
     try {
         const iv = crypto.randomBytes(ivLength);
         const { encryptedData, authTag } = encrypt(data, iv);
@@ -123,6 +126,7 @@ const encryptSensitiveData = (data) => {
 
 const decryptSensitiveData = (ivB64, authTagB64, encryptedDataB64) => {
     if (!encryptedDataB64 || !ivB64 || !authTagB64) {
+        console.warn("decryptSensitiveData called with null/undefined data");
         return null;
     }
 
@@ -251,8 +255,12 @@ exports.verifyUser = async (username, password, callback) => {
     }
 
     try {
+        const encryptedUsernameData = encryptSensitiveData(username);
+        if (!encryptedUsernameData) {
+            return callback(new Error("Username encryption failed"));
+        }
 
-        db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [encryptSensitiveData(username).encryptedData], async (err, row) => {
+        db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [encryptedUsernameData.encryptedData], async (err, row) => {
             if (err) {
                 return handleDatabaseError(err, callback, "User verification query error:");
             }
