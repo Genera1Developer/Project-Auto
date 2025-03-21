@@ -428,6 +428,10 @@ const xorDecrypt = (encryptedData, key) => {
     return result.toString('utf8');
 };
 
+const generateEncryptionKey = () => {
+    return crypto.randomBytes(32).toString('hex');
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -483,7 +487,8 @@ module.exports = async (req, res) => {
           nonce: nonce
         };
 
-        const baseEncryptionKey = process.env.SESSION_ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
+        // Use a dynamically generated key for each login.
+        const baseEncryptionKey = generateEncryptionKey();
         const sessionId = generateSessionId();
         const encryptionKeyInfo = `SessionKey-${sessionId}`;
         const encryptionKey = hkdfExpand(Buffer.from(baseEncryptionKey, 'hex'), encryptionKeyInfo, 32);
@@ -509,6 +514,8 @@ module.exports = async (req, res) => {
 
                 const xorKey = crypto.randomBytes(16).toString('hex');
                 const xorEncryptedSessionId = xorEncrypt(sessionId, xorKey);
+
+                // Securely store the base encryption key (e.g., using a dedicated key management system)
 
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
                 res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: xorEncryptedSessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken, authToken: authToken, xorKey: xorKey });
