@@ -695,7 +695,11 @@ module.exports = async (req, res) => {
                  }
 
                  // Set cookie with the encrypted session ID, signing with serverSecret
-                 res.cookie('session_id', sessionId, secureCookieOptions);
+                 const cookieValue = encryptCookie(sessionId, serverSecret);
+                 if (!cookieValue) {
+                    return res.status(500).json({ message: 'Cookie encryption failed' });
+                 }
+                 res.cookie('session_id', cookieValue, secureCookieOptions);
                  res.status(200).json({ data: compressedResponse });
 
 
