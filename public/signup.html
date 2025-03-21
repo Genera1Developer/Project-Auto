@@ -422,9 +422,6 @@
             const errorMessage = document.getElementById('error-message');
             const encryptionStatus = document.getElementById('encryption-status');
             const encryptionAnimation = document.getElementById('encryptionAnimation');
-            const saltDisplay = document.getElementById('saltDisplay');
-            const aesKeyDisplay = document.getElementById('aesKeyDisplay');
-             const hmacKeyDisplay = document.getElementById('hmacKeyDisplay');
 
             if (!username || !password || !confirmPassword || !email) {
                 errorMessage.textContent = 'Please enter all fields.';
@@ -492,21 +489,7 @@
 
                   const encryptedSalt = CryptoJS.enc.Base64.stringify(salt);
                   const encryptedIV = CryptoJS.enc.Base64.stringify(iv);
-                  const encryptedAesKey = CryptoJS.enc.Base64.stringify(aesKey);
                   const encryptedHmacKey = CryptoJS.enc.Base64.stringify(hmacKey);
-
-                 const signupData = {
-                    username: usernameEncrypted,
-                    password: hashedPassword,
-                    email: emailEncrypted,
-                    salt: encryptedSalt,
-                    iv: encryptedIV,
-                    aesKey: encryptedAesKey,
-                    hmacUsername: hmacUsername,
-                    hmacEmail: hmacEmail,
-                    hmacKey: encryptedHmacKey,
-                    recaptchaResponse: grecaptcha.getResponse()
-                 };
 
                   // Public key retrieval
                   fetch('/api/public-key')
