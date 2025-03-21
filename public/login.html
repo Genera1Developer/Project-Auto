@@ -205,10 +205,10 @@
 
         // Function to generate a cryptographically secure random key
         function generateEncryptionKey() {
-            let key = localStorage.getItem('encryptionKey');
+            let key = sessionStorage.getItem('encryptionKey'); // Use sessionStorage
             if(!key){
                 key = CryptoJS.lib.WordArray.random(32).toString(); // 256-bit key
-                localStorage.setItem('encryptionKey', key);
+                sessionStorage.setItem('encryptionKey', key); // Use sessionStorage
             }
             return key;
         }
@@ -237,16 +237,11 @@
             return CryptoJS.lib.WordArray.random(16).toString();
         }
 
-        // Function to encrypt the localStorage encryption key with a server key
+        // Function to encrypt the sessionStorage encryption key with a server key
         function encryptLocalKey(encryptionKey, serverPublicKey) {
             // Dummy implementation. Replace with proper public key encryption.
+            // Use a more robust key exchange mechanism in production.
             return btoa(encryptionKey);
-            // const serverKey = CryptoJS.enc.Utf8.parse(serverPublicKey);
-            // const encryptedKey = CryptoJS.AES.encrypt(CryptoJS.enc.Utf8.parse(encryptionKey), serverKey, {
-            //     mode: CryptoJS.mode.ECB,
-            //     padding: CryptoJS.pad.Pkcs7
-            // });
-            // return encryptedKey.toString();
         }
 
         // Function to generate a HMAC for request integrity
@@ -288,6 +283,7 @@
 
             // Include a timestamp in the request headers for replay protection
             const timestamp = Date.now();
+            const nonce = CryptoJS.lib.WordArray.random(16).toString(); // Generate a unique nonce
 
             // Get the server's public key (replace with actual method)
             const serverPublicKey = "YOUR_SERVER_PUBLIC_KEY"; // Replace with your actual public key retrieval method
@@ -296,7 +292,7 @@
             const encryptedEncryptionKey = encryptLocalKey(encryptionKey, serverPublicKey);
 
             // Create a combined data string for HMAC calculation
-            const hmacData = encryptedUsername.ciphertext + encryptedPassword.ciphertext + encryptedCaptcha.ciphertext + salt + timestamp + encryptedEncryptionKey;
+            const hmacData = encryptedUsername.ciphertext + encryptedPassword.ciphertext + encryptedCaptcha.ciphertext + salt + timestamp + encryptedEncryptionKey + nonce;
             const hmac = generateHMAC(hmacData, encryptionKey);
 
             fetch('/api/login', {
@@ -307,8 +303,9 @@
                     'X-Encryption-IV': encryptedUsername.iv, // Send IV in header
                     'X-Request-Timestamp': timestamp, // Send timestamp
                     'X-Salt-Hash': saltHash, // Send Salt hash
-                    'X-Encrypted-Key': encryptedEncryptionKey,
-                    'X-Request-HMAC': hmac // Send HMAC for integrity
+                    'X-Encrypted-Key': encryptedEncryptionKey, // Send the encrypted key
+                    'X-Request-HMAC': hmac, // Send HMAC for integrity
+                    'X-Request-Nonce': nonce // Send nonce for replay attack protection
                 },
                 body: JSON.stringify({
                     username: encryptedUsername.ciphertext,
@@ -322,8 +319,6 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-				// Store encryption key in session storage for use on the next page
-                sessionStorage.setItem('encryptionKey', encryptionKey);
                 return response.json();
             })
             .then(data => {
