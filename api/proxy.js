@@ -109,11 +109,18 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
             if(useEncryption) {
                 try {
                     if(encryptFlag){
-                      transformedKey = encrypt(key, encryptionKey);
-                      if (transformedKey) {
-                        transformedKey = ENCRYPT_HEADER_PREFIX + transformedKey;
+                      const encryptedKey = encrypt(key, encryptionKey);
+                      if (encryptedKey) {
+                        transformedKey = ENCRYPT_HEADER_PREFIX + encryptedKey;
+                      } else {
+                        console.warn(`Skipping header ${key} due to key encryption failure.`);
+                        continue;
                       }
                       transformedValue = encrypt(value, encryptionKey);
+                       if (transformedValue === null) {
+                          console.warn(`Skipping header value for ${key} due to encryption failure.`);
+                          continue;
+                        }
                     } else {
                       if (key.startsWith(ENCRYPT_HEADER_PREFIX)) {
                         const encryptedKey = key.slice(ENCRYPT_HEADER_PREFIX.length);
@@ -143,12 +150,6 @@ function transformHeaders(headers, encryptFlag, encryptionKey) {
                         transformedHeaders[key] = headers[key];
                         continue;
                       }
-                    }
-
-                    //If transformation results in null, skip the header.
-                    if(transformedKey === null || transformedValue === null) {
-                        console.warn(`Skipping header ${key} due to transformation failure.`);
-                        continue;
                     }
 
                 } catch (err) {
@@ -228,6 +229,8 @@ function proxyRequest(req, res) {
             // res.setHeader('x-pbkdf2-digest', DIGEST);
 
             res.writeHead(proxyRes.statusCode, resHeaders);
+
+            // Consider encrypting the response body if needed
             raw.pipe(res);
         });
 
