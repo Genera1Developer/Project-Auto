@@ -206,6 +206,16 @@
             display: none; /* Hide salt display by default */
         }
 
+        .hmac-key-display {
+            font-size: 0.7em;
+            color: #aaa;
+            margin-top: 5px;
+            text-align: left;
+            word-break: break-all; /* Prevent overflow */
+            display: none; /* Hide HMAC key display by default */
+        }
+
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
@@ -245,6 +255,7 @@
              <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh714gGWHYhPIVpCBoy"></div>
             <div class="salt-display" id="saltDisplay"></div>
             <div class="aes-key-display" id="aesKeyDisplay"></div>
+             <div class="hmac-key-display" id="hmacKeyDisplay"></div>
             <div class="encryption-animation" id="encryptionAnimation"></div>
             <button type="submit">Sign Up</button>
         </form>
@@ -385,6 +396,7 @@
             const encryptionAnimation = document.getElementById('encryptionAnimation');
             const saltDisplay = document.getElementById('saltDisplay');
             const aesKeyDisplay = document.getElementById('aesKeyDisplay');
+             const hmacKeyDisplay = document.getElementById('hmacKeyDisplay');
 
             if (!username || !password || !confirmPassword || !email) {
                 errorMessage.textContent = 'Please enter all fields.';
@@ -424,12 +436,13 @@
                 // Generate a random key (AES key size should be 128, 192, or 256 bits)
                 const salt = CryptoJS.lib.WordArray.random(128/8);
                 // Derive key from password and salt
-                const key = CryptoJS.PBKDF2(password, salt, {
-                  keySize: 256/32,
-                  iterations: 1000
-                });
+                //removed key derivation function from client side
+                //const key = CryptoJS.PBKDF2(password, salt, {
+                //  keySize: 256/32,
+                //  iterations: 1000
+                //});
                 const aesKey = CryptoJS.lib.WordArray.random(256/8); // Generate AES key
-                 const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
+                const hmacKey = CryptoJS.lib.WordArray.random(256/8); // Generate HMAC key
 
                 // Encrypt username and email
                 const iv = CryptoJS.lib.WordArray.random(128/8);
@@ -509,6 +522,8 @@
                    // NEVER display the salt in a production environment.
                   // saltDisplay.textContent = "Salt: " + encryptedSalt;
                   // aesKeyDisplay.textContent = "AES Key: " + encryptedAesKey;
+                  // hmacKeyDisplay.textContent = "HMAC Key: " + encryptedHmacKey;
+
 
                 } catch (e) {
                   encryptionAnimation.style.display = 'none';
