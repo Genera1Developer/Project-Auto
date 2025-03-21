@@ -19,9 +19,13 @@ let keyDerivationUsed = false;
 // Use a WeakMap to prevent IV reuse with specific keys
 const ivMap = new WeakMap();
 
-// Cache the cipher for potential performance improvement.  Consider removing for higher security if needed
-//let cachedCipher = null;
-//let cachedDecipher = null;
+// Consider using a more robust method for key storage and management.
+// For example, consider using a hardware security module (HSM) or a key
+// management system (KMS) for production environments.
+
+// Use a WeakMap to store cipher instances to prevent options pollution
+const cipherMap = new WeakMap();
+const decipherMap = new WeakMap();
 
 // Function to clear sensitive data from memory
 function zeroBuffer(buf) {
@@ -50,9 +54,9 @@ function deriveEncryptionKey(password) {
         key = derivedKey;
         keyGenerated = true;
         keyDerivationUsed = true; //Mark that key derivation was used
-        //cachedCipher = null; // Invalidate cached cipher on key change
-        //cachedDecipher = null; // Invalidate cached decipher on key change
         ivMap.delete(key); // Clear IV map on key change
+        cipherMap.delete(key); // Clear cipher map on key change
+        decipherMap.delete(key); // Clear decipher map on key change
     } catch (error) {
         console.error("Key derivation failed:", error);
         throw new Error('Key derivation failed. Check password and salt.');
@@ -77,9 +81,9 @@ function setEncryptionKey(newKey) {
     key = Buffer.from(newKey);
     keyGenerated = true;
     keyDerivationUsed = false; //Explicitly set to false when directly setting the key
-    //cachedCipher = null; // Invalidate cached cipher on key change
-    //cachedDecipher = null; // Invalidate cached decipher on key change
     ivMap.delete(key); // Clear IV map on key change
+    cipherMap.delete(key); // Clear cipher map on key change
+    decipherMap.delete(key); // Clear decipher map on key change
 }
 
 function generateEncryptionKey() {
@@ -94,9 +98,9 @@ function generateEncryptionKey() {
         key = newKey;
         keyGenerated = true;
         keyDerivationUsed = false; //Explicitly set to false when generating key
-        //cachedCipher = null; // Invalidate cached cipher on key change
-        //cachedDecipher = null; // Invalidate cached cipher on key change
         ivMap.delete(key); // Clear IV map on key change
+        cipherMap.delete(key); // Clear cipher map on key change
+        decipherMap.delete(key); // Clear decipher map on key change
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
@@ -204,10 +208,6 @@ function generateSalt(length = 32) {
     return crypto.randomBytes(length).toString('hex');
 }
 
-// Consider using a more robust method for key storage and management.
-// For example, consider using a hardware security module (HSM) or a key
-// management system (KMS) for production environments.
-
 // Added key rotation function.
 function rotateKey() {
     if (keyGenerated) {
@@ -215,13 +215,12 @@ function rotateKey() {
     }
     keyGenerated = false;
     keyDerivationUsed = false; // Reset key derivation flag on rotation
-    //lastIV = null; // Reset last IV on key rotation - Not needed since IV map exists
-    //cachedCipher = null;
-    //cachedDecipher = null;
     if(key){
         zeroBuffer(key);
     }
     ivMap.delete(key); // Clear IV map on key rotation
+    cipherMap.delete(key); // Clear cipher map on key rotation
+    decipherMap.delete(key); // Clear decipher map on key rotation
     return generateEncryptionKey();
 }
 
@@ -327,7 +326,7 @@ const decryptSecure = (text, aad = null) => {
         const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
          if (aad) {
             decipher.setAAD(Buffer.from(aad, 'utf8'));
         }
@@ -364,6 +363,8 @@ function resetKeyGeneration() {
         key = null;
     }
     ivMap.clear();
+    cipherMap.clear();
+    decipherMap.clear();
 }
 
 // Function to encrypt a buffer directly.
@@ -412,7 +413,7 @@ const decryptBuffer = (ciphertext, aad = null) => {
         const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         if (aad) {
             decipher.setAAD(Buffer.from(aad, 'utf8'));
         }
