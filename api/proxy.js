@@ -227,6 +227,10 @@ async function handleRequestBody(req, encryptionKey, reqIv) {
                 reject(err);
             });
 
+        req.on('aborted', () => {
+          reject(new Error('Request aborted.'));
+        });
+
         // Consume the request body to prevent issues with subsequent handlers
         req.pipe(new stream.PassThrough());
     });
@@ -319,6 +323,10 @@ async function proxyRequest(req, res) {
         proxyReq.on('error', (err) => {
             console.error('Proxy request error:', err);
             res.status(500).send('Proxy error');
+        });
+
+        req.on('aborted', () => {
+          proxyReq.abort();
         });
 
          // Generate IV for request encryption - different IV each time.
