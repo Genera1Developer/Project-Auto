@@ -392,6 +392,7 @@
             const ENABLE_HSTS = true;
             const ENABLE_WEBGPU = false;
             const ENABLE_SUBTLE_CRYPTO_LOGGING = false;
+			const ENABLE_DEFERRED_DECRYPTION = true;
 
             // DOM Elements
             const urlInput = document.getElementById('url');
@@ -634,80 +635,93 @@
                 aesKey = null;
             }
 
+			async function proxyRequest(url) {
+				try {
+					const nonce = generateNonce(NONCE_LENGTH);
+					console.log("Request Nonce:", nonce);
+
+					aesKey = await getOrCreateAESKey();
+					if (!aesKey) {
+						return;
+					}
+
+					const { ciphertext, iv } = await encryptURL(url, aesKey);
+
+					const aesKeyHex = sessionStorage.getItem('aesKey');
+					const hashedKey = await hashKey(aesKeyHex);
+					console.log("Hashed Key:", hashedKey);
+
+					const isCompromised = await checkKeyCompromise(hashedKey);
+					if (isCompromised) {
+						keyCompromisedAlertDiv.classList.remove('hidden');
+						errorDiv.textContent = 'Potential security risk: Key compromise detected.';
+						return;
+					} else {
+						keyCompromisedAlertDiv.classList.add('hidden');
+					}
+
+					sessionStorage.setItem('aesIV', iv);
+
+					sessionStorage.setItem('aesKey', aesKeyHex);
+					sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
+					sessionStorage.setItem('hashedKey', hashedKey);
+
+					const formData = new FormData();
+					formData.append('ciphertext', ciphertext);
+					formData.append('nonce', nonce);
+					formData.append('keyHash', hashedKey);
+
+					loadingDiv.style.display = 'block';
+					errorDiv.textContent = '';
+					proxyFrame.classList.remove('hidden');
+
+					proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
+					let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
+					if (ENABLE_CSP) {
+						proxyFrame.setAttribute('csp', cspValue);
+					}
+
+					return fetch(PROXY_URL, {
+						method: 'POST',
+						body: formData,
+						redirect: 'manual'
+					});
+
+				} catch (error) {
+					console.error("Error during proxy request:", error);
+					throw error;
+				} finally {
+					loadingDiv.style.display = 'none';
+				}
+			}
+
+
             async function encryptAndProxy(redirectUrl) {
                 try {
-                    const nonce = generateNonce(NONCE_LENGTH);
-                    console.log("Redirect Nonce:", nonce);
-
                     aesKey = await getOrCreateAESKey();
                     if (!aesKey) {
                         return;
                     }
 
-                    const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
+					const response = await proxyRequest(redirectUrl);
 
-                    const aesKeyHex = sessionStorage.getItem('aesKey');
-                    const hashedKey = await hashKey(aesKeyHex);
-                    console.log("Hashed Key:", hashedKey);
+					if (!response.ok) {
+						throw new Error(`HTTP error! status: ${response.status}`);
+					}
+					const html = await response.text();
+					proxyFrame.contentWindow.document.open();
+					proxyFrame.contentWindow.document.write(html);
+					proxyFrame.contentWindow.document.close();
 
-                    const isCompromised = await checkKeyCompromise(hashedKey);
-                    if (isCompromised) {
-                        keyCompromisedAlertDiv.classList.remove('hidden');
-                        errorDiv.textContent = 'Potential security risk: Key compromise detected.';
-                        return;
-                    } else {
-                        keyCompromisedAlertDiv.classList.add('hidden');
-                    }
+					if (PREFETCH_SUBRESOURCES) {
+						prefetchSubresources(html);
+					}
 
-                    sessionStorage.setItem('aesIV', iv);
-
-                    sessionStorage.setItem('aesKey', aesKeyHex);
-                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
-                    sessionStorage.setItem('hashedKey', hashedKey);
-
-                    const formData = new FormData();
-                    formData.append('ciphertext', ciphertext);
-                    formData.append('nonce', nonce);
-                    formData.append('keyHash', hashedKey);
-
-                    loadingDiv.style.display = 'block';
-                    errorDiv.textContent = '';
-                    proxyFrame.classList.remove('hidden');
-
-                    proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
-                    let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
-                    if (ENABLE_CSP) {
-                        proxyFrame.setAttribute('csp', cspValue);
-                    }
-
-                    return fetch(PROXY_URL, {
-                        method: 'POST',
-                        body: formData,
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.text();
-                        })
-                        .then(html => {
-                            proxyFrame.contentWindow.document.open();
-                            proxyFrame.contentWindow.document.write(html);
-                            proxyFrame.contentWindow.document.close();
-
-                            if (PREFETCH_SUBRESOURCES) {
-                                prefetchSubresources(html);
-                            }
-
-                            proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
-                        });
-                } catch (error) {
-                    console.error("Error handling redirect:", error);
-                    errorDiv.textContent = 'Failed to load the redirect page.';
-                } finally {
-                    clearTimeout(timeoutId);
-                    loadingDiv.style.display = 'none';
-                }
+					proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
+				} catch (error) {
+					console.error("Error handling redirect:", error);
+					errorDiv.textContent = 'Failed to load the redirect page.';
+				}
             }
 
             async function prefetchSubresources(html) {
@@ -777,93 +791,9 @@
                         errorDiv.textContent = 'Please enter a valid URL.';
                         return;
                     }
-
-                    const nonce = generateNonce(NONCE_LENGTH);
-                    console.log("Request Nonce:", nonce);
-
-
-                    aesKey = await getOrCreateAESKey();
-                    if (!aesKey) {
-                        return;
-                    }
-
-                    const { ciphertext, iv } = await encryptURL(url, aesKey);
-
-                    const aesKeyHex = sessionStorage.getItem('aesKey');
-                    const hashedKey = await hashKey(aesKeyHex);
-                    console.log("Hashed Key:", hashedKey);
-
-                    const isCompromised = await checkKeyCompromise(hashedKey);
-                    if (isCompromised) {
-                        keyCompromisedAlertDiv.classList.remove('hidden');
-                        errorDiv.textContent = 'Potential security risk: Key compromise detected.';
-                        return;
-                    } else {
-                        keyCompromisedAlertDiv.classList.add('hidden');
-                    }
-
-                    sessionStorage.setItem('aesIV', iv);
-
-                    sessionStorage.setItem('aesKey', aesKeyHex);
-                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
-                    sessionStorage.setItem('hashedKey', hashedKey);
-
-                    const formData = new FormData();
-                    formData.append('ciphertext', ciphertext);
-                    formData.append('nonce', nonce);
-                    formData.append('keyHash', hashedKey);
-
-                    loadingDiv.style.display = 'block';
+					loadingDiv.style.display = 'block';
                     errorDiv.textContent = '';
                     proxyFrame.classList.remove('hidden');
-
-                    proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
-                    let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
-                    if (ENABLE_CSP) {
-                        proxyFrame.setAttribute('csp', cspValue);
-                    }
-
-                    fetch(PROXY_URL, {
-                        method: 'POST',
-                        body: formData,
-                        redirect: 'manual'
-                    })
-                        .then(response => {
-                            if (REDIRECT_STATUS_CODES.includes(response.status)) {
-                                const redirectUrl = response.headers.get('Location');
-                                console.log("Redirect detected:", redirectUrl);
-                                if (ENCRYPT_REDIRECTS) {
-                                    return encryptAndProxy(redirectUrl);
-                                } else {
-                                    proxyFrame.src = redirectUrl;
-                                    return;
-                                }
-                            }
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.text();
-                        })
-                        .then(html => {
-                            proxyFrame.contentWindow.document.open();
-                            proxyFrame.contentWindow.document.write(html);
-                            proxyFrame.contentWindow.document.close();
-
-                            if (PREFETCH_SUBRESOURCES) {
-                                prefetchSubresources(html);
-                            }
-
-                            proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
-
-                        })
-                        .catch(error => {
-                            console.error("Error loading proxy:", error);
-                            errorDiv.textContent = 'Failed to load the page within the iframe.';
-                        })
-                        .finally(() => {
-                            clearTimeout(timeoutId);
-                            loadingDiv.style.display = 'none';
-                        });
 
                     const timeoutId = setTimeout(() => {
                         if (loadingDiv.style.display === 'block') {
@@ -872,6 +802,43 @@
                             proxyFrame.src = '';
                         }
                     }, LOAD_TIMEOUT);
+
+					try {
+						const response = await proxyRequest(url);
+
+						if (REDIRECT_STATUS_CODES.includes(response.status)) {
+							const redirectUrl = response.headers.get('Location');
+							console.log("Redirect detected:", redirectUrl);
+							if (ENCRYPT_REDIRECTS) {
+								await encryptAndProxy(redirectUrl);
+							} else {
+								proxyFrame.src = redirectUrl;
+							}
+						} else if (!response.ok) {
+							throw new Error(`HTTP error! status: ${response.status}`);
+						} else {
+							const html = await response.text();
+
+							proxyFrame.contentWindow.document.open();
+							proxyFrame.contentWindow.document.write(html);
+							proxyFrame.contentWindow.document.close();
+
+							if (PREFETCH_SUBRESOURCES) {
+								prefetchSubresources(html);
+							}
+
+							proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
+						}
+
+					} catch (error) {
+						console.error("Error loading proxy:", error);
+						errorDiv.textContent = 'Failed to load the page within the iframe.';
+					} finally {
+						clearTimeout(timeoutId);
+						loadingDiv.style.display = 'none';
+					}
+
+
                 } catch (e) {
                     handleErrors(e);
                 } finally {
