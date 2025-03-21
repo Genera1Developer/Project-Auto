@@ -353,6 +353,17 @@ const decryptSecure = (text) => {
     }
 };
 
+// Function to securely compare two buffers
+function safeBufferCompare(a, b) {
+    if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
+        return false;
+    }
+    if (a.length !== b.length) {
+        return false;
+    }
+    return timingSafeEqual(a, b);
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -371,5 +382,6 @@ module.exports = {
     getKeyDetails,
     generateSecureRandomBytes,
     encryptSecure,
-    decryptSecure
+    decryptSecure,
+    safeBufferCompare
 };
