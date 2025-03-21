@@ -154,6 +154,15 @@ function createSalt() {
   return crypto.randomBytes(16).toString('hex');
 }
 
+function safeHeaderValue(value) {
+    if (typeof value !== 'string') {
+        return String(value);
+    }
+
+    // Prevent header injection attacks
+    return value.replace(/[\r\n]+/g, '');
+}
+
 // Function to handle the proxy request
 function proxyRequest(req, res) {
     const targetUrl = req.headers['x-target-url'];
@@ -207,6 +216,13 @@ function proxyRequest(req, res) {
             const iv = crypto.randomBytes(IV_LENGTH);
             let resHeaders = transformHeaders(proxyRes.headers, true, encryptionKey, iv); // Encrypt outgoing headers, using salt
             delete resHeaders['content-encoding'];
+
+             // Sanitize header values before sending them to the client
+            for (const key in resHeaders) {
+                if (resHeaders.hasOwnProperty(key)) {
+                    resHeaders[key] = safeHeaderValue(resHeaders[key]);
+                }
+            }
 
             // Send the salt and algorithm to the client for decryption
             res.setHeader('x-encryption-salt', salt);
