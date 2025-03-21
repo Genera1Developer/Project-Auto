@@ -78,14 +78,19 @@ function generateSalt() {
 }
 
 function encrypt(text, iv) {
-    const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
-    const encrypted = cipher.update(text, 'utf8');
-    const finalEncrypted = Buffer.concat([encrypted, cipher.final()]);
-    const authTag = cipher.getAuthTag();
-    return {
-        encryptedData: finalEncrypted,
-        authTag: authTag
-    };
+    try {
+        const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
+        const encrypted = cipher.update(text, 'utf8');
+        const finalEncrypted = Buffer.concat([encrypted, cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        return {
+            encryptedData: finalEncrypted,
+            authTag: authTag
+        };
+    } catch (error) {
+        console.error("Encryption error:", error);
+        throw error;
+    }
 }
 
 function decrypt(encryptedData, iv, authTag) {
@@ -102,13 +107,18 @@ function decrypt(encryptedData, iv, authTag) {
 }
 
 const encryptData = (data) => {
-    const iv = crypto.randomBytes(ivLength);
-    const { encryptedData, authTag } = encrypt(data, iv);
-    return {
-        encryptedData: encryptedData.toString('hex'),
-        iv: iv.toString('hex'),
-        authTag: authTag.toString('hex')
-    };
+    try {
+        const iv = crypto.randomBytes(ivLength);
+        const { encryptedData, authTag } = encrypt(data, iv);
+        return {
+            encryptedData: encryptedData.toString('hex'),
+            iv: iv.toString('hex'),
+            authTag: authTag.toString('hex')
+        };
+    } catch (error) {
+        console.error("Encryption error:", error);
+        return null;
+    }
 };
 
 const decryptData = (encryptedDataHex, ivHex, authTagHex) => {
@@ -128,13 +138,18 @@ const decryptData = (encryptedDataHex, ivHex, authTagHex) => {
 };
 
 const encryptSensitiveData = (data) => {
-    const iv = crypto.randomBytes(ivLength);
-    const { encryptedData, authTag } = encrypt(data, iv);
-    return {
-        encryptedData: encryptedData.toString('base64'),
-        iv: iv.toString('base64'),
-        authTag: authTag.toString('base64')
-    };
+    try {
+        const iv = crypto.randomBytes(ivLength);
+        const { encryptedData, authTag } = encrypt(data, iv);
+        return {
+            encryptedData: encryptedData.toString('base64'),
+            iv: iv.toString('base64'),
+            authTag: authTag.toString('base64')
+        };
+    } catch (error) {
+        console.error("Encryption error:", error);
+        return null;
+    }
 };
 
 const decryptSensitiveData = (encryptedDataB64, ivB64, authTagB64) => {
@@ -169,6 +184,10 @@ exports.createUser = async (username, password, callback) => {
         const usernameEncryption = encryptSensitiveData(username);
         const passwordEncryption = encryptSensitiveData(hashedPassword);
         const saltEncryption = encryptSensitiveData(salt);
+
+        if (!usernameEncryption || !passwordEncryption || !saltEncryption) {
+            return callback(new Error("Encryption failed"));
+        }
 
         const values = [
             usernameEncryption.encryptedData,
@@ -217,6 +236,9 @@ exports.verifyUser = (username, password, callback) => {
                 const decryptedSalt = decryptSensitiveData(row.salt_iv, row.salt_auth_tag, row.salt);
                 const decryptedPassword = decryptSensitiveData(row.password_iv, row.password_auth_tag, row.password);
 
+                if (!decryptedUsername || !decryptedSalt || !decryptedPassword) {
+                    return callback(new Error("Decryption failed"));
+                }
                 const hashedPassword = await hashPassword(password, decryptedSalt, row.password_version);
 
                 if (username === decryptedUsername && hashedPassword === decryptedPassword) {
