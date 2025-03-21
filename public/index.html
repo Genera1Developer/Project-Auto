@@ -261,6 +261,10 @@
                     errorDiv.textContent = ''; // Clear any previous errors
                     proxyFrame.style.display = 'block';
 
+                    // Add CSP to the iframe to prevent mixed content issues
+                    proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
+                    proxyFrame.setAttribute('csp', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';");
+
                     // Load the URL in the iframe
                     proxyFrame.src = proxyUrl;
 
