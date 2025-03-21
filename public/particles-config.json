@@ -94,7 +94,8 @@
         "disableEncryptionOnLowPerformance": true,
         "cpuUsageThreshold": 80,
         "memoryUsageThreshold": 90,
-        "disableOnBattery": true
+        "disableOnBattery": true,
+        "maxConcurrentDecryptions": 4
       },
       "hmacSalt": "ENC_HMAC_SALT_PLACEHOLDER",
       "cacheTtl": 3600,
@@ -104,7 +105,8 @@
       "nonceLength": 12,
       "tagLength": 16,
       "keySize": 32,
-      "hmacKeySize": 32
+      "hmacKeySize": 32,
+      "adataHmacKey": "ENC_ADATA_HMAC_KEY_PLACEHOLDER"
     }
   },
   "interactivity": {
