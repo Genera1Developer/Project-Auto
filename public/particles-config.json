@@ -113,6 +113,9 @@
       "webAssemblyThreads": 2,
       "entropySeed": "ENC_ENTROPY_SEED_PLACEHOLDER",
       "hmacIterationOffset": 10
+    },
+    "wasm": {
+        "url": "wasm/encryption.wasm"
     }
   },
   "interactivity": {
