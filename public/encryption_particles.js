@@ -522,6 +522,15 @@ particlesJS('particles-js', {
                  iv && iv !== 'YOUR_IV_KEY' &&
                  salt && salt !== 'YOUR_SALT' &&
                  this.isValidBase64(key) && this.isValidBase64(iv) && this.isValidBase64(salt);
+      },
+      clearCryptoDetails: function() {
+          try {
+              localStorage.removeItem('encryptionKey');
+              localStorage.removeItem('encryptionIV');
+              localStorage.removeItem('encryptionSalt');
+          } catch (e) {
+              console.warn("localStorage not available.");
+          }
       }
   },
   "fn": {
@@ -615,13 +624,7 @@ particlesJS('particles-js', {
         }
     },
      "destroy": function() {
-            try{
-              localStorage.removeItem('encryptionKey');
-              localStorage.removeItem('encryptionIV');
-              localStorage.removeItem('encryptionSalt');
-            } catch(e){
-                console.warn("localStorage not available.");
-            }
+           this.plugins.clearCryptoDetails();
 
         }
 },
