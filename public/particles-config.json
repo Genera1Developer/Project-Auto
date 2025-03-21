@@ -149,7 +149,10 @@
          "memoryThresholdForCacheDisable": 80,
          "adataPrecomputeHashes": true,
          "hmacPrecomputeHashes": true,
-         "keyPrecomputeHashes": true
+         "keyPrecomputeHashes": true,
+         "deriveIvFromKey": true,
+         "adataDerivationRounds": 3,
+         "hmacDerivationRounds": 3
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
