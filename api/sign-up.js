@@ -93,6 +93,10 @@ function saltUsername(username, salt) {
     return crypto.createHash('sha256').update(combined).digest('hex');
 }
 
+// Function to securely erase sensitive data from memory
+function secureErase(buffer) {
+    buffer.fill(0);
+}
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
@@ -135,6 +139,13 @@ module.exports = async (req, res) => {
         encryptedUsername: encryptedUsername,
         encryptedSalt: encryptedSalt,
       };
+
+      // Securely erase sensitive data from memory after usage
+      secureErase(Buffer.from(username, 'utf8'));
+      secureErase(Buffer.from(password, 'utf8'));
+      if(salt){
+        secureErase(Buffer.from(salt, 'utf8'));
+      }
 
       // NEVER log sensitive data in production.  Instead, log the user ID after creation.
       if (process.env.NODE_ENV !== 'production') {
