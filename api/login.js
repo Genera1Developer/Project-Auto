@@ -114,6 +114,32 @@ const decryptSession = (encryptedSession, encryptionKey) => {
     }
 };
 
+const storeFailedLoginAttempt = (username) => {
+    //In-memory store for demonstration purposes
+    if (!global.failedLoginAttempts) {
+        global.failedLoginAttempts = {};
+    }
+
+    if (!global.failedLoginAttempts[username]) {
+        global.failedLoginAttempts[username] = 0;
+    }
+
+    global.failedLoginAttempts[username]++;
+};
+
+const checkFailedLoginAttempts = (username) => {
+    if (!global.failedLoginAttempts || !global.failedLoginAttempts[username]) {
+        return 0;
+    }
+    return global.failedLoginAttempts[username];
+};
+
+const clearFailedLoginAttempts = (username) => {
+    if (global.failedLoginAttempts && global.failedLoginAttempts[username]) {
+        delete global.failedLoginAttempts[username];
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -129,10 +155,16 @@ module.exports = async (req, res) => {
 
     username = sanitizeInput(username);
 
+    const failedAttempts = checkFailedLoginAttempts(username);
+    if (failedAttempts >= 3) {
+        return res.status(429).json({ message: 'Account locked due to multiple failed login attempts.' });
+    }
+
     try {
       const userData = await fetchUser(username);
 
       if (!userData) {
+          storeFailedLoginAttempt(username);
           return res.status(401).json({ message: 'Invalid credentials' });
       }
 
@@ -142,6 +174,7 @@ module.exports = async (req, res) => {
       }
 
       if (timingSafeCompare(hashedPassword, userData.passwordHash)) {
+        clearFailedLoginAttempts(username);
         const sessionData = {
           username: userData.username,
           loginTime: Date.now(),
@@ -158,6 +191,7 @@ module.exports = async (req, res) => {
         }
 
       } else {
+        storeFailedLoginAttempt(username);
         res.status(401).json({ message: 'Invalid credentials' });
       }
     } catch (error) {
