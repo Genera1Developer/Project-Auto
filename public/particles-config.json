@@ -386,6 +386,7 @@
            "enabled": true,
            "algorithm": "AES-256-GCM",
            "key": "ENC_SERVER_SIDE_KEY_PLACEHOLDER"
-       }
+       },
+        "keyVersion": 1
   }
 }
