@@ -404,6 +404,30 @@ const verifyAuthenticationToken = (token, encryptionKey) => {
     }
 };
 
+const xorEncrypt = (data, key) => {
+    const keyBuffer = Buffer.from(key, 'utf8');
+    const dataBuffer = Buffer.from(data, 'utf8');
+    const result = Buffer.alloc(dataBuffer.length);
+
+    for (let i = 0; i < dataBuffer.length; i++) {
+        result[i] = dataBuffer[i] ^ keyBuffer[i % keyBuffer.length];
+    }
+
+    return result.toString('hex');
+};
+
+const xorDecrypt = (encryptedData, key) => {
+    const keyBuffer = Buffer.from(key, 'utf8');
+    const encryptedDataBuffer = Buffer.from(encryptedData, 'hex');
+    const result = Buffer.alloc(encryptedDataBuffer.length);
+
+    for (let i = 0; i < encryptedDataBuffer.length; i++) {
+        result[i] = encryptedDataBuffer[i] ^ keyBuffer[i % keyBuffer.length];
+    }
+
+    return result.toString('utf8');
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
 
@@ -483,8 +507,11 @@ module.exports = async (req, res) => {
                 // Generate authentication token
                 const authToken = generateAuthenticationToken(userData.username, encryptionKey.toString('hex'));
 
+                const xorKey = crypto.randomBytes(16).toString('hex');
+                const xorEncryptedSessionId = xorEncrypt(sessionId, xorKey);
+
                 res.setHeader('Set-Cookie', `session=${encryptedSessionCookie}; HttpOnly; Secure; SameSite=Strict`);
-                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: sessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken, authToken: authToken });
+                res.status(200).json({ message: 'Login successful!', nonce: nonce, sessionId: xorEncryptedSessionId, deviceSecret: encryptedDeviceSecret, token: shortLivedToken, authToken: authToken, xorKey: xorKey });
             } else {
                 res.status(500).json({ message: 'Session cookie encryption failed' });
             }
