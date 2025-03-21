@@ -214,6 +214,38 @@
       "windowMs": 60000,
       "max": 1000
     },
-     "disableSourceMaps": true
+     "disableSourceMaps": true,
+     "frameGuard": {
+          "enabled": true,
+          "policy": "DENY"
+     },
+     "subresourceIntegrity": {
+       "enabled": true,
+       "algorithm": "sha384"
+     },
+     "strictTransportSecurity": {
+         "enabled": true,
+         "maxAge": 31536000,
+         "includeSubDomains": true,
+         "preload": true
+     },
+     "xssProtection": {
+         "enabled": true,
+         "mode": "block"
+     },
+      "referrerPolicy": "strict-origin-when-cross-origin",
+       "featurePolicy": {
+           "enabled": true,
+           "directives": {
+               "geolocation": "'none'",
+               "midi": "'none'",
+               "notifications": "'none'",
+               "camera": "'none'",
+               "microphone": "'none'",
+               "speaker": "'none'",
+               "vibrate": "'none'",
+               "payment": "'none'"
+           }
+       }
   }
 }
