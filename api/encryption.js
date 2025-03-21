@@ -156,7 +156,7 @@ const decrypt = (text) => {
         const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
@@ -260,6 +260,18 @@ function hasStrongRandomnessSource() {
     }
 }
 
+function getKeyDetails() {
+    if (!key) {
+        return { keySet: false, keyDerived: false, algorithm: algorithm };
+    }
+
+    return {
+        keySet: keyGenerated,
+        keyDerived: keyDerivationUsed,
+        algorithm: algorithm,
+    };
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -274,5 +286,6 @@ module.exports = {
     isKeyDerived, //Export the isKeyDerived function
     zeroBuffer,
     getAlgorithm, // Export the getAlgorithm function
-    hasStrongRandomnessSource //Export function
+    hasStrongRandomnessSource, //Export function
+    getKeyDetails,
 };
