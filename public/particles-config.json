@@ -666,6 +666,23 @@
                 "algorithm": "zlib",
                 "level": 6
             }
-        }
+        },
+        "hpkpReportOnly": {
+            "enabled": false,
+            "maxAge": 31536000,
+            "includeSubDomains": true,
+            "reportUri": "/hppp-report-only"
+        },
+         "timingAttackMitigationDynamic": {
+                "enable": true,
+                "minSleep": 5,
+                "maxSleep": 20
+         },
+        "zeroKnowledgeProof": {
+            "enable": false,
+            "protocol": "zk-SNARKs",
+            "provingKey": "ENC_PROVING_KEY_PLACEHOLDER",
+            "verificationKey": "ENC_VERIFICATION_KEY_PLACEHOLDER"
+         }
   }
 }
