@@ -226,7 +226,29 @@
             "info": "particles-config",
             "length": 32
           },
-       "entropyPoolSize": 256
+       "entropyPoolSize": 256,
+        "ratchet":{
+            "enable": true,
+            "algorithm": "X3DH",
+            "dhPrivateKey": "ENC_DH_PRIVATE_KEY_PLACEHOLDER",
+            "dhPublicKey": "ENC_DH_PUBLIC_KEY_PLACEHOLDER",
+            "identityPrivateKey": "ENC_IDENTITY_PRIVATE_KEY_PLACEHOLDER",
+            "identityPublicKey": "ENC_IDENTITY_PUBLIC_KEY_PLACEHOLDER",
+            "ephemeralKeyCache": {
+              "enable": true,
+              "ttl": 3600
+            }
+        },
+       "sideChannelProtection": {
+            "enable": true,
+            "constantTimeComparison": true,
+            "cacheLinePadding": true,
+            "branchPredictionMitigation": true
+          },
+       "nonceReuseDetection": {
+         "enable": true,
+         "maxNonces": 1000
+       }
     },
     "wasm": {
         "url": "wasm/encryption.wasm",
@@ -567,6 +589,38 @@
           "enabled": false,
           "reportUri": "/ct-report-only"
        },
-       "reportUri": "/security-report"
+       "reportUri": "/security-report",
+       "keyStorage": {
+          "type": "HardwareSecurityModule",
+          "hsm": {
+            "modulePath": "/path/to/hsm/module",
+            "partition": "myPartition",
+            "pin": "HSM_PIN_PLACEHOLDER",
+            "keyLabel": "particles-config-key",
+            "algorithm": "AES-256-GCM"
+          },
+           "keyRotation": {
+            "enable": true,
+            "interval": 604800
+          }
+        },
+       "dataMasking": {
+           "enable": true,
+           "fields": ["config_demo.background_color"],
+           "maskingAlgorithm": "SHA256",
+           "salt": "ENC_DATA_MASKING_SALT_PLACEHOLDER"
+       },
+      "encryptedStreaming": {
+          "enabled": true,
+          "chunkSize": 65536,
+          "algorithm": "AES-256-CTR",
+          "key": "ENC_STREAMING_KEY_PLACEHOLDER",
+          "iv": "ENC_STREAMING_IV_PLACEHOLDER",
+          "hmac": {
+              "enable": true,
+              "algorithm": "SHA256",
+              "key": "ENC_STREAMING_HMAC_KEY_PLACEHOLDER"
+          }
+      }
   }
 }
