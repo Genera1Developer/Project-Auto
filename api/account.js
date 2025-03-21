@@ -23,10 +23,22 @@ function handleDatabaseError(err, callback, message) {
     throw err; // Re-throw if no callback is provided
 }
 
+let dbConnectAttempts = 0;
+const MAX_DB_CONNECT_ATTEMPTS = 5;
+const DB_CONNECT_RETRY_DELAY = 2000;
+
 function connectToDatabase() {
     db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
-            handleDatabaseError(err, null, "Database connection error:");
+            console.error("Database connection error:", err.message);
+            if (dbConnectAttempts < MAX_DB_CONNECT_ATTEMPTS) {
+                dbConnectAttempts++;
+                console.log(`Retrying database connection (attempt ${dbConnectAttempts}/${MAX_DB_CONNECT_ATTEMPTS}) in ${DB_CONNECT_RETRY_DELAY}ms`);
+                setTimeout(connectToDatabase, DB_CONNECT_RETRY_DELAY);
+            } else {
+                handleDatabaseError(err, null, "Max database connection retries exceeded:");
+            }
+            return;
         }
         console.log('Connected to the accounts database.');
         db.run(`
