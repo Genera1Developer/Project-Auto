@@ -108,7 +108,7 @@ function generateEncryptionKey() {
         keyDerivationUsed = false; //Explicitly set to false when generating key
         ivMap.delete(key); // Clear IV map on key change
         cipherMap.delete(key); // Clear cipher map on key change
-        decipherMap.delete(key); // Clear decipher map on key change
+        decipherMap.delete(key); // Clear cipher map on key change
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
@@ -728,6 +728,64 @@ function computeSharedSecret(privateDH, otherPartyPublicKey) {
     }
 }
 
+// Added a more secure key storage using node-keytar if possible
+let keytar = null;
+try {
+    keytar = require('keytar');
+} catch (error) {
+    console.warn("Keytar not available, using in-memory storage.");
+}
+
+const KEYTAR_SERVICE_NAME = "web-proxy-encryption-key";
+const KEYTAR_ACCOUNT_NAME = "default";
+
+async function storeKeySecurely(keyToStore) {
+    if (keytar) {
+        try {
+            await keytar.setPassword(KEYTAR_SERVICE_NAME, KEYTAR_ACCOUNT_NAME, keyToStore.toString('hex'));
+            console.log("Encryption key stored securely using keytar.");
+        } catch (error) {
+            console.error("Failed to store key securely using keytar:", error);
+            throw new Error("Failed to store key securely.");
+        }
+    } else {
+        throw new Error("Keytar not available, cannot store key securely.");
+    }
+}
+
+async function retrieveKeySecurely() {
+    if (keytar) {
+        try {
+            const keyHex = await keytar.getPassword(KEYTAR_SERVICE_NAME, KEYTAR_ACCOUNT_NAME);
+            if (keyHex) {
+                console.log("Encryption key retrieved securely using keytar.");
+                return Buffer.from(keyHex, 'hex');
+            } else {
+                return null;
+            }
+        } catch (error) {
+            console.error("Failed to retrieve key securely using keytar:", error);
+            return null;
+        }
+    } else {
+        console.warn("Keytar not available, cannot retrieve key securely.");
+        return null;
+    }
+}
+
+async function deleteKeySecurely() {
+    if (keytar) {
+        try {
+            await keytar.deletePassword(KEYTAR_SERVICE_NAME, KEYTAR_ACCOUNT_NAME);
+            console.log("Encryption key deleted securely using keytar.");
+        } catch (error) {
+            console.error("Failed to delete key securely using keytar:", error);
+        }
+    } else {
+        console.warn("Keytar not available, cannot delete key securely.");
+    }
+}
+
 module.exports = {
     encrypt,
     decrypt,
@@ -759,5 +817,8 @@ module.exports = {
     encryptStream,
     decryptStream,
     generateDHKEParams,
-    computeSharedSecret
+    computeSharedSecret,
+    storeKeySecurely,
+    retrieveKeySecurely,
+    deleteKeySecurely
 };
