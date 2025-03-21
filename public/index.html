@@ -214,6 +214,19 @@
                 height: 400px; /* Reduce iframe height for smaller screens */
             }
         }
+        /* Additional styles for key generation and compromise alerts */
+        .key-generation-info {
+            color: #2196F3;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .key-compromised {
+            color: #f44336;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -239,6 +252,12 @@
         <div id="keyExpiryWarning" class="info key-expired" style="display:none;">
             <i class="fas fa-exclamation-triangle"></i> Encryption key will expire soon!
         </div>
+        <div id="keyGenerationInfo" class="key-generation-info" style="display:none;">
+            <i class="fas fa-cog fa-spin"></i> Generating encryption key...
+        </div>
+        <div id="keyCompromisedAlert" class="key-compromised" style="display:none;">
+            <i class="fas fa-exclamation-triangle"></i> Potential Security Risk: Key Compromised! Refresh the page.
+        </div>
         <iframe id="proxyFrame"></iframe>
     </div>
 
@@ -251,6 +270,8 @@
             const proxyFrame = document.getElementById('proxyFrame');
             const infoDiv = document.getElementById('info');
             const keyExpiryWarningDiv = document.getElementById('keyExpiryWarning');
+            const keyGenerationInfoDiv = document.getElementById('keyGenerationInfo');
+            const keyCompromisedAlertDiv = document.getElementById('keyCompromisedAlert');
             const HASH_ITERATIONS = 100000;
             const NONCE_LENGTH = 16;
             const KEY_CHECK_URL = '/api/checkKey';
@@ -365,16 +386,17 @@
             }
 
             async function generateAESKey() {
-                const key = await window.crypto.subtle.generateKey(
+                keyGenerationInfoDiv.style.display = 'block';
+                return window.crypto.subtle.generateKey(
                     {
                         name: "AES-GCM",
                         length: AES_KEY_LENGTH,
                     },
                     true,
                     ["encrypt", "decrypt"]
-                );
-                 if (ENABLE_SUBTLE_CRYPTO_LOGGING) console.log("AES Key generated.");
-                return key;
+                ).finally(() => {
+                    keyGenerationInfoDiv.style.display = 'none';
+                });
             }
 
             function handleErrors(error) {
@@ -392,26 +414,26 @@
             }
 
             async function checkKeyCompromise(keyHash) {
-              try {
-                const response = await fetch(KEY_CHECK_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ keyHash: keyHash })
-                });
+                try {
+                    const response = await fetch(KEY_CHECK_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ keyHash: keyHash })
+                    });
 
-                if (!response.ok) {
-                    console.error('Key check request failed:', response.status);
+                    if (!response.ok) {
+                        console.error('Key check request failed:', response.status);
+                        return false;
+                    }
+
+                    const data = await response.json();
+                    return data.isCompromised;
+                } catch (error) {
+                    console.error('Error during key check:', error);
                     return false;
                 }
-
-                const data = await response.json();
-                return data.isCompromised;
-              } catch (error) {
-                console.error('Error during key check:', error);
-                return false;
-              }
             }
 
             async function registerServiceWorker() {
@@ -433,19 +455,23 @@
             registerServiceWorker();
 
             async function rotateAESKey() {
-              console.log('Rotating AES key...');
-              const newAesKey = await generateAESKey();
-              const rawKey = await window.crypto.subtle.exportKey("raw", newAesKey);
-              const keyArray = Array.from(new Uint8Array(rawKey));
-              const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
-              const hashedKey = await hashKey(keyHex);
-              const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
-              sessionStorage.setItem('aesIV', btoa(String.fromCharCode(...iv)));
-              sessionStorage.setItem('aesKey', keyHex);
-              sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
-              sessionStorage.setItem('hashedKey', hashedKey);
-              console.log('AES key rotated successfully.');
-              displayKeyExpiryWarning();
+                console.log('Rotating AES key...');
+                try {
+                    const newAesKey = await generateAESKey();
+                    const rawKey = await window.crypto.subtle.exportKey("raw", newAesKey);
+                    const keyArray = Array.from(new Uint8Array(rawKey));
+                    const keyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                    const hashedKey = await hashKey(keyHex);
+                    const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+                    sessionStorage.setItem('aesIV', btoa(String.fromCharCode(...iv)));
+                    sessionStorage.setItem('aesKey', keyHex);
+                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
+                    sessionStorage.setItem('hashedKey', hashedKey);
+                    console.log('AES key rotated successfully.');
+                    displayKeyExpiryWarning();
+                } catch (error) {
+                    console.error("Key rotation failed:", error);
+                }
             }
 
             if (ENABLE_KEY_ROTATION) {
@@ -461,11 +487,14 @@
                         const hashedKey = await hashKey(aesKeyHex);
                         const isCompromised = await checkKeyCompromise(hashedKey);
                         if (isCompromised) {
-                            errorDiv.textContent = 'Potential security risk: Key compromise detected. Please refresh the page to generate a new key.';
+                            console.warn('Potential security risk: Key compromise detected.');
+                            keyCompromisedAlertDiv.style.display = 'block';
                             sessionStorage.removeItem('aesKey');
                             sessionStorage.removeItem('aesIV');
                             sessionStorage.removeItem('aesKeyTimestamp');
                             sessionStorage.removeItem('hashedKey');
+                        } else {
+                            keyCompromisedAlertDiv.style.display = 'none';
                         }
                     }
                 }
@@ -493,13 +522,13 @@
                 }
 
                 try {
-                  browseButton.disabled = true;
-                  browseButton.classList.add('disabled');
+                    browseButton.disabled = true;
+                    browseButton.classList.add('disabled');
 
-                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                      url = 'https://' + url;
-                      urlInput.value = url;
-                  }
+                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                        url = 'https://' + url;
+                        urlInput.value = url;
+                    }
 
                     try {
                         new URL(url);
@@ -520,32 +549,41 @@
                         const keyArray = Array.from(new Uint8Array(rawKey));
                         aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
                     } else {
-                        const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
-                        aesKey = await window.crypto.subtle.importKey(
-                            "raw",
-                            keyBytes,
-                            { name: "AES-GCM", length: AES_KEY_LENGTH },
-                            false,
-                            ["encrypt", "decrypt"]
-                        );
+                        try {
+                            const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
+                            aesKey = await window.crypto.subtle.importKey(
+                                "raw",
+                                keyBytes,
+                                {name: "AES-GCM", length: AES_KEY_LENGTH},
+                                false,
+                                ["encrypt", "decrypt"]
+                            );
+                        } catch (keyImportError) {
+                            console.error("Error importing stored key:", keyImportError);
+                            errorDiv.textContent = 'Error importing stored encryption key. Please refresh the page.';
+                            return;
+                        }
                     }
 
-                    const { ciphertext, iv } = await encryptURL(url, aesKey);
+                    const {ciphertext, iv} = await encryptURL(url, aesKey);
 
                     const hashedKey = await hashKey(aesKeyHex);
                     console.log("Hashed Key:", hashedKey);
 
                     const isCompromised = await checkKeyCompromise(hashedKey);
                     if (isCompromised) {
+                        keyCompromisedAlertDiv.style.display = 'block';
                         errorDiv.textContent = 'Potential security risk: Key compromise detected.';
                         return;
+                    } else {
+                        keyCompromisedAlertDiv.style.display = 'none';
                     }
 
                     sessionStorage.setItem('aesIV', iv);
 
                     sessionStorage.setItem('aesKey', aesKeyHex);
                     sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
-                    sessionStorage.setItem('hashedKey',hashedKey);
+                    sessionStorage.setItem('hashedKey', hashedKey);
 
                     const formData = new FormData();
                     formData.append('ciphertext', ciphertext);
@@ -567,42 +605,42 @@
                         body: formData,
                         redirect: 'manual'
                     })
-                    .then(response => {
-                        if (REDIRECT_STATUS_CODES.includes(response.status)) {
-                            const redirectUrl = response.headers.get('Location');
-                            console.log("Redirect detected:", redirectUrl);
-                            if (ENCRYPT_REDIRECTS) {
-                                return encryptAndProxy(redirectUrl);
-                            } else {
-                                proxyFrame.src = redirectUrl;
-                                return;
+                        .then(response => {
+                            if (REDIRECT_STATUS_CODES.includes(response.status)) {
+                                const redirectUrl = response.headers.get('Location');
+                                console.log("Redirect detected:", redirectUrl);
+                                if (ENCRYPT_REDIRECTS) {
+                                    return encryptAndProxy(redirectUrl);
+                                } else {
+                                    proxyFrame.src = redirectUrl;
+                                    return;
+                                }
                             }
-                        }
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.text();
-                    })
-                    .then(html => {
-                        proxyFrame.contentWindow.document.open();
-                        proxyFrame.contentWindow.document.write(html);
-                        proxyFrame.contentWindow.document.close();
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.text();
+                        })
+                        .then(html => {
+                            proxyFrame.contentWindow.document.open();
+                            proxyFrame.contentWindow.document.write(html);
+                            proxyFrame.contentWindow.document.close();
 
-                        if (PREFETCH_SUBRESOURCES) {
-                            prefetchSubresources(html);
-                        }
+                            if (PREFETCH_SUBRESOURCES) {
+                                prefetchSubresources(html);
+                            }
 
-                        proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
+                            proxyFrame.contentWindow.postMessage({type: 'proxyLoaded'}, ALLOWED_FRAME_ORIGIN);
 
-                    })
-                    .catch(error => {
-                        console.error("Error loading proxy:", error);
-                        errorDiv.textContent = 'Failed to load the page within the iframe.';
-                    })
-                    .finally(() => {
-                        clearTimeout(timeoutId);
-                        loadingDiv.style.display = 'none';
-                    });
+                        })
+                        .catch(error => {
+                            console.error("Error loading proxy:", error);
+                            errorDiv.textContent = 'Failed to load the page within the iframe.';
+                        })
+                        .finally(() => {
+                            clearTimeout(timeoutId);
+                            loadingDiv.style.display = 'none';
+                        });
 
                     const timeoutId = setTimeout(() => {
                         if (loadingDiv.style.display === 'block') {
@@ -659,16 +697,16 @@
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
                         sessionStorage.removeItem('hashedKey');
-                         keyExpiryWarningDiv.style.display = 'none';
+                        keyExpiryWarningDiv.style.display = 'none';
                     } else {
-                         displayKeyExpiryWarning();
+                        displayKeyExpiryWarning();
                     }
                 }
             }, KEY_EXPIRY_CHECK_INTERVAL);
 
             displayKeyExpiryWarning();
 
-            window.addEventListener('message', function(event) {
+            window.addEventListener('message', function (event) {
                 if (event.origin === ALLOWED_FRAME_ORIGIN && event.data.type === 'proxyLoaded') {
                     console.log('Iframe proxy loaded successfully.');
                 }
@@ -676,91 +714,100 @@
 
             async function encryptAndProxy(redirectUrl) {
                 try {
-                  const nonce = generateNonce(NONCE_LENGTH);
-                  console.log("Redirect Nonce:", nonce);
+                    const nonce = generateNonce(NONCE_LENGTH);
+                    console.log("Redirect Nonce:", nonce);
 
-                  let aesKeyHex = sessionStorage.getItem('aesKey');
-                  let aesKey;
+                    let aesKeyHex = sessionStorage.getItem('aesKey');
+                    let aesKey;
 
-                  if (!aesKeyHex) {
-                      aesKey = await generateAESKey();
-                      const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
-                      const keyArray = Array.from(new Uint8Array(rawKey));
-                      aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
-                  } else {
-                      const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
-                      aesKey = await window.crypto.subtle.importKey(
-                          "raw",
-                          keyBytes,
-                          { name: "AES-GCM", length: AES_KEY_LENGTH },
-                          false,
-                          ["encrypt", "decrypt"]
-                      );
-                  }
+                    if (!aesKeyHex) {
+                        aesKey = await generateAESKey();
+                        const rawKey = await window.crypto.subtle.exportKey("raw", aesKey);
+                        const keyArray = Array.from(new Uint8Array(rawKey));
+                        aesKeyHex = keyArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                    } else {
+                        try {
+                            const keyBytes = new Uint8Array(aesKeyHex.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16)));
+                            aesKey = await window.crypto.subtle.importKey(
+                                "raw",
+                                keyBytes,
+                                {name: "AES-GCM", length: AES_KEY_LENGTH},
+                                false,
+                                ["encrypt", "decrypt"]
+                            );
+                        } catch (keyImportError) {
+                            console.error("Error importing stored key during redirect:", keyImportError);
+                            errorDiv.textContent = 'Error importing stored encryption key for redirect. Please try again.';
+                            return;
+                        }
+                    }
 
-                  const { ciphertext, iv } = await encryptURL(redirectUrl, aesKey);
+                    const {ciphertext, iv} = await encryptURL(redirectUrl, aesKey);
 
-                  const hashedKey = await hashKey(aesKeyHex);
-                  console.log("Hashed Key:", hashedKey);
+                    const hashedKey = await hashKey(aesKeyHex);
+                    console.log("Hashed Key:", hashedKey);
 
-                   const isCompromised = await checkKeyCompromise(hashedKey);
-                  if (isCompromised) {
-                      errorDiv.textContent = 'Potential security risk: Key compromise detected.';
-                      return;
-                  }
+                    const isCompromised = await checkKeyCompromise(hashedKey);
+                    if (isCompromised) {
+                        keyCompromisedAlertDiv.style.display = 'block';
+                        errorDiv.textContent = 'Potential security risk: Key compromise detected.';
+                        return;
+                    } else {
+                        keyCompromisedAlertDiv.style.display = 'none';
+                    }
 
-                  sessionStorage.setItem('aesIV', iv);
+                    sessionStorage.setItem('aesIV', iv);
 
-                  sessionStorage.setItem('aesKey', aesKeyHex);
-                  sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
-                  sessionStorage.setItem('hashedKey',hashedKey);
+                    sessionStorage.setItem('aesKey', aesKeyHex);
+                    sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
+                    sessionStorage.setItem('hashedKey', hashedKey);
 
-                  const formData = new FormData();
-                  formData.append('ciphertext', ciphertext);
-                  formData.append('nonce', nonce);
-                  formData.append('keyHash', hashedKey);
+                    const formData = new FormData();
+                    formData.append('ciphertext', ciphertext);
+                    formData.append('nonce', nonce);
+                    formData.append('keyHash', hashedKey);
 
-                  loadingDiv.style.display = 'block';
-                  errorDiv.textContent = '';
-                  proxyFrame.style.display = 'block';
+                    loadingDiv.style.display = 'block';
+                    errorDiv.textContent = '';
+                    proxyFrame.style.display = 'block';
 
-                  proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
+                    proxyFrame.sandbox = 'allow-forms allow-scripts allow-same-origin allow-popups allow-downloads';
                     let cspValue = `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self';`;
                     if (ENABLE_CSP) {
                         proxyFrame.setAttribute('csp', cspValue);
                     }
 
-                  return fetch(PROXY_URL, {
-                      method: 'POST',
-                      body: formData,
-                  })
-                  .then(response => {
-                      if (!response.ok) {
-                          throw new Error(`HTTP error! status: ${response.status}`);
-                      }
-                      return response.text();
-                  })
-                  .then(html => {
-                      proxyFrame.contentWindow.document.open();
-                      proxyFrame.contentWindow.document.write(html);
-                      proxyFrame.contentWindow.document.close();
+                    return fetch(PROXY_URL, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.text();
+                        })
+                        .then(html => {
+                            proxyFrame.contentWindow.document.open();
+                            proxyFrame.contentWindow.document.write(html);
+                            proxyFrame.contentWindow.document.close();
 
-                      if (PREFETCH_SUBRESOURCES) {
-                          prefetchSubresources(html);
-                      }
+                            if (PREFETCH_SUBRESOURCES) {
+                                prefetchSubresources(html);
+                            }
 
-                      proxyFrame.contentWindow.postMessage({ type: 'proxyLoaded' }, ALLOWED_FRAME_ORIGIN);
-                  });
+                            proxyFrame.contentWindow.postMessage({type: 'proxyLoaded'}, ALLOWED_FRAME_ORIGIN);
+                        });
                 } catch (error) {
-                  console.error("Error handling redirect:", error);
-                  errorDiv.textContent = 'Failed to load the redirect page.';
+                    console.error("Error handling redirect:", error);
+                    errorDiv.textContent = 'Failed to load the redirect page.';
                 } finally {
                     clearTimeout(timeoutId);
                     loadingDiv.style.display = 'none';
                 }
             }
 
-           async function prefetchSubresources(html) {
+            async function prefetchSubresources(html) {
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(html, 'text/html');
                 const subresourceTypes = ['link[rel="stylesheet"]', 'script[src]', 'img[src]'];
@@ -814,7 +861,7 @@
             }
         });
 
-        particlesJS.load('particles-js', 'particles-config.json', function() {
+        particlesJS.load('particles-js', 'particles-config.json', function () {
             console.log('callback - particles.js config loaded');
         });
     </script>
