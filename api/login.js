@@ -671,7 +671,10 @@ module.exports = async (req, res) => {
                      authTag: finalEncryptedResponse.authTag
                  };
 
-                 res.status(200).json(responseWithIV);
+                 // Encode the entire response with base64url
+                 const base64UrlEncodedResponse = Buffer.from(JSON.stringify(responseWithIV)).toString('base64url');
+
+                 res.status(200).json({ data: base64UrlEncodedResponse });
 
 
             } else {
