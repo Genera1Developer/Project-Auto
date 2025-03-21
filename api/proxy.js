@@ -305,6 +305,9 @@ async function proxyRequest(req, res) {
             res.setHeader('Content-Encoding', 'encrypted');
             res.setHeader('x-encryption-authtag', authTag.toString('hex'));
 
+            const combinedIvAuthTag = Buffer.concat([resIv, authTag]);
+            res.write(combinedIvAuthTag); // Prepend IV and AuthTag to the stream
+
             raw.pipe(responseCipher).pipe(res);
         });
 
