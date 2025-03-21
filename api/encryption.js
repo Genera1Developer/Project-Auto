@@ -113,7 +113,7 @@ function generateEncryptionKey() {
         keyDerivationUsed = false; //Explicitly set to false when generating key
         ivMap.delete(key); // Clear IV map on key change
         cipherMap.delete(key); // Clear cipher map on key change
-        decipherMap.delete(key); // Clear cipher map on key change
+        decipherMap.delete(key); // Clear decipher map on key change
         return newKey.toString('hex');
     } catch (error) {
         console.error("Key generation failed:", error);
@@ -775,6 +775,11 @@ function getSupportedCiphers() {
 // Function to switch to a new cipher
 function setAlgorithm(newAlgorithm) {
     try {
+        // Check if the new algorithm is supported
+        if (!crypto.getCiphers().includes(newAlgorithm)) {
+            throw new Error(`Algorithm "${newAlgorithm}" is not supported.`);
+        }
+        //Test the cipher before switching. This is important.
         crypto.createCipheriv(newAlgorithm, key, generateSecureIV(), { authTagLength: AUTH_TAG_LENGTH });
         algorithm = newAlgorithm;
         console.log(`Algorithm switched to ${newAlgorithm}`);
