@@ -28,7 +28,9 @@ const ivMap = new WeakMap();
 
 // Function to clear sensitive data from memory
 function zeroBuffer(buf) {
-    buf.fill(0);
+    if (buf && typeof buf.fill === 'function') {
+        buf.fill(0);
+    }
 }
 
 function setDeriveKeySalt(salt) {
@@ -59,7 +61,9 @@ function deriveEncryptionKey(password) {
         throw new Error('Key derivation failed. Check password and salt.');
     } finally {
         // Zero out password after usage to prevent it lingering in memory.
-        zeroBuffer(Buffer.from(password, 'utf8')); // Assuming password is a string
+        if (password) {
+            zeroBuffer(Buffer.from(password, 'utf8')); // Assuming password is a string
+        }
     }
 }
 
@@ -121,8 +125,9 @@ const encrypt = (text) => {
     ivMap.set(key, iv); // Store current iv to prevent reuse
     lastIV = iv; // Store current iv to prevent reuse
 
+    let cipher = null;
     try {
-        const cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         let encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
         const authTag = cipher.getAuthTag();
 
@@ -135,8 +140,9 @@ const encrypt = (text) => {
         console.error("Encryption failed:", error);
         return null;
     } finally {
-         // Explicitly nullify the cipher object after use.
-        cipher = null;
+        if (cipher) {
+            cipher.destroy();
+        }
     }
 };
 
@@ -145,12 +151,13 @@ const decrypt = (text) => {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
+    let decipher = null;
     try {
         const iv = Buffer.from(text.iv, 'base64');
         const encryptedData = Buffer.from(text.encryptedData, 'base64');
         const authTag = Buffer.from(text.authTag, 'base64');
 
-        const decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
         decipher.setAuthTag(authTag);
         const decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
         return decrypted.toString('utf8');
@@ -158,8 +165,9 @@ const decrypt = (text) => {
         console.error("Decryption failed:", error);
         return null;
     } finally {
-        // Explicitly nullify the decipher object after use.
-        decipher = null;
+        if (decipher) {
+            decipher.destroy();
+        }
     }
 };
 
@@ -187,9 +195,11 @@ function safeCompare(a, b) {
         return false;
     }
 
+    let aBuf = null;
+    let bBuf = null;
     try {
-        const aBuf = Buffer.from(a, 'utf8');
-        const bBuf = Buffer.from(b, 'utf8');
+        aBuf = Buffer.from(a, 'utf8');
+        bBuf = Buffer.from(b, 'utf8');
 
         return timingSafeEqual(aBuf, bBuf);
     } catch (error) {
