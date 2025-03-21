@@ -157,6 +157,43 @@ const validatePassword = (password) => {
     return null;
 };
 
+const encryptWithPassword = async (data, password) => {
+    try {
+        const salt = crypto.randomBytes(SALT_LENGTH).toString('hex');
+        const hashedPassword = await hashPassword(password, salt);
+        const iv = crypto.randomBytes(ivLength);
+        const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, Buffer.from(hashedPassword, 'hex').slice(0,32), iv);
+        let encrypted = cipher.update(data, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        const authTag = cipher.getAuthTag();
+
+        return {
+            encryptedData: encrypted,
+            iv: iv.toString('hex'),
+            authTag: authTag.toString('hex'),
+            salt: salt
+        };
+
+    } catch (error) {
+        console.error("Encryption with password error:", error);
+        return null;
+    }
+};
+
+const decryptWithPassword = async (encryptedData, iv, authTag, password, salt) => {
+    try {
+        const hashedPassword = await hashPassword(password, salt);
+        const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, Buffer.from(hashedPassword, 'hex').slice(0,32), Buffer.from(iv, 'hex'));
+        decipher.setAuthTag(Buffer.from(authTag, 'hex'));
+        let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+        decrypted += decipher.final('utf8');
+        return decrypted;
+    } catch (error) {
+        console.error("Decryption with password error:", error);
+        return null;
+    }
+};
+
 exports.createUser = async (username, password, callback) => {
     if (!username || !password) {
         return callback(new Error("Username and password are required"));
@@ -172,11 +209,14 @@ exports.createUser = async (username, password, callback) => {
     try {
         const hashedPassword = await hashPassword(password, salt);
 
-        const usernameEncryption = encryptSensitiveData(username);
+        const usernameEncryption = await encryptWithPassword(username, password);
+        if (!usernameEncryption) {
+            return callback(new Error("Username encryption failed"));
+        }
         const passwordEncryption = encryptSensitiveData(hashedPassword);
         const saltEncryption = encryptSensitiveData(salt);
 
-        if (!usernameEncryption || !passwordEncryption || !saltEncryption) {
+        if (!passwordEncryption || !saltEncryption) {
             return callback(new Error("Encryption failed"));
         }
 
@@ -211,13 +251,8 @@ exports.verifyUser = async (username, password, callback) => {
     }
 
     try {
-        const usernameEncryption = encryptSensitiveData(username);
 
-        if (!usernameEncryption) {
-            return callback(new Error("Username encryption failed."));
-        }
-
-        db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [usernameEncryption.encryptedData], async (err, row) => {
+        db.get(`SELECT id, username, password, salt, password_version, username_iv, username_auth_tag, password_iv, password_auth_tag, salt_iv, salt_auth_tag FROM users WHERE username = ?`, [username], async (err, row) => {
             if (err) {
                 return handleDatabaseError(err, callback, "User verification query error:");
             }
@@ -227,7 +262,7 @@ exports.verifyUser = async (username, password, callback) => {
             }
 
             try {
-                const decryptedUsername = decryptSensitiveData(row.username_iv, row.username_auth_tag, row.username);
+                const decryptedUsername = await decryptWithPassword(row.username, row.username_iv, row.username_auth_tag, password, "");
                 const decryptedSalt = decryptSensitiveData(row.salt_iv, row.salt_auth_tag, row.salt);
                 const decryptedPassword = decryptSensitiveData(row.password_iv, row.password_auth_tag, row.password);
 
