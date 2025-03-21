@@ -120,8 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const salt = await generateAndStoreSalt();
             const key = CryptoJS.enc.Utf8.parse(generateKey(salt));
             const iv = CryptoJS.enc.Utf8.parse(generateIV(salt));
+            const combinedData = JSON.stringify(data);
 
-            const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), key, {
+            const encrypted = CryptoJS.AES.encrypt(combinedData, key, {
                 iv: iv,
                 mode: CryptoJS.mode.CBC,
                 padding: CryptoJS.pad.Pkcs7
@@ -137,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generateHmac(data, salt) {
         try {
             const hmacKey = CryptoJS.SHA256(await getHmacSecret() + salt).toString();
-            const hmac = CryptoJS.HmacSHA256(data, hmacKey).toString();
+            const hmac = CryptoJS.HmacSHA256(JSON.stringify(data), hmacKey).toString();
             return hmac;
         } catch (e) {
             console.error("HMAC generation error:", e);
@@ -220,19 +221,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function getHmacSecret() {
-        let secret = sessionStorage.getItem('hmacSecret');
-        if (!secret) {
-            try {
-                 secret = CryptoJS.lib.WordArray.random(16).toString();
-                 sessionStorage.setItem('hmacSecret', secret);
-            } catch (e) {
-                console.error("HMAC secret generation error:", e);
-                throw new Error("HMAC secret generation failed");
-            }
-        }
-        return secret;
-    }
-
+         let secret = sessionStorage.getItem('hmacSecret');
+         if (!secret) {
+             try {
+                  secret = CryptoJS.lib.WordArray.random(16).toString();
+                  sessionStorage.setItem('hmacSecret', secret);
+             } catch (e) {
+                 console.error("HMAC secret generation error:", e);
+                 throw new Error("HMAC secret generation failed");
+             }
+         }
+         return secret;
+     }
 
     // Particle.js Initialization
     if (typeof particlesJS === 'function') {
