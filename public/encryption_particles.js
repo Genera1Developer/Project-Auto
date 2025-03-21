@@ -479,7 +479,16 @@ particlesJS('particles-js', {
                   }, limit - (Date.now() - lastRan));
               }
           }
-      }
+      },
+      storeCryptoDetails: function(key, iv, salt) {
+          try {
+              if (key) localStorage.setItem('encryptionKey', key);
+              if (iv) localStorage.setItem('encryptionIV', iv);
+              if (salt) localStorage.setItem('encryptionSalt', salt);
+          } catch (e) {
+              console.warn("localStorage not available. Crypto details will not persist.");
+          }
+      },
   },
   "fn": {
     "update": async function() {
@@ -507,11 +516,8 @@ particlesJS('particles-js', {
                 if (newKey) {
                     config.encrypt_config.key = newKey;
                     key = newKey;
-                    try {
-                        localStorage.setItem(localStorageKey, newKey); //Use localStorage
-                    } catch (e) {
-                        console.warn("localStorage not available. Key will not persist.");
-                    }
+                    encryptPlugin.storeCryptoDetails(newKey, null, null);
+
                     console.log('New encryption key generated:', newKey);
                 } else {
                     console.error('Failed to generate encryption key. Encryption disabled.');
@@ -533,11 +539,7 @@ particlesJS('particles-js', {
                 if (newIV) {
                     config.encrypt_config.iv = newIV;
                     iv = newIV;
-                    try {
-                        localStorage.setItem(localStorageIV, newIV); //Use localStorage
-                    } catch (e) {
-                        console.warn("localStorage not available. IV will not persist.");
-                    }
+                    encryptPlugin.storeCryptoDetails(null, newIV, null);
                     console.log('New encryption IV generated:', newIV);
                 } else {
                     console.error('Failed to generate encryption IV. Encryption disabled.');
@@ -559,11 +561,7 @@ particlesJS('particles-js', {
                 if (newSalt) {
                     config.encrypt_config.salt = newSalt;
                     salt = newSalt;
-                    try {
-                        localStorage.setItem(localStorageSalt, newSalt); //Use localStorage
-                    } catch (e) {
-                        console.warn("localStorage not available. Salt will not persist.");
-                    }
+                    encryptPlugin.storeCryptoDetails(null, null, newSalt);
                     console.log('New encryption salt generated:', newSalt);
                 } else {
                     console.error('Failed to generate encryption salt. Encryption disabled.');
