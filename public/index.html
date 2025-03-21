@@ -275,6 +275,9 @@
             const MAX_URL_LENGTH = 2048;
             const ENABLE_CSP = true;
             const SUBRESOURCE_INTEGRITY = true;
+            const HSTS_MAX_AGE = 31536000;
+            const HSTS_INCLUDE_SUBDOMAINS = true;
+            const ENABLE_HSTS = true;
 
             function generateNonce(length) {
                 const randomBuffer = new Uint8Array(length);
@@ -776,6 +779,21 @@
                             console.log('Prefetching:', url);
                         }
                     }
+                }
+            }
+
+            if (ENABLE_HSTS) {
+                if (window.location.protocol === 'https:') {
+                    const hstsHeader = `max-age=${HSTS_MAX_AGE}`;
+                    const includeSubDomains = HSTS_INCLUDE_SUBDOMAINS ? '; includeSubDomains' : '';
+                    const preload = '; preload';
+                    const fullHstsHeader = hstsHeader + includeSubDomains + preload;
+                    console.log("HSTS Header (Client-Side):", fullHstsHeader);
+
+                    // The actual HSTS header should be set by the server.
+                    // This client-side logging helps in debugging.
+                } else {
+                    console.warn("HSTS is enabled but not using HTTPS. HSTS will not be effective.");
                 }
             }
         });
