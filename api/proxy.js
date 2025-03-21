@@ -3,6 +3,7 @@ const http = require('http');
 const crypto = require('crypto');
 const url = require('url');
 const zlib = require('zlib');
+const stream = require('stream');
 
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'); // Generate a random key if not provided
 const IV_LENGTH = 16;
@@ -216,10 +217,35 @@ function proxyRequest(req, res) {
 
             res.writeHead(proxyRes.statusCode, resHeaders);
 
-            // Consider encrypting the response body if needed
-            // const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, crypto.randomBytes(IV_LENGTH));
-            // proxyRes.pipe(cipher).pipe(res);
-            raw.pipe(res);
+            // Encrypt the response body
+            const iv = crypto.randomBytes(IV_LENGTH);
+            const cipher = crypto.createCipheriv(CIPHER_ALGORITHM, encryptionKey, iv);
+            const authTag = cipher.getAuthTag();
+
+            res.setHeader('Content-Encoding', 'encrypted');
+            res.setHeader('x-encryption-iv', iv.toString('hex'));
+            res.setHeader('x-encryption-authtag', authTag.toString('hex'));
+
+            const transformStream = new stream.Transform({
+              transform(chunk, encoding, callback) {
+                try {
+                  const encryptedChunk = cipher.update(chunk);
+                  callback(null, encryptedChunk);
+                } catch (error) {
+                  callback(error);
+                }
+              },
+              flush(callback) {
+                try {
+                  const finalChunk = cipher.final();
+                  callback(null, finalChunk);
+                } catch (error) {
+                  callback(error);
+                }
+              }
+            });
+
+            raw.pipe(transformStream).pipe(res);
         });
 
         proxyReq.on('error', (err) => {
