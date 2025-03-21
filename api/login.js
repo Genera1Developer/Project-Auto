@@ -604,7 +604,7 @@ module.exports = async (req, res) => {
           loginTime: Date.now(),
           nonce: nonce,
           sessionId: sessionId,
-          ipAddress: req.ip //Include IP
+          ipAddress: hashIpAddress(req.ip, generateSalt())
         };
 
         // Generate key material
