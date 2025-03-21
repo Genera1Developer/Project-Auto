@@ -653,6 +653,9 @@ module.exports = async (req, res) => {
                     encryptedSession: encryptedSession
                 };
 
+                // Hash the response payload for integrity check
+                const responseHash = crypto.createHash('sha256').update(JSON.stringify(responsePayload)).digest('hex');
+
                  // Generate a random IV for the final encryption
                  const finalEncryptionIV = generateRandomIV();
                  const finalEncryptionKey = keyMaterial;
@@ -664,11 +667,12 @@ module.exports = async (req, res) => {
                      return res.status(500).json({ message: "Final response encryption failed" });
                  }
 
-                 // Include the IV and authTag in the response
+                 // Include the IV, authTag and responseHash in the response
                  const responseWithIV = {
                      iv: finalEncryptionIV.toString('hex'),
                      encryptedData: finalEncryptedResponse.encryptedData,
-                     authTag: finalEncryptedResponse.authTag
+                     authTag: finalEncryptedResponse.authTag,
+                     hash: responseHash
                  };
 
                  // Encode the entire response with base64url and compress it
