@@ -398,8 +398,6 @@
                 username: encodedUsernameCiphertext,
                 password: encodedPasswordCiphertext,
                 salt: salt,
-                usernameIV: usernameIV,
-                passwordIV: passwordIV,
                 encryptedKey: encryptedEncryptionKey,
                 hmac: hmac,
                 nonce: nonce,
@@ -428,7 +426,6 @@
                 if (!response.ok) {
                    sessionStorage.removeItem('encryptionKey'); // Remove key on error
                    sessionStorage.removeItem('serverPublicKey');
-                   sessionStorage.removeItem('serverSalt');
                     // Attempt to parse the error message from the response
                     return response.json().then(errorData => {
                         throw new Error(errorData.message || 'Network response was not ok');
@@ -443,13 +440,11 @@
                     window.location.href = '/index.html';
                      sessionStorage.removeItem('encryptionKey');
                      sessionStorage.removeItem('serverPublicKey');
-                     sessionStorage.removeItem('serverSalt');
                 } else {
                     errorMessage.textContent = data.message || 'Invalid username or password.';
                     encryptionStatus.textContent = 'Login failed. Encryption in transit.';
                     sessionStorage.removeItem('encryptionKey'); // Remove the key on failure
                     sessionStorage.removeItem('serverPublicKey');
-                    sessionStorage.removeItem('serverSalt');
                 }
             })
             .catch(error => {
@@ -459,7 +454,6 @@
                 encryptionStatus.textContent = 'Connection error.';
                 sessionStorage.removeItem('encryptionKey'); // Remove the key on error
                 sessionStorage.removeItem('serverPublicKey');
-                 sessionStorage.removeItem('serverSalt');
             });
         });
 
@@ -480,7 +474,6 @@
                 // Clear sensitive data when the page is hidden
                 sessionStorage.removeItem('encryptionKey');
                 sessionStorage.removeItem('serverPublicKey');
-                sessionStorage.removeItem('serverSalt');
             }
         });
 
@@ -489,7 +482,6 @@
             // Clear sensitive data before the page is unloaded
            sessionStorage.removeItem('encryptionKey');
            sessionStorage.removeItem('serverPublicKey');
-           sessionStorage.removeItem('serverSalt');
         });
 
     </script>
