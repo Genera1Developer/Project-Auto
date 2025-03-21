@@ -22,10 +22,6 @@ let keyDerivationUsed = false;
 // Use a WeakMap to prevent IV reuse with specific keys
 const ivMap = new WeakMap();
 
-// Consider using a more robust method for key storage and management.
-// For example, consider using a hardware security module (HSM) or a key
-// management system (KMS) for production environments.
-
 // Use a WeakMap to store cipher instances to prevent options pollution
 const cipherMap = new WeakMap();
 const decipherMap = new WeakMap();
@@ -647,7 +643,7 @@ const decryptStream = (inputStream, aad = null) => {
                         chunk = chunk.slice(IV_LENGTH + AUTH_TAG_LENGTH);
                         headerReceived = true;
 
-                        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+                        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
                         if (aad) {
                             decipher.setAAD(Buffer.from(aad, 'utf8'));
                         }
@@ -711,17 +707,20 @@ function computeSharedSecret(privateDH, otherPartyPublicKey) {
 
 // Added a more secure key storage using node-keytar if possible
 let keytar = null;
+let keytarAvailable = false;
 try {
     keytar = require('keytar');
+    keytarAvailable = true;
 } catch (error) {
     console.warn("Keytar not available, using in-memory storage.");
+    keytarAvailable = false;
 }
 
 const KEYTAR_SERVICE_NAME = "web-proxy-encryption-key";
 const KEYTAR_ACCOUNT_NAME = "default";
 
 async function storeKeySecurely(keyToStore) {
-    if (keytar) {
+    if (keytarAvailable) {
         try {
             await keytar.setPassword(KEYTAR_SERVICE_NAME, KEYTAR_ACCOUNT_NAME, keyToStore.toString('hex'));
             console.log("Encryption key stored securely using keytar.");
@@ -735,7 +734,7 @@ async function storeKeySecurely(keyToStore) {
 }
 
 async function retrieveKeySecurely() {
-    if (keytar) {
+    if (keytarAvailable) {
         try {
             const keyHex = await keytar.getPassword(KEYTAR_SERVICE_NAME, KEYTAR_ACCOUNT_NAME);
             if (keyHex) {
@@ -755,7 +754,7 @@ async function retrieveKeySecurely() {
 }
 
 async function deleteKeySecurely() {
-    if (keytar) {
+    if (keytarAvailable) {
         try {
             await keytar.deletePassword(KEYTAR_SERVICE_NAME, KEYTAR_ACCOUNT_NAME);
             console.log("Encryption key deleted securely using keytar.");
@@ -791,8 +790,15 @@ function setAlgorithm(newAlgorithm) {
 
 // Function to encrypt and sign data
 const encryptAndSign = async (data, signingKey) => {
+    if (!signingKey) {
+        throw new Error('Signing key not set.');
+    }
+
     try {
         const encryptedData = await encryptSecure(data);
+        if (!encryptedData) {
+            throw new Error('Encryption failed.');
+        }
         const hmac = crypto.createHmac('sha256', signingKey);
         hmac.update(encryptedData);
         const signature = hmac.digest('hex');
@@ -808,6 +814,9 @@ const encryptAndSign = async (data, signingKey) => {
 
 // Function to verify signature and decrypt data
 const verifyAndDecrypt = async (ciphertext, signature, signingKey) => {
+    if (!signingKey) {
+        throw new Error('Signing key not set.');
+    }
     try {
         const hmac = crypto.createHmac('sha256', signingKey);
         hmac.update(ciphertext);
@@ -853,6 +862,10 @@ const encryptWithNonce = async (text, aad, nonce) => {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
+    if (!nonce) {
+        throw new Error('Nonce is required for encryption with nonce.');
+    }
+
     const iv = Buffer.from(nonce, 'base64').slice(0, IV_LENGTH); // Use nonce as IV
 
     let cipher = null;
@@ -863,7 +876,9 @@ const encryptWithNonce = async (text, aad, nonce) => {
 
     try {
         cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-        cipher.setAAD(Buffer.from(aad, 'utf8'));
+        if (aad) {
+            cipher.setAAD(Buffer.from(aad, 'utf8'));
+        }
 
         // Compress the data before encryption
         compressedData = await deflateAsync(Buffer.from(text, 'utf8'), { level: zlib.constants.Z_BEST_COMPRESSION });
@@ -893,6 +908,10 @@ const decryptWithNonce = async (text, aad, nonce) => {
         throw new Error('Encryption key not set. Call setEncryptionKey() first.');
     }
 
+    if (!nonce) {
+        throw new Error('Nonce is required for decryption with nonce.');
+    }
+
    const iv = Buffer.from(nonce, 'base64').slice(0, IV_LENGTH); // Use nonce as IV
 
     let decipher = null;
@@ -908,8 +927,10 @@ const decryptWithNonce = async (text, aad, nonce) => {
         authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
         encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
 
-        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
-        decipher.setAAD(Buffer.from(aad, 'utf8'));
+        decipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        if (aad) {
+            decipher.setAAD(Buffer.from(aad, 'utf8'));
+        }
         decipher.setAuthTag(authTag);
         decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
 
