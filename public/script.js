@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Utility function to safely get element by ID
+    const getElement = (id) => document.getElementById(id);
+    const querySelector = (selector) => document.querySelector(selector);
+
     // Preloader
-    const preloader = document.getElementById('preloader');
+    const preloader = getElement('preloader');
     if (preloader) {
         window.addEventListener('load', () => {
             preloader.classList.add('preloader-hidden');
@@ -8,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Password Toggle
-    const togglePassword = document.querySelector('#togglePassword');
-    const password = document.querySelector('#password');
+    const togglePassword = querySelector('#togglePassword');
+    const password = querySelector('#password');
 
     if (togglePassword && password) {
         togglePassword.addEventListener('click', function (e) {
@@ -21,8 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Captcha Refresh
-    const captchaImage = document.getElementById('captchaImage');
-    const refreshCaptchaButton = document.querySelector('button[onclick="refreshCaptcha()"]');
+    const captchaImage = getElement('captchaImage');
+    const refreshCaptchaButton = querySelector('button[onclick="refreshCaptcha()"]');
 
     function refreshCaptcha() {
         if (captchaImage) {
@@ -35,17 +39,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Login Form Submission
-    const loginForm = document.getElementById('loginForm');
+    const loginForm = getElement('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async function(event) {
             event.preventDefault();
-            const username = document.getElementById('username').value;
-            const passwordInput = document.getElementById('password');
+            const username = getElement('username').value;
+            const passwordInput = getElement('password');
             const password = passwordInput.value;
-            const captcha = document.getElementById('captcha').value;
-            const errorMessage = document.getElementById('error-message');
-            const encryptionStatus = document.getElementById('encryption-status');
-            const encryptionAnimation = document.getElementById('encryptionAnimation');
+            const captcha = getElement('captcha').value;
+            const errorMessage = getElement('error-message');
+            const encryptionStatus = getElement('encryption-status');
+            const encryptionAnimation = getElement('encryptionAnimation');
 
             if (!username || !password || !captcha) {
                 errorMessage.textContent = 'Please enter all fields.';
@@ -58,14 +62,24 @@ document.addEventListener('DOMContentLoaded', function() {
             errorMessage.textContent = '';
             encryptionStatus.textContent = 'Encrypting...';
 
-            // Hash the password before proceeding
-            const hashedPassword = await hashPassword(password);
-            passwordInput.value = ''; // Clear the password field immediately after hashing
+            try {
+                // Hash the password before proceeding
+                const hashedPassword = await hashPassword(password);
+                passwordInput.value = ''; // Clear the password field immediately after hashing
 
-            // Simulate encryption delay (for visual effect)
-            setTimeout(() => {
-                performLogin(username, hashedPassword, captcha, errorMessage, encryptionStatus, encryptionAnimation);
-            }, 1500);
+                // Simulate encryption delay (for visual effect)
+                setTimeout(() => {
+                    performLogin(username, hashedPassword, captcha, errorMessage, encryptionStatus, encryptionAnimation);
+                }, 1500);
+            } catch (error) {
+                if (encryptionAnimation) {
+                    encryptionAnimation.style.display = 'none';
+                }
+                console.error('Password hashing error:', error);
+                errorMessage.textContent = 'An error occurred during password hashing.';
+                encryptionStatus.textContent = 'Hashing error.';
+                showAlert('An error occurred during hashing. Please try again later.', 'error');
+            }
         });
     }
 
@@ -77,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 generateAndStoreHmac({ username: username, password: password, captcha: captcha }, saltValue)
             ]);
 
-             const encryptedHmac = await encryptHmac(hmac, saltValue);
+            const encryptedHmac = await encryptHmac(hmac, saltValue);
 
             const keyPrefix = getKeyPrefix();
             const ivPrefix = getIVPrefix();
@@ -109,7 +123,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                const errorText = await response.text();
+                throw new Error(`Network response was not ok: ${response.status} - ${errorText}`);
             }
 
             const data = await response.json();
@@ -158,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 sessionStorage.setItem('encryptionSalt', salt);
             } catch (e) {
                 console.error("Salt generation error:", e);
-                 showAlert('Salt Generation Failed. Secure login disabled.', 'error');
+                showAlert('Salt Generation Failed. Secure login disabled.', 'error');
                 throw new Error("Salt generation failed");
             }
         }
@@ -185,40 +200,40 @@ document.addEventListener('DOMContentLoaded', function() {
     function getIVPrefix() {
         let prefix = sessionStorage.getItem('ivPrefix');
         if (!prefix) {
-           try{
+            try{
                 const prefixBuffer = new Uint8Array(8);
                 window.crypto.getRandomValues(prefixBuffer);
                 prefix = arrayBufferToSafeBase64(prefixBuffer.buffer);
                 sessionStorage.setItem('ivPrefix', prefix);
-           } catch (e) {
+            } catch (e) {
                 console.error("IV Prefix generation error:", e);
                 showAlert('IV Prefix Generation Failed. Secure login disabled.', 'error');
                 throw new Error("IV Prefix generation failed");
-           }
+            }
         }
         return prefix;
     }
 
     async function getHmacSecret() {
-         let secret = sessionStorage.getItem('hmacSecret');
-         if (!secret) {
-             try {
-                 const secretBuffer = new Uint8Array(32);
-                 window.crypto.getRandomValues(secretBuffer);
-                 secret = arrayBufferToSafeBase64(secretBuffer.buffer);
-                  sessionStorage.setItem('hmacSecret', secret);
-             } catch (e) {
-                 console.error("HMAC secret generation error:", e);
-                 showAlert('HMAC Secret Generation Failed. Secure login disabled.', 'error');
-                 throw new Error("HMAC secret generation failed");
-             }
-         }
-         return secret;
-     }
+        let secret = sessionStorage.getItem('hmacSecret');
+        if (!secret) {
+            try {
+                const secretBuffer = new Uint8Array(32);
+                window.crypto.getRandomValues(secretBuffer);
+                secret = arrayBufferToSafeBase64(secretBuffer.buffer);
+                sessionStorage.setItem('hmacSecret', secret);
+            } catch (e) {
+                console.error("HMAC secret generation error:", e);
+                showAlert('HMAC Secret Generation Failed. Secure login disabled.', 'error');
+                throw new Error("HMAC secret generation failed");
+            }
+        }
+        return secret;
+    }
 
     // Function to get CSRF token from meta tag
     function getCSRFToken() {
-        const metaTag = document.querySelector('meta[name="csrf-token"]');
+        const metaTag = querySelector('meta[name="csrf-token"]');
         return metaTag ? metaTag.content : null;
     }
 
@@ -258,26 +273,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function base64ToArrayBuffer(base64) {
-      const binary_string = window.atob(base64);
-      const len = binary_string.length;
-      const bytes = new Uint8Array(len);
-      for (let i =0; i < len; i++){
-        bytes[i] = binary_string.charCodeAt(i);
-      }
-      return bytes.buffer;
+        const binary_string = window.atob(base64);
+        const len = binary_string.length;
+        const bytes = new Uint8Array(len);
+        for (let i =0; i < len; i++){
+            bytes[i] = binary_string.charCodeAt(i);
+        }
+        return bytes.buffer;
     }
 
     async function encryptDataWebCrypto(data, salt) {
         try {
-             const derivedKey = await deriveKeyMaterial(salt);
+            const derivedKey = await deriveKeyMaterial(salt);
 
             let iv = localStorage.getItem('currentIV');
             if (!iv){
-                 try{
+                try{
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16)); // Generate a new IV
                     iv = arrayBufferToSafeBase64(ivBuffer.buffer);
                     localStorage.setItem('currentIV', iv);
-                 } catch (e) {
+                } catch (e) {
                     console.error("IV generation error:", e);
                     showAlert('IV Generation Failed. Secure login disabled.', 'error');
                     throw new Error("IV generation failed");
@@ -296,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 encodedData
             );
 
-             const encryptedData = arrayBufferToSafeBase64(result);
+            const encryptedData = arrayBufferToSafeBase64(result);
 
             return encryptedData;
 
@@ -307,16 +322,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-     async function generateHmacWebCrypto(data, salt) {
+    async function generateHmacWebCrypto(data, salt) {
         try {
-             const secret = await getHmacSecret();
-             const keyMaterial = await window.crypto.subtle.importKey(
-                 "raw",
-                 new TextEncoder().encode(secret),
-                 { name: "HMAC", hash: "SHA-256" },
-                 false,
-                 ["sign", "verify"]
-             );
+            const secret = await getHmacSecret();
+            const keyMaterial = await window.crypto.subtle.importKey(
+                "raw",
+                new TextEncoder().encode(secret),
+                { name: "HMAC", hash: "SHA-256" },
+                false,
+                ["sign", "verify"]
+            );
 
             const hmac = await window.crypto.subtle.sign(
                 "HMAC",
@@ -347,18 +362,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function encryptHmacWebCrypto(hmac, salt) {
         try {
-             const derivedKey = await deriveKeyMaterial(salt);
+            const derivedKey = await deriveKeyMaterial(salt);
             let iv = localStorage.getItem('hmacIV');
             if (!iv){
                 try {
                     const ivBuffer =  window.crypto.getRandomValues(new Uint8Array(16));
                     iv = arrayBufferToSafeBase64(ivBuffer.buffer);
                     localStorage.setItem('hmacIV', iv);
-                 } catch (e) {
+                } catch (e) {
                     console.error("HMAC IV generation error:", e);
                     showAlert('HMAC IV Generation Failed. Secure login disabled.', 'error');
                     throw new Error("HMAC IV generation failed");
-                 }
+                }
             }
             iv = safeBase64ToArrayBuffer(localStorage.getItem('hmacIV'));
 
@@ -389,8 +404,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = new Date();
         const dayOfWeek = now.getDay(); // 0 (Sunday) to 6 (Saturday)
         const millisTillNextSunday = (7 - dayOfWeek) % 7 * 24 * 60 * 60 * 1000 +
-                                    new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0).getTime() -
-                                    now.getTime();
+            new Date(now.getFullYear(), now.getMonth(), now.getDate(), 6, 0, 0, 0).getTime() -
+            now.getTime();
 
         setTimeout(function() {
             clearEncryptionData();
@@ -424,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Implement timing attack resistant comparison
     function isEqual(a, b) {
-         if (typeof a !== 'string' || typeof b !== 'string') {
+        if (typeof a !== 'string' || typeof b !== 'string') {
             return false;
         }
 
@@ -441,7 +456,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Use more secure key derivation
     async function deriveKeyMaterial(salt) {
-         const password = await generateKey(salt);
+        const password = await generateKey(salt);
 
         const enc = new TextEncoder();
         const keyMaterial = await window.crypto.subtle.importKey(
@@ -488,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.history.replaceState(null, null, window.location.href);
     }
 
-     // Function to hash the password using SHA-256
+    // Function to hash the password using SHA-256
     async function hashPassword(password) {
         try {
             const encoder = new TextEncoder();
@@ -504,8 +519,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-     // CSP Nonce Management
-     function generateNonce() {
+    // CSP Nonce Management
+    function generateNonce() {
         const nonceBytes = new Uint8Array(16);
         window.crypto.getRandomValues(nonceBytes);
         return btoa(String.fromCharCode.apply(null, nonceBytes));
@@ -520,10 +535,10 @@ document.addEventListener('DOMContentLoaded', function() {
     setCSPHeaders(nonce);
     window.nonce = nonce;
 
-     // Clear sensitive data on unload
+    // Clear sensitive data on unload
     window.addEventListener('beforeunload', clearEncryptionData);
 
-     // Add automatic logout after 30 minutes of inactivity
+    // Add automatic logout after 30 minutes of inactivity
     let timeoutId;
 
     function resetTimeout() {
@@ -562,18 +577,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Disable autocomplete on sensitive fields
-    const usernameField = document.getElementById('username');
-    const passwordField = document.getElementById('password');
-    const captchaField = document.getElementById('captcha');
+    const usernameField = getElement('username');
+    const passwordField = getElement('password');
+    const captchaField = getElement('captcha');
 
     if (usernameField) {
         usernameField.autocomplete = 'off';
-       usernameField.setAttribute("autocomplete", "disabled");
+        usernameField.setAttribute("autocomplete", "disabled");
     }
 
     if (passwordField) {
         passwordField.autocomplete = 'new-password';
-       passwordField.setAttribute("autocomplete", "disabled");
+        passwordField.setAttribute("autocomplete", "disabled");
     }
 
     if (captchaField) {
@@ -581,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function() {
         captchaField.setAttribute("autocomplete", "disabled");
     }
 
-     // Replace base64 with URL-safe base64
+    // Replace base64 with URL-safe base64
     function arrayBufferToSafeBase64(buffer) {
         let binary = '';
         const bytes = new Uint8Array(buffer);
@@ -605,19 +620,19 @@ document.addEventListener('DOMContentLoaded', function() {
         return bytes.buffer;
     }
 
-     // Prevent caching of login page
+    // Prevent caching of login page
     preventPageCaching();
 
     function preventPageCaching() {
-         // Disable browser caching on page load
-         document.querySelector('body').classList.add('no-cache');
+        // Disable browser caching on page load
+        document.querySelector('body').classList.add('no-cache');
 
         // Set HTTP headers to prevent caching
         window.addEventListener('load', function() {
             // Overwrite HTTP headers to prevent caching
-            const cacheControlMeta = document.querySelector('meta[http-equiv="Cache-Control"]');
-            const pragmaMeta = document.querySelector('meta[http-equiv="Pragma"]');
-            const expiresMeta = document.querySelector('meta[http-equiv="Expires"]');
+            const cacheControlMeta = querySelector('meta[http-equiv="Cache-Control"]');
+            const pragmaMeta = querySelector('meta[http-equiv="Pragma"]');
+            const expiresMeta = querySelector('meta[http-equiv="Expires"]');
 
             if (cacheControlMeta) {
                 cacheControlMeta.setAttribute('content', 'no-cache, no-store, must-revalidate');
