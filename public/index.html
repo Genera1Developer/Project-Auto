@@ -151,22 +151,15 @@
             const NONCE_LENGTH = 16; // Define constant for nonce length
             const KEY_CHECK_URL = '/api/checkKey'; //Endpoint to check key
             const AES_KEY_LENGTH = 256; // Define AES key length in bits
-            const SALT_LENGTH = 16;
             const KEY_STORAGE_DURATION = 300000; // 5 minutes in milliseconds
             const LOAD_TIMEOUT = 30000; // 30 seconds
+            const IV_LENGTH = 12; // Standard IV length for AES-GCM
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
-                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                let nonce = '';
-                const randomValues = new Uint32Array(length);
-                window.crypto.getRandomValues(randomValues); // Fill the array with random values at once
-
-                for (let i = 0; i < length; i++) {
-                    const randomIndex = Math.floor(randomValues[i] / (0xffffffff + 1) * characters.length);
-                    nonce += characters.charAt(randomIndex);
-                }
-                return nonce;
+                const randomBuffer = new Uint8Array(length);
+                window.crypto.getRandomValues(randomBuffer);
+                return Array.from(randomBuffer).map(b => b.toString(16).padStart(2, '0')).join('');
             }
 
               // Function to decrypt the URL using AES (for potential future use)
@@ -195,16 +188,9 @@
 
             // Function to generate a cryptographically secure salt
             function generateSalt(length) {
-                let salt = '';
-                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                const randomValues = new Uint32Array(length);
-                window.crypto.getRandomValues(randomValues);
-
-                for (let i = 0; i < length; i++) {
-                    const randomIndex = Math.floor(randomValues[i] / (0xffffffff + 1) * characters.length);
-                    salt += characters.charAt(randomIndex);
-                }
-                return salt;
+              const randomBuffer = new Uint8Array(length);
+              window.crypto.getRandomValues(randomBuffer);
+              return Array.from(randomBuffer).map(b => b.toString(16).padStart(2, '0')).join('');
             }
 
 
@@ -242,7 +228,7 @@
 
             // Function to encrypt the URL using AES-GCM
             async function encryptURL(url, key) {
-                const iv = window.crypto.getRandomValues(new Uint8Array(12));
+                const iv = window.crypto.getRandomValues(new Uint8Array(IV_LENGTH));
                 const encodedText = new TextEncoder().encode(url);
                 const alg = { name: 'AES-GCM', iv: iv };
 
@@ -381,11 +367,6 @@
 
                     // Load the URL in the iframe
                     proxyFrame.src = proxyUrl;
-
-                     // Potentially store the nonce in local storage or a cookie
-                     // localStorage.setItem('lastRequestNonce', nonce); //Example
-                     // Consider using sessionStorage to store the key temporarily
-                     //sessionStorage.setItem('hashedKey', hashedKey);
 
                      // Set a timeout to prevent indefinite loading
                     const timeoutId = setTimeout(() => {
