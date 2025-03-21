@@ -272,6 +272,92 @@ function getKeyDetails() {
     };
 }
 
+function generateSecureRandomBytes(length) {
+    try {
+        return crypto.randomBytes(length);
+    } catch (error) {
+        console.error("Failed to generate cryptographically secure random bytes:", error);
+        // Fallback to less secure method (e.g., Math.random) - NOT RECOMMENDED for sensitive data.
+        // In production, consider throwing an error or using a seeded PRNG if truly necessary.
+        console.warn("Using less secure Math.random as fallback for randomBytes!");
+        const buffer = Buffer.alloc(length);
+        for (let i = 0; i < length; i++) {
+            buffer[i] = Math.floor(Math.random() * 256);
+        }
+        return buffer;
+    }
+}
+
+//Function to generate a more secure IV
+function generateSecureIV() {
+    return generateSecureRandomBytes(IV_LENGTH);
+}
+
+const encryptSecure = (text) => {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
+
+    let iv;
+    if (!ivMap.has(key)) {
+        iv = generateSecureIV();
+        ivMap.set(key, iv);
+    } else {
+        let lastIVForKey = ivMap.get(key);
+        do {
+            iv = generateSecureIV();
+        } while (lastIVForKey && timingSafeEqual(iv, lastIVForKey)); // Ensure IV is unique
+        ivMap.set(key, iv); // Store current iv to prevent reuse
+    }
+
+    let cipher = null;
+    let encrypted = null;
+    let authTag = null;
+    try {
+        cipher = crypto.createCipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        encrypted = Buffer.concat([cipher.update(Buffer.from(text, 'utf8')), cipher.final()]);
+        authTag = cipher.getAuthTag();
+
+        const ciphertext = Buffer.concat([iv, authTag, encrypted]);
+        return ciphertext.toString('base64');
+
+    } catch (error) {
+        console.error("Encryption failed:", error);
+        return null;
+    } finally {
+        if (cipher) {
+            cipher.destroy();
+        }
+    }
+};
+
+const decryptSecure = (text) => {
+    if (!key) {
+        throw new Error('Encryption key not set. Call setEncryptionKey() first.');
+    }
+
+    let decipher = null;
+    let decrypted = null;
+    try {
+        const ciphertext = Buffer.from(text, 'base64');
+        const iv = ciphertext.slice(0, IV_LENGTH);
+        const authTag = ciphertext.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
+        const encryptedData = ciphertext.slice(IV_LENGTH + AUTH_TAG_LENGTH);
+
+        decipher = crypto.createDecipheriv(algorithm, key, iv, { authTagLength: AUTH_TAG_LENGTH });
+        decipher.setAuthTag(authTag);
+        decrypted = Buffer.concat([decipher.update(encryptedData), decipher.final()]);
+        return decrypted.toString('utf8');
+    } catch (error) {
+        console.error("Decryption failed:", error);
+        return null;
+    } finally {
+        if (decipher) {
+            decipher.destroy();
+        }
+    }
+};
+
 module.exports = {
     encrypt,
     decrypt,
@@ -288,4 +374,7 @@ module.exports = {
     getAlgorithm, // Export the getAlgorithm function
     hasStrongRandomnessSource, //Export function
     getKeyDetails,
+    generateSecureRandomBytes,
+    encryptSecure,
+    decryptSecure
 };
