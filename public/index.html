@@ -132,6 +132,7 @@
             const NONCE_LENGTH = 16; // Define constant for nonce length
             const KEY_CHECK_URL = '/api/checkKey'; //Endpoint to check key
             const AES_KEY_LENGTH = 256; // Define AES key length in bits
+            const SALT_LENGTH = 16;
 
              // Function to generate a cryptographically secure nonce
             function generateNonce(length) {
@@ -338,16 +339,14 @@
                         return;
                     }
 
-                    // Remove key from session storage if it exists, before setting a new one.
-                    if (sessionStorage.getItem('aesKey')) {
-                        sessionStorage.removeItem('aesKey');
-                    }
+                    // Store IV in session storage
+                    sessionStorage.setItem('aesIV', iv);
 
                     // Store key in session storage *before* passing parameters
                     sessionStorage.setItem('aesKey', keyHex);
 
-                    // Construct the URL with encrypted parameters.  Send IV.
-                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(ciphertext)}&iv=${encodeURIComponent(iv)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}`;
+                    // Construct the URL with encrypted parameters.  Don't send IV in URL.
+                    const proxyUrl = `/api/proxy?ciphertext=${encodeURIComponent(ciphertext)}&nonce=${encodeURIComponent(nonce)}&keyHash=${encodeURIComponent(hashedKey)}`;
 
                     // Show loading indicator
                     loadingDiv.style.display = 'block';
@@ -378,6 +377,7 @@
                      //Clear sensitive information from sessionStorage after a delay.
                     setTimeout(() => {
                         sessionStorage.removeItem('aesKey'); //Remove the hashedKey
+                        sessionStorage.removeItem('aesIV'); // Remove the IV
                     }, 60000); //Clear after 60 seconds
 
                 } catch (e) {
