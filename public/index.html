@@ -160,6 +160,10 @@
             margin-top: 10px;
             text-align: center;
         }
+        .key-expired {
+            color: #ffc107; /* Amber color for warning/expired */
+            font-weight: bold;
+        }
 
     </style>
 </head>
@@ -183,6 +187,9 @@
             <i class="fas fa-check-circle"></i> Enhanced Security Measures Active
         </div>
         <div id="info" class="info"></div>
+        <div id="keyExpiryWarning" class="info key-expired" style="display:none;">
+            <i class="fas fa-exclamation-triangle"></i> Encryption key will expire soon!
+        </div>
         <iframe id="proxyFrame"></iframe>
     </div>
 
@@ -194,6 +201,7 @@
             const loadingDiv = document.getElementById('loading');
             const proxyFrame = document.getElementById('proxyFrame');
             const infoDiv = document.getElementById('info');
+            const keyExpiryWarningDiv = document.getElementById('keyExpiryWarning');
             const HASH_ITERATIONS = 100000; // Define constant for iterations
             const NONCE_LENGTH = 16; // Define constant for nonce length
             const KEY_CHECK_URL = '/api/checkKey'; //Endpoint to check key
@@ -387,6 +395,7 @@
               sessionStorage.setItem('aesKeyTimestamp', Date.now().toString());
               sessionStorage.setItem('hashedKey', hashedKey);
               console.log('AES key rotated successfully.');
+              displayKeyExpiryWarning(); //Update expiry warning message.
             }
 
             // Key rotation interval
@@ -565,6 +574,22 @@
                 }
             });
 
+            // Function to display key expiry warning
+            function displayKeyExpiryWarning() {
+                const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
+                if (storedTimestamp) {
+                    const timestamp = parseInt(storedTimestamp, 10);
+                    const timeLeft = KEY_STORAGE_DURATION - (Date.now() - timestamp);
+                    if (timeLeft <= 60000) { // Show warning if key expires in 1 minute or less
+                        keyExpiryWarningDiv.style.display = 'block';
+                    } else {
+                        keyExpiryWarningDiv.style.display = 'none';
+                    }
+                } else {
+                    keyExpiryWarningDiv.style.display = 'none';
+                }
+            }
+
             // Periodically check and clear key if expired
             setInterval(() => {
                 const storedTimestamp = sessionStorage.getItem('aesKeyTimestamp');
@@ -576,9 +601,15 @@
                         sessionStorage.removeItem('aesKey');
                         sessionStorage.removeItem('aesIV');
                         sessionStorage.removeItem('aesKeyTimestamp');
+                         keyExpiryWarningDiv.style.display = 'none'; // Hide expiry warning
+                    } else {
+                         displayKeyExpiryWarning();// Check if warning needs to be displayed
                     }
                 }
             }, KEY_EXPIRY_CHECK_INTERVAL);
+
+            // Display initial key expiry warning
+            displayKeyExpiryWarning();
 
              // Add event listener for iframe loaded message
             window.addEventListener('message', function(event) {
