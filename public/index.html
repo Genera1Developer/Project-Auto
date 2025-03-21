@@ -115,6 +115,11 @@
                 opacity: 0.8;
             }
         }
+        /* Info message style */
+        .info {
+            color: #2196F3; /* A blue shade for informational messages */
+            margin-top: 10px;
+        }
 
     </style>
 </head>
@@ -137,6 +142,7 @@
         <div class="enhanced-security">
             <i class="fas fa-check-circle"></i> Enhanced Security Measures Active
         </div>
+        <div id="info" class="info"></div>
         <iframe id="proxyFrame"></iframe>
     </div>
 
@@ -147,6 +153,7 @@
             const errorDiv = document.getElementById('error');
             const loadingDiv = document.getElementById('loading');
             const proxyFrame = document.getElementById('proxyFrame');
+            const infoDiv = document.getElementById('info');
             const HASH_ITERATIONS = 100000; // Define constant for iterations
             const NONCE_LENGTH = 16; // Define constant for nonce length
             const KEY_CHECK_URL = '/api/checkKey'; //Endpoint to check key
@@ -159,6 +166,7 @@
             const KEY_EXPIRY_CHECK_INTERVAL = 60000; // 60 seconds
             const ALLOWED_FRAME_ORIGIN = '*'; // Ideally, this should be your server's origin.
             const REDIRECT_STATUS_CODES = [301, 302, 307, 308];
+            const SERVICE_WORKER_URL = '/sw.js'; // Service worker URL
 
             // CSP Nonce for inline scripts (for stricter CSP)
             const cspNonce = generateNonce(16);
@@ -299,6 +307,26 @@
                 return false; // Treat error as not compromised, or handle differently
               }
             }
+
+             // Function to register service worker
+            async function registerServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    try {
+                        const registration = await navigator.serviceWorker.register(SERVICE_WORKER_URL);
+                        console.log('Service worker registered:', registration);
+                        infoDiv.textContent = 'Service worker registered for improved caching and offline support.';
+                    } catch (error) {
+                        console.error('Service worker registration failed:', error);
+                        errorDiv.textContent = 'Failed to register service worker. The proxy might not work offline.';
+                    }
+                } else {
+                    console.log('Service workers are not supported in this browser.');
+                    infoDiv.textContent = 'Service workers are not supported in this browser.';
+                }
+            }
+
+            // Call service worker registration on page load
+            registerServiceWorker();
 
             browseButton.addEventListener('click', async () => {
                 let url = urlInput.value.trim();
