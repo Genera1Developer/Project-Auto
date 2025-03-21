@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', function() {
     scheduleCleanupTasks();
 
     function scheduleCleanupTasks() {
-        // Clear localStorage weekly at 6 AM every Sunday
+        // Clear sessionStorage and localStorage weekly at 6 AM every Sunday
         const now = new Date();
         const dayOfWeek = now.getDay(); // 0 (Sunday) to 6 (Saturday)
         const millisTillNextSunday = (7 - dayOfWeek) % 7 * 24 * 60 * 60 * 1000 +
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
         sessionStorage.removeItem('hmacSecret');
         localStorage.removeItem('currentIV');
         localStorage.removeItem('hmacIV');
-        console.log('Encryption data cleared from localStorage.');
+        console.log('Encryption data cleared from sessionStorage and localStorage.');
     }
 
     // Add check for window.crypto
