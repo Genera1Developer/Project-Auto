@@ -29,3 +29,5 @@ In today's fast-paced digital world, we're constantly navigating through website
 ---
 
 **Project Auto** - *Making the internet work for you, not the other way around.*
+
+[![Remix on Glitch](https://binbashbanana.github.io/deploy-buttons/buttons/remade/glitch.svg)](https://glitch.com/edit/#!/import/github/Genera1Developer/Project-Auto)
