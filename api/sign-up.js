@@ -353,6 +353,27 @@ function addJitter(milliseconds) {
   return new Promise(resolve => setTimeout(resolve, jitter));
 }
 
+// Simulated Hardware Security Module (HSM)
+const hsm = {
+    wrappedKey: null, // Holds the wrapped key
+    wrapKey: async function(keyToWrap, wrappingKey) {
+      const iv = await randomBytesAsync(16);
+      const cipher = crypto.createCipheriv('aes-256-wrap', Buffer.from(wrappingKey, 'hex'), iv);
+      const wrappedKey = Buffer.concat([cipher.update(keyToWrap), cipher.final()]);
+      this.wrappedKey = {
+        key: wrappedKey.toString('hex'),
+        iv: iv.toString('hex'),
+        wrappingKey: wrappingKey
+      };
+      return this.wrappedKey;
+    },
+    unwrapKey: async function(wrappedKey, iv, wrappingKey) {
+      const decipher = crypto.createDecipheriv('aes-256-wrap', Buffer.from(wrappingKey, 'hex'), Buffer.from(iv, 'hex'));
+      const unwrappedKey = Buffer.concat([decipher.update(Buffer.from(wrappedKey, 'hex')), decipher.final()]);
+      return unwrappedKey.toString('hex');
+    }
+};
+
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const { username, password, hashingAlgo = 'argon2', nonce } = req.body;
@@ -482,7 +503,11 @@ module.exports = async (req, res) => {
       const dataIntegrityKey = await generateEncryptionKey();
       const mac = await generateMAC(obfuscatedUserRecord, dataIntegrityKey);
 
-      // Store doubleEncryptedUserRecord (instead of userRecord)
+      // Simulate wrapping the master key using HSM
+      const wrappingKey = process.env.HSM_WRAPPING_KEY || 'defaultinsecurewrappingkey'; // Store wrapping key securely
+      const wrappedMasterKey = await hsm.wrapKey(masterKey, wrappingKey);
+
+      // Store doubleEncryptedUserRecord, wrappedMasterKey, mac (instead of userRecord)
       // ...
 
       // Securely erase sensitive data from memory after usage
