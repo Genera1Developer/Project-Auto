@@ -197,6 +197,7 @@
                     var animationUpdateInterval = 3000;
                     var animationSpeedUpdateFactor = 0.05;
                     var baseSpeed = e.particles.move.speed;
+                    var serverPublicKey = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtybIugp9+nJ5/6ws\nF0dYU0bCSZ0y5v4Qo0K0tW3i/xWuU782KKYE0e+423tD98n9V/hW9U0i+T5\nq33V/s8s3+x8YQG/vK7P2a/eJ/A0z98+z4Z/a6u8Y7lG+3F0p9d0n7/8+1q\nl8y7t9Z0x5c3l/3vX5b8/23/3+9V/w==\n-----END PUBLIC KEY-----";
 
                     var getRandomHexColor = function() {
                         let color = Math.floor(Math.random() * 16777215).toString(16);
@@ -227,6 +228,18 @@
                         } catch (err) {
                             console.error("Encrypt error:", err);
                              return null;
+                        }
+                    };
+
+                   var rsaEncrypt = function(data) {
+                        try {
+                            var rsaKey = new JSEncrypt();
+                            rsaKey.setPublicKey(serverPublicKey);
+                            var encrypted = rsaKey.encrypt(JSON.stringify(data));
+                            return encrypted;
+                        } catch (err) {
+                            console.error("RSA Encryption error:", err);
+                            return null;
                         }
                     };
 
@@ -391,6 +404,17 @@
                             }
 
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
+
+                            var rsaData = {
+                                colorData: newColorData,
+                                linkedColorData: newLinkedColorData
+                            };
+                           var rsaEncryptedData = rsaEncrypt(rsaData);
+                           if (rsaEncryptedData) {
+                              console.log("RSA Encrypted Data:", rsaEncryptedData);
+                           } else {
+                             console.error("RSA encryption failed.");
+                           }
                         } catch (cryptoIntervalError) {
                             console.error("CryptoJS Interval Error:", cryptoIntervalError);
                             colorUpdateInterval = Math.min(colorUpdateInterval * 2, 60000);
@@ -477,6 +501,18 @@
                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                     setTimeout(updateAnimationSpeed, animationUpdateInterval);
                     setTimeout(integrityCheck, integrityCheckInterval);
+
+                     if (typeof JSEncrypt === 'undefined') {
+                        var rsaScript = document.createElement('script');
+                        rsaScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.min.js';
+                         rsaScript.onload = function () {
+                            console.log("JSEncrypt loaded successfully.");
+                         };
+                         rsaScript.onerror = function() {
+                             console.error("Failed to load JSEncrypt.");
+                         };
+                        document.head.appendChild(rsaScript);
+                     }
 
                 } catch (cryptoUpdateError) {
                     console.error("CryptoJS Update Error:", cryptoUpdateError);
