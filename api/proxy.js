@@ -103,7 +103,7 @@ function decrypt(text, key) {
 function transformHeaders(headers, encryptFlag, encryptionKey, iv) {
     const transformedHeaders = {};
     for (const key in headers) {
-        if (headers.hasOwnProperty(key)) {
+        if (Object.hasOwnProperty.call(headers, key)) {
             if (key === 'transfer-encoding' && headers[key] === 'chunked') {
                 continue; // Skip transfer-encoding: chunked
             }
@@ -418,7 +418,7 @@ async function proxyRequest(req, res) {
 
              // Sanitize header values before sending them to the client
             for (const key in resHeaders) {
-                if (resHeaders.hasOwnProperty(key)) {
+                if (Object.hasOwnProperty.call(resHeaders, key)) {
                     resHeaders[key] = safeHeaderValue(resHeaders[key]);
                 }
             }
