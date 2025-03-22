@@ -427,6 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function isEqual(a, b) {
+         // Mitigate timing attacks
         if (typeof a !== 'string' || typeof b !== 'string') {
             return false;
         }
