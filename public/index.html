@@ -400,6 +400,7 @@
 			const ENABLE_DEFERRED_DECRYPTION = true;
 			const ENABLE_URL_SANITIZATION = true;
 			const REPORT_CSP_VIOLATIONS = true;
+			const ENABLE_SECURE_COOKIES = true;
 
             // DOM Elements
             const urlInput = document.getElementById('url');
@@ -720,7 +721,8 @@
 					return fetch(PROXY_URL, {
 						method: 'POST',
 						body: formData,
-						redirect: 'manual'
+						redirect: 'manual',
+						credentials: 'omit'
 					});
 
 				} catch (error) {
