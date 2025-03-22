@@ -146,13 +146,18 @@ const verifyCredentials = async (username, password) => {
 
                 try {
                     const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
-                    const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
-
-                    if (!decryptedUsername || !decryptedPassword) {
-                        return resolve(false);
+                    if (!decryptedUsername) {
+                      return resolve(false);
                     }
+
                     const hashedPasswordAttempt = await hashPassword(password, row.salt, row.password_version);
+
+                    const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
+                    if (!decryptedPassword) {
+                      return resolve(false);
+                    }
                     const passwordsMatch = decryptedPassword === hashedPasswordAttempt;
+
 
                     if (!passwordsMatch) {
                         return resolve(false);
