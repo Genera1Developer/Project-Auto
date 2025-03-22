@@ -749,7 +749,8 @@ module.exports = async (req, res) => {
                  const responseWithIV = {
                      iv: finalEncryptionIV.toString('hex'),
                      encryptedData: finalEncryptedResponse.encryptedData,
-                     authTag: finalEncryptedResponse.authTag
+                     authTag: finalEncryptedResponse.authTag,
+                    hash: crypto.createHash('sha256').update(JSON.stringify(responsePayload)).digest('hex') //Add Integrity Check
                  };
 
                  // Encode the entire response with base64url and compress it
