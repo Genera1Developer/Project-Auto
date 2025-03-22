@@ -109,7 +109,7 @@ function transformHeaders(headers, encryptFlag, encryptionKey, iv) {
             }
 
             let lowerKey = key.toLowerCase();
-            let value = String(headers[key]); // Ensure value is a string
+            let value = headers[key];
 
             if (NON_ENCRYPTED_HEADERS.includes(lowerKey)) {
                 transformedHeaders[key] = headers[key];
@@ -127,7 +127,7 @@ function transformHeaders(headers, encryptFlag, encryptionKey, iv) {
                       if (SENSITIVE_HEADERS.includes(lowerKey)) {
                         transformedKey = ENCRYPT_HEADER_PREFIX + key;
                       }
-                      transformedValue = encrypt(value, encryptionKey, iv);
+                      transformedValue = encrypt(String(value), encryptionKey, iv);
                        if (transformedValue === null) {
                           console.warn(`Skipping header value for ${key} due to encryption failure.`);
                           continue;
