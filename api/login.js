@@ -43,10 +43,10 @@ const timingSafeCompare = (a, b) => {
     return false;
   } finally {
         if (aBuff) {
-            aBuff.fill(0);
+            crypto.randomFillSync(aBuff, 0, aBuff.length);
         }
         if (bBuff) {
-            bBuff.fill(0);
+            crypto.randomFillSync(bBuff, 0, bBuff.length);
         }
     }
 };
@@ -112,7 +112,7 @@ const encryptSession = (sessionData, encryptionKey) => {
         return null;
     } finally {
         if (cipherText) {
-            cipherText.fill(0);
+            crypto.randomFillSync(cipherText, 0, cipherText.length);
         }
     }
 };
@@ -135,7 +135,7 @@ const decryptSession = (encryptedSession, encryptionKey) => {
         return null;
     } finally {
         if(encryptedSessionBuffer){
-            encryptedSessionBuffer.fill(0)
+            crypto.randomFillSync(encryptedSessionBuffer, 0, encryptedSessionBuffer.length)
         }
     }
 };
@@ -199,7 +199,7 @@ const hkdfExpand = (secret, info, length) => {
         return null;
     } finally {
       if(prk){
-        prk.fill(0);
+        crypto.randomFillSync(prk, 0, prk.length);
       }
     }
 };
@@ -219,7 +219,7 @@ const encryptCookie = (cookieValue, encryptionKey) => {
         return null;
     } finally {
         if(cookieBuffer){
-            cookieBuffer.fill(0)
+            crypto.randomFillSync(cookieBuffer, 0, cookieBuffer.length);
         }
     }
 };
@@ -242,7 +242,7 @@ const decryptCookie = (encryptedCookie, encryptionKey) => {
         return null;
     } finally {
         if(encryptedCookieBuffer){
-            encryptedCookieBuffer.fill(0);
+            crypto.randomFillSync(encryptedCookieBuffer, 0, encryptedCookieBuffer.length);
         }
     }
 };
@@ -321,7 +321,7 @@ const encryptWithDeviceSecret = (data, deviceSecret) => {
         return null;
     } finally {
         if (dataBuffer) {
-            dataBuffer.fill(0);
+            crypto.randomFillSync(dataBuffer, 0, dataBuffer.length);
         }
     }
 };
@@ -344,7 +344,7 @@ const decryptWithDeviceSecret = (encryptedData, deviceSecret) => {
         return null;
     } finally {
         if (encryptedDataBuffer) {
-            encryptedDataBuffer.fill(0);
+            crypto.randomFillSync(encryptedDataBuffer, 0, encryptedDataBuffer.length);
         }
     }
 };
@@ -398,7 +398,7 @@ const verifyShortLivedToken = (token, secret) => {
         return null;
     } finally {
         if (encryptedDataBuffer) {
-            encryptedDataBuffer.fill(0)
+            crypto.randomFillSync(encryptedDataBuffer, 0, encryptedDataBuffer.length)
         }
     }
 };
@@ -515,7 +515,7 @@ const encryptWithKeyMaterial = (data, keyMaterial) => {
         return null;
     } finally {
         if(dataBuffer){
-            dataBuffer.fill(0);
+            crypto.randomFillSync(dataBuffer, 0, dataBuffer.length);
         }
     }
 };
@@ -538,7 +538,7 @@ const decryptWithKeyMaterial = (encryptedData, keyMaterial) => {
         return null;
     } finally {
         if(encryptedDataBuffer){
-            encryptedDataBuffer.fill(0);
+            crypto.randomFillSync(encryptedDataBuffer, 0, encryptedDataBuffer.length);
         }
     }
 };
@@ -572,7 +572,7 @@ const encryptData = (data, key, iv) => {
         return null;
     } finally {
         if(dataBuffer){
-            dataBuffer.fill(0);
+            crypto.randomFillSync(dataBuffer, 0, dataBuffer.length);
         }
     }
 };
@@ -606,7 +606,7 @@ const encryptObject = (obj, key) => {
         return null;
     } finally {
         if (dataBuffer){
-            dataBuffer.fill(0);
+            crypto.randomFillSync(dataBuffer, 0, dataBuffer.length);
         }
     }
 };
