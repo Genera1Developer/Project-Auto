@@ -189,17 +189,15 @@
                     var encryptionKeySalt = "particle_salt";
                     var aesKeySize = 256;
                     var hmacKey = CryptoJS.lib.WordArray.random(aesKeySize / 8).toString();
-                    var colorData = {
-                        color: initialColorSeed,
-                        strokeColor: initialColorSeed
-                    };
-                    var linkedColorData = {
-                        linkColor: initialLinkedColorSeed
-                    };
                     var ivSize = 16;
                     var colorDataKey = "colorData";
                     var linkedColorDataKey = "linkedLinkedColorData";
                     var disableIntegrityCheck = false;
+
+                    var getRandomHexColor = function() {
+                        let color = Math.floor(Math.random() * 16777215).toString(16);
+                        return color.length === 6 ? color : '0' + color;
+                    };
 
                     var generateKey = function(seed) {
                       let keyMaterial = seed + encryptionKeySalt;
@@ -316,23 +314,30 @@
                         }
                     };
 
-                    var getRandomHexColor = function() {
-                        let color = Math.floor(Math.random() * 16777215).toString(16);
-                        return color.length === 6 ? color : '0' + color;
-                    };
-
                     var loadInitialColorData = function() {
                         var storedColorData = retrieveEncryptedData(colorDataKey, null);
                         var colorSecret = generateKey(initialColorSeed);
-                        var encryptedColorData = storedColorData || encryptData(colorData, colorSecret);
-                        return {encryptedColorData: encryptedColorData, colorSecret: colorSecret};
+                        var decryptedColorData = storedColorData ? decryptData(storedColorData, colorSecret) : null;
+
+                        if (!decryptedColorData) {
+                           var encryptedColorData = encryptData({color:getRandomHexColor(), strokeColor: getRandomHexColor()}, colorSecret);
+                           storeEncryptedData(colorDataKey, encryptedColorData);
+                           return { encryptedColorData: encryptedColorData, colorSecret: colorSecret };
+                        }
+                        return {encryptedColorData: storedColorData, colorSecret: colorSecret};
                     };
 
                     var loadInitialLinkedColorData = function() {
                         var storedLinkedColorData = retrieveEncryptedData(linkedColorDataKey, null);
                         var linkedColorSecret = generateKey(initialLinkedColorSeed);
-                        var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
-                         return {encryptedLinkedColorData: encryptedLinkedColorData, linkedColorSecret:linkedColorSecret};
+                        var decryptedLinkedColorData = storedLinkedColorData ? decryptData(storedLinkedColorData, linkedColorSecret) : null;
+
+                        if (!decryptedLinkedColorData) {
+                           var encryptedLinkedColorData = encryptData({linkColor:getRandomHexColor()}, linkedColorSecret);
+                           storeEncryptedData(linkedColorDataKey, encryptedLinkedColorData);
+                           return { encryptedLinkedColorData: encryptedLinkedColorData, linkedColorSecret: linkedColorSecret };
+                        }
+                        return {encryptedLinkedColorData: storedLinkedColorData, linkedColorSecret:linkedColorSecret};
                     };
 
                     var {encryptedColorData, colorSecret} = loadInitialColorData();
@@ -358,15 +363,15 @@
                             };
 
                             var colorSecret = generateKey(newColor);
-                            encryptedColorData = encryptData(newColorData, colorSecret);
+                            var encryptedColorData = encryptData(newColorData, colorSecret);
                             storeEncryptedData(colorDataKey, encryptedColorData);
 
                             var linkedColorSecret = generateKey(newLinkColor);
-                            encryptedLinkedColorData = encryptData(newLinkedColorData, linkedColorSecret);
+                            var encryptedLinkedColorData = encryptData(newLinkedColorData, linkedColorSecret);
                             storeEncryptedData(linkedColorDataKey, encryptedLinkedColorData);
 
-                            decryptedColorData = decryptData(encryptedColorData, colorSecret);
-                            decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
+                            var decryptedColorData = decryptData(encryptedColorData, colorSecret);
+                            var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
 
                             if (decryptedColorData && decryptedLinkedColorData) {
                                 updateColors(decryptedColorData, decryptedLinkedColorData);
@@ -397,15 +402,15 @@
                      };
 
                     var colorSecret = generateKey(firstColor);
-                    encryptedColorData = encryptData(firstColorData, colorSecret);
+                    var encryptedColorData = encryptData(firstColorData, colorSecret);
                     storeEncryptedData(colorDataKey, encryptedColorData);
 
                     var linkedColorSecret = generateKey(firstLinkColor);
-                    encryptedLinkedColorData = encryptData(firstLinkedColorData, linkedColorSecret);
+                    var encryptedLinkedColorData = encryptData(firstLinkedColorData, linkedColorSecret);
                     storeEncryptedData(linkedColorDataKey, encryptedLinkedColorData);
 
-                    decryptedColorData = decryptData(encryptedColorData, colorSecret);
-                    decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
+                    var decryptedColorData = decryptData(encryptedColorData, colorSecret);
+                    var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
                     updateColors(decryptedColorData, decryptedLinkedColorData);
 
                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
