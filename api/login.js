@@ -19,6 +19,7 @@ const encryptPassword = (password, salt) => {
     return null;
   } finally {
     if(password){
+        crypto.randomFillSync(Buffer.from(password, 'utf-8'), 0, Buffer.from(password, 'utf-8').length);
       password = null;
     }
   }
