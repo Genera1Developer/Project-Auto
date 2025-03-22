@@ -746,9 +746,6 @@ module.exports = async (req, res) => {
                     encryptedSession: encryptedSession
                 };
 
-                // Securely erase key material after use
-                crypto.randomFillSync(keyMaterial, 0, keyMaterial.length);
-
                  // Generate a random IV for the final encryption
                  const finalEncryptionIV = generateRandomIV();
                  const finalEncryptionKey = crypto.randomBytes(32);
@@ -799,14 +796,14 @@ module.exports = async (req, res) => {
                  res.cookie('session_id', cookieValue, secureCookieOptions);
                  res.status(200).json({ data: compressedResponse });
 
-                // Securely erase encryption key after use
-                crypto.randomFillSync(finalEncryptionKey, 0, finalEncryptionKey.length);
+                // Securely erase key material after use
+                crypto.randomFillSync(keyMaterial, 0, keyMaterial.length);
 
                  // Securely erase sensitive variables
                  username = null;
                  password = null;
                  twoFactorToken = null;
-
+                 crypto.randomFillSync(finalEncryptionKey, 0, finalEncryptionKey.length);
 
             } else {
                 res.status(500).json({ message: 'Session encryption failed' });
