@@ -142,7 +142,7 @@ const encrypt = (text) => {
         console.error("Encryption failed:", error);
         return null;
     } finally {
-        if (cipher) {
+        if (cipher && cipher.destroy) {
             cipher.destroy();
         }
     }
@@ -173,7 +173,7 @@ const decrypt = (text) => {
         console.error("Decryption failed:", error);
         return null;
     } finally {
-        if (decipher) {
+         if (decipher && decipher.destroy) {
             decipher.destroy();
         }
     }
@@ -328,7 +328,7 @@ const encryptSecure = async (text, aad = null) => {
         console.error("Encryption failed:", error);
         return null;
     } finally {
-        if (cipher) {
+        if (cipher && cipher.destroy) {
             cipher.destroy();
         }
     }
@@ -370,7 +370,7 @@ const decryptSecure = async (text, aad = null) => {
         console.error("Decryption failed:", error);
         return null;
     } finally {
-        if (decipher) {
+        if (decipher && decipher.destroy) {
             decipher.destroy();
         }
     }
@@ -437,7 +437,7 @@ const encryptBuffer = async (buffer, aad = null) => {
         console.error("Buffer encryption failed:", error);
         return null;
     } finally {
-        if (cipher) {
+        if (cipher && cipher.destroy) {
             cipher.destroy();
         }
     }
@@ -475,7 +475,7 @@ const decryptBuffer = async (ciphertext, aad = null) => {
         console.error("Buffer decryption failed:", error);
         return null;
     } finally {
-        if (decipher) {
+        if (decipher && decipher.destroy) {
             decipher.destroy();
         }
     }
@@ -590,6 +590,10 @@ const encryptStream = (inputStream, aad = null) => {
 
             } catch (error){
                 callback(error);
+            } finally {
+                 if (cipher && cipher.destroy) {
+                    cipher.destroy();
+                 }
             }
         }
     });
@@ -656,6 +660,10 @@ const decryptStream = (inputStream, aad = null) => {
                 callback(null, finalChunk);
             } catch (error) {
                 callback(error);
+            } finally {
+                 if (decipher && decipher.destroy) {
+                    decipher.destroy();
+                 }
             }
         }
     });
@@ -886,7 +894,7 @@ const encryptWithNonce = async (text, aad, nonce) => {
         console.error("Encryption failed:", error);
         return null;
     } finally {
-        if (cipher) {
+        if (cipher && cipher.destroy) {
             cipher.destroy();
         }
     }
@@ -938,7 +946,7 @@ const decryptWithNonce = async (text, aad, nonce) => {
         console.error("Decryption failed:", error);
         return null;
     } finally {
-        if (decipher) {
+        if (decipher && decipher.destroy) {
             decipher.destroy();
         }
     }
