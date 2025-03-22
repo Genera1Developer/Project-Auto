@@ -143,7 +143,12 @@ const verifyCredentials = async (username, password) => {
                 }
 
                 try {
+                    const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
                     const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
+
+                    if (!decryptedUsername || !decryptedPassword) {
+                        return resolve(false);
+                    }
 
                     const hashedPasswordAttempt = await hashPassword(password, row.salt, row.password_version);
                     const passwordsMatch = decryptedPassword === hashedPasswordAttempt;
@@ -151,11 +156,6 @@ const verifyCredentials = async (username, password) => {
                     if (!passwordsMatch) {
                         return resolve(false);
                     }
-
-                    const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
-                        if (decryptedUsername === null) {
-                            return resolve(false);
-                        }
 
                     return resolve({ id: row.id, username: decryptedUsername });
 
