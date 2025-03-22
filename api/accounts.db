@@ -539,5 +539,15 @@
 	"device_binding_rotation_interval": 86400,
     "use_hardware_rng": true,
     "key_derivation_salt_rotation": true,
-    "key_derivation_salt_rotation_interval": 86400
+    "key_derivation_salt_rotation_interval": 86400,
+	"encrypted_network_traffic_analysis": true,
+	"network_traffic_analysis_cipher": "CHACHA20-POLY1305",
+	"network_traffic_analysis_key": null,
+	"network_traffic_analysis_iv": null,
+	"network_traffic_analysis_aad": null,
+	"use_authenticated_encryption": true,
+	"authenticated_encryption_cipher": "AES-256-GCM",
+	"authenticated_encryption_key": null,
+	"authenticated_encryption_iv": null,
+	"authenticated_encryption_aad": null
 }
