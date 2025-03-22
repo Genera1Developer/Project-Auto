@@ -194,6 +194,9 @@
                     var linkedColorDataKey = "linkedLinkedColorData";
                     var disableIntegrityCheck = false;
                     var integrityCheckInterval = 60000;
+                    var animationUpdateInterval = 3000;
+                    var animationSpeedUpdateFactor = 0.05;
+                    var baseSpeed = e.particles.move.speed;
 
                     var getRandomHexColor = function() {
                         let color = Math.floor(Math.random() * 16777215).toString(16);
@@ -395,6 +398,21 @@
                         }
                     };
 
+                    var updateAnimationSpeed = function() {
+                        try {
+                            var speedVariation = (Math.random() - 0.5) * 2 * animationSpeedUpdateFactor;
+                            var newSpeed = baseSpeed * (1 + speedVariation);
+
+                            e.particles.move.speed = Math.max(0.1, Math.min(newSpeed, baseSpeed * 2));
+                            e.particles.opacity.anim.speed = Math.max(0.1, Math.min(e.particles.opacity.anim.speed * (1 + speedVariation), e.particles.opacity.anim.speed * 2));
+
+                        } catch (animationError) {
+                            console.error("Animation Update Error:", animationError);
+                        } finally {
+                            setTimeout(updateAnimationSpeed, animationUpdateInterval);
+                        }
+                    };
+
                     var integrityCheck = function() {
                         try {
                             var storedColorData = retrieveEncryptedData(colorDataKey, null);
@@ -457,7 +475,7 @@
                     updateColors(decryptedColorData, decryptedLinkedColorData);
 
                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
-
+                    setTimeout(updateAnimationSpeed, animationUpdateInterval);
                     setTimeout(integrityCheck, integrityCheckInterval);
 
                 } catch (cryptoUpdateError) {
