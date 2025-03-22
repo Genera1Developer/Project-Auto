@@ -320,7 +320,7 @@ function validateNonce(nonce, timestamp) {
     nonceCache.add(combinedNonce);
     if (nonceCache.size > NONCE_CACHE_SIZE) {
         // Remove the oldest nonce to prevent unbounded growth
-        const oldestNonce = nonceCache.values().next().value;
+        const oldestNonce = Array.from(nonceCache)[0]; // Get the first element
         nonceCache.delete(oldestNonce);
     }
 
@@ -350,7 +350,7 @@ function validateStreamNonce(nonce, timestamp) {
   streamNonceCache.add(combinedNonce);
   if (streamNonceCache.size > STREAM_NONCE_CACHE_SIZE) {
       // Remove the oldest nonce to prevent unbounded growth
-      const oldestNonce = streamNonceCache.values().next().value;
+      const oldestNonce = Array.from(streamNonceCache)[0]; // Get the first element
       streamNonceCache.delete(oldestNonce);
   }
 
