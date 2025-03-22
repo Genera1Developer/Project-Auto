@@ -197,6 +197,9 @@
                         linkColor: initialLinkedColorSeed
                     };
                     var ivSize = 16;
+                    var colorDataKey = "colorData";
+                    var linkedColorDataKey = "linkedLinkedColorData";
+                    var disableIntegrityCheck = false;
 
                     var generateKey = function(seed) {
                       let keyMaterial = seed + encryptionKeySalt;
@@ -246,7 +249,7 @@
                             let ciphertext = CryptoJS.enc.Base64.parse(ciphertextString);
 
                             let calculatedHmac = CryptoJS.HmacSHA256(ciphertext.toString(), hmacKey).toString();
-                            if (calculatedHmac !== hmac) {
+                            if (!disableIntegrityCheck && calculatedHmac !== hmac) {
                                 console.error("HMAC verification failed!");
                                 return null;
                             }
@@ -319,14 +322,14 @@
                     };
 
                     var loadInitialColorData = function() {
-                        var storedColorData = retrieveEncryptedData("colorData", null);
+                        var storedColorData = retrieveEncryptedData(colorDataKey, null);
                         var colorSecret = generateKey(initialColorSeed);
                         var encryptedColorData = storedColorData || encryptData(colorData, colorSecret);
                         return {encryptedColorData: encryptedColorData, colorSecret: colorSecret};
                     };
 
                     var loadInitialLinkedColorData = function() {
-                        var storedLinkedColorData = retrieveEncryptedData("linkedLinkedColorData", null);
+                        var storedLinkedColorData = retrieveEncryptedData(linkedColorDataKey, null);
                         var linkedColorSecret = generateKey(initialLinkedColorSeed);
                         var encryptedLinkedColorData = storedLinkedColorData || encryptData(linkedColorData, linkedColorSecret);
                          return {encryptedLinkedColorData: encryptedLinkedColorData, linkedColorSecret:linkedColorSecret};
@@ -356,11 +359,11 @@
 
                             var colorSecret = generateKey(newColor);
                             encryptedColorData = encryptData(newColorData, colorSecret);
-                            storeEncryptedData("colorData", encryptedColorData);
+                            storeEncryptedData(colorDataKey, encryptedColorData);
 
                             var linkedColorSecret = generateKey(newLinkColor);
                             encryptedLinkedColorData = encryptData(newLinkedColorData, linkedColorSecret);
-                            storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
+                            storeEncryptedData(linkedColorDataKey, encryptedLinkedColorData);
 
                             decryptedColorData = decryptData(encryptedColorData, colorSecret);
                             decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
@@ -395,11 +398,11 @@
 
                     var colorSecret = generateKey(firstColor);
                     encryptedColorData = encryptData(firstColorData, colorSecret);
-                    storeEncryptedData("colorData", encryptedColorData);
+                    storeEncryptedData(colorDataKey, encryptedColorData);
 
                     var linkedColorSecret = generateKey(firstLinkColor);
                     encryptedLinkedColorData = encryptData(firstLinkedColorData, linkedColorSecret);
-                    storeEncryptedData("linkedLinkedColorData", encryptedLinkedColorData);
+                    storeEncryptedData(linkedColorDataKey, encryptedLinkedColorData);
 
                     decryptedColorData = decryptData(encryptedColorData, colorSecret);
                     decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
