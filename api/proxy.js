@@ -403,6 +403,7 @@ async function proxyRequest(req, res) {
         delete options.headers['x-nonce']; // Remove nonce
         delete options.headers['x-timestamp']; // Remove timestamp
         delete options.headers['x-request-encryption-iv']; // Remove request IV
+        delete reqHeaders['content-length'];
 
         const protocol = parsedUrl.protocol === 'https:' ? https : http;
 
