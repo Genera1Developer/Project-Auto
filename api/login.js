@@ -18,7 +18,9 @@ const encryptPassword = (password, salt) => {
     console.error('Password encryption error:', error);
     return null;
   } finally {
-    password = null;
+    if(password){
+      password = null;
+    }
   }
 };
 
