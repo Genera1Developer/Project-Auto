@@ -125,6 +125,8 @@ const validatePassword = (password) => {
 
 const verifyCredentials = async (username, password) => {
     try {
+        const salt = generateSalt();
+        const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, iv);
 
@@ -140,7 +142,7 @@ const verifyCredentials = async (username, password) => {
                 }
 
                 try {
-                    const passwordsMatch = await verifyPassword(password, row.password, row.salt, row.iv, row.authTag, row.password_version);
+                    const passwordsMatch = await verifyPassword(hashedPassword, row.password, row.salt, row.iv, row.authTag, row.password_version);
 
                     if (!passwordsMatch) {
                         return resolve(false);
