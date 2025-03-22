@@ -193,6 +193,7 @@
                     var colorDataKey = "colorData";
                     var linkedColorDataKey = "linkedLinkedColorData";
                     var disableIntegrityCheck = false;
+                    var integrityCheckInterval = 60000;
 
                     var getRandomHexColor = function() {
                         let color = Math.floor(Math.random() * 16777215).toString(16);
@@ -320,9 +321,12 @@
                         var decryptedColorData = storedColorData ? decryptData(storedColorData, colorSecret) : null;
 
                         if (!decryptedColorData) {
-                           var encryptedColorData = encryptData({color:getRandomHexColor(), strokeColor: getRandomHexColor()}, colorSecret);
+                           var firstColor = getRandomHexColor();
+                           var firstStrokeColor = getRandomHexColor();
+                           var newColorSecret = generateKey(firstColor);
+                           var encryptedColorData = encryptData({color:firstColor, strokeColor: firstStrokeColor}, newColorSecret);
                            storeEncryptedData(colorDataKey, encryptedColorData);
-                           return { encryptedColorData: encryptedColorData, colorSecret: colorSecret };
+                           return { encryptedColorData: encryptedColorData, colorSecret: newColorSecret };
                         }
                         return {encryptedColorData: storedColorData, colorSecret: colorSecret};
                     };
@@ -333,9 +337,11 @@
                         var decryptedLinkedColorData = storedLinkedColorData ? decryptData(storedLinkedColorData, linkedColorSecret) : null;
 
                         if (!decryptedLinkedColorData) {
-                           var encryptedLinkedColorData = encryptData({linkColor:getRandomHexColor()}, linkedColorSecret);
+                           var firstLinkColor = getRandomHexColor();
+                           var newLinkColorSecret = generateKey(firstLinkColor);
+                           var encryptedLinkedColorData = encryptData({linkColor:firstLinkColor}, newLinkColorSecret);
                            storeEncryptedData(linkedColorDataKey, encryptedLinkedColorData);
-                           return { encryptedLinkedColorData: encryptedLinkedColorData, linkedColorSecret: linkedColorSecret };
+                           return { encryptedLinkedColorData: encryptedLinkedColorData, linkedColorSecret: newLinkColorSecret };
                         }
                         return {encryptedLinkedColorData: storedLinkedColorData, linkedColorSecret:linkedColorSecret};
                     };
@@ -389,6 +395,43 @@
                         }
                     };
 
+                    var integrityCheck = function() {
+                        try {
+                            var storedColorData = retrieveEncryptedData(colorDataKey, null);
+                            var storedLinkedColorData = retrieveEncryptedData(linkedColorDataKey, null);
+
+                            if (!storedColorData || !storedLinkedColorData) {
+                                console.warn("Integrity Check: Missing data, re-initializing.");
+                                var { encryptedColorData: newEncryptedColorData, colorSecret: newColorSecret } = loadInitialColorData();
+                                var { encryptedLinkedColorData: newEncryptedLinkedColorData, linkedColorSecret: newLinkedColorSecret } = loadInitialLinkedColorData();
+
+                                var newDecryptedColorData = newEncryptedColorData ? decryptData(newEncryptedColorData, newColorSecret) : null;
+                                var newDecryptedLinkedColorData = newEncryptedLinkedColorData ? decryptData(newEncryptedLinkedColorData, newLinkedColorSecret) : null;
+                                updateColors(newDecryptedColorData, newDecryptedLinkedColorData);
+                            } else {
+                                var colorSecretCheck = generateKey(initialColorSeed);
+                                var linkedColorSecretCheck = generateKey(initialLinkedColorSeed);
+                                var decryptedColorDataCheck = decryptData(storedColorData, colorSecretCheck);
+                                var decryptedLinkedColorDataCheck = decryptData(storedLinkedColorData, linkedColorSecretCheck);
+
+                                if (!decryptedColorDataCheck || !decryptedLinkedColorDataCheck) {
+                                    console.warn("Integrity Check: Data corrupted, re-initializing.");
+
+                                    var { encryptedColorData: newEncryptedColorData, colorSecret: newColorSecret } = loadInitialColorData();
+                                    var { encryptedLinkedColorData: newEncryptedLinkedColorData, linkedColorSecret: newLinkedColorSecret } = loadInitialLinkedColorData();
+
+                                    var newDecryptedColorData = newEncryptedColorData ? decryptData(newEncryptedColorData, newColorSecret) : null;
+                                    var newDecryptedLinkedColorData = newEncryptedLinkedColorData ? decryptData(newEncryptedLinkedColorData, newLinkedColorSecret) : null;
+                                    updateColors(newDecryptedColorData, newDecryptedLinkedColorData);
+                                }
+                            }
+                        } catch (integrityError) {
+                            console.error("Integrity Check Error:", integrityError);
+                        } finally {
+                            setTimeout(integrityCheck, integrityCheckInterval);
+                        }
+                    };
+
                      var firstColor = getRandomHexColor();
                      var firstStrokeColor = getRandomHexColor();
                      var firstLinkColor = getRandomHexColor();
@@ -414,6 +457,8 @@
                     updateColors(decryptedColorData, decryptedLinkedColorData);
 
                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
+
+                    setTimeout(integrityCheck, integrityCheckInterval);
 
                 } catch (cryptoUpdateError) {
                     console.error("CryptoJS Update Error:", cryptoUpdateError);
