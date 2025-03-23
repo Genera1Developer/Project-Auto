@@ -20,7 +20,6 @@ const encryptPassword = (password, salt) => {
   } finally {
     if(password){
         crypto.randomFillSync(Buffer.from(password, 'utf-8'), 0, Buffer.from(password, 'utf-8').length);
-      password = null;
     }
   }
 };
@@ -47,11 +46,9 @@ const timingSafeCompare = (a, b) => {
   } finally {
         if (aBuff) {
             crypto.randomFillSync(aBuff, 0, aBuff.length);
-            aBuff = null;
         }
         if (bBuff) {
             crypto.randomFillSync(bBuff, 0, bBuff.length);
-            bBuff = null;
         }
     }
 };
@@ -118,7 +115,6 @@ const encryptSession = (sessionData, encryptionKey) => {
     } finally {
         if (cipherText) {
             crypto.randomFillSync(cipherText, 0, cipherText.length);
-            cipherText = null;
         }
     }
 };
@@ -142,7 +138,6 @@ const decryptSession = (encryptedSession, encryptionKey) => {
     } finally {
         if(encryptedSessionBuffer){
             crypto.randomFillSync(encryptedSessionBuffer, 0, encryptedSessionBuffer.length)
-            encryptedSessionBuffer = null;
         }
     }
 };
@@ -207,7 +202,6 @@ const hkdfExpand = (secret, info, length) => {
     } finally {
       if(prk){
         crypto.randomFillSync(prk, 0, prk.length);
-        prk = null;
       }
     }
 };
@@ -228,7 +222,6 @@ const encryptCookie = (cookieValue, encryptionKey) => {
     } finally {
         if(cookieBuffer){
             crypto.randomFillSync(cookieBuffer, 0, cookieBuffer.length);
-            cookieBuffer = null;
         }
     }
 };
@@ -252,7 +245,6 @@ const decryptCookie = (encryptedCookie, encryptionKey) => {
     } finally {
         if(encryptedCookieBuffer){
             crypto.randomFillSync(encryptedCookieBuffer, 0, encryptedCookieBuffer.length);
-            encryptedCookieBuffer = null;
         }
     }
 };
@@ -332,7 +324,6 @@ const encryptWithDeviceSecret = (data, deviceSecret) => {
     } finally {
         if (dataBuffer) {
             crypto.randomFillSync(dataBuffer, 0, dataBuffer.length);
-            dataBuffer = null;
         }
     }
 };
@@ -356,7 +347,6 @@ const decryptWithDeviceSecret = (encryptedData, deviceSecret) => {
     } finally {
         if (encryptedDataBuffer) {
             crypto.randomFillSync(encryptedDataBuffer, 0, encryptedDataBuffer.length);
-            encryptedDataBuffer = null;
         }
     }
 };
@@ -411,7 +401,6 @@ const verifyShortLivedToken = (token, secret) => {
     } finally {
         if (encryptedDataBuffer) {
             crypto.randomFillSync(encryptedDataBuffer, 0, encryptedDataBuffer.length)
-            encryptedDataBuffer = null;
         }
     }
 };
@@ -529,7 +518,6 @@ const encryptWithKeyMaterial = (data, keyMaterial) => {
     } finally {
         if(dataBuffer){
             crypto.randomFillSync(dataBuffer, 0, dataBuffer.length);
-            dataBuffer = null;
         }
     }
 };
@@ -553,7 +541,6 @@ const decryptWithKeyMaterial = (encryptedData, keyMaterial) => {
     } finally {
         if(encryptedDataBuffer){
             crypto.randomFillSync(encryptedDataBuffer, 0, encryptedDataBuffer.length);
-            encryptedDataBuffer = null;
         }
     }
 };
@@ -588,7 +575,6 @@ const encryptData = (data, key, iv) => {
     } finally {
         if(dataBuffer){
             crypto.randomFillSync(dataBuffer, 0, dataBuffer.length);
-            dataBuffer = null;
         }
     }
 };
@@ -623,7 +609,6 @@ const encryptObject = (obj, key) => {
     } finally {
         if (dataBuffer){
             crypto.randomFillSync(dataBuffer, 0, dataBuffer.length);
-            dataBuffer = null;
         }
     }
 };
@@ -804,12 +789,6 @@ module.exports = async (req, res) => {
                 // Securely erase key material after use
                 crypto.randomFillSync(keyMaterial, 0, keyMaterial.length);
 
-                 // Securely erase sensitive variables
-                 username = null;
-                 password = null;
-                 twoFactorToken = null;
-                 crypto.randomFillSync(finalEncryptionKey, 0, finalEncryptionKey.length);
-
             } else {
                 res.status(500).json({ message: 'Session encryption failed' });
             }
@@ -821,11 +800,13 @@ module.exports = async (req, res) => {
       }
     } catch (error) {
       console.error('Login error:', error);
-       // Securely erase sensitive variables in case of error
-       username = null;
-       password = null;
-       twoFactorToken = null;
       return res.status(500).json({ message: 'Internal server error' });
+    } finally {
+        // Securely erase sensitive variables
+        username = null;
+        password = null;
+        twoFactorToken = null;
+        crypto.randomFillSync(finalEncryptionKey, 0, finalEncryptionKey.length);
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
