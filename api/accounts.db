@@ -441,6 +441,7 @@
     "key_management_system_key": null,
     "key_management_system_iv": null,
     "key_management_system_aad": null,
+	"attestation_port": 443,
     "mrenclave": null,
     "smeasurement": null,
     "pcr_policies": [
@@ -628,5 +629,6 @@
     "anomaly_detection": true,
 	"use_pae": true,
 	"encrypted_swap": true,
-	"encrypted_ram": true
+	"encrypted_ram": true,
+	"key_exposure_limit": 3
 }
