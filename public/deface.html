@@ -41,23 +41,29 @@
 			color: #666;
 			margin-top: 5px;
 		}
+		#keyHint {
+			font-size: 0.7em;
+			color: #777;
+			margin-top: 5px;
+		}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         function generateEncryptedMessage() {
             const message = "This website is undergoing maintenance. Please check back later. Decryption key is below.";
-            const key = CryptoJS.lib.WordArray.random(16).toString(); // Generate a 128-bit (16-byte) random key
-			const iv = CryptoJS.lib.WordArray.random(16).toString(); // Generate a random IV
+            const key = CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Hex); // Generate a 256-bit key
+			const iv = CryptoJS.lib.WordArray.random(16).toString(CryptoJS.enc.Hex); // Generate a 128-bit IV
 
-            const encrypted = CryptoJS.AES.encrypt(message, CryptoJS.enc.Utf8.parse(key), {
-                iv: CryptoJS.enc.Utf8.parse(iv),
+            const encrypted = CryptoJS.AES.encrypt(message, CryptoJS.enc.Hex.parse(key), {
+                iv: CryptoJS.enc.Hex.parse(iv),
 				mode: CryptoJS.mode.CBC,
 				padding: CryptoJS.pad.Pkcs7
             }).toString();
 
             document.getElementById("encryptedMessage").innerText = encrypted;
-            document.getElementById("decryptionKey").innerText = "Decryption Key (AES, Base64 Encoded): " + btoa(key + ":" + iv);
-			document.getElementById("ciphertextIndicator").innerText = "Ciphertext is Base64 encoded."
+            document.getElementById("decryptionKey").innerText = "Decryption Key (AES-256, Hex Encoded): " + key + ":" + iv;
+			document.getElementById("ciphertextIndicator").innerText = "Ciphertext is Base64 encoded.";
+			document.getElementById("keyHint").innerText = "Key Hint: Look for a hex-encoded string.";
         }
 
         window.onload = generateEncryptedMessage;
@@ -70,5 +76,6 @@
     <div id="encryptedMessage"></div>
     <div id="decryptionKey"></div>
 	<div id="ciphertextIndicator"></div>
+	<div id="keyHint"></div>
 </body>
 </html>
