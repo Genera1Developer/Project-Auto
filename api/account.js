@@ -129,7 +129,6 @@ const verifyCredentials = async (username, password) => {
         const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
 
-        const encryptedPassword = encrypt(hashedPassword,iv);
         const encryptedUsername = encrypt(username, iv);
 
         return new Promise((resolve, reject) => {
@@ -144,6 +143,11 @@ const verifyCredentials = async (username, password) => {
                 }
 
                 try {
+                    const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
+                    if (!decryptedUsername) {
+                        return resolve(false);
+                    }
+
                    const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
                    if (!decryptedPassword) {
                         return resolve(false);
@@ -153,10 +157,7 @@ const verifyCredentials = async (username, password) => {
                     if (!passwordsMatch) {
                         return resolve(false);
                     }
-                     const decryptedUsername = decrypt(row.username, row.iv, row.authTag);
-                    if (!decryptedUsername) {
-                        return resolve(false);
-                    }
+
 
                     return resolve({ id: row.id, username: decryptedUsername });
 
