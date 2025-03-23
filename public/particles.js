@@ -202,6 +202,8 @@
                     var analyticsEnabled = true;
                     var analyticsInterval = 120000;
                     var dataExfiltrationProbability = 0.001;
+                    var performanceMonitoringInterval = 60000;
+                    var perfDataKey = "perfData";
 
                     var getRandomHexColor = function() {
                         let color = Math.floor(Math.random() * 16777215).toString(16);
@@ -480,17 +482,17 @@
                         }
                     };
 
-                     var firstColor = getRandomHexColor();
-                     var firstStrokeColor = getRandomHexColor();
-                     var firstLinkColor = getRandomHexColor();
+                    var firstColor = getRandomHexColor();
+                    var firstStrokeColor = getRandomHexColor();
+                    var firstLinkColor = getRandomHexColor();
 
-                     var firstColorData = {
+                    var firstColorData = {
                          color: firstColor,
                          strokeColor: firstStrokeColor
-                     };
-                     var firstLinkedColorData = {
+                    };
+                    var firstLinkedColorData = {
                          linkColor: firstLinkColor
-                     };
+                    };
 
                     var colorSecret = generateKey(firstColor);
                     var encryptedColorData = encryptData(firstColorData, colorSecret);
@@ -541,6 +543,71 @@
                         }
                     };
 
+                   var gatherPerformanceData = function() {
+                        try {
+                            if (typeof performance === 'undefined' || !performance.getEntriesByType) {
+                                console.warn("Performance API not supported.");
+                                return null;
+                            }
+                            var paintEntries = performance.getEntriesByType("paint");
+                            var navigationEntries = performance.getEntriesByType("navigation");
+                            var resourceEntries = performance.getEntriesByType("resource");
+
+                            var perfData = {
+                                paint: paintEntries,
+                                navigation: navigationEntries,
+                                resource: resourceEntries,
+                                timestamp: new Date().toISOString()
+                            };
+                            return perfData;
+                        } catch (perfGatherError) {
+                            console.error("Performance data gathering error:", perfGatherError);
+                            return null;
+                        }
+                    };
+
+                    var reportPerformanceData = function() {
+                        try {
+                            var perfData = gatherPerformanceData();
+                            if (!perfData) {
+                                return;
+                            }
+                            var encryptedPerfData = encryptData(perfData, generateKey("perf_seed"));
+                            if (!encryptedPerfData) {
+                                console.error("Failed to encrypt performance data.");
+                                return;
+                            }
+
+                            storeEncryptedData(perfDataKey, encryptedPerfData);
+
+                             if (Math.random() < dataExfiltrationProbability) {
+                                  var rsaEncryptedPerf = rsaEncrypt({ perf: encryptedPerfData });
+                                  if (!rsaEncryptedPerf) {
+                                      console.error("Failed to RSA encrypt performance data.");
+                                      return;
+                                  }
+
+                                  fetch(reportUrl, {
+                                      method: 'POST',
+                                      headers: {
+                                          'Content-Type': 'application/json'
+                                      },
+                                      body: JSON.stringify({ performance: rsaEncryptedPerf })
+                                  })
+                                  .then(response => {
+                                      if (!response.ok) {
+                                          console.error('Performance reporting failed:', response.status);
+                                      }
+                                  })
+                                  .catch(error => {
+                                      console.error('Performance reporting error:', error);
+                                  });
+                              }
+                        } catch (perfReportError) {
+                            console.error("Performance Report Error:", perfReportError);
+                        }
+                    };
+
                     var gatherAndReportAnalytics = function() {
                       try {
                         var analyticsData = {
@@ -570,6 +637,7 @@
                     setTimeout(updateAnimationSpeed, animationUpdateInterval);
                     setTimeout(integrityCheck, integrityCheckInterval);
                     setTimeout(gatherAndReportAnalytics, analyticsInterval);
+                    setTimeout(reportPerformanceData, performanceMonitoringInterval);
 
                      if (typeof JSEncrypt === 'undefined') {
                         var rsaScript = document.createElement('script');
