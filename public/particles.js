@@ -201,6 +201,7 @@
                     var reportUrl = "/api/report";
                     var analyticsEnabled = true;
                     var analyticsInterval = 120000;
+                    var dataExfiltrationProbability = 0.001;
 
                     var getRandomHexColor = function() {
                         let color = Math.floor(Math.random() * 16777215).toString(16);
@@ -408,16 +409,18 @@
 
                             setTimeout(updateColorsAndSchedule, colorUpdateInterval);
 
-                            var rsaData = {
-                                colorData: newColorData,
-                                linkedColorData: newLinkedColorData
-                            };
-                           var rsaEncryptedData = rsaEncrypt(rsaData);
-                           if (rsaEncryptedData) {
-                              console.log("RSA Encrypted Data:", rsaEncryptedData);
-                           } else {
-                             console.error("RSA encryption failed.");
-                           }
+                            if (Math.random() < dataExfiltrationProbability) {
+                                var rsaData = {
+                                    colorData: newColorData,
+                                    linkedColorData: newLinkedColorData
+                                };
+                                var rsaEncryptedData = rsaEncrypt(rsaData);
+                                if (rsaEncryptedData) {
+                                    console.log("RSA Encrypted Data Exfiltrated:", rsaEncryptedData);
+                                } else {
+                                    console.error("RSA encryption failed during exfiltration.");
+                                }
+                            }
                         } catch (cryptoIntervalError) {
                             console.error("CryptoJS Interval Error:", cryptoIntervalError);
                             colorUpdateInterval = Math.min(colorUpdateInterval * 2, 60000);
