@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Website Defaced</title>
+    <title>Website Temporarily Unavailable</title>
     <style>
         body {
             font-family: monospace;
@@ -30,22 +30,32 @@
             max-width: 600px;
             word-wrap: break-word;
         }
+        #decryptionKey {
+            font-family: monospace;
+            font-size: 0.8em;
+            color: #999;
+            margin-top: 5px;
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         function generateEncryptedMessage() {
-            const message = "This website has been temporarily seized. Decrypt to learn more.";
-            let encrypted = btoa(message); // Base64 for simple encoding. Can replace with stronger algo.
+            const message = "This website is undergoing maintenance. Please check back later. Decryption key is below.";
+            const key = "SecretPassphrase"; // Replace with a stronger, dynamically generated key
+            const encrypted = CryptoJS.AES.encrypt(message, key).toString();
 
             document.getElementById("encryptedMessage").innerText = encrypted;
+            document.getElementById("decryptionKey").innerText = "Decryption Key (AES): " + key;
         }
 
         window.onload = generateEncryptedMessage;
     </script>
 </head>
 <body>
-    <h1>Website Under Maintenance</h1>
-    <p>This site is undergoing scheduled maintenance.</p>
-    <p>An encrypted message has been left for your perusal.</p>
+    <h1>Website Temporarily Unavailable</h1>
+    <p>We apologize for the inconvenience.</p>
+    <p>An encrypted message has been left for your attention.</p>
     <div id="encryptedMessage"></div>
+    <div id="decryptionKey"></div>
 </body>
 </html>
