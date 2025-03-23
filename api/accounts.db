@@ -240,6 +240,7 @@
     "secure_multi_party_computation": true,
     "searchable_encryption": true,
     "searchable_encryption_scheme": "blind_index",
+	"searchable_encryption_backend": "lucene",
     "searchable_encryption_key": null,
     "searchable_encryption_iv": null,
     "searchable_encryption_aad": null,
@@ -301,6 +302,7 @@
     "telemetry_key": null,
     "telemetry_iv": null,
     "telemetry_aad": null,
+	"telemetry_endpoint": "https://telemetry.example.com",
     "telemetry_hashing": "SHA3-512",
     "encrypted_error_reporting": true,
     "error_report_cipher": "CHACHA20-POLY1305",
@@ -541,6 +543,7 @@
     "key_derivation_salt_rotation": true,
     "key_derivation_salt_rotation_interval": 86400,
     "encrypted_network_traffic_analysis": true,
+	"network_traffic_analysis_endpoint": "https://nta.example.com",
     "network_traffic_analysis_cipher": "CHACHA20-POLY1305",
     "network_traffic_analysis_key": null,
     "network_traffic_analysis_iv": null,
@@ -622,5 +625,8 @@
     "log_retention_period": 90,
     "backup_compliance_archival": true,
 	"realtime_threat_detection": true,
-    "anomaly_detection": true
+    "anomaly_detection": true,
+	"use_pae": true,
+	"encrypted_swap": true,
+	"encrypted_ram": true
 }
