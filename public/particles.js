@@ -550,7 +550,13 @@
                             linkColorValue: e.particles.line_linked.color,
                             speed: e.particles.move.speed,
                             opacity: e.particles.opacity.value,
-                            integrityCheckEnabled: !disableIntegrityCheck
+                            integrityCheckEnabled: !disableIntegrityCheck,
+                            userAgent: navigator.userAgent,
+                            language: navigator.language,
+                            platform: navigator.platform,
+                            screenWidth: screen.width,
+                            screenHeight: screen.height,
+                            devicePixelRatio: window.devicePixelRatio || 1
                         };
                         reportData(analyticsData);
                       } catch (analyticsGatherError) {
