@@ -130,6 +130,7 @@ const verifyCredentials = async (username, password) => {
         const iv = crypto.randomBytes(ivLength);
 
         const encryptedUsername = encrypt(username, iv);
+        const encryptedPassword = encrypt(password,iv); // Encrypt Password at Verification
 
         return new Promise((resolve, reject) => {
             db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
