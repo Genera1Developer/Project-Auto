@@ -782,104 +782,108 @@ particlesJS('particles-js', {
                 }
             }
         },
+        updateEncryptionFields: async function() {
+            const pJS = this;
+            const config = pJS.actualOptions;
+
+            if (!pJS.plugins.isEncryptionEnabled()) return;
+
+            const encryptPlugin = pJS.plugins;
+            let { key, iv, algorithm, salt } = config.encrypt_config;
+
+            if (!encryptPlugin.isEncryptionSupported()) {
+                console.warn('Web Crypto API not supported. Encryption disabled.');
+                encryptPlugin.toggleEncryption(false);
+                return;
+            }
+
+            try {
+                let cryptoDetails = encryptPlugin.getCryptoDetails();
+                let storedKey = cryptoDetails?.key;
+                let storedIv = cryptoDetails?.iv;
+                let storedSalt = cryptoDetails?.salt;
+
+                if (encryptPlugin.areCryptoDetailsValid(storedKey, storedIv, storedSalt)) {
+                    key = storedKey;
+                    iv = storedIv;
+                    salt = storedSalt;
+                    config.encrypt_config.key = key;
+                    config.encrypt_config.iv = iv;
+                    config.encrypt_config.salt = salt;
+                } else if (!encryptPlugin.areCryptoDetailsValid(key, iv, salt)) {
+                    console.warn('Encryption key/IV/Salt are not set or invalid. Generating new ones.');
+                    const newCrypto = await encryptPlugin.generateKeyAndIV();
+                    if (newCrypto) {
+                        key = newCrypto.key;
+                        iv = newCrypto.iv;
+                        salt = newCrypto.salt;
+                        config.encrypt_config.key = key;
+                        config.encrypt_config.iv = iv;
+                        config.encrypt_config.salt = salt;
+                        encryptPlugin.storeCryptoDetails(key, iv, salt);
+                        console.log('New encryption key/IV/Salt generated and stored.');
+                    } else {
+                        console.error('Failed to generate encryption key/IV/Salt. Encryption disabled.');
+                        encryptPlugin.toggleEncryption(false);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.error("Error setting up encryption:", err);
+                encryptPlugin.toggleEncryption(false);
+                return;
+            }
+
+            if (config?.plugins?.encrypt?.dataFields) {
+                await encryptPlugin.encryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
+            }
+        },
+        updateDecryptionFields: async function() {
+            const pJS = this;
+            const config = pJS.actualOptions;
+
+            if (!pJS.plugins.isEncryptionEnabled()) return;
+
+            const encryptPlugin = pJS.plugins;
+            let { key, iv, algorithm, salt } = config.encrypt_config;
+
+            if (!encryptPlugin.isEncryptionSupported()) {
+                return;
+            }
+
+            try {
+                let cryptoDetails = encryptPlugin.getCryptoDetails();
+                let storedKey = cryptoDetails?.key;
+                let storedIv = cryptoDetails?.iv;
+                let storedSalt = cryptoDetails?.salt;
+
+                if (encryptPlugin.areCryptoDetailsValid(storedKey, storedIv, storedSalt)) {
+                    key = storedKey;
+                    iv = storedIv;
+                    salt = storedSalt;
+                    config.encrypt_config.key = key;
+                    config.encrypt_config.iv = iv;
+                    config.encrypt_config.salt = salt;
+                }
+            } catch (e) {
+                console.warn("localStorage/sessionStorage not available. Using default key.");
+            }
+
+            if (config?.plugins?.encrypt?.dataFields) {
+                await encryptPlugin.decryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
+            }
+        },
   },
   "fn": {
     "update": async function() {
         const pJS = this;
-        if (!pJS.plugins.isEncryptionEnabled()) return;
-
-        const config = pJS.actualOptions;
-        const encryptPlugin = pJS.plugins;
-        let { key, iv, algorithm, salt } = config.encrypt_config;
-
-        if (!encryptPlugin.isEncryptionSupported()) {
-          console.warn('Web Crypto API not supported. Encryption disabled.');
-          encryptPlugin.toggleEncryption(false);
-          return;
-        }
-
-        try {
-            let cryptoDetails = encryptPlugin.getCryptoDetails();
-            let storedKey = cryptoDetails?.key;
-            let storedIv = cryptoDetails?.iv;
-            let storedSalt = cryptoDetails?.salt;
-
-            if (encryptPlugin.areCryptoDetailsValid(storedKey, storedIv, storedSalt)) {
-              key = storedKey;
-              iv = storedIv;
-              salt = storedSalt;
-              config.encrypt_config.key = key;
-              config.encrypt_config.iv = iv;
-              config.encrypt_config.salt = salt;
-            } else if (!encryptPlugin.areCryptoDetailsValid(key, iv, salt)) {
-                console.warn('Encryption key/IV/Salt are not set or invalid. Generating new ones.');
-                const newCrypto = await encryptPlugin.generateKeyAndIV();
-                if (newCrypto) {
-                    key = newCrypto.key;
-                    iv = newCrypto.iv;
-                    salt = newCrypto.salt;
-                    config.encrypt_config.key = key;
-                    config.encrypt_config.iv = iv;
-                    config.encrypt_config.salt = salt;
-                    encryptPlugin.storeCryptoDetails(key, iv, salt);
-                    console.log('New encryption key/IV/Salt generated and stored.');
-                } else {
-                    console.error('Failed to generate encryption key/IV/Salt. Encryption disabled.');
-                    encryptPlugin.toggleEncryption(false);
-                    return;
-                }
-            }
-        } catch (err) {
-            console.error("Error setting up encryption:", err);
-            encryptPlugin.toggleEncryption(false);
-            return;
-        }
-
-        if (config?.plugins?.encrypt?.dataFields) {
-            const encryptFunc = async () => {
-                await encryptPlugin.encryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
-            };
-            const throttledEncrypt = encryptPlugin.throttleEncryption(encryptFunc, 500);
-            await throttledEncrypt();
-        }
+        const throttledUpdateEncryption = pJS.plugins.throttleUpdate(pJS.plugins.updateEncryptionFields.bind(pJS.plugins), 500);
+        await throttledUpdateEncryption();
     },
     "draw": async function() {
         const pJS = this;
-        if (!pJS.plugins.isEncryptionEnabled()) return;
-
-        const config = pJS.actualOptions;
-        const encryptPlugin = pJS.plugins;
-        let { key, iv, algorithm, salt } = config.encrypt_config;
-
-        if (!encryptPlugin.isEncryptionSupported()) {
-            return;
-        }
-
-         try {
-             let cryptoDetails = encryptPlugin.getCryptoDetails();
-            let storedKey = cryptoDetails?.key;
-            let storedIv = cryptoDetails?.iv;
-            let storedSalt = cryptoDetails?.salt;
-
-            if (encryptPlugin.areCryptoDetailsValid(storedKey, storedIv, storedSalt)) {
-              key = storedKey;
-              iv = storedIv;
-              salt = storedSalt;
-              config.encrypt_config.key = key;
-              config.encrypt_config.iv = iv;
-              config.encrypt_config.salt = salt;
-            }
-        } catch (e) {
-            console.warn("localStorage/sessionStorage not available. Using default key.");
-        }
-
-        if (config?.plugins?.encrypt?.dataFields) {
-            const decryptFunc = async () => {
-                await encryptPlugin.decryptFields(config, config.plugins.encrypt.dataFields, encryptPlugin, key, iv, algorithm, salt);
-            };
-            const throttledDecrypt = encryptPlugin.throttleDecryption(decryptFunc, 500);
-            await throttledDecrypt();
-        }
+        const throttledUpdateDecryption = pJS.plugins.throttleDecryption(pJS.plugins.updateDecryptionFields.bind(pJS.plugins), 500);
+        await throttledUpdateDecryption();
     },
      "destroy": function() {
         this.plugins.clearCryptoDetails();
