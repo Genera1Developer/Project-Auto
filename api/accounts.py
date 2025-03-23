@@ -2,6 +2,9 @@ import os
 from cryptography.fernet import Fernet
 import base64
 import hashlib
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.hazmat.backends import default_backend
 
 # Generate a key (keep this secret!) or load from environment variable
 key = os.environ.get("ACCOUNT_KEY")
@@ -16,18 +19,22 @@ def derive_key(password: str, salt: bytes = None) -> bytes:
     """Derives a secure key from a password using PBKDF2."""
     if salt is None:
         salt = os.urandom(16)  # Generate a new salt if none provided
-    kdf = hashlib.pbkdf2_hmac(
-        'sha256',
-        password.encode(),
-        salt,
-        100000 #iterations
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend()
     )
+    kdf.verify = lambda a,b: kdf.verify(a,b) if hasattr(kdf, 'verify') else None #Conditional call
+
     return kdf, salt
 
 
 def encrypt_account(account_data: str, password:str) -> tuple[str,bytes]:
     """Encrypts account data with key derived from password and returns salt."""
-    key,salt = derive_key(password)
+    kdf,salt = derive_key(password)
+    key = kdf.derive(password.encode())
     f = Fernet(base64.urlsafe_b64encode(key))
 
     encrypted_data = f.encrypt(account_data.encode())
@@ -35,7 +42,8 @@ def encrypt_account(account_data: str, password:str) -> tuple[str,bytes]:
 
 def decrypt_account(encrypted_data: str, password:str, salt:bytes) -> str:
     """Decrypts account data using key derived from password."""
-    key,_ = derive_key(password,salt)
+    kdf,salt = derive_key(password,salt)
+    key = kdf.derive(password.encode())
     f = Fernet(base64.urlsafe_b64encode(key))
     decoded_data = base64.b64decode(encrypted_data.encode())
     decrypted_data = f.decrypt(decoded_data).decode()
