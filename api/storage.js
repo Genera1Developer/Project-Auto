@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 
 const algorithm = 'aes-256-gcm';
 const keyPath = path.join(__dirname, 'storage.key');
@@ -22,29 +23,29 @@ const key = getKey();
 function encrypt(text) {
   const iv = crypto.randomBytes(16);
   const cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(text);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
   const authTag = cipher.getAuthTag();
   return {
     iv: iv.toString('hex'),
-    encryptedData: encrypted.toString('hex'),
+    encryptedData: encrypted,
     authTag: authTag.toString('hex'),
   };
 }
 
 function decrypt(encryptedData, ivHex, authTagHex) {
   const iv = Buffer.from(ivHex, 'hex');
-  const encryptedText = Buffer.from(encryptedData, 'hex');
   const authTag = Buffer.from(authTagHex, 'hex');
   const decipher = crypto.createDecipheriv(algorithm, key, iv);
   decipher.setAuthTag(authTag);
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
+  let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
 }
 
 function storeData(filename, data) {
-  const encryptedData = encrypt(JSON.stringify(data));
+  const compressedData = zlib.gzipSync(JSON.stringify(data));
+  const encryptedData = encrypt(compressedData.toString('binary'));
   fs.writeFileSync(path.join(__dirname, filename), JSON.stringify(encryptedData));
 }
 
@@ -57,7 +58,8 @@ function readData(filename) {
       encryptedData.iv,
       encryptedData.authTag
     );
-    return JSON.parse(decryptedData);
+    const decompressedData = zlib.gunzipSync(Buffer.from(decryptedData, 'binary'));
+    return JSON.parse(decompressedData.toString());
   } catch (error) {
     return null;
   }
