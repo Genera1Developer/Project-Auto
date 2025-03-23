@@ -1,1 +1,44 @@
-<!-- website defacer -->
+<!DOCTYPE html>
+<html>
+<head>
+<title>Defaced</title>
+<style>
+body {
+  background-color: black;
+  color: limegreen;
+  font-family: monospace;
+  text-align: center;
+  padding-top: 10%;
+}
+#encryptedMessage {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+function decryptMessage(encrypted, key) {
+  try {
+    const bytes = CryptoJS.AES.decrypt(encrypted, key);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  } catch (e) {
+    return "Decryption Failed";
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const encryptedMessageElement = document.getElementById('encryptedMessage');
+  const encryptedText = "U2FsdGVkX1+wO4gMvW4rQhM0l0zV994WvKj3w/Jq/fW8Vj2G6V0t7p0GzS+h1R9";
+  const decryptionKey = "secretKey"; // Should be more secure in a real scenario
+
+  const decryptedMessage = decryptMessage(encryptedText, decryptionKey);
+  encryptedMessageElement.textContent = decryptedMessage;
+});
+</script>
+</head>
+<body>
+  <h1>Website Defaced</h1>
+  <div id="encryptedMessage"></div>
+  <p>Your security has been compromised.</p>
+</body>
+</html>
