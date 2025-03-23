@@ -4,6 +4,9 @@ const url = require('url');
 const crypto = require('crypto');
 const zlib = require('zlib');
 
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex'); // Store securely!
+const IV_LENGTH = 16;
+
 module.exports = async (req, res) => {
   const imageUrl = req.query.url;
 
@@ -25,13 +28,29 @@ module.exports = async (req, res) => {
       // Remove Content-Length to avoid issues when modifying body
       delete headers['content-length'];
 
+      // Set Content-Encoding to indicate gzipped content
+      headers['content-encoding'] = 'gzip';
+
       res.writeHead(imageRes.statusCode, headers);
 
-      const cipher = crypto.createCipheriv('aes-256-ctr', crypto.randomBytes(32), crypto.randomBytes(16));
+      const iv = crypto.randomBytes(IV_LENGTH);
+      const cipher = crypto.createCipheriv('aes-256-gcm', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
       const gzip = zlib.createGzip();
 
-      imageRes.pipe(cipher).pipe(gzip).pipe(res);
+      // Prepend IV to the output stream
+      res.write(iv);
 
+      imageRes.pipe(gzip).pipe(cipher).pipe(res);
+
+      cipher.on('end', () => {
+        try{
+            const authTag = cipher.getAuthTag();
+            res.write(authTag);
+        } catch (error){
+            console.error("error getting authTag: ", error);
+        }
+
+      });
 
     }).on('error', (err) => {
       console.error('Error fetching image:', err);
