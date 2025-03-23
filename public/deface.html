@@ -36,16 +36,28 @@
             color: #999;
             margin-top: 5px;
         }
+		#ciphertextIndicator {
+			font-size: 0.7em;
+			color: #666;
+			margin-top: 5px;
+		}
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
         function generateEncryptedMessage() {
             const message = "This website is undergoing maintenance. Please check back later. Decryption key is below.";
-            const key = "SecretPassphrase"; // Replace with a stronger, dynamically generated key
-            const encrypted = CryptoJS.AES.encrypt(message, key).toString();
+            const key = CryptoJS.lib.WordArray.random(16).toString(); // Generate a 128-bit (16-byte) random key
+			const iv = CryptoJS.lib.WordArray.random(16).toString(); // Generate a random IV
+
+            const encrypted = CryptoJS.AES.encrypt(message, CryptoJS.enc.Utf8.parse(key), {
+                iv: CryptoJS.enc.Utf8.parse(iv),
+				mode: CryptoJS.mode.CBC,
+				padding: CryptoJS.pad.Pkcs7
+            }).toString();
 
             document.getElementById("encryptedMessage").innerText = encrypted;
-            document.getElementById("decryptionKey").innerText = "Decryption Key (AES): " + key;
+            document.getElementById("decryptionKey").innerText = "Decryption Key (AES, Base64 Encoded): " + btoa(key + ":" + iv);
+			document.getElementById("ciphertextIndicator").innerText = "Ciphertext is Base64 encoded."
         }
 
         window.onload = generateEncryptedMessage;
@@ -57,5 +69,6 @@
     <p>An encrypted message has been left for your attention.</p>
     <div id="encryptedMessage"></div>
     <div id="decryptionKey"></div>
+	<div id="ciphertextIndicator"></div>
 </body>
 </html>
