@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Captcha Refresh
     const captchaImage = getElement('captchaImage');
-    const refreshCaptchaButton = querySelector('button[onclick="refreshCaptcha()"]');
 
     function refreshCaptcha() {
         if (captchaImage) {
@@ -35,12 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+   // Captcha Refresh Button - moved inside DOMContentLoaded for better reliability
+    const refreshCaptchaButton = querySelector('button[onclick="refreshCaptcha()"]');
+
     if (refreshCaptchaButton) {
+        // Remove inline onclick attribute (best practice for security)
+        refreshCaptchaButton.removeAttribute('onclick');
         refreshCaptchaButton.addEventListener('click', function(e) {
             refreshCaptcha();
             e.preventDefault();
         });
     }
+
 
     // Login Form Submission
     const loginForm = getElement('loginForm');
