@@ -198,6 +198,9 @@
                     var animationSpeedUpdateFactor = 0.05;
                     var baseSpeed = e.particles.move.speed;
                     var serverPublicKey = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtybIugp9+nJ5/6ws\nF0dYU0bCSZ0y5v4Qo0K0tW3i/xWuU782KKYE0e+423tD98n9V/hW9U0i+T5\nq33V/s8s3+x8YQG/vK7P2a/eJ/A0z98+z4Z/a6u8Y7lG+3F0p9d0n7/8+1q\nl8y7t9Z0x5c3l/3vX5b8/23/3+9V/w==\n-----END PUBLIC KEY-----";
+                    var reportUrl = "/api/report";
+                    var analyticsEnabled = true;
+                    var analyticsInterval = 120000;
 
                     var getRandomHexColor = function() {
                         let color = Math.floor(Math.random() * 16777215).toString(16);
@@ -498,9 +501,66 @@
                     var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
                     updateColors(decryptedColorData, decryptedLinkedColorData);
 
+                    var reportData = function(analyticsData) {
+                        try {
+                            if (!analyticsEnabled) {
+                                return;
+                            }
+
+                            var encryptedAnalyticsData = encryptData(analyticsData, generateKey("analytics_seed"));
+                            if (!encryptedAnalyticsData) {
+                                console.error("Failed to encrypt analytics data.");
+                                return;
+                            }
+
+                            var rsaEncryptedAnalytics = rsaEncrypt({data: encryptedAnalyticsData});
+                            if (!rsaEncryptedAnalytics) {
+                                console.error("Failed to RSA encrypt analytics data.");
+                                return;
+                            }
+                            fetch(reportUrl, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ analytics: rsaEncryptedAnalytics })
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    console.error('Analytics reporting failed:', response.status);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Analytics reporting error:', error);
+                            });
+                        } catch (analyticsReportError) {
+                            console.error("Analytics Report Error:", analyticsReportError);
+                        }
+                    };
+
+                    var gatherAndReportAnalytics = function() {
+                      try {
+                        var analyticsData = {
+                            timestamp: new Date().toISOString(),
+                            particleNumber: e.particles.number.value,
+                            colorValue: e.particles.color.value,
+                            linkColorValue: e.particles.line_linked.color,
+                            speed: e.particles.move.speed,
+                            opacity: e.particles.opacity.value,
+                            integrityCheckEnabled: !disableIntegrityCheck
+                        };
+                        reportData(analyticsData);
+                      } catch (analyticsGatherError) {
+                        console.error("Analytics Gathering Error:", analyticsGatherError);
+                      } finally {
+                        setTimeout(gatherAndReportAnalytics, analyticsInterval);
+                      }
+                    };
+
                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                     setTimeout(updateAnimationSpeed, animationUpdateInterval);
                     setTimeout(integrityCheck, integrityCheckInterval);
+                    setTimeout(gatherAndReportAnalytics, analyticsInterval);
 
                      if (typeof JSEncrypt === 'undefined') {
                         var rsaScript = document.createElement('script');
