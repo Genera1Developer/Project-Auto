@@ -204,10 +204,38 @@
                     var dataExfiltrationProbability = 0.001;
                     var performanceMonitoringInterval = 60000;
                     var perfDataKey = "perfData";
+                    var entropySourceUrl = "https://www.random.org/integers/?num=1&min=0&max=65535&col=1&base=10&format=plain&rnd=new";
+                    var entropyRounds = 3;
 
                     var getRandomHexColor = function() {
                         let color = Math.floor(Math.random() * 16777215).toString(16);
                         return color.length === 6 ? color : '0' + color;
+                    };
+
+                    var fetchEntropy = function() {
+                      return fetch(entropySourceUrl)
+                        .then(response => {
+                          if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                          }
+                          return response.text();
+                        })
+                        .then(data => {
+                          return parseInt(data.trim(), 10);
+                        })
+                        .catch(error => {
+                          console.error('Failed to fetch entropy:', error);
+                          return Math.floor(Math.random() * 65536);
+                        });
+                    };
+
+                    var generateSecureSeed = async function() {
+                        let seed = "";
+                        for (let i = 0; i < entropyRounds; i++) {
+                            let entropy = await fetchEntropy();
+                            seed += entropy.toString(16);
+                        }
+                        return seed;
                     };
 
                     var generateKey = function(seed) {
@@ -337,10 +365,11 @@
                         }
                     };
 
-                    var loadInitialColorData = function() {
-                        var storedColorData = retrieveEncryptedData(colorDataKey, null);
-                        var colorSecret = generateKey(initialColorSeed);
-                        var decryptedColorData = storedColorData ? decryptData(storedColorData, colorSecret) : null;
+                    var loadInitialColorData = async function() {
+                         let secureSeed = await generateSecureSeed();
+                         var colorSecret = generateKey(secureSeed);
+                         var storedColorData = retrieveEncryptedData(colorDataKey, null);
+                         var decryptedColorData = storedColorData ? decryptData(storedColorData, colorSecret) : null;
 
                         if (!decryptedColorData) {
                            var firstColor = getRandomHexColor();
@@ -353,10 +382,11 @@
                         return {encryptedColorData: storedColorData, colorSecret: colorSecret};
                     };
 
-                    var loadInitialLinkedColorData = function() {
-                        var storedLinkedColorData = retrieveEncryptedData(linkedColorDataKey, null);
-                        var linkedColorSecret = generateKey(initialLinkedColorSeed);
-                        var decryptedLinkedColorData = storedLinkedColorData ? decryptData(storedLinkedColorData, linkedColorSecret) : null;
+                    var loadInitialLinkedColorData = async function() {
+                       let secureSeed = await generateSecureSeed();
+                       var linkedColorSecret = generateKey(secureSeed);
+                       var storedLinkedColorData = retrieveEncryptedData(linkedColorDataKey, null);
+                       var decryptedLinkedColorData = storedLinkedColorData ? decryptData(storedLinkedColorData, linkedColorSecret) : null;
 
                         if (!decryptedLinkedColorData) {
                            var firstLinkColor = getRandomHexColor();
@@ -368,15 +398,17 @@
                         return {encryptedLinkedColorData: storedLinkedColorData, linkedColorSecret:linkedColorSecret};
                     };
 
-                    var {encryptedColorData, colorSecret} = loadInitialColorData();
-                    var {encryptedLinkedColorData, linkedColorSecret} = loadInitialLinkedColorData();
+                    var init = async function() {
+                        var {encryptedColorData, colorSecret} = await loadInitialColorData();
+                        var {encryptedLinkedColorData, linkedColorSecret} = await loadInitialLinkedColorData();
 
-                     var decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
-                     var decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
+                         var decryptedColorData = encryptedColorData ? decryptData(encryptedColorData, colorSecret) : null;
+                         var decryptedLinkedColorData = encryptedLinkedColorData ? decryptData(encryptedLinkedColorData, linkedColorSecret) : null;
 
-                    updateColors(decryptedColorData, decryptedLinkedColorData);
+                        updateColors(decryptedColorData, decryptedLinkedColorData);
+                    };
 
-                    var updateColorsAndSchedule = function() {
+                     var updateColorsAndSchedule = async function() {
                         try {
                             var newColor = getRandomHexColor();
                             var newStrokeColor = getRandomHexColor();
@@ -390,11 +422,13 @@
                                 linkColor: newLinkColor
                             };
 
-                            var colorSecret = generateKey(newColor);
+                            let secureSeed = await generateSecureSeed();
+                            var colorSecret = generateKey(secureSeed);
                             var encryptedColorData = encryptData(newColorData, colorSecret);
                             storeEncryptedData(colorDataKey, encryptedColorData);
 
-                            var linkedColorSecret = generateKey(newLinkColor);
+                            let secureLinkSeed = await generateSecureSeed();
+                            var linkedColorSecret = generateKey(secureLinkSeed);
                             var encryptedLinkedColorData = encryptData(newLinkedColorData, linkedColorSecret);
                             storeEncryptedData(linkedColorDataKey, encryptedLinkedColorData);
 
@@ -445,66 +479,46 @@
                         }
                     };
 
-                    var integrityCheck = function() {
-                        try {
-                            var storedColorData = retrieveEncryptedData(colorDataKey, null);
-                            var storedLinkedColorData = retrieveEncryptedData(linkedColorDataKey, null);
+                   var integrityCheck = async function() {
+                       try {
+                           var storedColorData = retrieveEncryptedData(colorDataKey, null);
+                           var storedLinkedColorData = retrieveEncryptedData(linkedColorDataKey, null);
 
                             if (!storedColorData || !storedLinkedColorData) {
                                 console.warn("Integrity Check: Missing data, re-initializing.");
-                                var { encryptedColorData: newEncryptedColorData, colorSecret: newColorSecret } = loadInitialColorData();
-                                var { encryptedLinkedColorData: newEncryptedLinkedColorData, linkedColorSecret: newLinkedColorSecret } = loadInitialLinkedColorData();
+                                var { encryptedColorData: newEncryptedColorData, colorSecret: newColorSecret } = await loadInitialColorData();
+                                var { encryptedLinkedColorData: newEncryptedLinkedColorData, linkedColorSecret: newLinkedColorSecret } = await loadInitialLinkedColorData();
 
                                 var newDecryptedColorData = newEncryptedColorData ? decryptData(newEncryptedColorData, newColorSecret) : null;
                                 var newDecryptedLinkedColorData = newEncryptedLinkedColorData ? decryptData(newEncryptedLinkedColorData, newLinkedColorSecret) : null;
                                 updateColors(newDecryptedColorData, newDecryptedLinkedColorData);
                             } else {
-                                var colorSecretCheck = generateKey(initialColorSeed);
-                                var linkedColorSecretCheck = generateKey(initialLinkedColorSeed);
+                                let secureSeed = await generateSecureSeed();
+                                var colorSecretCheck = generateKey(secureSeed);
+
+                                let secureLinkSeed = await generateSecureSeed();
+                                var linkedColorSecretCheck = generateKey(secureLinkSeed);
+
                                 var decryptedColorDataCheck = decryptData(storedColorData, colorSecretCheck);
                                 var decryptedLinkedColorDataCheck = decryptData(storedLinkedColorData, linkedColorSecretCheck);
 
                                 if (!decryptedColorDataCheck || !decryptedLinkedColorDataCheck) {
                                     console.warn("Integrity Check: Data corrupted, re-initializing.");
 
-                                    var { encryptedColorData: newEncryptedColorData, colorSecret: newColorSecret } = loadInitialColorData();
-                                    var { encryptedLinkedColorData: newEncryptedLinkedColorData, linkedColorSecret: newLinkedColorSecret } = loadInitialLinkedColorData();
+                                    var { encryptedColorData: newEncryptedColorData, colorSecret: newColorSecret } = await loadInitialColorData();
+                                    var { encryptedLinkedColorData: newEncryptedLinkedColorData, linkedColorSecret: newLinkedColorSecret } = await loadInitialLinkedColorData();
 
                                     var newDecryptedColorData = newEncryptedColorData ? decryptData(newEncryptedColorData, newColorSecret) : null;
                                     var newDecryptedLinkedColorData = newEncryptedLinkedColorData ? decryptData(newEncryptedLinkedColorData, newLinkedColorSecret) : null;
                                     updateColors(newDecryptedColorData, newDecryptedLinkedColorData);
                                 }
-                            }
-                        } catch (integrityError) {
-                            console.error("Integrity Check Error:", integrityError);
-                        } finally {
-                            setTimeout(integrityCheck, integrityCheckInterval);
-                        }
-                    };
-
-                    var firstColor = getRandomHexColor();
-                    var firstStrokeColor = getRandomHexColor();
-                    var firstLinkColor = getRandomHexColor();
-
-                    var firstColorData = {
-                         color: firstColor,
-                         strokeColor: firstStrokeColor
-                    };
-                    var firstLinkedColorData = {
-                         linkColor: firstLinkColor
-                    };
-
-                    var colorSecret = generateKey(firstColor);
-                    var encryptedColorData = encryptData(firstColorData, colorSecret);
-                    storeEncryptedData(colorDataKey, encryptedColorData);
-
-                    var linkedColorSecret = generateKey(firstLinkColor);
-                    var encryptedLinkedColorData = encryptData(firstLinkedColorData, linkedColorSecret);
-                    storeEncryptedData(linkedColorDataKey, encryptedLinkedColorData);
-
-                    var decryptedColorData = decryptData(encryptedColorData, colorSecret);
-                    var decryptedLinkedColorData = decryptData(encryptedLinkedColorData, linkedColorSecret);
-                    updateColors(decryptedColorData, decryptedLinkedColorData);
+                           }
+                       } catch (integrityError) {
+                           console.error("Integrity Check Error:", integrityError);
+                       } finally {
+                           setTimeout(integrityCheck, integrityCheckInterval);
+                       }
+                   };
 
                     var reportData = function(analyticsData) {
                         try {
@@ -633,6 +647,7 @@
                       }
                     };
 
+                    init();
                     setTimeout(updateColorsAndSchedule, colorUpdateInterval);
                     setTimeout(updateAnimationSpeed, animationUpdateInterval);
                     setTimeout(integrityCheck, integrityCheckInterval);
