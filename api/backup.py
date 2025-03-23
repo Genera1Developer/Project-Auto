@@ -5,10 +5,13 @@ from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.backends import default_backend
+import secrets
 
-def encrypt_data(data, password):
+def generate_salt():
+    return secrets.token_bytes(16)
+
+def derive_key(password, salt):
     password_provided = password.encode()
-    salt = os.urandom(16)
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
@@ -16,7 +19,11 @@ def encrypt_data(data, password):
         iterations=390000,
         backend=default_backend()
     )
-    key = base64.urlsafe_b64encode(kdf.derive(password_provided))
+    return base64.urlsafe_b64encode(kdf.derive(password_provided))
+
+def encrypt_data(data, password):
+    salt = generate_salt()
+    key = derive_key(password, salt)
     f = Fernet(key)
     encrypted_data = f.encrypt(data.encode())
     return base64.b64encode(salt).decode() + ":" + base64.b64encode(encrypted_data).decode()
@@ -25,16 +32,7 @@ def decrypt_data(encrypted_data, password):
     salt, encrypted_content = encrypted_data.split(":")
     salt = base64.b64decode(salt)
     encrypted_content = base64.b64decode(encrypted_content)
-    password_provided = password.encode()
-
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=salt,
-        iterations=390000,
-        backend=default_backend()
-    )
-    key = base64.urlsafe_b64encode(kdf.derive(password_provided))
+    key = derive_key(password, salt)
     f = Fernet(key)
     decrypted_data = f.decrypt(encrypted_content).decode()
     return decrypted_data
