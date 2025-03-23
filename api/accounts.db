@@ -630,5 +630,6 @@
 	"use_pae": true,
 	"encrypted_swap": true,
 	"encrypted_ram": true,
-	"key_exposure_limit": 3
+	"key_exposure_limit": 3,
+    "minimum_security_question_length": 12
 }
