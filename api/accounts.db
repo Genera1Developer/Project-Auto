@@ -661,5 +661,6 @@
     "vm_encryption_cipher": "CHACHA20-POLY1305",
     "vm_encryption_key": null,
     "vm_encryption_iv": null,
-    "vm_encryption_aad": null
+    "vm_encryption_aad": null,
+	"key_wrapping_mechanism": "NIST key wrapping"
 }
