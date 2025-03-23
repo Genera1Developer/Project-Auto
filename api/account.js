@@ -149,10 +149,11 @@ const verifyCredentials = async (username, password) => {
                     }
 
                    const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
+
                    if (!decryptedPassword) {
                         return resolve(false);
                     }
-                    const passwordsMatch = await verifyPassword(hashedPassword, decryptedPassword, row.salt, row.iv, row.authTag, row.password_version);
+                    const passwordsMatch = await verifyPassword(password, decryptedPassword, row.salt, row.iv, row.authTag, row.password_version);
 
                     if (!passwordsMatch) {
                         return resolve(false);
