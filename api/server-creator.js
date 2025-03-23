@@ -28,6 +28,7 @@ function createSecureServer(options, requestListener) {
 
           zlib.gunzip(decryptedData, (err, inflated) => {
             if (err) {
+              console.error("Decompression error:", err);
               res.writeHead(400, { 'Content-Type': 'text/plain' });
               res.end('Decompression failed.');
               return;
@@ -35,6 +36,7 @@ function createSecureServer(options, requestListener) {
             try{
               req.body = JSON.parse(inflated.toString('utf8'));
             } catch (parseError) {
+              console.error("JSON parse error:", parseError);
               res.writeHead(400, { 'Content-Type': 'text/plain' });
               res.end('JSON Parse failed.');
               return;
@@ -43,6 +45,7 @@ function createSecureServer(options, requestListener) {
           });
 
         } catch (error) {
+          console.error("Decryption error:", error);
           res.writeHead(400, { 'Content-Type': 'text/plain' });
           res.end('Decryption failed.');
           return;
