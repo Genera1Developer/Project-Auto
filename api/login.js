@@ -789,7 +789,12 @@ module.exports = async (req, res) => {
                   };
 
                  // Set cookie with the encrypted session ID, signing with serverSecret
-                 const cookieValue = encryptCookie(sessionId, serverSecret);
+                 const hmac = crypto.createHmac('sha256', serverSecret);
+                 hmac.update(sessionId);
+                 const sessionIdSignature = hmac.digest('hex');
+                 const signedSessionId = `${sessionId}.${sessionIdSignature}`;
+                 const cookieValue = encryptCookie(signedSessionId, serverSecret);
+
                  if (!cookieValue) {
                     return res.status(500).json({ message: 'Cookie encryption failed' });
                  }
