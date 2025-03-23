@@ -128,8 +128,9 @@ const verifyCredentials = async (username, password) => {
         const salt = generateSalt();
         const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
-        const encryptedUsername = encrypt(username, iv);
+
         const encryptedPassword = encrypt(hashedPassword,iv);
+        const encryptedUsername = encrypt(username, iv);
 
         return new Promise((resolve, reject) => {
             db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
@@ -143,7 +144,11 @@ const verifyCredentials = async (username, password) => {
                 }
 
                 try {
-                    const passwordsMatch = await verifyPassword(hashedPassword, row.password, row.salt, row.iv, row.authTag, row.password_version);
+                   const decryptedPassword = decrypt(row.password, row.iv, row.authTag);
+                   if (!decryptedPassword) {
+                        return resolve(false);
+                    }
+                    const passwordsMatch = await verifyPassword(hashedPassword, decryptedPassword, row.salt, row.iv, row.authTag, row.password_version);
 
                     if (!passwordsMatch) {
                         return resolve(false);
@@ -170,11 +175,8 @@ const verifyCredentials = async (username, password) => {
 const verifyPassword = async (attempt, encryptedPassword, salt, iv, authTag, password_version) => {
      try {
         const hashedPasswordAttempt = await hashPassword(attempt, salt, password_version);
-        const decryptedPassword = decrypt(encryptedPassword, iv, authTag);
-       if (!decryptedPassword) {
-            return false;
-        }
-        return decryptedPassword === hashedPasswordAttempt;
+
+        return encryptedPassword === hashedPasswordAttempt;
     } catch (error) {
         console.error("Password verification error:", error);
         return false;
