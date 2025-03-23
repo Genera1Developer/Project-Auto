@@ -129,6 +129,7 @@ const verifyCredentials = async (username, password) => {
         const hashedPassword = await hashPassword(password, salt);
         const iv = crypto.randomBytes(ivLength);
         const encryptedUsername = encrypt(username, iv);
+        const encryptedPassword = encrypt(hashedPassword,iv);
 
         return new Promise((resolve, reject) => {
             db.get(`SELECT id, username, password, salt, password_version, iv, authTag FROM users WHERE username = ?`, [encryptedUsername.encryptedData], async (err, row) => {
@@ -167,10 +168,12 @@ const verifyCredentials = async (username, password) => {
 };
 
 const verifyPassword = async (attempt, encryptedPassword, salt, iv, authTag, password_version) => {
-    try {
+     try {
         const hashedPasswordAttempt = await hashPassword(attempt, salt, password_version);
         const decryptedPassword = decrypt(encryptedPassword, iv, authTag);
-
+       if (!decryptedPassword) {
+            return false;
+        }
         return decryptedPassword === hashedPasswordAttempt;
     } catch (error) {
         console.error("Password verification error:", error);
