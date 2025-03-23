@@ -213,7 +213,10 @@
                     };
 
                     var fetchEntropy = function() {
-                      return fetch(entropySourceUrl)
+                      return fetch(entropySourceUrl, {
+                        mode: 'cors',
+                        credentials: 'omit'
+                      })
                         .then(response => {
                           if (!response.ok) {
                             throw new Error('Network response was not ok');
