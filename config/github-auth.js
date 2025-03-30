@@ -1,6 +1,6 @@
 // This file will contain the GitHub authentication configuration
 module.exports = {
-  clientID: 'YOUR_GITHUB_CLIENT_ID',
-  clientSecret: 'YOUR_GITHUB_CLIENT_SECRET',
+  clientID: 'MUST BE DYNAMIC GRABBING WITH AUTH.JS',
+  clientSecret: 'MUST BE DYNAMIC GRABBING WITH AUTH.JS',
   callbackURL: '/auth/github/callback'
 };
