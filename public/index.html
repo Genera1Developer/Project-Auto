@@ -5,99 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
+    <script src="https://github.com/Project-Auto/public/script.js" defer></script>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="https://github.com/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
         </div>
-        <nav>
-            <ul>
-                <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
-                <li><a href="https://github.com/Project-Auto/public/Configuration.html">Configuration</a></li>
-                <li><a href="https://github.com/Project-Auto/public/About-Us.html">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
+            <li><a href="https://github.com/Project-Auto/public/Configuration/index.html">Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/public/About-Us/index.html">About Us</a></li>
+        </ul>
     </div>
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="github-auth">
-                <a href="/api/github/login" class="button">Connect with GitHub</a>
-            </section>
-            <section id="repo-details" style="display: none;">
-                <h2>Repository Details</h2>
-                <p>Logged in as: <span id="github-username"></span></p>
-                <label for="repo-input">Repository (username/repo):</label>
-                <input type="text" id="repo-input" placeholder="username/repo">
-                <label for="prompt-input">Customization Instructions:</label>
-                <textarea id="prompt-input" placeholder="Enter instructions here"></textarea>
-                <button id="start-button" class="button">Start</button>
-            </section>
+            <p>Project Auto helps you automate your development tasks.</p>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        async function checkAuthStatus() {
-            try {
-                const response = await fetch('/api/auth/status');
-                const data = await response.json();
-
-                if (data.isAuthenticated) {
-                    document.getElementById('github-auth').style.display = 'none';
-                    document.getElementById('repo-details').style.display = 'block';
-                    document.getElementById('github-username').textContent = data.username;
-                } else {
-                    document.getElementById('github-auth').style.display = 'block';
-                    document.getElementById('repo-details').style.display = 'none';
-                }
-            } catch (error) {
-                console.error("Error checking authentication status:", error);
-            }
-        }
-
-        checkAuthStatus();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo-input').value;
-            const prompt = document.getElementById('prompt-input').value;
-
-            try {
-                const response = await fetch('/api/run', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repo: repo, prompt: prompt })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert('Project Auto started successfully!');
-                    console.log(data);
-                } else {
-                    alert('Project Auto failed to start.');
-                    console.error(data);
-                }
-            } catch (error) {
-                console.error('Error starting Project Auto:', error);
-                alert('An error occurred while starting Project Auto.');
-            }
-        });
-    </script>
 </body>
 </html>
