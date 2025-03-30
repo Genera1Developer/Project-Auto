@@ -7,25 +7,39 @@
     <link rel="stylesheet" href="style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
-            <li><a href="https://github.com/Project-Auto/public/Configuration/index.html">Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/public/About-Us/index.html">About Us</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <header>
-            <div id="clock"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
-        <main>
-            <p>Project Auto is a tool that helps you automate code modifications in your GitHub repositories.</p>
-            <p>To get started, navigate to the Configuration page to set up your repository and customization instructions.</p>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://github.com/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
+                <h1>Project Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
+                    <li><a href="https://github.com/Project-Auto/public/Configuration/index.html">Configuration</a></li>
+                    <li><a href="https://github.com/Project-Auto/public/About-Us/index.html">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <header>
+                <div id="current-time"></div>
+            </header>
+            <section class="main-section">
+                <h2>Automate Your Projects</h2>
+                <p>Enter your GitHub repository details and customization instructions below to start automating your project.</p>
+                <div class="input-group">
+                    <label for="repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo" placeholder="e.g., user/my-repo">
+                </div>
+                <div class="input-group">
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" rows="4" placeholder="Enter your instructions here..."></textarea>
+                </div>
+                <button id="start-button">Start</button>
+            </section>
         </main>
     </div>
-
-    <script src="script/clock.js"></script>
+    <script src="https://github.com/Project-Auto/public/js/script.js"></script>
 </body>
 </html>
