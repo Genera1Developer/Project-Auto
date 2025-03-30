@@ -9,9 +9,9 @@ import random
 import os
 import json
 
-GITHUB_TOKEN = "{ghp_ TOKEN FROM CONNECT.JS HERE!}"
+GITHUB_TOKEN = "{ghp_ TOKEN FROM CONNECT.JS HERE!}" # CHANGE TO BE DYNAMIC 
 GOOGLE_API_KEY = "AIzaSyAYcscrApPcDNkHxvzAPLek8ij0YSOsYKg"
-REPO_NAME = "{User}/{Repository}"
+REPO_NAME = "{User}/{Repository}" # CHANGE TO BE DYNAMIC
 DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1352379007945019412/z-hkYi6uw5yw-1WzxeuuF_Pm-iR0-fUm2v7uxpDd1KZYxy53oNGGg3uvupVXUrXmmXWx"
 
 logging.basicConfig(
