@@ -11,9 +11,9 @@
     <div class="sidebar">
         <h1>Project Auto</h1>
         <ul>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.js"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration"><i class="fas fa-cog"></i> Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="https://github.com/Project-Auto/public/index.js"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="https://github.com/Project-Auto/public/Configuration"><i class="fas fa-cog"></i> Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/public/About-Us"><i class="fas fa-info-circle"></i> About Us</a></li>
         </ul>
     </div>
 
