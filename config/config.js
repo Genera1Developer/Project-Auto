@@ -1,7 +1,7 @@
 const config = {
-  clientId: 'YOUR_GITHUB_APP_CLIENT_ID',
-  clientSecret: 'YOUR_GITHUB_APP_CLIENT_SECRET',
-  redirectUri: 'YOUR_GITHUB_APP_REDIRECT_URI'
+  clientId: 'MUST BE DYNAMIC GRABBING WITH AUTH.JS',
+  clientSecret: 'MUST BE DYNAMIC GRABBING WITH AUTH.JS',
+  redirectUri: 'MUST BE DYNAMIC GRABBING WITH AUTH.JS'
 };
 
 module.exports = config;
