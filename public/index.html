@@ -8,34 +8,28 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
-            <li><a href="https://github.com/Project-Auto/public/Configuration">Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/public/About-Us">About Us</a></li>
-        </ul>
+        <a href="https://github.com/Project-Auto/public/index.html">Home</a>
+        <a href="https://github.com/Project-Auto/public/Configuration">Configuration</a>
+        <a href="https://github.com/Project-Auto/public/About-Us">About Us</a>
     </div>
     <div class="content">
         <header>
-            <div id="clock"></div>
-            <a href="/api/auth/github" class="login-button">Login with GitHub</a>
+            <div id="time"></div>
+            <h1>Project Auto</h1>
         </header>
         <main>
-            <h2>Automate Your Repository</h2>
-            <div class="form-container">
-                <form id="auto-form">
-                    <label for="repository">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repo" required>
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-                    <button type="button" onclick="startAuto()">Start</button>
-                </form>
-            </div>
+            <section id="auth">
+                <a href="/api/auth/github">Authenticate with GitHub</a>
+            </section>
+            <section id="input">
+                <label for="repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository"><br><br>
+                <label for="instructions">Customization Instructions:</label><br>
+                <textarea id="instructions" name="instructions" rows="4" cols="50"></textarea><br><br>
+                <button id="startBtn">Start</button>
+            </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script src="https://github.com/Project-Auto/public/js/script.js"></script>
+    <script src="https://github.com/Project-Auto/public/script.js"></script>
 </body>
 </html>
