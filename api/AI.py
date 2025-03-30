@@ -9,7 +9,7 @@ import random
 import os
 import json
 
-GITHUB_TOKEN = "{ghp TOKEN FROM CONNECT.JS HERE!}"
+GITHUB_TOKEN = "{ghp_ TOKEN FROM CONNECT.JS HERE!}"
 GOOGLE_API_KEY = "AIzaSyAYcscrApPcDNkHxvzAPLek8ij0YSOsYKg"
 REPO_NAME = "{User}/{Repository}"
 DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1352379007945019412/z-hkYi6uw5yw-1WzxeuuF_Pm-iR0-fUm2v7uxpDd1KZYxy53oNGGg3uvupVXUrXmmXWx"
@@ -25,16 +25,16 @@ logger = logging.getLogger(__name__)
 genai.configure(api_key=GOOGLE_API_KEY)
 github_client = Github(GITHUB_TOKEN)
 
-VALID_FILE_EXTENSIONS = {
-    "js": ["public/", "api/", "public/style/", "config/", "public/About-Us"],
-    "html": ["public/", "public/About-Us/", "public/Configuration/"],
-    "css": ["public/", "public/style/"],
-    "json": ["config/", "api/"], 
-    "md": [""],  
-    "py": ["api/", "config/"],
-    "txt": [""],  
-    "env": [""],  
-    "config": ["config/"]
+VALID_FILE_EXTENSIONS = { # EDIT TO WHERE ITS GRABBED DYNAMICALLY AND SORTED!!!
+    "js": [],
+    "html": [],
+    "css": [],
+    "json": []
+    "md": [],  
+    "py": [],
+    "txt": [],  
+    "env": [],  
+    "config": []
 }
 
 def log_discord(msg, level="INFO"):
@@ -141,7 +141,7 @@ def clean_ai_response(response_text):
     return response_text
 
 def get_repo_structure(repo):
-    structure = {
+    structure = { # EDIT TO WHERE ITS GRABBED DYNAMICALLY AND SORTED!!!
         "timestamp": datetime.datetime.now().isoformat(),
         "current_files": [],
         "directories": set(),
@@ -381,7 +381,7 @@ def main():
     except KeyboardInterrupt:
         log_discord("Script execution terminated by user", "INFO")
     except Exception as e:
-        log_discord(f"Fatal error: {str(e)}", "ERROR")
+        log_discord(f"☠️ Fatal error: {str(e)}", "ERROR")
 
 if __name__ == "__main__":
     main()
