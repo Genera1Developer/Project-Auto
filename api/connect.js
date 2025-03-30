@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { Octokit } = require("@octokit/rest");
-const { createAppAuth } = require("@octokit/auth-app");
-const { request } = require("@octokit/request");
 const session = require('express-session');
+const fetch = require('node-fetch');
 require('dotenv').config();
 
 const clientId = process.env.GITHUB_CLIENT_ID;
@@ -48,16 +47,12 @@ router.get('/github/callback', async (req, res) => {
     req.session.githubToken = accessToken;
     req.session.githubUser = user.data;
 
-    res.redirect('https://github.com/Project-Auto/public/success');
+    res.redirect('https://github.com/Project-Auto/public/');
 
   } catch (error) {
     console.error('Error during GitHub callback:', error);
     res.status(500).send('Authentication failed.');
   }
-});
-
-router.get('/github/success', (req, res) => {
-  res.send('GitHub authentication successful!');
 });
 
 module.exports = router;
