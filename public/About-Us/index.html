@@ -6,104 +6,147 @@
     <title>About Us - Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css">
     <style>
-         body {
-            font-family: Arial, sans-serif;
+        body {
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #f0e7ff; /* Light purple background */
             color: #333;
         }
+
         .container {
             width: 80%;
             margin: auto;
             overflow: hidden;
         }
+
         header {
-            background: #35424a;
+            background: #4a148c; /* Dark purple header */
             color: white;
-            padding-top: 30px;
+            padding-top: 20px;
             min-height: 70px;
-            border-bottom: 3px solid #e8491d;
+            border-bottom: 3px solid #ffc107; /* Gold border */
         }
+
         header a {
             color: #ffffff;
             text-decoration: none;
             text-transform: uppercase;
             font-size: 16px;
         }
+
         header ul {
             padding: 0;
             margin: 0;
         }
+
         header li {
-            float: left;
             display: inline;
             padding: 0 20px 0 20px;
         }
+
         header #branding {
             float: left;
         }
+
         header #branding h1 {
             margin: 0;
         }
+
         header nav {
             float: right;
             margin-top: 10px;
         }
+
         header .highlight, header .current a {
-            color: #e8491d;
+            color: #ffc107; /* Gold highlight */
             font-weight: bold;
         }
+
         header a:hover {
-            color: #cccccc;
+            color: #ddd;
             font-weight: bold;
         }
 
-        /* Boxes */
-        #boxes {
+        #sidebar {
+            background: #5e35b1; /* Medium purple */
+            color: white;
+            padding: 20px;
             margin-top: 20px;
-        }
-        #boxes .box {
-            float: left;
-            width: 30%;
-            padding: 10px;
-            text-align: center;
-        }
-        #boxes .box img {
-            width: 90px;
+            border-radius: 5px;
         }
 
-        /* Sidebar */
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #sidebar li {
+            margin-bottom: 10px;
+        }
+
+        #sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        #sidebar a:hover {
+            background-color: #673ab7; /* Lighter purple on hover */
+        }
+
+        #main {
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        #main-col {
+            float: left;
+            width: 65%;
+            padding: 20px;
+        }
+
+        #main-col h1 {
+            color: #4a148c; /* Dark purple headings */
+        }
+
+        #main-col p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
         aside#sidebar {
             float: right;
             width: 30%;
-            margin-top: 10px;
+            margin-top: 20px;
             padding: 10px;
         }
 
-        /* Main Col */
-        article#main-col {
-            float: left;
-            width: 65%;
-        }
-
-        /* Footer */
         footer {
             padding: 20px;
             margin-top: 20px;
-            color: #ffffff;
-            background-color: #e8491d;
+            color: white;
+            background-color: #ffc107; /* Gold footer */
             text-align: center;
         }
 
-        /* Media Queries */
+        #current-time {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #ffc107;
+            font-weight: bold;
+        }
+
         @media(max-width: 768px) {
             header #branding,
             header nav,
             header nav li,
-            #boxes .box,
-            aside#sidebar,
-            article#main-col {
+            #main-col,
+            aside#sidebar {
                 float: none;
                 text-align: center;
                 width: 100%;
@@ -112,24 +155,11 @@
             header {
                 padding-bottom: 20px;
             }
-
-            #showcase h1 {
-                margin-top: 40px;
-            }
-
-            #newsletter button {
-                display: block;
-                width: 100%;
-            }
-
-            #newsletter form input[type="email"] {
-                width: 100%;
-                margin-bottom: 5px;
-            }
         }
     </style>
 </head>
 <body>
+    <div id="current-time"></div>
     <header>
         <div class="container">
             <div id="branding">
@@ -145,34 +175,25 @@
         </div>
     </header>
 
-    <section id="newsletter">
-        <div class="container">
-            <h1>Subscribe To Our Newsletter</h1>
-            <form>
-                <input type="email" placeholder="Enter Email...">
-                <button type="submit" class="button_1">Subscribe</button>
-            </form>
-        </div>
-    </section>
-
     <section id="main">
         <div class="container">
             <article id="main-col">
                 <h1 class="page-title">About Us</h1>
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius auctor lacus nec feugiat. Phasellus sit amet ex ipsum. Praesent eu dolor sit amet nibh semper cursus. Nunc quis ante quis sem vulputate fringilla.
+                    Project Auto is designed to automate and customize your development workflow.  We aim to provide a seamless experience for developers to configure and apply automated changes to their projects.
                 </p>
                 <p>
-                    Vivamus laoreet accumsan ipsum, id laoreet neque euismod in. Integer quis lorem nunc. Morbi ultricies mi non turpis molestie, quis viverra turpis ultricies.
+                    Our team is dedicated to creating a powerful and flexible tool that adapts to your specific needs.
                 </p>
             </article>
 
             <aside id="sidebar">
-                <div class="dark">
-                    <h3>What We Do</h3>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius auctor lacus nec feugiat. Phasellus sit amet ex ipsum. Praesent eu dolor sit amet nibh semper cursus.
-                    </p>
+                <div id="sidebar">
+                    <ul>
+                        <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/">Home</a></li>
+                        <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/">Configuration</a></li>
+                        <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us/">About Us</a></li>
+                    </ul>
                 </div>
             </aside>
         </div>
@@ -181,5 +202,20 @@
     <footer>
         <p>Project Auto, Copyright &copy; 2024</p>
     </footer>
+    <script>
+        function updateTime() {
+            const currentTimeElement = document.getElementById('current-time');
+            if (currentTimeElement) {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                currentTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+    </script>
 </body>
 </html>
