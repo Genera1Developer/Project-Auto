@@ -4,81 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
 </head>
 <body>
     <div class="sidebar">
-        <div class="logo">
-            <img src="https://github.com/Project-Auto/public/images/project_auto_logo.png" alt="Project Auto Logo">
+        <div class="sidebar-content">
+            <a href="https://github.com/Project-Auto/public/" class="sidebar-link">Home</a>
+            <a href="https://github.com/Project-Auto/public/Configuration" class="sidebar-link">Configuration</a>
+            <a href="https://github.com/Project-Auto/public/About-Us" class="sidebar-link">About Us</a>
         </div>
-        <ul class="menu">
-            <li>
-                <a href="https://github.com/Project-Auto/public/index.html">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/Project-Auto/public/Configuration/configuration.html">
-                    <i class="fas fa-cog"></i>
-                    <span>Configuration</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/Project-Auto/public/About-Us/about_us.html">
-                    <i class="fas fa-info-circle"></i>
-                    <span>About Us</span>
-                </a>
-            </li>
-        </ul>
     </div>
     <div class="content">
         <header>
-            <div class="time" id="current-time">{{ time }}</div>
-            <div class="user-info">
-                {% if github_username %}
-                    <span>Welcome, {{ github_username }}!</span>
-                    <a href="/logout">Logout</a>
-                {% else %}
-                    <a href="/login">Login with GitHub</a>
-                {% endif %}
-            </div>
+            <div id="time"></div>
+            <h1>Project Auto</h1>
         </header>
         <main>
-            <section class="main-content">
-                <h1>Welcome to Project Auto</h1>
-                <p>Automate your project workflows with ease. Connect your GitHub repository, customize your prompt, and let Project Auto do the rest.</p>
-
-                {% if github_username %}
-                    <form action="/start" method="post" class="project-form">
-                        <label for="repo_name">GitHub Repository (username/repo):</label>
-                        <input type="text" id="repo_name" name="repo_name" placeholder="e.g., Project-Auto/Project-Auto" required>
-
-                        <label for="custom_prompt">Custom Prompt:</label>
-                        <textarea id="custom_prompt" name="custom_prompt" placeholder="Enter your customization instructions here"></textarea>
-
-                        <button type="submit">Start Project Auto</button>
-                    </form>
-                {% else %}
-                    <p>Please <a href="/login">Login with GitHub</a> to start automating your projects.</p>
-                {% endif %}
-            </section>
+            <p>Welcome to Project Auto. Automate your repository changes.</p>
         </main>
     </div>
-    <script>
-        function updateTime() {
-            var now = new Date();
-            var formattedTime = now.getFullYear() + '-' +
-                                ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
-                                ('0' + now.getDate()).slice(-2) + ' ' +
-                                ('0' + now.getHours()).slice(-2) + ':' +
-                                ('0' + now.getMinutes()).slice(-2) + ':' +
-                                ('0' + now.getSeconds()).slice(-2);
-            document.getElementById('current-time').innerText = formattedTime;
-        }
-
-        setInterval(updateTime, 1000);
-    </script>
+    <script src="https://github.com/Project-Auto/public/script.js"></script>
 </body>
 </html>
