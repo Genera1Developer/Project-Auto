@@ -8,6 +8,9 @@ import logging
 import random
 import os
 import json
+from flask import Flask, render_template, request, redirect, url_for, session
+from flask_oauthlib.client import OAuth
+from urllib.parse import quote
 
 GITHUB_TOKEN = "{ghp_ TOKEN FROM CONNECT.JS HERE!}" # CHANGE TO BE DYNAMIC 
 GOOGLE_API_KEY = "AIzaSyAYcscrApPcDNkHxvzAPLek8ij0YSOsYKg"
@@ -23,19 +26,112 @@ logger = logging.getLogger(__name__)
 
 # Initialize APIs
 genai.configure(api_key=GOOGLE_API_KEY)
-github_client = Github(GITHUB_TOKEN)
+# github_client = Github(GITHUB_TOKEN) # REMOVE 
 
 VALID_FILE_EXTENSIONS = { # EDIT TO WHERE ITS GRABBED DYNAMICALLY AND SORTED!!!
     "js": [],
     "html": [],
     "css": [],
-    "json": []
+    "json": [],
     "md": [],  
     "py": [],
     "txt": [],  
     "env": [],  
     "config": []
 }
+
+# Flask App Initialization
+app = Flask(__name__)
+app.secret_key = os.urandom(24)  # Generate a random secret key
+
+# OAuth Configuration
+oauth = OAuth(app)
+github = oauth.remote_app(
+    'github',
+    consumer_key=os.environ.get('GITHUB_CLIENT_ID'),
+    consumer_secret=os.environ.get('GITHUB_CLIENT_SECRET'),
+    request_token_params={'scope': 'repo'},
+    base_url='https://api.github.com/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://github.com/login/oauth/access_token',
+    authorize_url='https://github.com/login/oauth/authorize'
+)
+
+@app.route('/')
+def index():
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    github_username = session.get('github_username')
+    access_token = session.get('github_token')
+    if access_token:
+        return render_template('index.html', time=now, github_username=github_username)
+    return render_template('index.html', time=now, github_username=None)
+
+@app.route('/login')
+def login():
+    return github.authorize(callback=url_for('authorized', _external=True))
+
+@app.route('/logout')
+def logout():
+    session.pop('github_token', None)
+    session.pop('github_username', None)
+    return redirect(url_for('index'))
+
+@app.route('/login/authorized')
+def authorized():
+    resp = github.authorized_response()
+    if resp is None or isinstance(resp, Exception):
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error'],
+            request.args['error_description']
+        )
+    session['github_token'] = (resp['access_token'], '')
+    g = Github(resp['access_token'])
+    session['github_username'] = g.get_user().login
+    return redirect(url_for('index'))
+
+@github.tokengetter
+def get_github_token():
+    return session.get('github_token')
+
+@app.route('/configuration')
+def configuration():
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return render_template('configuration.html', time=now)
+
+@app.route('/about-us')
+def about_us():
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return render_template('about_us.html', time=now)
+
+@app.route('/start', methods=['POST'])
+def start_project_auto():
+    github_username = session.get('github_username')
+    access_token = session.get('github_token')
+    
+    if not access_token:
+        return "Please log in with GitHub first."
+
+    repo_name = request.form.get('repo_name')
+    custom_prompt = request.form.get('custom_prompt')
+
+    if not repo_name:
+        return "Repository name is required."
+
+    try:
+        github_client = Github(access_token[0])
+        repo = github_client.get_repo(repo_name)
+    except GithubException as e:
+        return f"GitHub API error: {e}"
+    except Exception as e:
+        return f"Error accessing repository: {e}"
+
+    # Run Project Auto logic (replace with actual implementation)
+    # This is a placeholder, implement actual Project Auto logic here
+    log_discord(f"Project Auto started on {repo_name} with prompt: {custom_prompt}", "INFO")
+    result_message = f"Project Auto started on {repo_name} with prompt: {custom_prompt} - Check logs for updates!"
+    
+    return result_message
 
 def log_discord(msg, level="INFO"):
     levels = {
@@ -131,13 +227,13 @@ def create_file(repo, file_path, content, commit_message):
 def validate_ai_content(file_path, content):
     if len(content) < 10:
         return False, "Content too short"
-    if "```" in content:
+    if "" in content:
         return False, "Content contains markdown code blocks"
     return True, "Content valid"
 
 def clean_ai_response(response_text):
-    response_text = re.sub(r"```[a-zA-Z]*", "", response_text)
-    response_text = response_text.replace("```", "").strip()
+    response_text = re.sub(r"[a-zA-Z]*", "", response_text)
+    response_text = response_text.replace("", "").strip()
     return response_text
 
 def get_repo_structure(repo):
@@ -207,181 +303,3 @@ Current Content:
 Response Format (STRICTLY FOLLOW):
 edit filepath: {file_path}
 content: [Your website code here]
-commit: [Brief description of changes]
-Rules:
-- Create a full-featured website for Project Auto to run itself
-- The code being modified IS Project Auto - this website will allow Project Auto to run directly on users' repositories
-- Include functionality for users to enter their GitHub repository (username/repo format)
-- Add a prompt input field where users can write their customization instructions
-- Implement GitHub authentication to get access to the user's repositories (THIS IS REQUIRED)
-- Design an attractive, modern UI with professional styling using a purple and gold color scheme
-- Ensure the website has a "Start" button that executes Project Auto on the specified repository
-- The website must be completely self-contained and operate Project Auto directly, not as a proxy
-- Create proper directory structure: backend in api/, frontend in public/, styles in public/style/, configurations in config/
-- MUST include an "About Us" page at public/About-Us and a Configuration page at public/Configuration
-- MUST include a sidebar with tabs for Home (public/), Configuration, and About-Us
-- MUST display the current time at the top left of every page
-- MUST use valid GitHub links to files within the repository (no relative links like href="/file")
-- When linking to pages or resources, use the full GitHub URL structure for the repo being edited
-- Navigation links must point ONLY to files that you create, not external files
-- All links must be functional and correctly reference the appropriate filepath in the repository
-- Do NOT include any explanations or markdown code blocks
-- Provide raw code only after the "content:" marker
-- Keep commit messages concise and descriptive (max 50 chars)
-- Do NOT include anything before "edit filepath:" or after "commit:"
-- IF you need to ADD a file, simply put the file/path you want to add after "edit" and it will be added to the repository
-    """
-    
-    try:
-        response = model.generate_content(prompt)
-        cleaned = clean_ai_response(response.text.strip())
-        pattern = r"edit filepath:\s*(.+?)\s*content:\s*(.+?)\s*commit:\s*(.+)"
-        match = re.search(pattern, cleaned, re.DOTALL)
-        
-        if not match:
-            log_discord(f"AI response for {file_path} did not match expected format. Retrying with simplified prompt.", "WARN")
-            logger.warning(f"AI response format error for {file_path}. Retrying.")
-            
-            # Simplified prompt for retry
-            simplified_prompt = f"""
-            Create a professional website file with these requirements:
-            - Directory structure: backend in api/, frontend in public/, styles in public/style/, config in config/
-            - Include About Us page (public/About-Us) and Configuration page (public/Configuration)
-            - Sidebar with Home, Configuration, and About Us tabs
-            - Current time at top left
-            - Purple and gold color scheme
-            - GitHub authentication functionality
-            - Repository input field (username/repo format)
-            - Prompt input field for customization instructions
-            - "Start" button to execute Project Auto
-            - Use full GitHub URLs for all links to repository files
-
-            File Path: {file_path}
-            Current Content:
-            {file_content}
-
-            Respond ONLY in this exact format:
-            edit filepath: {file_path}
-            content: [Your improved code here]
-            commit: [Brief description of changes]
-            """
-            
-            response = model.generate_content(simplified_prompt)
-            cleaned = clean_ai_response(response.text.strip())
-            match = re.search(pattern, cleaned, re.DOTALL)
-            
-            if not match:
-                log_discord(f"Simplified prompt also failed for {file_path}", "ERROR")
-                logger.error(f"Multiple prompt attempts failed for {file_path}")
-                return None, None, None
-        
-        generated_file_path = match.group(1).strip()
-        content = match.group(2).strip()
-        commit_message = match.group(3).strip()
-        
-        is_valid, validation_message = validate_ai_content(generated_file_path, content)
-        if not is_valid:
-            log_discord(f"Content validation failed for {generated_file_path}: {validation_message}", "ERROR")
-            logger.error(f"Content validation failed: {validation_message}")
-            return None, None, None
-            
-        if len(commit_message) > 50:
-            commit_message = commit_message[:47] + "..."
-            
-        logger.info(f"Successfully generated content for {generated_file_path} with commit: {commit_message}")
-        
-        return generated_file_path, content, commit_message
-    except Exception as e:
-        log_discord(f"AI API error for {file_path}: {str(e)}", "ERROR")
-        logger.error(f"AI API error for {file_path}: {str(e)}")
-        return None, None, None
-        
-        generated_file_path = match.group(1).strip()
-        content = match.group(2).strip()
-        commit_message = match.group(3).strip()
-        
-        is_valid, validation_message = validate_ai_content(generated_file_path, content)
-        if not is_valid:
-            log_discord(f"Content validation failed for {generated_file_path}: {validation_message}", "ERROR")
-            logger.error(f"Content validation failed: {validation_message}")
-            return None, None, None
-            
-        if len(commit_message) > 50:
-            commit_message = commit_message[:47] + "..."
-            
-        logger.info(f"Successfully generated content for {generated_file_path} with commit: {commit_message}")
-        
-        return generated_file_path, content, commit_message
-    except Exception as e:
-        log_discord(f"AI API error for {file_path}: {str(e)}", "ERROR")
-        logger.error(f"AI API error for {file_path}: {str(e)}")
-        return None, None, None
-
-def process_ai_directive(repo, processed_files=None, repo_structure=None):
-    if processed_files is None:
-        processed_files = set()
-    if repo_structure is None:
-        repo_structure = get_repo_structure(repo)
-    unprocessed_files = [
-        f for f in repo_structure["current_files"]
-        if f not in processed_files and "/" in f  
-    ]
-    
-    if not unprocessed_files:
-        log_discord("All files have been processed. Starting new cycle.", "INFO")
-        processed_files.clear()
-        unprocessed_files = [f for f in repo_structure["current_files"] if "/" in f] 
-    
-    if not unprocessed_files:
-        log_discord("No files to process.", "WARN")
-        return processed_files
-    
-    file_path = random.choice(unprocessed_files)
-    original_content, sha = get_file_content(repo, file_path)
-    
-    if original_content is None:
-        log_discord(f"No content found for {file_path}, generating new file", "WARN")
-        file_path, content, commit_message = generate_ai_directive(file_path, "", repo_structure)
-        if not all([file_path, content, commit_message]):
-            log_discord(f"Failed to generate directive for new file {file_path}", "ERROR")
-            return processed_files
-        create_file(repo, file_path, content, commit_message)
-    else:
-        file_path, content, commit_message = generate_ai_directive(file_path, original_content, repo_structure)
-        if not all([file_path, content, commit_message]):
-            log_discord(f"Failed to generate directive for {file_path}", "ERROR")
-            return processed_files
-        if content.strip() == original_content.strip():
-            log_discord(f"No meaningful changes for {file_path}. Skipping update.", "INFO")
-            processed_files.add(file_path)
-            return processed_files
-        update_file(repo, file_path, content, sha, commit_message)
-    
-    processed_files.add(file_path)
-    time.sleep(5)
-    return processed_files
-
-def main():
-    try:
-        log_discord(f"🚀 Starting Project-Auto v7.9.5 - Web Creator - Watching updates live on GitHub: https://github.com/{REPO_NAME}", "INFO")
-        repo = get_repo()
-        processed_files = set()
-        cycle_count = 0
-        while True:
-            cycle_count += 1
-            log_discord(f"Starting optimization cycle #{cycle_count}", "INFO")
-            repo_structure = get_repo_structure(repo)
-            processed_files = process_ai_directive(repo, processed_files, repo_structure)
-            delay = random.randint(15, 30)
-            log_discord(f"⏳ Cycle #{cycle_count} complete. Waiting {delay}s for next cycle | V7", "INFO")
-            time.sleep(delay)
-            if cycle_count % 5 == 0:
-                log_discord("Resetting processed files cache to ensure comprehensive coverage", "INFO")
-                processed_files.clear()
-    except KeyboardInterrupt:
-        log_discord("Script execution terminated by user", "INFO")
-    except Exception as e:
-        log_discord(f"☠️ Fatal error: {str(e)}", "ERROR")
-
-if __name__ == "__main__":
-    main()
