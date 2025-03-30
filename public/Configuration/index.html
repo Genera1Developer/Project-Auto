@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+            background-color: #fffaf0;
             margin: 0;
             padding: 0;
             color: #333;
@@ -20,11 +20,11 @@
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
-            color: #7952B3;
+            color: #d4af37;
         }
 
         label {
@@ -36,29 +36,29 @@
         input[type="text"],
         textarea {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            margin-bottom: 15px;
+            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 16px;
         }
 
         button {
-            background-color: #7952B3;
+            background-color: #d4af37;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #5A3A8A;
+            background-color: #b89214;
         }
+
         #sidebar {
             width: 200px;
-            background-color: #333;
+            background-color: #7952B3;
             color: white;
             padding: 20px;
             position: fixed;
@@ -85,10 +85,11 @@
         }
 
         #sidebar a:hover {
-            background-color: #555;
+            background-color: #5A3A8A;
         }
+
         #content {
-            margin-left: 220px; /* Adjust based on sidebar width */
+            margin-left: 220px;
             padding: 20px;
         }
 
@@ -100,57 +101,8 @@
             font-size: 14px;
         }
 
-        /* GitHub Authentication Button Style */
         .github-auth-button {
-           background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .github-auth-button:hover {
-            background-color: #3e8e41;
-        }
-        /* Gold color scheme for primary elements */
-        body {
-            background-color: #fffaf0; /* Light golden background */
-            color: #333;
-        }
-
-        .container {
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        h1 {
-            color: #d4af37; /* Gold */
-        }
-
-        button {
-            background-color: #d4af37; /* Gold */
-        }
-
-        button:hover {
-            background-color: #b89214;
-        }
-
-        /* Purple accents for secondary elements */
-        #sidebar {
-            background-color: #7952B3; /* Purple */
-        }
-
-        .current-time {
-            color: #7952B3; /* Purple */
-        }
-        /* Style the GitHub Authentication button */
-        .github-auth-button {
-            background-color: #5cb85c; /* Green */
+            background-color: #5cb85c;
             color: white;
             padding: 12px 24px;
             font-size: 16px;
@@ -162,15 +114,6 @@
 
         .github-auth-button:hover {
             background-color: #4cae4c;
-        }
-        /* Style for input and textarea elements */
-        input[type="text"],
-        textarea {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 16px;
         }
     </style>
 </head>
@@ -185,18 +128,18 @@
     </div>
 
     <div id="content">
-    <div class="container">
-        <h1>Project Auto Configuration</h1>
-        <button class="github-auth-button" onclick="authenticateGitHub()">Authenticate with GitHub</button>
+        <div class="container">
+            <h1>Project Auto Configuration</h1>
+            <button class="github-auth-button" onclick="authenticateGitHub()">Authenticate with GitHub</button>
 
-        <label for="githubRepo">GitHub Repository (username/repo):</label>
-        <input type="text" id="githubRepo" name="githubRepo" placeholder="e.g., owner/repository">
+            <label for="githubRepo">GitHub Repository (username/repo):</label>
+            <input type="text" id="githubRepo" name="githubRepo" placeholder="e.g., owner/repository">
 
-        <label for="prompt">Customization Instructions:</label>
-        <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
+            <label for="prompt">Customization Instructions:</label>
+            <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
 
-        <button onclick="startProjectAuto()">Start</button>
-    </div>
+            <button onclick="startProjectAuto()">Start</button>
+        </div>
     </div>
 
     <script>
@@ -207,12 +150,11 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
+        updateTime();
 
         function authenticateGitHub() {
-            // Replace with your actual GitHub OAuth App client ID
             const clientId = 'Iv1.2d8779c43bc73e8c';
-            const redirectUri = 'https://project-auto.vercel.app/Configuration/'; // MUST match your app's redirect URI
+            const redirectUri = 'https://project-auto.vercel.app/Configuration/';
             const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
 
             window.location.href = githubAuthUrl;
@@ -222,10 +164,6 @@
             const repo = document.getElementById('githubRepo').value;
             const prompt = document.getElementById('prompt').value;
 
-            // Placeholder function - implement actual Project Auto execution logic here
-            alert(`Starting Project Auto on repo: ${repo} with prompt: ${prompt}`);
-            // In reality, this function would call an API endpoint to trigger Project Auto
-            // The backend would handle the GitHub authentication and execution
             fetch('/api/startProjectAuto', {
                 method: 'POST',
                 headers: {
@@ -235,7 +173,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.message); // Display success or error message
+                alert(data.message);
             })
             .catch(error => {
                 console.error('Error:', error);
