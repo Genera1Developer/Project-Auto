@@ -63,7 +63,7 @@ header a:hover {
 
 #showcase {
     min-height: 400px;
-    background: url('https://github.com/Project-Auto/public/img/showcase.jpg') no-repeat 0 -100px;
+    background: url('https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/img/showcase.jpg') no-repeat 0 -100px;
     text-align: center;
     color: #fff;
 }
@@ -106,6 +106,7 @@ header a:hover {
     padding-left: 20px;
     padding-right: 20px;
     color: #fff;
+    cursor: pointer;
 }
 
 article#main-col {
@@ -209,6 +210,35 @@ footer {
     position: absolute;
     top: 10px;
     left: 10px;
-    color: #673ab7;
+    color: #e6cc00;
     font-weight: bold;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.form-container {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
