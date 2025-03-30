@@ -1,10 +1,12 @@
 const theme = {
   colors: {
-    primary: '#673ab7', // Purple
-    secondary: '#ffeb3b', // Gold
+    primary: '#673ab7',
+    secondary: '#ffeb3b',
     background: '#f5f5f5',
     text: '#333',
     accent: '#7e57c2',
+    sidebar: '#512da8',
+    sidebarText: '#fff',
   },
   fonts: {
     main: 'Arial, sans-serif',
@@ -18,6 +20,10 @@ const theme = {
     small: '8px',
     medium: '16px',
     large: '24px',
+  },
+  breakpoints: {
+    mobile: '768px',
+    tablet: '992px',
   },
 };
 
