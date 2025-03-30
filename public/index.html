@@ -1,31 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
-    <script src="https://github.com/Project-Auto/public/script.js" defer></script>
-</head>
-<body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>Project Auto</h2>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
-            <li><a href="https://github.com/Project-Auto/public/Configuration/index.html">Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/public/About-Us/index.html">About Us</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
-        <main>
-            <p>Project Auto helps you automate your development tasks.</p>
-        </main>
-    </div>
-</body>
-</html>
+|
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Project Auto</title>
+      <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+      <div class="sidebar">
+          <div class="logo">Project Auto</div>
+          <a href="https://github.com/Project-Auto/public/index.html" class="sidebar-item"><i class="fa fa-home"></i>Home</a>
+          <a href="https://github.com/Project-Auto/public/Configuration/index.js" class="sidebar-item"><i class="fa fa-cog"></i>Configuration</a>
+          <a href="https://github.com/Project-Auto/public/About-Us/index.html" class="sidebar-item"><i class="fa fa-info-circle"></i>About Us</a>
+      </div>
+      <div class="content">
+          <header>
+              <div id="current-time"></div>
+              <h1>Project Auto</h1>
+          </header>
+          <main>
+              <section id="github-repo-section">
+                  <h2>GitHub Repository</h2>
+                  <input type="text" id="github-repo" placeholder="username/repo">
+              </section>
+              <section id="prompt-section">
+                  <h2>Customization Instructions</h2>
+                  <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
+              </section>
+              <section id="authentication-section">
+                  <h2>GitHub Authentication</h2>
+                  <button id="github-login">Login with GitHub</button>
+              </section>
+              <section id="start-section">
+                  <button id="start-button">Start</button>
+              </section>
+          </main>
+      </div>
+      <script src="https://github.com/Project-Auto/public/script.js"></script>
+  </body>
+  </html>
