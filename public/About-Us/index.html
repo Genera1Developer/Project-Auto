@@ -5,44 +5,181 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css">
-</head>
-<body>
-    <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/">Home</a>
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/">Configuration</a>
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us/">About Us</a>
-        </div>
-    </div>
-    <div class="content">
-        <header>
-            <div id="time" class="time"></div>
-            <h1>About Us</h1>
-        </header>
-        <main>
-            <section>
-                <h2>Our Mission</h2>
-                <p>To automate and streamline web development processes, making it easier for developers to customize their projects.</p>
-            </section>
-            <section>
-                <h2>Our Team</h2>
-                <p>We are a team of passionate developers dedicated to creating innovative tools and solutions.</p>
-            </section>
-            <section>
-                <h2>Contact Us</h2>
-                <p>Email: support@projectauto.git</p>
-            </section>
-        </main>
-    </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #35424a;
+            color: white;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: 3px solid #e8491d;
+        }
+        header a {
+            color: #ffffff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+        header ul {
+            padding: 0;
+            margin: 0;
+        }
+        header li {
+            float: left;
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
+        header #branding {
+            float: left;
+        }
+        header #branding h1 {
+            margin: 0;
+        }
+        header nav {
+            float: right;
+            margin-top: 10px;
+        }
+        header .highlight, header .current a {
+            color: #e8491d;
+            font-weight: bold;
+        }
+        header a:hover {
+            color: #cccccc;
+            font-weight: bold;
         }
 
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
+        /* Boxes */
+        #boxes {
+            margin-top: 20px;
+        }
+        #boxes .box {
+            float: left;
+            width: 30%;
+            padding: 10px;
+            text-align: center;
+        }
+        #boxes .box img {
+            width: 90px;
+        }
+
+        /* Sidebar */
+        aside#sidebar {
+            float: right;
+            width: 30%;
+            margin-top: 10px;
+            padding: 10px;
+        }
+
+        /* Main Col */
+        article#main-col {
+            float: left;
+            width: 65%;
+        }
+
+        /* Footer */
+        footer {
+            padding: 20px;
+            margin-top: 20px;
+            color: #ffffff;
+            background-color: #e8491d;
+            text-align: center;
+        }
+
+        /* Media Queries */
+        @media(max-width: 768px) {
+            header #branding,
+            header nav,
+            header nav li,
+            #boxes .box,
+            aside#sidebar,
+            article#main-col {
+                float: none;
+                text-align: center;
+                width: 100%;
+            }
+
+            header {
+                padding-bottom: 20px;
+            }
+
+            #showcase h1 {
+                margin-top: 40px;
+            }
+
+            #newsletter button {
+                display: block;
+                width: 100%;
+            }
+
+            #newsletter form input[type="email"] {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><span class="highlight">Project</span> Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/">Home</a></li>
+                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/">Configuration</a></li>
+                    <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us/">About Us</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="newsletter">
+        <div class="container">
+            <h1>Subscribe To Our Newsletter</h1>
+            <form>
+                <input type="email" placeholder="Enter Email...">
+                <button type="submit" class="button_1">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="main">
+        <div class="container">
+            <article id="main-col">
+                <h1 class="page-title">About Us</h1>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius auctor lacus nec feugiat. Phasellus sit amet ex ipsum. Praesent eu dolor sit amet nibh semper cursus. Nunc quis ante quis sem vulputate fringilla.
+                </p>
+                <p>
+                    Vivamus laoreet accumsan ipsum, id laoreet neque euismod in. Integer quis lorem nunc. Morbi ultricies mi non turpis molestie, quis viverra turpis ultricies.
+                </p>
+            </article>
+
+            <aside id="sidebar">
+                <div class="dark">
+                    <h3>What We Do</h3>
+                    <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius auctor lacus nec feugiat. Phasellus sit amet ex ipsum. Praesent eu dolor sit amet nibh semper cursus.
+                    </p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <footer>
+        <p>Project Auto, Copyright &copy; 2024</p>
+    </footer>
 </body>
 </html>
