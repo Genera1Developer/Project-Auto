@@ -1,17 +1,21 @@
-// This script should connect the users github account to the website through actual github, and once that happens it gets a token from the user to access their account, of which MUST have access to all repositories and to edit and delete and add them.  The token will be used in AI.py
 const express = require('express');
 const router = express.Router();
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
 const { request } = require("@octokit/request");
-const { ClientSecret } = require('twilio/lib/twiml/VoiceResponse');
-const { env } = require('process');
-
-require('dotenv').config()
+const session = require('express-session');
+require('dotenv').config();
 
 const clientId = process.env.GITHUB_CLIENT_ID;
 const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 const redirectUri = process.env.GITHUB_REDIRECT_URI;
+
+router.use(session({
+  secret: process.env.SESSION_SECRET || 'your_secret_key',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true in production with HTTPS
+}));
 
 router.get('/github/login', (req, res) => {
   const authURL = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
@@ -38,17 +42,13 @@ router.get('/github/callback', async (req, res) => {
     const tokenData = await tokenResponse.json();
     const accessToken = tokenData.access_token;
 
-    // Use the access token to fetch user data or store it securely
-    // For example, you can fetch the user's GitHub profile:
     const octokit = new Octokit({ auth: accessToken });
     const user = await octokit.rest.users.getAuthenticated();
 
-    // Store the access token securely and associate it with the user
-    req.session.githubToken = accessToken; // Example using session
+    req.session.githubToken = accessToken;
     req.session.githubUser = user.data;
 
-    // Redirect the user to a success page or their profile
-    res.redirect('/github/success');
+    res.redirect('https://github.com/Project-Auto/public/success');
 
   } catch (error) {
     console.error('Error during GitHub callback:', error);
@@ -57,7 +57,7 @@ router.get('/github/callback', async (req, res) => {
 });
 
 router.get('/github/success', (req, res) => {
-  res.send('GitHub authentication successful!'); // Replace with a proper page
+  res.send('GitHub authentication successful!');
 });
 
 module.exports = router;
