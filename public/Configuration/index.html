@@ -1,1 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto - Configuration</title>
+    <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #7952B3;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+
+        button {
+            background-color: #7952B3;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #5A3A8A;
+        }
+        #sidebar {
+            width: 200px;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            left: 0;
+            top: 0;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #sidebar li {
+            margin-bottom: 10px;
+        }
+
+        #sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        #sidebar a:hover {
+            background-color: #555;
+        }
+        #content {
+            margin-left: 220px; /* Adjust based on sidebar width */
+            padding: 20px;
+        }
+
+        .current-time {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: #7952B3;
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="current-time" id="current-time"></div>
+    <div id="sidebar">
+        <ul>
+            <li><a href="https://github.com/Project-Auto/public/">Home</a></li>
+            <li><a href="https://github.com/Project-Auto/public/Configuration/">Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/public/About-Us/">About Us</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+    <div class="container">
+        <h1>Project Auto Configuration</h1>
+        <label for="githubRepo">GitHub Repository (username/repo):</label>
+        <input type="text" id="githubRepo" name="githubRepo" placeholder="e.g., owner/repository">
+
+        <label for="prompt">Customization Instructions:</label>
+        <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
+
+        <button onclick="startProjectAuto()">Start</button>
+    </div>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to display time immediately
+
+        function startProjectAuto() {
+            const repo = document.getElementById('githubRepo').value;
+            const prompt = document.getElementById('prompt').value;
+
+            // Placeholder function - implement actual Project Auto execution logic here
+            alert(`Starting Project Auto on repo: ${repo} with prompt: ${prompt}`);
+            // In reality, this function would call an API endpoint to trigger Project Auto
+            // The backend would handle the GitHub authentication and execution
+        }
+    </script>
+</body>
+</html>
