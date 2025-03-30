@@ -102,7 +102,7 @@
 
         /* GitHub Authentication Button Style */
         .github-auth-button {
-            background-color: #4CAF50; /* Green */
+           background-color: #4CAF50;
             border: none;
             color: white;
             padding: 15px 32px;
@@ -117,7 +117,61 @@
         .github-auth-button:hover {
             background-color: #3e8e41;
         }
+        /* Gold color scheme for primary elements */
+        body {
+            background-color: #fffaf0; /* Light golden background */
+            color: #333;
+        }
 
+        .container {
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #d4af37; /* Gold */
+        }
+
+        button {
+            background-color: #d4af37; /* Gold */
+        }
+
+        button:hover {
+            background-color: #b89214;
+        }
+
+        /* Purple accents for secondary elements */
+        #sidebar {
+            background-color: #7952B3; /* Purple */
+        }
+
+        .current-time {
+            color: #7952B3; /* Purple */
+        }
+        /* Style the GitHub Authentication button */
+        .github-auth-button {
+            background-color: #5cb85c; /* Green */
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .github-auth-button:hover {
+            background-color: #4cae4c;
+        }
+        /* Style for input and textarea elements */
+        input[type="text"],
+        textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -172,6 +226,21 @@
             alert(`Starting Project Auto on repo: ${repo} with prompt: ${prompt}`);
             // In reality, this function would call an API endpoint to trigger Project Auto
             // The backend would handle the GitHub authentication and execution
+            fetch('/api/startProjectAuto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repo: repo, prompt: prompt }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Display success or error message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while starting Project Auto.');
+            });
         }
     </script>
 </body>
