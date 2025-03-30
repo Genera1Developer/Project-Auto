@@ -4,182 +4,212 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
          body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #1e1e1e;
+            color: #d4af37;
+            overflow-x: hidden;
         }
+
         .container {
             width: 80%;
             margin: auto;
             overflow: hidden;
         }
+
         header {
-            background: #35424a;
-            color: white;
-            padding-top: 30px;
-            min-height: 70px;
-            border-bottom: 3px solid #e8491d;
+            background: #301934;
+            color: #d4af37;
+            padding-top: 20px;
+            min-height: 60px;
+            border-bottom: 4px solid #d4af37;
+            position: relative;
         }
+
         header a {
-            color: #ffffff;
+            color: #d4af37;
             text-decoration: none;
             text-transform: uppercase;
             font-size: 16px;
+            transition: color 0.3s ease;
         }
+
         header ul {
             padding: 0;
             margin: 0;
+            list-style: none;
         }
+
         header li {
             float: left;
             display: inline;
             padding: 0 20px 0 20px;
         }
+
         header #branding {
             float: left;
         }
+
         header #branding h1 {
             margin: 0;
+            font-size: 2em;
         }
+
         header nav {
             float: right;
             margin-top: 10px;
         }
+
         header .highlight, header .current a {
-            color: #e8491d;
-            font-weight: bold;
-        }
-        header a:hover {
-            color: #cccccc;
+            color: #ffffff;
             font-weight: bold;
         }
 
-        /* Boxes */
-        #boxes {
-            margin-top: 20px;
+        header a:hover {
+            color: #ffffff;
+            font-weight: bold;
         }
-        #boxes .box {
-            float: left;
-            width: 30%;
-            padding: 10px;
-            text-align: center;
-        }
-        #boxes .box img {
-            width: 90px;
+
+        #currentTime {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1em;
+            color: #d4af37;
         }
 
         /* Sidebar */
-        aside#sidebar {
-            float: right;
-            width: 30%;
-            margin-top: 10px;
-            padding: 10px;
-        }
-
-        /* Main Col */
-        article#main-col {
+        #sidebar {
             float: left;
-            width: 65%;
+            width: 20%; /* Adjusted width */
+            margin-top: 20px;
+            padding: 10px;
+            background: #301934;
+            color: #d4af37;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding-top: 80px; /* Adjusted padding to accommodate header */
         }
 
-        /* Footer */
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #sidebar li {
+            padding: 15px;
+            border-bottom: 1px solid #444;
+            transition: background-color 0.3s ease;
+        }
+
+        #sidebar li:last-child {
+            border-bottom: none;
+        }
+
+        #sidebar li a {
+            color: #d4af37;
+            text-decoration: none;
+            display: block;
+            width: 100%;
+        }
+
+       #sidebar li:hover {
+            background-color: #444;
+        }
+
+        /* Main Content */
+        #main-content {
+            float: left;
+            width: 75%; /* Adjusted width */
+            margin-left: 22%; /* Adjusted margin */
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        #main-content h1 {
+            color: #d4af37;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        #main-content p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
         footer {
             padding: 20px;
             margin-top: 20px;
             color: #ffffff;
-            background-color: #e8491d;
+            background-color: #d4af37;
             text-align: center;
-        }
-
-        /* Media Queries */
-        @media(max-width: 768px) {
-            header #branding,
-            header nav,
-            header nav li,
-            #boxes .box,
-            aside#sidebar,
-            article#main-col {
-                float: none;
-                text-align: center;
-                width: 100%;
-            }
-
-            header {
-                padding-bottom: 20px;
-            }
-
-            #showcase h1 {
-                margin-top: 40px;
-            }
-
-            #newsletter button {
-                display: block;
-                width: 100%;
-            }
-
-            #newsletter form input[type="email"] {
-                width: 100%;
-                margin-bottom: 5px;
-            }
+            clear: both;
         }
     </style>
 </head>
 <body>
     <header>
+        <div id="currentTime"></div>
         <div class="container">
             <div id="branding">
-                <h1><span class="highlight">Project</span> Auto</h1>
+                <h1><i class="fas fa-code"></i> <span class="highlight">Project</span> Auto</h1>
             </div>
             <nav>
                 <ul>
-                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a></li>
-                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/index.html">Configuration</a></li>
-                    <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us/index.html">About Us</a></li>
+                   
                 </ul>
             </nav>
         </div>
     </header>
 
-    <section id="newsletter">
-        <div class="container">
-            <h1>Subscribe To Our Newsletter</h1>
-            <form>
-                <input type="email" placeholder="Enter Email...">
-                <button type="submit" class="button_1">Subscribe</button>
-            </form>
-        </div>
-    </section>
+    <aside id="sidebar">
+        <ul>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/index.html"><i class="fas fa-cogs"></i> Configuration</a></li>
+            <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us/index.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+        </ul>
+    </aside>
 
-    <section id="main">
+    <section id="main-content">
         <div class="container">
-            <article id="main-col">
-                <h1 class="page-title">About Us</h1>
-                <p>
-                    Project Auto is designed to automate and enhance your development workflow. We provide tools and services to streamline configuration, customization, and deployment of your projects.
-                </p>
-                <p>
-                    Our mission is to empower developers with the ability to quickly adapt and modify existing codebases, enabling them to deliver high-quality software efficiently.
-                </p>
-            </article>
-
-            <aside id="sidebar">
-                <div class="dark">
-                    <h3>What We Do</h3>
-                    <p>
-                        We offer a range of automated solutions including code modification, configuration management, and project deployment tools. Our services are tailored to integrate seamlessly with your existing development environment.
-                    </p>
-                </div>
-            </aside>
+            <h1>About Project Auto</h1>
+            <p>
+                Project Auto is a cutting-edge solution designed to streamline your software development workflow. Our mission is to empower developers by providing automated tools that simplify configuration, customization, and deployment processes.
+            </p>
+            <p>
+                We believe in the power of automation to reduce manual efforts and accelerate project delivery. Our tools are engineered to seamlessly integrate with your existing development environment, enhancing your productivity and code quality.
+            </p>
+            <p>
+                At Project Auto, we are committed to innovation and excellence. We continually strive to improve our offerings and provide exceptional support to our users. Join us in revolutionizing the way software is developed!
+            </p>
         </div>
     </section>
 
     <footer>
         <p>Project Auto, Copyright &copy; 2024</p>
     </footer>
+
+    <script>
+        function updateTime() {
+            var currentTimeElement = document.getElementById('currentTime');
+            var now = new Date();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
+            var timeString = hours + ':' + (minutes < 10 ? "0" + minutes : minutes) + ':' + (seconds < 10 ? "0" + seconds : seconds);
+            currentTimeElement.textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 </body>
 </html>
