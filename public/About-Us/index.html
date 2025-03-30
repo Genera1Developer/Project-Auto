@@ -1,1 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project Auto</title>
+    <link rel="stylesheet" href="https://projectauto.git/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-content">
+        <a href="https://projectauto.git/public/">Home</a>
+        <a href="https://projectauto.git/public/Configuration/">Configuration</a>
+        <a href="https://projectauto.git/public/About-Us/">About Us</a>
+        </div>
+    </div>
+    <div class="content">
+        <header>
+            <div id="time" class="time"></div>
+            <h1>About Us</h1>
+        </header>
+        <main>
+            <section>
+                <h2>Our Mission</h2>
+                <p>To automate and streamline web development processes, making it easier for developers to customize their projects.</p>
+            </section>
+            <section>
+                <h2>Our Team</h2>
+                <p>We are a team of passionate developers dedicated to creating innovative tools and solutions.</p>
+            </section>
+            <section>
+                <h2>Contact Us</h2>
+                <p>Email: support@projectauto.git</p>
+            </section>
+        </main>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
+        }
 
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
