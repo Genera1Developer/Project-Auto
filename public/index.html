@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            Project Auto
+            <img src="/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
         <nav>
             <ul>
@@ -25,24 +26,22 @@
             <div id="current-time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <section id="github-auth">
-                <a href="/api/auth/github">Authenticate with GitHub</a>
-            </section>
             <section id="project-setup">
                 <h2>Project Setup</h2>
-                <form id="project-form">
-                    <label for="repository">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" required><br><br>
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Genera1Developer/Project-Auto">
 
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
 
-                    <button type="button" id="start-button">Start</button>
-                </form>
+                <button id="start-button">Start</button>
+                <div id="status"></div>
             </section>
         </main>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
@@ -51,31 +50,30 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime();
+        updateTime(); // Initial call to display time immediately
 
         document.getElementById('start-button').addEventListener('click', async () => {
-            const repository = document.getElementById('repository').value;
+            const repo = document.getElementById('github-repo').value;
             const instructions = document.getElementById('instructions').value;
+            const statusDiv = document.getElementById('status');
+
+            statusDiv.textContent = 'Running...';
 
             try {
-                const response = await fetch('/api/project/run', {
+                const response = await fetch('/api/run-auto', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ repository, instructions }),
+                    body: JSON.stringify({ repo, instructions })
                 });
 
-                if (response.ok) {
-                    const result = await response.json();
-                    alert(result.message);
-                } else {
-                    console.error('Error:', response.status);
-                    alert('Error starting Project Auto. Check console for details.');
-                }
+                const data = await response.text();
+                statusDiv.textContent = data;
+
             } catch (error) {
                 console.error('Error:', error);
-                alert('An unexpected error occurred. Check console for details.');
+                statusDiv.textContent = `Error: ${error.message}`;
             }
         });
     </script>
