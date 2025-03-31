@@ -1,83 +1,243 @@
-/* General Styles */
+/* General body styling */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #ede7f6; /* Light purple background */
+    background-color: #f4f4f4;
     color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    line-height: 1.6;
 }
 
-/* Sidebar Styles */
-#sidebar {
-    width: 200px;
-    background-color: #5e35b1; /* Deep purple sidebar */
-    color: #fff;
-    padding-top: 20px;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-}
-
-#sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-#sidebar li {
-    padding: 10px;
-    text-align: left;
-}
-
-#sidebar a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-    transition: background-color 0.3s ease;
-}
-
-#sidebar a:hover {
-    background-color: #7e57c2; /* Lighter purple on hover */
-}
-
-#sidebar .current {
-    background-color: #7e57c2;
-}
-
-/* Content Styles */
-#content {
-    flex: 1;
+/* Container for content */
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
     padding: 20px;
-    margin-left: 220px; /* Adjust based on sidebar width */
+}
+
+/* Header styling */
+header {
+    background: #35424a;
+    color: #ffffff;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: 3px solid #e8491d;
+}
+
+header a {
+    color: #ffffff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+header ul {
+    padding: 0;
+    margin: 0;
+}
+
+header li {
+    float: left;
+    display: inline;
+    padding: 0 20px 0 20px;
+}
+
+header #branding {
+    float: left;
+}
+
+header #branding h1 {
+    margin: 0;
+}
+
+header nav {
+    float: right;
+    margin-top: 10px;
+}
+
+header .highlight, header .current a {
+    color: #e8491d;
+    font-weight: bold;
+}
+
+header a:hover {
+    color: #cccccc;
+    font-weight: bold;
+}
+
+/* Showcase section */
+#showcase {
+    min-height: 400px;
+    background: url('/public/img/showcase.jpg') no-repeat 0 -100px;
+    text-align: center;
+    color: #ffffff;
+}
+
+#showcase h1 {
+    margin-top: 100px;
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+#showcase p {
+    font-size: 20px;
+}
+
+/* Newsletter section */
+#newsletter {
+    padding: 15px;
+    color: #ffffff;
+    background: #35424a;
+}
+
+#newsletter h1 {
+    float: left;
+}
+
+#newsletter form {
+    float: right;
+    margin-top: 15px;
+}
+
+#newsletter input[type="email"] {
+    padding: 4px;
+    height: 25px;
+    width: 250px;
+}
+
+/* Boxes section */
+#boxes {
+    margin-top: 20px;
+}
+
+#boxes .box {
+    float: left;
+    text-align: center;
+    width: 30%;
+    padding: 10px;
+}
+
+#boxes .box img {
+    width: 90px;
+}
+
+/* Sidebar styling */
+aside#sidebar {
+    float: right;
+    width: 30%;
+    margin-top: 10px;
+    padding: 20px;
+}
+
+aside#sidebar .quote input, aside#sidebar .quote textarea {
+    width: 90%;
+    padding: 5px;
+}
+
+/* Main content area */
+article#main-col {
+    float: left;
+    width: 65%;
+}
+
+/* Services list styling */
+ul#services li {
+    padding: 20px;
+    border: #cccccc solid 1px;
+    margin-bottom: 5px;
+    background: #e6e6e6;
+}
+
+/* Footer styling */
+footer {
+    padding: 20px;
+    margin-top: 20px;
+    color: #ffffff;
+    background-color: #e8491d;
+    text-align: center;
+}
+
+/* Media queries for responsive design */
+@media(max-width: 768px) {
+    header #branding,
+    header nav,
+    header nav li,
+    #newsletter h1,
+    #newsletter form,
+    #boxes .box,
+    aside#sidebar,
+    article#main-col {
+        float: none;
+        text-align: center;
+        width: 100%;
+    }
+
+    header {
+        padding-bottom: 20px;
+    }
+
+    #showcase h1 {
+        margin-top: 40px;
+    }
+
+    #newsletter button {
+        display: block;
+        width: 100%;
+    }
+
+    #newsletter form input[type="email"] {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* Custom Purple and Gold Theme */
+body {
+    background-color: #f0f0f0; /* Light grey background */
+    color: #333; /* Dark grey text */
 }
 
 .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    background-color: #fff; /* White container */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-h1 {
-    color: #795548; /* Brown header for contrast */
-    text-align: center;
-    margin-bottom: 20px;
+h1, h2, h3 {
+    color: #7952B3; /* Purple heading color */
 }
 
-/* Form Styles */
-label {
-    display: block;
-    margin-top: 10px;
-    color: #777;
+/* Links */
+a {
+    color: #B3A152; /* Gold link color */
+    text-decoration: none;
 }
 
+a:hover {
+    color: #7952B3; /* Purple on hover */
+}
+
+/* Buttons */
+button, .button {
+    background-color: #B3A152; /* Gold button color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover, .button:hover {
+    background-color: #7952B3; /* Purple on hover */
+}
+
+/* Input fields */
 input[type="text"],
-textarea {
+input[type="email"],
+textarea,
+select {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
@@ -87,51 +247,70 @@ textarea {
     box-sizing: border-box;
 }
 
-/* Button Styles */
-button {
-    background-color: #ffb300; /* Gold button */
-    color: #333;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #f57f17; /* Darker gold on hover */
-}
-
-.github-auth-button {
-    background-color: #4CAF50;
-}
-
-.github-auth-button:hover {
-    background-color: #43A047;
-}
-
-/* Authentication Message Styles */
-#auth-message {
+/* Labels */
+label {
+    display: block;
     margin-top: 10px;
-    padding: 10px;
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
-    text-align: center;
+    color: #555;
 }
 
-/* Footer Styles */
+/* Footer */
 footer {
-    text-align: center;
-    padding: 20px;
     background-color: #333;
-    color: white;
-    margin-top: auto;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 20px;
 }
 
-/* Loading Overlay Styles */
+/* Sidebar */
+#sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+}
+
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+#sidebar li {
+    padding: 10px 0;
+    border-bottom: 1px solid #555;
+}
+
+#sidebar li:last-child {
+    border-bottom: none;
+}
+
+#sidebar a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+#sidebar a:hover {
+    background-color: #555;
+}
+
+/* Current time display */
+.current-time {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+/* Loading indicator */
 #loading {
     display: none;
     position: fixed;
@@ -150,19 +329,7 @@ footer {
     height: 100px;
 }
 
-/* Current Time Styles */
-.current-time {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    z-index: 1000;
-}
-
-/* Configuration Status Styles */
+/* Configuration status messages */
 #config-status {
     margin-top: 20px;
     padding: 10px;
@@ -182,78 +349,69 @@ footer {
     border: 1px solid #f5c6cb;
 }
 
-/* Dark mode styles */
-body.dark-mode {
-    background-color: #121212;
-    color: #fff;
+/* GitHub authentication message */
+#auth-message {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
 }
 
-body.dark-mode #sidebar {
-    background-color: #333;
-    color: #fff;
+/* Responsive layout adjustments */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    #content {
+        margin-left: 0;
+    }
 }
 
-body.dark-mode #sidebar a {
-    color: #fff;
+/* Specific adjustments for form elements */
+input[type="text"],
+textarea {
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
-body.dark-mode #sidebar a:hover {
-    background-color: #555;
+/* GitHub authentication button */
+.github-auth-button {
+    background-color: #7952B3; /* Purple */
 }
 
-body.dark-mode .container {
-    background-color: #333;
-    color: #fff;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+.github-auth-button:hover {
+    background-color: #5D4037;
 }
 
-body.dark-mode h1 {
-    color: #ffb300;
+/* Container enhancements for better spacing and alignment */
+#content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 270px; /* Adjust based on sidebar width */
 }
 
-body.dark-mode label {
-    color: #eee;
+/* General link style to match theme */
+a {
+    color: #B3A152; /* Gold */
+    text-decoration: none;
 }
 
-body.dark-mode input[type="text"],
-body.dark-mode textarea {
-    background-color: #444;
-    color: #eee;
-    border: 1px solid #666;
+a:hover {
+    color: #7952B3; /* Purple */
 }
 
-/* Added styles for input focus */
-input[type="text"]:focus,
-textarea:focus {
-    outline: none;
-    border-color: #ffb300; /* Gold focus color */
-    box-shadow: 0 0 5px rgba(255, 179, 0, 0.5); /* Optional glow effect */
+/* Ensure the footer sticks to the bottom */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-/* Adjustments for purple and gold dark mode */
-body.dark-mode {
-    background-color: #301934; /* Dark purple */
-    color: #ffb300; /* Gold text */
-}
-
-body.dark-mode #sidebar {
-    background-color: #1a0d2a; /* Even darker purple */
-}
-
-body.dark-mode #sidebar a:hover {
-    background-color: #4e3a4c; /* Darker hover */
-}
-
-body.dark-mode .container {
-    background-color: #24132d; /* Dark purple container */
-    box-shadow: 0 0 10px rgba(255, 179, 0, 0.3); /* Gold shadow */
-}
-
-body.dark-mode button {
-    background-color: #c68f00; /* Slightly lighter gold button */
-    color: #301934; /* Dark purple text */
-}
-
-body.dark-mode button:hover {
-    background-color: #f57f17; /* Darker gold on hover */
+footer {
+    margin-top: auto;
 }
