@@ -476,3 +476,9 @@ footer {
 .logout-button:hover {
     background-color: #512da8;
 }
+
+/* Style for displaying errors */
+.error-message {
+    color: red;
+    margin-top: 5px;
+}
