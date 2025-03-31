@@ -4,82 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2 class="logo">Project Auto</h2>
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
-
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
-            <h1>Project Auto</h1>
+            <div id="time"></div>
+            <button id="github-login-button">Login with GitHub</button>
         </header>
-
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo">GitHub Repository (user/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="user/repo">
-                <br><br>
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter customization instructions here"></textarea>
-                <br><br>
+            <section id="input-section">
+                <h2>Customize Your Repository</h2>
+                <label for="repo-url">Repository URL (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/my-repo">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" placeholder="Enter your customization instructions here"></textarea>
                 <button id="start-button">Start</button>
-                <p id="status"></p>
+                <div id="output"></div>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-            const status = document.getElementById('status');
-
-            status.textContent = 'Executing Project Auto...';
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, instructions }),
-                });
-
-                if (response.ok) {
-                    status.textContent = 'Project Auto executed successfully!';
-                } else {
-                    const errorData = await response.text();
-                    status.textContent = `Project Auto execution failed: ${errorData}`;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                status.textContent = `Project Auto execution failed: ${error.message}`;
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
