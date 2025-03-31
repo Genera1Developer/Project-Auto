@@ -1,109 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Auto</title>
+  <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css?raw=true">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="https://github.com/Genera1Developer/Project-Auto/public/images/auto-logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration.html"><i class="fas fa-cog"></i> Configuration</a></li>
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us.html"><i class="fas fa-info-circle"></i> About Us</a></li>
-        </ul>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/logo.png?raw=true" alt="Project Auto Logo" class="logo">
     </div>
-    <div class="content">
-        <header>
-            <div id="current-time" class="current-time"></div>
-            <div class="auth-buttons">
-                <button id="login-button" onclick="location.href='/github/login'">Login with GitHub</button>
-                <button id="logout-button" onclick="logout()" style="display:none;">Logout</button>
-            </div>
-        </header>
-        <main>
-            <section id="project-input">
-                <h2>Run Project Auto</h2>
-                <div id="user-info" style="display: none;">
-                    <img id="avatar" src="" alt="GitHub Avatar">
-                    <span id="username"></span>
-                </div>
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto">
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions for Project Auto"></textarea>
-                <button id="start-button" onclick="runAuto()">Start</button>
-                <p id="status"></p>
-            </section>
-        </main>
-    </div>
+    <ul class="sidebar-menu">
+      <li><a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html?raw=true"><i class="fa fa-home"></i> Home</a></li>
+      <li><a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration.html?raw=true"><i class="fa fa-cog"></i> Configuration</a></li>
+      <li><a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us.html?raw=true"><i class="fa fa-info-circle"></i> About Us</a></li>
+    </ul>
+  </div>
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+  <div class="content">
+    <header>
+      <div id="current-time" class="current-time"></div>
+      <a href="/api/github/login" class="login-button">
+          <i class="fab fa-github"></i> Login with GitHub
+      </a>
+    </header>
+    <main>
+      <h1>Welcome to Project Auto</h1>
+      <p>Automate your GitHub repository tasks with ease.</p>
+
+      <div class="form-container">
+        <form id="auto-form">
+          <div class="form-group">
+            <label for="repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto" required>
+          </div>
+          <div class="form-group">
+            <label for="instructions">Instructions:</label>
+            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions for Project Auto" required></textarea>
+          </div>
+          <button type="submit" class="start-button">Start</button>
+        </form>
+      </div>
+      <div id="status-message"></div>
+    </main>
+  </div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('current-time').textContent = timeString;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    document.getElementById('auto-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const repo = document.getElementById('repo').value;
+      const instructions = document.getElementById('instructions').value;
+      const statusMessage = document.getElementById('status-message');
+
+      try {
+        const response = await fetch('/api/run-auto', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ repo, instructions }),
+        });
+
+        if (response.ok) {
+          statusMessage.textContent = 'Project Auto executed successfully!';
+          statusMessage.className = 'success-message';
+        } else {
+          const errorData = await response.text();
+          statusMessage.textContent = `Project Auto execution failed: ${errorData}`;
+          statusMessage.className = 'error-message';
         }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        async function runAuto() {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-            const status = document.getElementById('status');
-
-            status.textContent = 'Running Project Auto...';
-
-            try {
-                const response = await fetch('/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repo, instructions })
-                });
-
-                if (response.ok) {
-                    status.textContent = 'Project Auto executed successfully!';
-                } else {
-                    const errorText = await response.text();
-                    status.textContent = `Project Auto execution failed: ${errorText}`;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                status.textContent = `Project Auto execution failed: ${error.message}`;
-            }
-        }
-
-        async function checkLoginStatus() {
-            const userInfo = localStorage.getItem('githubUser');
-            if (userInfo) {
-                const user = JSON.parse(userInfo);
-                document.getElementById('login-button').style.display = 'none';
-                document.getElementById('logout-button').style.display = 'inline-block';
-                document.getElementById('user-info').style.display = 'block';
-                document.getElementById('avatar').src = user.avatar_url;
-                document.getElementById('username').textContent = user.login;
-            } else {
-                document.getElementById('login-button').style.display = 'inline-block';
-                document.getElementById('logout-button').style.display = 'none';
-                document.getElementById('user-info').style.display = 'none';
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('githubUser');
-            location.reload();
-        }
-
-        checkLoginStatus();
-    </script>
+      } catch (error) {
+        console.error('Error:', error);
+        statusMessage.textContent = `Project Auto execution failed: ${error.message}`;
+        statusMessage.className = 'error-message';
+      }
+    });
+  </script>
 </body>
 </html>
