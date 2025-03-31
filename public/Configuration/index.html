@@ -180,6 +180,24 @@
             border: 1px solid #f5c6cb;
         }
 
+        #progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #4CAF50;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            border-radius: 5px;
+        }
+
     </style>
 </head>
 <body>
@@ -208,6 +226,10 @@
             <button onclick="startProjectAuto()">Start</button>
 
             <div id="config-status"></div>
+
+            <div id="progress-container">
+                <div id="progress-bar">0%</div>
+            </div>
         </div>
     </div>
 
@@ -253,6 +275,8 @@
             const prompt = document.getElementById('prompt').value;
             const accessToken = localStorage.getItem('github_access_token');
             const configStatus = document.getElementById('config-status');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
 
             configStatus.textContent = '';
             configStatus.classList.remove('success', 'error');
@@ -270,6 +294,21 @@
             }
 
             document.getElementById('loading').style.display = 'block';
+            progressContainer.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressBar.textContent = '0%';
+
+            // Simulate progress updates
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = progress + '%';
+                progressBar.textContent = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                }
+            }, 500);
 
             fetch('https://api.github.com/repos/' + repo, {
                 method: 'GET',
@@ -303,12 +342,14 @@
                 })
                 .then(data => {
                     document.getElementById('loading').style.display = 'none';
+                    progressContainer.style.display = 'none';
                     configStatus.textContent = data.message || 'Project Auto started successfully!';
                     configStatus.classList.add('success');
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     document.getElementById('loading').style.display = 'none';
+                    progressContainer.style.display = 'none';
                     configStatus.textContent = error.message || 'An error occurred while starting Project Auto.';
                     configStatus.classList.add('error');
                 });
@@ -316,6 +357,7 @@
             .catch(error => {
                 console.error('Error fetching repository:', error);
                 document.getElementById('loading').style.display = 'none';
+                progressContainer.style.display = 'none';
                 configStatus.textContent = error.message || 'An error occurred while fetching the repository.';
                 configStatus.classList.add('error');
             });
