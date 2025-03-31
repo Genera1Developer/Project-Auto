@@ -4,42 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/index.css">
 </head>
 <body>
+    <div class="current-time" id="current-time"></div>
     <div class="sidebar">
         <div class="sidebar-header">
-            <div id="current-time" class="time-display"></div>
-            <h1>Project Auto</h1>
+            Project Auto
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-list">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+            <li>
+                <button id="auth-button" class="auth-button">Authenticate with GitHub</button>
+                <button id="logout-button" class="logout-button hidden">Logout</button>
+            </li>
+        </ul>
     </div>
-    <div class="content">
-        <header>
-            <h2>Home</h2>
-        </header>
-        <main>
-            <section id="github-auth">
-                <a href="/api/auth/github" class="auth-button">Authenticate with GitHub</a>
-                <div id="user-info"></div>
-            </section>
-            <section id="project-auto-form" style="display: none;">
-                <label for="repo">Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" required><br><br>
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
-                <button id="start-button">Start</button>
-                <div id="status-message"></div>
-            </section>
-        </main>
-    </div>
+    <div class="main-content">
+        <h1>Welcome to Project Auto</h1>
+        <p>Enter your GitHub repository and customization instructions below.</p>
 
+        <div id="auth-modal" class="hidden">
+            <div id="auth-modal-content">
+                <h2>Authenticate with GitHub</h2>
+                <p>Please enter your GitHub username:</p>
+                <form id="auth-form">
+                    <label for="github-username">GitHub Username:</label>
+                    <input type="text" id="github-username" name="github-username">
+                    <button type="submit" class="auth-button">Submit</button>
+                    <button type="button" class="close-button" id="close-auth-modal">Close</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="repo-form" class="repo-form">
+            <label for="github-repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Project-Auto/Project-Auto">
+        </div>
+
+        <div id="prompt-input" class="prompt-input">
+            <label for="customization-prompt">Customization Instructions:</label>
+            <textarea id="customization-prompt" name="customization-prompt" placeholder="Enter your instructions here"></textarea>
+        </div>
+
+        <button id="start-button" class="start-button">Start</button>
+
+        <div id="response-display"></div>
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="loader"></div>
+        </div>
+    </div>
+    <footer>
+        <p>Project Auto &copy; 2024</p>
+    </footer>
     <script>
         function updateTime() {
             const now = new Date();
@@ -50,48 +69,94 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        fetch('/api/auth/user')
-            .then(response => response.json())
-            .then(user => {
-                if (user) {
-                    document.getElementById('github-auth').style.display = 'none';
-                    document.getElementById('project-auto-form').style.display = 'block';
-                    document.getElementById('user-info').textContent = `Logged in as ${user.displayName} (${user.username})`;
-                } else {
-                    document.getElementById('github-auth').style.display = 'block';
-                    document.getElementById('project-auto-form').style.display = 'none';
-                    document.getElementById('user-info').textContent = 'Not logged in.';
-                }
-            });
+        const authButton = document.getElementById('auth-button');
+        const logoutButton = document.getElementById('logout-button');
+        const authModal = document.getElementById('auth-modal');
+        const closeAuthModal = document.getElementById('close-auth-modal');
+        const authForm = document.getElementById('auth-form');
+        const githubUsernameInput = document.getElementById('github-username');
+        let githubUsername = localStorage.getItem('githubUsername') || '';
 
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-            const statusMessage = document.getElementById('status-message');
+        const repoInput = document.getElementById('github-repo');
+        const promptInput = document.getElementById('customization-prompt');
+        const startButton = document.getElementById('start-button');
+        const responseDisplay = document.getElementById('response-display');
+        const loadingOverlay = document.getElementById('loading-overlay');
 
-            statusMessage.textContent = 'Executing Project Auto...';
+        function updateAuthUI() {
+            if (githubUsername) {
+                authButton.classList.add('hidden');
+                logoutButton.classList.remove('hidden');
+            } else {
+                authButton.classList.remove('hidden');
+                logoutButton.classList.add('hidden');
+            }
+        }
+
+        authButton.addEventListener('click', () => {
+            authModal.classList.remove('hidden');
+        });
+
+        closeAuthModal.addEventListener('click', () => {
+            authModal.classList.add('hidden');
+        });
+
+        authForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            githubUsername = githubUsernameInput.value;
+            localStorage.setItem('githubUsername', githubUsername);
+            authModal.classList.add('hidden');
+            githubUsernameInput.value = '';
+            updateAuthUI();
+        });
+
+        logoutButton.addEventListener('click', () => {
+            githubUsername = '';
+            localStorage.removeItem('githubUsername');
+            updateAuthUI();
+        });
+
+        startButton.addEventListener('click', async () => {
+            const repo = repoInput.value;
+            const prompt = promptInput.value;
+
+            if (!repo || !prompt) {
+                responseDisplay.textContent = 'Please fill in all fields.';
+                return;
+            }
+
+            loadingOverlay.classList.remove('hidden');
+            responseDisplay.textContent = '';
 
             try {
-                const response = await fetch('/api/run-auto', {
+                const response = await fetch('/api/process-repo', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ repo, instructions }),
+                    body: JSON.stringify({
+                        repo: repo,
+                        prompt: prompt,
+                        username: githubUsername,
+                    }),
                 });
 
-                const data = await response.json();
+                const result = await response.json();
 
                 if (response.ok) {
-                    statusMessage.textContent = data.message;
+                    responseDisplay.textContent = result.message;
                 } else {
-                    statusMessage.textContent = `Error: ${data.error}`;
+                    responseDisplay.textContent = `Error: ${result.message || response.statusText}`;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                statusMessage.textContent = 'An unexpected error occurred.';
+                responseDisplay.textContent = `An error occurred: ${error.message}`;
+            } finally {
+                loadingOverlay.classList.add('hidden');
             }
         });
+
+        updateAuthUI();
     </script>
 </body>
 </html>
