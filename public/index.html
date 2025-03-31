@@ -5,39 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="https://github.com/Genera1Developer/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
         </div>
-        <nav>
-            <ul>
-                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/index.html">Home</a></li>
-                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration.html">Configuration</a></li>
-                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us.html">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="nav">
+            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
+            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+        </ul>
     </div>
+
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <section id="github-repo">
-                <h2>GitHub Repository</h2>
-                <input type="text" id="repo-url" placeholder="username/repository">
-            </section>
-            <section id="customization">
-                <h2>Customization Instructions</h2>
-                <textarea id="instructions" placeholder="Enter your instructions here"></textarea>
-            </section>
-            <section id="start">
+            <section id="project-input">
+                <h2>Enter Repository Details</h2>
+                <label for="repo-url">Repository URL (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., Genera1Developer/Project-Auto">
+
+                <label for="custom-instructions">Customization Instructions:</label>
+                <textarea id="custom-instructions" rows="4" placeholder="Enter instructions here..."></textarea>
+
                 <button id="start-button">Start</button>
+                <div id = "auth-button">
+                    <a href="/api/auth/github">Authenticate with GitHub</a>
+                </div>
             </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
+
     <script src="https://github.com/Genera1Developer/Project-Auto/public/js/script.js"></script>
 </body>
 </html>
