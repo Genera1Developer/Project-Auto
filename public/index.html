@@ -4,39 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css?raw=true">
+    <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
+    <script src="https://github.com/Project-Auto/public/script.js" defer></script>
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">Project Auto</div>
-        <ul class="sidebar-nav">
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true">Home</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true">Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true">About Us</a></li>
-        </ul>
+        <h1>Project Auto</h1>
+        <a href="https://github.com/Project-Auto/public/">Home</a>
+        <a href="https://github.com/Project-Auto/public/Configuration">Configuration</a>
+        <a href="https://github.com/Project-Auto/public/About-Us">About Us</a>
+        <a href="#" id="logout-button">Logout</a>
     </div>
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Project Auto</h1>
+            <button id="login-button">Login with GitHub</button>
         </header>
         <main>
-            <section id="github-repo-input">
-                <h2>Enter GitHub Repository</h2>
-                <input type="text" id="repo-input" placeholder="username/repo">
+            <section id="hero">
+                <h2>Automate Your Projects</h2>
+                <p>Enter your repository and instructions to let Project Auto do the work.</p>
             </section>
-            <section id="customization-instructions">
-                <h2>Customization Instructions</h2>
-                <textarea id="instructions-input" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-            <section id="github-auth">
-                <button id="github-login">Login with GitHub</button>
-            </section>
-            <section id="start-project">
+
+            <section id="auto-form">
+                <label for="repo-input">Repository (username/repo):</label>
+                <input type="text" id="repo-input" placeholder="e.g., owner/my-repo">
+
+                <label for="instructions-input">Instructions:</label>
+                <textarea id="instructions-input" placeholder="Enter instructions here"></textarea>
+
                 <button id="start-button">Start</button>
+                <p id="status-message"></p>
             </section>
         </main>
     </div>
-    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js?raw=true"></script>
 </body>
 </html>
