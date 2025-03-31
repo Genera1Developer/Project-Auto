@@ -10,38 +10,54 @@
     <div class="container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="https://github.com/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
-                <h1>Project Auto</h1>
+                <h3>Project Auto</h3>
             </div>
             <nav>
                 <ul>
-                    <li><a href="https://github.com/Project-Auto/public/">Home</a></li>
-                    <li><a href="https://github.com/Project-Auto/public/Configuration">Configuration</a></li>
-                    <li><a href="https://github.com/Project-Auto/public/About-Us">About Us</a></li>
+                    <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
+                    <li><a href="https://github.com/Project-Auto/public/Configuration/configuration.html">Configuration</a></li>
+                    <li><a href="https://github.com/Project-Auto/public/About-Us/about_us.html">About Us</a></li>
                 </ul>
             </nav>
         </aside>
-        <main class="main-content">
+        <main class="content">
             <header>
-                <div id="current-time"></div>
+                <div class="time" id="current-time"></div>
+                <div class="auth">
+                    {% if github_username %}
+                        <span>Welcome, {{ github_username }}!</span>
+                        <a href="/logout">Logout</a>
+                    {% else %}
+                        <a href="/login">Login with GitHub</a>
+                    {% endif %}
+                </div>
             </header>
-            <section class="hero">
-                <h1>Automate Your Projects</h1>
-                <p>Enter your GitHub repository and customization instructions to get started.</p>
-            </section>
-            <section class="input-area">
-                <div class="input-group">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository">
-                </div>
-                <div class="input-group">
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-                </div>
-                <button id="start-button" class="primary-button">Start</button>
+            <section class="main-section">
+                <h2>Start Project Auto</h2>
+                {% if github_username %}
+                <form action="/start" method="post">
+                    <label for="repo_name">Repository (username/repo):</label>
+                    <input type="text" id="repo_name" name="repo_name" required><br><br>
+
+                    <label for="custom_prompt">Custom Prompt:</label>
+                    <textarea id="custom_prompt" name="custom_prompt" rows="4" cols="50"></textarea><br><br>
+
+                    <button type="submit">Start</button>
+                </form>
+                {% else %}
+                <p>Please login with GitHub to start Project Auto.</p>
+                {% endif %}
             </section>
         </main>
     </div>
-    <script src="https://github.com/Project-Auto/public/script/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const formattedTime = now.toLocaleString();
+            document.getElementById('current-time').textContent = formattedTime;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 </body>
 </html>
