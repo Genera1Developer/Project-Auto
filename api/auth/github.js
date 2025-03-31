@@ -83,23 +83,28 @@ module.exports = (app) => {
             const filename = `project-auto-${Date.now()}.txt`;
             const path = filename;
 
-            await octokit.repos.createOrUpdateFileContents({
-                owner,
-                repo: repository,
-                path,
-                message: `Project Auto: ${instructions}`,
-                content: Buffer.from(content).toString('base64'),
-                committer: {
-                    name: 'Project Auto',
-                    email: 'projectauto@example.com',
-                },
-                author: {
-                    name: 'Project Auto',
-                    email: 'projectauto@example.com',
-                },
-            });
+            try {
+              await octokit.repos.createOrUpdateFileContents({
+                  owner,
+                  repo: repository,
+                  path,
+                  message: `Project Auto: ${instructions}`,
+                  content: Buffer.from(content).toString('base64'),
+                  committer: {
+                      name: 'Project Auto',
+                      email: 'projectauto@example.com',
+                  },
+                  author: {
+                      name: 'Project Auto',
+                      email: 'projectauto@example.com',
+                  },
+              });
 
-            res.json({ success: true, message: 'Project Auto executed successfully!' });
+              res.json({ success: true, message: 'Project Auto executed successfully!' });
+          } catch (error) {
+              console.error('Error running Project Auto:', error);
+              res.status(500).json({ error: 'Failed to execute Project Auto: ' + error.message });
+          }
         } catch (error) {
             console.error('Error running Project Auto:', error);
             res.status(500).json({ error: 'Failed to execute Project Auto.' });
