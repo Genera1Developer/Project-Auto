@@ -1,35 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="/public/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <span id="current-time"></span>
+    <div class="sidebar">
+        <div class="logo">Project Auto</div>
+        <a href="/" class="active">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
-    <ul>
-      <li><a href="/public/index.html">Home</a></li>
-      <li><a href="/public/Configuration">Configuration</a></li>
-      <li><a href="/public/About-Us">About Us</a></li>
-    </ul>
-    <button id="sidebar-toggle">Toggle Sidebar</button>
-  </div>
-  <div class="content" id="content">
-    <h1>Project Auto</h1>
-    <form id="project-auto-form">
-      <label for="repo">GitHub Repository (user/repo):</label>
-      <input type="text" id="repo" name="repo" required><br><br>
 
-      <label for="prompt">Prompt:</label>
-      <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
+    <div class="content">
+        <header>
+            <div id="time"></div>
+            <h1>Welcome to Project Auto</h1>
+        </header>
 
-      <button type="submit">Start</button>
-    </form>
-  </div>
-  <script src="/public/script.js"></script>
+        <main>
+            <section id="github-auth">
+                <h2>GitHub Authentication</h2>
+                <button id="github-login-button">Login with GitHub</button>
+                <p id="auth-status">Not authenticated</p>
+            </section>
+
+            <section id="project-details">
+                <h2>Project Details</h2>
+                <label for="repo-url">Repository URL (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repo">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
+                <button id="start-button">Start</button>
+            </section>
+
+            <section id="results">
+                <h2>Results</h2>
+                <pre id="output"></pre>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function updateTime() {
+            fetch('/api/time')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('time').textContent = data.time;
+                });
+        }
+
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        const githubLoginButton = document.getElementById('github-login-button');
+        const authStatus = document.getElementById('auth-status');
+        const repoUrlInput = document.getElementById('repo-url');
+        const promptInput = document.getElementById('prompt');
+        const startButton = document.getElementById('start-button');
+        const outputDiv = document.getElementById('output');
+
+        let githubToken = null;
+
+        githubLoginButton.addEventListener('click', () => {
+            fetch('/api/github_login?redirect_uri=https://project-auto-v1029.vercel.app')
+                .then(response => response.json())
+                .then(data => {
+                    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${data.github_client_id}&redirect_uri=${data.redirect_uri}&scope=repo`;
+                    window.location.href = githubAuthUrl;
+                });
+        });
+
+        // Check for GitHub token in URL after redirect
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('access_token');
+
+        if (accessToken) {
+            githubToken = accessToken;
+            authStatus.textContent = 'Authenticated';
+        }
+
+        startButton.addEventListener('click', () => {
+            const repoUrl = repoUrlInput.value;
+            const prompt = promptInput.value;
+
+            if (!repoUrl || !prompt) {
+                alert('Please enter both repository URL and prompt.');
+                return;
+            }
+
+            if (!githubToken) {
+                alert('Please authenticate with GitHub first.');
+                return;
+            }
+
+            fetch('/api/run_auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repo_url: repoUrl, prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    outputDiv.textContent = `Error: ${data.error}`;
+                } else {
+                    outputDiv.textContent = data.output;
+                }
+            })
+            .catch(error => {
+                outputDiv.textContent = `An unexpected error occurred: ${error}`;
+            });
+        });
+    </script>
 </body>
 </html>
