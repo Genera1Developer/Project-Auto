@@ -4,49 +4,314 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css">
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="https://github.com/Genera1Developer/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/index.html"><i class="fa fa-home"></i>Home</a></li>
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration"><i class="fa fa-cog"></i>Configuration</a></li>
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us"><i class="fa fa-info-circle"></i>About Us</a></li>
-        </ul>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html">Home</a>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration">Configuration</a>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us">About Us</a>
     </div>
 
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
 
         <main>
-            <section class="main-section">
-                <h1>Welcome to Project Auto</h1>
-                <p>Automate your repository customizations with ease.</p>
+            <section id="github-auth">
+                <a href="/github/login" class="button">Login with GitHub</a>
+            </section>
 
-                <div class="input-form">
-                    <label for="repo_url">Repository URL (username/repo):</label>
-                    <input type="text" id="repo_url" placeholder="e.g., Genera1Developer/Project-Auto">
+            <section id="auto-form">
+                <h2>Run Project Auto</h2>
+                <form id="project-auto-form">
+                    <label for="repo">GitHub Repository (user/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="user/repo" required>
 
-                    <label for="prompt">Customization Prompt:</label>
-                    <textarea id="prompt" placeholder="Enter your customization instructions here."></textarea>
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" placeholder="Enter instructions here" rows="4" required></textarea>
 
-                    <label for="github_token">GitHub Token:</label>
-                    <input type="password" id="github_token" placeholder="Enter your GitHub token">
+                    <button type="submit" class="button">Start</button>
+                </form>
+            </section>
 
-                    <button id="start_button">Start</button>
-                </div>
-
-                <div id="output"></div>
+            <section id="results">
+                <h2>Results</h2>
+                <div id="results-content"></div>
             </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+    <script src="https://github.com/Genera1Developer/Project-Auto/blob/main/public/script.js"></script>
+</body>
+</html>
+
+
+edit filepath: public/style/style.css
+content:
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #301934; /* Dark purple */
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar a {
+    text-decoration: none;
+    color: #FFD700; /* Gold */
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.sidebar a:hover {
+    background-color: #4E3654; /* Lighter purple */
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+header {
+    background-color: #542E71; /* Purple */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+main {
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+#github-auth {
+    text-align: center;
+}
+
+#auto-form label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+#auto-form input[type="text"],
+#auto-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.button {
+    background-color: #FFD700; /* Gold */
+    color: #301934; /* Dark purple */
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button:hover {
+    background-color: #DAA520; /* Darker gold */
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #301934; /* Dark purple */
+    color: white;
+    border-radius: 8px;
+}
+
+#current-time {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: white;
+}
+
+
+edit filepath: public/script.js
+content:
+
+document.addEventListener('DOMContentLoaded', () => {
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString();
+        document.getElementById('current-time').textContent = timeString;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    const form = document.getElementById('project-auto-form');
+    if (form) {
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+            const resultsDiv = document.getElementById('results-content');
+            resultsDiv.textContent = 'Running Project Auto...';
+
+            try {
+                const response = await fetch('/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, instructions }),
+                });
+
+                if (response.ok) {
+                    const result = await response.text();
+                    resultsDiv.textContent = result;
+                } else {
+                    const error = await response.text();
+                    resultsDiv.textContent = `Error: ${error}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.textContent = `An error occurred: ${error.message}`;
+            }
+        });
+    }
+});
+
+
+edit filepath: public/About-Us
+content:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project Auto</title>
+    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html">Home</a>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration">Configuration</a>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us">About Us</a>
     </div>
 
-    <script src="https://github.com/Genera1Developer/Project-Auto/public/script.js"></script>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>About Us</h1>
+        </header>
+
+        <main>
+            <section>
+                <h2>Our Mission</h2>
+                <p>Project Auto aims to automate and simplify software development tasks, allowing developers to focus on innovation and creativity. We provide a platform to easily customize and run automated processes on your GitHub repositories.</p>
+            </section>
+
+            <section>
+                <h2>Our Team</h2>
+                <p>We are a team of passionate developers dedicated to making software development more efficient and accessible for everyone.</p>
+            </section>
+
+            <section>
+                <h2>Contact</h2>
+                <p>If you have any questions or feedback, please feel free to contact us at: <a href="mailto:projectauto@example.com">projectauto@example.com</a></p>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+    <script src="https://github.com/Genera1Developer/Project-Auto/blob/main/public/script.js"></script>
+</body>
+</html>
+
+
+edit filepath: public/Configuration
+content:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Project Auto</title>
+    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html">Home</a>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration">Configuration</a>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us">About Us</a>
+    </div>
+
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>Configuration</h1>
+        </header>
+
+        <main>
+            <section>
+                <h2>Settings</h2>
+                <p>Customize Project Auto to fit your needs.</p>
+            </section>
+
+            <section>
+                <h2>API Keys</h2>
+                <p>Manage API keys for various services.</p>
+                <p>No API keys required for Project Auto to run.</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+    <script src="https://github.com/Genera1Developer/Project-Auto/blob/main/public/script.js"></script>
 </body>
 </html>
