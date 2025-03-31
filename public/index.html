@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="current-time" id="current-time"></div>
     <div class="sidebar">
         <div class="sidebar-header">
-            Project Auto
+            <i class="fas fa-cogs"></i> Project Auto
         </div>
         <ul class="sidebar-list">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-wrench"></i> Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i> About Us</a></li>
             <li>
-                <button id="auth-button" class="auth-button">Authenticate with GitHub</button>
-                <button id="logout-button" class="logout-button hidden">Logout</button>
+                <button id="auth-button" class="auth-button"><i class="fab fa-github"></i> Authenticate with GitHub</button>
+                <button id="logout-button" class="logout-button hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
             </li>
         </ul>
     </div>
@@ -33,23 +34,23 @@
                 <form id="auth-form">
                     <label for="github-username">GitHub Username:</label>
                     <input type="text" id="github-username" name="github-username">
-                    <button type="submit" class="auth-button">Submit</button>
-                    <button type="button" class="close-button" id="close-auth-modal">Close</button>
+                    <button type="submit" class="auth-button"><i class="fab fa-github"></i> Submit</button>
+                    <button type="button" class="close-button" id="close-auth-modal"><i class="fas fa-times"></i> Close</button>
                 </form>
             </div>
         </div>
 
         <div id="repo-form" class="repo-form">
-            <label for="github-repo">GitHub Repository (username/repo):</label>
+            <label for="github-repo"><i class="fab fa-github"></i> GitHub Repository (username/repo):</label>
             <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Project-Auto/Project-Auto">
         </div>
 
         <div id="prompt-input" class="prompt-input">
-            <label for="customization-prompt">Customization Instructions:</label>
+            <label for="customization-prompt"><i class="fas fa-magic"></i> Customization Instructions:</label>
             <textarea id="customization-prompt" name="customization-prompt" placeholder="Enter your instructions here"></textarea>
         </div>
 
-        <button id="start-button" class="start-button">Start</button>
+        <button id="start-button" class="start-button"><i class="fas fa-play"></i> Start</button>
 
         <div id="response-display"></div>
         <div id="loading-overlay" class="loading-overlay hidden">
