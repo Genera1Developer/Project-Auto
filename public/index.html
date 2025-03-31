@@ -8,37 +8,66 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true">Home</a>
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true">Configuration</a>
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true">About Us</a>
-        </div>
+        <h1>Project Auto</h1>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true">Home</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/configuration.html?raw=true">Configuration</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/about-us.html?raw=true">About Us</a>
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
+            <div id="time"></div>
+            <button id="loginButton">Login with GitHub</button>
         </header>
         <main>
-            <section id="github-repo">
-                <h2>GitHub Repository</h2>
-                <input type="text" id="repo-input" placeholder="username/repo">
-            </section>
-            <section id="customization-instructions">
-                <h2>Customization Instructions</h2>
-                <textarea id="instructions-input" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-            <section id="authentication">
-                <a href="/api/auth/github" class="button">Authenticate with GitHub</a>
-            </section>
-            <section id="start">
-                <button id="start-button" class="button">Start</button>
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <input type="text" id="repo-url" placeholder="username/repo">
+                <textarea id="instructions" placeholder="Customization Instructions"></textarea>
+                <button id="start-button">Start</button>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js?raw=true"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('loginButton').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+          const repoUrl = document.getElementById('repo-url').value;
+          const instructions = document.getElementById('instructions').value;
+
+          const apiUrl = '/api/execute';
+
+          try {
+            const response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ repoUrl: repoUrl, instructions: instructions }),
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              alert('Project Auto executed successfully!');
+              console.log(result);
+            } else {
+              console.error('Error executing Project Auto:', response.status);
+              alert('Error executing Project Auto. Check the console for details.');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('An unexpected error occurred. Check the console for details.');
+          }
+        });
+    </script>
 </body>
 </html>
