@@ -9,7 +9,7 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
         <nav>
@@ -20,38 +20,26 @@
             </ul>
         </nav>
     </div>
-
     <div class="content">
         <header>
             <div id="time" class="time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
-
         <main>
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="login-button">Login with GitHub</button>
-                <p id="auth-status">Not authenticated.</p>
-            </section>
-
             <section id="project-input">
-                <h2>Project Configuration</h2>
-                <label for="repo_url">Repository URL (username/repo):</label>
-                <input type="text" id="repo_url" placeholder="e.g., owner/repository">
-
+                <h2>Configure Project Auto</h2>
+                <label for="repo_url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo_url" placeholder="e.g., yourusername/yourrepo">
                 <label for="prompt">Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
-
+                <textarea id="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
                 <button id="start-button">Start</button>
-            </section>
-
-            <section id="output">
-                <h2>Output</h2>
-                <pre id="output-log"></pre>
+                <div id="output"></div>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-
     <script src="/script.js"></script>
 </body>
 </html>
