@@ -1,46 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Auto</title>
+  <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="current-time" id="current-time"></div>
-    <div id="sidebar">
+  <div class="container">
+    <header>
+      <div id="current-time"></div>
+      <h1>Project Auto</h1>
+    </header>
+    <aside>
+      <nav>
         <ul>
-            <li><a href="/" class="current">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
+          <li><a href="/">Home</a></li>
+          <li><a href="/Configuration">Configuration</a></li>
+          <li><a href="/About-Us">About Us</a></li>
         </ul>
-    </div>
-    <div id="content">
-        <div class="container">
-            <h1>Project Auto</h1>
-            <div id="auth-message"></div>
-            <button id="github-auth-button" class="github-auth-button">Authenticate with GitHub</button>
-            <label for="repo">GitHub Repository (username/repo):</label>
-            <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository">
-            <label for="prompt">Customization Instructions:</label>
-            <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
-            <button id="start-button">Start</button>
-
-            <div id="config-status"></div>
-
-            <div id="progress-container">
-                <div id="progress-bar">0%</div>
-            </div>
-        </div>
-    </div>
+      </nav>
+    </aside>
+    <main>
+      <section id="github-auth">
+        <a href="/api/auth/github">Authenticate with GitHub</a>
+      </section>
+      <section id="project-setup">
+        <h2>Configure Project Auto</h2>
+        <label for="repository">GitHub Repository (username/repo):</label>
+        <input type="text" id="repository" name="repository" placeholder="username/repo">
+        <label for="instructions">Customization Instructions:</label>
+        <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+        <button id="start-button">Start</button>
+      </section>
+    </main>
     <footer>
-        <p>&copy; 2024 Project Auto</p>
+      <p>&copy; 2024 Project Auto</p>
     </footer>
-
-    <div id="loading">
-        <img src="/images/loading.gif" alt="Loading...">
-    </div>
-
-    <script src="/script.js"></script>
+  </div>
+  <script src="/script.js"></script>
 </body>
 </html>
