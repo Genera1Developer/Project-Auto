@@ -16,10 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const content = document.getElementById('content');
   const sidebarToggle = document.getElementById('sidebar-toggle');
 
-  sidebarToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    content.classList.toggle('sidebar-collapsed');
-  });
+  if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        content.classList.toggle('sidebar-collapsed');
+      });
+  }
 
   // Form submission handling
   const projectAutoForm = document.getElementById('project-auto-form');
@@ -100,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // Store the access token (e.g., in localStorage)
           localStorage.setItem('githubToken', data.access_token);
           alert('GitHub authentication successful!');
+          window.location.href = '/public/';
         } else {
           alert('GitHub authentication failed.');
         }
