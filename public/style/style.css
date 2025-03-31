@@ -1,142 +1,138 @@
 /* General Styles */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f8f8f8;
     color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* Sidebar Styles */
-#sidebar {
-    width: 200px;
-    background-color: #333;
-    color: #fff;
-    padding-top: 20px;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
-}
-
-#sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-#sidebar li {
-    padding: 10px;
-    text-align: left;
-}
-
-#sidebar a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-}
-
-#sidebar a:hover {
-    background-color: #555;
-}
-
-#sidebar .current {
-    background-color: #555;
-}
-
-/* Content Styles */
-#content {
-    flex: 1;
-    padding: 20px;
-    margin-left: 220px; /* Adjust based on sidebar width */
+    line-height: 1.6;
 }
 
 .container {
-    max-width: 800px;
-    margin: 20px auto;
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
 }
 
-h1 {
-    color: #795548;
+/* Header Styles */
+header {
+    background-color: #512da8; /* Deep Purple */
+    color: white;
+    padding: 1rem 0;
     text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+/* Navigation Styles */
+nav {
+    background-color: #673ab7; /* Lighter Purple */
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0;
+}
+
+nav a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    transition: background-color 0.3s ease;
+}
+
+nav a:hover {
+    background-color: #5e35b1;
+}
+
+/* Main Content Styles */
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 30px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+section h2 {
+    color: #512da8;
+    border-bottom: 2px solid #d1c4e9;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
 label {
     display: block;
     margin-top: 10px;
-    color: #777;
+    color: #555;
 }
 
 input[type="text"],
 textarea {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin-top: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
+    font-size: 16px;
 }
 
 button {
-    background-color: #795548;
+    background-color: #ffb300; /* Amber/Gold */
     color: white;
-    padding: 10px 15px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #5D4037;
-}
-
-.github-auth-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-    display: block;
-    margin: 20px auto;
-    width: fit-content;
-}
-
-.github-auth-button:hover {
-    background-color: #43A047;
-}
-
-/* Auth Message Styles */
-#auth-message {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
-    text-align: center;
+    background-color: #ffa000;
 }
 
 /* Footer Styles */
 footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #333;
+    background-color: #512da8;
     color: white;
-    margin-top: auto;
+    text-align: center;
+    padding: 1rem 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
 
-/* Loading Spinner Styles */
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+/* Loading styles */
 #loading {
     display: none;
     position: fixed;
@@ -155,7 +151,18 @@ footer {
     height: 100px;
 }
 
-/* Current Time Styles */
+/* Auth message styles */
+#auth-message {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e8f5e9;
+    color: #1b5e20;
+    border: 1px solid #c8e6c9;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Current time styles */
 .current-time {
     position: fixed;
     top: 10px;
@@ -167,80 +174,75 @@ footer {
     z-index: 1000;
 }
 
-/* Configuration Status Styles */
-#config-status {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-#config-status.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-#config-status.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-/* Custom Styles */
-.purple-gold-theme {
-    background-color: #6a0dad; /* Purple */
-    color: #ffc107; /* Gold */
-}
-
-/* Input and textarea focus styles */
-input[type="text"]:focus,
-textarea:focus {
-    border-color: #ba68c8; /* Lighter purple */
-    box-shadow: 0 0 5px rgba(186, 104, 200, 0.5); /* Shadow with the lighter purple */
-}
-
-/* Button hover effect more pronounced */
-button:hover {
-    background-color: #5D4037;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Container shadow more subtle */
-.container {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-}
-
-/* Add transition to the sidebar for smoother appearance */
+/* Sidebar Styles */
 #sidebar {
-    transition: all 0.3s ease;
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    left: 0;
+    top: 0;
 }
 
-/* Styles for the About Us page */
-.about-us-content {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #555;
+#sidebar ul {
+    list-style: none;
+    padding: 0;
 }
 
-.about-us-content h2 {
-    color: #795548;
-    margin-top: 20px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+#sidebar li {
+    padding: 10px 15px;
+    text-align: left;
 }
 
-.about-us-content p {
-    margin-bottom: 15px;
+#sidebar a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 8px 16px;
 }
 
-/* Add responsive styles */
+#sidebar a:hover {
+    background-color: #555;
+}
+
+#sidebar .current {
+    background-color: #555;
+}
+
+/* Content Styles */
+#content {
+    margin-left: 250px; /* Adjust based on sidebar width */
+    padding: 20px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    nav ul {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    nav ul li {
+        margin: 0.5rem 0;
+    }
+
     #sidebar {
         width: 100%;
         position: static;
         height: auto;
+        overflow: visible;
+        padding-bottom: 20px;
     }
 
     #content {
