@@ -3,48 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Project Auto - Home</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/public/style/style.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0e68c; /* Light Gold */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        #sidebar {
+            width: 200px;
+            background-color: #542B82; /* Dark Purple */
+            color: #f0e68c; /* Light Gold */
+            padding-top: 20px;
+            position: fixed;
+            height: 100%;
+            overflow: auto;
+        }
+
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #sidebar li {
+            padding: 10px;
+            text-align: left;
+        }
+
+        #sidebar a {
+            color: #f0e68c; /* Light Gold */
+            text-decoration: none;
+            display: block;
+        }
+
+        #sidebar a:hover {
+            background-color: #6A38A5; /* Medium Purple */
+        }
+
+        #sidebar .current {
+            background-color: #6A38A5; /* Medium Purple */
+        }
+
+        #content {
+            flex: 1;
+            padding: 20px;
+            margin-left: 220px; /* Adjust based on sidebar width */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #795548;
+            text-align: center;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            margin-top: auto;
+        }
+
+        .current-time {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
     <div class="current-time" id="current-time"></div>
+
     <div id="sidebar">
         <ul>
-            <li class="current"><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
+            <li class="current"><a href="/public/index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/public/Configuration/index.html"><i class="fas fa-cogs"></i> Configuration</a></li>
+            <li><a href="/public/About-Us/index.html"><i class="fas fa-info-circle"></i> About Us</a></li>
         </ul>
     </div>
+
     <div id="content">
         <div class="container">
-            <h1>Project Auto</h1>
-            <p>Enter your GitHub repository and customization instructions to start Project Auto.</p>
-
-            <label for="github-repo">GitHub Repository (username/repo):</label>
-            <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
-
-            <label for="custom-instructions">Customization Instructions:</label>
-            <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-
-            <button id="start-button">Start</button>
-
-            <div id="auth-message"></div>
-            <button id="github-auth-button" class="github-auth-button">Authenticate with GitHub</button>
-
-            <div id="config-status"></div>
-
-            <div id="progress-container">
-                <div id="progress-bar">0%</div>
-            </div>
+            <h1>Welcome to Project Auto</h1>
+            <p>Project Auto is a tool designed to automate and customize your projects. With Project Auto, you can easily configure and tailor your projects to meet your specific needs.</p>
+            <p>Get started by navigating to the Configuration page to set up your project.</p>
         </div>
     </div>
+
     <footer>
-        &copy; 2024 Project Auto
+        <p>&copy; 2024 Project Auto. All rights reserved.</p>
     </footer>
-    <div id="loading">
-        <img src="loading.gif" alt="Loading...">
-    </div>
+
     <script>
         function updateTime() {
             const now = new Date();
@@ -54,41 +130,6 @@
 
         setInterval(updateTime, 1000);
         updateTime();
-
-        document.getElementById('github-auth-button').addEventListener('click', async () => {
-            window.location.href = '/api/auth/github';
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('github-repo').value;
-            const instructions = document.getElementById('custom-instructions').value;
-
-            document.getElementById('loading').style.display = 'block';
-
-            try {
-                const response = await fetch('/api/run', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, instructions }),
-                });
-
-                const data = await response.json();
-
-                document.getElementById('loading').style.display = 'none';
-
-                if (response.ok) {
-                    alert('Project Auto started successfully!');
-                } else {
-                    alert(`Error: ${data.message}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loading').style.display = 'none';
-                alert('An error occurred while starting Project Auto.');
-            }
-        });
     </script>
 </body>
 </html>
