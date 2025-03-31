@@ -16,36 +16,41 @@
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
+            <li>
+                <button id="auth-button" class="auth-button">Authenticate</button>
+                <button id="logout-button" class="logout-button hidden">Logout</button>
+            </li>
         </ul>
-        <button id="auth-button" class="auth-button">Authenticate with GitHub</button>
-        <button id="logout-button" class="logout-button hidden">Logout</button>
     </div>
 
-    <div class="main-content">
+    <div id="auth-modal" class="hidden">
+        <div id="auth-modal-content">
+            <h2>Authenticate with GitHub</h2>
+            <p>Enter your GitHub username:</p>
+            <form id="auth-form">
+                <label for="github-username">Username:</label>
+                <input type="text" id="github-username" name="github-username">
+                <button type="submit" class="auth-button">Submit</button>
+                <button type="button" class="close-button">Close</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="main-content" id="main-content">
         <h1>Welcome to Project Auto</h1>
-        <p>Customize your GitHub repositories with ease.</p>
+        <p>Enter your repository details and customization prompt to begin.</p>
 
-        <div id="auth-modal" class="hidden">
-            <div id="auth-modal-content">
-                <h2>GitHub Authentication</h2>
-                <p>Please enter your GitHub username:</p>
-                <form id="auth-form">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
-                    <button type="submit" class="auth-button">Authenticate</button>
-                </form>
-                <button class="close-button" onclick="closeAuthModal()">Close</button>
-            </div>
-        </div>
+        <div id="error-message" class="error-message hidden"></div>
+        <div id="success-message" class="success-message hidden"></div>
 
-        <div id="repo-form" class="repo-form">
-            <label for="github-repo">GitHub Repository (username/repo):</label>
-            <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Project-Auto/Project-Auto">
-        </div>
+        <form id="repo-form" class="repo-form">
+            <label for="repo-name">Repository (username/repo):</label>
+            <input type="text" id="repo-name" name="repo-name" placeholder="e.g., Project-Auto/Project-Auto">
+        </form>
 
         <div id="prompt-input" class="prompt-input">
-            <label for="customization-prompt">Customization Prompt:</label>
-            <textarea id="customization-prompt" name="customization-prompt" placeholder="Enter your customization instructions here."></textarea>
+            <label for="prompt">Customization Prompt:</label>
+            <textarea id="prompt" name="prompt" placeholder="Enter your customization instructions here."></textarea>
         </div>
 
         <button id="start-button" class="start-button">Start</button>
@@ -58,7 +63,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Project Auto</p>
+        <p>Project Auto &copy; 2024</p>
     </footer>
 
     <script>
@@ -75,74 +80,93 @@
         const logoutButton = document.getElementById('logout-button');
         const authModal = document.getElementById('auth-modal');
         const authForm = document.getElementById('auth-form');
-        const usernameInput = document.getElementById('username');
-        const repoInput = document.getElementById('github-repo');
-        const promptInput = document.getElementById('customization-prompt');
+        const closeButton = document.querySelector('.close-button');
+        const repoForm = document.getElementById('repo-form');
+        const promptInput = document.getElementById('prompt');
         const startButton = document.getElementById('start-button');
         const responseDisplay = document.getElementById('response-display');
         const loadingOverlay = document.getElementById('loading-overlay');
+        const errorMessageDisplay = document.getElementById('error-message');
+        const successMessageDisplay = document.getElementById('success-message');
 
-        function showLoading() {
-            loadingOverlay.classList.remove('hidden');
-        }
+        let isAuthenticated = false;
+        let githubUsername = localStorage.getItem('githubUsername') || '';
 
-        function hideLoading() {
-            loadingOverlay.classList.add('hidden');
-        }
-
-        function showAuthModal() {
-            authModal.classList.remove('hidden');
-        }
-
-        function closeAuthModal() {
-            authModal.classList.add('hidden');
-        }
-
-        function isLoggedIn() {
-            return localStorage.getItem('githubUsername') !== null;
-        }
-
-        function updateAuthUI() {
-            if (isLoggedIn()) {
+        function checkAuthentication() {
+            if (githubUsername) {
+                isAuthenticated = true;
                 authButton.classList.add('hidden');
                 logoutButton.classList.remove('hidden');
             } else {
+                isAuthenticated = false;
                 authButton.classList.remove('hidden');
                 logoutButton.classList.add('hidden');
             }
         }
 
-        authButton.addEventListener('click', showAuthModal);
+        checkAuthentication();
 
-        logoutButton.addEventListener('click', () => {
-            localStorage.removeItem('githubUsername');
-            updateAuthUI();
+        authButton.addEventListener('click', () => {
+            authModal.classList.remove('hidden');
         });
 
-        authForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const username = usernameInput.value;
-            localStorage.setItem('githubUsername', username);
-            closeAuthModal();
-            updateAuthUI();
+        closeButton.addEventListener('click', () => {
+            authModal.classList.add('hidden');
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            githubUsername = document.getElementById('github-username').value;
+            localStorage.setItem('githubUsername', githubUsername);
+            isAuthenticated = true;
+            authModal.classList.add('hidden');
+            authButton.classList.add('hidden');
+            logoutButton.classList.remove('hidden');
+
+            successMessageDisplay.textContent = 'Authenticated successfully!';
+            successMessageDisplay.classList.remove('hidden');
+            setTimeout(() => {
+                successMessageDisplay.classList.add('hidden');
+            }, 3000);
+        });
+
+        logoutButton.addEventListener('click', () => {
+            githubUsername = '';
+            localStorage.removeItem('githubUsername');
+            isAuthenticated = false;
+            authButton.classList.remove('hidden');
+            logoutButton.classList.add('hidden');
+
+            successMessageDisplay.textContent = 'Logged out successfully!';
+            successMessageDisplay.classList.remove('hidden');
+            setTimeout(() => {
+                successMessageDisplay.classList.add('hidden');
+            }, 3000);
         });
 
         startButton.addEventListener('click', async () => {
-            const repo = repoInput.value;
-            const prompt = promptInput.value;
-            const username = localStorage.getItem('githubUsername');
-
-            if (!username) {
-                alert('Please authenticate with GitHub first.');
+            if (!isAuthenticated) {
+                errorMessageDisplay.textContent = 'Please authenticate with GitHub first.';
+                errorMessageDisplay.classList.remove('hidden');
+                setTimeout(() => {
+                    errorMessageDisplay.classList.add('hidden');
+                }, 3000);
                 return;
             }
 
-            if (!repo) {
-                alert('Please enter a GitHub repository.');
+            const repoName = document.getElementById('repo-name').value;
+            const prompt = document.getElementById('prompt').value;
+
+            if (!repoName || !prompt) {
+                errorMessageDisplay.textContent = 'Please enter both repository name and a prompt.';
+                errorMessageDisplay.classList.remove('hidden');
+                setTimeout(() => {
+                    errorMessageDisplay.classList.add('hidden');
+                }, 3000);
                 return;
             }
 
-            showLoading();
+            loadingOverlay.classList.remove('hidden');
             responseDisplay.textContent = 'Processing...';
 
             try {
@@ -152,24 +176,36 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        repo: repo,
+                        repoName: repoName,
                         prompt: prompt,
-                        username: username,
+                        githubUsername: githubUsername
                     }),
                 });
 
-                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-                hideLoading();
+                const data = await response.json();
                 responseDisplay.textContent = data.message;
+                successMessageDisplay.textContent = 'Operation completed successfully!';
+                successMessageDisplay.classList.remove('hidden');
+                setTimeout(() => {
+                    successMessageDisplay.classList.add('hidden');
+                }, 3000);
 
             } catch (error) {
-                hideLoading();
+                console.error('Error:', error);
                 responseDisplay.textContent = `Error: ${error.message}`;
+                errorMessageDisplay.textContent = `An error occurred: ${error.message}`;
+                errorMessageDisplay.classList.remove('hidden');
+                setTimeout(() => {
+                    errorMessageDisplay.classList.add('hidden');
+                }, 3000);
+            } finally {
+                loadingOverlay.classList.add('hidden');
             }
         });
-
-        updateAuthUI();
     </script>
 </body>
 </html>
