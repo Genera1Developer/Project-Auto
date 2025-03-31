@@ -7,49 +7,140 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2 class="logo">Project Auto</h2>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
+    <div id="sidebar">
+        <ul>
+            <li><a href="/" class="current">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <div class="auth-buttons">
-                <button id="login-button" onclick="loginWithGitHub()">Login with GitHub</button>
-                <button id="logout-button" onclick="logout()">Logout</button>
-                <span id="user-info"></span>
-            </div>
-        </header>
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <div class="input-group">
-                    <label for="github-repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="github-repo" placeholder="e.g., owner/repository">
-                </div>
-                <div class="input-group">
-                    <label for="customization-instructions">Customization Instructions:</label>
-                    <textarea id="customization-instructions" rows="4" placeholder="Enter your instructions here..."></textarea>
-                </div>
-                <button id="start-button" onclick="startProjectAuto()">Start</button>
-            </section>
-        </main>
+
+    <div id="content">
+        <div class="current-time"></div>
+        <h1>Project Auto</h1>
+        <div class="container">
+            <button id="github-auth" class="github-auth-button">Authenticate with GitHub</button>
+            <div id="auth-message"></div>
+
+            <label for="repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
+
+            <label for="instructions">Customization Instructions:</label>
+            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+
+            <button id="start">Start Project Auto</button>
+            <div id="loading"><img src="https://i.imgur.com/Tk9nqMz.gif" alt="Loading..."></div>
+            <div id="config-status"></div>
+        </div>
     </div>
-    <script src="/script.js"></script>
+
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            document.querySelector('.current-time').textContent = timeString;
         }
+
         setInterval(updateTime, 1000);
         updateTime();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const githubAuthButton = document.getElementById('github-auth');
+            const authMessage = document.getElementById('auth-message');
+            const repoInput = document.getElementById('repo');
+            const instructionsTextarea = document.getElementById('instructions');
+            const startButton = document.getElementById('start');
+            const loadingDiv = document.getElementById('loading');
+            const configStatusDiv = document.getElementById('config-status');
+
+            githubAuthButton.addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/auth');
+                    if (response.ok) {
+                        const data = await response.json();
+                        window.location.href = data.authUrl;
+                    } else {
+                        authMessage.textContent = 'Authentication failed.';
+                        authMessage.style.backgroundColor = '#F08080';
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    authMessage.textContent = 'An error occurred during authentication.';
+                    authMessage.style.backgroundColor = '#F08080';
+                }
+            });
+
+            // Check for returned auth code
+            const urlParams = new URLSearchParams(window.location.search);
+            const authCode = urlParams.get('code');
+
+            if (authCode) {
+                (async () => {
+                    try {
+                        const response = await fetch('/api/auth/callback?code=' + authCode);
+                        if (response.ok) {
+                            const data = await response.json();
+                            authMessage.textContent = data.message;
+                            authMessage.style.backgroundColor = '#98FB98';
+                        } else {
+                            authMessage.textContent = 'Authentication failed.';
+                            authMessage.style.backgroundColor = '#F08080';
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        authMessage.textContent = 'An error occurred during authentication callback.';
+                        authMessage.style.backgroundColor = '#F08080';
+                    }
+                })();
+            }
+
+            startButton.addEventListener('click', async () => {
+                const repo = repoInput.value;
+                const instructions = instructionsTextarea.value;
+
+                if (!repo) {
+                    alert('Please enter a repository in the format username/repo.');
+                    return;
+                }
+
+                loadingDiv.style.display = 'block';
+                configStatusDiv.textContent = '';
+
+                try {
+                    const response = await fetch('/api/run', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ repo, instructions })
+                    });
+
+                    loadingDiv.style.display = 'none';
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        configStatusDiv.textContent = data.message;
+                        configStatusDiv.classList.add('success');
+                        configStatusDiv.classList.remove('error');
+
+                        // Redirect to new URL after successful execution.
+                        if (data.redirectURL) {
+                            window.location.href = data.redirectURL;
+                        }
+                    } else {
+                        const errorData = await response.json();
+                        configStatusDiv.textContent = 'Error: ' + errorData.message;
+                        configStatusDiv.classList.add('error');
+                        configStatusDiv.classList.remove('success');
+                    }
+                } catch (error) {
+                    loadingDiv.style.display = 'none';
+                    configStatusDiv.textContent = 'An unexpected error occurred.';
+                    configStatusDiv.classList.add('error');
+                    configStatusDiv.classList.remove('success');
+                }
+            });
+        });
     </script>
 </body>
 </html>
