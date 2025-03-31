@@ -112,4 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('An error occurred during GitHub authentication.');
       });
   }
+
+   // Handle logout
+   const logoutButton = document.getElementById('logout-button');
+   if (logoutButton) {
+     logoutButton.addEventListener('click', () => {
+       localStorage.removeItem('githubToken');
+       alert('Logged out.');
+       window.location.href = '/public/';
+     });
+   }
 });
