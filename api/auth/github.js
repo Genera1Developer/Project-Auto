@@ -9,15 +9,15 @@ module.exports = (app) => {
     secret: 'Beauty&TheBeast', // Replace with a strong secret
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Set to true in production with HTTPS
+    cookie: { secure: true, sameSite: 'none', domain: 'project-auto-v1029.vercel.app' } // Set to true in production with HTTPS
   }));
   app.use(passport.initialize());
   app.use(passport.session());
 
   passport.use(new GitHubStrategy({
-    clientID: 'YOUR_GITHUB_CLIENT_ID', // Replace with your GitHub Client ID
-    clientSecret: 'YOUR_GITHUB_CLIENT_SECRET', // Replace with your GitHub Client Secret
-    callbackURL: 'https://project-auto-website.vercel.app/api/auth/github/callback' // Replace with your callback URL
+    clientID: process.env.GITHUB_CLIENT_ID, // Replace with your GitHub Client ID
+    clientSecret: process.env.GITHUB_CLIENT_SECRET, // Replace with your GitHub Client Secret
+    callbackURL: 'https://project-auto-v1029.vercel.app/api/auth/github/callback' // Replace with your callback URL
   },
   async (accessToken, refreshToken, profile, done) => {
     profile.accessToken = accessToken;
@@ -36,15 +36,15 @@ module.exports = (app) => {
     passport.authenticate('github', { scope: [ 'repo' ] }));
 
   app.get('/api/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: 'https://github.com/Genera1Developer/Project-Auto/public/' }),
+    passport.authenticate('github', { failureRedirect: '/error' }),
     (req, res) => {
-      res.redirect('https://github.com/Genera1Developer/Project-Auto/public/');
+      res.redirect('/');
     });
 
   app.get('/api/auth/logout', (req, res) => {
     req.logout(function(err) {
       if (err) { return next(err); }
-      res.redirect('https://github.com/Genera1Developer/Project-Auto/public/');
+      res.redirect('/');
     });
   });
 
