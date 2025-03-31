@@ -9,80 +9,36 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/style/project-auto-logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
-            <button id="github-login-button" class="login-button">Login with GitHub</button>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button" onclick="loginWithGitHub()">Login with GitHub</button>
+                <button id="logout-button" onclick="logout()" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
         </header>
-
         <main>
             <section id="project-input">
-                <h2>Project Setup</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., yourusername/yourrepo">
-
-                <label for="customization-instructions">Customization Instructions:</label>
-                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your desired customizations here..."></textarea>
-
-                <button id="start-button" class="start-button">Start</button>
+                <h2>Run Project Auto</h2>
+                <label for="repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="username/repo">
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter customization instructions"></textarea>
+                <button id="start-button" onclick="runProjectAuto()">Start</button>
+                <div id="status-message"></div>
             </section>
         </main>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('github-login-button').addEventListener('click', () => {
-            window.location.href = '/api/auth/github';
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const customizationInstructions = document.getElementById('customization-instructions').value;
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        repoUrl: repoUrl,
-                        customizationInstructions: customizationInstructions,
-                    }),
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    alert(result.message);
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
