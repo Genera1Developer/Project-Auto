@@ -8,27 +8,39 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <a href="/">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <div class="sidebar-header">
+            <a href="/index.html">Project Auto</a>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
+
     <div class="content">
         <header>
-            <div id="currentTime"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <section id="inputSection">
-                <h2>Run Project Auto</h2>
-                <label for="repo">Repository (user/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="user/repo"><br><br>
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter customization instructions"></textarea><br><br>
-                <button id="startButton">Start</button>
-                <div id="status"></div>
+            <section id="repo-input">
+                <h2>Enter Repository Details</h2>
+                <form id="project-auto-form">
+                    <label for="repository">Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo" required>
+
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+
+                    <button type="button" id="start-button">Start</button>
+                </form>
             </section>
         </main>
+
         <footer>
             <p>&copy; 2024 Project Auto</p>
         </footer>
@@ -38,38 +50,36 @@
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('currentTime').textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('startButton').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repository = document.getElementById('repository').value;
             const instructions = document.getElementById('instructions').value;
-            const statusDiv = document.getElementById('status');
-
-            statusDiv.textContent = 'Running...';
 
             try {
-                const response = await fetch('/api/run-auto', {
+                const response = await fetch('/api/process', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ repo, instructions }),
+                    body: JSON.stringify({ repository, instructions }),
                 });
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    statusDiv.textContent = data.message;
-                } else {
-                    statusDiv.textContent = `Error: ${data.error}`;
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+
+                const data = await response.json();
+                console.log(data);
+                alert(data.message);
+
             } catch (error) {
                 console.error('Error:', error);
-                statusDiv.textContent = 'An error occurred.';
+                alert('An error occurred while processing your request.');
             }
         });
     </script>
