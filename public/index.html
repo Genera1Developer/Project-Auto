@@ -4,384 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css">
+    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
 </head>
 <body>
     <div class="sidebar">
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html">Home</a>
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us.html">About Us</a>
+        <div class="sidebar-header">
+            <img src="https://github.com/Genera1Developer/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/index.html">Home</a></li>
+                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration.html">Configuration</a></li>
+                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us.html">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
+            <div id="time" class="time"></div>
             <h1>Project Auto</h1>
         </header>
         <main>
-            <section id="auth-section">
-                <button id="login-button">Login with GitHub</button>
-                <div id="user-info"></div>
+            <section id="github-repo">
+                <h2>GitHub Repository</h2>
+                <input type="text" id="repo-url" placeholder="username/repository">
             </section>
-            <section id="auto-section">
-                <h2>Run Project Auto</h2>
-                <form id="auto-form">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" required><br><br>
-                    <label for="instructions">Instructions:</label><br>
-                    <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
-                    <button type="submit">Start</button>
-                </form>
-                <div id="result"></div>
+            <section id="customization">
+                <h2>Customization Instructions</h2>
+                <textarea id="instructions" placeholder="Enter your instructions here"></textarea>
+            </section>
+            <section id="start">
+                <button id="start-button">Start</button>
             </section>
         </main>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('login-button').addEventListener('click', () => {
-            window.location.href = '/github/login';
-        });
-
-        const form = document.getElementById('auto-form');
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-
-            const response = await fetch('/run-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ repo, instructions }),
-            });
-
-            const resultDiv = document.getElementById('result');
-            if (response.ok) {
-                resultDiv.textContent = 'Project Auto executed successfully!';
-            } else {
-                const message = await response.text();
-                resultDiv.textContent = `Project Auto execution failed: ${message}`;
-            }
-        });
-
-        async function fetchUserInfo() {
-          try {
-              const response = await fetch('/api/user');
-              if (response.ok) {
-                  const user = await response.json();
-                  const userInfoDiv = document.getElementById('user-info');
-                  userInfoDiv.innerHTML = `<p>Logged in as: ${user.login}</p><img src="${user.avatar_url}" alt="User Avatar" style="width: 50px; height: 50px;">`;
-                  document.getElementById('login-button').style.display = 'none';
-              } else {
-                  console.log('User not logged in.');
-                  document.getElementById('login-button').style.display = 'block';
-              }
-          } catch (error) {
-              console.error('Error fetching user info:', error);
-              document.getElementById('login-button').style.display = 'block';
-          }
-      }
-
-      fetchUserInfo();
-    </script>
+    <script src="https://github.com/Genera1Developer/Project-Auto/public/js/script.js"></script>
 </body>
 </html>
-
-
-edit filepath: public/style/style.css
-content:
-
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-    display: flex;
-    height: 100vh;
-}
-
-.sidebar {
-    width: 200px;
-    background-color: #301934; /* Deep Purple */
-    color: #fff;
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sidebar a {
-    padding: 15px;
-    text-decoration: none;
-    color: #FFD700; /* Gold */
-    display: block;
-    width: 100%;
-    text-align: center;
-    transition: background-color 0.3s;
-}
-
-.sidebar a:hover {
-    background-color: #4B0082; /* Dark Violet */
-}
-
-.content {
-    flex: 1;
-    padding: 20px;
-}
-
-header {
-    background-color: #FFD700; /* Gold */
-    color: #301934; /* Deep Purple */
-    padding: 10px;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-main {
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-#current-time {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: #301934;
-}
-
-#auth-section {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-#auth-section button {
-    background-color: #4B0082; /* Dark Violet */
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#auth-section button:hover {
-    background-color: #301934; /* Deep Purple */
-}
-
-#user-info {
-    margin-top: 10px;
-    color: #555;
-}
-
-#auto-section label {
-    display: block;
-    margin-bottom: 5px;
-    color: #301934;
-}
-
-#auto-section input[type="text"],
-#auto-section textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-#auto-section button[type="submit"] {
-    background-color: #FFD700; /* Gold */
-    color: #301934; /* Deep Purple */
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-#auto-section button[type="submit"]:hover {
-    background-color: #B8860B; /* Dark Goldenrod */
-}
-
-#result {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    color: #555;
-}
-
-
-edit filepath: public/About-Us.html
-content:
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css">
-</head>
-<body>
-    <div class="sidebar">
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html">Home</a>
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us.html">About Us</a>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>About Us</h1>
-        </header>
-        <main>
-            <section>
-                <h2>Our Mission</h2>
-                <p>Project Auto aims to automate and simplify common development tasks, allowing developers to focus on innovation rather than repetitive work.</p>
-            </section>
-            <section>
-                <h2>Our Team</h2>
-                <p>We are a team of dedicated developers passionate about creating tools that enhance productivity and efficiency.</p>
-            </section>
-            <section>
-                <h2>Contact</h2>
-                <p>For inquiries, please contact us at: example@email.com</p>
-            </section>
-        </main>
-    </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
-</body>
-</html>
-
-
-edit filepath: public/Configuration.html
-content:
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuration - Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css">
-</head>
-<body>
-    <div class="sidebar">
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html">Home</a>
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
-        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us.html">About Us</a>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Configuration</h1>
-        </header>
-        <main>
-            <section>
-                <h2>Settings</h2>
-                <p>Configure the behavior of Project Auto to suit your specific needs.</p>
-                <form id="config-form">
-                    <label for="setting1">Setting 1:</label>
-                    <input type="text" id="setting1" name="setting1" value="Example Value"><br><br>
-                    <label for="setting2">Setting 2:</label>
-                    <input type="text" id="setting2" name="setting2" value="Another Value"><br><br>
-                    <button type="submit">Save Settings</button>
-                </form>
-            </section>
-        </main>
-    </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('config-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('Settings saved!');
-        });
-    </script>
-</body>
-</html>
-
-
-edit filepath: api/user.js
-content:
-
-const express = require('express');
-const router = express.Router();
-
-router.get('/user', (req, res) => {
-    if (req.session.githubUser) {
-        res.json(req.session.githubUser);
-    } else {
-        res.status(401).send('Unauthorized');
-    }
-});
-
-module.exports = router;
-
-
-edit filepath: server.js
-content:
-
-const express = require('express');
-const session = require('express-session');
-const connectRouter = require('./api/connect');
-const userRouter = require('./api/user');
-require('dotenv').config();
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'your_default_secret',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }
-}));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.use('/', connectRouter);
-app.use('/', userRouter);
-
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
-});
-
-
-edit filepath: .env
-content:
-
-GITHUB_CLIENT_ID=YOUR_GITHUB_CLIENT_ID
-GITHUB_CLIENT_SECRET=YOUR_GITHUB_CLIENT_SECRET
-GITHUB_REDIRECT_URI=http://localhost:3000/github/callback
-SESSION_SECRET=your_session_secret
