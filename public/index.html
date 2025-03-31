@@ -9,7 +9,7 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h2 class="logo">Project Auto</h2>
         </div>
         <ul class="sidebar-menu">
             <li><a href="/index.html">Home</a></li>
@@ -17,121 +17,39 @@
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button" onclick="loginWithGitHub()">Login with GitHub</button>
+                <button id="logout-button" onclick="logout()">Logout</button>
+                <span id="user-info"></span>
+            </div>
         </header>
-
         <main>
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login-btn">Login with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </section>
-
             <section id="project-setup">
                 <h2>Project Setup</h2>
-                <label for="repo_url">Repository URL (username/repo):</label>
-                <input type="text" id="repo_url" name="repo_url" placeholder="e.g., owner/repository">
-
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions"></textarea>
-
-                <button id="start-btn">Start</button>
-            </section>
-
-            <section id="output">
-                <h2>Output</h2>
-                <pre id="output-log"></pre>
+                <div class="input-group">
+                    <label for="github-repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="github-repo" placeholder="e.g., owner/repository">
+                </div>
+                <div class="input-group">
+                    <label for="customization-instructions">Customization Instructions:</label>
+                    <textarea id="customization-instructions" rows="4" placeholder="Enter your instructions here..."></textarea>
+                </div>
+                <button id="start-button" onclick="startProjectAuto()">Start</button>
             </section>
         </main>
     </div>
-
+    <script src="/script.js"></script>
     <script>
         function updateTime() {
-            fetch('/api/time')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('time').textContent = data.time;
-                });
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
         }
-
-        updateTime();
         setInterval(updateTime, 1000);
-
-        const githubLoginBtn = document.getElementById('github-login-btn');
-        const authStatus = document.getElementById('auth-status');
-        const repoUrlInput = document.getElementById('repo_url');
-        const promptInput = document.getElementById('prompt');
-        const startBtn = document.getElementById('start-btn');
-        const outputLog = document.getElementById('output-log');
-
-        let accessToken = null;
-
-        githubLoginBtn.addEventListener('click', () => {
-            const redirectUri = window.location.origin;
-            fetch(`/api/github_login?redirect_uri=${redirectUri}`)
-                .then(response => response.json())
-                .then(data => {
-                    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${data.github_client_id}&redirect_uri=${data.redirect_uri}&scope=repo`;
-                    window.location.href = githubAuthUrl;
-                });
-        });
-
-        // Check for authorization code in the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-
-        if (code) {
-            fetch(`/api/github_callback?code=${code}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.access_token) {
-                        accessToken = data.access_token;
-                        authStatus.textContent = 'Authenticated with GitHub';
-                    } else {
-                        authStatus.textContent = 'GitHub authentication failed.';
-                    }
-                });
-        }
-        
-        startBtn.addEventListener('click', () => {
-            const repoUrl = repoUrlInput.value;
-            const prompt = promptInput.value;
-
-            if (!repoUrl || !prompt) {
-                outputLog.textContent = 'Repository URL and prompt are required.';
-                return;
-            }
-
-            if (!accessToken) {
-                outputLog.textContent = 'Please authenticate with GitHub.';
-                return;
-            }
-
-            outputLog.textContent = 'Running Project Auto...';
-
-            fetch('/api/run_auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ repo_url: repoUrl, prompt: prompt }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    outputLog.textContent = `Error: ${data.error}`;
-                } else {
-                    outputLog.textContent = `Success: ${data.message}\n\nOutput:\n${data.output}`;
-                }
-            })
-            .catch(error => {
-                outputLog.textContent = `An unexpected error occurred: ${error}`;
-            });
-        });
+        updateTime();
     </script>
 </body>
 </html>
