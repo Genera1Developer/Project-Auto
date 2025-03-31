@@ -4,58 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css">
+    <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 <body>
-    <aside class="sidebar">
-        <div class="sidebar-content">
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html" class="sidebar-link active">Home</a>
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/configuration.html" class="sidebar-link">Configuration</a>
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/about_us.html" class="sidebar-link">About Us</a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <i class="fa fa-cog fa-spin"></i> Project Auto
         </div>
-    </aside>
-    <main class="main-content">
-        <header class="header">
-            <div id="time" class="time"></div>
-            <nav>
-                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a> |
-                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/configuration.html">Configuration</a> |
-                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/about_us.html">About Us</a>
-            </nav>
+        <ul class="sidebar-menu">
+            <li><a href="https://github.com/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="https://github.com/Project-Auto/public/Configuration"><i class="fa fa-wrench"></i> Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <header>
+            <div id="clock"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
-        <section class="content">
-            <h1>Project Auto</h1>
-            <p>Automate your GitHub projects.</p>
-
-            {% if github_username %}
-            <p>Logged in as: {{ github_username }}</p>
-            <a href="/logout" class="button">Logout</a>
-            <form action="/start" method="post" class="project-form">
-                <label for="repo_name">Repository Name (username/repo):</label>
-                <input type="text" id="repo_name" name="repo_name" required><br><br>
-
-                <label for="custom_prompt">Custom Prompt:</label><br>
-                <textarea id="custom_prompt" name="custom_prompt" rows="4" cols="50"></textarea><br><br>
-
-                <button type="submit" class="button">Start</button>
-            </form>
-            {% else %}
-            <a href="/login" class="button">Login with GitHub</a>
-            {% endif %}
-        </section>
-    </main>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeElement = document.getElementById('time');
-            if (timeElement) {
-                timeElement.textContent = now.toLocaleString();
-            }
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
-    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js"></script>
+        <main>
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <label for="repo">Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., owner/my-repo">
+                <br>
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your customization instructions here..."></textarea>
+                <br>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
+    </div>
+    <script src="https://github.com/Project-Auto/public/script/script.js"></script>
 </body>
 </html>
