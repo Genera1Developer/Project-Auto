@@ -1,239 +1,144 @@
-/* General Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f8f8f8;
-    color: #333;
-    line-height: 1.6;
-}
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
 
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
+        header {
+            background: #552583;
+            color: #fff;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: 3px solid #A79778;
+        }
 
-/* Typography */
-h1, h2, h3 {
-    color: #7036ba; /* Purple */
-    text-align: center;
-    margin-bottom: 20px;
-}
+        header a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
 
-h1 {
-    font-size: 2.5em;
-}
+        header ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
 
-h2 {
-    font-size: 2em;
-}
+        header li {
+            float: left;
+            display: inline;
+            padding: 0 20px 0 20px;
+        }
 
-h3 {
-    font-size: 1.5em;
-}
+        header #branding {
+            float: left;
+        }
 
-p {
-    margin-bottom: 15px;
-}
+        header #branding h1 {
+            margin: 0;
+        }
 
-a {
-    color: #b39ddb; /* Lighter Purple */
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
+        header nav {
+            float: right;
+            margin-top: 10px;
+        }
 
-a:hover {
-    color: #7036ba; /* Purple */
-}
+        header .highlight,
+        header .current a {
+            color: #A79778;
+            font-weight: bold;
+        }
 
-/* Layout */
-#sidebar {
-    width: 250px;
-    background-color: #333;
-    color: #fff;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
-    padding-top: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-}
+        header a:hover {
+            color: #ccc;
+            font-weight: bold;
+        }
 
-#sidebar ul {
-    list-style: none;
-    padding: 0;
-}
+        #currentTime {
+            float: left;
+            padding: 10px;
+            font-size: 16px;
+        }
 
-#sidebar li {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #555;
-}
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
 
-#sidebar li:last-child {
-    border-bottom: none;
-}
+        #sidebar {
+            float: left;
+            width: 20%;
+            padding: 10px;
+        }
 
-#sidebar a {
-    color: #fff;
-    display: block;
-    padding: 8px 16px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
 
-#sidebar a:hover,
-#sidebar .current {
-    background-color: #555;
-}
+        #sidebar li {
+            padding: 10px;
+            background: #552583;
+            border-bottom: 1px solid #A79778;
+        }
 
-#content {
-    margin-left: 270px; /* Adjust based on sidebar width */
-    padding: 20px;
-}
+        #sidebar a {
+            color: #fff;
+            text-decoration: none;
+        }
 
-/* Forms */
-label {
-    display: block;
-    margin-top: 10px;
-    color: #555;
-    font-weight: bold;
-}
+        #sidebar .current a {
+            font-weight: bold;
+        }
 
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 16px;
-}
+        #main-content {
+            float: right;
+            width: 75%;
+            padding: 20px;
+        }
 
-button {
-    background-color: #7036ba; /* Purple */
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
+        footer {
+            padding: 20px;
+            margin-top: 20px;
+            color: #fff;
+            background-color: #A79778;
+            text-align: center;
+        }
 
-button:hover {
-    background-color: #5a2999;
-}
+        .team-member {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-.github-auth-button {
-    background-color: #4CAF50;
-}
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
 
-.github-auth-button:hover {
-    background-color: #43A047;
-}
+        #team-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
 
-/* Alerts and Messages */
-#auth-message,
-#config-status {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 5px;
-    text-align: center;
-}
+        .team-member {
+            width: 45%; /* Adjust as needed */
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
 
-#auth-message {
-    background-color: #e8f5e9;
-    color: #1b5e20;
-    border: 1px solid #a5d6a7;
-}
-
-#config-status.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-#config-status.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-/* Loading Spinner */
-#loading {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    text-align: center;
-    padding-top: 200px;
-}
-
-#loading img {
-    width: 100px;
-    height: 100px;
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #333;
-    color: white;
-    margin-top: auto;
-    border-top: 2px solid #7036ba; /* Purple */
-}
-
-/* Current Time Display */
-.current-time {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: 14px;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    #sidebar {
-        width: 100%;
-        position: static;
-        height: auto;
-        box-shadow: none;
-    }
-
-    #sidebar ul {
-        display: flex;
-        overflow-x: auto;
-    }
-
-    #sidebar li {
-        flex: 0 0 auto;
-        border-bottom: none;
-    }
-
-    #content {
-        margin-left: 0;
-        padding: 10px;
-    }
-
-    .container {
-        width: 100%;
-        padding: 10px;
-    }
-}
+        .team-member img {
+            width: 80px;
+            height: 80px;
+        }
