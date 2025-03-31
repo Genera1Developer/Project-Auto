@@ -5,40 +5,131 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <ul class="nav">
-            <li><a href="/">Home</a></li>
+    <div class="current-time" id="current-time"></div>
+    <div id="sidebar">
+        <ul>
+            <li><a href="/" class="current">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-    <div class="content">
-        <header>
-            <div id="time"></div>
-            <button id="github-login-button">Authenticate with GitHub</button>
-            <span id="github-username"></span>
-        </header>
-        <main>
-            <section id="project-input">
-                <h2>Run Project Auto</h2>
-                <label for="repo-url">Repository URL (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
-                <button id="start-button">Start</button>
-            </section>
-            <section id="output">
-                <h2>Output</h2>
-                <pre id="output-text"></pre>
-            </section>
-        </main>
+
+    <div id="content">
+        <div class="container">
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your GitHub repository and customization instructions below to start Project Auto.</p>
+
+            <label for="github-repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="github-repo" name="github-repo" placeholder="e.g., owner/repository">
+
+            <label for="customization-instructions">Customization Instructions:</label>
+            <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+
+            <button id="start-button">Start</button>
+
+            <div id="progress-container">
+                <div id="progress-bar">0%</div>
+            </div>
+
+            <div id="config-status"></div>
+
+            <button id="github-auth-button" class="github-auth-button">Authenticate with GitHub</button>
+            <div id="auth-message"></div>
+        </div>
     </div>
-    <script src="/script.js"></script>
+
+    <footer>
+        <p>&copy; 2024 Project Auto</p>
+    </footer>
+
+    <div id="loading">
+        <img src="loading.gif" alt="Loading...">
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            // Current Time
+            function updateTime() {
+                var currentTime = new Date();
+                var hours = currentTime.getHours();
+                var minutes = currentTime.getMinutes();
+                var seconds = currentTime.getSeconds();
+                minutes = (minutes < 10 ? "0" : "") + minutes;
+                seconds = (seconds < 10 ? "0" : "") + seconds;
+                var timeString = hours + ":" + minutes + ":" + seconds;
+                $("#current-time").html(timeString);
+            }
+            setInterval(updateTime, 1000);
+
+            // GitHub Authentication
+            $("#github-auth-button").click(function() {
+                // Redirect to GitHub OAuth flow
+                window.location.href = '/api/auth/github';
+            });
+
+            // Check for authentication message
+            function getAuthMessage() {
+                $.ajax({
+                    url: '/api/auth/message',
+                    type: 'GET',
+                    success: function(data) {
+                        if (data.message) {
+                            $('#auth-message').text(data.message).show();
+                        } else {
+                            $('#auth-message').hide();
+                        }
+                    }
+                });
+            }
+            getAuthMessage();
+
+            // Start Button Functionality
+            $("#start-button").click(function() {
+                var repo = $("#github-repo").val();
+                var instructions = $("#customization-instructions").val();
+
+                $("#loading").show();
+                $("#progress-container").show();
+                $("#config-status").hide();
+
+                // Simulate progress
+                var progress = 0;
+                var interval = setInterval(function() {
+                    progress += 10;
+                    $("#progress-bar").width(progress + '%').text(progress + '%');
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        $("#progress-bar").text("Complete!");
+                    }
+                }, 300);
+
+                // Send data to backend (Placeholder)
+                $.ajax({
+                    url: '/api/run',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        repo: repo,
+                        instructions: instructions
+                    }),
+                    success: function(response) {
+                        $("#loading").hide();
+                        clearInterval(interval);
+                        $("#progress-bar").width('100%').text('Complete!');
+                        $("#config-status").text(response.message).addClass('success').show();
+                    },
+                    error: function(error) {
+                        $("#loading").hide();
+                        clearInterval(interval);
+                        $("#progress-bar").width('0%').text('Error');
+                        $("#config-status").text("Error: " + error.responseJSON.error).addClass('error').show();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
