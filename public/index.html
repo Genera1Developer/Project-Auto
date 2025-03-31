@@ -4,49 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="style/logo.png" alt="Project Auto Logo" class="logo">
-            <h2 class="sidebar-title">Project Auto</h2>
+            <img src="/style/Project-Auto-Logo.png" alt="Project Auto Logo" class="logo">
+            <button class="menu-toggle">&#9776;</button>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
 
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <button id="github-login-button" class="github-login-button">Login with GitHub</button>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="loginBtn" onclick="login()">Login with GitHub</button>
+                <button id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
         </header>
 
         <main>
-            <section class="hero">
-                <h1>Automate Your Repository</h1>
-                <p>Enter your repository details and prompt to customize your project.</p>
-            </section>
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your repository and instructions to automate tasks.</p>
 
-            <section class="form-section">
-                <form id="auto-form">
-                    <label for="repo_url">Repository URL (username/repo):</label>
-                    <input type="text" id="repo_url" name="repo_url" placeholder="e.g., facebook/react" required>
+            <div id="auth-message" style="display: none;">
+                Please authenticate with GitHub to continue.
+            </div>
 
-                    <label for="prompt">Prompt:</label>
-                    <textarea id="prompt" name="prompt" placeholder="Enter customization instructions..." required></textarea>
+            <div id="input-area" style="display: none;">
+                <label for="repo">Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="username/repo"><br><br>
 
-                    <button type="submit" class="start-button">Start</button>
-                </form>
-            </section>
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter instructions here"></textarea><br><br>
 
-            <section class="output-section">
-                <h2>Output:</h2>
-                <div id="output" class="output"></div>
-            </section>
+                <button id="startBtn" onclick="runAuto()">Start</button>
+                <p id="status"></p>
+            </div>
         </main>
 
         <footer>
@@ -54,6 +56,375 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
+edit filepath: public/style/style.css
+content: body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    padding-top: 20px;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-x: hidden;
+    transition: 0.3s;
+}
+
+.sidebar-header {
+    padding: 15px;
+    text-align: center;
+}
+
+.sidebar-header .logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s;
+}
+
+.sidebar nav ul li a:hover {
+    background-color: #555;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 200px;
+    transition: margin-left 0.3s;
+}
+
+header {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header #current-time {
+    font-size: 1.1em;
+    color: #555;
+}
+
+header .auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+header .auth-buttons button {
+    background-color: #7036db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+header .auth-buttons button:hover {
+    background-color: #5a2ab3;
+}
+
+header .auth-buttons span {
+    font-weight: bold;
+    color: #5a2ab3;
+}
+
+main {
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+main h1 {
+    color: #5a2ab3;
+}
+
+main label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+main input[type="text"],
+main textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+main button {
+    background-color: #7036db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+main button:hover {
+    background-color: #5a2ab3;
+}
+
+main p#status {
+    margin-top: 10px;
+    font-style: italic;
+    color: #777;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #333;
+    color: #fff;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        margin-bottom: 20px;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header .auth-buttons {
+        margin-top: 10px;
+    }
+}
+
+/* Logo */
+.logo {
+    width: 150px;
+    height: auto;
+}
+
+edit filepath: public/script.js
+content: document.addEventListener('DOMContentLoaded', () => {
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userInfo = document.getElementById('user-info');
+    const authMessage = document.getElementById('auth-message');
+    const inputArea = document.getElementById('input-area');
+    const repoInput = document.getElementById('repo');
+    const instructionsTextarea = document.getElementById('instructions');
+    const status = document.getElementById('status');
+
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString();
+        document.getElementById('current-time').textContent = timeString;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    function updateUI(user) {
+        if (user) {
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'inline-block';
+            userInfo.textContent = `Logged in as ${user.displayName}`;
+            authMessage.style.display = 'none';
+            inputArea.style.display = 'block';
+        } else {
+            loginBtn.style.display = 'inline-block';
+            logoutBtn.style.display = 'none';
+            userInfo.textContent = '';
+            authMessage.style.display = 'block';
+            inputArea.style.display = 'none';
+        }
+    }
+
+    window.login = () => {
+        window.location.href = '/api/auth/github';
+    };
+
+    window.logout = () => {
+        window.location.href = '/api/auth/logout';
+    };
+
+    window.runAuto = async () => {
+        const repo = repoInput.value;
+        const instructions = instructionsTextarea.value;
+
+        status.textContent = 'Running Project Auto...';
+
+        try {
+            const response = await fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repo, instructions }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                status.textContent = data.message;
+            } else {
+                status.textContent = `Error: ${data.error}`;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            status.textContent = 'An error occurred while running Project Auto.';
+        }
+    };
+
+    async function fetchUser() {
+        const response = await fetch('/api/auth/user');
+        const user = await response.json();
+        updateUI(user);
+    }
+
+    fetchUser();
+});
+edit filepath: public/About-Us
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/Project-Auto-Logo.png" alt="Project Auto Logo" class="logo">
+            <button class="menu-toggle">&#9776;</button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="loginBtn" onclick="login()">Login with GitHub</button>
+                <button id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
+        </header>
+
+        <main>
+            <h1>About Us</h1>
+            <p>Project Auto is designed to automate tasks in your GitHub repositories.</p>
+            <p>Our mission is to simplify development workflows and boost productivity.</p>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
+edit filepath: public/Configuration
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Project Auto</title>
+        <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/Project-Auto-Logo.png" alt="Project Auto Logo" class="logo">
+            <button class="menu-toggle">&#9776;</button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="loginBtn" onclick="login()">Login with GitHub</button>
+                <button id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
+        </header>
+
+        <main>
+            <h1>Configuration</h1>
+            <p>Configure Project Auto settings here.</p>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
+edit filepath: public/style/Project-Auto-Logo.png
+content: iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAZdEVYdFNvZnR3YXJlAHBhaW50Lm5ldCA0LjIuMTZEaa/1AAACiElEQVQ4T42SQUjVURTFT5tLQtbqLzO0e4bXkKio3XFQsAlEV0EwKIJgEQQKgiCIKLgogohEBMU9L6vT2mD2fM4593kz8+P9zuP7zvc95znnHt4kXq833V5vV16v9/ptV0K+b3e7c79u739m7/f7vL73/f7k1/tK13H560H0+qFQ8K/yG/g2d2u4aX2xXoEAgE9kC7XW5+vV58Ph82hV7YnE6npmn89fX1w+EQVqvV6XQ64XAYuVwuzGYz1tfXDw8PNYlEAoFAwGQy0b+g/W7MZrNLpZL1ej12u93T6XQi0ev1mkwm0Gg02traIpFI8HgcIpEIkUiEw+GAVqvV2traIpFIRCLBoNPpdDqtVqvT6XTC4XAQi8U8Ho9EIoFAIIB6vV6lUonL5cLn80mlUikWi3E4HOx2u41EIoFAIFCk0+m0tbWNRqOBy+WCz+cjEAiQSqVwOp1MJpNJpVIQCLBaLTQaDaRSKQCwWCy0tbWw2+1kMhkAwGg0kskklUoF0WgkEAjkcjnw+XwkEgn0ej0ajQYejwePx4NCoQCwWCw+nw+bzQabzQadTgeDwQDweDxEIhGg0WhEIhHA6/XA5/NhNBrRaDQikQhMJhNJpVLweDxEIhGg0WggEAiQSqXQ6/XA5/Oh0+nQ6/UwGAwQCIROp4NGo4HA4IBAIIBcLheHwwGbzQabzQazdQbj8QAQCLBYLCwWi8ViMQaDwYDD4YBAIIFAIIFAIIDL5QJOp4NGo4FAIIBcLhd7e3vQ6/XA5/PhdDqRSCQajQafzwd4PI5AIMDQarVSqQTe7/e73e6Qy+XQaDTQaDTQ6XSg0+kwGAwQCKRSKQCwWCwqFAoEQmEwGJlMJsPhcBCDwWAwi8UikUiQSqXQ6XQ6nU6n0+kQCIROp4PBYIDL5YJLpVJhYWBgMBhEIhEgEAgwGAy0tbXx8fGQy+XQ6XSgUqlgMPi5XDgcDhKJRBKJBGtra2QyGfD7/SgUCgQCLBaLw+HwEARCqVRcLpepVKpQKBBGo9HpdDqRSASn0wkwGAwQCLRaLQQCgUBgMBhEIhGg0WgkEgnQ6/VcLheHwwEIBALRaDRcLhdKpVJeXl5EIhFwOp1MJhMZDIZAIIDD4YDL5QJT6YvV6nV6vV6vVv+1+321Wm15uQAAAABJRU5ErkJggg==
+edit filepath: api/route.js
+content: module.exports = (app) => {
+  app.get('/api', (req, res) => {
+    res.json({ message: 'Hello from server!' });
+  });
+};
