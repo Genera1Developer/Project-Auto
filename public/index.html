@@ -5,61 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/index.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="current-time" id="current-time"></div>
     <div class="sidebar">
         <div class="sidebar-header">
-            <i class="fas fa-cogs"></i> Project Auto
+            Project Auto
         </div>
         <ul class="sidebar-list">
-            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="/Configuration"><i class="fas fa-wrench"></i> Configuration</a></li>
-            <li><a href="/About-Us"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
             <li>
-                <button id="auth-button" class="auth-button"><i class="fab fa-github"></i> Authenticate with GitHub</button>
-                <button id="logout-button" class="logout-button hidden"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <button id="auth-button" class="auth-button">Authenticate with GitHub</button>
+                <button id="logout-button" class="logout-button hidden">Logout</button>
             </li>
         </ul>
     </div>
-    <div class="main-content">
-        <h1>Welcome to Project Auto</h1>
-        <p>Enter your GitHub repository and customization instructions below.</p>
 
-        <div id="auth-modal" class="hidden">
-            <div id="auth-modal-content">
-                <h2>Authenticate with GitHub</h2>
-                <p>Please enter your GitHub username:</p>
-                <form id="auth-form">
-                    <label for="github-username">GitHub Username:</label>
-                    <input type="text" id="github-username" name="github-username">
-                    <button type="submit" class="auth-button"><i class="fab fa-github"></i> Submit</button>
-                    <button type="button" class="close-button" id="close-auth-modal"><i class="fas fa-times"></i> Close</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="repo-form" class="repo-form">
-            <label for="github-repo"><i class="fab fa-github"></i> GitHub Repository (username/repo):</label>
-            <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Project-Auto/Project-Auto">
-        </div>
-
-        <div id="prompt-input" class="prompt-input">
-            <label for="customization-prompt"><i class="fas fa-magic"></i> Customization Instructions:</label>
-            <textarea id="customization-prompt" name="customization-prompt" placeholder="Enter your instructions here"></textarea>
-        </div>
-
-        <button id="start-button" class="start-button"><i class="fas fa-play"></i> Start</button>
-
-        <div id="response-display"></div>
-        <div id="loading-overlay" class="loading-overlay hidden">
-            <div class="loader"></div>
+    <div id="auth-modal" class="hidden">
+        <div id="auth-modal-content">
+            <h2>GitHub Authentication</h2>
+            <p>Please enter your GitHub username:</p>
+            <form id="auth-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <button type="submit" class="auth-button">Authenticate</button>
+            </form>
+            <button class="close-button" id="close-auth-modal">Close</button>
         </div>
     </div>
+
+    <div class="main-content">
+        <section id="showcase">
+            <div class="container">
+                <h1>Welcome to Project Auto</h1>
+                <p>Automate your development workflow with ease.</p>
+            </div>
+        </section>
+
+        <section class="container">
+            <div id="repo-form" class="repo-form">
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., Project-Auto/Project-Auto">
+            </div>
+
+            <div id="prompt-input" class="prompt-input">
+                <label for="prompt">Customization Prompt:</label>
+                <textarea id="prompt" name="prompt" placeholder="Enter your customization instructions here."></textarea>
+            </div>
+
+            <button id="start-button" class="start-button">Start</button>
+
+            <div id="response-display"></div>
+        </section>
+    </div>
+
+    <div class="loading-overlay hidden">
+        <div class="loader"></div>
+    </div>
+
     <footer>
-        <p>Project Auto &copy; 2024</p>
+        <p>Project Auto, Copyright &copy; 2024</p>
     </footer>
+
     <script>
         function updateTime() {
             const now = new Date();
@@ -75,22 +84,28 @@
         const authModal = document.getElementById('auth-modal');
         const closeAuthModal = document.getElementById('close-auth-modal');
         const authForm = document.getElementById('auth-form');
-        const githubUsernameInput = document.getElementById('github-username');
-        let githubUsername = localStorage.getItem('githubUsername') || '';
-
-        const repoInput = document.getElementById('github-repo');
-        const promptInput = document.getElementById('customization-prompt');
-        const startButton = document.getElementById('start-button');
+        const usernameInput = document.getElementById('username');
+        let githubUsername = localStorage.getItem('githubUsername');
         const responseDisplay = document.getElementById('response-display');
-        const loadingOverlay = document.getElementById('loading-overlay');
+        const loadingOverlay = document.querySelector('.loading-overlay');
+
+        function showLoading() {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
 
         function updateAuthUI() {
             if (githubUsername) {
                 authButton.classList.add('hidden');
                 logoutButton.classList.remove('hidden');
+                usernameInput.value = githubUsername;
             } else {
                 authButton.classList.remove('hidden');
                 logoutButton.classList.add('hidden');
+                usernameInput.value = '';
             }
         }
 
@@ -102,32 +117,38 @@
             authModal.classList.add('hidden');
         });
 
-        authForm.addEventListener('submit', async (event) => {
+        authForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            githubUsername = githubUsernameInput.value;
+            githubUsername = usernameInput.value;
             localStorage.setItem('githubUsername', githubUsername);
             authModal.classList.add('hidden');
-            githubUsernameInput.value = '';
             updateAuthUI();
         });
 
         logoutButton.addEventListener('click', () => {
-            githubUsername = '';
+            githubUsername = null;
             localStorage.removeItem('githubUsername');
             updateAuthUI();
         });
 
-        startButton.addEventListener('click', async () => {
-            const repo = repoInput.value;
-            const prompt = promptInput.value;
+        updateAuthUI();
 
-            if (!repo || !prompt) {
-                responseDisplay.textContent = 'Please fill in all fields.';
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const prompt = document.getElementById('prompt').value;
+
+            if (!githubUsername) {
+                alert("Please authenticate with GitHub first.");
                 return;
             }
 
-            loadingOverlay.classList.remove('hidden');
-            responseDisplay.textContent = '';
+            if (!repoUrl) {
+                alert("Please enter a repository URL.");
+                return;
+            }
+
+            showLoading();
+            responseDisplay.textContent = 'Processing...';
 
             try {
                 const response = await fetch('/api/process-repo', {
@@ -136,28 +157,25 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        repo: repo,
+                        repoUrl: repoUrl,
                         prompt: prompt,
-                        username: githubUsername,
+                        username: githubUsername
                     }),
                 });
 
-                const result = await response.json();
-
-                if (response.ok) {
-                    responseDisplay.textContent = result.message;
-                } else {
-                    responseDisplay.textContent = `Error: ${result.message || response.statusText}`;
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+
+                const data = await response.json();
+                responseDisplay.textContent = data.message;
             } catch (error) {
                 console.error('Error:', error);
-                responseDisplay.textContent = `An error occurred: ${error.message}`;
+                responseDisplay.textContent = `Error: ${error.message}`;
             } finally {
-                loadingOverlay.classList.add('hidden');
+                hideLoading();
             }
         });
-
-        updateAuthUI();
     </script>
 </body>
 </html>
