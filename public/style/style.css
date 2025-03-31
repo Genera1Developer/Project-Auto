@@ -1,170 +1,246 @@
+/* General body styling */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f0f0f0;
     color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    line-height: 1.6;
 }
 
-#sidebar {
-    width: 200px;
-    background-color: #333;
+/* Container for content */
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* Header styling */
+header {
+    background: #333;
     color: #fff;
-    padding-top: 20px;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: 3px solid #e8491d;
 }
 
-#sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-#sidebar li {
-    padding: 10px;
-    text-align: left;
-}
-
-#sidebar a {
+header a {
     color: #fff;
     text-decoration: none;
-    display: block;
+    text-transform: uppercase;
+    font-size: 16px;
 }
 
-#sidebar a:hover {
-    background-color: #555;
+header ul {
+    padding: 0;
+    margin: 0;
 }
 
-#sidebar .current {
-    background-color: #555;
+header li {
+    float: left;
+    display: inline;
+    padding: 0 20px 0 20px;
 }
 
-#content {
-    flex: 1;
-    padding: 20px;
-    margin-left: 220px; /* Adjust based on sidebar width */
+header #branding {
+    float: left;
 }
 
-.container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+header #branding h1 {
+    margin: 0;
 }
 
-h1 {
-    color: #795548;
+header nav {
+    float: right;
+    margin-top: 10px;
+}
+
+header .highlight, header .current a {
+    color: #e8491d;
+    font-weight: bold;
+}
+
+header a:hover {
+    color: #ccc;
+    font-weight: bold;
+}
+
+/* Showcase styling */
+#showcase {
+    min-height: 400px;
+    background: url('../img/showcase.jpg') no-repeat 0 -400px;
+    text-align: center;
+    color: #fff;
+}
+
+#showcase h1 {
+    margin-top: 100px;
+    font-size: 55px;
+    margin-bottom: 10px;
+}
+
+#showcase p {
+    font-size: 20px;
+}
+
+/* Newsletter styling */
+#newsletter {
+    padding: 15px;
+    color: #fff;
+    background: #333;
+}
+
+#newsletter h1 {
+    float: left;
+}
+
+#newsletter form {
+    float: right;
+    margin-top: 15px;
+}
+
+#newsletter input[type="email"] {
+    padding: 4px;
+    height: 25px;
+    width: 250px;
+}
+
+/* Boxes styling */
+#boxes {
+    margin-top: 20px;
+}
+
+#boxes .box {
+    float: left;
+    width: 30%;
+    padding: 10px;
     text-align: center;
 }
 
-label {
-    display: block;
+#boxes .box img {
+    width: 90px;
+}
+
+/* Sidebar styling */
+aside#sidebar {
+    float: right;
+    width: 30%;
     margin-top: 10px;
-    color: #777;
+    padding: 20px;
+}
+
+aside#sidebar .quote input, aside#sidebar .quote textarea {
+    width: 90%;
+    padding: 5px;
+}
+
+/* Main-col styling */
+article#main-col {
+    float: left;
+    width: 65%;
+}
+
+/* Services styling */
+ul#services li {
+    padding: 20px;
+    border: #cccccc solid 1px;
+    margin-bottom: 5px;
+    background: #e6e6e6;
+}
+
+/* Footer styling */
+footer {
+    padding: 20px;
+    margin-top: 20px;
+    color: #fff;
+    background-color: #e8491d;
+    text-align: center;
+}
+
+/* Media Queries for responsiveness */
+@media(max-width: 768px) {
+    header #branding,
+    header nav,
+    header nav li,
+    #newsletter h1,
+    #newsletter form,
+    #boxes .box,
+    aside#sidebar,
+    article#main-col {
+        float: none;
+        text-align: center;
+        width: 100%;
+    }
+
+    header {
+        padding-bottom: 20px;
+    }
+
+    #showcase h1 {
+        margin-top: 40px;
+    }
+
+    #newsletter form {
+        margin-top: 0;
+    }
+}
+
+/* Custom CSS for Project Auto */
+body {
+    background-color: #1e1e30;
+    color: #fff;
+}
+
+#sidebar {
+    background-color: #2c2c44;
+}
+
+#sidebar a:hover {
+    background-color: #4a4a6a;
+}
+
+#content {
+    margin-left: 220px;
+}
+
+.container {
+    background-color: #3d3d5c;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+h1 {
+    color: #ffc107; /* Gold */
+}
+
+label {
+    color: #ddd;
 }
 
 input[type="text"],
 textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
+    background-color: #4a4a6a;
+    border: 1px solid #555;
+    color: #eee;
 }
 
 button {
-    background-color: #795548;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
+    background-color: #9c27b0; /* Deep Purple */
 }
 
 button:hover {
-    background-color: #5D4037;
-}
-
-.github-auth-button {
-    background-color: #4CAF50;
-}
-
-.github-auth-button:hover {
-    background-color: #43A047;
-}
-
-#auth-message {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
-    text-align: center;
+    background-color: #7b1fa2;
 }
 
 footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #333;
-    color: white;
-    margin-top: auto;
+    background-color: #2c2c44;
 }
 
-#loading {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    text-align: center;
-    padding-top: 200px;
+.github-auth-button {
+    background-color: #ffc107;
+    color: #222;
 }
 
-#loading img {
-    width: 100px;
-    height: 100px;
-}
-
-.current-time {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    z-index: 1000;
-}
-
-#config-status {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-#config-status.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-#config-status.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+.github-auth-button:hover {
+    background-color: #ffca28;
 }
