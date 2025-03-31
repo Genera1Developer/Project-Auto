@@ -4,138 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/index.css">
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div class="current-time" id="current-time"></div>
     <div class="sidebar">
         <div class="sidebar-header">
-            Project Auto
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
         </div>
-        <ul class="sidebar-list">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-            <li><a href="#" id="auth-button">Authenticate</a></li>
-            <li><a href="#" id="logout-button" class="hidden">Logout</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+                <li><a href="/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
+                <li><a href="/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+            </ul>
+        </nav>
     </div>
 
-    <div class="main-content">
-        <h1>Welcome to Project Auto</h1>
-        <p>Automate your project customization with ease.</p>
+    <div class="content">
+        <header>
+            <div id="current-time" class="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
+        </header>
 
-        <div class="form-container">
-            <h2>Project Configuration</h2>
-            <form id="repo-form" class="repo-form">
-                <div class="form-group">
-                    <label for="repo">GitHub Repository (username/repo)</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., Project-Auto/Project-Auto">
-                    <div id="repo-error" class="error-message"></div>
+        <main>
+            <section id="home">
+                <h2>Home</h2>
+                <p>Enter your GitHub repository details and customization instructions to run Project Auto.</p>
+                <div class="input-group">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository">
                 </div>
-
-                <div class="form-group" id="prompt-input">
-                    <label for="prompt">Customization Prompt</label>
-                    <textarea id="prompt" name="prompt" placeholder="Enter your customization instructions here."></textarea>
+                <div class="input-group">
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
                 </div>
+                <button id="start-button" class="primary-button">Start Project Auto</button>
+                <div id="auth-button-container">
+                    <button id="github-auth-button" class="primary-button">Authenticate with GitHub</button>
+                </div>
+                <div id="status-message"></div>
+            </section>
+        </main>
 
-                <button type="button" class="start-button" onclick="startAuto()">Start</button>
-            </form>
-            <div id="response-display"></div>
-        </div>
+        <footer>
+            <p>&copy; 2024 Project Auto. All rights reserved.</p>
+        </footer>
     </div>
 
-    <div id="auth-modal" class="hidden">
-        <div id="auth-modal-content">
-            <h2>GitHub Authentication</h2>
-            <p>Please enter your GitHub username to authenticate:</p>
-            <form id="auth-form">
-                <label for="github-username">GitHub Username:</label>
-                <input type="text" id="github-username" name="github-username">
-                <button type="button" class="auth-button" onclick="authenticateGitHub()">Authenticate</button>
-            </form>
-            <button class="close-button" onclick="closeAuthModal()">Close</button>
-        </div>
-    </div>
-
-    <div id="loading-overlay" class="loading-overlay hidden">
-        <div class="loader"></div>
-    </div>
-
-    <footer>
-        <p>&copy; 2024 Project Auto</p>
-    </footer>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        function showAuthModal() {
-            document.getElementById('auth-modal').classList.remove('hidden');
-        }
-
-        function closeAuthModal() {
-            document.getElementById('auth-modal').classList.add('hidden');
-        }
-
-        document.getElementById('auth-button').addEventListener('click', showAuthModal);
-        document.getElementById('logout-button').addEventListener('click', logout);
-
-        function authenticateGitHub() {
-            const username = document.getElementById('github-username').value;
-            if (username) {
-                alert('Authentication is a placeholder. Add backend.');
-                closeAuthModal();
-                // Show logout button and hide auth button
-                document.getElementById('auth-button').classList.add('hidden');
-                document.getElementById('logout-button').classList.remove('hidden');
-            } else {
-                alert('Please enter a username.');
-            }
-        }
-
-        function logout() {
-            // Hide logout button and show auth button
-            document.getElementById('auth-button').classList.remove('hidden');
-            document.getElementById('logout-button').classList.add('hidden');
-        }
-
-        function startAuto() {
-            const repo = document.getElementById('repo').value;
-            const prompt = document.getElementById('prompt').value;
-            const repoError = document.getElementById('repo-error');
-
-            if (!repo) {
-                repoError.textContent = 'Please enter a repository in the format username/repo.';
-                return;
-            } else {
-                repoError.textContent = ''; // Clear any previous error messages
-            }
-
-            document.getElementById('loading-overlay').classList.remove('hidden');
-            fetch('/api/run-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ repo: repo, prompt: prompt }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('loading-overlay').classList.add('hidden');
-                document.getElementById('response-display').textContent = data.message;
-            })
-            .catch(error => {
-                document.getElementById('loading-overlay').classList.add('hidden');
-                document.getElementById('response-display').textContent = 'Error: ' + error;
-            });
-        }
-    </script>
+    <script src="/script/script.js"></script>
 </body>
 </html>
