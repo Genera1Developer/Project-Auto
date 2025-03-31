@@ -10,10 +10,9 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h2>Project Auto</h2>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/index.html" class="active">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
@@ -21,24 +20,29 @@
     <div class="content">
         <header>
             <div id="time" class="time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <h1>Project Auto</h1>
         </header>
         <main>
-            <section id="github-auth">
-                <button id="github-login-btn">Login with GitHub</button>
+            <section id="input-section">
+                <h2>Customize Your Repository</h2>
+                <div class="input-group">
+                    <label for="repo_url">Repository URL (username/repo):</label>
+                    <input type="text" id="repo_url" placeholder="e.g., owner/repo">
+                </div>
+                <div class="input-group">
+                    <label for="prompt">Prompt:</label>
+                    <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
+                </div>
+                <button id="start-button">Start</button>
             </section>
-            <section id="project-input" style="display: none;">
-                <label for="repo_url">Repository URL (username/repo):</label>
-                <input type="text" id="repo_url" name="repo_url" placeholder="username/repo"><br><br>
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Enter your customization instructions"></textarea><br><br>
-                <button id="start-btn">Start</button>
-            </section>
-            <section id="output" style="display: none;">
-                <h2>Output:</h2>
-                <pre id="output-text"></pre>
+            <section id="output-section">
+                <h2>Output</h2>
+                <div id="output"></div>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
     <script src="/script.js"></script>
 </body>
