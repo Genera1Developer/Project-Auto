@@ -4,208 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/index.css">
+    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div class="current-time" id="current-time"></div>
     <div class="sidebar">
         <div class="sidebar-header">
-            Project Auto
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <ul class="sidebar-list">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-            <li>
-                <button id="auth-button" class="auth-button">Authenticate</button>
-                <button id="logout-button" class="logout-button hidden">Logout</button>
-            </li>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html" class="active"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
+            <li><a href="/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
         </ul>
     </div>
-
-    <div id="auth-modal" class="hidden">
-        <div id="auth-modal-content">
-            <h2>Authenticate with GitHub</h2>
-            <p>Enter your GitHub username:</p>
-            <form id="auth-form">
-                <label for="github-username">Username:</label>
-                <input type="text" id="github-username" name="github-username">
-                <button type="submit" class="auth-button">Submit</button>
-                <button type="button" class="close-button">Close</button>
-            </form>
-        </div>
+    <div class="content">
+        <header>
+            <div id="current-time" class="current-time"></div>
+            <h1>Project Auto</h1>
+        </header>
+        <main>
+            <section id="github-auth">
+                <button id="github-login-btn" class="auth-button">
+                    <i class="fab fa-github"></i> Authenticate with GitHub
+                </button>
+                <span id="auth-status"></span>
+            </section>
+            <section id="project-input">
+                <label for="repo_url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo_url" placeholder="e.g., owner/repository" required>
+                <label for="prompt">Customization Prompt:</label>
+                <textarea id="prompt" placeholder="Enter your instructions here" required></textarea>
+                <button id="start-btn" class="start-button">Start</button>
+            </section>
+            <section id="output">
+                <h2>Output:</h2>
+                <pre id="output-log"></pre>
+            </section>
+        </main>
     </div>
-
-    <div class="main-content" id="main-content">
-        <h1>Welcome to Project Auto</h1>
-        <p>Enter your repository details and customization prompt to begin.</p>
-
-        <div id="error-message" class="error-message hidden"></div>
-        <div id="success-message" class="success-message hidden"></div>
-
-        <form id="repo-form" class="repo-form">
-            <label for="repo-name">Repository (username/repo):</label>
-            <input type="text" id="repo-name" name="repo-name" placeholder="e.g., Project-Auto/Project-Auto">
-        </form>
-
-        <div id="prompt-input" class="prompt-input">
-            <label for="prompt">Customization Prompt:</label>
-            <textarea id="prompt" name="prompt" placeholder="Enter your customization instructions here."></textarea>
-        </div>
-
-        <button id="start-button" class="start-button">Start</button>
-
-        <div id="response-display"></div>
-    </div>
-
-    <div class="loading-overlay hidden" id="loading-overlay">
-        <div class="loader"></div>
-    </div>
-
     <footer>
-        <p>Project Auto &copy; 2024</p>
+        <p>&copy; 2024 Project Auto. All rights reserved.</p>
     </footer>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        const authButton = document.getElementById('auth-button');
-        const logoutButton = document.getElementById('logout-button');
-        const authModal = document.getElementById('auth-modal');
-        const authForm = document.getElementById('auth-form');
-        const closeButton = document.querySelector('.close-button');
-        const repoForm = document.getElementById('repo-form');
-        const promptInput = document.getElementById('prompt');
-        const startButton = document.getElementById('start-button');
-        const responseDisplay = document.getElementById('response-display');
-        const loadingOverlay = document.getElementById('loading-overlay');
-        const errorMessageDisplay = document.getElementById('error-message');
-        const successMessageDisplay = document.getElementById('success-message');
-
-        let isAuthenticated = false;
-        let githubUsername = localStorage.getItem('githubUsername') || '';
-
-        function checkAuthentication() {
-            if (githubUsername) {
-                isAuthenticated = true;
-                authButton.classList.add('hidden');
-                logoutButton.classList.remove('hidden');
-            } else {
-                isAuthenticated = false;
-                authButton.classList.remove('hidden');
-                logoutButton.classList.add('hidden');
-            }
-        }
-
-        checkAuthentication();
-
-        authButton.addEventListener('click', () => {
-            authModal.classList.remove('hidden');
-        });
-
-        closeButton.addEventListener('click', () => {
-            authModal.classList.add('hidden');
-        });
-
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            githubUsername = document.getElementById('github-username').value;
-            localStorage.setItem('githubUsername', githubUsername);
-            isAuthenticated = true;
-            authModal.classList.add('hidden');
-            authButton.classList.add('hidden');
-            logoutButton.classList.remove('hidden');
-
-            successMessageDisplay.textContent = 'Authenticated successfully!';
-            successMessageDisplay.classList.remove('hidden');
-            setTimeout(() => {
-                successMessageDisplay.classList.add('hidden');
-            }, 3000);
-        });
-
-        logoutButton.addEventListener('click', () => {
-            githubUsername = '';
-            localStorage.removeItem('githubUsername');
-            isAuthenticated = false;
-            authButton.classList.remove('hidden');
-            logoutButton.classList.add('hidden');
-
-            successMessageDisplay.textContent = 'Logged out successfully!';
-            successMessageDisplay.classList.remove('hidden');
-            setTimeout(() => {
-                successMessageDisplay.classList.add('hidden');
-            }, 3000);
-        });
-
-        startButton.addEventListener('click', async () => {
-            if (!isAuthenticated) {
-                errorMessageDisplay.textContent = 'Please authenticate with GitHub first.';
-                errorMessageDisplay.classList.remove('hidden');
-                setTimeout(() => {
-                    errorMessageDisplay.classList.add('hidden');
-                }, 3000);
-                return;
-            }
-
-            const repoName = document.getElementById('repo-name').value;
-            const prompt = document.getElementById('prompt').value;
-
-            if (!repoName || !prompt) {
-                errorMessageDisplay.textContent = 'Please enter both repository name and a prompt.';
-                errorMessageDisplay.classList.remove('hidden');
-                setTimeout(() => {
-                    errorMessageDisplay.classList.add('hidden');
-                }, 3000);
-                return;
-            }
-
-            loadingOverlay.classList.remove('hidden');
-            responseDisplay.textContent = 'Processing...';
-
-            try {
-                const response = await fetch('/api/processRepo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        repoName: repoName,
-                        prompt: prompt,
-                        githubUsername: githubUsername
-                    }),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                responseDisplay.textContent = data.message;
-                successMessageDisplay.textContent = 'Operation completed successfully!';
-                successMessageDisplay.classList.remove('hidden');
-                setTimeout(() => {
-                    successMessageDisplay.classList.add('hidden');
-                }, 3000);
-
-            } catch (error) {
-                console.error('Error:', error);
-                responseDisplay.textContent = `Error: ${error.message}`;
-                errorMessageDisplay.textContent = `An error occurred: ${error.message}`;
-                errorMessageDisplay.classList.remove('hidden');
-                setTimeout(() => {
-                    errorMessageDisplay.classList.add('hidden');
-                }, 3000);
-            } finally {
-                loadingOverlay.classList.add('hidden');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
