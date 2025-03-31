@@ -6,41 +6,37 @@
     <title>Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <h3 style="color: gold;">Project Auto</h3>
-        </div>
-        <ul class="nav">
-            <li><a href="https://github.com/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="https://github.com/Project-Auto/public/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
-        </ul>
+        <h1>Project Auto</h1>
+        <a href="https://github.com/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a>
+        <a href="https://github.com/Project-Auto/public/Configuration"><i class="fa fa-cog"></i> Configuration</a>
+        <a href="https://github.com/Project-Auto/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a>
     </div>
 
     <div class="content">
-        <header>
+        <div class="header">
             <div id="current-time"></div>
-            <button id="github-login">
-                <i class="fab fa-github"></i> Login with GitHub
-            </button>
-        </header>
-        <main>
-            <section id="project-input">
-                <h2>Automate Your Repository</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+            <a href="/auth/github" class="github-auth-button">
+            <i class="fab fa-github"></i> Authenticate with GitHub
+            </a>
+        </div>
+
+        <div class="main-content">
+            <h2>Automate Your Repository</h2>
+            <div class="input-form">
+                <label for="repository">GitHub Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository">
 
                 <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" placeholder="Enter your instructions here"></textarea>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
 
                 <button id="start-button">Start</button>
-            </section>
-        </main>
+            </div>
+        </div>
     </div>
 
-    <script src="https://github.com/Project-Auto/public/script/script.js"></script>
+    <script src="https://github.com/Project-Auto/public/script.js"></script>
 </body>
 </html>
