@@ -10,44 +10,104 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <h2>Project Auto</h2>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
 
     <div class="content">
         <header>
-            <div id="time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="current-time" class="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
 
         <main>
-            <section id="github-auth">
-                <button id="github-login-btn">Authenticate with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
+            <section id="auth-section">
+                <button id="github-login-button">Login with GitHub</button>
+                <p id="auth-status"></p>
             </section>
 
-            <section id="project-input">
-                <label for="repo-url">Repository URL (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
-                <button id="start-btn">Start</button>
-            </section>
+            <section id="project-input-section">
+                <label for="repo-input">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-input" placeholder="e.g., Genera1Developer/Project-Auto">
 
-            <section id="output">
-                <h2>Output:</h2>
-                <pre id="output-log"></pre>
+                <label for="instructions-input">Instructions:</label>
+                <textarea id="instructions-input" placeholder="Enter instructions for Project Auto"></textarea>
+
+                <button id="start-button">Start</button>
+                <p id="execution-status"></p>
             </section>
         </main>
     </div>
 
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('github-login-button').addEventListener('click', () => {
+            window.location.href = '/api/github/login';
+        });
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo = document.getElementById('repo-input').value;
+            const instructions = document.getElementById('instructions-input').value;
+            const executionStatus = document.getElementById('execution-status');
+
+            executionStatus.textContent = 'Executing...';
+
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repo: repo, instructions: instructions })
+                });
+
+                if (response.ok) {
+                    executionStatus.textContent = 'Project Auto executed successfully!';
+                } else {
+                    const errorText = await response.text();
+                    executionStatus.textContent = `Project Auto execution failed: ${errorText}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                executionStatus.textContent = `Project Auto execution failed: ${error.message}`;
+            }
+        });
+
+        async function checkAuthStatus() {
+            const authStatus = document.getElementById('auth-status');
+            try {
+                const response = await fetch('/api/check-auth');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.isAuthenticated) {
+                        authStatus.textContent = `Authenticated as ${data.user.login}`;
+                        document.getElementById('github-login-button').style.display = 'none';
+                    } else {
+                        authStatus.textContent = 'Not authenticated.';
+                    }
+                } else {
+                    authStatus.textContent = 'Failed to check authentication status.';
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                authStatus.textContent = 'Error checking authentication status.';
+            }
+        }
+
+       // checkAuthStatus();
+    </script>
 </body>
 </html>
