@@ -12,10 +12,10 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_oauthlib.client import OAuth
 from urllib.parse import quote
 
-GITHUB_TOKEN = "{ghp_ TOKEN FROM CONNECT.JS HERE!}" # CHANGE TO BE DYNAMIC 
-GOOGLE_API_KEY = "AIzaSyAYcscrApPcDNkHxvzAPLek8ij0YSOsYKg"
-REPO_NAME = "{User}/{Repository}" # CHANGE TO BE DYNAMIC
-DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1352379007945019412/z-hkYi6uw5yw-1WzxeuuF_Pm-iR0-fUm2v7uxpDd1KZYxy53oNGGg3uvupVXUrXmmXWx"
+GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN') # CHANGE TO BE DYNAMIC 
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+REPO_NAME = os.environ.get('REPO_NAME') # CHANGE TO BE DYNAMIC
+DISCORD_WEBHOOK_URL = os.environ.get('DISCORD_WEBHOOK_URL')
 
 logging.basicConfig(
     level=logging.INFO,
@@ -151,6 +151,7 @@ def log_discord(msg, level="INFO"):
 
 def get_repo():
     try:
+        github_client = Github(GITHUB_TOKEN)
         repo = github_client.get_repo(REPO_NAME)
         user = github_client.get_user().login
         log_discord(f"Authenticated as {user}", "SUCCESS")
@@ -302,4 +303,7 @@ Current Content:
 {file_content}
 Response Format (STRICTLY FOLLOW):
 edit filepath: {file_path}
+content: [Your website code here]
+Response Format (STRICTLY FOLLOW):
+edit filepath: api/AI.py
 content: [Your website code here]
