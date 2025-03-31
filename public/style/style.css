@@ -1,163 +1,138 @@
-/* General Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f8f8f8;
+    background-color: #f0f0f0;
     color: #333;
-    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-/* Container for centering content */
-.container {
-    max-width: 960px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-/* Header Styles */
-h1, h2, h3 {
-    color: #7036ba; /* Deep Purple */
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-/* Link Styles */
-a {
-    color: #7036ba; /* Deep Purple */
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    color: #a56fd0; /* Lighter Purple */
-}
-
-/* Form Styles */
-label {
-    display: block;
-    margin-top: 15px;
-    color: #555;
-}
-
-input[type="text"],
-textarea,
-input[type="email"],
-input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 16px;
-}
-
-button {
-    background-color: #7036ba; /* Deep Purple */
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #a56fd0; /* Lighter Purple */
-}
-
-/* Navigation Bar Styles */
-nav {
-    background-color: #7036ba; /* Deep Purple */
-    color: white;
-    padding: 15px 0;
-}
-
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-}
-
-nav li {
-    display: inline;
-    margin: 0 20px;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s ease;
-}
-
-nav a:hover {
-    color: #ffc107; /* Gold */
-}
-
-/* Footer Styles */
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #333;
-    color: white;
-    margin-top: 30px;
-}
-
-/* Sidebar Styles */
 #sidebar {
     width: 250px;
-    background-color: #333;
+    background-color: #301934; /* Deep Purple */
     color: #fff;
     padding-top: 20px;
     position: fixed;
     height: 100%;
-    overflow: auto;
-    left: 0; /* Stick to the left */
-    top: 0;  /* Align to the top */
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 #sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 #sidebar li {
-    padding: 15px;
+    padding: 15px 20px;
     text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#sidebar li:last-child {
+    border-bottom: none;
 }
 
 #sidebar a {
     color: #fff;
     text-decoration: none;
     display: block;
-    padding: 8px;
-    border-radius: 5px;
     transition: background-color 0.3s ease;
+    padding: 5px 0;
 }
 
 #sidebar a:hover {
-    background-color: #555;
+    background-color: rgba(255, 215, 0, 0.2); /* Gold hover */
 }
 
 #sidebar .current {
-    background-color: #555;
+    background-color: rgba(255, 215, 0, 0.4); /* Gold current */
 }
 
-/* Content Area Styles */
 #content {
-    margin-left: 270px; /* Adjust based on sidebar width */
+    flex: 1;
     padding: 20px;
+    margin-left: 270px; /* Adjust based on sidebar width */
 }
 
-/* Loading Indicator Styles */
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+h1 {
+    color: #D4AF37; /* Gold */
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    color: #555;
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+button {
+    background-color: #D4AF37; /* Gold */
+    color: white;
+    padding: 14px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #C09B30;
+}
+
+.github-auth-button {
+    background-color: #5cb85c; /* Green */
+}
+
+.github-auth-button:hover {
+    background-color: #4cae4c;
+}
+
+#auth-message {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+    border-radius: 6px;
+    text-align: center;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #301934; /* Deep Purple */
+    color: white;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 #loading {
     display: none;
     position: fixed;
@@ -172,27 +147,26 @@ footer {
 }
 
 #loading img {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
 }
 
-/* Current Time Display Styles */
 .current-time {
     position: fixed;
     top: 10px;
     left: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 15px;
     z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Configuration Status Message Styles */
 #config-status {
-    margin-top: 20px;
-    padding: 12px;
-    border-radius: 5px;
+    margin-top: 25px;
+    padding: 15px;
+    border-radius: 8px;
     text-align: center;
     font-weight: bold;
 }
@@ -209,18 +183,20 @@ footer {
     border: 1px solid #f5c6cb;
 }
 
-/* Authentication Message Styles */
-.auth-message {
-    margin-top: 15px;
-    padding: 12px;
-    background-color: #e9ecef;
-    color: #495057;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    text-align: center;
-}
+/* Responsive Design */
+@media (max-width: 768px) {
+    #sidebar {
+        width: 100%;
+        position: static;
+        height: auto;
+    }
 
-/* Utility Classes */
-.mt-20 {
-    margin-top: 20px;
+    #content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .container {
+        padding: 20px;
+    }
 }
