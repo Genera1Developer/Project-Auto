@@ -10,15 +10,14 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/"><i class="fa fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fa fa-cog"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fa fa-info-circle"></i>About Us</a></li>
+            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
+            <li><a href="/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
         </ul>
     </div>
-
     <div class="content">
         <header>
             <div id="time" class="time"></div>
@@ -26,22 +25,28 @@
         </header>
         <main>
             <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login-button">Login with GitHub</button>
+                <button id="github-login-btn">
+                    <i class="fab fa-github"></i> Authenticate with GitHub
+                </button>
                 <p id="auth-status">Not authenticated</p>
             </section>
-            <section id="project-details">
-                <h2>Project Details</h2>
+            <section id="repo-input">
                 <label for="repo-url">Repository URL (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repo">
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+            </section>
+            <section id="prompt-input">
                 <label for="prompt">Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
-                <button id="start-button">Start</button>
-                <div id="output"></div>
+                <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
+            </section>
+            <section id="run-auto">
+                <button id="start-btn">Start</button>
+            </section>
+            <section id="output">
+                <h2>Output:</h2>
+                <pre id="output-text"></pre>
             </section>
         </main>
     </div>
-
     <script src="/script.js"></script>
 </body>
 </html>
