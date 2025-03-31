@@ -1,75 +1,52 @@
-|
- <!DOCTYPE html>
- <html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
- </head>
- <body>
-  <div class="sidebar">
-   <a href="https://github.com/Genera1Developer/Project-Auto/public/index.html">Home</a>
-   <a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration.html">Configuration</a>
-   <a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us.html">About Us</a>
-  </div>
-  <div class="content">
-   <header>
-    <div id="time"></div>
-    <h1>Project Auto</h1>
-   </header>
-   <main>
-    <section id="github-auth">
-     <a href="/api/auth/github">Authenticate with GitHub</a>
-    </section>
-    <section id="repo-input">
-     <label for="repo">GitHub Repository (username/repo):</label>
-     <input type="text" id="repo" name="repo">
-    </section>
-    <section id="instructions-input">
-     <label for="instructions">Customization Instructions:</label>
-     <textarea id="instructions" name="instructions"></textarea>
-    </section>
-    <button id="start-button">Start</button>
-   </main>
-   <footer>
-    <p>&copy; 2024 Project Auto</p>
-   </footer>
-  </div>
-  <script>
-   function updateTime() {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString();
-    document.getElementById('time').textContent = timeString;
-   }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://github.com/Genera1Developer/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/index.html"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration"><i class="fa fa-cog"></i>Configuration</a></li>
+            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us"><i class="fa fa-info-circle"></i>About Us</a></li>
+        </ul>
+    </div>
 
-   setInterval(updateTime, 1000);
-   updateTime();
+    <div class="content">
+        <header>
+            <div id="time" class="time"></div>
+        </header>
 
-   document.getElementById('start-button').addEventListener('click', async () => {
-    const repo = document.getElementById('repo').value;
-    const instructions = document.getElementById('instructions').value;
+        <main>
+            <section class="main-section">
+                <h1>Welcome to Project Auto</h1>
+                <p>Automate your repository customizations with ease.</p>
 
-    try {
-     const response = await fetch('/api/run', {
-      method: 'POST',
-      headers: {
-       'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ repo, instructions })
-     });
+                <div class="input-form">
+                    <label for="repo_url">Repository URL (username/repo):</label>
+                    <input type="text" id="repo_url" placeholder="e.g., Genera1Developer/Project-Auto">
 
-     if (response.ok) {
-      const result = await response.json();
-      alert('Project Auto started successfully!');
-     } else {
-      const errorData = await response.json();
-      alert(`Error: ${errorData.message}`);
-     }
-    } catch (error) {
-     alert(`Error: ${error.message}`);
-    }
-   });
-  </script>
- </body>
- </html>
+                    <label for="prompt">Customization Prompt:</label>
+                    <textarea id="prompt" placeholder="Enter your customization instructions here."></textarea>
+
+                    <label for="github_token">GitHub Token:</label>
+                    <input type="password" id="github_token" placeholder="Enter your GitHub token">
+
+                    <button id="start_button">Start</button>
+                </div>
+
+                <div id="output"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://github.com/Genera1Developer/Project-Auto/public/script.js"></script>
+</body>
+</html>
