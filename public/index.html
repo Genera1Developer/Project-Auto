@@ -4,37 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css?raw=true">
+    <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true"><i class="fa fa-home"></i>Home</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/index.html?raw=true"><i class="fa fa-cog"></i>Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us/index.html?raw=true"><i class="fa fa-info-circle"></i>About Us</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <header>
-            <div id="datetime"></div>
-            <button id="login-button">Login with GitHub</button>
-            <button id="logout-button" style="display: none;">Logout</button>
-            <span id="user-info"></span>
-        </header>
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repository">GitHub Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" placeholder="username/repo"><br><br>
-                <label for="instructions">Customization Instructions:</label><br>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your customization instructions here"></textarea><br><br>
-                <button id="start-button">Start</button>
-                <p id="status"></p>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://github.com/Project-Auto/public/blob/main/public/images/logo.png?raw=true" alt="Project Auto Logo" class="logo">
+                <h1>Project Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="https://github.com/Project-Auto/public/blob/main/public/index.html?raw=true"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="https://github.com/Project-Auto/public/blob/main/public/Configuration.html?raw=true"><i class="fas fa-cog"></i> Configuration</a></li>
+                    <li><a href="https://github.com/Project-Auto/public/blob/main/public/About-Us.html?raw=true"><i class="fas fa-info-circle"></i> About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <header>
+                <div id="current-time"></div>
+                <h1>Welcome to Project Auto</h1>
+            </header>
+            <section class="main-section">
+                <div class="input-area">
+                    <label for="repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
+                </div>
+                <div class="input-area">
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                </div>
+                <button id="start-button" class="primary-button">Start</button>
             </section>
         </main>
     </div>
-    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js?raw=true"></script>
+    <script src="https://github.com/Project-Auto/public/blob/main/public/js/script.js?raw=true"></script>
 </body>
 </html>
