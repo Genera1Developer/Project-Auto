@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
   const [prompt, setPrompt] = useState('');
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState(new Date());
+  const [output, setOutput] = useState('');
 
   useEffect(() => {
   const intervalId = setInterval(() => {
@@ -20,6 +21,7 @@ import React, { useState, useEffect } from 'react';
   const handleSubmit = async (e) => {
   e.preventDefault();
   setIsRunning(true);
+  setOutput(''); // Clear previous output
 
   try {
   const response = await fetch('/api/run-auto', {
@@ -32,13 +34,31 @@ import React, { useState, useEffect } from 'react';
   });
 
   if (!response.ok) {
-  throw new Error(`HTTP error! status: ${response.status}`);
+  const errorData = await response.json();
+  throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.message || 'Unknown error'}`);
   }
 
-  const data = await response.json();
-  console.log('Project Auto Result:', data);
+  // Use ReadableStream to handle streaming output
+  const reader = response.body.getReader();
+  let decoder = new TextDecoder();
+  let accumulatedData = '';
+
+  while (true) {
+  const { done, value } = await reader.read();
+
+  if (done) {
+  break;
+  }
+
+  accumulatedData += decoder.decode(value);
+  setOutput(prevOutput => prevOutput + accumulatedData); // Append new data
+  }
+
+  console.log('Project Auto Result: Stream completed');
+
   } catch (error) {
   console.error('Error running Project Auto:', error);
+  setOutput(prevOutput => prevOutput + `\nError: ${error.message}`);
   } finally {
   setIsRunning(false);
   }
@@ -76,6 +96,10 @@ import React, { useState, useEffect } from 'react';
   {isRunning ? 'Running...' : 'Start'}
   </button>
   </form>
+  <div className="output-container">
+  <label>Output:</label>
+  <pre>{output}</pre>
+  </div>
   </div>
   );
  };
