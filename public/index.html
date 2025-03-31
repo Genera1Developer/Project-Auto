@@ -1,45 +1,31 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
-  <link rel="icon" href="https://github.com/Project-Auto/public/style/favicon.ico" type="image/x-icon">
- </head>
- <body>
-  <div class="sidebar">
-  <a href="https://github.com/Project-Auto/public/index.html" class="sidebar-item">Home</a>
-  <a href="https://github.com/Project-Auto/public/Configuration/index.js" class="sidebar-item">Configuration</a>
-  <a href="https://github.com/Project-Auto/public/About-Us/index.html" class="sidebar-item">About Us</a>
-  </div>
-  <div class="content">
-  <header>
-  <div id="current-time" class="current-time"></div>
-  <h1>Project Auto</h1>
-  </header>
-  <main>
-  <section id="github-auth">
-  <button id="github-login-button">Login with GitHub</button>
-  <p id="github-status">Not authenticated.</p>
-  </section>
-  <section id="project-input">
-  <label for="repo-url">GitHub Repository (username/repo):</label>
-  <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-  </section>
-  <section id="prompt-input">
-  <label for="prompt">Customization Prompt:</label>
-  <textarea id="prompt" rows="5" placeholder="Enter your instructions here..."></textarea>
-  </section>
-  <section id="start-button">
-  <button id="start-project">Start</button>
-  </section>
-  <section id="output-log">
-  <h2>Output Log:</h2>
-  <div id="log-area"></div>
-  </section>
-  </main>
-  </div>
-  <script src="https://github.com/Project-Auto/public/script.js"></script>
- </body>
- </html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Project Auto</h1>
+        <ul>
+            <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
+            <li><a href="https://github.com/Project-Auto/public/Configuration/index.html">Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/public/About-Us/index.html">About Us</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+        </header>
+        <main>
+            <section id="home">
+                <h2>Welcome to Project Auto</h2>
+                <p>Automate your GitHub repository with custom instructions.</p>
+            </section>
+        </main>
+    </div>
+    <script src="https://github.com/Project-Auto/public/script.js"></script>
+</body>
+</html>
