@@ -5,124 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <i class="fa fa-cog fa-spin"></i> Project Auto
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="/Configuration"><i class="fa fa-wrench"></i> Configuration</a></li>
-            <li><a href="/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
+
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <h1>Project Auto</h1>
+            <div id="time"></div>
+            <div class="auth-buttons">
+                <button id="loginBtn" onclick="location.href='/api/auth/github'">Login with GitHub</button>
+                <button id="logoutBtn" onclick="location.href='/api/auth/logout'" style="display:none;">Logout</button>
+                <span id="username" style="display:none;"></span>
+            </div>
         </header>
+
         <main>
-            <section id="github-auth">
-                <button id="github-login-btn">
-                    <i class="fab fa-github"></i> Authenticate with GitHub
-                </button>
-                <span id="auth-status"></span>
-            </section>
             <section id="project-input">
-                <label for="repo-url">Repository URL (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repo">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
-                <button id="start-btn">Start</button>
-            </section>
-            <section id="output">
-                <h2>Output:</h2>
-                <pre id="output-log"></pre>
+                <h2>Run Project Auto</h2>
+                <label for="repo">Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter customization instructions..."></textarea>
+                <button id="startButton">Start</button>
+                <div id="message"></div>
             </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
+
     <script>
         function updateTime() {
-            fetch('/api/time')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('time').textContent = data.time;
-                });
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
         }
 
-        updateTime();
         setInterval(updateTime, 1000);
+        updateTime();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const githubLoginBtn = document.getElementById('github-login-btn');
-            const authStatus = document.getElementById('auth-status');
-            const repoUrlInput = document.getElementById('repo-url');
-            const promptInput = document.getElementById('prompt');
-            const startBtn = document.getElementById('start-btn');
-            const outputLog = document.getElementById('output-log');
+        async function checkAuth() {
+            const response = await fetch('/api/auth/user');
+            const user = await response.json();
 
-            let githubToken = null;
-
-            githubLoginBtn.addEventListener('click', () => {
-                // Store the current URL in localStorage
-                localStorage.setItem('redirect_uri', window.location.href);
-
-                fetch('/api/github_login?redirect_uri=' + encodeURIComponent(window.location.href))
-                    .then(response => response.json())
-                    .then(data => {
-                        const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${data.github_client_id}&redirect_uri=${encodeURIComponent(window.location.href)}`;
-                        window.location.href = githubAuthUrl;
-                    });
-            });
-
-            // Check for the presence of the code in the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-
-            if (code) {
-                // Exchange the code for an access token
-                fetch('/api/github_callback?code=' + code)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.access_token) {
-                            githubToken = data.access_token;
-                            authStatus.textContent = 'Authenticated with GitHub!';
-                            githubLoginBtn.style.display = 'none';
-                        } else {
-                            authStatus.textContent = 'GitHub authentication failed.';
-                        }
-                    });
-                    // Remove code from URL
-                    window.history.replaceState({}, document.title, window.location.pathname);
+            if (user) {
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'inline-block';
+                document.getElementById('username').textContent = `Logged in as ${user.displayName}`;
+                document.getElementById('username').style.display = 'inline-block';
+            } else {
+                document.getElementById('loginBtn').style.display = 'inline-block';
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('username').style.display = 'none';
             }
+        }
 
-            startBtn.addEventListener('click', () => {
-                const repoUrl = repoUrlInput.value;
-                const prompt = promptInput.value;
+        checkAuth();
 
-                outputLog.textContent = 'Running...';
+        document.getElementById('startButton').addEventListener('click', async () => {
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+            const messageDiv = document.getElementById('message');
 
-                fetch('/api/run_auto', {
+            try {
+                const response = await fetch('/api/run-auto', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ repo_url: repoUrl, prompt: prompt, github_token: githubToken })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        outputLog.textContent = `Error: ${data.error}`;
-                    } else {
-                        outputLog.textContent = data.output;
-                    }
-                })
-                .catch(error => {
-                    outputLog.textContent = `An error occurred: ${error}`;
+                    body: JSON.stringify({ repo, instructions }),
                 });
-            });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.textContent = data.message;
+                    messageDiv.className = 'success';
+                } else {
+                    messageDiv.textContent = data.error || 'An error occurred.';
+                    messageDiv.className = 'error';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = 'An error occurred while processing your request.';
+                messageDiv.className = 'error';
+            }
         });
     </script>
 </body>
