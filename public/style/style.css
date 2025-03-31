@@ -1,119 +1,171 @@
+/* General Styles */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f0e68c; /* Light Gold */
     color: #333;
     display: flex;
-    height: 100vh;
-}
-
-#sidebar {
-    width: 200px;
-    background-color: #333;
-    color: #fff;
-    padding-top: 20px;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    overflow-x: hidden;
-    transition: 0.5s;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-}
-
-#sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-#sidebar li a {
-    padding: 15px 25px;
-    text-decoration: none;
-    font-size: 18px;
-    color: #fff;
-    display: block;
-    transition: 0.3s;
-}
-
-#sidebar li a:hover {
-    background-color: #555;
-    color: gold;
-}
-
-#sidebar li a.current {
-    background-color: #555;
-    color: gold;
-}
-
-#content {
-    padding: 20px;
-    margin-left: 200px;
-    transition: margin-left 0.5s;
-    width: calc(100% - 200px);
-}
-
-h1 {
-    color: #663399;
-    margin-bottom: 20px;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
     max-width: 800px;
     margin: 20px auto;
-    padding: 30px;
+    padding: 20px;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
 
+h1 {
+    color: #795548;
+    text-align: center;
+}
+
+/* Sidebar Styles */
+#sidebar {
+    width: 200px;
+    background-color: #542B82; /* Dark Purple */
+    color: #f0e68c; /* Light Gold */
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+#sidebar li {
+    padding: 10px;
+    text-align: left;
+}
+
+#sidebar a {
+    color: #f0e68c; /* Light Gold */
+    text-decoration: none;
+    display: block;
+}
+
+#sidebar a:hover {
+    background-color: #6A38A5; /* Medium Purple */
+}
+
+#sidebar .current {
+    background-color: #6A38A5; /* Medium Purple */
+}
+
+/* Content Styles */
+#content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 220px; /* Adjust based on sidebar width */
+}
+
+/* Form Styles */
 label {
     display: block;
-    margin-bottom: 8px;
-    color: #555;
+    margin-top: 10px;
+    color: #777;
 }
 
 input[type="text"],
 textarea {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px;
 }
 
 button {
-    background-color: #663399;
-    color: white;
-    padding: 12px 20px;
+    background-color: #542B82; /* Dark Purple */
+    color: #f0e68c; /* Light Gold */
+    padding: 10px 15px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #555;
+    background-color: #6A38A5; /* Medium Purple */
 }
 
-#loading {
-    display: none;
-    margin-top: 20px;
+/* GitHub Auth Button Styles */
+.github-auth-button {
+    background-color: #6A38A5; /* Medium Purple */
+    color: #f0e68c;
+}
+
+.github-auth-button:hover {
+    background-color: #542B82; /* Dark Purple */
+}
+
+/* Auth Message Styles */
+#auth-message {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
     text-align: center;
 }
 
-#loading img {
-    height: 50px;
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: auto;
 }
 
+/* Loading Styles */
+#loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    text-align: center;
+    padding-top: 200px;
+}
+
+#loading img {
+    width: 100px;
+    height: 100px;
+}
+
+/* Current Time Styles */
+.current-time {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+/* Configuration Status Styles */
 #config-status {
     margin-top: 20px;
-    padding: 15px;
-    border-radius: 4px;
-    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
 }
 
 #config-status.success {
@@ -128,34 +180,21 @@ button:hover {
     border: 1px solid #f5c6cb;
 }
 
-.github-auth-button {
-    background-color: #444;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin-bottom: 20px;
+/* Progress Bar Styles */
+#progress-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: none;
 }
 
-.github-auth-button:hover {
-    background-color: #000;
-}
-
-#auth-message {
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
-    font-weight: bold;
+#progress-bar {
+    width: 0%;
+    height: 20px;
+    background-color: #4CAF50;
     text-align: center;
-}
-
-.current-time {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: #888;
-    font-size: 14px;
+    line-height: 20px;
+    color: white;
+    border-radius: 5px;
 }
