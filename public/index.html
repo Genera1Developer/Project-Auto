@@ -7,101 +7,51 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-
-    <div id="sidebar">
-        <ul>
-            <li><a href="/" class="current">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
-    </div>
-
-    <div id="content">
-        <div class="current-time"></div>
-        <h1>Project Auto</h1>
-        <div class="container">
-            <label for="repo">GitHub Repository (username/repo):</label>
-            <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository">
-
-            <label for="prompt">Customization Instructions:</label>
-            <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
-
-            <button id="start-button">Start</button>
-
-            <div id="config-status"></div>
-
-            <div id="auth-message"></div>
-
-            <button id="github-auth-button" class="github-auth-button">Authenticate with GitHub</button>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
 
-    <div id="loading">
-        <img src="https://project-auto-v1029.vercel.app/loading.gif" alt="Loading...">
+    <div class="content">
+        <header>
+            <div id="time" class="time"></div>
+            <h1>Welcome to Project Auto</h1>
+        </header>
+
+        <main>
+            <section id="github-auth">
+                <h2>GitHub Authentication</h2>
+                <button id="login-button">Login with GitHub</button>
+                <p id="auth-status">Not authenticated.</p>
+            </section>
+
+            <section id="project-input">
+                <h2>Project Configuration</h2>
+                <label for="repo_url">Repository URL (username/repo):</label>
+                <input type="text" id="repo_url" placeholder="e.g., owner/repository">
+
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
+
+                <button id="start-button">Start</button>
+            </section>
+
+            <section id="output">
+                <h2>Output</h2>
+                <pre id="output-log"></pre>
+            </section>
+        </main>
     </div>
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            document.querySelector('.current-time').textContent = `${hours}:${minutes}:${seconds}`;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('github-auth-button').addEventListener('click', async () => {
-            window.location.href = '/api/auth/github';
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const prompt = document.getElementById('prompt').value;
-
-            document.getElementById('loading').style.display = 'block';
-
-            try {
-                const response = await fetch('/api/run', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, prompt }),
-                });
-
-                const data = await response.json();
-
-                document.getElementById('loading').style.display = 'none';
-
-                if (response.ok) {
-                    document.getElementById('config-status').textContent = data.message;
-                    document.getElementById('config-status').className = 'success';
-                } else {
-                    document.getElementById('config-status').textContent = data.error || 'An error occurred.';
-                    document.getElementById('config-status').className = 'error';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('config-status').textContent = 'Failed to connect to the server.';
-                document.getElementById('config-status').className = 'error';
-            }
-        });
-
-        async function checkAuthStatus() {
-            const response = await fetch('/api/auth/status');
-            const data = await response.json();
-
-            if (data.isAuthenticated) {
-                document.getElementById('auth-message').textContent = `Authenticated as ${data.user.username}`;
-            } else {
-                document.getElementById('auth-message').textContent = 'Not authenticated.';
-            }
-        }
-
-        checkAuthStatus();
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
