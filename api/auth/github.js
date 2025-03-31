@@ -68,6 +68,17 @@ module.exports = (app) => {
         const octokit = new Octokit({ auth: accessToken });
 
         try {
+            // Check if the repository exists
+            try {
+                await octokit.repos.get({
+                    owner,
+                    repo: repository,
+                });
+            } catch (repoError) {
+                console.error('Repository not found:', repoError);
+                return res.status(400).json({ error: 'Repository not found.' });
+            }
+
             const content = `Project Auto ran with instructions: ${instructions}`;
             const filename = `project-auto-${Date.now()}.txt`;
             const path = filename;
