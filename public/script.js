@@ -37,10 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
+      // GitHub authentication (replace with actual implementation)
+      const githubToken = localStorage.getItem('githubToken'); // Retrieve token
+      if (!githubToken) {
+        alert('Please authenticate with GitHub first.');
+        window.location.href = '/public/Configuration'; // Redirect to configuration
+        return;
+      }
+
       const response = await fetch('/api/run_auto', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${githubToken}`, // Include token
         },
         body: JSON.stringify({ repo, prompt }),
       });
