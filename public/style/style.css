@@ -1,25 +1,65 @@
-/* General Styles */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f9f0ff; /* Light purple background */
+    background-color: #f0f0f0;
     color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
 }
 
-/* Sidebar Styles */
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+header {
+    background-color: #795548;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav {
+    background-color: #5D4037;
+    color: white;
+    padding: 10px 0;
+}
+
+nav ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
 #sidebar {
     width: 200px;
-    background-color: #512da8; /* Dark purple sidebar */
+    background-color: #333;
     color: #fff;
     padding-top: 20px;
     position: fixed;
     height: 100%;
     overflow: auto;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
 
 #sidebar ul {
@@ -36,105 +76,79 @@ body {
     color: #fff;
     text-decoration: none;
     display: block;
-    transition: background-color 0.3s ease;
-    padding: 10px 15px;
 }
 
 #sidebar a:hover {
-    background-color: #673ab7; /* Lighter purple on hover */
+    background-color: #555;
 }
 
 #sidebar .current {
-    background-color: #7e57c2; /* Current page highlight */
+    background-color: #555;
 }
 
-/* Content Styles */
 #content {
     flex: 1;
     padding: 20px;
     margin-left: 220px; /* Adjust based on sidebar width */
 }
 
-.container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 30px;
-    background-color: #fff;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+.github-auth-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
 }
 
-h1 {
-    color: #512da8; /* Dark purple header */
-    text-align: center;
-    margin-bottom: 20px;
+.github-auth-button:hover {
+    background-color: #43A047;
 }
 
-/* Form Styles */
 label {
     display: block;
     margin-top: 10px;
-    color: #555;
+    color: #777;
 }
 
 input[type="text"],
 textarea {
     width: 100%;
-    padding: 10px;
+    padding: 8px;
     margin-top: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px;
 }
 
-/* Button Styles */
 button {
-    background-color: #512da8; /* Dark purple button */
+    background-color: #795548;
     color: white;
-    padding: 12px 20px;
+    padding: 10px 15px;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #311b92; /* Darker purple on hover */
+    background-color: #5D4037;
 }
 
-.github-auth-button {
-    background-color: #4CAF50; /* Green GitHub button */
-}
-
-.github-auth-button:hover {
-    background-color: #43A047; /* Darker green on hover */
-}
-
-/* Auth Message Styles */
 #auth-message {
-    margin-top: 20px;
-    padding: 15px;
+    margin-top: 10px;
+    padding: 10px;
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
-    border-radius: 5px;
+    border-radius: 4px;
     text-align: center;
-    font-size: 16px;
 }
 
-/* Footer Styles */
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #333;
-    color: white;
-    margin-top: auto;
-}
-
-/* Loading Spinner Styles */
 #loading {
     display: none;
     position: fixed;
@@ -153,25 +167,22 @@ footer {
     height: 100px;
 }
 
-/* Current Time Styles */
 .current-time {
     position: fixed;
     top: 10px;
     left: 10px;
     background-color: rgba(255, 255, 255, 0.8);
-    padding: 8px 15px;
+    padding: 5px 10px;
     border-radius: 5px;
     font-size: 14px;
     z-index: 1000;
 }
 
-/* Config Status Styles */
 #config-status {
     margin-top: 20px;
-    padding: 15px;
+    padding: 10px;
     border-radius: 5px;
     text-align: center;
-    font-size: 16px;
 }
 
 #config-status.success {
@@ -185,67 +196,3 @@ footer {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/public/style/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div id="sidebar">
-        <ul>
-            <li><a href="/" class="current">Home</a></li>
-            <li><a href="/public/Configuration">Configuration</a></li>
-            <li><a href="/public/About-Us">About Us</a></li>
-        </ul>
-    </div>
-
-    <div id="content">
-        <div class="current-time"></div>
-        <div class="container">
-            <h1>Welcome to Project Auto</h1>
-            <p>Enter your GitHub repository and customization instructions to get started.</p>
-
-            <label for="repo">GitHub Repository (username/repo):</label>
-            <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
-
-            <label for="instructions">Customization Instructions:</label>
-            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-
-            <button onclick="startProjectAuto()">Start</button>
-
-            <div id="auth-message"></div>
-            <div id="config-status"></div>
-        </div>
-    </div>
-
-    <footer>
-        &copy; 2024 Project Auto
-    </footer>
-
-    <div id="loading">
-        <img src="loading.gif" alt="Loading...">
-    </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.querySelector('.current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call
-
-        function startProjectAuto() {
-            alert('Project Auto started!');
-            // Implement the actual logic to start Project Auto here
-        }
-    </script>
-</body>
-</html>
-edit filepath:
