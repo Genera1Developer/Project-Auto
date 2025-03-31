@@ -26,6 +26,7 @@
             padding-top: 30px;
             min-height: 70px;
             border-bottom: 3px solid #A79778;
+            position: relative; /* Add this */
         }
 
         header a {
@@ -72,8 +73,10 @@
         }
 
         #currentTime {
-            float: left;
-            padding: 10px;
+            position: absolute; /* Add this */
+            top: 10px; /* Adjust as needed */
+            left: 10px; /* Adjust as needed */
+            color: white;
             font-size: 16px;
         }
 
@@ -87,6 +90,9 @@
             float: left;
             width: 20%;
             padding: 10px;
+            background-color: #333; /* Dark background for sidebar */
+            color: #fff;
+            height: 100vh; /* Full height sidebar */
         }
 
         #sidebar ul {
@@ -96,6 +102,7 @@
 
         #sidebar li {
             padding: 10px;
+            margin-bottom: 5px; /* Spacing between items */
             background: #552583;
             border-bottom: 1px solid #A79778;
         }
@@ -103,16 +110,25 @@
         #sidebar a {
             color: #fff;
             text-decoration: none;
+            display: block; /* Make links fill the list item */
+            width: 100%;
+        }
+
+        #sidebar .current {
+            background-color: #A79778; /* Highlight current page */
         }
 
         #sidebar .current a {
             font-weight: bold;
+            color: #333;
         }
 
         #main-content {
             float: right;
             width: 75%;
             padding: 20px;
+            background-color: #fff; /* White background for content */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional shadow */
         }
 
         footer {
@@ -127,6 +143,9 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
+            background-color: #f9f9f9; /* Light background for team members */
+            padding: 10px;
+            border-radius: 5px;
         }
 
         .team-member img {
