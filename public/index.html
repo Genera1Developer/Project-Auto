@@ -1,5 +1,4 @@
-|
- <!DOCTYPE html>
+<!DOCTYPE html>
  <html lang="en">
  <head>
   <meta charset="UTF-8">
@@ -7,14 +6,13 @@
   <title>Project Auto</title>
   <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
  </head>
  <body>
   <div class="sidebar">
    <h1>Project Auto</h1>
    <ul>
     <li><a href="https://github.com/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a></li>
-    <li><a href="https://github.com/Project-Auto/public/Configuration/index.js"><i class="fa fa-cog"></i> Configuration</a></li>
+    <li><a href="https://github.com/Project-Auto/public/Configuration/index.html"><i class="fa fa-cog"></i> Configuration</a></li>
     <li><a href="https://github.com/Project-Auto/public/About-Us/index.html"><i class="fa fa-info-circle"></i> About Us</a></li>
    </ul>
   </div>
@@ -48,6 +46,29 @@
    }
    setInterval(updateTime, 1000);
    updateTime(); // Initial call
+   document.addEventListener('DOMContentLoaded', function() {
+    const authButton = document.getElementById('github-auth-button');
+    const appContent = document.getElementById('app-content');
+    authButton.addEventListener('click', function() {
+     // Replace with actual GitHub authentication logic
+     // For now, just simulate authentication
+     alert('Simulating GitHub Authentication');
+     appContent.style.display = 'block';
+     authButton.style.display = 'none';
+    });
+    const startButton = document.getElementById('start-button');
+    startButton.addEventListener('click', function() {
+     const repoInput = document.getElementById('repo-input').value;
+     const promptInput = document.getElementById('prompt-input').value;
+     document.getElementById('status').textContent = `Running Project Auto on ${repoInput} with instructions: ${promptInput}`;
+     // Here, add the actual Project Auto execution logic
+     // This is where you would send the repo and prompt to your backend
+     // For now, simulate a successful run
+     setTimeout(() => {
+      document.getElementById('status').textContent = `Project Auto completed successfully on ${repoInput}!`;
+     }, 3000);
+    });
+   });
   </script>
   <script src="https://github.com/Project-Auto/public/script.js"></script>
  </body>
