@@ -17,6 +17,8 @@ const theme = {
     buttonPrimaryText: '#FFFFFF',
     buttonSecondary: '#FDD835',
     buttonSecondaryText: '#212121',
+    gold: '#FFD700',
+    purple: '#800080',
   },
   fonts: {
     main: 'Roboto, sans-serif',
