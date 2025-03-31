@@ -4,14 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto - Configuration</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             background-color: #f8f8ff;
             margin: 0;
             padding: 0;
             color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .current-time {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            color: #7952B3;
+            font-size: 16px;
+            z-index: 1000;
+        }
+
+        #sidebar {
+            width: 250px;
+            background-color: #7952B3;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            left: 0;
+            top: 0;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+        }
+
+        #sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #sidebar li {
+            margin-bottom: 15px;
+        }
+
+        #sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        #sidebar a:hover {
+            background-color: #5A3A8A;
+        }
+
+        #content {
+            margin-left: 250px;
+            padding: 30px;
+            flex: 1;
         }
 
         .container {
@@ -26,6 +79,7 @@
         h1 {
             color: #7952B3;
             text-align: center;
+            margin-bottom: 30px;
         }
 
         label {
@@ -60,53 +114,6 @@
 
         button:hover {
             background-color: #b89214;
-        }
-
-        #sidebar {
-            width: 250px;
-            background-color: #7952B3;
-            color: white;
-            padding: 25px;
-            position: fixed;
-            height: 100%;
-            left: 0;
-            top: 0;
-            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        #sidebar ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #sidebar li {
-            margin-bottom: 15px;
-        }
-
-        #sidebar a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            padding: 12px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
-
-        #sidebar a:hover {
-            background-color: #5A3A8A;
-        }
-
-        #content {
-            margin-left: 270px;
-            padding: 30px;
-        }
-
-        .current-time {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            color: #7952B3;
-            font-size: 16px;
         }
 
         .github-auth-button {
@@ -174,7 +181,7 @@
         if (accessToken) {
             localStorage.setItem('github_access_token', accessToken);
             document.getElementById('auth-message').textContent = 'Successfully authenticated with GitHub!';
-            history.replaceState({}, document.title, window.location.pathname);
+            history.replaceState({}, document.title, 'https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/');
         } else if (localStorage.getItem('github_access_token')) {
             document.getElementById('auth-message').textContent = 'Already authenticated with GitHub.';
         }
