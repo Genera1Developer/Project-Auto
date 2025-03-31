@@ -79,6 +79,8 @@ router.post('/run-auto', async (req, res) => {
     });
     console.log('Repo Data:', repoData.data);
 
+    // Implement Auto execution logic here
+
     res.status(200).send('Project Auto executed successfully!');
 
   } catch (error) {
