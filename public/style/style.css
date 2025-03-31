@@ -1,195 +1,158 @@
-/* General Styles */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
 }
 
-/* Sidebar Styles */
-#sidebar {
-    width: 200px;
+.sidebar {
+    width: 250px;
     background-color: #333;
     color: #fff;
-    padding-top: 20px;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
-}
-
-#sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-#sidebar li {
-    padding: 10px;
-    text-align: left;
-}
-
-#sidebar a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-    transition: background-color 0.3s ease;
-}
-
-#sidebar a:hover {
-    background-color: #555;
-}
-
-#sidebar .current {
-    background-color: #555;
-}
-
-/* Content Styles */
-#content {
-    flex: 1;
     padding: 20px;
-    margin-left: 220px; /* Adjust based on sidebar width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-h1 {
-    color: #795548;
+.sidebar-header {
     text-align: center;
     margin-bottom: 20px;
 }
 
-label {
-    display: block;
-    margin-top: 10px;
-    color: #777;
-}
-
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+.logo {
+    width: 80px;
     margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
 }
 
-button {
-    background-color: #795548;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
+.sidebar h1 {
+    font-size: 24px;
+    margin: 0;
+    color: #FFD700; /* Gold */
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.sidebar nav li {
+    margin-bottom: 10px;
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
-button:hover {
-    background-color: #5D4037;
+.sidebar nav a:hover {
+    background-color: #555;
 }
 
-/* GitHub Authentication Button */
-.github-auth-button {
-    background-color: #4CAF50;
+.content {
+    flex: 1;
+    padding: 20px;
 }
 
-.github-auth-button:hover {
-    background-color: #43A047;
+header {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Authentication Message */
-#auth-message {
+header #current-time {
+    font-size: 16px;
+    color: #777;
+}
+
+header button {
+    background-color: #7030A0; /* Purple */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+header button:hover {
+    background-color: #502080;
+}
+
+main {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#project-input {
+    display: flex;
+    flex-direction: column;
+}
+
+#project-input h2 {
+    margin-top: 0;
+    color: #7030A0;
+}
+
+#project-input label {
     margin-top: 10px;
-    padding: 10px;
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
-    text-align: center;
+    font-weight: bold;
 }
 
-/* Footer Styles */
+#project-input input[type="text"],
+#project-input textarea {
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#project-input textarea {
+    height: 150px;
+}
+
+#project-input button {
+    background-color: #7030A0; /* Purple */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: fit-content;
+}
+
+#project-input button:hover {
+    background-color: #502080;
+}
+
+#project-input p {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
 footer {
     text-align: center;
-    padding: 20px;
-    background-color: #333;
-    color: white;
-    margin-top: auto;
-}
-
-/* Loading Spinner */
-#loading {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    text-align: center;
-    padding-top: 200px;
-}
-
-#loading img {
-    width: 100px;
-    height: 100px;
-}
-
-/* Current Time Display */
-.current-time {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    z-index: 1000;
-}
-
-/* Configuration Status */
-#config-status {
     margin-top: 20px;
     padding: 10px;
+    background-color: #333;
+    color: #fff;
     border-radius: 5px;
-    text-align: center;
-}
-
-#config-status.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-#config-status.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-/* Purple and Gold Theme */
-.purple-gold h1 {
-    color: #795548; /* Brown */
-}
-
-.purple-gold button {
-    background-color: #795548; /* Brown */
-}
-
-.purple-gold button:hover {
-    background-color: #5D4037; /* Darker Brown */
 }
