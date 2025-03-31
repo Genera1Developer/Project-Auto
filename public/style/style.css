@@ -1,10 +1,10 @@
 /* General body styling */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: #222;
+    color: #fff;
     line-height: 1.6;
 }
 
@@ -14,6 +14,9 @@ body {
     margin: auto;
     overflow: hidden;
     padding: 20px;
+    background-color: #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* Header styles */
@@ -188,19 +191,6 @@ footer {
 }
 
 /* Custom styles for Project Auto */
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #222;
-    color: #fff;
-}
-
-.container {
-    background-color: #333;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    padding: 20px;
-}
-
 h1 {
     color: #FFD700; /* Gold */
     text-align: center;
@@ -249,6 +239,8 @@ button:hover {
     height: 100%;
     overflow: auto;
     padding-top: 20px;
+    left: 0;
+    top: 0;
 }
 
 #sidebar ul {
@@ -364,4 +356,42 @@ footer {
     border-radius: 5px;
     font-size: 14px;
     z-index: 1000;
+}
+
+/* Added styling for the main content */
+#main-content {
+    padding: 20px;
+}
+
+/* Form specific styling */
+form {
+    margin-bottom: 20px;
+}
+
+/* Ensure the sidebar covers the full viewport height */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#sidebar {
+    height: 100%;
+}
+
+/* Style for the "Start" button */
+.start-button {
+    background-color: #FFD700; /* Gold */
+    color: #000; /* Black */
+    padding: 15px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.start-button:hover {
+    background-color: #DAA520; /* Darker Gold */
 }
