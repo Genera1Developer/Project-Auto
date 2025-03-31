@@ -1,0 +1,22 @@
+{
+  "name": "project-auto",
+  "version": "1.0.0",
+  "description": "Web interface for Project Auto",
+  "main": "api/server.js",
+  "scripts": {
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "octokit": "^1.7.0",
+    "dotenv": "^10.0.0",
+    "express-session": "^1.17.2",
+    "passport": "^0.6.0",
+    "passport-github2": "^0.1.12",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
