@@ -10,113 +10,109 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h2>Project Auto</h2>
         </div>
-        <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
-
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
         <main>
-            <h1>Welcome to Project Auto</h1>
-            <p>Automate your repository tasks with ease.</p>
-
-            <div id="github-auth" style="display: none;">
-                <button id="authenticate-button">Authenticate with GitHub</button>
-            </div>
-            <div id="repo-input" style="display: none;">
-                <label for="repo_url">Repository URL (username/repo):</label>
-                <input type="text" id="repo_url" name="repo_url" placeholder="username/repo">
-            </div>
-            <div id="prompt-input" style="display: none;">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Enter your instructions here"></textarea>
-            </div>
-            <button id="start-button" style="display: none;">Start</button>
-            <div id="output" style="margin-top: 20px;"></div>
+            <section id="auth-section">
+                <button id="login-button">Login with GitHub</button>
+                <button id="logout-button" style="display: none;">Logout</button>
+                <div id="user-info"></div>
+            </section>
+            <section id="project-auto-form">
+                <h2>Run Project Auto</h2>
+                <label for="repo">Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository"><br><br>
+                <label for="instructions">Instructions:</label><br>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your instructions here"></textarea><br><br>
+                <button id="start-button">Start</button>
+                <div id="result"></div>
+            </section>
         </main>
     </div>
-
     <script>
         function updateTime() {
-            fetch('/api/time')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('time').textContent = data.time;
-                });
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
         }
+
         setInterval(updateTime, 1000);
         updateTime();
 
-        let accessToken = localStorage.getItem('github_token');
-        const authenticateButton = document.getElementById('authenticate-button');
-        const repoInput = document.getElementById('repo-input');
-        const promptInput = document.getElementById('prompt-input');
-        const startButton = document.getElementById('start-button');
-        const githubAuth = document.getElementById('github-auth');
-        const outputDiv = document.getElementById('output');
-        
-        if (accessToken) {
-            repoInput.style.display = 'block';
-            promptInput.style.display = 'block';
-            startButton.style.display = 'block';
-        } else {
-            githubAuth.style.display = 'block';
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const userInfoDiv = document.getElementById('user-info');
+            const startButton = document.getElementById('start-button');
+            const resultDiv = document.getElementById('result');
+            const repoInput = document.getElementById('repo');
+            const instructionsInput = document.getElementById('instructions');
 
-        authenticateButton.addEventListener('click', () => {
-            fetch('/api/github_login?redirect_uri=' + window.location.origin)
-                .then(response => response.json())
-                .then(data => {
-                    const githubURL = `https://github.com/login/oauth/authorize?client_id=${data.github_client_id}&redirect_uri=${data.redirect_uri}`;
-                    window.location.href = githubURL;
-                });
-        });
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-
-        if (code && !accessToken) {
-            fetch('/api/github_callback?code=' + code)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.access_token) {
-                        localStorage.setItem('github_token', data.access_token);
-                        accessToken = data.access_token;
-                        repoInput.style.display = 'block';
-                        promptInput.style.display = 'block';
-                        startButton.style.display = 'block';
-                        githubAuth.style.display = 'none';
-                    } else {
-                        outputDiv.textContent = 'Failed to authenticate with GitHub.';
-                    }
-                });
-        }
-
-        startButton.addEventListener('click', () => {
-            const repoUrl = document.getElementById('repo_url').value;
-            const prompt = document.getElementById('prompt').value;
-            
-            fetch('/api/run_auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repo_url: repoUrl, prompt: prompt })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    outputDiv.textContent = 'Error: ' + data.error;
+            const updateUI = (user) => {
+                if (user) {
+                    loginButton.style.display = 'none';
+                    logoutButton.style.display = 'inline-block';
+                    userInfoDiv.textContent = `Logged in as ${user.displayName} (${user.username})`;
                 } else {
-                    outputDiv.textContent = 'Output: ' + data.output;
+                    loginButton.style.display = 'inline-block';
+                    logoutButton.style.display = 'none';
+                    userInfoDiv.textContent = 'Not logged in.';
                 }
+            };
+
+            fetch('/api/auth/user')
+                .then(response => response.json())
+                .then(user => {
+                    updateUI(user);
+                });
+
+            loginButton.addEventListener('click', () => {
+                window.location.href = '/api/auth/github';
+            });
+
+            logoutButton.addEventListener('click', () => {
+                fetch('/api/auth/logout')
+                    .then(response => {
+                        if (response.redirected) {
+                            window.location.href = response.url;
+                        }
+                    });
+            });
+
+            startButton.addEventListener('click', () => {
+                const repo = repoInput.value;
+                const instructions = instructionsInput.value;
+
+                fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repo, instructions })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    resultDiv.textContent = data.message || data.error;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultDiv.textContent = 'An error occurred.';
+                });
             });
         });
     </script>
