@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let config = JSON.parse(localStorage.getItem('projectAutoConfig')) || {
         githubRepo: '',
         customInstructions: '',
-        githubToken: null // Store token as null
+        githubToken: null
     };
 
     // Populate the form with existing configuration
@@ -22,8 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // GitHub Authentication button event
     const githubAuthButton = document.getElementById('githubAuth');
     githubAuthButton.addEventListener('click', function() {
-        // Redirect to GitHub OAuth flow, but only if there is no token already
-        config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config; //refresh config
+        config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config;
         if (!config.githubToken) {
             window.location.href = '/api/github-auth';
         } else {
@@ -33,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Check for GitHub token in local storage and update UI
     function updateAuthButton() {
-        config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config; //refresh config
+        config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config;
         if (config.githubToken) {
             githubAuthButton.textContent = 'Authenticated';
             githubAuthButton.disabled = true;
@@ -46,23 +45,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Start button functionality
     const startButton = document.getElementById('startBtn');
     startButton.addEventListener('click', function() {
-        config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config; //refresh config
+        config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config;
         const repo = document.getElementById('githubRepo').value;
         const instructions = document.getElementById('customInstructions').value;
         const token = config.githubToken;
-
 
         if (!repo || !instructions || !token) {
             alert('Please configure your repository, instructions, and authenticate with GitHub.');
             return;
         }
 
-        // Call the backend API to start Project Auto
         fetch('/api/start-auto', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Include token in header
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
                 repo: repo,
@@ -96,16 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial time display
     updateTime();
-    updateAuthButton(); // Initial button state
-    window.addEventListener('storage', updateAuthButton); // Listen for changes
+    updateAuthButton();
+    window.addEventListener('storage', updateAuthButton);
 
     // Add event listener for clearing the configuration
     document.getElementById('clearConfig').addEventListener('click', function() {
         localStorage.removeItem('projectAutoConfig');
-        // Reset form values
         document.getElementById('githubRepo').value = '';
         document.getElementById('customInstructions').value = '';
-        // Update auth button
         updateAuthButton();
         alert('Configuration cleared!');
     });
