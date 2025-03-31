@@ -5,140 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
-            <li><a href="/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
         <header>
             <div id="time" class="time"></div>
-            <div class="auth-buttons">
-                <button id="loginBtn" onclick="loginWithGitHub()">Login with GitHub</button>
-                <button id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
-                <span id="username"></span>
-            </div>
         </header>
         <main>
-            <section id="project-input">
-                <h2>Run Project Auto</h2>
+            <section class="hero">
+                <h2>Automate Your Code</h2>
+                <p>Enter your repository and prompt to start automating.</p>
+            </section>
+            <section class="input-area">
                 <label for="repo_url">Repository URL (username/repo):</label>
-                <input type="text" id="repo_url" placeholder="e.g., owner/repository">
+                <input type="text" id="repo_url" name="repo_url" placeholder="e.g., owner/repository">
                 <label for="prompt">Prompt:</label>
-                <textarea id="prompt" rows="4" placeholder="Enter your customization instructions"></textarea>
-                <button id="startBtn" onclick="runAuto()">Start</button>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your prompt here"></textarea>
+                <button id="start-button">Start</button>
                 <div id="output"></div>
             </section>
         </main>
     </div>
-
-    <script>
-        function updateTime() {
-            fetch('/api/time')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('time').textContent = data.time;
-                });
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        let accessToken = null;
-
-        function loginWithGitHub() {
-            const redirect_uri = window.location.origin;
-            fetch(`/api/github_login?redirect_uri=${redirect_uri}`)
-                .then(response => response.json())
-                .then(data => {
-                    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${data.github_client_id}&redirect_uri=${data.redirect_uri}&scope=repo`;
-                    window.location.href = githubAuthUrl;
-                });
-        }
-        
-        // Check for the presence of a code in the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-
-        if (code) {
-            // Exchange the code for an access token
-            fetch(`/api/github_callback?code=${code}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.access_token) {
-                        accessToken = data.access_token;
-                        localStorage.setItem('github_token', accessToken);
-                        document.getElementById('loginBtn').style.display = 'none';
-                        document.getElementById('logoutBtn').style.display = 'inline-block';
-                        document.getElementById('username').textContent = 'Logged in';
-                        // Clear the code from the URL
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                    } else {
-                        console.error('Failed to obtain access token:', data.error);
-                        alert('Failed to authenticate with GitHub.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error during token exchange:', error);
-                    alert('An error occurred during GitHub authentication.');
-                });
-        } else {
-            // Check if there's an existing token in localStorage
-            accessToken = localStorage.getItem('github_token');
-            if (accessToken) {
-                document.getElementById('loginBtn').style.display = 'none';
-                document.getElementById('logoutBtn').style.display = 'inline-block';
-                document.getElementById('username').textContent = 'Logged in';
-            }
-        }
-
-        function logout() {
-            localStorage.removeItem('github_token');
-            accessToken = null;
-            document.getElementById('loginBtn').style.display = 'inline-block';
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('username').textContent = '';
-        }
-
-        function runAuto() {
-            const repo_url = document.getElementById('repo_url').value;
-            const prompt = document.getElementById('prompt').value;
-            const outputDiv = document.getElementById('output');
-            outputDiv.textContent = 'Running...';
-
-            if (!accessToken) {
-                alert('Please login with GitHub first.');
-                return;
-            }
-
-            fetch('/api/run_auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repo_url: repo_url, prompt: prompt })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    outputDiv.textContent = 'Error: ' + data.error;
-                } else {
-                    outputDiv.textContent = 'Output: ' + data.output;
-                }
-            })
-            .catch(error => {
-                outputDiv.textContent = 'An error occurred: ' + error;
-            });
-        }
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
