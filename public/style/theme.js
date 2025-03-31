@@ -1,7 +1,7 @@
 const theme = {
   colors: {
-    primary: '#800080',
-    secondary: '#FFD700',
+    primary: '#800080', // Purple
+    secondary: '#FFD700', // Gold
     background: '#FAFAFA',
     text: '#212121',
     accent: '#A020F0',
@@ -27,6 +27,9 @@ const theme = {
     headerText: '#FFFFFF',
     footerBackground: '#301934',
     footerText: '#FFFFFF',
+    cardBackground: '#FFFFFF',
+    cardShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
   },
   fonts: {
     main: 'Arial, sans-serif',
