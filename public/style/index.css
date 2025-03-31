@@ -4,20 +4,28 @@ body {
     padding: 0;
     background-color: #f4f4f4;
     color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container {
     width: 80%;
     margin: auto;
     overflow: hidden;
+    flex: 1;
 }
 
 header {
     background: #673ab7;
     color: #fff;
-    padding-top: 30px;
-    min-height: 70px;
+    padding-top: 20px;
+    min-height: 50px;
     border-bottom: 3px solid #e6cc00;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
 }
 
 header a {
@@ -30,25 +38,21 @@ header a {
 header ul {
     margin: 0;
     padding: 0;
+    list-style: none;
+    display: flex;
 }
 
 header li {
-    float: left;
-    display: inline;
-    padding: 0 20px 0 20px;
+    margin: 0 15px;
 }
 
 header #branding {
-    float: left;
-}
-
-header #branding h1 {
-    margin: 0;
+    font-size: 1.5em;
 }
 
 header nav {
-    float: right;
-    margin-top: 10px;
+    display: flex;
+    align-items: center;
 }
 
 header .highlight, header .current a {
@@ -62,62 +66,69 @@ header a:hover {
 }
 
 #showcase {
-    min-height: 400px;
-    background: url('https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/img/showcase.jpg') no-repeat 0 -100px;
+    min-height: 300px;
+    background: url('https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/img/showcase.jpg') no-repeat center center/cover;
     text-align: center;
     color: #fff;
+    padding: 50px 0;
 }
 
 #showcase h1 {
-    margin-top: 100px;
-    font-size: 55px;
+    margin-top: 20px;
+    font-size: 4em;
     margin-bottom: 10px;
 }
 
 #showcase p {
-    font-size: 20px;
+    font-size: 1.5em;
 }
 
 #newsletter {
     padding: 15px;
     color: #fff;
     background: #35424a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #newsletter h1 {
-    float: left;
+    font-size: 1.2em;
+    margin: 0;
 }
 
 #newsletter form {
-    float: right;
-    margin-top: 15px;
+    display: flex;
 }
 
 #newsletter input[type="email"] {
-    padding: 4px;
-    height: 25px;
-    width: 250px;
+    padding: 8px;
+    width: 200px;
+    border: none;
+    border-radius: 4px;
 }
 
 .button_1 {
-    height: 38px;
+    padding: 10px 20px;
     background: #e6cc00;
-    border: 0;
-    padding-left: 20px;
-    padding-right: 20px;
+    border: none;
     color: #fff;
     cursor: pointer;
+    border-radius: 4px;
+    font-size: 1em;
 }
 
 article#main-col {
-    float: left;
     width: 65%;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 aside#sidebar {
-    float: right;
     width: 30%;
     margin-top: 10px;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 #services {
@@ -128,10 +139,18 @@ aside#sidebar {
     padding: 20px;
     margin-bottom: 20px;
     border-bottom: 3px solid #e6cc00;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 #services .box h3 {
     margin: 0;
+    color: #673ab7;
+}
+
+#services .box p {
+    color: #555;
 }
 
 aside#sidebar .quote input, aside#sidebar .quote textarea {
@@ -141,43 +160,49 @@ aside#sidebar .quote input, aside#sidebar .quote textarea {
 
 footer {
     padding: 20px;
-    margin-top: 20px;
     color: #fff;
     background-color: #673ab7;
     text-align: center;
+    margin-top: auto;
 }
 
 /* Media Queries */
 @media(max-width: 768px) {
-    header #branding,
-    header nav,
-    header nav li,
-    #newsletter h1,
-    #newsletter form,
-    #newsletter button,
+    .container {
+        width: 100%;
+    }
+
+    header,
+    #newsletter {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    header ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header li {
+        margin: 10px 0;
+    }
+
+    header nav {
+        margin-top: 10px;
+    }
+
+    #newsletter form {
+        margin-top: 10px;
+    }
+
+    #newsletter input[type="email"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
     article#main-col,
     aside#sidebar {
-        float: none;
-        text-align: center;
         width: 100%;
-    }
-
-    header {
-        padding-bottom: 20px;
-    }
-
-    #showcase h1 {
-        margin-top: 40px;
-    }
-
-    #newsletter button {
-        display: block;
-        width: 100%;
-    }
-
-    #newsletter form input[type="email"] {
-        width: 100%;
-        margin-bottom: 5px;
     }
 }
 
@@ -188,6 +213,11 @@ footer {
     background-color: #333;
     padding-top: 20px;
     color: #fff;
+    left: 0;
+    top: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    box-sizing: border-box;
 }
 
 .sidebar a {
@@ -195,6 +225,7 @@ footer {
     text-decoration: none;
     color: #fff;
     display: block;
+    transition: 0.3s;
 }
 
 .sidebar a:hover {
@@ -204,14 +235,16 @@ footer {
 .content {
     margin-left: 220px;
     padding: 20px;
+    transition: margin-left 0.5s;
 }
 
 .current-time {
-    position: absolute;
+    position: fixed;
     top: 10px;
-    left: 10px;
+    right: 10px;
     color: #e6cc00;
     font-weight: bold;
+    z-index: 1000;
 }
 
 .form-group {
@@ -257,3 +290,272 @@ footer {
 .auth-button:hover {
     background-color: #512da8;
 }
+
+/* Responsive sidebar */
+@media screen and (max-width: 600px) {
+    .sidebar {
+        width: 0;
+        padding-top: 15px;
+    }
+
+    .sidebar a {
+        text-align: left;
+        padding: 10px;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+}
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/style/index.css">
+</head>
+<body>
+    <div class="current-time" id="current-time"></div>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><span class="highlight">Project</span> Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a></li>
+                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a></li>
+                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a>
+    </div>
+
+    <section id="showcase">
+        <div class="container">
+            <h1>Automate Your Projects</h1>
+            <p>Let Project Auto handle the tedious tasks so you can focus on what matters.</p>
+        </div>
+    </section>
+
+    <section id="newsletter">
+        <div class="container">
+            <h1>Subscribe To Our Newsletter</h1>
+            <form>
+                <input type="email" placeholder="Enter Email...">
+                <button type="submit" class="button_1">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="content">
+        <div class="form-container">
+            <h2>Project Configuration</h2>
+            <form id="project-form">
+                <div class="form-group">
+                    <label for="repo">GitHub Repository (username/repo)</label>
+                    <input type="text" id="repo" name="repo" placeholder="e.g., Project-Auto/Project-Auto">
+                </div>
+                <div class="form-group">
+                    <label for="instructions">Customization Instructions</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here..."></textarea>
+                </div>
+                <button type="submit" class="auth-button">Start</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>Project Auto, Copyright &copy; 2024</p>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTime(); // Initial call
+
+            const projectForm = document.getElementById('project-form');
+            projectForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                const repo = document.getElementById('repo').value;
+                const instructions = document.getElementById('instructions').value;
+
+                //  Implementation for Project Auto logic here
+                alert(`Starting Project Auto on repo: ${repo} with instructions: ${instructions}`);
+            });
+        });
+    </script>
+</body>
+</html>
+edit filepath: public/About-Us.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project Auto</title>
+    <link rel="stylesheet" href="https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/style/index.css">
+</head>
+<body>
+    <div class="current-time" id="current-time"></div>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><span class="highlight">Project</span> Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a></li>
+                    <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a></li>
+                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a>
+    </div>
+
+    <section id="showcase">
+        <div class="container">
+            <h1>About Project Auto</h1>
+            <p>Learn more about our mission and team.</p>
+        </div>
+    </section>
+
+    <div class="content">
+        <div class="container">
+            <article id="main-col">
+                <h1>Our Mission</h1>
+                <p>Project Auto aims to simplify and automate software development workflows. We believe that developers should focus on innovation, not repetitive tasks. Our goal is to provide a powerful and user-friendly platform that streamlines project setup, configuration, and deployment.</p>
+
+                <p>We are dedicated to building a community-driven project. We welcome contributions and feedback from developers of all skill levels. Together, we can create a tool that empowers developers to build better software, faster.</p>
+            </article>
+
+            <aside id="sidebar">
+                <div class="dark">
+                    <h3>What We Do</h3>
+                    <p>We provide automated solutions for project configuration, dependency management, and deployment. Our platform integrates seamlessly with GitHub, allowing you to easily manage and automate your projects.</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <footer>
+        <p>Project Auto, Copyright &copy; 2024</p>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
+edit filepath: public/Configuration.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Project Auto</title>
+    <link rel="stylesheet" href="https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/style/index.css">
+</head>
+<body>
+    <div class="current-time" id="current-time"></div>
+    <header>
+        <div class="container">
+            <div id="branding">
+                <h1><span class="highlight">Project</span> Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a></li>
+                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a></li>
+                    <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="sidebar">
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a>
+    </div>
+
+    <section id="showcase">
+        <div class="container">
+            <h1>Configure Project Auto</h1>
+            <p>Customize Project Auto to fit your needs.</p>
+        </div>
+    </section>
+
+    <div class="content">
+        <div class="form-container">
+            <h2>Configuration Options</h2>
+            <form id="config-form">
+                <div class="form-group">
+                    <label for="github-token">GitHub Authentication Token</label>
+                    <input type="text" id="github-token" name="github-token" placeholder="Enter your GitHub token">
+                    <p>
+                        <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens" target="_blank">
+                            Learn how to generate a GitHub token.
+                        </a>
+                    </p>
+                </div>
+                <button type="submit" class="auth-button">Save Configuration</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>Project Auto, Copyright &copy; 2024</p>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const configForm = document.getElementById('config-form');
+            configForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const githubToken = document.getElementById('github-token').value;
+                // Future: Store this token securely (e.g., in local storage or cookies).
+                alert('Configuration Saved!  GitHub Token: ' + githubToken);
+            });
+        });
+    </script>
+</body>
+</html>
