@@ -30,6 +30,8 @@ const theme = {
     cardBackground: '#FFFFFF',
     cardShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+    boxBorder: '1px solid #BDBDBD',
+    modalOverlay: 'rgba(0, 0, 0, 0.5)',
   },
   fonts: {
     main: 'Arial, sans-serif',
@@ -89,6 +91,40 @@ const theme = {
     sidebar: 10,
     modal: 20,
     notification: 30,
+  },
+  components: {
+    button: {
+      primary: {
+        background: '#800080',
+        color: '#FFFFFF',
+        '&:hover': {
+          backgroundColor: '#A020F0',
+        },
+      },
+      secondary: {
+        background: '#FFD700',
+        color: '#212121',
+        '&:hover': {
+          backgroundColor: '#F0C808',
+        },
+      },
+    },
+    input: {
+      border: '1px solid #BDBDBD',
+      borderRadius: '5px',
+      padding: '8px 12px',
+      '&:focus': {
+        borderColor: '#A020F0',
+        outline: 'none',
+        boxShadow: '0 0 5px rgba(160, 32, 240, 0.3)',
+      },
+    },
+    card: {
+      backgroundColor: '#FFFFFF',
+      borderRadius: '5px',
+      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+      padding: '20px',
+    },
   },
 };
 
