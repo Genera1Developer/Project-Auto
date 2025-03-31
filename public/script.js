@@ -68,4 +68,45 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // GitHub authentication flow
+  const githubAuthButton = document.getElementById('github-auth-button');
+  if (githubAuthButton) {
+    githubAuthButton.addEventListener('click', () => {
+      // Redirect to GitHub OAuth flow (replace with your actual OAuth URL)
+      const clientId = 'Iv1.742494741585dfa7'; // Replace with your GitHub App client ID
+      const redirectUri = 'https://project-auto-v1029.vercel.app/public/Configuration'; // Replace with your redirect URI
+      const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
+      window.location.href = githubAuthUrl;
+    });
+  }
+
+  // Handle the OAuth callback
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+
+  if (code && window.location.pathname === '/public/Configuration') {
+    // Exchange the code for an access token (send to backend)
+    fetch('/api/github_auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ code }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.access_token) {
+          // Store the access token (e.g., in localStorage)
+          localStorage.setItem('githubToken', data.access_token);
+          alert('GitHub authentication successful!');
+        } else {
+          alert('GitHub authentication failed.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error during token exchange:', error);
+        alert('An error occurred during GitHub authentication.');
+      });
+  }
 });
