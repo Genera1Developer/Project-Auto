@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/public/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Auto</title>
+  <link rel="stylesheet" href="/public/style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <span id="current-time"></span>
-            </div>
-            <ul>
-                <li><a href="/public/index.html">Home</a></li>
-                <li><a href="/public/Configuration">Configuration</a></li>
-                <li><a href="/public/About-Us">About Us</a></li>
-            </ul>
-        </div>
-        <div class="content" id="content">
-            <button id="sidebar-toggle">☰</button>
-            <h1>Project Auto</h1>
-            <form id="project-auto-form">
-                <label for="repo">Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" required><br><br>
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" cols="50" required></textarea><br><br>
-                <button type="submit">Start</button>
-            </form>
-        </div>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span id="current-time"></span>
     </div>
-    <script src="/public/script.js"></script>
+    <ul>
+      <li><a href="/public/index.html">Home</a></li>
+      <li><a href="/public/Configuration">Configuration</a></li>
+      <li><a href="/public/About-Us">About Us</a></li>
+    </ul>
+    <button id="sidebar-toggle">Toggle Sidebar</button>
+  </div>
+  <div class="content" id="content">
+    <h1>Project Auto</h1>
+    <form id="project-auto-form">
+      <label for="repo">GitHub Repository (user/repo):</label>
+      <input type="text" id="repo" name="repo" required><br><br>
+
+      <label for="prompt">Prompt:</label>
+      <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
+
+      <button type="submit">Start</button>
+    </form>
+  </div>
+  <script src="/public/script.js"></script>
 </body>
 </html>
