@@ -5,7 +5,7 @@ body {
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    height: 100vh;
+    min-height: 100vh; /* Ensure full height */
 }
 
 .sidebar {
@@ -14,6 +14,11 @@ body {
     color: #fff;
     padding-top: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    height: 100vh; /* Full height sidebar */
+    position: fixed; /* Fixed position */
+    top: 0;
+    left: 0;
+    z-index: 100; /* Ensure it's above other content */
 }
 
 .sidebar-header {
@@ -53,6 +58,7 @@ body {
 .content {
     flex: 1;
     padding: 20px;
+    margin-left: 250px; /* Adjust for sidebar width */
 }
 
 header {
@@ -145,3 +151,409 @@ main h1 {
     background-color: #f9f9f9;
     color: #333;
 }
+
+/* New Styles */
+.github-auth {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.github-auth button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 20%;
+    border-radius: 4px;
+}
+
+.github-auth button:hover {
+    opacity: 0.8;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.input-group input[type="text"],
+.input-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #301934;
+    color: #fff;
+    margin-top: 20px;
+}
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="/">Project Auto</a>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="loginBtn">Login with GitHub</button>
+                <button id="logoutBtn" style="display:none;">Logout</button>
+                <span id="username"></span>
+            </div>
+        </header>
+
+        <main>
+            <h1>Welcome to Project Auto</h1>
+            <div id="app">
+                <form id="project-auto-form">
+                    <div class="input-group">
+                        <label for="repo">GitHub Repository (username/repo)</label>
+                        <input type="text" id="repo" name="repo" placeholder="e.g., facebook/react">
+                    </div>
+                    <div class="input-group">
+                        <label for="prompt">Customization Instructions</label>
+                        <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
+                    </div>
+                    <button type="button" id="startBtn">Start</button>
+                </form>
+                <div id="result"></div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            // Redirect to GitHub OAuth flow
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            // Redirect to logout route
+            window.location.href = '/api/auth/logout';
+        });
+
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            const repo = document.getElementById('repo').value;
+            const prompt = document.getElementById('prompt').value;
+            const resultDiv = document.getElementById('result');
+
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, prompt }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.textContent = 'Success: ' + data.message;
+                } else {
+                    resultDiv.textContent = 'Error: ' + data.message;
+                }
+            } catch (error) {
+                resultDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        // Check authentication status on page load
+        async function checkAuthStatus() {
+            const response = await fetch('/api/auth/status');
+            const data = await response.json();
+
+            if (data.isAuthenticated) {
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'block';
+                document.getElementById('username').textContent = 'Logged in as ' + data.username;
+            } else {
+                document.getElementById('loginBtn').style.display = 'block';
+                document.getElementById('logoutBtn').style.display = 'none';
+                document.getElementById('username').textContent = '';
+            }
+        }
+
+        checkAuthStatus();
+    </script>
+</body>
+
+</html>
+edit filepath: api/auth/github.js
+content: const passport = require('passport');
+const GitHubStrategy = require('passport-github2').Strategy;
+const session = require('express-session');
+
+// Configure session middleware
+module.exports = (app) => {
+    app.use(session({
+        secret: 'your_secret_key', // Replace with a strong, random key
+        resave: false,
+        saveUninitialized: false,
+        cookie: { secure: false } // Set to true in production with HTTPS
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+
+    passport.use(new GitHubStrategy({
+        clientID: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET,
+        callbackURL: '/api/auth/github/callback'
+    },
+        (accessToken, refreshToken, profile, done) => {
+            // In a real application, you would save the user profile to a database
+            // and use the accessToken to make API requests on behalf of the user.
+            const user = {
+                id: profile.id,
+                username: profile.username,
+                accessToken: accessToken
+            };
+            return done(null, user);
+        }
+    ));
+
+    passport.serializeUser((user, done) => {
+        done(null, user);
+    });
+
+    passport.deserializeUser((user, done) => {
+        done(null, user);
+    });
+
+    // GitHub authentication route
+    app.get('/api/auth/github', passport.authenticate('github', { scope: ['repo'] }));
+
+    // GitHub callback route
+    app.get('/api/auth/github/callback',
+        passport.authenticate('github', { failureRedirect: '/' }),
+        (req, res) => {
+            // Successful authentication, redirect home.
+            res.redirect('/');
+        });
+
+    app.get('/api/auth/logout', (req, res) => {
+        req.logout(function(err) {
+            if (err) { return next(err); }
+            res.redirect('/');
+          });
+    });
+
+    app.get('/api/auth/status', (req, res) => {
+        if (req.isAuthenticated()) {
+            res.json({ isAuthenticated: true, username: req.user.username });
+        } else {
+            res.json({ isAuthenticated: false });
+        }
+    });
+};
+edit filepath: api/run.js
+content: const { Octokit } = require("@octokit/rest");
+
+module.exports = (app) => {
+    app.post('/api/run', async (req, res) => {
+        if (!req.isAuthenticated()) {
+            return res.status(401).json({ message: 'Authentication required' });
+        }
+
+        const { repo, prompt } = req.body;
+        const { accessToken } = req.user;
+
+        if (!repo || !prompt) {
+            return res.status(400).json({ message: 'Repo and prompt are required' });
+        }
+
+        try {
+            const octokit = new Octokit({ auth: accessToken });
+
+            const [owner, repository] = repo.split('/');
+            // Example: Create a new issue in the repository
+            const issue = await octokit.issues.create({
+                owner: owner,
+                repo: repository,
+                title: 'Project Auto Task',
+                body: prompt,
+            });
+
+            res.json({ message: `Issue created successfully: ${issue.data.html_url}` });
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).json({ message: error.message });
+        }
+    });
+};
+edit filepath: server.js
+content: const express = require('express');
+const path = require('path');
+require('dotenv').config();
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Authentication routes (GitHub)
+require('./api/auth/github')(app);
+
+// API route to run Project Auto
+require('./api/run')(app);
+
+// "About Us" page route
+app.get('/About-Us', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'About-Us.html'));
+});
+
+// Configuration page route
+app.get('/Configuration', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'Configuration.html'));
+});
+
+// Handle SPA routing - serve index.html for all unknown routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+edit filepath: public/About-Us.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="/">Project Auto</a>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+        </header>
+        <main>
+            <h1>About Us</h1>
+            <p>Project Auto is a tool designed to automate tasks in your GitHub repositories.
+                It allows you to specify instructions, and it will attempt to execute those instructions
+                by creating issues, pull requests, or other actions.</p>
+            <p>Our goal is to simplify repository maintenance and enable efficient collaboration.</p>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
+edit filepath: public/Configuration.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="/">Project Auto</a>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+        </header>
+        <main>
+            <h1>Configuration</h1>
+            <p>Here, you can configure Project Auto settings.</p>
+            <p>Currently, there are no configurable settings.
+                This page will be updated as new settings become available.</p>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto. All rights reserved.</p>
+        </footer>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
