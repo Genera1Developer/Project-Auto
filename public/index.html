@@ -9,35 +9,508 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/Project-Auto-Logo.png" alt="Project Auto Logo">
-            <h1 class="logo-text">Project Auto</h1>
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
+        <ul class="nav">
+            <li><a href="/index.html">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
+
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <div class="container">
-                <h1>Welcome to Project Auto</h1>
-                <p>Automate your repository modifications with ease.</p>
-                <div class="input-area">
-                    <label for="repo_url">Repository URL (username/repo):</label>
-                    <input type="text" id="repo_url" placeholder="e.g., owner/repository">
-                    <label for="prompt">Prompt:</label>
-                    <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
-                    <button id="start-button">Start</button>
-                    <button id="github-login-button">Authenticate with GitHub</button>
+            <section id="github-auth">
+                <a href="/api/github/login" class="button">Authenticate with GitHub</a>
+            </section>
+
+            <section id="project-input">
+                <h2>Run Project Auto</h2>
+                <form id="auto-form">
+                    <label for="repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto" required>
+
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions here"></textarea>
+
+                    <button type="submit" class="button">Start</button>
+                </form>
+            </section>
+
+            <section id="results">
+                <h2>Results</h2>
+                <div id="results-content">
+                    <!-- Results will be displayed here -->
                 </div>
-                <div id="output" class="output-area"></div>
-            </div>
+            </section>
         </main>
+
+        <footer>
+            <p>Contact: support@projectauto.com</p>
+        </footer>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('auto-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repo, instructions })
+                });
+
+                const result = await response.text();
+                document.getElementById('results-content').textContent = result;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('results-content').textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
 </body>
 </html>
+edit filepath: public/style/style.css
+content: body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.logo {
+    width: 80px;
+    margin-bottom: 10px;
+}
+
+.nav {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+.nav li {
+    margin-bottom: 10px;
+}
+
+.nav a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #fff;
+    background-color: #555;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.nav a:hover {
+    background-color: #777;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+header {
+    background-color: #663399;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+main {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #663399;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.button {
+    background-color: #663399;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button:hover {
+    background-color: #7744aa;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+#current-time {
+    font-size: 1.2em;
+    color: gold;
+}
+
+#results-content {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+/* Configuration Page Styles */
+.config-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.config-container h1 {
+    color: #333;
+    text-align: center;
+}
+
+.config-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.config-section h2 {
+    color: #663399;
+    margin-bottom: 10px;
+}
+
+.config-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.config-form input[type="text"],
+.config-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.config-form button {
+    background-color: #663399;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.config-form button:hover {
+    background-color: #552288;
+}
+
+/* About Us Page Styles */
+.about-us-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.about-us-container h1 {
+    color: #333;
+    text-align: center;
+}
+
+.about-us-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.about-us-section h2 {
+    color: #663399;
+    margin-bottom: 10px;
+}
+
+.about-us-section p {
+    color: #555;
+    line-height: 1.6;
+}
+
+.team-member {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.team-member h3 {
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.team-member p {
+    color: #777;
+}
+edit filepath: public/About-Us
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
+        </div>
+        <ul class="nav">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
+    </div>
+    
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>About Us</h1>
+        </header>
+        
+        <main>
+            <section class="about-us-container">
+                <div class="about-us-section">
+                    <h2>Our Mission</h2>
+                    <p>Project Auto aims to automate and streamline software development processes, making it easier for developers to manage and enhance their projects. We strive to provide powerful, user-friendly tools that save time and improve efficiency.</p>
+                </div>
+                
+                <div class="about-us-section">
+                    <h2>Our Team</h2>
+                    <div class="team-member">
+                        <img src="/style/team-member-1.jpg" alt="Team Member 1">
+                        <h3>John Doe</h3>
+                        <p>Lead Developer</p>
+                    </div>
+                    
+                    <div class="team-member">
+                        <img src="/style/team-member-2.jpg" alt="Team Member 2">
+                        <h3>Jane Smith</h3>
+                        <p>UI/UX Designer</p>
+                    </div>
+                </div>
+                
+                <div class="about-us-section">
+                    <h2>Contact Us</h2>
+                    <p>If you have any questions or feedback, please feel free to reach out to us at support@projectauto.com.</p>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Contact: support@projectauto.com</p>
+        </footer>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
+edit filepath: public/Configuration
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
+        </div>
+        <ul class="nav">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
+    </div>
+    
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>Configuration</h1>
+        </header>
+        
+        <main>
+            <section class="config-container">
+                <div class="config-section">
+                    <h2>General Settings</h2>
+                    <form class="config-form">
+                        <label for="api-key">API Key:</label>
+                        <input type="text" id="api-key" name="api-key" placeholder="Enter your API key">
+                        
+                        <label for="default-repo">Default Repository:</label>
+                        <input type="text" id="default-repo" name="default-repo" placeholder="Enter default repository (username/repo)">
+                        
+                        <button type="submit">Save Settings</button>
+                    </form>
+                </div>
+                
+                <div class="config-section">
+                    <h2>Advanced Settings</h2>
+                    <form class="config-form">
+                        <label for="custom-instructions">Custom Instructions:</label>
+                        <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter custom instructions"></textarea>
+                        
+                        <button type="submit">Save Instructions</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Contact: support@projectauto.com</p>
+        </footer>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
+edit filepath: public/style/logo.png
+content: Fake image content for logo.png
