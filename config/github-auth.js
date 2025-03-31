@@ -1,8 +1,7 @@
-// must be dynamic from ./api/auth/github.js
 const githubAuth = {
-  clientID: 'YOUR_GITHUB_APP_CLIENT_ID',
-  clientSecret: 'YOUR_GITHUB_APP_CLIENT_SECRET',
-  callbackURL: 'https://your-app-url/api/auth/github/callback'
+  clientID: process.env.GITHUB_CLIENT_ID,
+  clientSecret: process.env.GITHUB_CLIENT_SECRET,
+  callbackURL: process.env.GITHUB_CALLBACK_URL || 'http://localhost:3000/api/auth/github/callback'
 };
 
 module.exports = githubAuth;
