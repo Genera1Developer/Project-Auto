@@ -12,23 +12,26 @@
         <h1>Project Auto</h1>
         <ul>
             <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true"><i class="fa fa-home"></i>Home</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true"><i class="fa fa-cog"></i>Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true"><i class="fa fa-info-circle"></i>About Us</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/index.html?raw=true"><i class="fa fa-cog"></i>Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us/index.html?raw=true"><i class="fa fa-info-circle"></i>About Us</a></li>
         </ul>
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
+            <div id="datetime"></div>
             <button id="login-button">Login with GitHub</button>
+            <button id="logout-button" style="display: none;">Logout</button>
+            <span id="user-info"></span>
         </header>
         <main>
             <section id="project-setup">
                 <h2>Project Setup</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" rows="5" placeholder="Enter your customization instructions here"></textarea>
+                <label for="repository">GitHub Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" placeholder="username/repo"><br><br>
+                <label for="instructions">Customization Instructions:</label><br>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your customization instructions here"></textarea><br><br>
                 <button id="start-button">Start</button>
+                <p id="status"></p>
             </section>
         </main>
     </div>
