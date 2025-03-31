@@ -1,11 +1,11 @@
 const theme = {
   colors: {
-    primary: '#800080', // Purple
-    secondary: '#FFD700', // Gold
+    primary: '#800080',
+    secondary: '#FFD700',
     background: '#FAFAFA',
     text: '#212121',
-    accent: '#A020F0', // Lighter Purple
-    sidebar: '#301934', // Darker Purple
+    accent: '#A020F0',
+    sidebar: '#301934',
     sidebarText: '#FFFFFF',
     error: '#D32F2F',
     success: '#388E3C',
@@ -19,6 +19,8 @@ const theme = {
     buttonSecondaryText: '#212121',
     gold: '#FFD700',
     purple: '#800080',
+    link: '#007bff',
+    linkHover: '#0056b3',
   },
   fonts: {
     main: 'Arial, sans-serif',
