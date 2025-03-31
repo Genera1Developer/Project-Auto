@@ -48,6 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
+        document.getElementById('loading-indicator').style.display = 'block';
+
         const response = await fetch('/api/run_auto', {
           method: 'POST',
           headers: {
@@ -57,6 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ repo, prompt }),
         });
 
+        document.getElementById('loading-indicator').style.display = 'none';
+
         if (response.ok) {
           const result = await response.json();
           alert(result.message); // Or display the result in a more user-friendly way
@@ -65,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
           alert(`Error: ${errorData.error}`);
         }
       } catch (error) {
+        document.getElementById('loading-indicator').style.display = 'none';
         console.error('Error during Project Auto execution:', error);
         alert('An error occurred while running Project Auto. Please check the console.');
       }
