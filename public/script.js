@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        // GitHub authentication (replace with actual implementation)
+        // GitHub authentication
         const githubToken = localStorage.getItem('githubToken'); // Retrieve token
         if (!githubToken) {
           alert('Please authenticate with GitHub first.');
