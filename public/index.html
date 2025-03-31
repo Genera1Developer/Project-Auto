@@ -4,139 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="/public/style/style.css">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0e68c; /* Light Gold */
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        #sidebar {
-            width: 200px;
-            background-color: #542B82; /* Dark Purple */
-            color: #f0e68c; /* Light Gold */
-            padding-top: 20px;
-            position: fixed;
-            height: 100%;
-            overflow: auto;
-        }
-
-        #sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        #sidebar li {
-            padding: 10px;
-            text-align: left;
-        }
-
-        #sidebar a {
-            color: #f0e68c; /* Light Gold */
-            text-decoration: none;
-            display: block;
-        }
-
-        #sidebar a:hover {
-            background-color: #6A38A5; /* Medium Purple */
-        }
-
-        #sidebar .current {
-            background-color: #6A38A5; /* Medium Purple */
-        }
-
-        #content {
-            flex: 1;
-            padding: 20px;
-            margin-left: 220px; /* Adjust based on sidebar width */
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        h1 {
-            color: #795548;
-            text-align: center;
-        }
-
-        p {
-            line-height: 1.6;
-            color: #555;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #333;
-            color: white;
-            margin-top: auto;
-        }
-
-        .current-time {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            z-index: 1000;
-        }
-    </style>
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="current-time" id="current-time"></div>
-
-    <div id="sidebar">
-        <ul>
-            <li class="current"><a href="/public/index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="/public/Configuration/index.html"><i class="fas fa-cogs"></i> Configuration</a></li>
-            <li><a href="/public/About-Us/index.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Project Auto</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-
-    <div id="content">
-        <div class="container">
+    <div class="content">
+        <header>
+            <div id="time" class="time"></div>
             <h1>Welcome to Project Auto</h1>
-            <p>
-                Project Auto is an innovative tool designed to automate and enhance your software development workflow.
-                With Project Auto, you can easily configure and customize your projects to meet specific requirements,
-                saving you time and effort.
-            </p>
-            <p>
-                Get started by navigating to the <a href="/public/Configuration/index.html">Configuration</a> page to set up your project.
-                Learn more <a href="/public/About-Us/index.html">About Us</a>.
-            </p>
-        </div>
+        </header>
+        <main>
+            <div class="input-area">
+                <label for="repo_url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo_url" name="repo_url" placeholder="e.g., yourusername/yourrepo">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                <button id="start_button">Start</button>
+            </div>
+            <div id="output" class="output-area">
+                <!-- Output from Project Auto will be displayed here -->
+            </div>
+        </main>
     </div>
-
-    <footer>
-        <p>&copy; 2024 Project Auto. All rights reserved.</p>
-    </footer>
-
     <script>
         function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            fetch('/api/time')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('time').textContent = data.time;
+                });
         }
 
-        setInterval(updateTime, 1000);
         updateTime();
+        setInterval(updateTime, 1000);
+
+        document.getElementById('start_button').addEventListener('click', function() {
+            const repoUrl = document.getElementById('repo_url').value;
+            const prompt = document.getElementById('prompt').value;
+
+            fetch('/api/run_auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repo_url: repoUrl, prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('output').textContent = 'An error occurred: ' + error;
+            });
+        });
     </script>
 </body>
 </html>
