@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto - Configuration</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css">
+    <link rel="stylesheet" href="https://github.com/Project-Auto/blob/main/public/style/style.css">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -128,9 +128,9 @@
     <div class="current-time" id="current-time"></div>
     <div id="sidebar">
         <ul>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/index.html">Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us/index.html">About Us</a></li>
+            <li><a href="https://github.com/Project-Auto/blob/main/public/index.html">Home</a></li>
+            <li><a href="https://github.com/Project-Auto/blob/main/public/Configuration/index.html">Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/blob/main/public/About-Us/index.html">About Us</a></li>
         </ul>
     </div>
 
@@ -166,14 +166,14 @@
         if (accessToken) {
             localStorage.setItem('github_access_token', accessToken);
             document.getElementById('auth-message').textContent = 'Successfully authenticated with GitHub!';
-            history.replaceState({}, document.title, 'https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/');
+            history.replaceState({}, document.title, 'https://github.com/Project-Auto/blob/main/public/Configuration/');
         } else if (localStorage.getItem('github_access_token')) {
             document.getElementById('auth-message').textContent = 'Already authenticated with GitHub.';
         }
 
         function authenticateGitHub() {
             const clientId = 'Iv1.2d8779c43bc73e8c';
-            const redirectUri = 'https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration/';
+            const redirectUri = 'https://github.com/Project-Auto/blob/main/public/Configuration/';
             const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
 
             window.location.href = githubAuthUrl;
@@ -205,7 +205,7 @@
             .then(repoData => {
                 console.log('Repository Data:', repoData);
 
-                fetch('https://github.com/Project-Auto/Project-Auto/blob/main/api/startProjectAuto', {
+                fetch('https://github.com/Project-Auto/blob/main/api/startProjectAuto', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
