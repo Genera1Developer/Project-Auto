@@ -1,6 +1,6 @@
 /* General Styles */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #301934; /* Dark purple background */
@@ -11,224 +11,19 @@ body {
 }
 
 .container {
-    max-width: 80%; /* Adjusted for responsiveness */
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #483D8B; /* Slightly lighter purple container */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
-    overflow: hidden; /* Added to contain floated elements */
-}
-
-/* Header Styles */
-header {
-    background: #35424a;
-    color: #fff;
-    padding-top: 15px; /* Reduced padding */
-    min-height: 50px; /* Reduced height */
-    border-bottom: 3px solid #e8491d;
-    display: none; /* Hiding the default header */
-}
-
-header a {
-    color: #fff;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 14px; /* Reduced font size */
-}
-
-header ul {
-    padding: 0;
-    margin: 0;
-    list-style: none; /* Removing default list styles */
-}
-
-header li {
-    float: left;
-    display: inline;
-    padding: 0 10px 0 10px; /* Reduced padding */
-}
-
-header #branding {
-    float: left;
-}
-
-header #branding h1 {
-    margin: 0;
-    font-size: 20px; /* Reduced font size */
-}
-
-header nav {
-    float: right;
-    margin-top: 5px; /* Reduced margin */
-}
-
-header .highlight, header .current a {
-    color: #e8491d;
-    font-weight: bold;
-}
-
-header a:hover {
-    color: #ccc;
-    font-weight: bold;
-}
-
-/* Showcase Styles */
-#showcase {
-    min-height: 300px; /* Reduced height */
-    background: url('../img/showcase.jpg') no-repeat 0 -200px; /* Adjusted background position */
-    text-align: center;
-    color: #fff;
-    display: none; /*Hiding showcase section*/
-}
-
-#showcase h1 {
-    margin-top: 50px; /* Reduced margin */
-    font-size: 40px; /* Reduced font size */
-    margin-bottom: 5px; /* Reduced margin */
-}
-
-#showcase p {
-    font-size: 16px; /* Reduced font size */
-}
-
-/* Newsletter Styles */
-#newsletter {
-    padding: 10px; /* Reduced padding */
-    color: #fff;
-    background: #35424a;
-    display: none; /* Hiding the newsletter section */
-}
-
-#newsletter h1 {
-    float: left;
-    font-size: 18px; /* Reduced font size */
-}
-
-#newsletter form {
-    float: right;
-    margin-top: 10px; /* Reduced margin */
-}
-
-#newsletter input[type="email"] {
-    padding: 3px; /* Reduced padding */
-    height: 20px; /* Reduced height */
-    width: 200px; /* Reduced width */
-}
-
-/* Boxes Styles */
-#boxes {
-    margin-top: 10px; /* Reduced margin */
-    display: none; /* Hiding the boxes section */
-}
-
-#boxes .box {
-    float: left;
-    width: 30%;
-    padding: 5px; /* Reduced padding */
-    text-align: center;
-}
-
-#boxes .box img {
-    width: 70px; /* Reduced width */
+    max-width: 960px; /* Wider container */
+    margin: 30px auto; /* More margin */
+    padding: 30px;
+    background-color: #483D8B;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* More pronounced shadow */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden;
 }
 
 /* Sidebar Styles */
-aside#sidebar {
-    float: right;
-    width: 30%;
-    margin-top: 10px;
-    padding: 10px;
-    display: none; /*Hiding default sidebar*/
-}
-
-aside#sidebar .quote input, aside#sidebar .quote textarea {
-    width: 90%;
-    padding: 5px;
-}
-
-/* Main Styles */
-article#main-col {
-    float: left;
-    width: 65%;
-    display: none; /*Hiding main content*/
-}
-
-/* Services Styles */
-ul#services li {
-    list-style: none;
-    padding: 10px; /* Reduced padding */
-    border: #ccc solid 1px;
-    margin-bottom: 5px;
-    background: #e6e6e6;
-    display: none; /*Hiding services*/
-}
-
-/* Footer Styles */
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #4B0082;
-    color: #FFD700;
-    margin-top: auto;
-}
-
-/* Media Queries */
-@media(max-width: 768px) {
-    header #branding,
-    header nav,
-    header nav li,
-    #newsletter h1,
-    #newsletter form,
-    #boxes .box,
-    article#main-col,
-    aside#sidebar {
-        float: none;
-        text-align: center;
-        width: 100%;
-    }
-
-    header {
-        padding-bottom: 10px; /* Reduced padding */
-    }
-
-    #showcase h1 {
-        margin-top: 20px; /* Reduced margin */
-        font-size: 30px; /* Further reduced font size */
-    }
-
-    #newsletter button {
-        display: block;
-        width: 100%;
-    }
-
-    #newsletter form input[type="email"] {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-
-    /* Adjust container width for smaller screens */
-    .container {
-        width: 95%;
-        padding: 15px;
-    }
-
-    /* More responsive sidebar */
-    #sidebar {
-        width: 100%;
-        position: static;
-        box-shadow: none;
-        height: auto; /* Adjust height for smaller screens */
-    }
-    #content {
-        margin-left: 0; /* Reset margin for smaller screens */
-    }
-}
-
-/* Project Auto Specific Styles */
 #sidebar {
-    width: 200px;
-    background-color: #4B0082; /* Darker purple sidebar */
+    width: 240px; /* Wider sidebar */
+    background-color: #4B0082; /* Darker, more modern color */
     color: #FFD700;
     padding-top: 20px;
     position: fixed;
@@ -236,168 +31,12 @@ footer {
     overflow: auto;
     top: 0;
     left: 0;
-    z-index: 100; /* Ensure sidebar is above other elements */
-}
-
-#sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-#sidebar li {
-    padding: 10px;
-    text-align: left;
-}
-
-#sidebar a {
-    color: #FFD700;
-    text-decoration: none;
-    display: block;
-}
-
-#sidebar a:hover {
-    background-color: #6a1b9a; /* Hover color */
-}
-
-#sidebar .current {
-    background-color: #6a1b9a;
-}
-
-#content {
-    flex: 1;
-    padding: 20px;
-    margin-left: 220px; /* Adjust based on sidebar width */
-}
-
-h1 {
-    color: #FFD700;
-    text-align: center;
-    text-shadow: 2px 2px 4px #000000; /* Add a text shadow for emphasis */
-}
-
-label {
-    display: block;
-    margin-top: 10px;
-    color: #EEE8AA; /* Pale gold for labels */
-}
-
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #778899;
-    border-radius: 4px;
-    box-sizing: border-box;
-    background-color: #E6E6FA; /* Lavender background for inputs */
-    color: #333;
-}
-
-button {
-    background-color: #D4AF37; /* Metallic gold for buttons */
-    color: #301934;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #B8860B; /* Darker gold on hover */
-}
-
-.github-auth-button {
-    background-color: #90EE90; /* Light green for GitHub auth */
-    color: #301934;
-}
-
-.github-auth-button:hover {
-    background-color: #3CB371;
-}
-
-#auth-message {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #ADFF2F; /* Vibrant green for messages */
-    color: #301934;
-    border: 1px solid #32CD32;
-    border-radius: 4px;
-    text-align: center;
-}
-
-#loading {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    text-align: center;
-    padding-top: 200px;
-}
-
-#loading img {
-    width: 100px;
-    height: 100px;
-}
-
-.current-time {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(75, 0, 130, 0.8); /* Purple background for time */
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    z-index: 1000;
-    color: #FFD700;
-}
-
-#config-status {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-#config-status.success {
-    background-color: #98FB98; /* Pale green for success */
-    color: #301934;
-    border: 1px solid #32CD32;
-}
-
-#config-status.error {
-    background-color: #F08080; /* Light coral for error */
-    color: #301934;
-    border: 1px solid #CD5C5C;
-}
-
-/* Style update: Modernize styles */
-
-/* Use a modern font */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* More subtle background */
-body {
-    background-color: #301934; /* Dark purple background */
-    color: #FFD700; /* Gold text */
-}
-
-/* Improved sidebar styling */
-#sidebar {
-    width: 240px; /* Wider sidebar */
-    background-color: #4B0082; /* Darker, more modern color */
+    z-index: 100;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 #sidebar ul {
+    list-style: none;
     padding: 0;
     margin: 0;
 }
@@ -423,17 +62,14 @@ body {
     background-color: #6a1b9a; /* Active state color */
 }
 
-/* Clean container */
-.container {
-    max-width: 960px; /* Wider container */
-    margin: 30px auto; /* More margin */
-    padding: 30px;
-    background-color: #483D8B;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* More pronounced shadow */
-    border-radius: 10px; /* Rounded corners */
+/* Content Styles */
+#content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 240px; /* Adjust based on sidebar width */
 }
 
-/* Modern heading */
+/* Heading Styles */
 h1 {
     color: #FFD700;
     text-align: center;
@@ -442,7 +78,7 @@ h1 {
     text-shadow: 2px 2px 4px #000000;
 }
 
-/* Input styles */
+/* Label Styles */
 label {
     display: block;
     margin-top: 15px;
@@ -450,6 +86,7 @@ label {
     font-weight: 500;
 }
 
+/* Input and Textarea Styles */
 input[type="text"],
 textarea {
     width: 100%;
@@ -471,7 +108,7 @@ textarea:focus {
     outline: none;
 }
 
-/* Button styles */
+/* Button Styles */
 button {
     background-color: #D4AF37;
     color: #301934;
@@ -487,7 +124,7 @@ button:hover {
     background-color: #B8860B;
 }
 
-/* GitHub auth button */
+/* GitHub Auth Button Styles */
 .github-auth-button {
     background-color: #90EE90;
     color: #301934;
@@ -497,7 +134,7 @@ button:hover {
     background-color: #3CB371;
 }
 
-/* Auth message */
+/* Auth Message Styles */
 #auth-message {
     margin-top: 20px;
     padding: 15px;
@@ -508,7 +145,7 @@ button:hover {
     text-align: center;
 }
 
-/* Loading animation */
+/* Loading Styles */
 #loading {
     display: none;
     position: fixed;
@@ -527,7 +164,7 @@ button:hover {
     height: 120px;
 }
 
-/* Current time */
+/* Current Time Styles */
 .current-time {
     position: fixed;
     top: 15px;
@@ -541,7 +178,7 @@ button:hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Config status */
+/* Config Status Styles */
 #config-status {
     margin-top: 25px;
     padding: 15px;
