@@ -9,30 +9,47 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
         </div>
-        <ul class="sidebar-nav">
-            <li><a href="/">Home</a></li>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
     <div class="content">
         <header>
-            <div id="time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
         </header>
         <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <label for="repo">Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="owner/repository" required>
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-                <button id="start-button">Start</button>
+            <section id="hero">
+                <h1>Automate Your GitHub Repository</h1>
+                <p>Enter your repository details and customization instructions to get started.</p>
+            </section>
+            <section id="form-section">
+                <form id="auto-form">
+                    <div class="form-group">
+                        <label for="repository">GitHub Repository (username/repo):</label>
+                        <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="instructions">Customization Instructions:</label>
+                        <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Start</button>
+                </form>
             </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 </body>
 </html>
