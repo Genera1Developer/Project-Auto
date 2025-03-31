@@ -39,6 +39,9 @@ function AboutUs() {
         <p>
           GitHub: <a href="https://github.com/Project-Auto">https://github.com/Project-Auto</a>
         </p>
+        <p>
+          <a href="https://github.com/Project-Auto/public/Home">Return to Home</a>
+        </p>
       </div>
     </div>
   );
