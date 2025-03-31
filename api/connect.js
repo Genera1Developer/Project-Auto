@@ -67,19 +67,31 @@ router.post('/run-auto', async (req, res) => {
     const octokit = new Octokit({ auth: accessToken });
 
     const [owner, repository] = repo.split('/');
-    // Placeholder for Auto execution logic
-    //  - Use octokit to access and modify the repository
-    //  - Implement the instructions provided by the user
-    console.log(`Running Auto on ${repo} with instructions: ${instructions}`);
 
-    // Example: Get repository information
     const repoData = await octokit.rest.repos.get({
       owner,
       repo: repository,
     });
+
+    const files = await octokit.rest.git.getTree({
+      owner,
+      repo: repository,
+      tree_sha: repoData.data.default_branch,
+      recursive: 'true',
+    });
+
+    console.log(`Running Auto on ${repo} with instructions: ${instructions}`);
+
     console.log('Repo Data:', repoData.data);
 
-    // Implement Auto execution logic here
+    // Example: Create a new file
+    await octokit.rest.repos.createOrUpdateFileContents({
+      owner,
+      repo: repository,
+      path: `project-auto-${Date.now()}.txt`,
+      message: 'feat: Project Auto generated file',
+      content: `Project Auto ran with instructions: ${instructions}\nFiles in repo: ${JSON.stringify(files.data.tree.map(file => file.path))}`,
+    });
 
     res.status(200).send('Project Auto executed successfully!');
 
