@@ -47,11 +47,43 @@ router.get('/github/callback', async (req, res) => {
     req.session.githubToken = accessToken;
     req.session.githubUser = user.data;
 
-    res.redirect('https://github.com/Project-Auto/public/');
+    res.redirect('https://project-auto.github.io/public/');
 
   } catch (error) {
     console.error('Error during GitHub callback:', error);
     res.status(500).send('Authentication failed.');
+  }
+});
+
+router.post('/run-auto', async (req, res) => {
+  if (!req.session.githubToken) {
+    return res.status(401).send('Unauthorized: GitHub token missing.');
+  }
+
+  const { repo, instructions } = req.body;
+  const accessToken = req.session.githubToken;
+
+  try {
+    const octokit = new Octokit({ auth: accessToken });
+
+    const [owner, repository] = repo.split('/');
+    // Placeholder for Auto execution logic
+    //  - Use octokit to access and modify the repository
+    //  - Implement the instructions provided by the user
+    console.log(`Running Auto on ${repo} with instructions: ${instructions}`);
+
+    // Example: Get repository information
+    const repoData = await octokit.rest.repos.get({
+      owner,
+      repo: repository,
+    });
+    console.log('Repo Data:', repoData.data);
+
+    res.status(200).send('Project Auto executed successfully!');
+
+  } catch (error) {
+    console.error('Error during Project Auto execution:', error);
+    res.status(500).send(`Project Auto execution failed: ${error.message}`);
   }
 });
 
