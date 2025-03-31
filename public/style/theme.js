@@ -1,7 +1,7 @@
 const theme = {
   colors: {
-    primary: '#800080', // Purple
-    secondary: '#FFD700', // Gold
+    primary: '#800080',
+    secondary: '#FFD700',
     background: '#FAFAFA',
     text: '#212121',
     accent: '#A020F0',
