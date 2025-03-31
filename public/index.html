@@ -9,39 +9,41 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/" class="active">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="current-time" class="current-time"></div>
+            <button id="login-button" class="login-button">Login with GitHub</button>
         </header>
-
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="github-repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Genera1Developer/Project-Auto">
-
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-
-                <button id="start-button">Start</button>
-                <div id="status"></div>
+            <section class="hero">
+                <h1>Automate Your Development Workflow</h1>
+                <p>Project Auto helps you automate repetitive tasks and streamline your development process.</p>
+            </section>
+            <section class="form-section">
+                <form id="auto-form">
+                    <div class="form-group">
+                        <label for="repo">GitHub Repository (username/repo):</label>
+                        <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="instructions">Instructions:</label>
+                        <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions for Project Auto" required></textarea>
+                    </div>
+                    <button type="submit" class="start-button">Start</button>
+                    <div id="status-message" class="status-message"></div>
+                </form>
             </section>
         </main>
     </div>
-
     <script>
         function updateTime() {
             const now = new Date();
@@ -50,30 +52,39 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
+        updateTime();
 
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('github-repo').value;
+        document.getElementById('login-button').addEventListener('click', () => {
+            window.location.href = '/api/github/login';
+        });
+
+        document.getElementById('auto-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const repo = document.getElementById('repo').value;
             const instructions = document.getElementById('instructions').value;
-            const statusDiv = document.getElementById('status');
-
-            statusDiv.textContent = 'Running...';
+            const statusMessage = document.getElementById('status-message');
 
             try {
                 const response = await fetch('/api/run-auto', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ repo, instructions })
+                    body: JSON.stringify({ repo, instructions }),
                 });
 
-                const data = await response.text();
-                statusDiv.textContent = data;
-
+                if (response.ok) {
+                    statusMessage.textContent = 'Project Auto executed successfully!';
+                    statusMessage.className = 'status-message success';
+                } else {
+                    const errorData = await response.text();
+                    statusMessage.textContent = `Project Auto execution failed: ${errorData}`;
+                    statusMessage.className = 'status-message error';
+                }
             } catch (error) {
                 console.error('Error:', error);
-                statusDiv.textContent = `Error: ${error.message}`;
+                statusMessage.textContent = `Project Auto execution failed: ${error.message}`;
+                statusMessage.className = 'status-message error';
             }
         });
     </script>
