@@ -4,36 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/index.css">
 </head>
 <body>
+    <div class="current-time" id="current-time"></div>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            Project Auto
         </div>
-        <ul class="nav">
+        <ul class="sidebar-list">
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-    <div class="content">
-        <header>
-            <div id="time"></div>
-            <button id="github-login-button">Login with GitHub</button>
-        </header>
-        <main>
-            <div class="input-area">
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
-                <button id="start-button">Start</button>
-            </div>
-            <div id="output"></div>
-        </main>
+
+    <div id="auth-modal" class="hidden">
+        <div id="auth-modal-content">
+            <h2>Authentication</h2>
+            <form id="auth-form">
+                <div class="form-group">
+                    <label for="github_username">GitHub Username:</label>
+                    <input type="text" id="github_username" name="github_username" required>
+                </div>
+                <button type="button" class="auth-button" onclick="authenticateWithGitHub()">Authenticate with GitHub</button>
+                <button type="button" class="close-button" onclick="closeAuthModal()">Close</button>
+            </form>
+        </div>
     </div>
-    <script src="/script.js"></script>
+
+    <div class="main-content">
+        <h1>Welcome to Project Auto</h1>
+        <p>Enter your GitHub repository and customization prompt to start.</p>
+
+        <button class="auth-button" onclick="openAuthModal()">Authenticate with GitHub</button>
+
+        <form id="repo-form" class="repo-form">
+            <label for="repo_name">GitHub Repository (username/repo):</label>
+            <input type="text" id="repo_name" name="repo_name" required>
+        </form>
+
+        <div id="prompt-input" class="prompt-input">
+            <label for="customization_prompt">Customization Prompt:</label>
+            <textarea id="customization_prompt" name="customization_prompt" rows="4" required></textarea>
+        </div>
+
+        <button class="start-button" onclick="startProjectAuto()">Start</button>
+
+        <div id="response-display"></div>
+    </div>
+
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <footer>
+        <p>Project Auto &copy; 2024</p>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        async function authenticateWithGitHub() {
+            // Placeholder for GitHub authentication logic
+            alert("GitHub authentication not yet implemented");
+        }
+
+        async function startProjectAuto() {
+            const repoName = document.getElementById('repo_name').value;
+            const customizationPrompt = document.getElementById('customization_prompt').value;
+            const responseDisplay = document.getElementById('response-display');
+            const loadingOverlay = document.getElementById('loading-overlay');
+
+            responseDisplay.textContent = '';
+            loadingOverlay.classList.remove('hidden');
+
+            try {
+                const response = await fetch('/api/run_project_auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        repo_name: repoName,
+                        customization_prompt: customizationPrompt
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                responseDisplay.textContent = data.message;
+            } catch (error) {
+                console.error('Error:', error);
+                responseDisplay.textContent = `Error: ${error.message}`;
+            } finally {
+                loadingOverlay.classList.add('hidden');
+            }
+        }
+    </script>
 </body>
 </html>
