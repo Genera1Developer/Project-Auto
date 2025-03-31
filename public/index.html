@@ -4,44 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style/index.css">
 </head>
 <body>
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                Project Auto
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main class="main-content">
-            <header class="header">
-                <div id="current-time"></div>
-            </header>
-            <section class="content">
-                <h1>Welcome to Project Auto</h1>
-                <p>Automate your repository tasks with ease.</p>
-                <div id="github-auth">
-                    <button id="github-login-button">Login with GitHub</button>
-                    <p id="github-status">Not logged in</p>
-                </div>
-
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-
-                <label for="custom-instructions">Custom Instructions:</label>
-                <textarea id="custom-instructions" placeholder="Enter your automation instructions here."></textarea>
-
-                <button id="start-button">Start</button>
-            </section>
-        </main>
+    <div class="current-time" id="current-time"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            Project Auto
+        </div>
+        <ul class="sidebar-list">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+        <button id="auth-button" class="auth-button">Authenticate with GitHub</button>
+        <button id="logout-button" class="logout-button hidden">Logout</button>
     </div>
-    <script src="/script.js"></script>
+
+    <div class="main-content">
+        <h1>Welcome to Project Auto</h1>
+        <p>Customize your GitHub repositories with ease.</p>
+
+        <div id="auth-modal" class="hidden">
+            <div id="auth-modal-content">
+                <h2>GitHub Authentication</h2>
+                <p>Please enter your GitHub username:</p>
+                <form id="auth-form">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <button type="submit" class="auth-button">Authenticate</button>
+                </form>
+                <button class="close-button" onclick="closeAuthModal()">Close</button>
+            </div>
+        </div>
+
+        <div id="repo-form" class="repo-form">
+            <label for="github-repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Project-Auto/Project-Auto">
+        </div>
+
+        <div id="prompt-input" class="prompt-input">
+            <label for="customization-prompt">Customization Prompt:</label>
+            <textarea id="customization-prompt" name="customization-prompt" placeholder="Enter your customization instructions here."></textarea>
+        </div>
+
+        <button id="start-button" class="start-button">Start</button>
+
+        <div id="response-display"></div>
+    </div>
+
+    <div class="loading-overlay hidden" id="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Project Auto</p>
+    </footer>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        const authButton = document.getElementById('auth-button');
+        const logoutButton = document.getElementById('logout-button');
+        const authModal = document.getElementById('auth-modal');
+        const authForm = document.getElementById('auth-form');
+        const usernameInput = document.getElementById('username');
+        const repoInput = document.getElementById('github-repo');
+        const promptInput = document.getElementById('customization-prompt');
+        const startButton = document.getElementById('start-button');
+        const responseDisplay = document.getElementById('response-display');
+        const loadingOverlay = document.getElementById('loading-overlay');
+
+        function showLoading() {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
+
+        function showAuthModal() {
+            authModal.classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            authModal.classList.add('hidden');
+        }
+
+        function isLoggedIn() {
+            return localStorage.getItem('githubUsername') !== null;
+        }
+
+        function updateAuthUI() {
+            if (isLoggedIn()) {
+                authButton.classList.add('hidden');
+                logoutButton.classList.remove('hidden');
+            } else {
+                authButton.classList.remove('hidden');
+                logoutButton.classList.add('hidden');
+            }
+        }
+
+        authButton.addEventListener('click', showAuthModal);
+
+        logoutButton.addEventListener('click', () => {
+            localStorage.removeItem('githubUsername');
+            updateAuthUI();
+        });
+
+        authForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const username = usernameInput.value;
+            localStorage.setItem('githubUsername', username);
+            closeAuthModal();
+            updateAuthUI();
+        });
+
+        startButton.addEventListener('click', async () => {
+            const repo = repoInput.value;
+            const prompt = promptInput.value;
+            const username = localStorage.getItem('githubUsername');
+
+            if (!username) {
+                alert('Please authenticate with GitHub first.');
+                return;
+            }
+
+            if (!repo) {
+                alert('Please enter a GitHub repository.');
+                return;
+            }
+
+            showLoading();
+            responseDisplay.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('/api/processRepo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        repo: repo,
+                        prompt: prompt,
+                        username: username,
+                    }),
+                });
+
+                const data = await response.json();
+
+                hideLoading();
+                responseDisplay.textContent = data.message;
+
+            } catch (error) {
+                hideLoading();
+                responseDisplay.textContent = `Error: ${error.message}`;
+            }
+        });
+
+        updateAuthUI();
+    </script>
 </body>
 </html>
