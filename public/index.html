@@ -5,90 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 <body>
     <div class="sidebar">
-        <a href="https://github.com/Project-Auto/public/index.html" class="active">Home</a>
-        <a href="https://github.com/Project-Auto/public/Configuration/configuration.html">Configuration</a>
-        <a href="https://github.com/Project-Auto/public/About-Us/about_us.html">About Us</a>
-        <a href="#" id="logout-link" style="display: none;">Logout</a>
+        <div class="sidebar-header">
+            <h3 style="color: gold;">Project Auto</h3>
+        </div>
+        <ul class="nav">
+            <li><a href="https://github.com/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="https://github.com/Project-Auto/public/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+        </ul>
     </div>
 
     <div class="content">
-        <div class="header">
-            <div id="time"></div>
-            <div class="auth-buttons">
-                {% if github_username %}
-                    <span>Logged in as {{ github_username }}</span>
-                    <button onclick="logout()">Logout</button>
-                {% else %}
-                    <button onclick="login()">Login with GitHub</button>
-                {% endif %}
-            </div>
-        </div>
+        <header>
+            <div id="current-time"></div>
+            <button id="github-login">
+                <i class="fab fa-github"></i> Login with GitHub
+            </button>
+        </header>
+        <main>
+            <section id="project-input">
+                <h2>Automate Your Repository</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
 
-        <h1>Welcome to Project Auto</h1>
-        <p>Automate your GitHub projects with ease.</p>
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" placeholder="Enter your instructions here"></textarea>
 
-        <form id="project-form">
-            <label for="repo_name">GitHub Repository (username/repo):</label>
-            <input type="text" id="repo_name" name="repo_name" placeholder="e.g., owner/repository" required><br><br>
-
-            <label for="custom_prompt">Custom Prompt:</label>
-            <textarea id="custom_prompt" name="custom_prompt" rows="4" cols="50" placeholder="Enter your automation instructions here"></textarea><br><br>
-
-            <button type="submit">Start Automation</button>
-        </form>
-
-        <div id="result"></div>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
     </div>
 
-    <script>
-        function updateTime() {
-            var now = new Date();
-            var timeString = now.toLocaleTimeString();
-            document.getElementById("time").textContent = timeString;
-        }
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-
-        document.getElementById('project-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            var repoName = document.getElementById('repo_name').value;
-            var customPrompt = document.getElementById('custom_prompt').value;
-
-            fetch('/start', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'repo_name=' + encodeURIComponent(repoName) + '&custom_prompt=' + encodeURIComponent(customPrompt)
-            })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('result').innerText = data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('result').innerText = 'An error occurred.';
-            });
-        });
-
-        function login() {
-            window.location.href = '/login';
-        }
-
-        function logout() {
-            window.location.href = '/logout';
-        }
-
-        // Conditionally show/hide logout link based on login status (using a hidden link for now)
-        {% if github_username %}
-            document.getElementById('logout-link').style.display = 'block';
-        {% else %}
-            document.getElementById('logout-link').style.display = 'none';
-        {% endif %}
-
-    </script>
+    <script src="https://github.com/Project-Auto/public/script/script.js"></script>
 </body>
 </html>
