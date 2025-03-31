@@ -1,209 +1,147 @@
-/* General Styles */
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
 }
 
-/* Sidebar Styles */
-#sidebar {
-    width: 200px;
-    background-color: #333;
+.sidebar {
+    width: 250px;
+    background-color: #301934;
     color: #fff;
     padding-top: 20px;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-#sidebar ul {
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    border-bottom: 1px solid #4e3451;
+}
+
+.sidebar-header a {
+    color: #ffc107;
+    text-decoration: none;
+}
+
+.sidebar-menu {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
-#sidebar li {
-    padding: 10px;
-    text-align: left;
+.sidebar-menu li {
+    padding: 10px 20px;
+    transition: background-color 0.3s;
 }
 
-#sidebar a {
+.sidebar-menu li:hover {
+    background-color: #4e3451;
+}
+
+.sidebar-menu li a {
     color: #fff;
     text-decoration: none;
     display: block;
 }
 
-#sidebar a:hover {
-    background-color: #555;
-}
-
-#sidebar .current {
-    background-color: #555;
-}
-
-/* Content Styles */
-#content {
+.content {
     flex: 1;
     padding: 20px;
-    margin-left: 220px; /* Adjust based on sidebar width */
 }
 
-.container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
+header {
     background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header #current-time {
+    font-size: 1em;
+    color: #555;
+}
+
+header .auth-buttons button {
+    background-color: #301934;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+header .auth-buttons button:hover {
+    background-color: #4e3451;
+}
+
+header .auth-buttons span {
+    margin-left: 10px;
+    color: #555;
+}
+
+main {
+    background-color: #fff;
+    padding: 20px;
     border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    color: #795548;
-    text-align: center;
+main h1 {
+    color: #301934;
+    border-bottom: 2px solid #ffc107;
+    padding-bottom: 10px;
 }
 
-label {
+#app {
+    margin-top: 20px;
+}
+
+#project-auto-form label {
     display: block;
     margin-top: 10px;
-    color: #777;
+    color: #555;
 }
 
-input[type="text"],
-textarea {
+#project-auto-form input[type="text"],
+#project-auto-form textarea {
     width: 100%;
     padding: 8px;
     margin-top: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-sizing: border-box;
 }
 
-button {
-    background-color: #795548;
-    color: white;
-    padding: 10px 15px;
+#project-auto-form button {
+    background-color: #ffc107;
+    color: #301934;
     border: none;
-    border-radius: 4px;
+    padding: 12px 24px;
     cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #5D4037;
-}
-
-/* Github Auth Button Style */
-.github-auth-button {
-    background-color: #4CAF50;
-}
-
-.github-auth-button:hover {
-    background-color: #43A047;
-}
-
-/* Auth Message Style */
-#auth-message {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
-    text-align: center;
-}
-
-/* Footer Styles */
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #333;
-    color: white;
-    margin-top: auto;
-}
-
-/* Loading Styles */
-#loading {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    text-align: center;
-    padding-top: 200px;
-}
-
-#loading img {
-    width: 100px;
-    height: 100px;
-}
-
-/* Current Time */
-.current-time {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
     border-radius: 5px;
-    font-size: 14px;
-    z-index: 1000;
+    transition: background-color 0.3s;
 }
 
-/* Config Status Styles */
-#config-status {
+#project-auto-form button:hover {
+    background-color: #e0a800;
+}
+
+#result {
     margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-#config-status.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-#config-status.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-/* New styles for purple and gold theme */
-body {
-    background-color: #f0f0f5; /* Light gray background */
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
     color: #333;
-}
-
-#sidebar {
-    background-color: #542f82; /* Dark purple sidebar */
-}
-
-#sidebar a:hover {
-    background-color: #6a449f; /* Lighter purple on hover */
-}
-
-h1 {
-    color: #a98231; /* Gold heading */
-}
-
-button {
-    background-color: #a98231; /* Gold button */
-}
-
-button:hover {
-    background-color: #bca054; /* Darker gold on hover */
-}
-
-.container {
-    background-color: #fff; /* White container */
 }
