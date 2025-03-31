@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="/style/index.css">
 </head>
 <body>
+
     <div class="current-time" id="current-time"></div>
+
     <div class="sidebar">
         <div class="sidebar-header">
             Project Auto
@@ -16,49 +18,42 @@
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
-            <li>
-                <button id="auth-button" class="auth-button">Authenticate with GitHub</button>
-                <button id="logout-button" class="logout-button hidden">Logout</button>
-            </li>
         </ul>
     </div>
 
     <div id="auth-modal" class="hidden">
         <div id="auth-modal-content">
-            <h2>GitHub Authentication</h2>
-            <p>Please enter your GitHub username:</p>
+            <h2>Authenticate with GitHub</h2>
             <form id="auth-form">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-                <button type="submit" class="auth-button">Authenticate</button>
+                <label for="github_username">GitHub Username:</label>
+                <input type="text" id="github_username" name="github_username" required>
+                <button type="button" class="auth-button" onclick="authenticateGitHub()">Authenticate</button>
+                <button type="button" class="close-button" onclick="closeAuthModal()">Close</button>
             </form>
-            <button class="close-button" id="close-auth-modal">Close</button>
         </div>
     </div>
 
-    <div class="main-content">
-        <section id="showcase">
-            <div class="container">
-                <h1>Welcome to Project Auto</h1>
-                <p>Automate your development workflow with ease.</p>
-            </div>
-        </section>
+    <div class="content" id="main-content">
+        <h1>Welcome to Project Auto</h1>
+        <p>Enter your GitHub repository and customization instructions below:</p>
 
-        <section class="container">
-            <div id="repo-form" class="repo-form">
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., Project-Auto/Project-Auto">
-            </div>
+        <button class="github-button" onclick="openAuthModal()">Authenticate with GitHub</button>
+        <button class="logout-button" onclick="logoutGitHub()" style="display:none;">Logout</button>
+        <span id="username-display"></span>
 
-            <div id="prompt-input" class="prompt-input">
-                <label for="prompt">Customization Prompt:</label>
-                <textarea id="prompt" name="prompt" placeholder="Enter your customization instructions here."></textarea>
-            </div>
+        <div id="repo-form" class="repo-form">
+            <label for="repo_name">Repository (username/repo):</label>
+            <input type="text" id="repo_name" name="repo_name" placeholder="username/repo" required>
+        </div>
 
-            <button id="start-button" class="start-button">Start</button>
+        <div id="prompt-input" class="prompt-input">
+            <label for="prompt">Customization Instructions:</label>
+            <textarea id="prompt" name="prompt" placeholder="Enter your instructions here" rows="4" required></textarea>
+        </div>
 
-            <div id="response-display"></div>
-        </section>
+        <button class="start-button" onclick="startProjectAuto()">Start</button>
+
+        <div id="response-display"></div>
     </div>
 
     <div class="loading-overlay hidden">
@@ -66,116 +61,116 @@
     </div>
 
     <footer>
-        <p>Project Auto, Copyright &copy; 2024</p>
+        <p>Project Auto &copy; 2024</p>
     </footer>
 
     <script>
         function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            const currentTimeElement = document.getElementById("current-time");
+            if (currentTimeElement) {
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const seconds = now.getSeconds().toString().padStart(2, '0');
+                currentTimeElement.textContent = `${hours}:${minutes}:${seconds}`;
+            }
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        const authButton = document.getElementById('auth-button');
-        const logoutButton = document.getElementById('logout-button');
-        const authModal = document.getElementById('auth-modal');
-        const closeAuthModal = document.getElementById('close-auth-modal');
-        const authForm = document.getElementById('auth-form');
-        const usernameInput = document.getElementById('username');
-        let githubUsername = localStorage.getItem('githubUsername');
-        const responseDisplay = document.getElementById('response-display');
-        const loadingOverlay = document.querySelector('.loading-overlay');
+        let githubUsername = localStorage.getItem('githubUsername') || '';
+        let isLoggedIn = localStorage.getItem('isLoggedIn') === 'true' || false;
 
-        function showLoading() {
-            loadingOverlay.classList.remove('hidden');
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.remove('hidden');
         }
 
-        function hideLoading() {
-            loadingOverlay.classList.add('hidden');
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function authenticateGitHub() {
+            githubUsername = document.getElementById('github_username').value;
+            localStorage.setItem('githubUsername', githubUsername);
+            localStorage.setItem('isLoggedIn', 'true');
+            isLoggedIn = true;
+            updateAuthUI();
+            closeAuthModal();
+        }
+
+        function logoutGitHub() {
+            localStorage.removeItem('githubUsername');
+            localStorage.setItem('isLoggedIn', 'false');
+            githubUsername = '';
+            isLoggedIn = false;
+            updateAuthUI();
         }
 
         function updateAuthUI() {
-            if (githubUsername) {
-                authButton.classList.add('hidden');
-                logoutButton.classList.remove('hidden');
-                usernameInput.value = githubUsername;
+            const githubButton = document.querySelector('.github-button');
+            const logoutButton = document.querySelector('.logout-button');
+            const usernameDisplay = document.getElementById('username-display');
+
+            if (isLoggedIn) {
+                githubButton.style.display = 'none';
+                logoutButton.style.display = 'inline-block';
+                usernameDisplay.textContent = `Logged in as ${githubUsername}`;
             } else {
-                authButton.classList.remove('hidden');
-                logoutButton.classList.add('hidden');
-                usernameInput.value = '';
+                githubButton.style.display = 'inline-block';
+                logoutButton.style.display = 'none';
+                usernameDisplay.textContent = '';
             }
         }
 
-        authButton.addEventListener('click', () => {
-            authModal.classList.remove('hidden');
-        });
-
-        closeAuthModal.addEventListener('click', () => {
-            authModal.classList.add('hidden');
-        });
-
-        authForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            githubUsername = usernameInput.value;
-            localStorage.setItem('githubUsername', githubUsername);
-            authModal.classList.add('hidden');
-            updateAuthUI();
-        });
-
-        logoutButton.addEventListener('click', () => {
-            githubUsername = null;
-            localStorage.removeItem('githubUsername');
-            updateAuthUI();
-        });
-
         updateAuthUI();
 
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
+        async function startProjectAuto() {
+            const repoName = document.getElementById('repo_name').value;
             const prompt = document.getElementById('prompt').value;
+            const responseDisplay = document.getElementById('response-display');
+            const loadingOverlay = document.querySelector('.loading-overlay');
 
-            if (!githubUsername) {
-                alert("Please authenticate with GitHub first.");
+            if (!repoName || !prompt) {
+                alert('Please fill in all fields.');
                 return;
             }
 
-            if (!repoUrl) {
-                alert("Please enter a repository URL.");
+            if (!isLoggedIn) {
+                alert('Please authenticate with GitHub first.');
                 return;
             }
 
-            showLoading();
+            loadingOverlay.classList.remove('hidden');
             responseDisplay.textContent = 'Processing...';
 
             try {
-                const response = await fetch('/api/process-repo', {
+                const response = await fetch('/api/execute', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        repoUrl: repoUrl,
+                        repo: repoName,
                         prompt: prompt,
                         username: githubUsername
                     }),
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
                 const data = await response.json();
-                responseDisplay.textContent = data.message;
+
+                if (response.ok) {
+                    responseDisplay.textContent = data.message;
+                } else {
+                    responseDisplay.textContent = `Error: ${data.message}`;
+                }
             } catch (error) {
                 console.error('Error:', error);
-                responseDisplay.textContent = `Error: ${error.message}`;
+                responseDisplay.textContent = `An error occurred: ${error.message}`;
             } finally {
-                hideLoading();
+                loadingOverlay.classList.add('hidden');
             }
-        });
+        }
     </script>
 </body>
 </html>
