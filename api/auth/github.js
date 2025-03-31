@@ -2,39 +2,63 @@
 // For example, using Passport.js
 // Replace with your actual GitHub OAuth implementation
 
-edit filepath: public/index.html
-content:
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
-</head>
-<body>
-    <div class="sidebar">
-        <div class="logo">Project Auto</div>
-        <a href="https://github.com/Genera1Developer/Project-Auto/public/index.html">Home</a>
-        <a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration">Configuration</a>
-        <a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us">About Us</a>
-    </div>
-    <div class="content">
-        <header>
-            <div id="time"></div>
-            <h1>Project Auto</h1>
-        </header>
-        <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <label for="repo">Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="Genera1Developer/Project-Auto">
-                <label for="prompt">Customization Instructions:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter instructions here"></textarea>
-                <button id="start-button">Start</button>
-            </section>
-        </main>
-    </div>
-    <script src="https://github.com/Genera1Developer/Project-Auto/public/script.js"></script>
-</body>
-</html>
+const passport = require('passport');
+const GitHubStrategy = require('passport-github2').Strategy;
+const session = require('express-session');
+
+module.exports = (app) => {
+  // Session configuration
+  app.use(session({
+    secret: 'your-secret-key', // Replace with a strong secret
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Set to true in production with HTTPS
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  passport.use(new GitHubStrategy({
+    clientID: 'YOUR_GITHUB_CLIENT_ID', // Replace with your GitHub Client ID
+    clientSecret: 'YOUR_GITHUB_CLIENT_SECRET', // Replace with your GitHub Client Secret
+    callbackURL: 'https://project-auto-website.vercel.app/api/auth/github/callback' // Replace with your callback URL
+  },
+  (accessToken, refreshToken, profile, done) => {
+    // Here you would typically find or create a user in your database
+    // based on the GitHub profile information.
+    // For this example, we'll just pass the profile to the done callback.
+    return done(null, profile);
+  }));
+
+  passport.serializeUser((user, done) => {
+    done(null, user);
+  });
+
+  passport.deserializeUser((user, done) => {
+    done(null, user);
+  });
+
+  app.get('/api/auth/github',
+    passport.authenticate('github', { scope: [ 'repo' ] }));
+
+  app.get('/api/auth/github/callback',
+    passport.authenticate('github', { failureRedirect: '/login' }),
+    (req, res) => {
+      // Successful authentication, redirect home.
+      res.redirect('https://github.com/Genera1Developer/Project-Auto/public/');
+    });
+
+  app.get('/api/auth/logout', (req, res) => {
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      res.redirect('https://github.com/Genera1Developer/Project-Auto/public/');
+    });
+  });
+
+  app.get('/api/auth/user', (req, res) => {
+    if (req.isAuthenticated()) {
+      res.json(req.user);
+    } else {
+      res.json(null);
+    }
+  });
+};
