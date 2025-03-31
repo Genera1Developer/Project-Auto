@@ -10,93 +10,36 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <h2>Project Auto</h2>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
+            <li><a href="/index.html" class="active">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
     <div class="content">
         <header>
-            <div id="time"></div>
+            <div id="time" class="time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
+            <section id="github-auth">
+                <button id="github-login-btn">Login with GitHub</button>
+            </section>
+            <section id="project-input" style="display: none;">
                 <label for="repo_url">Repository URL (username/repo):</label>
-                <input type="text" id="repo_url" name="repo_url" placeholder="e.g., owner/repository">
+                <input type="text" id="repo_url" name="repo_url" placeholder="username/repo"><br><br>
                 <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
-                <button id="start-button">Start</button>
-                <div id="output"></div>
+                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Enter your customization instructions"></textarea><br><br>
+                <button id="start-btn">Start</button>
+            </section>
+            <section id="output" style="display: none;">
+                <h2>Output:</h2>
+                <pre id="output-text"></pre>
             </section>
         </main>
     </div>
-
-    <script>
-        function updateTime() {
-            fetch('/api/time')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('time').textContent = data.time;
-                });
-        }
-
-        updateTime();
-        setInterval(updateTime, 1000);
-
-        document.getElementById('start-button').addEventListener('click', function() {
-            const repoUrl = document.getElementById('repo_url').value;
-            const prompt = document.getElementById('prompt').value;
-
-            fetch('/api/github_login?redirect_uri=' + encodeURIComponent(window.location.origin), {
-                method: 'GET',
-            })
-            .then(response => response.json())
-            .then(data => {
-                const clientId = data.github_client_id;
-                const redirectUri = data.redirect_uri;
-                const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
-                window.location.href = githubAuthUrl;
-            });
-
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-
-            if (code) {
-              fetch('/api/github_callback?code=' + code)
-                  .then(response => response.json())
-                  .then(data => {
-                      if (data.access_token) {
-                          runAuto(repoUrl, prompt);
-                      } else {
-                          alert('Failed to obtain access token: ' + data.error);
-                      }
-                  });
-            }
-
-        });
-
-        function runAuto(repoUrl, prompt) {
-            fetch('/api/run_auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ repo_url: repoUrl, prompt: prompt }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    document.getElementById('output').textContent = 'Error: ' + data.error;
-                } else {
-                    document.getElementById('output').textContent = data.message + '\n' + data.output;
-                }
-            });
-        }
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
