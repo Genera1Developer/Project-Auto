@@ -1,10 +1,7 @@
-// This file should contain the GitHub authentication logic
-// For example, using Passport.js
-// Replace with your actual GitHub OAuth implementation
-
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const session = require('express-session');
+const { Octokit } = require('@octokit/rest');
 
 module.exports = (app) => {
   // Session configuration
@@ -22,10 +19,11 @@ module.exports = (app) => {
     clientSecret: 'YOUR_GITHUB_CLIENT_SECRET', // Replace with your GitHub Client Secret
     callbackURL: 'https://project-auto-website.vercel.app/api/auth/github/callback' // Replace with your callback URL
   },
-  (accessToken, refreshToken, profile, done) => {
+  async (accessToken, refreshToken, profile, done) => {
     // Here you would typically find or create a user in your database
     // based on the GitHub profile information.
     // For this example, we'll just pass the profile to the done callback.
+    profile.accessToken = accessToken;
     return done(null, profile);
   }));
 
@@ -41,7 +39,7 @@ module.exports = (app) => {
     passport.authenticate('github', { scope: [ 'repo' ] }));
 
   app.get('/api/auth/github/callback',
-    passport.authenticate('github', { failureRedirect: '/login' }),
+    passport.authenticate('github', { failureRedirect: 'https://github.com/Genera1Developer/Project-Auto/public/' }),
     (req, res) => {
       // Successful authentication, redirect home.
       res.redirect('https://github.com/Genera1Developer/Project-Auto/public/');
@@ -61,4 +59,45 @@ module.exports = (app) => {
       res.json(null);
     }
   });
+
+    app.post('/api/run-auto', async (req, res) => {
+        if (!req.isAuthenticated()) {
+            return res.status(401).json({ error: 'Not authenticated' });
+        }
+
+        const { repo, instructions } = req.body;
+        const [owner, repository] = repo.split('/');
+        const accessToken = req.user.accessToken;
+
+        const octokit = new Octokit({ auth: accessToken });
+
+        try {
+            // Placeholder: Replace with your actual Project Auto logic
+            // This example just creates a dummy file.
+            const content = `Project Auto ran with instructions: ${instructions}`;
+            const filename = `project-auto-${Date.now()}.txt`;
+            const path = filename;
+
+            await octokit.repos.createOrUpdateFileContents({
+                owner,
+                repo: repository,
+                path,
+                message: `Project Auto: ${instructions}`,
+                content: Buffer.from(content).toString('base64'),
+                committer: {
+                    name: 'Project Auto',
+                    email: 'projectauto@example.com',
+                },
+                author: {
+                    name: 'Project Auto',
+                    email: 'projectauto@example.com',
+                },
+            });
+
+            res.json({ success: true, message: 'Project Auto executed successfully!' });
+        } catch (error) {
+            console.error('Error running Project Auto:', error);
+            res.status(500).json({ error: 'Failed to execute Project Auto.' });
+        }
+    });
 };
