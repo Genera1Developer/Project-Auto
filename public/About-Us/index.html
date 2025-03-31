@@ -135,6 +135,26 @@
             border-radius: 50%;
             margin-right: 20px;
         }
+
+        #team-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .team-member {
+            width: 45%; /* Adjust as needed */
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .team-member img {
+            width: 80px;
+            height: 80px;
+        }
     </style>
 </head>
 
@@ -179,21 +199,41 @@
             </p>
             <h2>Our Team</h2>
 
-            <div class="team-member">
-                <img src="https://via.placeholder.com/100" alt="Team Member 1">
-                <div>
-                    <h3>John Doe</h3>
-                    <p>Lead Developer</p>
-                    <p>Passionate about automation and clean code.</p>
+            <div id="team-container">
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/80" alt="John Doe">
+                    <div>
+                        <h3>John Doe</h3>
+                        <p>Lead Developer</p>
+                        <p>Passionate about automation and clean code.</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="team-member">
-                <img src="https://via.placeholder.com/100" alt="Team Member 2">
-                <div>
-                    <h3>Jane Smith</h3>
-                    <p>UI/UX Designer</p>
-                    <p>Dedicated to creating intuitive and beautiful interfaces.</p>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/80" alt="Jane Smith">
+                    <div>
+                        <h3>Jane Smith</h3>
+                        <p>UI/UX Designer</p>
+                        <p>Dedicated to creating intuitive and beautiful interfaces.</p>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/80" alt="Peter Jones">
+                    <div>
+                        <h3>Peter Jones</h3>
+                        <p>Backend Developer</p>
+                        <p>Focused on server-side logic and database management.</p>
+                    </div>
+                </div>
+
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/80" alt="Alice Brown">
+                    <div>
+                        <h3>Alice Brown</h3>
+                        <p>Frontend Developer</p>
+                        <p>Specializing in responsive and interactive user interfaces.</p>
+                    </div>
                 </div>
             </div>
 
