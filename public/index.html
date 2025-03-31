@@ -8,40 +8,33 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <nav class="sidebar-nav">
-            <a href="/" class="sidebar-link active">Home</a>
-            <a href="/Configuration" class="sidebar-link">Configuration</a>
-            <a href="/About-Us" class="sidebar-link">About Us</a>
-        </nav>
+        <a href="/" class="active">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
     <div class="content">
-        <header class="header">
-            <div id="current-time" class="current-time"></div>
+        <header>
+            <div id="time"></div>
             <h1>Project Auto</h1>
         </header>
-
-        <main class="main-content">
-            <section class="project-form">
-                <h2>Run Project Auto</h2>
-                <form id="auto-form">
-                    <div class="form-group">
-                        <label for="repo">Repository (owner/repo):</label>
-                        <input type="text" id="repo" name="repo" placeholder="owner/repo" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="instructions">Instructions:</label>
-                        <textarea id="instructions" name="instructions" placeholder="Enter your instructions here" required></textarea>
-                    </div>
-                    <button type="submit" class="start-button">Start</button>
-                    <div id="status-message" class="status-message"></div>
-                </form>
-            </section>
+        <main>
+            <div id="github-auth">
+                <button id="github-login-btn">Authenticate with GitHub</button>
+                <p id="auth-status">Not authenticated</p>
+            </div>
+            <div id="input-fields">
+                <label for="repo-url">Repository URL (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repo">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" placeholder="Enter your instructions"></textarea>
+                <button id="start-btn">Start</button>
+            </div>
+            <div id="output">
+                <h2>Output:</h2>
+                <pre id="output-text"></pre>
+            </div>
         </main>
-
-        <footer class="footer">
+        <footer>
             <p>&copy; 2024 Project Auto</p>
         </footer>
     </div>
