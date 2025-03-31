@@ -4,80 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration.html">Configuration</a></li>
-            <li><a href="/About-Us.html">About Us</a></li>
+        <ul class="nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
-            <h1>Project Auto</h1>
+            <div id="time"></div>
+            <button id="github-login-button">Login with GitHub</button>
         </header>
         <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <form id="auto-form">
-                    <label for="repo">Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto" required>
-                    <br>
-                    <label for="instructions">Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter customization instructions here..." required></textarea>
-                    <br>
-                    <button type="submit" class="start-button">Start</button>
-                </form>
-                <div id="status-message" class="status-message"></div>
-            </section>
+            <div class="input-area">
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
+                <button id="start-button">Start</button>
+            </div>
+            <div id="output"></div>
         </main>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('auto-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-            const statusMessage = document.getElementById('status-message');
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repo, instructions })
-                });
-
-                if (response.ok) {
-                    statusMessage.textContent = 'Project Auto executed successfully!';
-                    statusMessage.className = 'status-message success';
-                } else {
-                    const errorText = await response.text();
-                    statusMessage.textContent = `Project Auto execution failed: ${errorText}`;
-                    statusMessage.className = 'status-message error';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                statusMessage.textContent = `Project Auto execution failed: ${error.message}`;
-                statusMessage.className = 'status-message error';
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
