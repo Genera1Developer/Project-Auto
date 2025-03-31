@@ -1,43 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Auto</title>
+  <link rel="stylesheet" href="/public/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/project-auto-logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+  <div class="container">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span id="current-time"></span>
+      </div>
+      <ul>
+        <li><a href="/public/index.html">Home</a></li>
+        <li><a href="/public/Configuration">Configuration</a></li>
+        <li><a href="/public/About-Us">About Us</a></li>
+      </ul>
     </div>
-    <div class="content">
-        <header>
-            <div id="time" class="time"></div>
-            <h1>Project Auto</h1>
-        </header>
-        <main>
-            <div class="input-area">
-                <label for="repo_url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo_url" name="repo_url" placeholder="e.g., owner/repo">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" placeholder="Enter your instructions here"></textarea>
-                <button id="start-button">Start</button>
-            </div>
-            <div id="output" class="output-area">
-                <!-- Project Auto output will be displayed here -->
-            </div>
-        </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
+    <div class="content" id="content">
+      <button id="sidebar-toggle" aria-label="Toggle Sidebar">☰</button>
+      <h1>Project Auto</h1>
+      <form id="project-auto-form">
+        <label for="repo">Repository (username/repo):</label>
+        <input type="text" id="repo" name="repo" required><br><br>
+
+        <label for="prompt">Prompt:</label>
+        <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
+
+        <button type="submit">Start</button>
+      </form>
     </div>
-    <script src="/script.js"></script>
+  </div>
+  <script src="/public/script.js"></script>
 </body>
 </html>
