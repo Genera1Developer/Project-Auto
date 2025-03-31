@@ -9,104 +9,80 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="/index.html">Project Auto</a>
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
+
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <div class="auth-buttons">
-                <button id="login-button" onclick="login()">Login with GitHub</button>
-                <button id="logout-button" onclick="logout()" style="display: none;">Logout</button>
-                <span id="user-info"></span>
-            </div>
+            <div id="current-time" class="current-time"></div>
+            <button id="github-login-button" class="login-button">Login with GitHub</button>
         </header>
+
         <main>
-            <h1>Welcome to Project Auto</h1>
-            <div id="app">
-                <div id="auth-section">
-                    </div>
-                <div id="project-auto-form" style="display: none;">
-                    <label for="repo">Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" required><br><br>
-                    <label for="instructions">Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
-                    <button onclick="runProjectAuto()">Start</button>
-                    <div id="result"></div>
-                </div>
-            </div>
+            <section id="project-input">
+                <h2>Project Setup</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., yourusername/yourrepo">
+
+                <label for="customization-instructions">Customization Instructions:</label>
+                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your desired customizations here..."></textarea>
+
+                <button id="start-button" class="start-button">Start</button>
+            </section>
         </main>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
             document.getElementById('current-time').textContent = timeString;
         }
+
         setInterval(updateTime, 1000);
         updateTime();
 
-        async function checkAuth() {
-            const response = await fetch('/api/auth/user');
-            const user = await response.json();
-            const loginButton = document.getElementById('login-button');
-            const logoutButton = document.getElementById('logout-button');
-            const userInfoSpan = document.getElementById('user-info');
-            const projectAutoForm = document.getElementById('project-auto-form');
-
-            if (user) {
-                loginButton.style.display = 'none';
-                logoutButton.style.display = 'inline-block';
-                userInfoSpan.textContent = `Logged in as ${user.displayName}`;
-                projectAutoForm.style.display = 'block';
-            } else {
-                loginButton.style.display = 'inline-block';
-                logoutButton.style.display = 'none';
-                userInfoSpan.textContent = '';
-                projectAutoForm.style.display = 'none';
-            }
-        }
-
-        async function login() {
+        document.getElementById('github-login-button').addEventListener('click', () => {
             window.location.href = '/api/auth/github';
-        }
+        });
 
-        async function logout() {
-            window.location.href = '/api/auth/logout';
-        }
-
-        async function runProjectAuto() {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-            const resultDiv = document.getElementById('result');
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customizationInstructions = document.getElementById('customization-instructions').value;
 
             try {
                 const response = await fetch('/api/run-auto', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ repo: repo, instructions: instructions })
+                    body: JSON.stringify({
+                        repoUrl: repoUrl,
+                        customizationInstructions: customizationInstructions,
+                    }),
                 });
 
-                const data = await response.json();
-
                 if (response.ok) {
-                    resultDiv.textContent = data.message;
+                    const result = await response.json();
+                    alert(result.message);
                 } else {
-                    resultDiv.textContent = `Error: ${data.error}`;
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
                 }
             } catch (error) {
-                resultDiv.textContent = `An error occurred: ${error}`;
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
             }
-        }
-
-        checkAuth();
+        });
     </script>
 </body>
 </html>
