@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (response.ok) {
           const result = await response.json();
-          alert(result.message); // Or display the result in a more user-friendly way
+          displayResult(result);
         } else {
           const errorData = await response.json();
           alert(`Error: ${errorData.error}`);
@@ -74,6 +74,24 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('An error occurred while running Project Auto. Please check the console.');
       }
     });
+  }
+
+  function displayResult(result) {
+    const resultContainer = document.getElementById('result-container');
+    resultContainer.innerHTML = ''; // Clear previous results
+
+    if (result && result.message) {
+      const messageElement = document.createElement('p');
+      messageElement.textContent = result.message;
+      resultContainer.appendChild(messageElement);
+    }
+
+    if (result && result.details) {
+      const detailsElement = document.createElement('pre');
+      detailsElement.textContent = JSON.stringify(result.details, null, 2); // Format JSON for readability
+      resultContainer.appendChild(detailsElement);
+    }
+    resultContainer.style.display = 'block';
   }
 
   // GitHub authentication flow
