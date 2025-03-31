@@ -17,10 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const sidebarToggle = document.getElementById('sidebar-toggle');
 
   if (sidebarToggle) {
-      sidebarToggle.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        content.classList.toggle('sidebar-collapsed');
-      });
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      content.classList.toggle('sidebar-collapsed');
+    });
   }
 
   // Form submission handling
