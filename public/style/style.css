@@ -3,7 +3,7 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #ede7f6; /* Light purple background */
     color: #333;
     display: flex;
     flex-direction: column;
@@ -13,7 +13,7 @@ body {
 /* Sidebar Styles */
 #sidebar {
     width: 200px;
-    background-color: #333;
+    background-color: #5e35b1; /* Deep purple sidebar */
     color: #fff;
     padding-top: 20px;
     position: fixed;
@@ -40,11 +40,11 @@ body {
 }
 
 #sidebar a:hover {
-    background-color: #555;
+    background-color: #7e57c2; /* Lighter purple on hover */
 }
 
 #sidebar .current {
-    background-color: #555;
+    background-color: #7e57c2;
 }
 
 /* Content Styles */
@@ -64,7 +64,7 @@ body {
 }
 
 h1 {
-    color: #795548;
+    color: #795548; /* Brown header for contrast */
     text-align: center;
     margin-bottom: 20px;
 }
@@ -89,8 +89,8 @@ textarea {
 
 /* Button Styles */
 button {
-    background-color: #795548;
-    color: white;
+    background-color: #ffb300; /* Gold button */
+    color: #333;
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
@@ -100,7 +100,7 @@ button {
 }
 
 button:hover {
-    background-color: #5D4037;
+    background-color: #f57f17; /* Darker gold on hover */
 }
 
 .github-auth-button {
@@ -182,29 +182,78 @@ footer {
     border: 1px solid #f5c6cb;
 }
 
-/* New purple and gold theme */
-body {
-    background-color: #ede7f6; /* Light purple background */
-    color: #333;
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #fff;
 }
 
-#sidebar {
-    background-color: #5e35b1; /* Deep purple sidebar */
+body.dark-mode #sidebar {
+    background-color: #333;
+    color: #fff;
 }
 
-#sidebar a:hover {
-    background-color: #7e57c2; /* Lighter purple on hover */
+body.dark-mode #sidebar a {
+    color: #fff;
 }
 
-h1 {
-    color: #795548; /* Brown header for contrast */
+body.dark-mode #sidebar a:hover {
+    background-color: #555;
 }
 
-button {
-    background-color: #ffb300; /* Gold button */
-    color: #333;
+body.dark-mode .container {
+    background-color: #333;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-button:hover {
+body.dark-mode h1 {
+    color: #ffb300;
+}
+
+body.dark-mode label {
+    color: #eee;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode textarea {
+    background-color: #444;
+    color: #eee;
+    border: 1px solid #666;
+}
+
+/* Added styles for input focus */
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: #ffb300; /* Gold focus color */
+    box-shadow: 0 0 5px rgba(255, 179, 0, 0.5); /* Optional glow effect */
+}
+
+/* Adjustments for purple and gold dark mode */
+body.dark-mode {
+    background-color: #301934; /* Dark purple */
+    color: #ffb300; /* Gold text */
+}
+
+body.dark-mode #sidebar {
+    background-color: #1a0d2a; /* Even darker purple */
+}
+
+body.dark-mode #sidebar a:hover {
+    background-color: #4e3a4c; /* Darker hover */
+}
+
+body.dark-mode .container {
+    background-color: #24132d; /* Dark purple container */
+    box-shadow: 0 0 10px rgba(255, 179, 0, 0.3); /* Gold shadow */
+}
+
+body.dark-mode button {
+    background-color: #c68f00; /* Slightly lighter gold button */
+    color: #301934; /* Dark purple text */
+}
+
+body.dark-mode button:hover {
     background-color: #f57f17; /* Darker gold on hover */
 }
