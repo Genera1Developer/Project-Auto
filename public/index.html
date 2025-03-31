@@ -4,49 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/public/style/style.css">
+    <link rel="stylesheet" href="/style/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/public/images/logo.png" alt="Project Auto Logo" class="logo">
-            <h2>Project Auto</h2>
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <ul class="nav">
-            <li><a href="/public/index.html"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="/public/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
-            <li><a href="/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i> Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i> About Us</a></li>
         </ul>
     </div>
 
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="time" class="time"></div>
+            <h1>Project Auto</h1>
         </header>
-
         <main>
-            <section id="project-input">
-                <h2>Enter Repository Details</h2>
-                <label for="repo-url">Repository URL (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., Genera1Developer/Project-Auto">
-
-                <label for="custom-instructions">Customization Instructions:</label>
-                <textarea id="custom-instructions" rows="4" placeholder="Enter instructions here..."></textarea>
-
-                <button id="start-button">Start</button>
-                <div id = "auth-button">
-                    <a href="/api/auth/github">Authenticate with GitHub</a>
+            <section id="input-section">
+                <h2>Customize Your Repository</h2>
+                <div class="input-group">
+                    <label for="repo_url">Repository URL (username/repo):</label>
+                    <input type="text" id="repo_url" placeholder="e.g., owner/repository">
                 </div>
+                <div class="input-group">
+                    <label for="prompt">Customization Prompt:</label>
+                    <textarea id="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
+                </div>
+                <button id="start-button">Start</button>
+                <div id="status"></div>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-
-    <script src="/public/js/script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
