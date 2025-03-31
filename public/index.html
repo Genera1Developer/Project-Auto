@@ -4,40 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="sidebar">
-        <a href="/" class="active">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <h1>Project Auto</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
     <div class="content">
         <header>
-            <div id="time"></div>
-            <h1>Project Auto</h1>
+            <div id="clock"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <div id="github-auth">
-                <button id="github-login-btn">Authenticate with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </div>
-            <div id="input-fields">
-                <label for="repo-url">Repository URL (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repo">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your instructions"></textarea>
-                <button id="start-btn">Start</button>
-            </div>
-            <div id="output">
-                <h2>Output:</h2>
-                <pre id="output-text"></pre>
-            </div>
+            <section id="input-section">
+                <h2>Run Project Auto</h2>
+                <input type="text" id="repo-input" placeholder="username/repo" required>
+                <textarea id="instructions-input" placeholder="Enter customization instructions" rows="4" required></textarea>
+                <button id="run-button">Start</button>
+                <p id="status"></p>
+            </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script src="/script.js"></script>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            document.getElementById('clock').textContent = time;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        document.getElementById('run-button').addEventListener('click', async () => {
+            const repo = document.getElementById('repo-input').value;
+            const instructions = document.getElementById('instructions-input').value;
+            const status = document.getElementById('status');
+
+            status.textContent = 'Running...';
+
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repo, instructions })
+                });
+
+                const data = await response.text();
+                status.textContent = data;
+            } catch (error) {
+                console.error('Error:', error);
+                status.textContent = `Error: ${error.message}`;
+            }
+        });
+    </script>
 </body>
 </html>
