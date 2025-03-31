@@ -10,39 +10,74 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/logo.png?raw=true" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <i class="fa fa-robot fa-3x"></i>
+            <h2>Project Auto</h2>
         </div>
-        <nav>
-            <ul>
-                <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true"><i class="fas fa-cog"></i> Configuration</a></li>
-                <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true"><i class="fas fa-info-circle"></i> About Us</a></li>
-            </ul>
-        </nav>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
+        <ul>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true"><i class="fa fa-cog"></i>Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true"><i class="fa fa-info-circle"></i>About Us</a></li>
+            <li><a href="#" id="login-link"><i class="fa fa-sign-in"></i>Login with GitHub</a></li>
+        </ul>
     </div>
+
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <button id="login-button">Login with GitHub</button>
+            <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="github-repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github-repo" placeholder="e.g., Project-Auto/Project-Auto">
-                <label for="customization-instructions">Customization Instructions:</label>
-                <textarea id="customization-instructions" rows="5" placeholder="Enter your instructions here"></textarea>
-                <button id="start-button">Start</button>
+            <section id="repo-input">
+                <h2>Enter Repository Details</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
             </section>
+
+            <section id="customization-input">
+                <h2>Customization Instructions</h2>
+                <label for="instructions">Enter your customization instructions:</label>
+                <textarea id="instructions" rows="5" placeholder="e.g., Change the title to 'My Awesome Project'"></textarea>
+            </section>
+
+            <button id="start-button">Start</button>
         </main>
-        <footer>
-            <p>Contact: support@projectauto.com</p>
-        </footer>
+
     </div>
-    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js?raw=true"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('login-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('start-button').addEventListener('click', function() {
+            const repoUrl = document.getElementById('repo-url').value;
+            const instructions = document.getElementById('instructions').value;
+
+            fetch('/api/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repoUrl: repoUrl, instructions: instructions })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please check the console.');
+            });
+        });
+    </script>
 </body>
 </html>
