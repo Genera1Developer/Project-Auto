@@ -9,41 +9,123 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/images/ProjectAutoLogo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button">Login with GitHub</button>
+                <button id="logout-button" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
         </header>
         <main>
-            <section id="input-section">
-                <h2>Customize Your Repository</h2>
-                <div class="input-group">
-                    <label for="repo_url">Repository URL (username/repo):</label>
-                    <input type="text" id="repo_url" placeholder="e.g., owner/repo">
-                </div>
-                <div class="input-group">
-                    <label for="prompt">Prompt:</label>
-                    <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
-                </div>
-                <button id="start-button">Start</button>
-            </section>
-            <section id="output-section">
-                <h2>Output</h2>
-                <div id="output"></div>
+            <section id="project-auto-form">
+                <h2>Run Project Auto</h2>
+                <form id="auto-form">
+                    <div class="form-group">
+                        <label for="repo">Repository (username/repo):</label>
+                        <input type="text" id="repo" name="repo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="instructions">Instructions:</label>
+                        <textarea id="instructions" name="instructions" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="start-button">Start</button>
+                    <div id="status-message"></div>
+                </form>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const userInfoSpan = document.getElementById('user-info');
+            const autoForm = document.getElementById('auto-form');
+            const statusMessage = document.getElementById('status-message');
+
+            const updateAuthUI = (user) => {
+                if (user) {
+                    loginButton.style.display = 'none';
+                    logoutButton.style.display = 'inline-block';
+                    userInfoSpan.textContent = `Logged in as ${user.displayName || user.username}`;
+                } else {
+                    loginButton.style.display = 'inline-block';
+                    logoutButton.style.display = 'none';
+                    userInfoSpan.textContent = '';
+                }
+            };
+
+            const fetchUser = async () => {
+                const response = await fetch('/api/auth/user');
+                const user = await response.json();
+                updateAuthUI(user);
+            };
+
+            fetchUser();
+
+            loginButton.addEventListener('click', () => {
+                window.location.href = '/api/auth/github';
+            });
+
+            logoutButton.addEventListener('click', async () => {
+                await fetch('/api/auth/logout');
+                fetchUser();
+            });
+
+            autoForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                statusMessage.textContent = 'Running...';
+
+                const repo = document.getElementById('repo').value;
+                const instructions = document.getElementById('instructions').value;
+
+                try {
+                    const response = await fetch('/api/run-auto', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ repo, instructions }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        statusMessage.textContent = data.message;
+                    } else {
+                        statusMessage.textContent = `Error: ${data.error}`;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    statusMessage.textContent = 'An error occurred while running Project Auto.';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
