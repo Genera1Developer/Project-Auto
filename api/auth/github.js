@@ -6,10 +6,10 @@ const { Octokit } = require('@octokit/rest');
 module.exports = (app) => {
   // Session configuration
   app.use(session({
-    secret: 'Beauty&TheBeast', // Replace with a strong secret
+    secret: process.env.SESSION_SECRET || 'Beauty&TheBeast', // Use environment variable for secret
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: true, sameSite: 'none', domain: 'project-auto-v1029.vercel.app' } // Set to true in production with HTTPS
+    cookie: { secure: process.env.NODE_ENV === 'production', sameSite: 'none', domain: process.env.NODE_ENV === 'production' ? 'project-auto-v1029.vercel.app' : undefined } // Secure cookies in production
   }));
   app.use(passport.initialize());
   app.use(passport.session());
@@ -17,7 +17,7 @@ module.exports = (app) => {
   passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID, // Replace with your GitHub Client ID
     clientSecret: process.env.GITHUB_CLIENT_SECRET, // Replace with your GitHub Client Secret
-    callbackURL: 'https://project-auto-v1029.vercel.app/api/auth/github/callback' // Replace with your callback URL
+    callbackURL: process.env.GITHUB_CALLBACK_URL || 'https://project-auto-v1029.vercel.app/api/auth/github/callback' // Replace with your callback URL
   },
   async (accessToken, refreshToken, profile, done) => {
     profile.accessToken = accessToken;
@@ -62,7 +62,13 @@ module.exports = (app) => {
         }
 
         const { repo, instructions } = req.body;
+        if (!repo || !instructions) {
+            return res.status(400).json({ error: 'Repository and instructions are required.' });
+        }
         const [owner, repository] = repo.split('/');
+          if (!owner || !repository) {
+              return res.status(400).json({ error: 'Invalid repository format. Use owner/repo.' });
+          }
         const accessToken = req.user.accessToken;
 
         const octokit = new Octokit({ auth: accessToken });
