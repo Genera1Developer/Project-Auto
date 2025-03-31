@@ -1,224 +1,161 @@
-/* General Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #301934; /* Dark purple background */
-    color: #FFD700; /* Gold text */
+    background-color: #f4f4f4;
+    color: #333;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
 }
 
-.container {
-    max-width: 960px; /* Wider container */
-    margin: 30px auto; /* More margin */
-    padding: 30px;
-    background-color: #483D8B;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* More pronounced shadow */
-    border-radius: 10px; /* Rounded corners */
-    overflow: hidden;
-}
-
-/* Sidebar Styles */
 #sidebar {
-    width: 240px; /* Wider sidebar */
-    background-color: #4B0082; /* Darker, more modern color */
-    color: #FFD700;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
     padding-top: 20px;
-    position: fixed;
     height: 100%;
-    overflow: auto;
-    top: 0;
+    position: fixed;
     left: 0;
-    z-index: 100;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    top: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
 }
 
 #sidebar ul {
-    list-style: none;
+    list-style-type: none;
     padding: 0;
-    margin: 0;
 }
 
-#sidebar li {
-    padding: 12px 20px; /* More padding */
-    text-align: left;
-    transition: background-color 0.3s;
-}
-
-#sidebar a {
-    color: #FFD700; /* Lighter text color */
+#sidebar li a {
+    padding: 15px 25px;
     text-decoration: none;
+    font-size: 18px;
+    color: #fff;
     display: block;
-    font-size: 16px;
+    transition: 0.3s;
 }
 
-#sidebar a:hover {
-    background-color: #6a1b9a; /* Darker hover color */
+#sidebar li a:hover {
+    background-color: #555;
+    color: gold;
 }
 
-#sidebar .current {
-    background-color: #6a1b9a; /* Active state color */
+#sidebar li a.current {
+    background-color: #555;
+    color: gold;
 }
 
-/* Content Styles */
 #content {
-    flex: 1;
     padding: 20px;
-    margin-left: 240px; /* Adjust based on sidebar width */
+    margin-left: 200px;
+    transition: margin-left 0.5s;
+    width: calc(100% - 200px);
 }
 
-/* Heading Styles */
 h1 {
-    color: #FFD700;
-    text-align: center;
-    font-size: 2.5em;
+    color: #663399;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px #000000;
 }
 
-/* Label Styles */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
 label {
     display: block;
-    margin-top: 15px;
-    color: #EEE8AA;
-    font-weight: 500;
+    margin-bottom: 8px;
+    color: #555;
 }
 
-/* Input and Textarea Styles */
 input[type="text"],
 textarea {
     width: 100%;
-    padding: 12px;
-    margin-top: 8px;
+    padding: 10px;
     margin-bottom: 20px;
-    border: 1px solid #778899;
-    border-radius: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     box-sizing: border-box;
     font-size: 16px;
-    transition: border-color 0.3s;
-    background-color: #E6E6FA;
-    color: #333;
 }
 
-input[type="text"]:focus,
-textarea:focus {
-    border-color: #6a1b9a;
-    outline: none;
-}
-
-/* Button Styles */
 button {
-    background-color: #D4AF37;
-    color: #301934;
-    padding: 14px 20px;
+    background-color: #663399;
+    color: white;
+    padding: 12px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #B8860B;
+    background-color: #555;
 }
 
-/* GitHub Auth Button Styles */
-.github-auth-button {
-    background-color: #90EE90;
-    color: #301934;
-}
-
-.github-auth-button:hover {
-    background-color: #3CB371;
-}
-
-/* Auth Message Styles */
-#auth-message {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #ADFF2F;
-    color: #301934;
-    border: 1px solid #32CD32;
-    border-radius: 6px;
-    text-align: center;
-}
-
-/* Loading Styles */
 #loading {
     display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+    margin-top: 20px;
     text-align: center;
-    padding-top: 200px;
 }
 
 #loading img {
-    width: 120px;
-    height: 120px;
+    height: 50px;
 }
 
-/* Current Time Styles */
-.current-time {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    background-color: rgba(75, 0, 130, 0.9);
-    padding: 8px 15px;
-    border-radius: 6px;
-    font-size: 15px;
-    z-index: 1000;
-    color: #FFD700;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Config Status Styles */
 #config-status {
-    margin-top: 25px;
+    margin-top: 20px;
     padding: 15px;
-    border-radius: 6px;
-    text-align: center;
+    border-radius: 4px;
+    font-weight: bold;
 }
 
 #config-status.success {
-    background-color: #98FB98;
-    color: #301934;
-    border: 1px solid #32CD32;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
 #config-status.error {
-    background-color: #F08080;
-    color: #301934;
-    border: 1px solid #CD5C5C;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    #sidebar {
-        width: 100%;
-        position: static;
-        box-shadow: none;
-    }
+.github-auth-button {
+    background-color: #444;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+}
 
-    #content {
-        margin-left: 0;
-    }
+.github-auth-button:hover {
+    background-color: #000;
+}
 
-    .container {
-        width: 95%;
-        margin: 20px auto;
-        padding: 20px;
-    }
+#auth-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: center;
+}
 
-    .current-time {
-        position: static;
-        text-align: center;
-        margin-bottom: 10px;
-    }
+.current-time {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #888;
+    font-size: 14px;
 }
