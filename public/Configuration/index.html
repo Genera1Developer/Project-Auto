@@ -124,6 +124,12 @@
         .github-auth-button:hover {
             background-color: #4cae4c;
         }
+
+        .auth-message {
+            color: #7952B3;
+            margin-top: 10px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -140,6 +146,7 @@
         <div class="container">
             <h1>Project Auto Configuration</h1>
             <button class="github-auth-button" onclick="authenticateGitHub()">Authenticate with GitHub</button>
+            <div id="auth-message" class="auth-message"></div>
 
             <label for="githubRepo">GitHub Repository (username/repo):</label>
             <input type="text" id="githubRepo" name="githubRepo" placeholder="e.g., owner/repository">
@@ -161,6 +168,20 @@
         setInterval(updateTime, 1000);
         updateTime();
 
+        // Check for the presence of a GitHub access token in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('access_token');
+
+        if (accessToken) {
+            // Store the access token (in localStorage, a cookie, or similar)
+            localStorage.setItem('github_access_token', accessToken);
+            document.getElementById('auth-message').textContent = 'Successfully authenticated with GitHub!';
+            // Optionally, remove the access_token from the URL to avoid showing it
+            history.replaceState({}, document.title, window.location.pathname);
+        } else if (localStorage.getItem('github_access_token')) {
+            document.getElementById('auth-message').textContent = 'Already authenticated with GitHub.';
+        }
+
         function authenticateGitHub() {
             const clientId = 'Iv1.2d8779c43bc73e8c';
             const redirectUri = 'https://project-auto.vercel.app/Configuration/';
@@ -172,11 +193,18 @@
         function startProjectAuto() {
             const repo = document.getElementById('githubRepo').value;
             const prompt = document.getElementById('prompt').value;
+            const accessToken = localStorage.getItem('github_access_token');
+
+            if (!accessToken) {
+                alert('Please authenticate with GitHub first.');
+                return;
+            }
 
             fetch('/api/startProjectAuto', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({ repo: repo, prompt: prompt }),
             })
