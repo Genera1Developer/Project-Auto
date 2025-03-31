@@ -1,7 +1,7 @@
 const theme = {
   colors: {
-    primary: '#7957D4',
-    secondary: '#FDD835',
+    primary: '#7957D4', // Purple
+    secondary: '#FDD835', // Gold
     background: '#FAFAFA',
     text: '#212121',
     accent: '#9575CD',
@@ -10,6 +10,9 @@ const theme = {
     error: '#D32F2F',
     success: '#388E3C',
     warning: '#F57C00',
+    inputBackground: '#FFFFFF',
+    inputBorder: '#BDBDBD',
+    inputFocus: '#7957D4',
   },
   fonts: {
     main: 'Roboto, sans-serif',
