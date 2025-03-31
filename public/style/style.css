@@ -1,336 +1,209 @@
-/* General body styling */
+/* General Styles */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
     color: #333;
-    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-/* Container to hold content */
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-    padding: 15px;
-}
-
-/* Header styling */
-header {
-    background: #333;
+/* Sidebar Styles */
+#sidebar {
+    width: 200px;
+    background-color: #333;
     color: #fff;
-    padding-top: 30px;
-    min-height: 70px;
-    border-bottom: 3px solid #e8491d;
-}
-
-header a {
-    color: #fff;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 16px;
-}
-
-header ul {
-    padding: 0;
-    margin: 0;
-}
-
-header li {
-    display: inline;
-    padding: 0 20px 0 20px;
-}
-
-header #branding {
-    float: left;
-}
-
-header #branding h1 {
-    margin: 0;
-}
-
-header nav {
-    float: right;
-    margin-top: 10px;
-}
-
-header .highlight, header .current a {
-    color: #e8491d;
-    font-weight: bold;
-}
-
-header a:hover {
-    color: #fff;
-    font-weight: bold;
-}
-
-/* Showcase styling */
-#showcase {
-    min-height: 400px;
-    background: url('../img/showcase.jpg') no-repeat 0 -400px;
-    text-align: center;
-    color: #fff;
-}
-
-#showcase h1 {
-    margin-top: 100px;
-    font-size: 55px;
-    margin-bottom: 10px;
-}
-
-#showcase p {
-    font-size: 20px;
-}
-
-/* Newsletter styling */
-#newsletter {
-    padding: 15px;
-    color: #fff;
-    background: #333;
-}
-
-#newsletter h1 {
-    float: left;
-}
-
-#newsletter form {
-    float: right;
-    margin-top: 15px;
-}
-
-#newsletter input[type="email"] {
-    padding: 4px;
-    height: 25px;
-    width: 250px;
-}
-
-/* Boxes styling */
-#boxes {
-    margin-top: 20px;
-}
-
-#boxes .box {
-    float: left;
-    text-align: center;
-    width: 30%;
-    padding: 10px;
-}
-
-#boxes .box img {
-    width: 90px;
-}
-
-/* Sidebar styling */
-aside#sidebar {
-    float: right;
-    width: 30%;
-    margin-top: 10px;
-    padding: 20px;
-}
-
-/* Article styling */
-article#main-col {
-    float: left;
-    width: 65%;
-}
-
-/* Services styling */
-ul#services li {
-    list-style: none;
-    padding: 20px;
-    border: #cccccc solid 1px;
-    margin-bottom: 5px;
-    background: #e6e6e6;
-}
-
-/* Footer styling */
-footer {
-    padding: 20px;
-    margin-top: 20px;
-    color: #fff;
-    background-color: #e8491d;
-    text-align: center;
-}
-
-/* Media Queries for responsiveness */
-@media(max-width: 768px) {
-    header #branding,
-    header nav,
-    header nav li,
-    #newsletter h1,
-    #newsletter form,
-    #boxes .box,
-    aside#sidebar,
-    article#main-col {
-        float: none;
-        text-align: center;
-        width: 100%;
-    }
-
-    header {
-        padding-bottom: 20px;
-    }
-
-    #showcase h1 {
-        margin-top: 40px;
-    }
-
-    #newsletter form {
-        margin-top: 0;
-    }
-}
-
-/* Custom styles for Project Auto */
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f9f9f9;
-    color: #343a40;
-}
-
-.sidebar {
-    width: 250px;
-    background-color: #343a40;
-    color: #ffffff;
-    padding: 20px;
+    padding-top: 20px;
     position: fixed;
     height: 100%;
     overflow: auto;
 }
 
-.sidebar a {
-    color: #ffffff;
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+#sidebar li {
+    padding: 10px;
+    text-align: left;
+}
+
+#sidebar a {
+    color: #fff;
     text-decoration: none;
-    padding: 10px 0;
     display: block;
-    transition: background-color 0.3s;
 }
 
-.sidebar a:hover {
-    background-color: #495057;
+#sidebar a:hover {
+    background-color: #555;
 }
 
-.content {
-    margin-left: 270px;
+#sidebar .current {
+    background-color: #555;
+}
+
+/* Content Styles */
+#content {
+    flex: 1;
     padding: 20px;
+    margin-left: 220px; /* Adjust based on sidebar width */
 }
 
-.form-container {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 18px;
-    color: #495057;
-    margin-bottom: 5px;
-}
-
-.form-group input[type="text"],
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    font-size: 16px;
-    color: #495057;
-    transition: border-color 0.3s;
-}
-
-.form-group input[type="text"]:focus,
-.form-group textarea:focus {
-    border-color: #80bdff;
-    outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.btn-primary {
-    background-color: #6c757d;
-    color: #ffffff;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.btn-primary:hover {
-    background-color: #5a6268;
-}
-
-.footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #343a40;
-    color: #ffffff;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-
-/* Add purple and gold color scheme */
-.purple-gold {
-    background-color: #795548; /* Brownish Purple */
-    color: #FFD700; /* Gold */
-}
-
-.purple-gold-text {
-    color: #795548; /* Brownish Purple */
-}
-
-.btn-gold {
-    background-color: #FFD700; /* Gold */
-    color: #000;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.btn-gold:hover {
-    background-color: #e6c200;
-}
-
-/* Loading spinner */
-.loading-spinner {
-    border: 5px solid #f3f3f3; /* Light grey */
-    border-top: 5px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 2s linear infinite;
+.container {
+    max-width: 800px;
     margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+h1 {
+    color: #795548;
+    text-align: center;
 }
 
-/* Configuration Status */
-.config-status {
+label {
+    display: block;
+    margin-top: 10px;
+    color: #777;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #795548;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #5D4037;
+}
+
+/* Github Auth Button Style */
+.github-auth-button {
+    background-color: #4CAF50;
+}
+
+.github-auth-button:hover {
+    background-color: #43A047;
+}
+
+/* Auth Message Style */
+#auth-message {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    text-align: center;
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: auto;
+}
+
+/* Loading Styles */
+#loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    text-align: center;
+    padding-top: 200px;
+}
+
+#loading img {
+    width: 100px;
+    height: 100px;
+}
+
+/* Current Time */
+.current-time {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+/* Config Status Styles */
+#config-status {
     margin-top: 20px;
-    padding: 15px;
+    padding: 10px;
     border-radius: 5px;
     text-align: center;
 }
 
-.config-status.success {
+#config-status.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
-.config-status.error {
+#config-status.error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+/* New styles for purple and gold theme */
+body {
+    background-color: #f0f0f5; /* Light gray background */
+    color: #333;
+}
+
+#sidebar {
+    background-color: #542f82; /* Dark purple sidebar */
+}
+
+#sidebar a:hover {
+    background-color: #6a449f; /* Lighter purple on hover */
+}
+
+h1 {
+    color: #a98231; /* Gold heading */
+}
+
+button {
+    background-color: #a98231; /* Gold button */
+}
+
+button:hover {
+    background-color: #bca054; /* Darker gold on hover */
+}
+
+.container {
+    background-color: #fff; /* White container */
 }
