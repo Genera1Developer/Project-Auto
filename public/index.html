@@ -8,33 +8,24 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <div class="logo">Project Auto</div>
+        <a href="/" class="active">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
 
     <div class="content">
         <header>
-            <div id="current-time"></div>
+            <div id="time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
 
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository">
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions here"></textarea>
+            <section id="input-section">
+                <h2>Enter Your Repository Details</h2>
+                <input type="text" id="repo-url" placeholder="username/repository">
+                <textarea id="custom-instructions" placeholder="Customization Instructions"></textarea>
                 <button id="start-button">Start</button>
-                <div id="status-message"></div>
             </section>
         </main>
 
@@ -47,39 +38,35 @@
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = `Current Time: ${timeString}`;
+            document.getElementById('time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
-        updateTime();
+        updateTime(); // Initial call to display time immediately
 
         document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-            const statusMessage = document.getElementById('status-message');
+            const repoUrl = document.getElementById('repo-url').value;
+            const customInstructions = document.getElementById('custom-instructions').value;
 
             try {
-                const response = await fetch('/api/run-auto', {
+                const response = await fetch('/api/process', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ repo, instructions }),
+                    body: JSON.stringify({ repoUrl, customInstructions }),
                 });
 
-                const data = await response.json();
-
                 if (response.ok) {
-                    statusMessage.textContent = data.message;
-                    statusMessage.className = 'success';
+                    const result = await response.json();
+                    alert(result.message);
                 } else {
-                    statusMessage.textContent = data.error || 'An error occurred.';
-                    statusMessage.className = 'error';
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                statusMessage.textContent = 'Failed to connect to the server.';
-                statusMessage.className = 'error';
+                alert('An error occurred while processing your request.');
             }
         });
     </script>
