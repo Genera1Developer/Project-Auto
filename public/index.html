@@ -1,20 +1,25 @@
-<!DOCTYPE html>
+|
+ <!DOCTYPE html>
  <html lang="en">
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Project Auto</title>
   <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
  </head>
  <body>
   <div class="sidebar">
-   <h1>Project Auto</h1>
-   <ul>
-    <li><a href="https://github.com/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a></li>
-    <li><a href="https://github.com/Project-Auto/public/Configuration/index.html"><i class="fa fa-cog"></i> Configuration</a></li>
-    <li><a href="https://github.com/Project-Auto/public/About-Us/index.html"><i class="fa fa-info-circle"></i> About Us</a></li>
-   </ul>
+   <div class="sidebar-header">
+    <img src="https://github.com/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
+    <h1>Project Auto</h1>
+   </div>
+   <nav>
+    <ul>
+     <li><a href="https://github.com/Project-Auto/public/">Home</a></li>
+     <li><a href="https://github.com/Project-Auto/public/Configuration">Configuration</a></li>
+     <li><a href="https://github.com/Project-Auto/public/About-Us">About Us</a></li>
+    </ul>
+   </nav>
   </div>
   <div class="content">
    <header>
@@ -23,53 +28,17 @@
    <main>
     <section id="home">
      <h2>Welcome to Project Auto</h2>
-     <p>Automate your development workflow.</p>
-     <div id="auth-button-container">
-      <button id="github-auth-button">Authenticate with GitHub</button>
-     </div>
-     <div id="app-content" style="display:none;">
-      <label for="repo-input">GitHub Repository (username/repo):</label>
-      <input type="text" id="repo-input" placeholder="username/repo">
-      <label for="prompt-input">Customization Instructions:</label>
-      <textarea id="prompt-input" placeholder="Enter instructions here"></textarea>
+     <p>Enter your GitHub repository and instructions to automate your project.</p>
+     <div class="input-form">
+      <label for="repo">GitHub Repository (username/repo):</label>
+      <input type="text" id="repo" name="repo" placeholder="e.g., user/my-repo">
+      <label for="prompt">Instructions:</label>
+      <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions"></textarea>
       <button id="start-button">Start</button>
-      <p id="status"></p>
      </div>
     </section>
    </main>
   </div>
-  <script>
-   function updateTime() {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString();
-    document.getElementById('current-time').textContent = timeString;
-   }
-   setInterval(updateTime, 1000);
-   updateTime(); // Initial call
-   document.addEventListener('DOMContentLoaded', function() {
-    const authButton = document.getElementById('github-auth-button');
-    const appContent = document.getElementById('app-content');
-    authButton.addEventListener('click', function() {
-     // Replace with actual GitHub authentication logic
-     // For now, just simulate authentication
-     alert('Simulating GitHub Authentication');
-     appContent.style.display = 'block';
-     authButton.style.display = 'none';
-    });
-    const startButton = document.getElementById('start-button');
-    startButton.addEventListener('click', function() {
-     const repoInput = document.getElementById('repo-input').value;
-     const promptInput = document.getElementById('prompt-input').value;
-     document.getElementById('status').textContent = `Running Project Auto on ${repoInput} with instructions: ${promptInput}`;
-     // Here, add the actual Project Auto execution logic
-     // This is where you would send the repo and prompt to your backend
-     // For now, simulate a successful run
-     setTimeout(() => {
-      document.getElementById('status').textContent = `Project Auto completed successfully on ${repoInput}!`;
-     }, 3000);
-    });
-   });
-  </script>
-  <script src="https://github.com/Project-Auto/public/script.js"></script>
+  <script src="https://github.com/Project-Auto/public/js/script.js"></script>
  </body>
  </html>
