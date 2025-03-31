@@ -6,7 +6,7 @@
     <title>Project Auto - Configuration</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css">
+    <link rel="stylesheet" href="/public/style/style.css">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -166,9 +166,9 @@
 
     <div id="sidebar">
         <ul>
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li class="current"><a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration/index.html"><i class="fas fa-cogs"></i> Configuration</a></li>
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us/index.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+            <li><a href="/public/index.html"><i class="fas fa-home"></i> Home</a></li>
+            <li class="current"><a href="/public/Configuration/index.html"><i class="fas fa-cogs"></i> Configuration</a></li>
+            <li><a href="/public/About-Us/index.html"><i class="fas fa-info-circle"></i> About Us</a></li>
         </ul>
     </div>
 
@@ -193,7 +193,7 @@
     </footer>
 
     <div id="loading">
-        <img src="https://github.com/Genera1Developer/Project-Auto/blob/main/public/loading.gif" alt="Loading...">
+        <img src="/public/loading.gif" alt="Loading...">
     </div>
 
     <script>
@@ -212,14 +212,14 @@
         if (accessToken) {
             localStorage.setItem('github_access_token', accessToken);
             document.getElementById('auth-message').textContent = 'Successfully authenticated with GitHub!';
-            history.replaceState({}, document.title, 'https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration/index.html');
+            history.replaceState({}, document.title, '/public/Configuration/index.html');
         } else if (localStorage.getItem('github_access_token')) {
             document.getElementById('auth-message').textContent = 'Already authenticated with GitHub.';
         }
 
         function authenticateGitHub() {
             const clientId = 'Iv1.2d8779c43bc73e8c';
-            const redirectUri = 'https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration/index.html';
+            const redirectUri = 'https://project-auto-v1029.vercel.app/public/Configuration/index.html';
             const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
 
             window.location.href = githubAuthUrl;
@@ -253,7 +253,7 @@
             .then(repoData => {
                 console.log('Repository Data:', repoData);
 
-                fetch('https://github.com/Genera1Developer/Project-Auto/blob/main/api/startProjectAuto.js', {
+                fetch('/api/startProjectAuto.js', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
