@@ -9,56 +9,34 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
             <h2>Project Auto</h2>
         </div>
-        <ul class="nav">
-            <li><a href="/index.html">Home</a></li>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
     </div>
-
     <div class="content">
         <header>
             <div id="current-time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
-
         <main>
             <section id="github-auth">
-                <a href="/api/github/login" class="button">Authenticate with GitHub</a>
+                <button id="github-login">Login with GitHub</button>
+                <p id="auth-status">Not logged in.</p>
             </section>
-
-            <section id="project-input">
-                <h2>Run Project Auto</h2>
-                <form id="auto-form">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto" required>
-
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions here"></textarea>
-
-                    <button type="submit" class="button">Start</button>
-                </form>
-            </section>
-
-            <section id="results">
-                <h2>Results</h2>
-                <div id="results-content">
-                    <!-- Results will be displayed here -->
-                </div>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your customization instructions here."></textarea>
+                <button id="start-button">Start</button>
             </section>
         </main>
-
-        <footer>
-            <p>Contact: support@projectauto.com</p>
-        </footer>
     </div>
-
     <script>
         function updateTime() {
             const now = new Date();
@@ -69,31 +47,40 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('auto-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
+        document.getElementById('github-login').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
 
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repo, instructions })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+        fetch('/api/auth/status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.authenticated) {
+                    document.getElementById('auth-status').textContent = `Logged in as ${data.user.login}`;
+                    document.getElementById('github-login').style.display = 'none';
+                } else {
+                    document.getElementById('auth-status').textContent = 'Not logged in.';
                 }
+            });
 
-                const result = await response.text();
-                document.getElementById('results-content').textContent = result;
-            } catch (error) {
+        document.getElementById('start-button').addEventListener('click', () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customInstructions = document.getElementById('custom-instructions').value;
+
+            fetch('/api/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repoUrl, customInstructions })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Display success or error message
+            })
+            .catch(error => {
                 console.error('Error:', error);
-                document.getElementById('results-content').textContent = `Error: ${error.message}`;
-            }
+                alert('An error occurred while processing your request.');
+            });
         });
     </script>
 </body>
