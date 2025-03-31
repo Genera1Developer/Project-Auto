@@ -9,79 +9,35 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="/index.html">Project Auto</a>
+            <img src="/style/project-auto-logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <nav>
-            <ul>
-                <li><a href="/index.html">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="time" class="time"></div>
+            <h1>Project Auto</h1>
         </header>
-
         <main>
-            <section id="repo-input">
-                <h2>Enter Repository Details</h2>
-                <form id="project-auto-form">
-                    <label for="repository">Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo" required>
-
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-
-                    <button type="button" id="start-button">Start</button>
-                </form>
-            </section>
+            <div class="input-area">
+                <label for="repo_url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo_url" name="repo_url" placeholder="e.g., owner/repo">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" name="prompt" placeholder="Enter your instructions here"></textarea>
+                <button id="start-button">Start</button>
+            </div>
+            <div id="output" class="output-area">
+                <!-- Project Auto output will be displayed here -->
+            </div>
         </main>
-
         <footer>
             <p>&copy; 2024 Project Auto</p>
         </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repository = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-
-            try {
-                const response = await fetch('/api/process', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repository, instructions }),
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log(data);
-                alert(data.message);
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
