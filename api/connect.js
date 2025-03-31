@@ -10,7 +10,7 @@ const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 const redirectUri = process.env.GITHUB_REDIRECT_URI;
 
 router.use(session({
-  secret: process.env.SESSION_SECRET || 'your_secret_key',
+  secret: process.env.SESSION_SECRET || '', //DYNAMICALLY GENGERATED
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } // Set to true in production with HTTPS
@@ -47,7 +47,7 @@ router.get('/github/callback', async (req, res) => {
     req.session.githubToken = accessToken;
     req.session.githubUser = user.data;
 
-    res.redirect('https://project-auto.github.io/public/');
+    res.redirect('/index.html');
 
   } catch (error) {
     console.error('Error during GitHub callback:', error);
