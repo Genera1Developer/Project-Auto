@@ -9,31 +9,46 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="/">Project Auto</a>
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
+        <ul class="nav">
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
+
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time" class="current-time"></div>
+            <a href="https://github.com/login/oauth/authorize?client_id=Iv1.112dfc004d837e06&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
+                <button id="login-button">Login with GitHub</button>
+            </a>
+            <button id="logout-button" style="display:none;">Logout</button>
+            <span id="user-info"></span>
         </header>
+
         <main>
-            <section id="github-auth">
-                <a href="/api/connect/github/login" class="button">Authenticate with GitHub</a>
-            </section>
-            <section id="auto-form">
-                <label for="repo">GitHub Repository (user/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="user/repo">
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" placeholder="Enter customization instructions"></textarea>
-                <button id="start-button" class="button">Start</button>
+            <section id="project-auto-form">
+                <h2>Run Project Auto</h2>
+                <label for="repo">Repository (owner/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="owner/repo"><br><br>
+
+                <label for="instructions">Instructions:</label><br>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter instructions for Project Auto"></textarea><br><br>
+
+                <button id="start-button">Start</button>
+                <p id="status-message"></p>
             </section>
         </main>
+
+        <footer>
+            <p>Contact: projectauto@example.com</p>
+        </footer>
     </div>
 
     <script>
@@ -44,31 +59,65 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime();
+        updateTime(); // Initial call to set the time immediately
 
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const userInfoSpan = document.getElementById('user-info');
+            const repoInput = document.getElementById('repo');
+            const instructionsInput = document.getElementById('instructions');
+            const startButton = document.getElementById('start-button');
+            const statusMessage = document.getElementById('status-message');
 
-            try {
-                const response = await fetch('/api/connect/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repo, instructions })
-                });
+            const fetchUser = async () => {
+                const response = await fetch('/api/auth/user');
+                const user = await response.json();
 
-                if (response.ok) {
-                    alert('Project Auto executed successfully!');
+                if (user) {
+                    loginButton.style.display = 'none';
+                    logoutButton.style.display = 'inline-block';
+                    userInfoSpan.textContent = `Logged in as ${user.displayName || user.id}`;
                 } else {
-                    const errorData = await response.text();
-                    alert(`Project Auto execution failed: ${errorData}`);
+                    loginButton.style.display = 'inline-block';
+                    logoutButton.style.display = 'none';
+                    userInfoSpan.textContent = '';
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert(`Project Auto execution failed: ${error.message}`);
-            }
+            };
+
+            fetchUser();
+
+            logoutButton.addEventListener('click', async () => {
+                await fetch('/api/auth/logout');
+                fetchUser();
+            });
+
+            startButton.addEventListener('click', async () => {
+                const repo = repoInput.value;
+                const instructions = instructionsInput.value;
+
+                statusMessage.textContent = 'Running Project Auto...';
+
+                try {
+                    const response = await fetch('/api/run-auto', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ repo, instructions }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        statusMessage.textContent = data.message;
+                    } else {
+                        statusMessage.textContent = `Error: ${data.error}`;
+                    }
+                } catch (error) {
+                    statusMessage.textContent = `Error: ${error.message}`;
+                }
+            });
         });
     </script>
 </body>
