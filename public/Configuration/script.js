@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // GitHub Authentication button event
-    document.getElementById('githubAuth').addEventListener('click', function() {
+    const githubAuthButton = document.getElementById('githubAuth');
+    githubAuthButton.addEventListener('click', function() {
         // Redirect to GitHub OAuth flow, but only if there is no token already
         config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config; //refresh config
         if (!config.githubToken) {
@@ -34,16 +35,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateAuthButton() {
         config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config; //refresh config
         if (config.githubToken) {
-            document.getElementById('githubAuth').textContent = 'Authenticated';
-            document.getElementById('githubAuth').disabled = true;
+            githubAuthButton.textContent = 'Authenticated';
+            githubAuthButton.disabled = true;
         } else {
-            document.getElementById('githubAuth').textContent = 'Authenticate with GitHub';
-            document.getElementById('githubAuth').disabled = false;
+            githubAuthButton.textContent = 'Authenticate with GitHub';
+            githubAuthButton.disabled = false;
         }
     }
 
     // Start button functionality
-    document.getElementById('startBtn').addEventListener('click', function() {
+    const startButton = document.getElementById('startBtn');
+    startButton.addEventListener('click', function() {
         config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config; //refresh config
         const repo = document.getElementById('githubRepo').value;
         const instructions = document.getElementById('customInstructions').value;
@@ -67,13 +69,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 instructions: instructions
             })
         })
-        .then(response => response.json())
+        .then(response => {
+             if (!response.ok) {
+                  return response.json().then(err => {throw new Error(err.message || 'Something went wrong')});
+             }
+             return response.json();
+        })
         .then(data => {
             alert(data.message);
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('An error occurred while starting Project Auto.');
+            alert(`An error occurred while starting Project Auto: ${error.message}`);
         });
     });
 
