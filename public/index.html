@@ -5,47 +5,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html" class="active"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
-            <li><a href="/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+        <ul class="nav">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
+
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
+            <div id="time" class="time"></div>
             <h1>Project Auto</h1>
         </header>
-        <main>
-            <section id="github-auth">
-                <button id="github-login-btn" class="auth-button">
-                    <i class="fab fa-github"></i> Authenticate with GitHub
-                </button>
-                <span id="auth-status"></span>
-            </section>
-            <section id="project-input">
+
+        <section id="main">
+            <div class="input-area">
                 <label for="repo_url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo_url" placeholder="e.g., owner/repository" required>
-                <label for="prompt">Customization Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your instructions here" required></textarea>
-                <button id="start-btn" class="start-button">Start</button>
-            </section>
-            <section id="output">
-                <h2>Output:</h2>
-                <pre id="output-log"></pre>
-            </section>
-        </main>
+                <input type="text" id="repo_url" placeholder="e.g., owner/repository">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
+                <button id="start_button">Start</button>
+            </div>
+            <div id="output" class="output-area">
+                <h3>Output:</h3>
+                <pre id="output_text"></pre>
+            </div>
+            <button id="github_login">Login with GitHub</button>
+        </section>
     </div>
-    <footer>
-        <p>&copy; 2024 Project Auto. All rights reserved.</p>
-    </footer>
-    <script src="/script.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            function updateTime() {
+                $.ajax({
+                    url: '/api/time',
+                    type: 'GET',
+                    success: function(data) {
+                        $('#time').text(data.time);
+                    }
+                });
+            }
+
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            $('#start_button').click(function() {
+                var repo_url = $('#repo_url').val();
+                var prompt = $('#prompt').val();
+                $('#output_text').text('Running Project Auto...');
+
+                $.ajax({
+                    url: '/api/run_auto',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ repo_url: repo_url, prompt: prompt }),
+                    success: function(data) {
+                        $('#output_text').text(data.output);
+                    },
+                    error: function(xhr, status, error) {
+                        $('#output_text').text('Error: ' + xhr.responseJSON.error);
+                    }
+                });
+            });
+
+            $('#github_login').click(function() {
+                var redirect_uri = window.location.origin;
+                $.ajax({
+                    url: '/api/github_login?redirect_uri=' + encodeURIComponent(redirect_uri),
+                    type: 'GET',
+                    success: function(data) {
+                        window.location.href = 'https://github.com/login/oauth/authorize?client_id=' + data.github_client_id + '&redirect_uri=' + encodeURIComponent(redirect_uri) + '&scope=repo';
+                    }
+                });
+            });
+
+            // Handle the GitHub callback
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            if (code) {
+                $.ajax({
+                    url: '/api/github_callback?code=' + code,
+                    type: 'GET',
+                    success: function(data) {
+                        alert('Successfully authenticated with GitHub!');
+                        // Optionally, store the token or update the UI
+                    },
+                    error: function(xhr, status, error) {
+                        alert('GitHub authentication failed: ' + xhr.responseJSON.error);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
