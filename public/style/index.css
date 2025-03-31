@@ -482,3 +482,93 @@ footer {
     color: red;
     margin-top: 5px;
 }
+
+/* Added Styles */
+.main-content {
+    margin-left: 220px;
+    padding: 20px;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5em;
+    color: #e6cc00;
+    border-bottom: 1px solid #673ab7;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-list li a {
+    padding: 15px;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    transition: 0.3s;
+    border-bottom: 1px solid #673ab7;
+}
+
+.sidebar-list li a:hover {
+    background-color: #673ab7;
+}
+
+.repo-form {
+    margin-bottom: 20px;
+}
+
+.repo-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.repo-form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.prompt-input label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.prompt-input textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Styles for success/error messages */
+.success-message {
+    color: green;
+    margin-top: 5px;
+}
+
+.error-message {
+    color: red;
+    margin-top: 5px;
+}
+
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
