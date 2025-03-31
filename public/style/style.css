@@ -1,165 +1,226 @@
+/* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f8f8f8;
     color: #333;
-    display: flex;
-    height: 100vh;
+    line-height: 1.6;
 }
 
-.sidebar {
-    width: 250px;
-    background-color: #333;
-    color: #fff;
+/* Container for centering content */
+.container {
+    max-width: 960px;
+    margin: 20px auto;
     padding: 20px;
-    display: flex;
-    flex-direction: column;
+    background-color: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
-.sidebar-header {
+/* Header Styles */
+h1, h2, h3 {
+    color: #7036ba; /* Deep Purple */
+    text-align: center;
     margin-bottom: 20px;
+}
+
+/* Link Styles */
+a {
+    color: #7036ba; /* Deep Purple */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #a56fd0; /* Lighter Purple */
+}
+
+/* Form Styles */
+label {
+    display: block;
+    margin-top: 15px;
+    color: #555;
+}
+
+input[type="text"],
+textarea,
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+button {
+    background-color: #7036ba; /* Deep Purple */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #a56fd0; /* Lighter Purple */
+}
+
+/* Navigation Bar Styles */
+nav {
+    background-color: #7036ba; /* Deep Purple */
+    color: white;
+    padding: 15px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     text-align: center;
 }
 
-.sidebar-header h2 {
-    color: #ffc107;
+nav li {
+    display: inline;
+    margin: 0 20px;
 }
 
-.sidebar-menu {
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #ffc107; /* Gold */
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: 30px;
+}
+
+/* Sidebar Styles */
+#sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    left: 0; /* Stick to the left */
+    top: 0;  /* Align to the top */
+}
+
+#sidebar ul {
     list-style: none;
     padding: 0;
 }
 
-.sidebar-menu li {
-    margin-bottom: 10px;
+#sidebar li {
+    padding: 15px;
+    text-align: left;
 }
 
-.sidebar-menu a {
-    display: block;
-    padding: 10px;
+#sidebar a {
     color: #fff;
     text-decoration: none;
+    display: block;
+    padding: 8px;
     border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
-.sidebar-menu a:hover {
+#sidebar a:hover {
     background-color: #555;
 }
 
-.content {
-    flex: 1;
+#sidebar .current {
+    background-color: #555;
+}
+
+/* Content Area Styles */
+#content {
+    margin-left: 270px; /* Adjust based on sidebar width */
     padding: 20px;
 }
 
-header {
-    background-color: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
+/* Loading Indicator Styles */
+#loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    text-align: center;
+    padding-top: 200px;
+}
+
+#loading img {
+    width: 100px;
+    height: 100px;
+}
+
+/* Current Time Display Styles */
+.current-time {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 8px 12px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    font-size: 14px;
+    z-index: 1000;
 }
 
-header h1 {
-    margin: 0;
-    color: #333;
-}
-
-main {
-    padding: 20px;
-    background-color: #fff;
+/* Configuration Status Message Styles */
+#config-status {
+    margin-top: 20px;
+    padding: 12px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-#current-time {
-    font-size: 1.2em;
-    color: #777;
-}
-
-#github-auth, #project-input {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-#project-input label {
-    display: block;
-    margin-bottom: 5px;
+    text-align: center;
     font-weight: bold;
 }
 
-#project-input input[type="text"],
-#project-input textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
+#config-status.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
-#project-input button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+#config-status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
-#project-input button:hover {
-    background-color: #0056b3;
-}
-
-footer {
+/* Authentication Message Styles */
+.auth-message {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #e9ecef;
+    color: #495057;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
     text-align: center;
-    padding: 10px;
+}
+
+/* Utility Classes */
+.mt-20 {
     margin-top: 20px;
-    color: #777;
-}
-
-/* New styles for purple and gold theme */
-body {
-    background-color: #f8f7ff; /* Light purple background */
-    color: #4a4a4a; /* Dark gray text */
-}
-
-.sidebar {
-    background-color: #5e35b1; /* Deep purple sidebar */
-}
-
-.sidebar-header h2 {
-    color: #ffc107; /* Gold header text */
-}
-
-.sidebar-menu a {
-    color: #fff; /* White menu text */
-}
-
-.sidebar-menu a:hover {
-    background-color: #7e57c2; /* Lighter purple on hover */
-}
-
-header {
-    background-color: #fff;
-}
-
-header h1 {
-    color: #5e35b1; /* Deep purple header */
-}
-
-#project-input button {
-    background-color: #ffc107; /* Gold button */
-    color: #5e35b1; /* Deep purple button text */
-}
-
-#project-input button:hover {
-    background-color: #e0ac00; /* Darker gold on hover */
 }
