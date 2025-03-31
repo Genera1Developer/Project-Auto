@@ -10,32 +10,46 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <h2>Project Auto</h2>
         </div>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
+                <li><a href="/" class="active">Home</a></li>
                 <li><a href="/Configuration">Configuration</a></li>
                 <li><a href="/About-Us">About Us</a></li>
+                <li><a href="/api/auth/logout">Logout</a></li>
             </ul>
         </nav>
     </div>
+
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <button id="github-login-button">Login with GitHub</button>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
+            <section id="authentication">
+                <div id="auth-status">
+                    <a href="/api/auth/github">Authenticate with GitHub</a>
+                </div>
+            </section>
+
             <section id="project-input">
                 <h2>Run Project Auto</h2>
-                <label for="repo">GitHub Repository (user/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="user/repo">
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" placeholder="Enter instructions here"></textarea>
-                <button id="start-button">Start</button>
-                <p id="status-message"></p>
+                <form id="auto-form">
+                    <label for="repo">Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="username/repo" required>
+
+                    <label for="instructions">Instructions:</label>
+                    <textarea id="instructions" name="instructions" placeholder="Enter your instructions here" required></textarea>
+
+                    <button type="submit">Start</button>
+                </form>
+                <div id="result"></div>
             </section>
         </main>
+
         <footer>
             <p>&copy; 2024 Project Auto</p>
         </footer>
@@ -45,22 +59,32 @@
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            document.getElementById('current-time').textContent = `Current Time: ${timeString}`;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('github-login-button').addEventListener('click', () => {
-            window.location.href = '/api/github/login';
-        });
+        async function checkAuth() {
+            const response = await fetch('/api/auth/user');
+            const user = await response.json();
+            const authStatusDiv = document.getElementById('auth-status');
 
-        document.getElementById('start-button').addEventListener('click', async () => {
+            if (user) {
+                authStatusDiv.innerHTML = `<p>Logged in as: ${user.displayName}</p>`;
+            } else {
+                authStatusDiv.innerHTML = `<a href="/api/auth/github">Authenticate with GitHub</a>`;
+            }
+        }
+
+        checkAuth();
+
+        document.getElementById('auto-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
             const repo = document.getElementById('repo').value;
             const instructions = document.getElementById('instructions').value;
-            const statusMessage = document.getElementById('status-message');
-
-            statusMessage.textContent = 'Running Project Auto...';
+            const resultDiv = document.getElementById('result');
 
             try {
                 const response = await fetch('/api/run-auto', {
@@ -71,11 +95,16 @@
                     body: JSON.stringify({ repo, instructions })
                 });
 
-                const data = await response.text();
-                statusMessage.textContent = data;
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.textContent = data.message;
+                } else {
+                    resultDiv.textContent = `Error: ${data.error}`;
+                }
             } catch (error) {
                 console.error('Error:', error);
-                statusMessage.textContent = `Error: ${error.message}`;
+                resultDiv.textContent = 'An error occurred while processing your request.';
             }
         });
     </script>
