@@ -9,38 +9,94 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/" class="active">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <button id="github-login">Login with GitHub</button>
-            <span id="user-info"></span>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button">Login with GitHub</button>
+                <button id="logout-button" style="display: none;">Logout</button>
+            </div>
         </header>
         <main>
-            <section class="hero">
-                <h2>Automate Your Code</h2>
-                <p>Enter your repository and prompt to start automating.</p>
-            </section>
-            <section class="input-area">
-                <label for="repo_url">Repository URL (username/repo):</label>
-                <input type="text" id="repo_url" name="repo_url" placeholder="e.g., owner/repository">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your prompt here"></textarea>
+            <section id="repo-input">
+                <h2>Repository Configuration</h2>
+                <label for="repo-name">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="owner/repository">
+                <label for="customization-instructions">Customization Instructions:</label>
+                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter customization instructions here"></textarea>
                 <button id="start-button">Start</button>
-                <div id="output"></div>
             </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('login-button').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('logout-button').addEventListener('click', () => {
+            fetch('/api/auth/logout')
+                .then(response => {
+                    if (response.ok) {
+                        alert('Logged out successfully!');
+                        // Update UI to reflect logged out state
+                        document.getElementById('login-button').style.display = 'block';
+                        document.getElementById('logout-button').style.display = 'none';
+                    } else {
+                        alert('Logout failed.');
+                    }
+                });
+        });
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            const repoName = document.getElementById('repo-name').value;
+            const customizationInstructions = document.getElementById('customization-instructions').value;
+
+            fetch('/api/auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repoName: repoName, instructions: customizationInstructions }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            });
+        });
+
+        fetch('/api/auth/session')
+            .then(response => response.json())
+            .then(data => {
+                if (data.user) {
+                    document.getElementById('login-button').style.display = 'none';
+                    document.getElementById('logout-button').style.display = 'block';
+                } else {
+                    document.getElementById('login-button').style.display = 'block';
+                    document.getElementById('logout-button').style.display = 'none';
+                }
+            });
+    </script>
 </body>
 </html>
