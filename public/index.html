@@ -1,69 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css?raw=true">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true" class="logo">
-                <i class="fas fa-cogs"></i> Project Auto
-            </a>
+            <img src="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/logo.png?raw=true" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li>
-                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true">
-                    <i class="fas fa-cog"></i>
-                    <span>Configuration</span>
-                </a>
-            </li>
-            <li>
-                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true">
-                    <i class="fas fa-info-circle"></i>
-                    <span>About Us</span>
-                </a>
-            </li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true"><i class="fas fa-cog"></i> Configuration</a></li>
+                <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true"><i class="fas fa-info-circle"></i> About Us</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
-
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <button id="login-button">
-                <i class="fab fa-github"></i> Login with GitHub
-            </button>
+            <button id="login-button">Login with GitHub</button>
         </header>
         <main>
             <section id="project-setup">
                 <h2>Project Setup</h2>
-                <div class="input-group">
-                    <label for="repo-url">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo-url" placeholder="e.g., Project-Auto/Project-Auto">
-                </div>
-                <div class="input-group">
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" rows="5"
-                        placeholder="Enter your instructions here..."></textarea>
-                </div>
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" placeholder="e.g., Project-Auto/Project-Auto">
+                <label for="customization-instructions">Customization Instructions:</label>
+                <textarea id="customization-instructions" rows="5" placeholder="Enter your instructions here"></textarea>
                 <button id="start-button">Start</button>
             </section>
         </main>
+        <footer>
+            <p>Contact: support@projectauto.com</p>
+        </footer>
     </div>
-    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/js/script.js?raw=true"></script>
+    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js?raw=true"></script>
 </body>
-
 </html>
