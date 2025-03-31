@@ -4,44 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <h2>Project Auto</h2>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
+
     <div class="content">
         <header>
-            <div id="time"></div>
-            <button id="login-button">Login with GitHub</button>
-            <span id="user-info"></span>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <section id="input-section">
-                <h2>Customize Your Repository</h2>
-                <label for="repo_url">Repository URL (username/repo):</label>
-                <input type="text" id="repo_url" placeholder="e.g., owner/repository">
-                <label for="prompt">Customization Prompt:</label>
-                <textarea id="prompt" rows="5" placeholder="Enter your customization instructions here"></textarea>
-                <button id="start-button">Start</button>
+            <section id="auth-section">
+                <a href="/api/github/login" class="auth-button">Authenticate with GitHub</a>
             </section>
-            <section id="output-section">
-                <h2>Output</h2>
-                <pre id="output"></pre>
+
+            <section id="project-form" style="display: none;">
+                <form id="auto-form">
+                    <label for="repo">GitHub Repository (user/repo):</label>
+                    <input type="text" id="repo" name="repo" required><br><br>
+
+                    <label for="instructions">Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" required></textarea><br><br>
+
+                    <button type="submit" class="start-button">Start</button>
+                </form>
             </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        async function checkAuth() {
+          try {
+            const response = await fetch('/api/check-auth');
+            if (response.ok) {
+              document.getElementById('auth-section').style.display = 'none';
+              document.getElementById('project-form').style.display = 'block';
+            } else {
+              document.getElementById('auth-section').style.display = 'block';
+              document.getElementById('project-form').style.display = 'none';
+            }
+          } catch (error) {
+            console.error('Error checking authentication:', error);
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('project-form').style.display = 'none';
+          }
+        }
+
+        checkAuth();
+
+        document.getElementById('auto-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repo, instructions })
+                });
+
+                if (response.ok) {
+                    alert('Project Auto executed successfully!');
+                } else {
+                    const errorData = await response.text();
+                    alert(`Project Auto execution failed: ${errorData}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Project Auto execution failed. Check the console for details.');
+            }
+        });
+    </script>
 </body>
 </html>
