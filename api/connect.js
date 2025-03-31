@@ -10,7 +10,7 @@ const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 const redirectUri = process.env.GITHUB_REDIRECT_URI;
 
 router.use(session({
-  secret: process.env.SESSION_SECRET || '', //DYNAMICALLY GENGERATED
+  secret: process.env.SESSION_SECRET || '',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false } // Set to true in production with HTTPS
@@ -47,7 +47,7 @@ router.get('/github/callback', async (req, res) => {
     req.session.githubToken = accessToken;
     req.session.githubUser = user.data;
 
-    res.redirect('/index.html');
+    res.redirect('https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html');
 
   } catch (error) {
     console.error('Error during GitHub callback:', error);
@@ -68,11 +68,14 @@ router.post('/run-auto', async (req, res) => {
 
     const [owner, repository] = repo.split('/');
 
+    // Get Repo information
     const repoData = await octokit.rest.repos.get({
       owner,
       repo: repository,
     });
+    console.log("Repo Data:", repoData);
 
+    // Get the tree
     const files = await octokit.rest.git.getTree({
       owner,
       repo: repository,
@@ -81,8 +84,6 @@ router.post('/run-auto', async (req, res) => {
     });
 
     console.log(`Running Auto on ${repo} with instructions: ${instructions}`);
-
-    console.log('Repo Data:', repoData.data);
 
     // Example: Create a new file
     await octokit.rest.repos.createOrUpdateFileContents({
