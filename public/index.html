@@ -4,58 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/style/index.css">
 </head>
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-        <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-        <div class="title">Project Auto</div>
+    <div class="current-time" id="current-time"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            Project Auto
+        </div>
+        <ul class="sidebar-list">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-    <ul class="sidebar-menu">
-        <li><a href="/index.html"><i class="fa fa-home"></i>Home</a></li>
-        <li><a href="/Configuration"><i class="fa fa-cog"></i>Configuration</a></li>
-        <li><a href="/About-Us"><i class="fa fa-info-circle"></i>About Us</a></li>
-    </ul>
-</div>
 
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
+    <div class="main-content">
+        <h1>Welcome to Project Auto</h1>
+        <p>Enter your GitHub repository and customization prompt below.</p>
 
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <p>Enter your GitHub repository details and customization instructions to get started.</p>
-                <div class="form-group">
-                    <label for="repo">Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
-                </div>
-                <div class="form-group">
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here."></textarea>
-                </div>
-                <button id="start-button" class="primary-button">Start</button>
-            </section>
+        <div id="auth-area">
+            <button id="auth-button" class="auth-button">Authenticate with GitHub</button>
+            <button id="logout-button" class="logout-button hidden">Logout</button>
+            <span id="user-info"></span>
+        </div>
 
-            <section id="github-auth">
+        <div id="auth-modal" class="hidden">
+            <div id="auth-modal-content">
                 <h2>GitHub Authentication</h2>
-                <p>Authenticate with GitHub to allow Project Auto to access your repositories.</p>
-                <button id="github-login" class="secondary-button">
-                    <i class="fab fa-github"></i> Login with GitHub
-                </button>
-                <div id="auth-status"></div>
-            </section>
-        </main>
+                <form id="auth-form">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
 
-        <footer>
-            <p>&copy; 2024 Project Auto. All rights reserved.</p>
-        </footer>
+                    <label for="token">Personal Access Token:</label>
+                    <input type="text" id="token" name="token" required>
+
+                    <button type="submit" class="auth-button">Authenticate</button>
+                    <button type="button" class="close-button">Close</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="main-content">
+            <div id="repo-form" class="repo-form">
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Project-Auto/Project-Auto">
+            </div>
+
+            <div id="prompt-input" class="prompt-input">
+                <label for="customization-prompt">Customization Prompt:</label>
+                <textarea id="customization-prompt" name="customization-prompt" placeholder="Enter your customization instructions here."></textarea>
+            </div>
+
+            <button id="start-button" class="start-button">Start</button>
+            <div id="response-display"></div>
+        </div>
     </div>
 
-    <script src="/script/script.js"></script>
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loader"></div>
+    </div>
+    <script src="/script/index.js"></script>
 </body>
 </html>
