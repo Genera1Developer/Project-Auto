@@ -1,38 +1,35 @@
+/* General Styles */
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f0f0;
+    background-color: #f4f4f4;
     color: #333;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
+/* Sidebar Styles */
 #sidebar {
-    width: 250px;
-    background-color: #301934; /* Deep Purple */
+    width: 200px;
+    background-color: #333;
     color: #fff;
     padding-top: 20px;
     position: fixed;
     height: 100%;
-    overflow-x: hidden; /* Prevent horizontal scroll */
+    overflow: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
 
 #sidebar ul {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 #sidebar li {
-    padding: 15px 20px;
+    padding: 10px;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#sidebar li:last-child {
-    border-bottom: none;
 }
 
 #sidebar a {
@@ -40,99 +37,100 @@ body {
     text-decoration: none;
     display: block;
     transition: background-color 0.3s ease;
-    padding: 5px 0;
 }
 
 #sidebar a:hover {
-    background-color: rgba(255, 215, 0, 0.2); /* Gold hover */
+    background-color: #555;
 }
 
 #sidebar .current {
-    background-color: rgba(255, 215, 0, 0.4); /* Gold current */
+    background-color: #555;
 }
 
+/* Content Styles */
 #content {
     flex: 1;
     padding: 20px;
-    margin-left: 270px; /* Adjust based on sidebar width */
+    margin-left: 220px; /* Adjust based on sidebar width */
 }
 
 .container {
-    max-width: 900px;
+    max-width: 800px;
     margin: 20px auto;
-    padding: 30px;
+    padding: 20px;
     background-color: #fff;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 h1 {
-    color: #D4AF37; /* Gold */
+    color: #795548;
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 label {
     display: block;
-    margin-top: 15px;
-    color: #555;
-    font-weight: bold;
+    margin-top: 10px;
+    color: #777;
 }
 
 input[type="text"],
 textarea {
     width: 100%;
-    padding: 12px;
-    margin-top: 8px;
-    margin-bottom: 20px;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px;
 }
 
 button {
-    background-color: #D4AF37; /* Gold */
+    background-color: #795548;
     color: white;
-    padding: 14px 25px;
+    padding: 10px 15px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #C09B30;
+    background-color: #5D4037;
 }
 
+/* GitHub Authentication Button */
 .github-auth-button {
-    background-color: #5cb85c; /* Green */
+    background-color: #4CAF50;
 }
 
 .github-auth-button:hover {
-    background-color: #4cae4c;
+    background-color: #43A047;
 }
 
+/* Authentication Message */
 #auth-message {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #dff0d8;
-    color: #3c763d;
-    border: 1px solid #d6e9c6;
-    border-radius: 6px;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
     text-align: center;
 }
 
+/* Footer Styles */
 footer {
     text-align: center;
-    padding: 30px;
-    background-color: #301934; /* Deep Purple */
+    padding: 20px;
+    background-color: #333;
     color: white;
     margin-top: auto;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Loading Spinner */
 #loading {
     display: none;
     position: fixed;
@@ -147,28 +145,28 @@ footer {
 }
 
 #loading img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
 }
 
+/* Current Time Display */
 .current-time {
     position: fixed;
     top: 10px;
     left: 10px;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 8px 15px;
-    border-radius: 8px;
-    font-size: 15px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
     z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Configuration Status */
 #config-status {
-    margin-top: 25px;
-    padding: 15px;
-    border-radius: 8px;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
     text-align: center;
-    font-weight: bold;
 }
 
 #config-status.success {
@@ -183,20 +181,15 @@ footer {
     border: 1px solid #f5c6cb;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    #sidebar {
-        width: 100%;
-        position: static;
-        height: auto;
-    }
+/* Purple and Gold Theme */
+.purple-gold h1 {
+    color: #795548; /* Brown */
+}
 
-    #content {
-        margin-left: 0;
-        padding: 15px;
-    }
+.purple-gold button {
+    background-color: #795548; /* Brown */
+}
 
-    .container {
-        padding: 20px;
-    }
+.purple-gold button:hover {
+    background-color: #5D4037; /* Darker Brown */
 }
