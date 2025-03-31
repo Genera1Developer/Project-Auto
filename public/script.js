@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     githubAuthButton.addEventListener('click', () => {
       // Redirect to GitHub OAuth flow (replace with your actual OAuth URL)
       const clientId = 'Iv1.742494741585dfa7'; // Replace with your GitHub App client ID
-      const redirectUri = 'https://project-auto-v1029.vercel.app/public/Configuration'; // Replace with your redirect URI
+      const redirectUri = 'https://project-auto-v1029.vercel.app/Configuration'; // Replace with your redirect URI
       const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
       window.location.href = githubAuthUrl;
     });
