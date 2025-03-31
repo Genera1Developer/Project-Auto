@@ -1,258 +1,35 @@
-/* General body styling */
+/* General Styles */
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #222;
-    color: #fff;
-    line-height: 1.6;
-}
-
-/* Container for content */
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
-    padding: 20px;
-    background-color: #333;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-/* Header styles */
-header {
-    background: #333;
-    color: #fff;
-    padding-top: 30px;
-    min-height: 70px;
-    border-bottom: 3px solid #e8491d;
-}
-
-header a {
-    color: #fff;
-    text-decoration: none;
-    text-transform: uppercase;
-    font-size: 16px;
-}
-
-header ul {
-    padding: 0;
-    margin: 0;
-}
-
-header li {
-    float: left;
-    display: inline;
-    padding: 0 20px 0 20px;
-}
-
-header #branding {
-    float: left;
-}
-
-header #branding h1 {
-    margin: 0;
-}
-
-header nav {
-    float: right;
-    margin-top: 10px;
-}
-
-header .highlight, header .current a {
-    color: #e8491d;
-    font-weight: bold;
-}
-
-header a:hover {
-    color: #bbb;
-    font-weight: bold;
-}
-
-/* Showcase styles */
-#showcase {
-    min-height: 400px;
-    background: url('../img/showcase.jpg') no-repeat 0 -100px;
-    text-align: center;
-    color: #fff;
-}
-
-#showcase h1 {
-    margin-top: 100px;
-    font-size: 55px;
-    margin-bottom: 10px;
-}
-
-#showcase p {
-    font-size: 20px;
-}
-
-/* Newsletter styles */
-#newsletter {
-    padding: 15px;
-    color: #fff;
-    background: #333;
-}
-
-#newsletter h1 {
-    float: left;
-}
-
-#newsletter form {
-    float: right;
-    margin-top: 15px;
-}
-
-#newsletter input[type="email"] {
-    padding: 4px;
-    height: 25px;
-    width: 250px;
-}
-
-/* Boxes styles */
-#boxes {
-    margin-top: 20px;
-}
-
-#boxes .box {
-    float: left;
-    text-align: center;
-    width: 30%;
-    padding: 10px;
-}
-
-#boxes .box img {
-    width: 90px;
-}
-
-/* Sidebar styles */
-aside#sidebar {
-    float: right;
-    width: 30%;
-    margin-top: 10px;
-    padding: 10px;
-}
-
-/* Article styles */
-article#main-col {
-    float: left;
-    width: 65%;
-}
-
-/* Services styles */
-ul#services li {
-    padding: 20px;
-    border: #ccc solid 1px;
-    margin-bottom: 5px;
-    background: #e6e6e6;
-}
-
-/* Footer styles */
-footer {
-    padding: 20px;
-    margin-top: 20px;
-    color: #fff;
-    background-color: #e8491d;
-    text-align: center;
-}
-
-/* Media queries for responsive design */
-@media(max-width: 768px) {
-    header #branding,
-    header nav,
-    header nav li,
-    #newsletter h1,
-    #newsletter form,
-    #boxes .box,
-    aside#sidebar,
-    article#main-col {
-        float: none;
-        text-align: center;
-        width: 100%;
-    }
-
-    header {
-        padding-bottom: 50px;
-    }
-
-    #showcase h1 {
-        margin-top: 40px;
-    }
-
-    #newsletter button {
-        display: block;
-        width: 100%;
-    }
-
-    #newsletter form input[type="email"] {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-}
-
-/* Custom styles for Project Auto */
-h1 {
-    color: #FFD700; /* Gold */
-    text-align: center;
-}
-
-label {
-    color: #ddd;
-    margin-top: 10px;
-    display: block;
-}
-
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #555;
-    background-color: #444;
-    color: #fff;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #800080; /* Purple */
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #A020F0; /* Lighter Purple */
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* Sidebar Styles */
 #sidebar {
-    width: 250px;
-    background-color: #444;
+    width: 200px;
+    background-color: #333;
     color: #fff;
+    padding-top: 20px;
     position: fixed;
     height: 100%;
     overflow: auto;
-    padding-top: 20px;
-    left: 0;
-    top: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
 }
 
 #sidebar ul {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
 #sidebar li {
-    padding: 15px;
+    padding: 10px;
     text-align: left;
-    border-bottom: 1px solid #555;
 }
 
 #sidebar a {
@@ -262,27 +39,99 @@ button:hover {
     transition: background-color 0.3s ease;
 }
 
-#sidebar a:hover, #sidebar .current {
-    background-color: #666;
-    color: #FFD700;
+#sidebar a:hover {
+    background-color: #555;
 }
 
-/* Content Area Styles */
+#sidebar .current {
+    background-color: #555;
+}
+
+/* Content Styles */
 #content {
-    margin-left: 270px; /* Adjust based on sidebar width */
+    flex: 1;
     padding: 20px;
+    margin-left: 220px; /* Adjust based on sidebar width */
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    color: #795548;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
+label {
+    display: block;
+    margin-top: 10px;
+    color: #777;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Button Styles */
+button {
+    background-color: #795548;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #5D4037;
+}
+
+.github-auth-button {
+    background-color: #4CAF50;
+}
+
+.github-auth-button:hover {
+    background-color: #43A047;
+}
+
+/* Authentication Message Styles */
+#auth-message {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    text-align: center;
 }
 
 /* Footer Styles */
 footer {
     text-align: center;
     padding: 20px;
-    background-color: #444;
-    color: #fff;
-    margin-top: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: auto;
 }
 
-/* Loading Animation Styles */
+/* Loading Overlay Styles */
 #loading {
     display: none;
     position: fixed;
@@ -290,108 +139,72 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     text-align: center;
+    padding-top: 200px;
 }
 
 #loading img {
     width: 100px;
     height: 100px;
-    margin-top: 200px;
 }
 
-/* Auth Message Styles */
-#auth-message {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 5px;
-    text-align: center;
-    background-color: #5cb85c;
-    color: #fff;
-}
-
-/* Config Status Message Styles */
-#config-status {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 5px;
-    text-align: center;
-}
-
-#config-status.success {
-    background-color: #5cb85c;
-    color: #fff;
-}
-
-#config-status.error {
-    background-color: #d9534f;
-    color: #fff;
-}
-
-/* GitHub Auth Button */
-.github-auth-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    border-radius: 4px;
-}
-
-.github-auth-button:hover {
-    opacity: 0.8;
-}
-
-/* Current Time Display */
+/* Current Time Styles */
 .current-time {
     position: fixed;
     top: 10px;
     left: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
     border-radius: 5px;
     font-size: 14px;
     z-index: 1000;
 }
 
-/* Added styling for the main content */
-#main-content {
-    padding: 20px;
+/* Configuration Status Styles */
+#config-status {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
 }
 
-/* Form specific styling */
-form {
-    margin-bottom: 20px;
+#config-status.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
-/* Ensure the sidebar covers the full viewport height */
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+#config-status.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* New purple and gold theme */
+body {
+    background-color: #ede7f6; /* Light purple background */
+    color: #333;
 }
 
 #sidebar {
-    height: 100%;
+    background-color: #5e35b1; /* Deep purple sidebar */
 }
 
-/* Style for the "Start" button */
-.start-button {
-    background-color: #FFD700; /* Gold */
-    color: #000; /* Black */
-    padding: 15px 25px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s ease;
-    margin-top: 20px;
+#sidebar a:hover {
+    background-color: #7e57c2; /* Lighter purple on hover */
 }
 
-.start-button:hover {
-    background-color: #DAA520; /* Darker Gold */
+h1 {
+    color: #795548; /* Brown header for contrast */
+}
+
+button {
+    background-color: #ffb300; /* Gold button */
+    color: #333;
+}
+
+button:hover {
+    background-color: #f57f17; /* Darker gold on hover */
 }
