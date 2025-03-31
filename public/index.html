@@ -1,66 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha5m04-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"
-        referrerpolicy="no-referrer" />
-</head>
-
-<body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <a href="https://github.com/Genera1Developer/Project-Auto/public/index.html">Project Auto</a>
+|
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Project Auto</title>
+        <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/public/style/style.css">
+        <script src="https://github.com/Genera1Developer/Project-Auto/public/script.js" defer></script>
+    </head>
+    <body>
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <span id="current-time"></span>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/index.html">Home</a></li>
+                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration">Configuration</a></li>
+                <li><a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us">About Us</a></li>
+            </ul>
         </div>
-        <ul class="nav">
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/index.html"><i
-                        class="fas fa-home"></i>Home</a></li>
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/Configuration.html"><i
-                        class="fas fa-cog"></i>Configuration</a></li>
-            <li><a href="https://github.com/Genera1Developer/Project-Auto/public/About-Us.html"><i
-                        class="fas fa-info-circle"></i>About Us</a></li>
-        </ul>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="datetime"></div>
-            <div>
-                <a id="github-auth-button" href="/api/auth/github">
-                    <i class="fab fa-github"></i> Authenticate with GitHub
-                </a>
-            </div>
-        </header>
-
-        <main>
+        <div class="content">
             <h1>Welcome to Project Auto</h1>
-            <p>Automate your GitHub repository with ease.</p>
-
-            <div class="form-container">
-                <form id="auto-form">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto">
-
-                    <label for="prompt">Customization Instructions:</label>
-                    <textarea id="prompt" name="prompt"
-                        placeholder="Enter instructions for Project Auto"></textarea>
-
-                    <button type="button" id="start-button">Start</button>
-                    <p id="status"></p>
-                </form>
+            <p>Automate your repository tasks with ease.</p>
+            <div class="input-area">
+                <label for="repository">GitHub Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" placeholder="e.g., Genera1Developer/Project-Auto">
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
+                <button id="start-button">Start</button>
             </div>
-        </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
-    </div>
-
-    <script src="https://github.com/Genera1Developer/Project-Auto/public/script.js"></script>
-</body>
-
-</html>
+        </div>
+    </body>
+    </html>
