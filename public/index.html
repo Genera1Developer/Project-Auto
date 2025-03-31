@@ -9,7 +9,8 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/ProjectAutoLogo.png" alt="Project Auto Logo" class="logo">
+            <img src="/Project-Auto-Logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
         <ul class="sidebar-menu">
             <li><a href="/">Home</a></li>
@@ -19,18 +20,23 @@
     </div>
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button">Login with GitHub</button>
+            </div>
         </header>
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="github-repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., Genera1Developer/Project-Auto">
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter customization instructions here..."></textarea>
-                <button id="start-button" class="start-button">Start</button>
-                <div id="status-message" class="status-message"></div>
+            <section id="hero">
+                <h2>Automate Your GitHub Projects</h2>
+                <p>Enter your repository and instructions to get started.</p>
+            </section>
+            <section id="input-area">
+                <label for="repo-input">Repository (username/repo):</label>
+                <input type="text" id="repo-input" placeholder="e.g., Genera1Developer/Project-Auto">
+                <label for="instructions-input">Instructions:</label>
+                <textarea id="instructions-input" placeholder="Enter your automation instructions here."></textarea>
+                <button id="start-button">Start</button>
+                <div id="status-message"></div>
             </section>
         </main>
         <footer>
@@ -44,12 +50,16 @@
             document.getElementById('current-time').textContent = timeString;
         }
 
-        updateTime();
         setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('login-button').addEventListener('click', () => {
+            window.location.href = '/api/github/login';
+        });
 
         document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('github-repo').value;
-            const instructions = document.getElementById('instructions').value;
+            const repo = document.getElementById('repo-input').value;
+            const instructions = document.getElementById('instructions-input').value;
             const statusMessage = document.getElementById('status-message');
 
             statusMessage.textContent = 'Executing...';
@@ -58,9 +68,9 @@
                 const response = await fetch('/api/run-auto', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ repo, instructions }),
+                    body: JSON.stringify({ repo, instructions })
                 });
 
                 if (response.ok) {
@@ -70,7 +80,7 @@
                     statusMessage.textContent = `Project Auto execution failed: ${errorData}`;
                 }
             } catch (error) {
-                console.error('Error during Project Auto execution:', error);
+                console.error('Error:', error);
                 statusMessage.textContent = `Project Auto execution failed: ${error.message}`;
             }
         });
