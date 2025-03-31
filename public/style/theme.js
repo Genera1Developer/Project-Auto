@@ -21,22 +21,33 @@ const theme = {
     purple: '#800080',
     link: '#007bff',
     linkHover: '#0056b3',
+    codeBackground: '#F5F5F5',
+    codeText: '#333333',
+    headerBackground: '#800080',
+    headerText: '#FFFFFF',
+    footerBackground: '#301934',
+    footerText: '#FFFFFF',
   },
   fonts: {
     main: 'Arial, sans-serif',
     code: 'monospace',
+    title: 'Georgia, serif',
   },
   fontSizes: {
     small: '14px',
     medium: '18px',
     large: '22px',
     xLarge: '26px',
+    h1: '36px',
+    h2: '30px',
+    h3: '24px',
   },
   spacing: {
     small: '10px',
     medium: '20px',
     large: '30px',
     xLarge: '40px',
+    sectionPadding: '50px 0',
   },
   breakpoints: {
     mobile: '600px',
@@ -47,6 +58,7 @@ const theme = {
     small: '0 2px 4px rgba(0,0,0,0.2)',
     medium: '0 4px 8px rgba(0,0,0,0.2)',
     large: '0 8px 16px rgba(0,0,0,0.2)',
+    button: '0 4px 6px rgba(0,0,0,0.1)',
   },
   transitions: {
     short: 'all 0.3s ease-in-out',
@@ -61,6 +73,19 @@ const theme = {
   opacity: {
     disabled: 0.6,
     hover: 0.9,
+  },
+  layout: {
+    contentWidth: '1200px',
+    sidebarWidth: '250px',
+  },
+  animations: {
+    fadeIn: 'fadeIn 0.5s ease-in-out',
+    slideIn: 'slideIn 0.5s ease-in-out',
+  },
+  zIndex: {
+    sidebar: 10,
+    modal: 20,
+    notification: 30,
   },
 };
 
