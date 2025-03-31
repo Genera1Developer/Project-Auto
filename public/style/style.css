@@ -3,7 +3,7 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f9f8f7; /* Light beige background */
+    background-color: #f0e68c; /* Gold background */
     color: #333;
     display: flex;
     flex-direction: column;
@@ -12,8 +12,8 @@ body {
 
 /* Sidebar Styles */
 #sidebar {
-    width: 250px;
-    background-color: #3f37c9; /* Deep purple background */
+    width: 200px;
+    background-color: #553939; /* Dark brown sidebar */
     color: #fff;
     padding-top: 20px;
     position: fixed;
@@ -28,9 +28,8 @@ body {
 }
 
 #sidebar li {
-    padding: 15px 20px;
+    padding: 10px;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #sidebar a {
@@ -38,95 +37,99 @@ body {
     text-decoration: none;
     display: block;
     transition: background-color 0.3s ease;
+    padding: 10px 15px;
 }
 
 #sidebar a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #6d4c41; /* Lighter brown on hover */
 }
 
 #sidebar .current {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: #795548; /* Current page highlight */
 }
 
 /* Content Styles */
 #content {
     flex: 1;
-    padding: 30px;
-    margin-left: 270px; /* Adjust based on sidebar width */
+    padding: 20px;
+    margin-left: 220px; /* Adjust based on sidebar width */
 }
 
 .container {
-    max-width: 900px;
-    margin: 30px auto;
+    max-width: 800px;
+    margin: 20px auto;
     padding: 30px;
     background-color: #fff;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
 h1 {
-    color: #745d1c; /* Gold color */
+    color: #795548; /* Brown header */
     text-align: center;
     margin-bottom: 20px;
 }
 
+/* Form Styles */
 label {
     display: block;
-    margin-top: 15px;
+    margin-top: 10px;
     color: #555;
-    font-weight: bold;
 }
 
 input[type="text"],
 textarea {
     width: 100%;
-    padding: 12px;
-    margin-top: 8px;
-    margin-bottom: 20px;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 6px;
+    border-radius: 5px;
     box-sizing: border-box;
     font-size: 16px;
 }
 
+/* Button Styles */
 button {
-    background-color: #745d1c; /* Gold color */
+    background-color: #795548; /* Brown button */
     color: white;
-    padding: 14px 20px;
+    padding: 12px 20px;
     border: none;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 18px;
     transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #5a4615;
+    background-color: #5D4037; /* Darker brown on hover */
 }
 
 .github-auth-button {
-    background-color: #5cb85c; /* Green color for GitHub Auth */
+    background-color: #4CAF50; /* Green GitHub button */
 }
 
 .github-auth-button:hover {
-    background-color: #4cae4c;
+    background-color: #43A047; /* Darker green on hover */
 }
 
+/* Auth Message Styles */
 #auth-message {
     margin-top: 20px;
     padding: 15px;
-    background-color: #dff0d8;
-    color: #3c763d;
-    border: 1px solid #d6e9c6;
-    border-radius: 6px;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 5px;
     text-align: center;
+    font-size: 16px;
 }
 
 /* Footer Styles */
 footer {
     text-align: center;
     padding: 20px;
-    background-color: #3f37c9; /* Deep purple background */
+    background-color: #333;
     color: white;
     margin-top: auto;
 }
@@ -146,8 +149,8 @@ footer {
 }
 
 #loading img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
 }
 
 /* Current Time Styles */
@@ -156,18 +159,19 @@ footer {
     top: 10px;
     left: 10px;
     background-color: rgba(255, 255, 255, 0.8);
-    padding: 8px 12px;
+    padding: 8px 15px;
     border-radius: 5px;
     font-size: 14px;
     z-index: 1000;
 }
 
-/* Configuration Status Styles */
+/* Config Status Styles */
 #config-status {
-    margin-top: 25px;
+    margin-top: 20px;
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 5px;
     text-align: center;
+    font-size: 16px;
 }
 
 #config-status.success {
