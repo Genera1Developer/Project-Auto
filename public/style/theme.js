@@ -33,6 +33,7 @@ const theme = {
     boxBorder: '1px solid #BDBDBD',
     modalOverlay: 'rgba(0, 0, 0, 0.5)',
     sidebarHover: '#4B0082',
+    accent2: '#6a0dad',
   },
   fonts: {
     main: 'Arial, sans-serif',
