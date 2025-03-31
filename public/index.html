@@ -4,60 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
+    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css?raw=true">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>Project Auto</h3>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
-                    <li><a href="https://github.com/Project-Auto/public/Configuration/configuration.html">Configuration</a></li>
-                    <li><a href="https://github.com/Project-Auto/public/About-Us/about_us.html">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main class="content">
-            <header>
-                <div class="time" id="current-time"></div>
-                <div class="auth">
-                    {% if github_username %}
-                        <span>Welcome, {{ github_username }}!</span>
-                        <a href="/logout">Logout</a>
-                    {% else %}
-                        <a href="/login">Login with GitHub</a>
-                    {% endif %}
-                </div>
-            </header>
-            <section class="main-section">
-                <h2>Start Project Auto</h2>
-                {% if github_username %}
-                <form action="/start" method="post">
-                    <label for="repo_name">Repository (username/repo):</label>
-                    <input type="text" id="repo_name" name="repo_name" required><br><br>
+    <div class="sidebar">
+        <div class="logo">Project Auto</div>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true"><i class="fa fa-home"></i>Home</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true"><i class="fa fa-cogs"></i>Configuration</a>
+        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true"><i class="fa fa-info-circle"></i>About Us</a>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
+        </header>
+        <main>
+            <section id="github-config">
+                <h2>GitHub Configuration</h2>
+                <label for="github-repo">Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="username/repo"><br><br>
 
-                    <label for="custom_prompt">Custom Prompt:</label>
-                    <textarea id="custom_prompt" name="custom_prompt" rows="4" cols="50"></textarea><br><br>
+                <label for="custom-instructions">Custom Instructions:</label><br>
+                <textarea id="custom-instructions" name="custom-instructions" rows="4" cols="50" placeholder="Enter customization instructions here"></textarea><br><br>
 
-                    <button type="submit">Start</button>
-                </form>
-                {% else %}
-                <p>Please login with GitHub to start Project Auto.</p>
-                {% endif %}
+                <button id="start-button">Start</button>
             </section>
         </main>
     </div>
     <script>
         function updateTime() {
             const now = new Date();
-            const formattedTime = now.toLocaleString();
-            document.getElementById('current-time').textContent = formattedTime;
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
         }
+
         setInterval(updateTime, 1000);
         updateTime();
     </script>
+    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script/script.js?raw=true"></script>
 </body>
 </html>
