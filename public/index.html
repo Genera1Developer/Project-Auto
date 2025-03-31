@@ -4,40 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="style/logo.png" alt="Project Auto Logo" class="logo">
-            <h2>Project Auto</h2>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-        </header>
-        <main>
-            <h1>Welcome to Project Auto</h1>
-            <section id="github-auth">
-                <button id="github-login-btn">Authenticate with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </section>
-            <section id="project-input">
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                Project Auto
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <div id="current-time"></div>
+            </header>
+            <section class="content">
+                <h1>Welcome to Project Auto</h1>
+                <p>Automate your repository tasks with ease.</p>
+                <div id="github-auth">
+                    <button id="github-login-button">Login with GitHub</button>
+                    <p id="github-status">Not logged in</p>
+                </div>
+
                 <label for="repo-url">GitHub Repository (username/repo):</label>
                 <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
-                <button id="start-btn">Start</button>
-                <p id="output"></p>
+
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" placeholder="Enter your automation instructions here."></textarea>
+
+                <button id="start-button">Start</button>
             </section>
         </main>
     </div>
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
