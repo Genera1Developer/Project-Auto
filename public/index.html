@@ -5,78 +5,130 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <a href="/" class="logo">Project Auto</a>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+    <div class="current-time" id="current-time"></div>
+    <div id="sidebar">
+        <ul>
+            <li class="current"><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
-        <main>
-            <section id="project-input">
-                <h2>Enter Project Details</h2>
-                <form id="project-form">
-                    <label for="github-repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo" required>
+    <div id="content">
+        <div class="container">
+            <h1>Project Auto</h1>
+            <div id="auth-message"></div>
+            <button id="github-auth" class="github-auth-button">Authenticate with GitHub</button>
+            <div id="config-status"></div>
+            <label for="repository">GitHub Repository (username/repo):</label>
+            <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository">
 
-                    <label for="customization-instructions">Customization Instructions:</label>
-                    <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+            <label for="prompt">Customization Instructions:</label>
+            <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
 
-                    <button type="button" id="start-button">Start</button>
-                </form>
-            </section>
-            <section id="status-section">
-                <h2>Status</h2>
-                <p id="status-message">Waiting for input...</p>
-            </section>
-        </main>
+            <button id="start-button">Start</button>
+
+            <div id="progress-container">
+                <div id="progress-bar">0%</div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Project Auto</p>
+    </footer>
+
+    <div id="loading">
+        <img src="loading.gif" alt="Loading...">
     </div>
 
     <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('github-repo').value;
-            const instructions = document.getElementById('customization-instructions').value;
-            document.getElementById('status-message').textContent = "Processing...";
-
-            try {
-                const response = await fetch('/api/process-repo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repo: repo, instructions: instructions })
-                });
-
-                const data = await response.json();
-                document.getElementById('status-message').textContent = data.message;
-
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('status-message').textContent = "An error occurred: " + error;
+        $(document).ready(function() {
+            function updateTime() {
+                var currentTime = new Date();
+                var hours = currentTime.getHours();
+                var minutes = currentTime.getMinutes();
+                var seconds = currentTime.getSeconds();
+                minutes = (minutes < 10 ? "0" : "") + minutes;
+                seconds = (seconds < 10 ? "0" : "") + seconds;
+                var timeString = hours + ":" + minutes + ":" + seconds;
+                $("#current-time").html(timeString);
             }
-        });
 
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            $("#github-auth").click(function() {
+                window.location.href = '/api/auth/github';
+            });
+
+            function getAuthStatus() {
+                $.ajax({
+                    url: '/api/auth/status',
+                    type: 'GET',
+                    success: function(data) {
+                        if (data.isAuthenticated) {
+                            $('#auth-message').html('Authenticated with GitHub!');
+                            $('#github-auth').hide();
+                        } else {
+                            $('#auth-message').html('Not authenticated with GitHub.');
+                            $('#github-auth').show();
+                        }
+                    },
+                    error: function() {
+                        $('#auth-message').html('Failed to check authentication status.');
+                        $('#github-auth').show();
+                    }
+                });
+            }
+
+            getAuthStatus();
+
+            $("#start-button").click(function() {
+                var repository = $("#repository").val();
+                var prompt = $("#prompt").val();
+
+                if (!repository) {
+                    alert("Please enter a GitHub repository.");
+                    return;
+                }
+
+                $("#loading").show();
+                $("#progress-container").show();
+                $("#progress-bar").width("0%");
+
+                $.ajax({
+                    url: '/api/run',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ repository: repository, prompt: prompt }),
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = (evt.loaded / evt.total) * 100;
+                                $("#progress-bar").width(percentComplete + '%');
+                                $("#progress-bar").html(percentComplete.toFixed(2) + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(data) {
+                        $("#loading").hide();
+                        $("#config-status").addClass("success").text("Project Auto completed successfully!");
+                        $("#progress-bar").width("100%");
+                        $("#progress-bar").html("100%");
+                    },
+                    error: function(xhr, status, error) {
+                        $("#loading").hide();
+                        $("#config-status").addClass("error").text("Project Auto failed: " + error);
+                        $("#progress-bar").width("0%");
+                        $("#progress-bar").html("0%");
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
