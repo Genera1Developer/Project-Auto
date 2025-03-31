@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const response = await fetch('/api/run_auto', {
           method: 'POST',
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${githubToken}`, // Include token
