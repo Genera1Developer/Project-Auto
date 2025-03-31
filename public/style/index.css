@@ -307,255 +307,77 @@ footer {
         margin-left: 0;
     }
 }
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/style/index.css">
-</head>
-<body>
-    <div class="current-time" id="current-time"></div>
-    <header>
-        <div class="container">
-            <div id="branding">
-                <h1><span class="highlight">Project</span> Auto</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a></li>
-                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a></li>
-                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <div class="sidebar">
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a>
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a>
-    </div>
+/* New styles */
+.hidden {
+    display: none;
+}
 
-    <section id="showcase">
-        <div class="container">
-            <h1>Automate Your Projects</h1>
-            <p>Let Project Auto handle the tedious tasks so you can focus on what matters.</p>
-        </div>
-    </section>
+#auth-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-    <section id="newsletter">
-        <div class="container">
-            <h1>Subscribe To Our Newsletter</h1>
-            <form>
-                <input type="email" placeholder="Enter Email...">
-                <button type="submit" class="button_1">Subscribe</button>
-            </form>
-        </div>
-    </section>
+#auth-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 50%;
+    max-width: 500px;
+}
 
-    <div class="content">
-        <div class="form-container">
-            <h2>Project Configuration</h2>
-            <form id="project-form">
-                <div class="form-group">
-                    <label for="repo">GitHub Repository (username/repo)</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., Project-Auto/Project-Auto">
-                </div>
-                <div class="form-group">
-                    <label for="instructions">Customization Instructions</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here..."></textarea>
-                </div>
-                <button type="submit" class="auth-button">Start</button>
-            </form>
-        </div>
-    </div>
+#auth-modal-content h2 {
+    margin-top: 0;
+    color: #673ab7;
+}
 
-    <footer>
-        <p>Project Auto, Copyright &copy; 2024</p>
-    </footer>
+#auth-form {
+    display: flex;
+    flex-direction: column;
+}
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
+#auth-form label {
+    margin-bottom: 5px;
+    color: #333;
+}
 
-        setInterval(updateTime, 1000);
+#auth-form input[type="text"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
 
-        document.addEventListener('DOMContentLoaded', () => {
-            updateTime(); // Initial call
+.close-button {
+    background-color: #ccc;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    align-self: flex-start;
+}
 
-            const projectForm = document.getElementById('project-form');
-            projectForm.addEventListener('submit', (event) => {
-                event.preventDefault();
+.close-button:hover {
+    background-color: #999;
+}
 
-                const repo = document.getElementById('repo').value;
-                const instructions = document.getElementById('instructions').value;
-
-                //  Implementation for Project Auto logic here
-                alert(`Starting Project Auto on repo: ${repo} with instructions: ${instructions}`);
-            });
-        });
-    </script>
-</body>
-</html>
-edit filepath: public/About-Us.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Project Auto</title>
-    <link rel="stylesheet" href="https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/style/index.css">
-</head>
-<body>
-    <div class="current-time" id="current-time"></div>
-    <header>
-        <div class="container">
-            <div id="branding">
-                <h1><span class="highlight">Project</span> Auto</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a></li>
-                    <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a></li>
-                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <div class="sidebar">
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a>
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a>
-    </div>
-
-    <section id="showcase">
-        <div class="container">
-            <h1>About Project Auto</h1>
-            <p>Learn more about our mission and team.</p>
-        </div>
-    </section>
-
-    <div class="content">
-        <div class="container">
-            <article id="main-col">
-                <h1>Our Mission</h1>
-                <p>Project Auto aims to simplify and automate software development workflows. We believe that developers should focus on innovation, not repetitive tasks. Our goal is to provide a powerful and user-friendly platform that streamlines project setup, configuration, and deployment.</p>
-
-                <p>We are dedicated to building a community-driven project. We welcome contributions and feedback from developers of all skill levels. Together, we can create a tool that empowers developers to build better software, faster.</p>
-            </article>
-
-            <aside id="sidebar">
-                <div class="dark">
-                    <h3>What We Do</h3>
-                    <p>We provide automated solutions for project configuration, dependency management, and deployment. Our platform integrates seamlessly with GitHub, allowing you to easily manage and automate your projects.</p>
-                </div>
-            </aside>
-        </div>
-    </div>
-
-    <footer>
-        <p>Project Auto, Copyright &copy; 2024</p>
-    </footer>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
-</body>
-</html>
-edit filepath: public/Configuration.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuration - Project Auto</title>
-    <link rel="stylesheet" href="https://raw.githubusercontent.com/Project-Auto/Project-Auto/main/public/style/index.css">
-</head>
-<body>
-    <div class="current-time" id="current-time"></div>
-    <header>
-        <div class="container">
-            <div id="branding">
-                <h1><span class="highlight">Project</span> Auto</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a></li>
-                    <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a></li>
-                    <li class="current"><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <div class="sidebar">
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a>
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html">Configuration</a>
-        <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html">About Us</a>
-    </div>
-
-    <section id="showcase">
-        <div class="container">
-            <h1>Configure Project Auto</h1>
-            <p>Customize Project Auto to fit your needs.</p>
-        </div>
-    </section>
-
-    <div class="content">
-        <div class="form-container">
-            <h2>Configuration Options</h2>
-            <form id="config-form">
-                <div class="form-group">
-                    <label for="github-token">GitHub Authentication Token</label>
-                    <input type="text" id="github-token" name="github-token" placeholder="Enter your GitHub token">
-                    <p>
-                        <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens" target="_blank">
-                            Learn how to generate a GitHub token.
-                        </a>
-                    </p>
-                </div>
-                <button type="submit" class="auth-button">Save Configuration</button>
-            </form>
-        </div>
-    </div>
-
-    <footer>
-        <p>Project Auto, Copyright &copy; 2024</p>
-    </footer>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const configForm = document.getElementById('config-form');
-            configForm.addEventListener('submit', (event) => {
-                event.preventDefault();
-                const githubToken = document.getElementById('github-token').value;
-                // Future: Store this token securely (e.g., in local storage or cookies).
-                alert('Configuration Saved!  GitHub Token: ' + githubToken);
-            });
-        });
-    </script>
-</body>
-</html>
+.current-time {
+    position: fixed;
+    top: 10px;
+    left: 10px; /* Moved to left side */
+    color: #e6cc00;
+    font-weight: bold;
+    z-index: 1000;
+}
