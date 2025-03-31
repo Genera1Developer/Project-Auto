@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #fffaf0;
+            background-color: #f8f8ff; /* Light background */
             margin: 0;
             padding: 0;
             color: #333;
@@ -17,39 +17,45 @@
         .container {
             max-width: 800px;
             margin: 20px auto;
-            padding: 20px;
+            padding: 30px;
             background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #d4af37;
+            color: #7952B3; /* Purple */
+            text-align: center;
         }
 
         label {
             display: block;
-            margin-top: 10px;
+            margin-top: 15px;
             font-weight: bold;
+            color: #555;
         }
 
         input[type="text"],
         textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
             font-size: 16px;
+            color: #333;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
         }
 
         button {
-            background-color: #d4af37;
+            background-color: #d4af37; /* Gold */
             color: white;
-            padding: 12px 24px;
+            padding: 14px 32px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -57,14 +63,15 @@
         }
 
         #sidebar {
-            width: 200px;
-            background-color: #7952B3;
+            width: 250px;
+            background-color: #7952B3; /* Purple */
             color: white;
-            padding: 20px;
+            padding: 25px;
             position: fixed;
             height: 100%;
             left: 0;
             top: 0;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.2);
         }
 
         #sidebar ul {
@@ -73,15 +80,16 @@
         }
 
         #sidebar li {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         #sidebar a {
             color: white;
             text-decoration: none;
             display: block;
-            padding: 8px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
         }
 
         #sidebar a:hover {
@@ -89,27 +97,28 @@
         }
 
         #content {
-            margin-left: 220px;
-            padding: 20px;
+            margin-left: 270px;
+            padding: 30px;
         }
 
         .current-time {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            color: #7952B3;
-            font-size: 14px;
+            top: 15px;
+            left: 15px;
+            color: #7952B3; /* Purple */
+            font-size: 16px;
         }
 
         .github-auth-button {
             background-color: #5cb85c;
             color: white;
-            padding: 12px 24px;
+            padding: 14px 32px;
             font-size: 16px;
             cursor: pointer;
             border: none;
-            border-radius: 5px;
-            margin-bottom: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
         }
 
         .github-auth-button:hover {
