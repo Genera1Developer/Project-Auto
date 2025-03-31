@@ -9,41 +9,96 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
+
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <button id="github-login-button" class="github-button">Connect with GitHub</button>
-            <span id="github-username"></span>
-            <button id="github-logout-button" class="github-button" style="display:none;">Logout</button>
+            <div id="current-time" class="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
+
         <main>
-            <section id="input-section">
-                <h2>Customize Your Repository</h2>
-                <div class="input-group">
-                    <label for="repo_url">Repository URL (username/repo):</label>
-                    <input type="text" id="repo_url" placeholder="e.g., owner/repository">
-                </div>
-                <div class="input-group">
-                    <label for="prompt">Prompt:</label>
-                    <textarea id="prompt" placeholder="Enter your customization instructions"></textarea>
-                </div>
-                <button id="start-button" class="start-button">Start</button>
+            <section id="auth-section">
+                <button id="login-button" onclick="location.href='/api/auth/github'">Login with GitHub</button>
+                <button id="logout-button" onclick="location.href='/api/auth/logout'" style="display:none;">Logout</button>
+                <div id="user-info"></div>
             </section>
-            <section id="output-section">
-                <h2>Output</h2>
-                <div id="output"></div>
+
+            <section id="project-auto-section" style="display:none;">
+                <label for="repo">Repository (owner/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="owner/repo"><br><br>
+
+                <label for="instructions">Instructions:</label><br>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter instructions here"></textarea><br><br>
+
+                <button id="start-button">Start</button>
+                <div id="result"></div>
             </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        async function fetchUser() {
+            const response = await fetch('/api/auth/user');
+            const user = await response.json();
+
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const userInfoDiv = document.getElementById('user-info');
+            const projectAutoSection = document.getElementById('project-auto-section');
+
+            if (user) {
+                loginButton.style.display = 'none';
+                logoutButton.style.display = 'block';
+                userInfoDiv.textContent = `Logged in as ${user.displayName}`;
+                projectAutoSection.style.display = 'block';
+            } else {
+                loginButton.style.display = 'block';
+                logoutButton.style.display = 'none';
+                userInfoDiv.textContent = '';
+                projectAutoSection.style.display = 'none';
+            }
+        }
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+            const resultDiv = document.getElementById('result');
+
+            const response = await fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repo, instructions }),
+            });
+
+            const data = await response.json();
+            resultDiv.textContent = data.message || data.error;
+        });
+
+        fetchUser();
+    </script>
 </body>
 </html>
