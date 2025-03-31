@@ -11,55 +11,56 @@ body {
 .sidebar {
     width: 250px;
     background-color: #333;
-    color: #fff;
+    color: white;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 .sidebar-header {
-    text-align: center;
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-.logo {
-    width: 80px;
-    margin-bottom: 10px;
+.sidebar-header img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
 }
 
-.sidebar h1 {
-    font-size: 24px;
+.sidebar-header h1 {
+    font-size: 1.5em;
     margin: 0;
-    color: #FFD700; /* Gold */
 }
 
 .sidebar nav ul {
     list-style: none;
     padding: 0;
-    width: 100%;
 }
 
-.sidebar nav li {
+.sidebar nav ul li {
     margin-bottom: 10px;
 }
 
-.sidebar nav a {
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
     display: block;
     padding: 10px;
-    text-decoration: none;
-    color: #fff;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
-.sidebar nav a:hover {
+.sidebar nav ul li a:hover {
     background-color: #555;
 }
 
 .content {
     flex: 1;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
@@ -67,92 +68,126 @@ header {
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 header #current-time {
-    font-size: 16px;
-    color: #777;
+    font-size: 1em;
+    color: #666;
 }
 
 header button {
-    background-color: #7030A0; /* Purple */
-    color: #fff;
+    background-color: #7952B3;
+    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 header button:hover {
-    background-color: #502080;
+    background-color: #673AB7;
 }
 
 main {
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 1;
 }
 
-#project-input {
+main section#project-input {
     display: flex;
     flex-direction: column;
 }
 
-#project-input h2 {
+main section#project-input h2 {
     margin-top: 0;
-    color: #7030A0;
+    color: #333;
 }
 
-#project-input label {
+main section#project-input label {
     margin-top: 10px;
-    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
 }
 
-#project-input input[type="text"],
-#project-input textarea {
+main section#project-input input[type="text"],
+main section#project-input textarea {
     padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    font-size: 16px;
+    margin-bottom: 15px;
+    font-size: 1em;
 }
 
-#project-input textarea {
-    height: 150px;
-}
-
-#project-input button {
-    background-color: #7030A0; /* Purple */
-    color: #fff;
+main section#project-input button#start-button {
+    background-color: #7952B3;
+    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: fit-content;
+    transition: background-color 0.3s;
 }
 
-#project-input button:hover {
-    background-color: #502080;
+main section#project-input button#start-button:hover {
+    background-color: #673AB7;
 }
 
-#project-input p {
+main section#project-input p#status-message {
     margin-top: 15px;
     font-weight: bold;
+    color: #4CAF50;
 }
 
 footer {
     text-align: center;
+    padding: 20px;
     margin-top: 20px;
-    padding: 10px;
     background-color: #333;
-    color: #fff;
+    color: white;
     border-radius: 5px;
+}
+
+/* Additional styles for About Us and Configuration pages */
+.about-us, .configuration {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.about-us h2, .configuration h2 {
+    color: #333;
+}
+
+/* Style adjustments for smaller screens */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        max-height: 150px;
+        overflow-y: auto;
+        position: static;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    header {
+        padding: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    header #current-time {
+        margin-bottom: 10px;
+    }
 }
