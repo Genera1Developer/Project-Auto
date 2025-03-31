@@ -5,44 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>Project Auto</h2>
+            <div id="current-time" class="time-display"></div>
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <h2>Home</h2>
         </header>
         <main>
-            <section class="main-section">
-                <h2>Automate Your Repository</h2>
-                <p>Enter your GitHub repository and customization instructions to start automating your workflow.</p>
-                <div class="input-group">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" placeholder="e.g., owner/repository">
-                </div>
-                <div class="input-group">
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" placeholder="Enter your instructions here"></textarea>
-                </div>
+            <section id="github-auth">
+                <a href="/api/auth/github" class="auth-button">Authenticate with GitHub</a>
+                <div id="user-info"></div>
+            </section>
+            <section id="project-auto-form" style="display: none;">
+                <label for="repo">Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" required><br><br>
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
                 <button id="start-button">Start</button>
                 <div id="status-message"></div>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        fetch('/api/auth/user')
+            .then(response => response.json())
+            .then(user => {
+                if (user) {
+                    document.getElementById('github-auth').style.display = 'none';
+                    document.getElementById('project-auto-form').style.display = 'block';
+                    document.getElementById('user-info').textContent = `Logged in as ${user.displayName} (${user.username})`;
+                } else {
+                    document.getElementById('github-auth').style.display = 'block';
+                    document.getElementById('project-auto-form').style.display = 'none';
+                    document.getElementById('user-info').textContent = 'Not logged in.';
+                }
+            });
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+            const statusMessage = document.getElementById('status-message');
+
+            statusMessage.textContent = 'Executing Project Auto...';
+
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, instructions }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusMessage.textContent = data.message;
+                } else {
+                    statusMessage.textContent = `Error: ${data.error}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusMessage.textContent = 'An unexpected error occurred.';
+            }
+        });
+    </script>
 </body>
 </html>
