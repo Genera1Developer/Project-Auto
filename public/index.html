@@ -4,39 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css?raw=true">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <i class="fa fa-cog fa-spin"></i> Project Auto
+            <h2 class="logo">Project Auto</h2>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="https://github.com/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="https://github.com/Project-Auto/public/Configuration"><i class="fa fa-wrench"></i> Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true">Home</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true">Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true">About Us</a></li>
         </ul>
     </div>
     <div class="content">
         <header>
-            <div id="clock"></div>
+            <div id="current-time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <label for="repo">Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., owner/my-repo">
-                <br>
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your customization instructions here..."></textarea>
-                <br>
+            <section id="github-config">
+                <h2>GitHub Repository Configuration</h2>
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo"><br><br>
+                <label for="custom-instructions">Custom Instructions:</label><br>
+                <textarea id="custom-instructions" name="custom-instructions" rows="4" cols="50" placeholder="Enter your customization instructions here"></textarea><br><br>
                 <button id="start-button">Start</button>
             </section>
+            <section id="auth">
+                <a href="/api/auth/github">
+                    <button>Authenticate with GitHub</button>
+                </a>
+            </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-    <script src="https://github.com/Project-Auto/public/script/script.js"></script>
+    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js?raw=true"></script>
 </body>
 </html>
