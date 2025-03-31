@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f8f8ff; /* Light background */
+            background-color: #f8f8ff;
             margin: 0;
             padding: 0;
             color: #333;
@@ -24,7 +24,7 @@
         }
 
         h1 {
-            color: #7952B3; /* Purple */
+            color: #7952B3;
             text-align: center;
         }
 
@@ -44,11 +44,11 @@
             margin-bottom: 25px;
             font-size: 16px;
             color: #333;
-            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            box-sizing: border-box;
         }
 
         button {
-            background-color: #d4af37; /* Gold */
+            background-color: #d4af37;
             color: white;
             padding: 14px 32px;
             border: none;
@@ -64,7 +64,7 @@
 
         #sidebar {
             width: 250px;
-            background-color: #7952B3; /* Purple */
+            background-color: #7952B3;
             color: white;
             padding: 25px;
             position: fixed;
@@ -105,7 +105,7 @@
             position: absolute;
             top: 15px;
             left: 15px;
-            color: #7952B3; /* Purple */
+            color: #7952B3;
             font-size: 16px;
         }
 
@@ -168,15 +168,12 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        // Check for the presence of a GitHub access token in the URL
         const urlParams = new URLSearchParams(window.location.search);
         const accessToken = urlParams.get('access_token');
 
         if (accessToken) {
-            // Store the access token (in localStorage, a cookie, or similar)
             localStorage.setItem('github_access_token', accessToken);
             document.getElementById('auth-message').textContent = 'Successfully authenticated with GitHub!';
-            // Optionally, remove the access_token from the URL to avoid showing it
             history.replaceState({}, document.title, window.location.pathname);
         } else if (localStorage.getItem('github_access_token')) {
             document.getElementById('auth-message').textContent = 'Already authenticated with GitHub.';
