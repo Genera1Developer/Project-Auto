@@ -5,40 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
-    <script src="https://github.com/Project-Auto/public/script.js" defer></script>
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <a href="https://github.com/Project-Auto/public/index.html">Project Auto</a>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="https://github.com/Project-Auto/public/index.html">Home</a></li>
-            <li><a href="https://github.com/Project-Auto/public/Configuration">Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/public/About-Us">About Us</a></li>
-        </ul>
+        <a href="https://github.com/Project-Auto/public/index.html" class="active">Home</a>
+        <a href="https://github.com/Project-Auto/public/Configuration/configuration.html">Configuration</a>
+        <a href="https://github.com/Project-Auto/public/About-Us/about_us.html">About Us</a>
+        <a href="#" id="logout-link" style="display: none;">Logout</a>
     </div>
+
     <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <a href="/api/auth/github" class="login-button">Login with GitHub</a>
-        </header>
-        <main>
-            <h1>Welcome to Project Auto</h1>
-            <p>Enter your GitHub repository and customization instructions below.</p>
-            <div class="form-container">
-                <form id="auto-form">
-                    <label for="repository">Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo" required>
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here" required></textarea>
-                    <button type="submit">Start</button>
-                </form>
+        <div class="header">
+            <div id="time"></div>
+            <div class="auth-buttons">
+                {% if github_username %}
+                    <span>Logged in as {{ github_username }}</span>
+                    <button onclick="logout()">Logout</button>
+                {% else %}
+                    <button onclick="login()">Login with GitHub</button>
+                {% endif %}
             </div>
-        </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
+        </div>
+
+        <h1>Welcome to Project Auto</h1>
+        <p>Automate your GitHub projects with ease.</p>
+
+        <form id="project-form">
+            <label for="repo_name">GitHub Repository (username/repo):</label>
+            <input type="text" id="repo_name" name="repo_name" placeholder="e.g., owner/repository" required><br><br>
+
+            <label for="custom_prompt">Custom Prompt:</label>
+            <textarea id="custom_prompt" name="custom_prompt" rows="4" cols="50" placeholder="Enter your automation instructions here"></textarea><br><br>
+
+            <button type="submit">Start Automation</button>
+        </form>
+
+        <div id="result"></div>
     </div>
+
+    <script>
+        function updateTime() {
+            var now = new Date();
+            var timeString = now.toLocaleTimeString();
+            document.getElementById("time").textContent = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to display time immediately
+
+        document.getElementById('project-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var repoName = document.getElementById('repo_name').value;
+            var customPrompt = document.getElementById('custom_prompt').value;
+
+            fetch('/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'repo_name=' + encodeURIComponent(repoName) + '&custom_prompt=' + encodeURIComponent(customPrompt)
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('result').innerText = data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'An error occurred.';
+            });
+        });
+
+        function login() {
+            window.location.href = '/login';
+        }
+
+        function logout() {
+            window.location.href = '/logout';
+        }
+
+        // Conditionally show/hide logout link based on login status (using a hidden link for now)
+        {% if github_username %}
+            document.getElementById('logout-link').style.display = 'block';
+        {% else %}
+            document.getElementById('logout-link').style.display = 'none';
+        {% endif %}
+
+    </script>
 </body>
 </html>
