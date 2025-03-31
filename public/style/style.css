@@ -3,7 +3,7 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0e68c; /* Gold background */
+    background-color: #f9f0ff; /* Light purple background */
     color: #333;
     display: flex;
     flex-direction: column;
@@ -13,7 +13,7 @@ body {
 /* Sidebar Styles */
 #sidebar {
     width: 200px;
-    background-color: #553939; /* Dark brown sidebar */
+    background-color: #512da8; /* Dark purple sidebar */
     color: #fff;
     padding-top: 20px;
     position: fixed;
@@ -41,11 +41,11 @@ body {
 }
 
 #sidebar a:hover {
-    background-color: #6d4c41; /* Lighter brown on hover */
+    background-color: #673ab7; /* Lighter purple on hover */
 }
 
 #sidebar .current {
-    background-color: #795548; /* Current page highlight */
+    background-color: #7e57c2; /* Current page highlight */
 }
 
 /* Content Styles */
@@ -65,7 +65,7 @@ body {
 }
 
 h1 {
-    color: #795548; /* Brown header */
+    color: #512da8; /* Dark purple header */
     text-align: center;
     margin-bottom: 20px;
 }
@@ -91,7 +91,7 @@ textarea {
 
 /* Button Styles */
 button {
-    background-color: #795548; /* Brown button */
+    background-color: #512da8; /* Dark purple button */
     color: white;
     padding: 12px 20px;
     border: none;
@@ -102,7 +102,7 @@ button {
 }
 
 button:hover {
-    background-color: #5D4037; /* Darker brown on hover */
+    background-color: #311b92; /* Darker purple on hover */
 }
 
 .github-auth-button {
@@ -185,3 +185,67 @@ footer {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/public/style/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="sidebar">
+        <ul>
+            <li><a href="/" class="current">Home</a></li>
+            <li><a href="/public/Configuration">Configuration</a></li>
+            <li><a href="/public/About-Us">About Us</a></li>
+        </ul>
+    </div>
+
+    <div id="content">
+        <div class="current-time"></div>
+        <div class="container">
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your GitHub repository and customization instructions to get started.</p>
+
+            <label for="repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
+
+            <label for="instructions">Customization Instructions:</label>
+            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+
+            <button onclick="startProjectAuto()">Start</button>
+
+            <div id="auth-message"></div>
+            <div id="config-status"></div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 Project Auto
+    </footer>
+
+    <div id="loading">
+        <img src="loading.gif" alt="Loading...">
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.querySelector('.current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call
+
+        function startProjectAuto() {
+            alert('Project Auto started!');
+            // Implement the actual logic to start Project Auto here
+        }
+    </script>
+</body>
+</html>
+edit filepath:
