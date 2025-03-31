@@ -1,42 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
-    <script src="https://github.com/Project-Auto/public/script.js" defer></script>
+    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css?raw=true">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <a href="https://github.com/Project-Auto/public/">Home</a>
-        <a href="https://github.com/Project-Auto/public/Configuration">Configuration</a>
-        <a href="https://github.com/Project-Auto/public/About-Us">About Us</a>
-        <a href="#" id="logout-button">Logout</a>
+        <div class="sidebar-header">
+            <i class="fa fa-cog fa-spin"></i> Project Auto
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration?raw=true"><i class="fa fa-wrench"></i> Configuration</a></li>
+            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us?raw=true"><i class="fa fa-info-circle"></i> About Us</a></li>
+        </ul>
     </div>
+
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <button id="login-button">Login with GitHub</button>
+            <div id="time"></div>
+            <h1>Project Auto</h1>
         </header>
+
         <main>
-            <section id="hero">
-                <h2>Automate Your Projects</h2>
-                <p>Enter your repository and instructions to let Project Auto do the work.</p>
+            <section id="github-repo">
+                <h2>GitHub Repository</h2>
+                <input type="text" id="repo-url" placeholder="username/repository">
             </section>
 
-            <section id="auto-form">
-                <label for="repo-input">Repository (username/repo):</label>
-                <input type="text" id="repo-input" placeholder="e.g., owner/my-repo">
+            <section id="customization">
+                <h2>Customization Instructions</h2>
+                <textarea id="instructions" placeholder="Enter your customization instructions here"></textarea>
+            </section>
 
-                <label for="instructions-input">Instructions:</label>
-                <textarea id="instructions-input" placeholder="Enter instructions here"></textarea>
+            <section id="authentication">
+                <button id="login-button">Login with GitHub</button>
+            </section>
 
+            <section id="start">
                 <button id="start-button">Start</button>
-                <p id="status-message"></p>
             </section>
         </main>
     </div>
+
+    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js?raw=true"></script>
 </body>
+
 </html>
