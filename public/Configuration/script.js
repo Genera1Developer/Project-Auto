@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // GitHub Authentication button event
     document.getElementById('githubAuth').addEventListener('click', function() {
         // Redirect to GitHub OAuth flow, but only if there is no token already
+        config = JSON.parse(localStorage.getItem('projectAutoConfig')) || config; //refresh config
         if (!config.githubToken) {
             window.location.href = '/api/github-auth';
         } else {
@@ -90,4 +91,15 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTime();
     updateAuthButton(); // Initial button state
     window.addEventListener('storage', updateAuthButton); // Listen for changes
+
+    // Add event listener for clearing the configuration
+    document.getElementById('clearConfig').addEventListener('click', function() {
+        localStorage.removeItem('projectAutoConfig');
+        // Reset form values
+        document.getElementById('githubRepo').value = '';
+        document.getElementById('customInstructions').value = '';
+        // Update auth button
+        updateAuthButton();
+        alert('Configuration cleared!');
+    });
 });
