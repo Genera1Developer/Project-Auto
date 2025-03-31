@@ -5,130 +5,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div class="current-time" id="current-time"></div>
-    <div id="sidebar">
-        <ul>
-            <li class="current"><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
+            <li><a href="/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
         </ul>
     </div>
-    <div id="content">
-        <div class="container">
-            <h1>Project Auto</h1>
-            <div id="auth-message"></div>
-            <button id="github-auth" class="github-auth-button">Authenticate with GitHub</button>
-            <div id="config-status"></div>
-            <label for="repository">GitHub Repository (username/repo):</label>
-            <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository">
-
-            <label for="prompt">Customization Instructions:</label>
-            <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
-
-            <button id="start-button">Start</button>
-
-            <div id="progress-container">
-                <div id="progress-bar">0%</div>
+    <div class="content">
+        <header>
+            <div id="time" class="time"></div>
+            <div class="auth-buttons">
+                <button id="loginBtn" onclick="loginWithGitHub()">Login with GitHub</button>
+                <button id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
+                <span id="username"></span>
             </div>
-        </div>
-    </div>
-    <footer>
-        <p>&copy; 2024 Project Auto</p>
-    </footer>
-
-    <div id="loading">
-        <img src="loading.gif" alt="Loading...">
+        </header>
+        <main>
+            <section id="project-input">
+                <h2>Run Project Auto</h2>
+                <label for="repo_url">Repository URL (username/repo):</label>
+                <input type="text" id="repo_url" placeholder="e.g., owner/repository">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" rows="4" placeholder="Enter your customization instructions"></textarea>
+                <button id="startBtn" onclick="runAuto()">Start</button>
+                <div id="output"></div>
+            </section>
+        </main>
     </div>
 
     <script>
-        $(document).ready(function() {
-            function updateTime() {
-                var currentTime = new Date();
-                var hours = currentTime.getHours();
-                var minutes = currentTime.getMinutes();
-                var seconds = currentTime.getSeconds();
-                minutes = (minutes < 10 ? "0" : "") + minutes;
-                seconds = (seconds < 10 ? "0" : "") + seconds;
-                var timeString = hours + ":" + minutes + ":" + seconds;
-                $("#current-time").html(timeString);
-            }
-
-            updateTime();
-            setInterval(updateTime, 1000);
-
-            $("#github-auth").click(function() {
-                window.location.href = '/api/auth/github';
-            });
-
-            function getAuthStatus() {
-                $.ajax({
-                    url: '/api/auth/status',
-                    type: 'GET',
-                    success: function(data) {
-                        if (data.isAuthenticated) {
-                            $('#auth-message').html('Authenticated with GitHub!');
-                            $('#github-auth').hide();
-                        } else {
-                            $('#auth-message').html('Not authenticated with GitHub.');
-                            $('#github-auth').show();
-                        }
-                    },
-                    error: function() {
-                        $('#auth-message').html('Failed to check authentication status.');
-                        $('#github-auth').show();
-                    }
+        function updateTime() {
+            fetch('/api/time')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('time').textContent = data.time;
                 });
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        let accessToken = null;
+
+        function loginWithGitHub() {
+            const redirect_uri = window.location.origin;
+            fetch(`/api/github_login?redirect_uri=${redirect_uri}`)
+                .then(response => response.json())
+                .then(data => {
+                    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${data.github_client_id}&redirect_uri=${data.redirect_uri}&scope=repo`;
+                    window.location.href = githubAuthUrl;
+                });
+        }
+        
+        // Check for the presence of a code in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            // Exchange the code for an access token
+            fetch(`/api/github_callback?code=${code}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.access_token) {
+                        accessToken = data.access_token;
+                        localStorage.setItem('github_token', accessToken);
+                        document.getElementById('loginBtn').style.display = 'none';
+                        document.getElementById('logoutBtn').style.display = 'inline-block';
+                        document.getElementById('username').textContent = 'Logged in';
+                        // Clear the code from the URL
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    } else {
+                        console.error('Failed to obtain access token:', data.error);
+                        alert('Failed to authenticate with GitHub.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during token exchange:', error);
+                    alert('An error occurred during GitHub authentication.');
+                });
+        } else {
+            // Check if there's an existing token in localStorage
+            accessToken = localStorage.getItem('github_token');
+            if (accessToken) {
+                document.getElementById('loginBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'inline-block';
+                document.getElementById('username').textContent = 'Logged in';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('github_token');
+            accessToken = null;
+            document.getElementById('loginBtn').style.display = 'inline-block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('username').textContent = '';
+        }
+
+        function runAuto() {
+            const repo_url = document.getElementById('repo_url').value;
+            const prompt = document.getElementById('prompt').value;
+            const outputDiv = document.getElementById('output');
+            outputDiv.textContent = 'Running...';
+
+            if (!accessToken) {
+                alert('Please login with GitHub first.');
+                return;
             }
 
-            getAuthStatus();
-
-            $("#start-button").click(function() {
-                var repository = $("#repository").val();
-                var prompt = $("#prompt").val();
-
-                if (!repository) {
-                    alert("Please enter a GitHub repository.");
-                    return;
+            fetch('/api/run_auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repo_url: repo_url, prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    outputDiv.textContent = 'Error: ' + data.error;
+                } else {
+                    outputDiv.textContent = 'Output: ' + data.output;
                 }
-
-                $("#loading").show();
-                $("#progress-container").show();
-                $("#progress-bar").width("0%");
-
-                $.ajax({
-                    url: '/api/run',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ repository: repository, prompt: prompt }),
-                    xhr: function() {
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.upload.addEventListener("progress", function(evt) {
-                            if (evt.lengthComputable) {
-                                var percentComplete = (evt.loaded / evt.total) * 100;
-                                $("#progress-bar").width(percentComplete + '%');
-                                $("#progress-bar").html(percentComplete.toFixed(2) + '%');
-                            }
-                        }, false);
-                        return xhr;
-                    },
-                    success: function(data) {
-                        $("#loading").hide();
-                        $("#config-status").addClass("success").text("Project Auto completed successfully!");
-                        $("#progress-bar").width("100%");
-                        $("#progress-bar").html("100%");
-                    },
-                    error: function(xhr, status, error) {
-                        $("#loading").hide();
-                        $("#config-status").addClass("error").text("Project Auto failed: " + error);
-                        $("#progress-bar").width("0%");
-                        $("#progress-bar").html("0%");
-                    }
-                });
+            })
+            .catch(error => {
+                outputDiv.textContent = 'An error occurred: ' + error;
             });
-        });
+        }
     </script>
 </body>
 </html>
