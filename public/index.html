@@ -10,36 +10,46 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <h2 class="sidebar-title">Project Auto</h2>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration.html">Configuration</a></li>
+            <li><a href="/About-Us.html">About Us</a></li>
+        </ul>
     </div>
 
     <div class="content">
         <header>
-            <div id="time"></div>
-            <div class="auth-buttons">
-                <button id="loginBtn" onclick="location.href='/api/auth/github'">Login with GitHub</button>
-                <button id="logoutBtn" onclick="location.href='/api/auth/logout'" style="display:none;">Logout</button>
-                <span id="username" style="display:none;"></span>
-            </div>
+            <div id="current-time" class="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
 
         <main>
-            <section id="project-input">
-                <h2>Run Project Auto</h2>
-                <label for="repo">Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter customization instructions..."></textarea>
-                <button id="startButton">Start</button>
-                <div id="message"></div>
+            <section id="github-auth">
+                <a href="/api/connect/github/login" class="button">Authenticate with GitHub</a>
+            </section>
+
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <form id="project-form">
+                    <div class="form-group">
+                        <label for="repo">GitHub Repository (username/repo):</label>
+                        <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="instructions">Customization Instructions:</label>
+                        <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions for Project Auto"></textarea>
+                    </div>
+                    <button type="submit" class="button">Start</button>
+                </form>
+            </section>
+
+            <section id="results">
+                <h2>Results</h2>
+                <div id="results-content">
+                    <p>Project Auto results will appear here.</p>
+                </div>
             </section>
         </main>
 
@@ -52,37 +62,19 @@
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        async function checkAuth() {
-            const response = await fetch('/api/auth/user');
-            const user = await response.json();
-
-            if (user) {
-                document.getElementById('loginBtn').style.display = 'none';
-                document.getElementById('logoutBtn').style.display = 'inline-block';
-                document.getElementById('username').textContent = `Logged in as ${user.displayName}`;
-                document.getElementById('username').style.display = 'inline-block';
-            } else {
-                document.getElementById('loginBtn').style.display = 'inline-block';
-                document.getElementById('logoutBtn').style.display = 'none';
-                document.getElementById('username').style.display = 'none';
-            }
-        }
-
-        checkAuth();
-
-        document.getElementById('startButton').addEventListener('click', async () => {
+        document.getElementById('project-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
             const repo = document.getElementById('repo').value;
             const instructions = document.getElementById('instructions').value;
-            const messageDiv = document.getElementById('message');
 
             try {
-                const response = await fetch('/api/run-auto', {
+                const response = await fetch('/api/connect/run-auto', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -90,19 +82,11 @@
                     body: JSON.stringify({ repo, instructions }),
                 });
 
-                const data = await response.json();
-
-                if (response.ok) {
-                    messageDiv.textContent = data.message;
-                    messageDiv.className = 'success';
-                } else {
-                    messageDiv.textContent = data.error || 'An error occurred.';
-                    messageDiv.className = 'error';
-                }
+                const result = await response.text();
+                document.getElementById('results-content').textContent = result;
             } catch (error) {
                 console.error('Error:', error);
-                messageDiv.textContent = 'An error occurred while processing your request.';
-                messageDiv.className = 'error';
+                document.getElementById('results-content').textContent = `Error: ${error.message}`;
             }
         });
     </script>
