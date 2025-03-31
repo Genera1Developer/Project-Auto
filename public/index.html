@@ -4,80 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css?raw=true">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://github.com/Project-Auto/Project-Auto/blob/main/public/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <i class="fa fa-robot fa-3x"></i>
-            <h2>Project Auto</h2>
+    <aside class="sidebar">
+        <div class="sidebar-content">
+            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html" class="sidebar-link active">Home</a>
+            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/configuration.html" class="sidebar-link">Configuration</a>
+            <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/about_us.html" class="sidebar-link">About Us</a>
         </div>
-        <ul>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html?raw=true"><i class="fa fa-home"></i>Home</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/Configuration.html?raw=true"><i class="fa fa-cog"></i>Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/About-Us.html?raw=true"><i class="fa fa-info-circle"></i>About Us</a></li>
-            <li><a href="#" id="login-link"><i class="fa fa-sign-in"></i>Login with GitHub</a></li>
-        </ul>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+    </aside>
+    <main class="main-content">
+        <header class="header">
+            <div id="time" class="time"></div>
+            <nav>
+                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/index.html">Home</a> |
+                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/configuration.html">Configuration</a> |
+                <a href="https://github.com/Project-Auto/Project-Auto/blob/main/public/about_us.html">About Us</a>
+            </nav>
         </header>
-        <main>
-            <section id="repo-input">
-                <h2>Enter Repository Details</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-            </section>
+        <section class="content">
+            <h1>Project Auto</h1>
+            <p>Automate your GitHub projects.</p>
 
-            <section id="customization-input">
-                <h2>Customization Instructions</h2>
-                <label for="instructions">Enter your customization instructions:</label>
-                <textarea id="instructions" rows="5" placeholder="e.g., Change the title to 'My Awesome Project'"></textarea>
-            </section>
+            {% if github_username %}
+            <p>Logged in as: {{ github_username }}</p>
+            <a href="/logout" class="button">Logout</a>
+            <form action="/start" method="post" class="project-form">
+                <label for="repo_name">Repository Name (username/repo):</label>
+                <input type="text" id="repo_name" name="repo_name" required><br><br>
 
-            <button id="start-button">Start</button>
-        </main>
+                <label for="custom_prompt">Custom Prompt:</label><br>
+                <textarea id="custom_prompt" name="custom_prompt" rows="4" cols="50"></textarea><br><br>
 
-    </div>
+                <button type="submit" class="button">Start</button>
+            </form>
+            {% else %}
+            <a href="/login" class="button">Login with GitHub</a>
+            {% endif %}
+        </section>
+    </main>
     <script>
         function updateTime() {
             const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            const timeElement = document.getElementById('time');
+            if (timeElement) {
+                timeElement.textContent = now.toLocaleString();
+            }
         }
 
         setInterval(updateTime, 1000);
         updateTime();
-
-        document.getElementById('login-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.location.href = '/api/auth/github';
-        });
-
-        document.getElementById('start-button').addEventListener('click', function() {
-            const repoUrl = document.getElementById('repo-url').value;
-            const instructions = document.getElementById('instructions').value;
-
-            fetch('/api/run', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repoUrl: repoUrl, instructions: instructions })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please check the console.');
-            });
-        });
     </script>
+    <script src="https://github.com/Project-Auto/Project-Auto/blob/main/public/script.js"></script>
 </body>
 </html>
