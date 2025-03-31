@@ -1,7 +1,7 @@
 {
-  "name": "project-auto-web",
+  "name": "project-auto",
   "version": "1.0.0",
-  "description": "Web interface for Project Auto",
+  "description": "Project Auto Website",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
@@ -17,11 +17,10 @@
     "next": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-time-ago": "^7.2.1",
-    "sass": "^1.71.1"
+    "react-time": "^4.3.0"
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
+    "eslint": "^8.56.0",
     "eslint-config-next": "^14.1.0"
   }
 }
