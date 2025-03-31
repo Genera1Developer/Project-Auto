@@ -5,34 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="https://github.com/Project-Auto/public/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://github.com/Project-Auto/public/script.js" defer></script>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <i class="fa fa-cog fa-spin"></i> Project Auto
+            <img src="https://github.com/Project-Auto/public/images/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="https://github.com/Project-Auto/public/index.html"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="https://github.com/Project-Auto/public/Configuration/index.html"><i class="fa fa-wrench"></i> Configuration</a></li>
-            <li><a href="https://github.com/Project-Auto/public/About-Us/index.html"><i class="fa fa-info-circle"></i> About Us</a></li>
-        </ul>
+        <nav>
+            <a href="https://github.com/Project-Auto/public/index.html">Home</a>
+            <a href="https://github.com/Project-Auto/public/Configuration/index.html">Configuration</a>
+            <a href="https://github.com/Project-Auto/public/About-Us/index.html">About Us</a>
+        </nav>
     </div>
     <div class="content">
         <header>
-            <div id="time"></div>
+            <div id="current-time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <p>Project Auto automates repository tasks.</p>
-            <p>Configure your settings to get started.</p>
+            <section id="home">
+                <p>Project Auto automates your development workflow.</p>
+                <p>Enter your GitHub repository and customization instructions below.</p>
+                <div class="input-area">
+                    <label for="repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo" placeholder="e.g., owner/repository">
+                    <label for="prompt">Customization Instructions:</label>
+                    <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
+                    <button id="start-button">Start</button>
+                    <button id="github-login">Login with GitHub</button>
+                </div>
+            </section>
         </main>
     </div>
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
