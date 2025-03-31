@@ -1,458 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css?raw=true">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css">
 </head>
 <body>
-  <div class="sidebar">
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html?raw=true">Home</a>
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration.html?raw=true">Configuration</a>
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us.html?raw=true">About Us</a>
-  </div>
+    <div class="sidebar">
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html" class="sidebar-item">Home</a>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration.html" class="sidebar-item">Configuration</a>
+        <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us.html" class="sidebar-item">About Us</a>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
+            <a href="/api/github/login" class="github-button">Login with GitHub</a>
+        </header>
+        <main>
+            <section id="input-section">
+                <h2>Run Project Auto</h2>
+                <label for="repo">Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="username/repo">
+                <label for="instructions">Instructions:</label>
+                <textarea id="instructions" name="instructions" placeholder="Enter instructions here"></textarea>
+                <button id="start-button">Start</button>
+                <div id="message"></div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
 
-  <div class="content">
-    <header>
-      <div id="current-time"></div>
-      <h1>Project Auto</h1>
-    </header>
+        setInterval(updateTime, 1000);
+        updateTime();
 
-    <main>
-      <section id="auth-section">
-        <button id="login-button">Login with GitHub</button>
-        <div id="user-info"></div>
-      </section>
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+            const messageDiv = document.getElementById('message');
 
-      <section id="project-form">
-        <label for="repo">Repository (username/repo):</label>
-        <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto">
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, instructions }),
+                });
 
-        <label for="instructions">Instructions:</label>
-        <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions for Project Auto"></textarea>
-
-        <button id="start-button">Start</button>
-        <div id="result"></div>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Project Auto</p>
-    </footer>
-  </div>
-
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('current-time').textContent = timeString;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    document.getElementById('login-button').addEventListener('click', () => {
-      window.location.href = '/github/login';
-    });
-
-    document.getElementById('start-button').addEventListener('click', async () => {
-      const repo = document.getElementById('repo').value;
-      const instructions = document.getElementById('instructions').value;
-      const resultDiv = document.getElementById('result');
-
-      try {
-        const response = await fetch('/run-auto', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ repo, instructions }),
+                if (response.ok) {
+                    messageDiv.textContent = 'Project Auto executed successfully!';
+                    messageDiv.className = 'success-message';
+                } else {
+                    const errorText = await response.text();
+                    messageDiv.textContent = `Error: ${errorText}`;
+                    messageDiv.className = 'error-message';
+                }
+            } catch (error) {
+                messageDiv.textContent = `Error: ${error.message}`;
+                messageDiv.className = 'error-message';
+            }
         });
-
-        if (response.ok) {
-          resultDiv.textContent = 'Project Auto executed successfully!';
-        } else {
-          const errorText = await response.text();
-          resultDiv.textContent = `Project Auto execution failed: ${errorText}`;
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        resultDiv.textContent = `Project Auto execution failed: ${error.message}`;
-      }
-    });
-
-    async function fetchUserInfo() {
-      try {
-        const response = await fetch('/user');
-        if (response.ok) {
-          const user = await response.json();
-          const userInfoDiv = document.getElementById('user-info');
-          userInfoDiv.innerHTML = `<p>Logged in as: ${user.login}</p><img src="${user.avatar_url}" alt="User Avatar" width="50">`;
-          document.getElementById('login-button').style.display = 'none';
-        } else {
-          console.log('User not logged in.');
-        }
-      } catch (error) {
-        console.error('Error fetching user info:', error);
-      }
-    }
-
-    fetchUserInfo();
-  </script>
+    </script>
 </body>
 </html>
-content: Website index page with login and form
-edit filepath: public/style/style.css
-content:
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
-  color: #333;
-  display: flex;
-}
-
-.sidebar {
-  width: 200px;
-  background-color: #333;
-  color: #fff;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar a {
-  padding: 10px;
-  text-decoration: none;
-  color: #fff;
-  border-bottom: 1px solid #555;
-}
-
-.sidebar a:hover {
-  background-color: #555;
-}
-
-.content {
-  flex: 1;
-  padding: 20px;
-}
-
-header {
-  background-color: #6a0dad;
-  color: #fff;
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-header h1 {
-  margin: 0;
-}
-
-main {
-  padding: 20px;
-}
-
-#project-form {
-  margin-top: 20px;
-}
-
-#project-form label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-#project-form input[type="text"],
-#project-form textarea {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-#project-form button {
-  background-color: #d4af37;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#project-form button:hover {
-  background-color: #b8860b;
-}
-
-#result {
-  margin-top: 20px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-}
-
-footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #333;
-  color: #fff;
-  margin-top: 20px;
-}
-
-#current-time {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  color: white;
-}
-
-#auth-section {
-  margin-bottom: 20px;
-}
-
-#login-button {
-    background-color: #d4af37;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-#login-button:hover {
-    background-color: #b8860b;
-}
-
-#user-info {
-    margin-top: 10px;
-}
-
-content: Styles for Project Auto website
-edit filepath: public/About-Us.html
-content:
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About Us - Project Auto</title>
-  <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css?raw=true">
-</head>
-<body>
-  <div class="sidebar">
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html?raw=true">Home</a>
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration.html?raw=true">Configuration</a>
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us.html?raw=true">About Us</a>
-  </div>
-
-  <div class="content">
-    <header>
-      <div id="current-time"></div>
-      <h1>About Us</h1>
-    </header>
-
-    <main>
-      <section>
-        <h2>Our Mission</h2>
-        <p>Project Auto aims to automate software development tasks, making developers more efficient and productive. We believe in the power of automation to streamline workflows and reduce manual effort.</p>
-      </section>
-
-      <section>
-        <h2>Our Team</h2>
-        <p>We are a team of dedicated developers passionate about creating innovative solutions for the software development community. Our expertise spans across various domains, including automation, web development, and artificial intelligence.</p>
-      </section>
-
-      <section>
-        <h2>Contact Us</h2>
-        <p>If you have any questions or feedback, please feel free to reach out to us at: <a href="mailto:contact@projectauto.com">contact@projectauto.com</a></p>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Project Auto</p>
-    </footer>
-  </div>
-
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('current-time').textContent = timeString;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-  </script>
-</body>
-</html>
-content: About Us page for the website
-edit filepath: public/Configuration.html
-content:
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configuration - Project Auto</title>
-  <link rel="stylesheet" href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/style/style.css?raw=true">
-</head>
-<body>
-  <div class="sidebar">
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html?raw=true">Home</a>
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/Configuration.html?raw=true">Configuration</a>
-    <a href="https://github.com/Genera1Developer/Project-Auto/blob/main/public/About-Us.html?raw=true">About Us</a>
-  </div>
-
-  <div class="content">
-    <header>
-      <div id="current-time"></div>
-      <h1>Configuration</h1>
-    </header>
-
-    <main>
-      <section>
-        <h2>API Keys</h2>
-        <p>Enter your API keys below to enable certain features of Project Auto.</p>
-
-        <label for="github-api-key">GitHub API Key:</label>
-        <input type="text" id="github-api-key" name="github-api-key" placeholder="Enter your GitHub API key">
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Project Auto</p>
-    </footer>
-  </div>
-
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('current-time').textContent = timeString;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-  </script>
-</body>
-</html>
-content: Configuration page for the website
-edit filepath: api/connect.js
-content:
-const express = require('express');
-const router = express.Router();
-const { Octokit } = require("@octokit/rest");
-const session = require('express-session');
-const fetch = require('node-fetch');
-require('dotenv').config();
-
-const clientId = process.env.GITHUB_CLIENT_ID;
-const clientSecret = process.env.GITHUB_CLIENT_SECRET;
-const redirectUri = process.env.GITHUB_REDIRECT_URI;
-
-router.use(session({
-  secret: process.env.SESSION_SECRET || '', //DYNAMICALLY GENGERATED
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Set to true in production with HTTPS
-}));
-
-router.get('/github/login', (req, res) => {
-  const authURL = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
-  res.redirect(authURL);
-});
-
-router.get('/github/callback', async (req, res) => {
-  const { code } = req.query;
-
-  try {
-    const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        client_id: clientId,
-        client_secret: clientSecret,
-        code: code
-      })
-    });
-
-    const tokenData = await tokenResponse.json();
-    const accessToken = tokenData.access_token;
-
-    const octokit = new Octokit({ auth: accessToken });
-    const user = await octokit.rest.users.getAuthenticated();
-
-    req.session.githubToken = accessToken;
-    req.session.githubUser = user.data;
-
-    res.redirect('https://github.com/Genera1Developer/Project-Auto/blob/main/public/index.html?raw=true');
-
-  } catch (error) {
-    console.error('Error during GitHub callback:', error);
-    res.status(500).send('Authentication failed.');
-  }
-});
-
-router.get('/user', (req, res) => {
-  if (req.session.githubUser) {
-    res.json(req.session.githubUser);
-  } else {
-    res.status(401).send('Unauthorized');
-  }
-});
-
-router.post('/run-auto', async (req, res) => {
-  if (!req.session.githubToken) {
-    return res.status(401).send('Unauthorized: GitHub token missing.');
-  }
-
-  const { repo, instructions } = req.body;
-  const accessToken = req.session.githubToken;
-
-  try {
-    const octokit = new Octokit({ auth: accessToken });
-
-    const [owner, repository] = repo.split('/');
-
-    const repoData = await octokit.rest.repos.get({
-      owner,
-      repo: repository,
-    });
-
-    const files = await octokit.rest.git.getTree({
-      owner,
-      repo: repository,
-      tree_sha: repoData.data.default_branch,
-      recursive: 'true',
-    });
-
-    console.log(`Running Auto on ${repo} with instructions: ${instructions}`);
-
-    console.log('Repo Data:', repoData.data);
-
-    // Example: Create a new file
-    await octokit.rest.repos.createOrUpdateFileContents({
-      owner,
-      repo: repository,
-      path: `project-auto-${Date.now()}.txt`,
-      message: 'feat: Project Auto generated file',
-      content: `Project Auto ran with instructions: ${instructions}\nFiles in repo: ${JSON.stringify(files.data.tree.map(file => file.path))}`,
-    });
-
-    res.status(200).send('Project Auto executed successfully!');
-
-  } catch (error) {
-    console.error('Error during Project Auto execution:', error);
-    res.status(500).send(`Project Auto execution failed: ${error.message}`);
-  }
-});
-
-module.exports = router;
-content: Updates backend API to handle user info
