@@ -4,40 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <div class="logo">Project Auto</div>
+        <a href="/" class="active">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section class="hero">
-                <h2>Automate Your GitHub Projects</h2>
-                <p>Enter your repository and instructions to start Project Auto.</p>
-            </section>
-            <section class="input-form">
-                <form id="auto-form">
-                    <label for="repo">Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto" required>
-                    <label for="instructions">Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here" required></textarea>
-                    <button type="submit">Start</button>
-                </form>
-                <div id="message"></div>
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <input type="text" id="repo-url" placeholder="username/repo">
+                <textarea id="custom-instructions" placeholder="Customization Instructions"></textarea>
+                <button id="start-button">Start</button>
             </section>
         </main>
     </div>
@@ -47,39 +33,29 @@
             const timeString = now.toLocaleTimeString();
             document.getElementById('current-time').textContent = timeString;
         }
+
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('auto-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
+        document.getElementById('start-button').addEventListener('click', () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customInstructions = document.getElementById('custom-instructions').value;
 
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-            const messageDiv = document.getElementById('message');
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, instructions }),
-                });
-
-                const data = await response.text();
-
-                if (response.ok) {
-                    messageDiv.textContent = data;
-                    messageDiv.className = 'success-message';
-                } else {
-                    messageDiv.textContent = `Error: ${data}`;
-                    messageDiv.className = 'error-message';
-                }
-            } catch (error) {
+            fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repoUrl, customInstructions })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Display response message
+            })
+            .catch(error => {
                 console.error('Error:', error);
-                messageDiv.textContent = `An error occurred: ${error.message}`;
-                messageDiv.className = 'error-message';
-            }
+                alert('An error occurred.');
+            });
         });
     </script>
 </body>
