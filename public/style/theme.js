@@ -32,6 +32,7 @@ const theme = {
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
     boxBorder: '1px solid #BDBDBD',
     modalOverlay: 'rgba(0, 0, 0, 0.5)',
+    sidebarHover: '#4B0082',
   },
   fonts: {
     main: 'Arial, sans-serif',
