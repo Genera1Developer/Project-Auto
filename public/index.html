@@ -4,35 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/ProjectAutoLogo.png" alt="Project Auto Logo" class="logo">
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <button id="login-button">Login with GitHub</button>
-            <div id="user-info"></div>
+            <div class="auth-buttons">
+                <button id="login-button" onclick="loginWithGitHub()">Login with GitHub</button>
+                <button id="logout-button" onclick="logout()" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
         </header>
         <main>
             <section id="project-input">
                 <h2>Run Project Auto</h2>
-                <label for="repo">Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., Genera1Developer/Project-Auto">
-                <label for="instructions">Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter customization instructions here..."></textarea>
-                <button id="start-button">Start</button>
-                <p id="status-message"></p>
+                <div id="auth-required" style="display: none;">
+                    <label for="repo">Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="username/repo"><br><br>
+                    <label for="instructions">Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your instructions here"></textarea><br><br>
+                    <button onclick="runAuto()">Start</button>
+                    <p id="status-message"></p>
+                </div>
+                <p id="login-message">Please log in to use Project Auto.</p>
             </section>
         </main>
     </div>
@@ -46,11 +57,15 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('login-button').addEventListener('click', async () => {
-            window.location.href = '/api/github/login';
-        });
+        function loginWithGitHub() {
+            window.location.href = '/api/auth/github';
+        }
 
-        document.getElementById('start-button').addEventListener('click', async () => {
+        function logout() {
+            window.location.href = '/api/auth/logout';
+        }
+
+        async function runAuto() {
             const repo = document.getElementById('repo').value;
             const instructions = document.getElementById('instructions').value;
             const statusMessage = document.getElementById('status-message');
@@ -66,35 +81,44 @@
                     body: JSON.stringify({ repo, instructions })
                 });
 
+                const data = await response.json();
+
                 if (response.ok) {
-                    statusMessage.textContent = 'Project Auto executed successfully!';
+                    statusMessage.textContent = data.message;
                 } else {
-                    const errorText = await response.text();
-                    statusMessage.textContent = `Project Auto execution failed: ${errorText}`;
+                    statusMessage.textContent = `Error: ${data.error}`;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                statusMessage.textContent = `Project Auto execution failed: ${error.message}`;
-            }
-        });
-
-        async function fetchUserInfo() {
-            try {
-                const response = await fetch('/api/user');
-                if (response.ok) {
-                    const userData = await response.json();
-                    const userInfoDiv = document.getElementById('user-info');
-                    userInfoDiv.innerHTML = `<p>Logged in as: ${userData.login}</p><img src="${userData.avatar_url}" alt="User Avatar" style="width: 50px; height: 50px;">`;
-                    document.getElementById('login-button').style.display = 'none';
-                } else {
-                    document.getElementById('user-info').textContent = 'Not logged in.';
-                }
-            } catch (error) {
-                console.error('Error fetching user info:', error);
+                statusMessage.textContent = 'An error occurred while running Project Auto.';
             }
         }
 
-        fetchUserInfo();
+        async function fetchUser() {
+            const response = await fetch('/api/auth/user');
+            const user = await response.json();
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const userInfo = document.getElementById('user-info');
+            const authRequired = document.getElementById('auth-required');
+            const loginMessage = document.getElementById('login-message');
+
+            if (user) {
+                loginButton.style.display = 'none';
+                logoutButton.style.display = 'inline-block';
+                userInfo.textContent = `Logged in as ${user.displayName}`;
+                authRequired.style.display = 'block';
+                loginMessage.style.display = 'none';
+            } else {
+                loginButton.style.display = 'inline-block';
+                logoutButton.style.display = 'none';
+                userInfo.textContent = '';
+                authRequired.style.display = 'none';
+                loginMessage.style.display = 'block';
+            }
+        }
+
+        fetchUser();
     </script>
 </body>
 </html>
