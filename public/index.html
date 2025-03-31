@@ -9,64 +9,30 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>Project Auto</h2>
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
+        <ul class="sidebar-nav">
+            <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="time"></div>
+            <h1>Project Auto</h1>
         </header>
         <main>
-            <div class="input-area">
-                <label for="repo_url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo_url" name="repo_url" placeholder="e.g., yourusername/yourrepo">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
-                <button id="start_button">Start</button>
-            </div>
-            <div id="output" class="output-area">
-                <!-- Output from Project Auto will be displayed here -->
-            </div>
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <label for="repo">Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="owner/repository" required>
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                <button id="start-button">Start</button>
+            </section>
         </main>
     </div>
-    <script>
-        function updateTime() {
-            fetch('/api/time')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('time').textContent = data.time;
-                });
-        }
-
-        updateTime();
-        setInterval(updateTime, 1000);
-
-        document.getElementById('start_button').addEventListener('click', function() {
-            const repoUrl = document.getElementById('repo_url').value;
-            const prompt = document.getElementById('prompt').value;
-
-            fetch('/api/run_auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repo_url: repoUrl, prompt: prompt })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('output').textContent = 'An error occurred: ' + error;
-            });
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
