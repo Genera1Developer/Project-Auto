@@ -4,25 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div id="current-time"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
             <h1>Project Auto</h1>
-        </header>
-        <aside id="sidebar">
+        </div>
+        <nav>
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/Configuration">Configuration</a></li>
                 <li><a href="/About-Us">About Us</a></li>
             </ul>
-        </aside>
-        <main id="content">
-            <!-- Content will be loaded here -->
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+        </header>
+
+        <main>
+            <section id="home">
+                <h2>Welcome to Project Auto</h2>
+                <p>Automate your GitHub repository tasks with ease.</p>
+
+                <div class="input-fields">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository">
+
+                    <label for="prompt">Customization Instructions:</label>
+                    <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here..."></textarea>
+                </div>
+
+                <div class="button-container">
+                    <button id="github-login-button">Login with GitHub</button>
+                    <button id="start-button" disabled>Start</button>
+                </div>
+            </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('github-login-button').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repository = document.getElementById('repository').value;
+            const prompt = document.getElementById('prompt').value;
+
+            const accessToken = localStorage.getItem('github_access_token');
+
+            if (!accessToken) {
+                alert('Please log in with GitHub first.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/project-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ repository, prompt })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert('Project Auto started successfully!');
+                    console.log(result); // Process the response
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error starting Project Auto: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while starting Project Auto.');
+            }
+        });
+
+        // Check for access token on page load
+        window.onload = () => {
+            const accessToken = localStorage.getItem('github_access_token');
+            if (accessToken) {
+                document.getElementById('github-login-button').textContent = 'Logged in';
+                document.getElementById('github-login-button').disabled = true;
+                document.getElementById('start-button').disabled = false;
+            }
+        };
+    </script>
 </body>
 </html>
