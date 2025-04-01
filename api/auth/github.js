@@ -20,8 +20,12 @@ export default async function handler(req, res) {
 
       const token = auth.token;
 
-      // Redirect to configuration page with token
-      res.redirect(`/configuration?token=${token}`);
+      // Redirect to configuration page with token and username
+      const octokitUser = new Octokit({ auth: token });
+      const { data: user } = await octokitUser.request('GET /user');
+      const username = user.login;
+
+      res.redirect(`/configuration?token=${token}&username=${username}`);
 
     } catch (error) {
       console.error("Error exchanging code for token:", error);
