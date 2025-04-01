@@ -1,43 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
-    <script src="/script.js" defer></script>
+    <link rel="stylesheet" href="/style/style.css">
 </head>
+
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <div class="sidebar-header">
+            <span id="current-time"></span>
+        </div>
+        <a href="/" class="active">Home</a>
+        <a href="/configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
+
     <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
-        <main>
-            <section id="home">
-                <h2>Run Project Auto</h2>
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo"><br><br>
+        <h1>Welcome to Project Auto</h1>
+        <p>Automate your GitHub repository tasks with ease.</p>
 
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Enter your customization instructions"></textarea><br><br>
+        <div class="input-area">
+            <label for="repository">GitHub Repository (username/repo):</label>
+            <input type="text" id="repository" name="repository" placeholder="e.g., owner/repo">
+        </div>
 
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub Token"><br><br>
+        <div class="input-area">
+            <label for="instructions">Customization Instructions:</label>
+            <textarea id="instructions" name="instructions" rows="4"
+                placeholder="Enter your instructions here"></textarea>
+        </div>
 
-                <button id="start-button">Start</button>
-                <div id="result"></div>
-            </section>
-        </main>
+        <button id="start-button">Start</button>
+
+        <div id="error-message" class="error"></div>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
@@ -47,6 +47,42 @@
 
         setInterval(updateTime, 1000);
         updateTime();
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repository = document.getElementById('repository').value;
+            const instructions = document.getElementById('instructions').value;
+            const errorMessageDiv = document.getElementById('error-message');
+
+            if (!repository) {
+                errorMessageDiv.textContent = "Please enter a repository.";
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repository, instructions }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    errorMessageDiv.textContent = errorData.error || "An error occurred.";
+                    return;
+                }
+
+                const data = await response.json();
+                errorMessageDiv.textContent = "Project Auto started successfully!";
+                console.log(data);
+
+            } catch (error) {
+                console.error("Error starting Project Auto:", error);
+                errorMessageDiv.textContent = "Failed to start Project Auto. Check the console for details.";
+            }
+        });
     </script>
 </body>
+
 </html>
