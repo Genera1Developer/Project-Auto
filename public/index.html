@@ -7,73 +7,30 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="time-display" id="time-display"></div>
-    <div class="sidebar">
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+                <h3>Project Auto</h3>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main>
+            <header>
+                <div id="current-time"></div>
+                <h1>Welcome to Project Auto</h1>
+            </header>
+            <section id="content">
+                <!-- Content will be loaded here -->
+            </section>
+        </main>
     </div>
-    <div class="content">
-        <div class="project-auto-container">
-            <h1>Project Auto</h1>
-            <p>Enter your GitHub repository and customization instructions to start Project Auto.</p>
-            <form class="project-auto-form" id="project-auto-form">
-                <div class="input-group">
-                    <label for="github_repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="github_repo" name="github_repo" placeholder="e.g., owner/repository" required>
-                </div>
-                <div class="input-group">
-                    <label for="github_token">GitHub Token:</label>
-                    <input type="password" id="github_token" name="github_token" placeholder="Enter your GitHub token" required>
-                </div>
-                <div class="input-group">
-                    <label for="customization_instructions">Customization Instructions:</label>
-                    <textarea id="customization_instructions" name="customization_instructions" rows="4" placeholder="Enter instructions here"></textarea>
-                </div>
-                <button type="button" onclick="startProjectAuto()">Start</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time-display').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-
-        async function startProjectAuto() {
-            const repo = document.getElementById('github_repo').value;
-            const instructions = document.getElementById('customization_instructions').value;
-            const githubToken = document.getElementById('github_token').value;
-
-            try {
-                const response = await fetch('/api/start', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${githubToken}`
-                    },
-                    body: JSON.stringify({ repo: repo, instructions: instructions }),
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    alert(result.message);
-                } else {
-                    const errorResult = await response.json();
-                    alert(`Error: ${errorResult.error}`);
-                }
-            } catch (error) {
-                console.error('Failed to start Project Auto:', error);
-                alert('Failed to start Project Auto. Check the console for details.');
-            }
-        }
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
