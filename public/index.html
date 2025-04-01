@@ -8,43 +8,35 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <div class="sidebar-header">
+            <img src="/style/project-auto-logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <nav>
+            <a href="/index.html">Home</a>
+            <a href="/Configuration">Configuration</a>
+            <a href="/About-Us">About Us</a>
+        </nav>
     </div>
-
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <h1>Project Auto</h1>
         </header>
-
         <main>
-            <section id="project-form">
-                <h2>Run Project Auto</h2>
-                <form id="auto-form">
-                    <label for="repo_name">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo_name" name="repo_name" required><br><br>
-
-                    <label for="prompt">Customization Prompt:</label>
-                    <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
-
-                    <label for="github_token">GitHub Token:</label>
-                    <input type="password" id="github_token" name="github_token" required><br><br>
-
-                    <button type="button" id="start-button">Start</button>
-                </form>
+            <section id="github-repo">
+                <h2>GitHub Repository</h2>
+                <input type="text" id="repo-url" placeholder="username/repo">
+            </section>
+            <section id="customization">
+                <h2>Customization Instructions</h2>
+                <textarea id="custom-instructions" placeholder="Enter your instructions here"></textarea>
+            </section>
+            <section id="authentication">
+                <button id="github-login">Login with GitHub</button>
+                <button id="start-button" disabled>Start</button>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-
     <script src="/script.js"></script>
 </body>
 </html>
