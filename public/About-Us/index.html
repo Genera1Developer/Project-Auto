@@ -1,1 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Project Auto</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+        <div class="current-time" id="current-time"></div>
+    </div>
+    <div class="content">
+        <header>
+            <div class="current-time" id="current-time-header"></div>
+            <h1>About Us</h1>
+        </header>
+        <main>
+            <section>
+                <h2>Our Mission</h2>
+                <p>Project Auto aims to automate and streamline the software development process, making it easier for developers to focus on innovation.</p>
+            </section>
+            <section>
+                <h2>Our Team</h2>
+                <p>We are a team of passionate developers dedicated to building tools that empower other developers. Our expertise spans across various domains including automation, web development, and cloud computing.</p>
+            </section>
+            <section>
+                <h2>Contact Us</h2>
+                <p>If you have any questions or feedback, please feel free to contact us at: <a href="mailto:info@projectauto.com">info@projectauto.com</a></p>
+            </section>
+        </main>
+    </div>
 
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById("current-time").textContent = timeString;
+            document.getElementById("current-time-header").textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body>
+</html>
