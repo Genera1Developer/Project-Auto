@@ -9,64 +9,30 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <h2>Project Auto</h2>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/configuration">Configuration</a></li>
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
     </div>
-
     <div class="content">
         <header>
             <div id="current-time"></div>
         </header>
         <main>
-            <section id="hero">
-                <h1>Automate Your Repository</h1>
-                <p>Enter your repository details and customization instructions below.</p>
-            </section>
-
-            <section id="configuration-form">
-                <form id="auto-form">
-                    <label for="repository">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo" required>
-
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-
-                    <button type="button" id="start-button">Start</button>
-                </form>
+            <section id="project-details">
+                <h1>Project Auto</h1>
+                <p>Automate your GitHub projects with ease.</p>
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., owner/repository">
+                <label for="customization-prompt">Customization Instructions:</label>
+                <textarea id="customization-prompt" name="customization-prompt" rows="4" placeholder="Enter your customization instructions here."></textarea>
+                <button id="start-button">Start</button>
             </section>
         </main>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async function() {
-            const repo = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-
-            // Placeholder for API call
-            console.log('Starting Project Auto with repo:', repo, 'and instructions:', instructions);
-            alert('Project Auto started! Check the console for details. (API call not yet implemented)');
-
-            // Todo: Implement API call here to trigger backend processing.
-
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
