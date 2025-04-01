@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+    </script>
 </head>
 <body>
-    <div class="time-display" id="time-display"></div>
+    <div class="time-display">
+        Current Time: <span id="current-time"></span>
+    </div>
     <div class="sidebar">
         <ul>
             <li><a href="/">Home</a></li>
@@ -18,17 +29,18 @@
     <div class="content">
         <div class="project-auto-container">
             <h1>Project Auto</h1>
-            <div class="auth-container">
-                <button id="github-auth-button">Authenticate with GitHub</button>
-            </div>
+            <p>Enter your GitHub repository and customization instructions to start Project Auto.</p>
             <form class="project-auto-form" id="project-auto-form">
                 <div class="input-group">
                     <label for="github-repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
+                    <input type="text" id="github-repo" name="github-repo" placeholder="e.g., facebook/react" required>
                 </div>
                 <div class="input-group">
-                    <label for="customization-prompt">Customization Instructions:</label>
-                    <textarea id="customization-prompt" name="customization-prompt" rows="5" placeholder="Enter your customization instructions here"></textarea>
+                    <label for="customization-instructions">Customization Instructions:</label>
+                    <textarea id="customization-instructions" name="customization-instructions" rows="5" placeholder="Enter your instructions here" required></textarea>
+                </div>
+                <div class="auth-container">
+                    <button type="button" id="github-auth-button">Authenticate with GitHub</button>
                 </div>
                 <button type="submit">Start</button>
             </form>
@@ -36,44 +48,19 @@
     </div>
 
     <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time-display').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-
-        document.getElementById('github-auth-button').addEventListener('click', function() {
-            // Redirect to GitHub authentication endpoint (to be implemented in the backend)
-            window.location.href = '/api/auth/github';
-        });
-
         document.getElementById('project-auto-form').addEventListener('submit', function(event) {
             event.preventDefault();
-
             const repo = document.getElementById('github-repo').value;
-            const prompt = document.getElementById('customization-prompt').value;
+            const instructions = document.getElementById('customization-instructions').value;
+            // TODO: Implement the logic to send the data to the backend and start Project Auto.
+            console.log('Starting Project Auto with repo:', repo, 'and instructions:', instructions);
+            alert('Project Auto started! (Not really, this is a placeholder)'); // Placeholder
+        });
 
-            fetch('/api/run', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    repo: repo,
-                    prompt: prompt
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
-            });
+        document.getElementById('github-auth-button').addEventListener('click', function() {
+            // TODO: Implement GitHub authentication logic here.
+            console.log('GitHub authentication initiated.');
+            alert('GitHub Authentication! (Not really, this is a placeholder)'); // Placeholder
         });
     </script>
 </body>
