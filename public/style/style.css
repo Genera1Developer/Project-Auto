@@ -2,7 +2,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #E6E6FA; /* Light lavender background */
     color: #333;
 }
 
@@ -171,9 +171,9 @@ footer {
     width: 80%;
     margin: 20px auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: #fff; /* White containers */
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Deeper shadow */
 }
 
 .project-auto-container h1 {
@@ -203,8 +203,8 @@ footer {
 
 .project-auto-form button {
     padding: 10px 15px;
-    background-color: #70369D;
-    color: white;
+    background-color: #FFD700; /* Gold button */
+    color: #000;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -212,7 +212,7 @@ footer {
 }
 
 .project-auto-form button:hover {
-    background-color: #A250C7;
+    background-color: #DAA520; /* Darker gold on hover */
 }
 
 /* Sidebar styles */
@@ -220,7 +220,7 @@ footer {
     width: 200px;
     position: fixed;
     height: 100%;
-    background-color: #333;
+    background-color: #70369D; /* Purple background */
     padding-top: 20px;
 }
 
@@ -242,7 +242,7 @@ footer {
 }
 
 .sidebar a:hover {
-    background-color: #555;
+    background-color: #A250C7; /* Lighter purple on hover */
 }
 
 /* Content area styles */
@@ -256,9 +256,9 @@ footer {
     width: 80%;
     margin: 20px auto;
     padding: 20px;
-    background-color: #fff;
+    background-color: #fff; /* White containers */
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Deeper shadow */
 }
 
 .config-container h1 {
@@ -289,8 +289,8 @@ footer {
 
 .config-form button {
     padding: 10px 15px;
-    background-color: #70369D;
-    color: white;
+    background-color: #FFD700; /* Gold button */
+    color: #000;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -298,7 +298,7 @@ footer {
 }
 
 .config-form button:hover {
-    background-color: #A250C7;
+    background-color: #DAA520; /* Darker gold on hover */
 }
 /* Time Display */
 .time-display {
@@ -359,4 +359,24 @@ body {
 .project-auto-container, .config-container {
     background-color: #fff; /* White containers */
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+}
+
+/* Additional Styles */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #70369D;
+}
+
+.input-group input[type="text"],
+.input-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
