@@ -1,39 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
-    <script src="/script.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Auto</title>
+  <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <nav class="sidebar-nav">
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <a href="/">Project Auto</a>
     </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-        </header>
-        <main>
-            <h1>Welcome to Project Auto</h1>
-            <div class="input-fields">
-                <input type="text" id="repo-name" placeholder="GitHub Repository (username/repo)">
-                <textarea id="prompt" placeholder="Enter customization instructions"></textarea>
-                <input type="text" id="github-token" placeholder="GitHub Token">
-            </div>
-            <button id="start-button">Start</button>
-            <div id="result"></div>
-        </main>
-    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/Configuration">Configuration</a></li>
+        <li><a href="/About-Us">About Us</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="content">
+    <header>
+      <div id="time"></div>
+    </header>
+    <main>
+      <h1>Welcome to Project Auto</h1>
+      <p>Enter your GitHub repository and customization instructions below to start Project Auto.</p>
+      <div class="form-container">
+        <form id="auto-form">
+          <div class="form-group">
+            <label for="repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required>
+          </div>
+          <div class="form-group">
+            <label for="instructions">Customization Instructions:</label>
+            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here." required></textarea>
+          </div>
+          <button type="submit">Start</button>
+        </form>
+      </div>
+    </main>
+  </div>
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('time').textContent = timeString;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime(); // Initial call
+
+    document.getElementById('auto-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const repo = document.getElementById('repo').value;
+      const instructions = document.getElementById('instructions').value;
+
+      //  Add your logic here to send data to the backend for processing.
+      //  For example, using fetch API to send a POST request to /api/auto
+      console.log('Repo:', repo);
+      console.log('Instructions:', instructions);
+      alert('Form submitted! Check the console for data.');
+
+      try {
+        const response = await fetch('/api/auto', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ repo, instructions }),
+        });
+
+        if (response.ok) {
+          console.log('Request submitted successfully!');
+          // Handle success
+        } else {
+          console.error('Failed to submit request.');
+          // Handle error
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    });
+  </script>
 </body>
 </html>
