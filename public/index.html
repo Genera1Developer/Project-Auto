@@ -1,1 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>Project Auto</h1>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
+        </header>
+        <main>
+            <section id="github-input">
+                <h2>Enter GitHub Repository</h2>
+                <input type="text" id="repo-input" placeholder="username/repo">
+            </section>
+            <section id="prompt-input">
+                <h2>Customization Instructions</h2>
+                <textarea id="prompt-textarea" placeholder="Enter your instructions here"></textarea>
+            </section>
+            <section id="github-auth">
+                <h2>Authenticate with GitHub</h2>
+                <button id="github-login-button">Login with GitHub</button>
+            </section>
+            <button id="start-button">Start</button>
+        </main>
+    </div>
 
+    <script src="/script.js"></script>
+</body>
+</html>
