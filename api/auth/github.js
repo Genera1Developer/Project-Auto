@@ -32,6 +32,6 @@ export default async function handler(req, res) {
       res.status(500).json({ error: "Failed to authenticate with GitHub." });
     }
   } else {
-    res.status(400).json({ error: "Missing code parameter." });
+    res.redirect(`/?error=Missing code parameter`);
   }
 }
