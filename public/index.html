@@ -7,106 +7,68 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
+    <div class="time-display" id="time-display"></div>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <h1 class="logo">Project Auto</h1>
-        </div>
-        <ul class="nav">
+        <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-
     <div class="content">
-        <header>
-            <div id="current-time" class="time"></div>
-            <div class="auth-buttons">
-                <button id="github-login">Login with GitHub</button>
-                <button id="github-logout" style="display: none;">Logout</button>
-                <span id="github-username"></span>
+        <div class="project-auto-container">
+            <h1>Project Auto</h1>
+            <div class="auth-container">
+                <button id="github-auth-button">Authenticate with GitHub</button>
+                <p id="auth-status">Not authenticated.</p>
             </div>
-        </header>
-
-        <main>
-            <section id="home">
-                <h2>Welcome to Project Auto</h2>
-                <p>Automate your GitHub repository customization with ease.</p>
-
-                <div class="input-area">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" placeholder="e.g., yourusername/yourrepo">
-
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" placeholder="Enter your customization instructions here"></textarea>
-
-                    <button id="start-button">Start</button>
+            <form class="project-auto-form" id="project-auto-form">
+                <div class="input-group">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo">
                 </div>
-            </section>
-        </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
+                <div class="input-group">
+                    <label for="prompt">Customization Instructions:</label>
+                    <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
+                </div>
+                <button type="button" id="start-button">Start</button>
+            </form>
+        </div>
     </div>
 
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            document.getElementById('time-display').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('github-login').addEventListener('click', () => {
-            window.location.href = '/api/auth/github';
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const githubAuthButton = document.getElementById('github-auth-button');
+            const authStatus = document.getElementById('auth-status');
+            const startButton = document.getElementById('start-button');
 
-        document.getElementById('github-logout').addEventListener('click', () => {
-            fetch('/api/auth/logout')
-                .then(response => {
-                    if (response.ok) {
-                        document.getElementById('github-login').style.display = 'block';
-                        document.getElementById('github-logout').style.display = 'none';
-                        document.getElementById('github-username').textContent = '';
-                    }
-                });
-        });
-
-        fetch('/api/auth/session')
-            .then(response => response.json())
-            .then(data => {
-                if (data.user) {
-                    document.getElementById('github-login').style.display = 'none';
-                    document.getElementById('github-logout').style.display = 'block';
-                    document.getElementById('github-username').textContent = `Logged in as ${data.user.name}`;
-                }
+            githubAuthButton.addEventListener('click', function() {
+                // Implement GitHub authentication logic here (e.g., using OAuth)
+                // For now, simulate authentication:
+                authStatus.textContent = "Authenticated with GitHub!";
             });
 
-        document.getElementById('start-button').addEventListener('click', () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
+            startButton.addEventListener('click', function() {
+                const repository = document.getElementById('repository').value;
+                const prompt = document.getElementById('prompt').value;
 
-            fetch('/api/run-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repo, instructions })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
+                // Implement logic to send repository and prompt to the backend
+                // to start Project Auto
+
+                console.log("Repository:", repository);
+                console.log("Prompt:", prompt);
+                alert("Project Auto started!");
             });
         });
-
-
     </script>
 </body>
 </html>
