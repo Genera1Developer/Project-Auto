@@ -7,41 +7,95 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
+    <div class="time-display" id="time-display"></div>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/Configuration">Configuration</a>
-            <a href="/About-Us">About Us</a>
-        </nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-
     <div class="content">
-        <header>
-            <div id="current-time"></div>
+        <div class="project-auto-container">
             <h1>Project Auto</h1>
-        </header>
-
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., yourusername/yourrepo">
-
-                <label for="prompt">Customization Instructions:</label>
-                <textarea id="prompt" rows="4" placeholder="Enter your customization instructions here..."></textarea>
-
-                <button id="start-button">Start</button>
-            </section>
-        </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
+            <div class="auth-container">
+                <button id="loginButton">Login with GitHub</button>
+                <p id="authStatus"></p>
+            </div>
+            <form class="project-auto-form" id="projectAutoForm">
+                <div class="input-group">
+                    <label for="githubRepo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="githubRepo" name="githubRepo" placeholder="e.g., yourUsername/yourRepo" required>
+                </div>
+                <div class="input-group">
+                    <label for="customInstructions">Custom Instructions:</label>
+                    <textarea id="customInstructions" name="customInstructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                </div>
+                <button type="submit" id="startButton">Start</button>
+            </form>
+        </div>
     </div>
 
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time-display').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('loginButton').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('projectAutoForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const repo = document.getElementById('githubRepo').value;
+            const instructions = document.getElementById('customInstructions').value;
+
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, instructions }),
+                });
+
+                if (response.ok) {
+                    alert('Project Auto started successfully!');
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.message || 'Failed to start Project Auto'}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while starting Project Auto.');
+            }
+        });
+
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/auth/status');
+                const data = await response.json();
+
+                if (data.isAuthenticated) {
+                    document.getElementById('authStatus').textContent = 'Authenticated with GitHub';
+                    document.getElementById('loginButton').style.display = 'none';
+                } else {
+                    document.getElementById('authStatus').textContent = 'Not authenticated. Please log in.';
+                    document.getElementById('loginButton').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error checking auth status:', error);
+                document.getElementById('authStatus').textContent = 'Error checking authentication status.';
+                document.getElementById('loginButton').style.display = 'block';
+            }
+        }
+
+        checkAuthStatus();
+    </script>
 </body>
 </html>
