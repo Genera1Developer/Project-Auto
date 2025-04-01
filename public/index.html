@@ -1,87 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="/style/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <a href="/">Project Auto</a>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/Configuration">Configuration</a></li>
-        <li><a href="/About-Us">About Us</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div class="content">
-    <header>
-      <div id="time"></div>
-    </header>
-    <main>
-      <h1>Welcome to Project Auto</h1>
-      <p>Enter your GitHub repository and customization instructions below to start Project Auto.</p>
-      <div class="form-container">
-        <form id="auto-form">
-          <div class="form-group">
-            <label for="repo">GitHub Repository (username/repo):</label>
-            <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required>
-          </div>
-          <div class="form-group">
-            <label for="instructions">Customization Instructions:</label>
-            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here." required></textarea>
-          </div>
-          <button type="submit">Start</button>
-        </form>
-      </div>
-    </main>
-  </div>
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('time').textContent = timeString;
-    }
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
+        </header>
+        <main>
+            <section id="project-form">
+                <h2>Run Project Auto</h2>
+                <form id="auto-form">
+                    <label for="repo_name">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo_name" name="repo_name" required><br><br>
 
-    setInterval(updateTime, 1000);
-    updateTime(); // Initial call
+                    <label for="prompt">Customization Prompt:</label>
+                    <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
 
-    document.getElementById('auto-form').addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const repo = document.getElementById('repo').value;
-      const instructions = document.getElementById('instructions').value;
+                    <label for="github_token">GitHub Token:</label>
+                    <input type="password" id="github_token" name="github_token" required><br><br>
 
-      //  Add your logic here to send data to the backend for processing.
-      //  For example, using fetch API to send a POST request to /api/auto
-      console.log('Repo:', repo);
-      console.log('Instructions:', instructions);
-      alert('Form submitted! Check the console for data.');
-
-      try {
-        const response = await fetch('/api/auto', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ repo, instructions }),
-        });
-
-        if (response.ok) {
-          console.log('Request submitted successfully!');
-          // Handle success
-        } else {
-          console.error('Failed to submit request.');
-          // Handle error
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    });
-  </script>
+                    <button type="button" id="start-button">Start</button>
+                </form>
+                <div id="result"></div>
+            </section>
+        </main>
+    </div>
+    <script src="/script.js"></script>
 </body>
 </html>
