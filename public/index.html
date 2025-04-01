@@ -4,33 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
+            <div id="current-time" class="current-time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="github-repo-input">
-                <h2>Enter Your GitHub Repository</h2>
-                <input type="text" id="repo-url" placeholder="username/repo">
-                <textarea id="customization-instructions" placeholder="Enter customization instructions"></textarea>
+            <section id="input-section">
+                <h2>Customize Your Repository</h2>
+                <div class="input-group">
+                    <label for="repo-name">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo-name" placeholder="e.g., your_username/your_repo">
+                </div>
+                <div class="input-group">
+                    <label for="prompt">Customization Prompt:</label>
+                    <textarea id="prompt" placeholder="Enter instructions here"></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="github-token">GitHub Token:</label>
+                    <input type="password" id="github-token" placeholder="Enter your GitHub token">
+                </div>
                 <button id="start-button">Start</button>
+                <div id="status-message"></div>
             </section>
         </main>
     </div>
