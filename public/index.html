@@ -45,7 +45,6 @@
         updateTime();
 
         document.getElementById('github-auth-btn').addEventListener('click', async () => {
-            // Redirect to GitHub OAuth flow - replace with your actual endpoint
             window.location.href = '/api/auth/github';
         });
 
@@ -65,7 +64,7 @@
 
                 if (response.ok) {
                     const result = await response.json();
-                    alert(result.message); // Or display in a more user-friendly way
+                    alert(result.message);
                 } else {
                     const errorData = await response.json();
                     alert(`Error: ${errorData.error}`);
