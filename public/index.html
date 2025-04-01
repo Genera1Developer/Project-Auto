@@ -4,77 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            Project Auto
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <a href="/api/auth/github" id="github-login">Login with GitHub</a>
-        </header>
-        <main>
-            <h1>Welcome to Project Auto</h1>
-            <p>Automate your GitHub repository with ease.</p>
-
-            <div id="app">
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required><br><br>
-
-                <label for="instructions">Customization Instructions:</label><br>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your customization instructions here..."></textarea><br><br>
-
-                <button id="start-button">Start</button>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <span id="current-time"></span>
             </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main id="content">
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your GitHub repository and prompt to begin.</p>
+            <input type="text" id="repo-name" placeholder="username/repo">
+            <textarea id="prompt-text" placeholder="Enter your prompt"></textarea>
+            <button id="start-button">Start</button>
         </main>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, instructions }),
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    alert(result.message); // Display success message
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error}`); // Display error message
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
