@@ -7,114 +7,71 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
+    <div class="time-display" id="time-display"></div>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <h2 class="logo">Project Auto</h2>
-        </div>
-        <ul class="sidebar-menu">
+        <ul>
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-
     <div class="content">
-        <header class="header">
-            <div id="current-time"></div>
-            <div class="auth-buttons">
-                <button id="login-button">Login with GitHub</button>
-                <button id="logout-button" style="display: none;">Logout</button>
+        <div class="project-auto-container">
+            <h1>Project Auto</h1>
+            <div class="auth-container">
+                <button id="loginButton">Login with GitHub</button>
             </div>
-        </header>
-
-        <main>
-            <section id="project-input">
-                <h1>Automate Your Project</h1>
-                <input type="text" id="repo-name" placeholder="GitHub Repository (username/repo)">
-                <textarea id="custom-instructions" placeholder="Enter customization instructions"></textarea>
-                <button id="start-button">Start</button>
-            </section>
-            <section id="results">
-                <h2>Results</h2>
-                <div id="results-display"></div>
-            </section>
-        </main>
+            <form class="project-auto-form" id="projectAutoForm">
+                <div class="input-group">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository" required>
+                </div>
+                <div class="input-group">
+                    <label for="prompt">Customization Instructions:</label>
+                    <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                </div>
+                <button type="submit">Start</button>
+            </form>
+            <div id="result"></div>
+        </div>
     </div>
 
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            document.getElementById('time-display').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginButton = document.getElementById('login-button');
-            const logoutButton = document.getElementById('logout-button');
-            const repoNameInput = document.getElementById('repo-name');
-            const customInstructionsInput = document.getElementById('custom-instructions');
-            const startButton = document.getElementById('start-button');
-            const resultsDisplay = document.getElementById('results-display');
+        document.getElementById('loginButton').addEventListener('click', async () => {
+            // Redirect to the backend login route
+            window.location.href = '/api/login';
+        });
 
-            // GitHub Authentication (Placeholder)
-            loginButton.addEventListener('click', () => {
-                window.location.href = '/api/auth/github';
-            });
+        document.getElementById('projectAutoForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-            logoutButton.addEventListener('click', () => {
-                // Implement Logout Logic
-                logoutButton.style.display = 'none';
-                loginButton.style.display = 'block';
-            });
+            const repository = document.getElementById('repository').value;
+            const prompt = document.getElementById('prompt').value;
 
-            // Project Auto Start
-            startButton.addEventListener('click', async () => {
-                const repoName = repoNameInput.value;
-                const customInstructions = customInstructionsInput.value;
-
-                if (!repoName) {
-                    alert('Please enter a repository name.');
-                    return;
-                }
-
-                try {
-                    const response = await fetch('/api/run-auto', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            repoName: repoName,
-                            customInstructions: customInstructions,
-                        }),
-                    });
-
-                    if (response.ok) {
-                        const result = await response.json();
-                        resultsDisplay.textContent = JSON.stringify(result, null, 2);
-                    } else {
-                        resultsDisplay.textContent = `Error: ${response.status} - ${response.statusText}`;
-                    }
-                } catch (error) {
-                    resultsDisplay.textContent = `Error: ${error.message}`;
-                }
-            });
-
-            // Authentication check
-            fetch('/api/auth/session')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.user) {
-                        loginButton.style.display = 'none';
-                        logoutButton.style.display = 'block';
-                    } else {
-                        loginButton.style.display = 'block';
-                        logoutButton.style.display = 'none';
-                    }
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repository, prompt }),
                 });
+
+                const data = await response.json();
+                document.getElementById('result').textContent = data.message;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').textContent = 'An error occurred.';
+            }
         });
     </script>
 </body>
