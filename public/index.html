@@ -4,40 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/public/style/style.css">
 </head>
 <body>
+    <div class="time-display" id="time-display"></div>
     <div class="sidebar">
-        <div class="sidebar-header">
-            Project Auto
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul>
+            <li><a href="/public/">Home</a></li>
+            <li><a href="/public/Configuration">Configuration</a></li>
+            <li><a href="/public/About-Us">About Us</a></li>
+        </ul>
     </div>
     <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
-        <main>
-            <section id="github-auth">
-                <a href="/api/auth/github">Authenticate with GitHub</a>
-            </section>
-            <section id="project-setup">
-                <h2>Set Up Your Project</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="owner/repository">
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your instructions here..."></textarea>
-                <button id="start-button">Start</button>
-            </section>
-        </main>
+        <div class="project-auto-container">
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your GitHub repository and customization instructions to get started.</p>
+            <form class="project-auto-form" id="project-auto-form">
+                <div class="input-group">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo">
+                </div>
+                <div class="input-group">
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+                </div>
+                <div class="auth-container">
+                    <button type="button" id="github-auth-button">Authenticate with GitHub</button>
+                    <p id="auth-status">Not authenticated</p>
+                </div>
+                <button type="submit">Start Project Auto</button>
+            </form>
+        </div>
     </div>
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time-display').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('github-auth-button').addEventListener('click', function() {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('project-auto-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const repository = document.getElementById('repository').value;
+            const instructions = document.getElementById('instructions').value;
+
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repository, instructions }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the form.');
+            }
+        });
+    </script>
 </body>
 </html>
