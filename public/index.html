@@ -7,36 +7,74 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
+    <div class="time-display" id="time-display"></div>
     <div class="sidebar">
-        <div class="sidebar-header">Project Auto</div>
-        <a href="/" class="sidebar-tab">Home</a>
-        <a href="/Configuration" class="sidebar-tab">Configuration</a>
-        <a href="/About-Us" class="sidebar-tab">About Us</a>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
     <div class="content">
-        <header>
-            <div id="current-time"></div>
+        <div class="project-auto-container">
             <h1>Project Auto</h1>
-        </header>
-        <main>
-            <section id="github-repo">
-                <h2>GitHub Repository</h2>
-                <input type="text" id="repo-url" placeholder="username/repo">
-            </section>
-            <section id="customization">
-                <h2>Customization Instructions</h2>
-                <textarea id="instructions" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-            <section id="start">
-                <button id="start-button">Start</button>
-            </section>
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login">Login with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </section>
-        </main>
+            <p>Enter your GitHub repository and customization instructions to run Project Auto.</p>
+            <form class="project-auto-form" id="project-auto-form">
+                <div class="input-group">
+                    <label for="github-repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
+                </div>
+                <div class="input-group">
+                    <label for="customization-instructions">Customization Instructions:</label>
+                    <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+                </div>
+                <button type="button" onclick="startProjectAuto()">Start</button>
+            </form>
+        </div>
     </div>
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time-display').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to display time immediately
+
+        function startProjectAuto() {
+            const repo = document.getElementById('github-repo').value;
+            const instructions = document.getElementById('customization-instructions').value;
+
+            // Basic validation
+            if (!repo) {
+                alert('Please enter a GitHub repository.');
+                return;
+            }
+
+            // Here you would typically send the data to your backend
+            // For demonstration, we'll just log the data
+            console.log('Repository:', repo);
+            console.log('Instructions:', instructions);
+
+            // Example fetch request (replace with your actual API endpoint)
+            fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repo: repo, instructions: instructions })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                alert('Project Auto started. Check the console for details.');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('An error occurred. Check the console for details.');
+            });
+        }
+    </script>
 </body>
 </html>
