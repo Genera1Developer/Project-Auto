@@ -40,6 +40,7 @@
                 <textarea id="customization-instructions" name="customization-instructions" rows="5" placeholder="Enter your instructions here"></textarea>
 
                 <button id="start-button" class="start-button">Start</button>
+                <div id="status-message" class="status-message"></div>
             </div>
         </section>
 
@@ -62,17 +63,25 @@
             const repo = document.getElementById('github-repo').value;
             const instructions = document.getElementById('customization-instructions').value;
             const githubToken = document.getElementById('github-token').value;
+            const statusMessage = document.getElementById('status-message');
 
             // Basic validation
             if (!repo) {
-                alert('Please enter a GitHub repository.');
+                statusMessage.textContent = 'Please enter a GitHub repository.';
+                statusMessage.classList.add('error');
                 return;
             }
 
             if (!githubToken) {
-                alert('Please enter your GitHub Token.');
+                statusMessage.textContent = 'Please enter your GitHub Token.';
+                statusMessage.classList.add('error');
                 return;
             }
+
+            statusMessage.textContent = 'Starting Project Auto...';
+            statusMessage.classList.remove('error');
+            statusMessage.classList.add('loading');
+
 
             try {
                 const response = await fetch('/api/run-auto', {
@@ -91,11 +100,16 @@
                 const data = await response.json();
                 console.log('Project Auto Result:', data);
 
-                alert('Project Auto started! (Implementation pending, check console for result)'); // Replace with real result display
+                statusMessage.textContent = 'Project Auto completed! Check console for result.'; // Replace with real result display
+                statusMessage.classList.remove('loading');
+                statusMessage.classList.add('success');
+
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred: ' + error.message);
+                statusMessage.textContent = 'An error occurred: ' + error.message;
+                statusMessage.classList.remove('loading');
+                statusMessage.classList.add('error');
             }
         });
     </script>
