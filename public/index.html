@@ -7,27 +7,33 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside id="sidebar">
-            <div class="sidebar-header">
-                <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-                <h3>Project Auto</h3>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
+    <div class="sidebar">
+        <div class="sidebar-header">Project Auto</div>
+        <a href="/" class="sidebar-tab">Home</a>
+        <a href="/Configuration" class="sidebar-tab">Configuration</a>
+        <a href="/About-Us" class="sidebar-tab">About Us</a>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
+        </header>
         <main>
-            <header>
-                <div id="current-time"></div>
-                <h1>Welcome to Project Auto</h1>
-            </header>
-            <section id="content">
-                <!-- Content will be loaded here -->
+            <section id="github-repo">
+                <h2>GitHub Repository</h2>
+                <input type="text" id="repo-url" placeholder="username/repo">
+            </section>
+            <section id="customization">
+                <h2>Customization Instructions</h2>
+                <textarea id="instructions" placeholder="Enter your customization instructions here"></textarea>
+            </section>
+            <section id="start">
+                <button id="start-button">Start</button>
+            </section>
+            <section id="github-auth">
+                <h2>GitHub Authentication</h2>
+                <button id="github-login">Login with GitHub</button>
+                <p id="auth-status">Not authenticated</p>
             </section>
         </main>
     </div>
