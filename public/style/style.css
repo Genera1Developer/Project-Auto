@@ -308,3 +308,55 @@ footer {
     color: #70369D;
     font-size: 14px;
 }
+
+/* Gold color scheme additions */
+.gold-text {
+    color: #FFD700; /* Gold */
+}
+
+.gold-background {
+    background-color: #FFD700; /* Gold */
+    color: #000; /* Ensure text is readable */
+}
+
+.purple-background {
+    background-color: #70369D; /* Purple */
+    color: #fff;
+}
+
+.purple-text {
+    color: #70369D;
+}
+
+/* Updated sidebar */
+.sidebar {
+    width: 200px;
+    position: fixed;
+    height: 100%;
+    background-color: #70369D; /* Purple background */
+    padding-top: 20px;
+}
+
+.sidebar a:hover {
+    background-color: #A250C7; /* Lighter purple on hover */
+}
+
+/* Updated button styles */
+.project-auto-form button, .config-form button {
+    background-color: #FFD700; /* Gold button */
+    color: #000;
+}
+
+.project-auto-form button:hover, .config-form button:hover {
+    background-color: #DAA520; /* Darker gold on hover */
+}
+
+/* General adjustments */
+body {
+    background-color: #E6E6FA; /* Light lavender background */
+}
+
+.project-auto-container, .config-container {
+    background-color: #fff; /* White containers */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+}
