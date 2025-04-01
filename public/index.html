@@ -5,73 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div class="time-display" id="time"></div>
     <div class="sidebar">
-        <ul>
-            <li><a href="/index.html"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="/Configuration"><i class="fas fa-cog"></i> Configuration</a></li>
-            <li><a href="/About-Us"><i class="fas fa-info-circle"></i> About Us</a></li>
+        <div class="sidebar-header">Project Auto</div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
     <div class="content">
-        <div class="project-auto-container">
-            <h1>Project Auto</h1>
-            <form class="project-auto-form" id="project-auto-form">
-                <label for="github_repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github_repo" name="github_repo" placeholder="e.g., yourusername/yourrepo">
-
-                <label for="customization_instructions">Customization Instructions:</label>
-                <textarea id="customization_instructions" name="customization_instructions" rows="5" placeholder="Enter your customization instructions here"></textarea>
-
-                <button type="button" onclick="startProjectAuto()">Start</button>
-                <p id="status_message"></p>
-            </form>
-        </div>
+        <header>
+            <div id="time"></div>
+            <h1>Welcome to Project Auto</h1>
+        </header>
+        <main>
+            <section id="input-section">
+                <label for="repo-input">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-input" placeholder="e.g., owner/repository">
+                <label for="prompt-input">Customization Instructions:</label>
+                <textarea id="prompt-input" placeholder="Enter your instructions here"></textarea>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
     </div>
-
+    <script src="/script.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('time').innerText = timeString;
+            document.getElementById('time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call
-
-        async function startProjectAuto() {
-            const repo = document.getElementById('github_repo').value;
-            const instructions = document.getElementById('customization_instructions').value;
-            const statusMessage = document.getElementById('status_message');
-
-            statusMessage.innerText = "Processing...";
-
-            try {
-                const response = await fetch('/api/run_auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        repo: repo,
-                        instructions: instructions
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    statusMessage.innerText = data.message;
-                } else {
-                    statusMessage.innerText = `Error: ${data.message}`;
-                }
-            } catch (error) {
-                statusMessage.innerText = `An unexpected error occurred: ${error}`;
-            }
-        }
+        updateTime();
     </script>
 </body>
 </html>
