@@ -7,181 +7,24 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="/" class="sidebar-item">Home</a>
-            <a href="/Configuration" class="sidebar-item">Configuration</a>
-            <a href="/About-Us" class="sidebar-item">About Us</a>
-        </div>
-    </div>
-
-    <div class="content">
+    <div class="container">
         <header>
-            <div id="current-time"></div>
+            <div id="current-time" class="time"></div>
             <h1>Project Auto</h1>
         </header>
-
-        <main>
-            <section id="github-repo-input">
-                <h2>Enter GitHub Repository</h2>
-                <input type="text" id="repo-url" placeholder="username/repo">
-            </section>
-
-            <section id="customization-instructions">
-                <h2>Customization Instructions</h2>
-                <textarea id="instructions" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-
-            <section id="authentication">
-                <h2>GitHub Authentication</h2>
-                <button id="login-button">Login with GitHub</button>
-                <button id="logout-button" style="display: none;">Logout</button>
-                <div id="user-info"></div>
-            </section>
-
-            <section id="start-project">
-                <button id="start-button">Start</button>
-            </section>
+        <aside id="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginButton = document.getElementById('login-button');
-            const logoutButton = document.getElementById('logout-button');
-            const userInfoDiv = document.getElementById('user-info');
-            const startButton = document.getElementById('start-button');
-            const repoUrlInput = document.getElementById('repo-url');
-            const instructionsTextarea = document.getElementById('instructions');
-
-            // Check for existing token
-            const token = localStorage.getItem('github_token');
-            if (token) {
-                loginButton.style.display = 'none';
-                logoutButton.style.display = 'inline-block';
-                fetchUserInfo(token);
-            }
-
-            loginButton.addEventListener('click', () => {
-                window.location.href = '/api/auth/github';
-            });
-
-            logoutButton.addEventListener('click', () => {
-                localStorage.removeItem('github_token');
-                userInfoDiv.textContent = '';
-                loginButton.style.display = 'inline-block';
-                logoutButton.style.display = 'none';
-                window.location.reload();
-            });
-
-            startButton.addEventListener('click', async () => {
-                const repoUrl = repoUrlInput.value;
-                const instructions = instructionsTextarea.value;
-                const githubToken = localStorage.getItem('github_token');
-
-                if (!repoUrl || !instructions || !githubToken) {
-                    alert('Please enter repository URL, customization instructions, and login with GitHub.');
-                    return;
-                }
-
-                try {
-                    const response = await fetch('/api/execute', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${githubToken}`
-                        },
-                        body: JSON.stringify({
-                            repoUrl: repoUrl,
-                            instructions: instructions
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        alert('Project Auto execution started!');
-                        console.log(data);
-                    } else {
-                        alert(`Error: ${data.error || 'Unknown error'}`);
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred while starting Project Auto.');
-                }
-            });
-
-            async function fetchUserInfo(token) {
-                try {
-                    const response = await fetch('/api/user', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    if (response.ok) {
-                        const userData = await response.json();
-                        userInfoDiv.textContent = `Logged in as ${userData.login}`;
-                    } else {
-                        userInfoDiv.textContent = 'Failed to fetch user info.';
-                        logoutButton.click(); // Automatically logout if user info fails
-                    }
-                } catch (error) {
-                    console.error('Error fetching user info:', error);
-                    userInfoDiv.textContent = 'Error fetching user info.';
-                    logoutButton.click(); // Automatically logout if user info fails
-                }
-            }
-
-             // Get the code after successful authentication
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-
-            if (code) {
-                async function getToken(code) {
-                    try {
-                        const response = await fetch('/api/auth/github/token', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ code }),
-                        });
-        
-                        const data = await response.json();
-        
-                        if (response.ok) {
-                            localStorage.setItem('github_token', data.access_token);
-                            loginButton.style.display = 'none';
-                            logoutButton.style.display = 'inline-block';
-                            fetchUserInfo(data.access_token);
-                            // Clear the code from the URL
-                            window.history.replaceState({}, document.title, window.location.pathname);
-                        } else {
-                            console.error('Error getting token:', data.error);
-                            alert('Failed to authenticate with GitHub.');
-                        }
-                    } catch (error) {
-                        console.error('Error getting token:', error);
-                        alert('An error occurred during authentication.');
-                    }
-                }
-                getToken(code);
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
