@@ -19,12 +19,12 @@
         <div class="project-auto-container">
             <h1>Project Auto</h1>
             <div class="auth-container">
-                <button id="github-auth-button">Authenticate with GitHub</button>
+                <button id="github-auth-btn">Authenticate with GitHub</button>
             </div>
             <form class="project-auto-form" id="project-auto-form">
                 <div class="input-group">
                     <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required>
+                    <input type="text" id="repo" name="repo" placeholder="e.g., facebook/react" required>
                 </div>
                 <div class="input-group">
                     <label for="prompt">Customization Instructions:</label>
@@ -44,30 +44,36 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('project-auto-form').addEventListener('submit', function(event) {
+        document.getElementById('github-auth-btn').addEventListener('click', async () => {
+            // Redirect to GitHub OAuth flow - replace with your actual endpoint
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('project-auto-form').addEventListener('submit', async (event) => {
             event.preventDefault();
             const repo = document.getElementById('repo').value;
             const prompt = document.getElementById('prompt').value;
 
-            fetch('/api/run-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repo: repo, prompt: prompt })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please check the console.');
-            });
-        });
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, prompt }),
+                });
 
-        document.getElementById('github-auth-button').addEventListener('click', function() {
-            window.location.href = '/api/auth/github';
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(result.message); // Or display in a more user-friendly way
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            }
         });
     </script>
 </body>
