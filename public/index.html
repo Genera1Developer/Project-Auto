@@ -25,6 +25,10 @@
                     <input type="text" id="github_repo" name="github_repo" placeholder="e.g., owner/repository" required>
                 </div>
                 <div class="input-group">
+                    <label for="github_token">GitHub Token:</label>
+                    <input type="password" id="github_token" name="github_token" placeholder="Enter your GitHub token" required>
+                </div>
+                <div class="input-group">
                     <label for="customization_instructions">Customization Instructions:</label>
                     <textarea id="customization_instructions" name="customization_instructions" rows="4" placeholder="Enter instructions here"></textarea>
                 </div>
@@ -46,12 +50,14 @@
         async function startProjectAuto() {
             const repo = document.getElementById('github_repo').value;
             const instructions = document.getElementById('customization_instructions').value;
+            const githubToken = document.getElementById('github_token').value;
 
             try {
                 const response = await fetch('/api/start', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${githubToken}`
                     },
                     body: JSON.stringify({ repo: repo, instructions: instructions }),
                 });
