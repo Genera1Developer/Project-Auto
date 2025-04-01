@@ -1,90 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="/style/style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <i class="fa fa-cog fa-spin"></i>
-      <span>Project Auto</span>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="logo">Project Auto</h2>
+        </div>
+        <ul class="nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-    <ul class="sidebar-menu">
-      <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-      <li><a href="/configuration"><i class="fa fa-cogs"></i> Configuration</a></li>
-      <li><a href="/about-us"><i class="fa fa-info-circle"></i> About Us</a></li>
-    </ul>
-  </div>
 
-  <div class="content">
-    <header>
-      <div id="current-time"></div>
-      <h1>Welcome to Project Auto</h1>
-    </header>
+    <div class="content">
+        <header>
+            <div id="time" class="time"></div>
+            <button id="loginButton">Login with GitHub</button>
+            <span id="userDisplay"></span>
+        </header>
 
-    <main>
-      <section class="input-section">
-        <h2>Enter Repository Details</h2>
-        <div class="input-group">
-          <label for="repo-name">Repository (username/repo):</label>
-          <input type="text" id="repo-name" placeholder="e.g., owner/repository">
-        </div>
-        <div class="input-group">
-          <label for="custom-instructions">Custom Instructions:</label>
-          <textarea id="custom-instructions" placeholder="Enter customization instructions here"></textarea>
-        </div>
-        <button id="start-button">Start</button>
-      </section>
-    </main>
-  </div>
+        <main>
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your GitHub repository and customization instructions below to get started.</p>
 
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('current-time').textContent = timeString;
-    }
-    setInterval(updateTime, 1000);
-    updateTime(); // Initial call to display time immediately
+            <div class="input-group">
+                <label for="repository">GitHub Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository">
+            </div>
 
-    document.getElementById('start-button').addEventListener('click', async () => {
-      const repoName = document.getElementById('repo-name').value;
-      const customInstructions = document.getElementById('custom-instructions').value;
+            <div class="input-group">
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here."></textarea>
+            </div>
 
-      // Basic validation
-      if (!repoName) {
-        alert('Please enter a repository name.');
-        return;
-      }
+            <button id="startButton" class="start-button">Start</button>
+        </main>
+    </div>
 
-      try {
-        const response = await fetch('/api/run', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            repo: repoName,
-            instructions: customInstructions,
-          }),
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('loginButton').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          alert(data.message); // Or display a more informative message
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.error}`);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while processing your request.');
-      }
-    });
-  </script>
+        fetch('/api/user')
+            .then(response => response.json())
+            .then(data => {
+                if (data.user) {
+                    document.getElementById('userDisplay').textContent = `Logged in as: ${data.user.login}`;
+                    document.getElementById('loginButton').style.display = 'none';
+                } else {
+                    document.getElementById('userDisplay').textContent = 'Not logged in.';
+                }
+            });
+
+        document.getElementById('startButton').addEventListener('click', () => {
+            const repository = document.getElementById('repository').value;
+            const instructions = document.getElementById('instructions').value;
+
+            fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repository, instructions }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            });
+        });
+
+    </script>
 </body>
 </html>
