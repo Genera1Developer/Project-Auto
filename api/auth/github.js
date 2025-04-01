@@ -20,6 +20,7 @@ export default async function handler(req, res) {
 
       const token = auth.token;
 
+      // Redirect to configuration page with token
       res.redirect(`/configuration?token=${token}`);
 
     } catch (error) {
