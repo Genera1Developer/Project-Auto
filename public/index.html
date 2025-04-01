@@ -7,80 +7,23 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h1>Project Auto</h1>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
-        <main>
-            <section id="hero">
-                <h2>Automate Your Repository</h2>
-                <p>Enter your repository details and customization instructions to get started.</p>
-            </section>
-            <section id="form">
-                <form id="auto-form">
-                    <label for="repository">Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo" required>
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-                    <button type="button" id="start-button">Start</button>
-                    <p id="status-message"></p>
-                </form>
-                <button id="github-auth">Authenticate with GitHub</button>
-            </section>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <span id="current-time"></span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
         </main>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('github-auth').addEventListener('click', () => {
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://project-auto-v1029.vercel.app/Configuration')}`;
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repository = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-            const statusMessage = document.getElementById('status-message');
-
-            statusMessage.textContent = "Processing...";
-
-            try {
-                const response = await fetch('/api/auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repository, instructions }),
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    statusMessage.textContent = data.message;
-                } else {
-                    statusMessage.textContent = `Error: ${data.error}`;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                statusMessage.textContent = "An unexpected error occurred.";
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
