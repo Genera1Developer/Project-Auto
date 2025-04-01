@@ -7,40 +7,39 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="content">
+    <div class="container">
         <header>
             <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
+        <aside>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
         <main>
-            <section id="home">
-                <h1>Welcome to Project Auto</h1>
-                <p>Automate your GitHub projects with ease.</p>
-                <div class="input-form">
-                    <label for="repo-name">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo-name" placeholder="e.g., your_username/your_repo">
-                    <label for="prompt">Customization Prompt:</label>
-                    <textarea id="prompt" placeholder="Describe the changes you want to make."></textarea>
-                    <label for="github-token">GitHub Token:</label>
-                    <input type="password" id="github-token" placeholder="Enter your GitHub token">
-                    <button id="start-button">Start</button>
-                    <div id="status-message"></div>
-                </div>
+            <section id="github-auth">
+                <a href="/api/auth/github">Authenticate with GitHub</a>
+            </section>
+            <section id="project-details">
+                <h2>Project Details</h2>
+                <form id="project-form">
+                    <label for="repository">Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository" required>
+                    <label for="prompt">Customization Instructions:</label>
+                    <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
+                    <button type="submit">Start</button>
+                </form>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-    <script src="/script/script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
