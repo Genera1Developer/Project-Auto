@@ -7,22 +7,29 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="sidebar">
+        <div class="logo">Project Auto</div>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
+    </div>
+    <div class="content">
         <header>
-            <div id="current-time" class="time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
-        <aside id="sidebar">
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main id="content">
-            <!-- Content will be loaded here -->
+        <main>
+            <section id="github-repo-input">
+                <h2>Enter GitHub Repository</h2>
+                <input type="text" id="repo-name" placeholder="username/repo">
+            </section>
+            <section id="customization-prompt">
+                <h2>Customization Instructions</h2>
+                <textarea id="prompt" placeholder="Enter your customization instructions here"></textarea>
+            </section>
+            <section id="start-button">
+                <button id="start-project-auto">Start</button>
+            </section>
         </main>
     </div>
     <script src="/script.js"></script>
