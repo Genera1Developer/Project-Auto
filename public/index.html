@@ -5,97 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
+    <div class="time-display" id="time-display"></div>
     <div class="sidebar">
-        <a href="/" class="logo">
-            <img src="" alt="Project Auto Logo">
-        </a>
-        <ul class="nav-links">
-            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+        <ul>
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-
     <div class="content">
-        <header>
-            <div id="time" class="time"></div>
+        <div class="project-auto-container">
             <h1>Project Auto</h1>
-        </header>
+            <p>Enter your GitHub repository and customization instructions to start Project Auto.</p>
+            <form class="project-auto-form" id="project-auto-form">
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
 
-        <main>
-            <section id="project-input">
-                <h2>Enter Your Project Details</h2>
-                <div class="input-group">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
-                </div>
-                <div class="input-group">
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" placeholder="Enter your customization instructions here"></textarea>
-                </div>
-                <button id="start-button">Start</button>
-            </section>
+                <label for="customization-instructions">Customization Instructions:</label>
+                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your instructions here"></textarea>
 
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login">Login with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </section>
-        </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
+                <button type="button" id="start-button">Start</button>
+            </form>
+        </div>
     </div>
-
     <script>
         function updateTime() {
             const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('time-display').textContent = `${hours}:${minutes}:${seconds}`;
         }
 
         setInterval(updateTime, 1000);
-        updateTime();
+        updateTime(); // Initial call to display time immediately
 
-        document.getElementById('github-login').addEventListener('click', () => {
-            // Redirect to GitHub OAuth flow (replace with your actual OAuth endpoint)
-            window.location.href = '/api/auth/github';
-        });
-
-        // Example: Fetch authentication status from the backend
-        async function checkAuthStatus() {
-            const response = await fetch('/api/auth/status');
-            const data = await response.json();
-
-            if (data.isAuthenticated) {
-                document.getElementById('auth-status').textContent = 'Authenticated';
-            } else {
-                document.getElementById('auth-status').textContent = 'Not authenticated';
-            }
-        }
-
-        checkAuthStatus();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-
-            // Send data to the backend for processing
-            const response = await fetch('/api/run', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repo, instructions })
-            });
-
-            const result = await response.json();
-            console.log(result);
-            alert(result.message); // Display result message
+        document.getElementById('start-button').addEventListener('click', function() {
+            const repo = document.getElementById('github-repo').value;
+            const instructions = document.getElementById('customization-instructions').value;
+            // Placeholder for sending data to the backend.  This will be implemented later.
+            alert(`Starting Project Auto on ${repo} with instructions: ${instructions}`);
         });
     </script>
 </body>
