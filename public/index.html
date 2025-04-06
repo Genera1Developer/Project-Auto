@@ -9,87 +9,37 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <span id="current-time"></span>
+            <h1 class="logo">Project Auto</h1>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
 
     <div class="content">
-        <h1>Project Auto</h1>
-        <p>Automate your GitHub repositories.</p>
+        <header>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button">Login with GitHub</button>
+                <button id="logout-button" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
+        </header>
 
-        <div id="auth-area">
-            <button id="github-auth-button">Authenticate with GitHub</button>
-            <p id="auth-status">Not authenticated.</p>
-        </div>
-
-        <div class="input-area">
-            <label for="repo-url">GitHub Repository (username/repo):</label>
-            <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-
-            <label for="custom-prompt">Customization Instructions:</label>
-            <textarea id="custom-prompt" name="custom-prompt" rows="4" placeholder="Enter your instructions here."></textarea>
-
-            <button id="start-button">Start</button>
-        </div>
+        <main>
+            <section id="project-input">
+                <h2>Project Configuration</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" placeholder="Enter your customization instructions here"></textarea>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
     </div>
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('github-auth-button').addEventListener('click', () => {
-            // Redirect to the GitHub authentication endpoint on the backend
-            window.location.href = '/api/auth/github';
-        });
-
-        // Check if the user is already authenticated (e.g., by checking for a token in local storage)
-        // Update the auth-status element accordingly.  This requires backend support to set local storage after auth
-        async function checkAuthStatus() {
-            const response = await fetch('/api/auth/status');
-            const data = await response.json();
-
-            if (data.isAuthenticated) {
-                document.getElementById('auth-status').textContent = 'Authenticated with GitHub.';
-                document.getElementById('github-auth-button').style.display = 'none';
-            } else {
-                document.getElementById('auth-status').textContent = 'Not authenticated.';
-                document.getElementById('github-auth-button').style.display = 'block';
-            }
-        }
-
-        checkAuthStatus();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const customPrompt = document.getElementById('custom-prompt').value;
-
-            const response = await fetch('/api/run-automation', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repoUrl, customPrompt })
-            });
-
-            const data = await response.json();
-            console.log(data);
-            // Handle the response from the backend (e.g., display a success message)
-            alert(data.message); // placeholder
-        });
-
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
