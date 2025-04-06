@@ -21,6 +21,7 @@ body {
     top: 0;
     overflow-x: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background-color: #3f37c9; /* Purple */
 }
 
 .sidebar-header {
@@ -54,6 +55,7 @@ body {
 
 .sidebar-menu a:hover {
     background-color: #555;
+    background-color: #7209b7; /* Darker Purple */
 }
 
 .sidebar-menu i {
@@ -84,6 +86,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #f9d71c; /* Gold */
 }
 
 .header h1 {
@@ -133,10 +136,12 @@ body {
     cursor: pointer;
     font-size: 1em;
     transition: background-color 0.3s ease;
+    background-color: #9d4edd; /* Purple */
 }
 
 .start-button:hover {
     background-color: #449d44;
+    background-color: #7209b7; /* Darker Purple */
 }
 
 .status-message {
@@ -172,5 +177,317 @@ body {
     color: #fff;
     border-radius: 8px;
     font-size: 0.9em;
+    background-color: #3f37c9; /* Purple */
 }
-edit filepath: public/style/style.css
+edit filepath: public/index.html
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            <h1>Project Auto</h1>
+            <div class="current-time" id="current-time"></div>
+        </div>
+        <div class="main-content">
+            <h2>Welcome to Project Auto</h2>
+            <p>Enter your GitHub repository and customization instructions below to start Project Auto.</p>
+            <form class="configuration-form">
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., owner/repository">
+                <label for="customization-instructions">Customization Instructions:</label>
+                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+                <button type="button" class="start-button" onclick="startProjectAuto()">Start</button>
+            </form>
+            <div id="status-message" class="status-message"></div>
+        </div>
+        <div class="footer">
+            <p>Contact: contact@projectauto.com</p>
+        </div>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        function startProjectAuto() {
+            const repo = document.getElementById('github-repo').value;
+            const instructions = document.getElementById('customization-instructions').value;
+            const statusMessage = document.getElementById('status-message');
+
+            statusMessage.textContent = 'Loading...';
+            statusMessage.className = 'status-message loading';
+
+            fetch('/api/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repo: repo, instructions: instructions }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusMessage.textContent = data.message;
+                statusMessage.className = data.success ? 'status-message success' : 'status-message error';
+            })
+            .catch(error => {
+                statusMessage.textContent = 'An error occurred: ' + error;
+                statusMessage.className = 'status-message error';
+            });
+        }
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
+edit filepath: public/About-Us
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            <h1>About Us</h1>
+            <div class="current-time" id="current-time"></div>
+        </div>
+        <div class="main-content">
+            <h2>Our Mission</h2>
+            <p>Project Auto aims to automate software development tasks, making it easier for developers to customize and deploy their projects.</p>
+            <h2>Our Team</h2>
+            <p>We are a team of passionate developers dedicated to creating innovative solutions for the software development community.</p>
+            <h2>Contact</h2>
+            <p>Email: contact@projectauto.com</p>
+        </div>
+        <div class="footer">
+            <p>Contact: contact@projectauto.com</p>
+        </div>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
+edit filepath: public/Configuration
+content: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            <h1>Configuration</h1>
+            <div class="current-time" id="current-time"></div>
+        </div>
+        <div class="main-content">
+            <h2>Project Auto Configuration</h2>
+            <p>Configure the settings for Project Auto.</p>
+            <form class="configuration-form">
+                <label for="github-token">GitHub Token:</label>
+                <input type="text" id="github-token" name="github-token" placeholder="Enter your GitHub token">
+                <label for="default-instructions">Default Instructions:</label>
+                <textarea id="default-instructions" name="default-instructions" rows="4" placeholder="Enter default instructions"></textarea>
+                <button type="button" class="start-button" onclick="saveConfiguration()">Save Configuration</button>
+            </form>
+            <div id="status-message" class="status-message"></div>
+        </div>
+        <div class="footer">
+            <p>Contact: contact@projectauto.com</p>
+        </div>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        function saveConfiguration() {
+            const githubToken = document.getElementById('github-token').value;
+            const defaultInstructions = document.getElementById('default-instructions').value;
+            const statusMessage = document.getElementById('status-message');
+
+            statusMessage.textContent = 'Loading...';
+            statusMessage.className = 'status-message loading';
+
+            fetch('/api/configure', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ githubToken: githubToken, defaultInstructions: defaultInstructions }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusMessage.textContent = data.message;
+                statusMessage.className = data.success ? 'status-message success' : 'status-message error';
+            })
+            .catch(error => {
+                statusMessage.textContent = 'An error occurred: ' + error;
+                statusMessage.className = 'status-message error';
+            });
+        }
+    </script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
+edit filepath: api/start
+content: const express = require('express');
+const router = express.Router();
+const { Octokit } = require("@octokit/rest");
+const fs = require('fs');
+const path = require('path');
+
+router.post('/', async (req, res) => {
+    const { repo, instructions } = req.body;
+    const githubTokenPath = path.join(__dirname, '../config/github_token.txt');
+
+    try {
+        const githubToken = fs.readFileSync(githubTokenPath, 'utf8').trim();
+        if (!githubToken) {
+            return res.status(400).json({ success: false, message: 'GitHub token is not configured. Please configure it in the Configuration page.' });
+        }
+
+        const octokit = new Octokit({ auth: githubToken });
+
+        const [owner, repository] = repo.split('/');
+
+        // Example: List repository contents
+        const { data: contents } = await octokit.repos.getContent({
+            owner,
+            repo: repository,
+            path: '/',
+        });
+
+        // Process files based on instructions.  For now just return the file list.
+        const fileList = contents.map(file => file.name);
+
+        // Placeholder logic - replace with actual processing
+        const resultMessage = `Processed repository: ${repo} with instructions: ${instructions}. Files: ${fileList.join(', ')}`;
+
+        res.json({ success: true, message: resultMessage });
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ success: false, message: 'An error occurred: ' + error.message });
+    }
+});
+
+module.exports = router;
+edit filepath: api/configure
+content: const express = require('express');
+const router = express.Router();
+const fs = require('fs');
+const path = require('path');
+
+router.post('/', async (req, res) => {
+    const { githubToken, defaultInstructions } = req.body;
+    const githubTokenPath = path.join(__dirname, '../config/github_token.txt');
+
+    try {
+        fs.writeFileSync(githubTokenPath, githubToken);
+
+        // Optionally save default instructions to a file as well
+        const instructionsPath = path.join(__dirname, '../config/default_instructions.txt');
+        fs.writeFileSync(instructionsPath, defaultInstructions);
+
+        res.json({ success: true, message: 'Configuration saved successfully!' });
+    } catch (error) {
+        console.error("Error saving configuration:", error);
+        res.status(500).json({ success: false, message: 'Failed to save configuration: ' + error.message });
+    }
+});
+
+module.exports = router;
+edit filepath: config/github_token.txt
+content: 
+edit filepath: config/default_instructions.txt
+content: 
+edit filepath: server.js
+content: const express = require('express');
+const path = require('path');
+const startApi = require('./api/start');
+const configureApi = require('./api/configure');
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/api/start', startApi);
+app.use('/api/configure', configureApi);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+edit filepath: logo.png
+content: iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAABoklEQVR4nO2a2w2DMBAEif7/T64hW9CqqygwT4WfDsH4SAE94hNmqQoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABiitG6dV1utVtNpNBaLpV6v97pd7wKBAFgtVrFYLJfNZlKpVDabzcPhcDgcrVarxWw2i8Vi6XQ6nU6n0+l0Op1Op9Pp9FotFotFo9FotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotoFotFotFototFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFotFot
