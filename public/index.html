@@ -4,35 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/public/images/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/public/Configuration">Configuration</a></li>
-            <li><a href="/public/About-Us">About Us</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h1>Project Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
         <main>
-            <section id="project-input">
-                <h2>Enter Project Details</h2>
-                <input type="text" id="repo-name" placeholder="GitHub Repository (username/repo)">
-                <textarea id="prompt" placeholder="Enter customization instructions"></textarea>
-                <button id="start-button">Start</button>
-                <div id="status-message"></div>
+            <header>
+                <div id="current-time" class="time-display"></div>
+                <h1>Welcome to Project Auto</h1>
+            </header>
+            <section id="content">
+                <!-- Content will be loaded here dynamically -->
             </section>
         </main>
     </div>
-
-    <script src="/public/script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
