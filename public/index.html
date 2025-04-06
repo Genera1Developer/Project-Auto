@@ -4,27 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <div id="current-time" class="current-time"></div>
-                <h3>Project Auto</h3>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main id="content" class="main-content">
-            <!-- Content will be loaded here -->
-        </main>
+    <div class="sidebar">
+        <div class="sidebar-content">
+        <h1>Project Auto</h1>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
+        </div>
     </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+        </header>
+        <main>
+            <section id="project-input">
+                <h2>Run Project Auto</h2>
+                <label for="repo-name">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-name" placeholder="e.g., your_username/your_repo"><br><br>
+
+                <label for="prompt">Prompt:</label><br>
+                <textarea id="prompt" rows="4" cols="50" placeholder="Enter your customization instructions"></textarea><br><br>
+
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" placeholder="Enter your GitHub token"><br><br>
+
+                <button id="start-button">Start</button>
+            </section>
+            <section id="output">
+                <h2>Output</h2>
+                <div id="output-area"></div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+
     <script src="/script.js"></script>
 </body>
 </html>
