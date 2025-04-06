@@ -1,5 +1,8 @@
 # 🚀 Project Auto
 
+## 🤖 This Current Repository
+This repository other than readme.md, has never actually been edited by a human.  Rather, Project Auto Github bot is running on this repository, and maintaining it!  Making this one of the world's first github repositories fully run via AI!
+
 ## 🌐 Automating the Internet for Convenience
 
 Project Auto is a collection of carefully tuned AI systems working together to make your internet experience seamless and efficient.
