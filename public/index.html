@@ -1,43 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
 </head>
+
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1>Project Auto</h1>
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
+
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <a href="https://github.com/login/oauth/authorize?client_id=YOUR_GITHUB_CLIENT_ID&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/callback&scope=repo">
-                Login with GitHub
-            </a>
+            <h1>Project Auto</h1>
         </header>
+
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo-url">Repository URL (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., yourusername/yourrepo"><br><br>
-                <label for="prompt">Customization Instructions:</label><br>
-                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Enter your customization instructions here"></textarea><br><br>
+            <section id="input-section">
+                <label for="repo-name">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
+
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" name="prompt" rows="4"
+                    placeholder="Enter your customization instructions here"></textarea>
+
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
+
                 <button id="start-button">Start</button>
             </section>
+
+            <section id="output-section">
+                <h2>Output:</h2>
+                <div id="output-display">
+                    <p>Project Auto output will be displayed here.</p>
+                </div>
+            </section>
         </main>
+
         <footer>
             <p>&copy; 2024 Project Auto</p>
         </footer>
     </div>
+    <script src="/script.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
@@ -47,39 +65,7 @@
 
         setInterval(updateTime, 1000);
         updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const prompt = document.getElementById('prompt').value;
-
-            const accessToken = localStorage.getItem('github_token');
-
-            if (!accessToken) {
-                alert('Please login with GitHub first.');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/project-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`
-                    },
-                    body: JSON.stringify({ repoUrl, prompt })
-                });
-
-                if (response.ok) {
-                    alert('Project Auto started successfully!');
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.message || 'Something went wrong.'}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while starting Project Auto.');
-            }
-        });
     </script>
 </body>
+
 </html>
