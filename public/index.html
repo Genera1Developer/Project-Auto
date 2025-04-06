@@ -10,7 +10,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1 class="sidebar-title">Project Auto</h1>
+            <h1>Project Auto</h1>
         </div>
         <nav>
             <ul>
@@ -22,76 +22,28 @@
     </div>
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button">Login with GitHub</button>
+                <button id="logout-button" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
         </header>
         <main>
-            <section class="hero">
-                <h1>Automate Your Repositories</h1>
-                <p>Let Project Auto handle your repository tasks with ease.</p>
-            </section>
-            <section class="input-area">
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-                <label for="custom-instructions">Custom Instructions:</label>
-                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" placeholder="e.g., yourusername/yourrepo">
+                <label for="customization-prompt">Customization Instructions:</label>
+                <textarea id="customization-prompt" rows="4" placeholder="Enter your customization instructions here..."></textarea>
                 <button id="start-button">Start</button>
+                <p id="status-message"></p>
             </section>
         </main>
         <footer>
             <p>&copy; 2024 Project Auto</p>
         </footer>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const customInstructions = document.getElementById('custom-instructions').value;
-            const params = new URLSearchParams(window.location.search);
-            const token = params.get('token');
-
-            if (!repoUrl) {
-                alert('Please enter a repository URL.');
-                return;
-            }
-
-            if (!token) {
-                alert('Please configure your GitHub token.');
-                window.location.href = '/Configuration';
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        repoUrl: repoUrl,
-                        customInstructions: customInstructions,
-                        token: token,
-                    }),
-                });
-
-                if (response.ok) {
-                    alert('Project Auto started successfully!');
-                } else {
-                    const errorData = await response.json();
-                    alert(`Project Auto failed: ${errorData.error || 'Unknown error'}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while starting Project Auto.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
