@@ -8,42 +8,34 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="/" class="sidebar-item">Home</a>
-            <a href="/Configuration" class="sidebar-item">Configuration</a>
-            <a href="/About-Us" class="sidebar-item">About Us</a>
-        </div>
+        <h1>Project Auto</h1>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
-
-    <div class="main-content">
+    <div class="content">
         <header>
-            <div id="current-time" class="time-display"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <div>
+                <a href="/api/auth/github">Sign in with GitHub</a>
+            </div>
         </header>
-
-        <section id="home">
-            <h2>Welcome to Project Auto</h2>
-            <p>Automate your repository tasks with ease.</p>
-
-            <div class="input-area">
+        <main>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
                 <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-            </div>
-
-            <div class="input-area">
-                <label for="custom-instructions">Custom Instructions:</label>
-                <textarea id="custom-instructions" placeholder="Enter your instructions here"></textarea>
-            </div>
-
-            <button id="start-button">Start</button>
-        </section>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
+                <label for="customization-instructions">Customization Instructions:</label>
+                <textarea id="customization-instructions" name="customization-instructions" rows="4" cols="50" placeholder="Enter your customization instructions here"></textarea>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
     </div>
-
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            document.getElementById("current-time").textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
@@ -51,18 +43,26 @@
 
         document.getElementById('start-button').addEventListener('click', async () => {
             const repoUrl = document.getElementById('repo-url').value;
-            const customInstructions = document.getElementById('custom-instructions').value;
+            const customizationInstructions = document.getElementById('customization-instructions').value;
 
-            const response = await fetch('/api/execute', {
+            const response = await fetch('/api/run-project-auto', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ repoUrl, customInstructions }),
+                body: JSON.stringify({
+                    repoUrl: repoUrl,
+                    customizationInstructions: customizationInstructions
+                })
             });
 
             const data = await response.json();
-            alert(data.message); // Show the message returned from the server
+
+            if (response.ok) {
+                alert('Project Auto started successfully!');
+            } else {
+                alert('Error starting Project Auto: ' + data.error);
+            }
         });
     </script>
 </body>
