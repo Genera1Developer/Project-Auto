@@ -8,63 +8,87 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
     <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <button id="github-auth-button">Authenticate with GitHub</button>
-        </header>
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repository">GitHub Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo">
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions for Project Auto"></textarea>
-                <button id="start-button">Start</button>
-            </section>
-        </main>
+        <div class="header">
+            <div class="current-time" id="current-time"></div>
+            <h1>Project Auto</h1>
+        </div>
+        <div class="main-content">
+            <h2>Welcome!</h2>
+            <p>Enter your GitHub repository and customization instructions to start Project Auto.</p>
+            <form class="configuration-form" id="main-form">
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
+
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" name="custom-instructions" rows="5" placeholder="Enter your customization instructions here"></textarea>
+
+                <button type="button" class="start-button" onclick="startProjectAuto()">Start</button>
+            </form>
+            <div id="status-message" class="status-message"></div>
+        </div>
+        <div class="footer">
+            <p>Contact: support@projectauto.com</p>
+        </div>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById("current-time").textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('github-auth-button').addEventListener('click', () => {
-            window.location.href = '/api/auth/github';
-        });
+        async function startProjectAuto() {
+            const repo = document.getElementById('github-repo').value;
+            const instructions = document.getElementById('custom-instructions').value;
+            const statusMessage = document.getElementById('status-message');
 
-        document.getElementById('start-button').addEventListener('click', () => {
-            const repository = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
+            statusMessage.textContent = 'Loading...';
+            statusMessage.className = 'status-message loading';
 
-            fetch('/api/run-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ repository, instructions }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        repo: repo,
+                        instructions: instructions
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusMessage.textContent = data.message;
+                    statusMessage.className = 'status-message success';
+                } else {
+                    statusMessage.textContent = data.error || 'An error occurred.';
+                    statusMessage.className = 'status-message error';
+                }
+            } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred.');
-            });
-        });
+                statusMessage.textContent = 'An error occurred: ' + error.message;
+                statusMessage.className = 'status-message error';
+            }
+        }
     </script>
 </body>
 </html>
