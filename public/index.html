@@ -17,17 +17,22 @@
     </div>
     <div class="content">
         <header>
-            <div id="time"></div>
-            <a href="/api/auth/github" class="github-button">Sign in with GitHub</a>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+            <section id="input-section">
+                <label for="repo-name">Repository (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions"></textarea>
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
                 <button id="start-button">Start</button>
+            </section>
+            <section id="output-section">
+                <h2>Output</h2>
+                <div id="output"></div>
             </section>
         </main>
     </div>
