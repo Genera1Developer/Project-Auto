@@ -13,8 +13,8 @@
         </div>
         <ul class="sidebar-menu">
             <li><a href="/index.html"><i class="fas fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+            <li><a href="/public/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/public/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
         </ul>
         <div class="sidebar-footer">
             <p>&copy; 2024 Project Auto</p>
@@ -23,27 +23,27 @@
     <div class="content">
         <div class="header">
             <div class="current-time" id="current-time"></div>
-            <div></div>
+            <h1>Project Auto</h1>
         </div>
         <div class="main-content">
-            <h1>Welcome to Project Auto</h1>
-            <p>Automate your repository tasks with ease.</p>
-            <p>Please configure your repository settings and customization instructions in the Configuration tab.</p>
+            <h2>Welcome to Project Auto!</h2>
+            <p>Please configure your repository and customization instructions below.</p>
+            <form class="configuration-form" id="configuration-form">
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., owner/repository">
+
+                <label for="customization-instructions">Customization Instructions:</label>
+                <textarea id="customization-instructions" name="customization-instructions" rows="5" placeholder="Enter your customization instructions here."></textarea>
+
+                <button type="button" class="start-button" onclick="startProjectAuto()">Start</button>
+            </form>
+            <div id="status-message" class="status-message"></div>
         </div>
         <div class="footer">
-            <p>Contact us: support@projectauto.com</p>
+            <p>Contact us at: contact@projectauto.com</p>
         </div>
     </div>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
