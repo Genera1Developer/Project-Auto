@@ -9,9 +9,9 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="/" class="logo">Project Auto</a>
+            <h2 class="logo">Project Auto</h2>
         </div>
-        <ul class="sidebar-menu">
+        <ul class="nav">
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
@@ -19,34 +19,46 @@
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
+            <div id="time" class="time"></div>
         </header>
         <main>
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login">Login with GitHub</button>
-                <p id="auth-status">Not authenticated.</p>
-            </section>
-            <section id="repo-input">
-                <h2>Repository Details</h2>
-                <label for="repo-url">Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-            </section>
-            <section id="prompt-input">
-                <h2>Customization Instructions</h2>
-                <label for="custom-prompt">Instructions:</label>
-                <textarea id="custom-prompt" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-            <section id="start-button">
-                <button id="start-auto">Start</button>
-            </section>
-            <section id="output">
-                <h2>Output</h2>
-                <div id="output-area"></div>
+            <section id="home">
+                <h1>Welcome to Project Auto</h1>
+                <p>Automate your GitHub repository tasks with ease.</p>
+                <div class="github-auth">
+                    <a href="https://github.com/login/oauth/authorize?client_id=Iv1.43baf1ff2c617089&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
+                        Authenticate with GitHub
+                    </a>
+                </div>
+                <div class="project-details">
+                    <label for="repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="owner/repository" required>
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your automation instructions here" required></textarea>
+                    <button id="start-button">Start</button>
+                </div>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to display time immediately
+
+        document.getElementById('start-button').addEventListener('click', function() {
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+            // TODO: Implement the logic to send the repository and instructions to the backend for processing.
+            alert(`Starting automation for repository: ${repo} with instructions: ${instructions}`);
+        });
+    </script>
 </body>
 </html>
