@@ -4,77 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo">
-            <i class="fa fa-cog fa-spin"></i>
-            Project Auto
-        </div>
-        <ul>
-            <li><a href="/index.html"><i class="fa fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fa fa-cogs"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fa fa-info-circle"></i>About Us</a></li>
-        </ul>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="time"></div>
-            <h1>Project Auto</h1>
-        </header>
-
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository">
-
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here..."></textarea>
-
-                <button id="start-button">Start</button>
-            </section>
+    <div class="container">
+        <aside id="sidebar">
+            <div id="current-time"></div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
         </main>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, instructions }),
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    alert(result.message); // Or display the message in a better way
-                } else {
-                    const error = await response.json();
-                    alert(`Error: ${error.error}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
