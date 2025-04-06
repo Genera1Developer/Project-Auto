@@ -8,39 +8,29 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="/" class="sidebar-item">Home</a>
-            <a href="/Configuration" class="sidebar-item">Configuration</a>
-            <a href="/About-Us" class="sidebar-item">About Us</a>
-        </div>
+        <h1>Project Auto</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-
     <div class="content">
         <header>
             <div id="current-time"></div>
+            <button id="github-auth-button">Authenticate with GitHub</button>
         </header>
         <main>
-            <h1>Welcome to Project Auto</h1>
-            <p>Automate your GitHub repository tasks with ease.</p>
-
-            <div class="github-auth">
-                <a href="https://github.com/login/oauth/authorize?client_id=Iv1.4626c9b1334d1412&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
-                    Authenticate with GitHub
-                </a>
-            </div>
-
-            <div class="input-fields">
-                <label for="repository">Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" placeholder="e.g., owner/repo">
-
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="repository">GitHub Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo">
                 <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your automation instructions here"></textarea>
-            </div>
-
-            <button id="start-button">Start</button>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter instructions for Project Auto"></textarea>
+                <button id="start-button">Start</button>
+            </section>
         </main>
     </div>
-
     <script>
         function updateTime() {
             const now = new Date();
@@ -49,55 +39,31 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
+        updateTime();
 
-        document.getElementById("start-button").addEventListener("click", async () => {
-            const repository = document.getElementById("repository").value;
-            const instructions = document.getElementById("instructions").value;
+        document.getElementById('github-auth-button').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
 
-            // Retrieve token and username from the URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-            const username = urlParams.get('username');
+        document.getElementById('start-button').addEventListener('click', () => {
+            const repository = document.getElementById('repository').value;
+            const instructions = document.getElementById('instructions').value;
 
-            if (!repository) {
-                alert("Please enter a repository.");
-                return;
-            }
-
-            if (!token || !username) {
-                alert("Please authenticate with GitHub first.");
-                return;
-            }
-
-            const payload = {
-                repository: repository,
-                instructions: instructions,
-                token: token,
-                username: username
-            };
-
-            try {
-                const response = await fetch('/api/run', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    alert("Project Auto started!");
-                    console.log("Project Auto started successfully.");
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error || 'Failed to start Project Auto.'}`);
-                    console.error("Failed to start Project Auto:", errorData);
-                }
-            } catch (error) {
-                console.error("Error starting Project Auto:", error);
-                alert("An error occurred while starting Project Auto.");
-            }
+            fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repository, instructions }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            });
         });
     </script>
 </body>
