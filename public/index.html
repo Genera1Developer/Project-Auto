@@ -8,39 +8,37 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-content">
-        <h1>Project Auto</h1>
-        <a href="/">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <div class="sidebar-header">
+            <h2>Project Auto</h2>
         </div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
+
     <div class="content">
         <header>
-            <div id="current-time"></div>
+            <div id="time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <section id="project-input">
-                <h2>Run Project Auto</h2>
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" placeholder="e.g., your_username/your_repo"><br><br>
-
-                <label for="prompt">Prompt:</label><br>
-                <textarea id="prompt" rows="4" cols="50" placeholder="Enter your customization instructions"></textarea><br><br>
-
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" placeholder="Enter your GitHub token"><br><br>
-
-                <button id="start-button">Start</button>
+            <section id="github-auth">
+                <a href="/api/auth/github">Authenticate with GitHub</a>
             </section>
-            <section id="output">
-                <h2>Output</h2>
-                <div id="output-area"></div>
+
+            <section id="project-setup">
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
+
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+
+                <button id="start-button">Start Project Auto</button>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
 
     <script src="/script.js"></script>
