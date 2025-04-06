@@ -7,69 +7,27 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
-    </div>
-    <div class="content">
+    <div class="container">
         <header>
-            <div id="current-time"></div>
-            <div>Welcome to Project Auto</div>
+            <div id="current-time" class="time"></div>
+            <h1>Project Auto</h1>
         </header>
-        <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <input type="text" id="repo-url" placeholder="username/repo">
-                <textarea id="custom-instructions" placeholder="Customization Instructions"></textarea>
-                <button id="start-button">Start</button>
-            </section>
-            <section id="auth-section">
-                <h2>Authenticate with GitHub</h2>
-                <button id="github-auth-button">Authenticate</button>
-            </section>
+        <aside id="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById("current-time").textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('github-auth-button').addEventListener('click', () => {
-            window.location.href = '/api/auth/github';
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const customInstructions = document.getElementById('custom-instructions').value;
-
-            try {
-                const response = await fetch('/api/run', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repoUrl, customInstructions })
-                });
-
-                const data = await response.json();
-                console.log(data);
-                alert(data.message);
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
