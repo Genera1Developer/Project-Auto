@@ -1,22 +1,43 @@
 {
-  "name": "project-auto",
+  "name": "project-auto-web",
   "version": "1.0.0",
-  "description": "Project Auto Website",
+  "description": "Web interface for Project Auto",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "build": "npm install && npm install --prefix public && npm run build --prefix public"
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "web",
+    "automation",
+    "github"
+  ],
+  "author": "Project Auto Team",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
+    "@octokit/rest": "^20.0.2",
+    "axios": "^1.6.7",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
+    "eslint-config-next": "^14.1.0",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.0",
-    "node-fetch": "^3.3.2",
-    "nodemon": "^3.0.3"
+    "next": "^14.1.0",
+    "next-auth": "^5.0.0-beta.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-markdown": "^9.0.1",
+    "react-simplemde-editor": "^5.2.0",
+    "remark-gfm": "^4.0.0",
+    "sass": "^1.71.0",
+    "styled-components": "^6.1.8"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.34.0"
   }
 }
