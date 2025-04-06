@@ -8,69 +8,34 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <ul class="nav">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <div class="logo">Project Auto</div>
+        <a href="/" class="active">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
+
     <div class="content">
         <header>
             <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-                <label for="customization-instructions">Customization Instructions:</label>
-                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your desired customizations here..."></textarea>
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <input type="text" id="repo-name" placeholder="GitHub Repository (username/repo)">
+                <textarea id="prompt" placeholder="Enter customization instructions"></textarea>
+                <input type="text" id="github-token" placeholder="GitHub Token">
                 <button id="start-button">Start</button>
             </section>
+
+            <section id="output-section">
+                <h2>Output</h2>
+                <div id="output"></div>
+            </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
 
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const customizationInstructions = document.getElementById('customization-instructions').value;
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repoUrl, customizationInstructions })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    alert(data.message);
-                } else {
-                    alert(data.error || 'An error occurred.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
