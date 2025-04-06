@@ -8,30 +8,42 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <a href="/">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <div class="sidebar-header">
+            <img src="/style/project-auto-logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
         <header>
-            <div id="time"></div>
-            <a href="/api/auth/github">Login with GitHub</a>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button">Login with GitHub</button>
+                <button id="logout-button" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
         </header>
         <main>
-            <h2>Welcome to Project Auto</h2>
-            <p>Enter your GitHub repository and customization instructions below:</p>
-            <form id="project-form">
-                <label for="repository">Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" required><br><br>
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
-                <button type="button" id="start-button">Start</button>
-            </form>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <div class="form-group">
+                    <label for="github-repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="github-repo" name="github-repo" placeholder="username/repo">
+                </div>
+                <div class="form-group">
+                    <label for="customization-prompt">Customization Instructions:</label>
+                    <textarea id="customization-prompt" name="customization-prompt" rows="4" placeholder="Enter your customization instructions here."></textarea>
+                </div>
+                <button id="start-button">Start</button>
+                <div id="status-message"></div>
+            </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
     <script src="/script.js"></script>
 </body>
