@@ -4,30 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside id="sidebar">
-            <div class="sidebar-header">
-                <img src="/logo.png" alt="Project Auto Logo" class="logo">
-                <h2>Project Auto</h2>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+        </header>
         <main>
-            <header>
-                <div id="current-time"></div>
+            <section id="home">
                 <h1>Welcome to Project Auto</h1>
-            </header>
-            <section id="content">
-                <!-- Content will be loaded here -->
+                <p>Enter your GitHub repository and customization prompt below:</p>
+                <div class="input-form">
+                    <label for="repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="e.g., your_username/your_repo">
+                    <label for="prompt">Customization Prompt:</label>
+                    <textarea id="prompt" name="prompt" rows="4" placeholder="e.g., Add a new feature to the website."></textarea>
+                    <button id="start-button">Start</button>
+                    <div id="status-message"></div>
+                </div>
             </section>
         </main>
     </div>
