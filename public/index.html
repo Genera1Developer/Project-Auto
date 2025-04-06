@@ -8,38 +8,70 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <div class="sidebar-header">
+            <img src="/style/Project-Auto-Logo.png" alt="Project Auto Logo" class = "logo">
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/index.html" class="sidebar-link">Home</a>
+            <a href="/Configuration" class="sidebar-link">Configuration</a>
+            <a href="/About-Us" class="sidebar-link">About Us</a>
+        </nav>
     </div>
     <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+        <header class="header">
+            <div id="current-time" class="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
-        <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <label for="repo-name">Repository Name (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-                <label for="prompt">Customization Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Describe the changes you want to make."></textarea>
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
-                <button id="start-button">Start</button>
-            </section>
-            <section id="status-section">
-                <h2>Status</h2>
-                <p id="status-message">Ready to start!</p>
+        <main class="main-content">
+            <section id="github-config">
+                <h2>GitHub Configuration</h2>
+                <label for="github-repo">Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., owner/repository">
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Enter your customization instructions here..."></textarea>
+                <button id="start-button" class="start-button">Start</button>
+                <a href="/api/auth/github" class="github-button">Authenticate with GitHub</a>
             </section>
         </main>
-        <footer>
+        <footer class="footer">
             <p>&copy; 2024 Project Auto</p>
         </footer>
     </div>
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo = document.getElementById('github-repo').value;
+            const prompt = document.getElementById('prompt').value;
+
+            try {
+                const response = await fetch('/api/projectAuto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, prompt }),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    alert(result.message);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            }
+        });
+    </script>
 </body>
 </html>
