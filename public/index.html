@@ -1,37 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Auto</title>
+  <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside id="sidebar">
-            <div class="sidebar-header">
-                <img src="/logo.png" alt="Project Auto Logo" class="logo">
-                <h1>Project Auto</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main>
-            <header>
-                <div id="current-time"></div>
-                <!-- GitHub Authentication Button -->
-                <button id="github-auth-button">Authenticate with GitHub</button>
-            </header>
-            <section id="content">
-                <!-- Content will be loaded here -->
-            </section>
-        </main>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2 class="sidebar-title">Project Auto</h2>
     </div>
-    <script src="/script.js"></script>
+    <ul class="sidebar-menu">
+      <li><a href="/index.html">Home</a></li>
+      <li><a href="/Configuration">Configuration</a></li>
+      <li><a href="/About-Us">About Us</a></li>
+    </ul>
+  </div>
+  <div class="content">
+    <header class="header">
+      <div id="current-time" class="current-time"></div>
+      <h1>Project Auto</h1>
+    </header>
+    <main class="main">
+      <section class="input-section">
+        <h2>Enter Repository Details</h2>
+        <input type="text" id="repo-url" placeholder="username/repo">
+        <textarea id="custom-prompt" placeholder="Enter customization instructions"></textarea>
+        <button id="start-button">Start</button>
+      </section>
+      <section class="auth-section">
+        <button id="github-login">Login with GitHub</button>
+        <div id="auth-status"></div>
+      </section>
+    </main>
+    <footer class="footer">
+      <p>&copy; 2024 Project Auto</p>
+    </footer>
+  </div>
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('current-time').textContent = timeString;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+  <script src="/script.js"></script>
 </body>
 </html>
