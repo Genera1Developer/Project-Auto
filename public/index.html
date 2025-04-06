@@ -1,48 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/style.css">
 </head>
+
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+        <div class="sidebar-content">
+            <a href="/" class="sidebar-item active">Home</a>
+            <a href="/Configuration" class="sidebar-item">Configuration</a>
+            <a href="/About-Us" class="sidebar-item">About Us</a>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html"><i class="fa fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fa fa-cogs"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fa fa-info-circle"></i>About Us</a></li>
-        </ul>
     </div>
-    <div class="content">
+    <div class="container">
         <header>
-            <div id="time"></div>
+            <div id="time" class="time"></div>
             <h1>Project Auto</h1>
         </header>
         <main>
-            <section id="github-repo">
-                <h2>GitHub Repository</h2>
-                <input type="text" id="repo-url" placeholder="username/repository">
+            <section id="input-section">
+                <h2>Customize Your Repository</h2>
+                <form id="project-form">
+                    <div class="form-group">
+                        <label for="repo_name">Repository (username/repo):</label>
+                        <input type="text" id="repo_name" name="repo_name" placeholder="e.g., your_username/your_repo"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prompt">Prompt:</label>
+                        <textarea id="prompt" name="prompt" rows="4"
+                            placeholder="Describe the changes you want to make." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="github_token">GitHub Token:</label>
+                        <input type="password" id="github_token" name="github_token"
+                            placeholder="Enter your GitHub token" required>
+                    </div>
+                    <button type="submit" class="start-button">Start</button>
+                </form>
             </section>
-            <section id="customization">
-                <h2>Customization Instructions</h2>
-                <textarea id="custom-instructions" placeholder="Enter your instructions here"></textarea>
-            </section>
-            <section id="authentication">
-                <h2>GitHub Authentication</h2>
-                <button id="login-button">Login with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </section>
-            <section id="start">
-                <button id="start-button">Start</button>
+            <section id="output-section">
+                <h2>Output</h2>
+                <div id="output">
+                    <p>Project Auto output will appear here.</p>
+                </div>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
 
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('project-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const repo_name = document.getElementById('repo_name').value;
+            const prompt = document.getElementById('prompt').value;
+            const github_token = document.getElementById('github_token').value;
+            const outputDiv = document.getElementById('output');
+
+            fetch('/api/AI.py', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    repo_name: repo_name,
+                    prompt: prompt,
+                    github_token: github_token
+                })
+            })
+                .then(response => response.text())
+                .then(data => {
+                    outputDiv.textContent = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    outputDiv.textContent = 'An error occurred.';
+                });
+        });
+    </script>
 </body>
+
 </html>
