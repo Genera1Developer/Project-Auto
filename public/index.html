@@ -5,35 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1 class="logo">Project Auto</h1>
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <nav class="sidebar-nav">
-            <a href="/" class="sidebar-link active" data-page="home">Home</a>
-            <a href="/Configuration" class="sidebar-link" data-page="configuration">Configuration</a>
-            <a href="/About-Us" class="sidebar-link" data-page="about">About Us</a>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="/public/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
+            <li><a href="/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+        </ul>
     </div>
 
-    <main class="main-content">
-        <header class="header">
-            <div id="current-time" class="current-time"></div>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
+            <a href="/api/auth/github" class="github-button">
+                <i class="fab fa-github"></i> Sign in with GitHub
+            </a>
         </header>
 
-        <section id="home" class="content-section active">
-            <h1>Welcome to Project Auto</h1>
-            <p>Automate your GitHub repository tasks.</p>
+        <main>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <div class="input-group">
+                    <label for="repo-url">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo-url" placeholder="e.g., yourusername/yourrepo">
+                </div>
+                <div class="input-group">
+                    <label for="custom-instructions">Custom Instructions:</label>
+                    <textarea id="custom-instructions" placeholder="Enter your customization instructions here"></textarea>
+                </div>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
 
-            <div id="github-auth">
-                <a href="https://github.com/login/oauth/authorize?client_id=Iv1.a05608471ca454f1&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
-                    Authenticate with GitHub
-                </a>
-            </div>
-        </section>
-    </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
 
     <script>
         function updateTime() {
@@ -44,25 +57,38 @@
 
         setInterval(updateTime, 1000);
         updateTime();
-    </script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sidebarLinks = document.querySelectorAll('.sidebar-link');
-            const contentSections = document.querySelectorAll('.content-section');
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customInstructions = document.getElementById('custom-instructions').value;
 
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function(event) {
-                    event.preventDefault();
+            const accessToken = localStorage.getItem('github_access_token');
 
-                    sidebarLinks.forEach(link => link.classList.remove('active'));
-                    this.classList.add('active');
+            if (!accessToken) {
+                alert('Please sign in with GitHub first.');
+                return;
+            }
 
-                    contentSections.forEach(section => section.classList.remove('active'));
-                    const target = this.getAttribute('data-page');
-                    document.getElementById(target).classList.add('active');
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({ repoUrl, customInstructions })
                 });
-            });
+
+                if (response.ok) {
+                    alert('Project Auto started successfully!');
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.message || 'Failed to start Project Auto.'}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while starting Project Auto.');
+            }
         });
     </script>
 </body>
