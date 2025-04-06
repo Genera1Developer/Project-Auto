@@ -9,112 +9,44 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <span id="current-time"></span>
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
+
     <div class="content">
-        <h1>Project Auto</h1>
-        <p>Automate your GitHub repository tasks.</p>
+        <header>
+            <div id="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button" onclick="loginWithGitHub()">Login with GitHub</button>
+                <button id="logout-button" onclick="logout()" style="display: none;">Logout</button>
+                <span id="user-info"></span>
+            </div>
+        </header>
 
-        <div id="auth-section">
-            <button id="github-login">Login with GitHub</button>
-        </div>
-
-        <div id="app-section" style="display: none;">
-            <label for="repo">GitHub Repository (username/repo):</label>
-            <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo"><br><br>
-
-            <label for="prompt">Customization Instructions:</label><br>
-            <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br><br>
-
-            <button id="start-button">Start</button>
-            <p id="status-message"></p>
-        </div>
+        <main>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <div class="input-group">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository">
+                </div>
+                <div class="input-group">
+                    <label for="prompt">Customization Instructions:</label>
+                    <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here..."></textarea>
+                </div>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
     </div>
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-
-        const githubLoginButton = document.getElementById('github-login');
-        const appSection = document.getElementById('app-section');
-        const authSection = document.getElementById('auth-section');
-        const startButton = document.getElementById('start-button');
-        const repoInput = document.getElementById('repo');
-        const promptInput = document.getElementById('prompt');
-        const statusMessage = document.getElementById('status-message');
-        const config = {
-            githubClientId: 'YOUR_GITHUB_CLIENT_ID',
-            githubClientSecret: 'YOUR_GITHUB_CLIENT_SECRET',
-            redirectUri: 'https://project-auto-v1029.vercel.app/api/auth/callback',
-            apiBaseUrl: 'https://project-auto-v1029.vercel.app/api',
-        };
-
-        githubLoginButton.addEventListener('click', () => {
-            // Redirect to GitHub authentication
-            window.location.href = `${config.apiBaseUrl}/auth/github`;
-        });
-        
-        // Check if the user is already authenticated (e.g., via a cookie)
-        function checkAuthentication() {
-            fetch(`${config.apiBaseUrl}/auth/check`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.isAuthenticated) {
-                    authSection.style.display = 'none';
-                    appSection.style.display = 'block';
-                } else {
-                    authSection.style.display = 'block';
-                    appSection.style.display = 'none';
-                }
-            })
-            .catch(error => {
-                console.error('Error checking authentication:', error);
-                authSection.style.display = 'block';
-                appSection.style.display = 'none';
-            });
-        }
-
-        checkAuthentication();
-
-        startButton.addEventListener('click', async () => {
-            const repo = repoInput.value;
-            const prompt = promptInput.value;
-
-            if (!repo) {
-                statusMessage.textContent = 'Please enter a repository.';
-                return;
-            }
-
-            statusMessage.textContent = 'Processing...';
-
-            try {
-                const response = await fetch(`${config.apiBaseUrl}/run`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, prompt }),
-                });
-
-                const data = await response.json();
-                statusMessage.textContent = data.message; // Or handle errors accordingly
-            } catch (error) {
-                console.error('Error:', error);
-                statusMessage.textContent = 'An error occurred.';
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
