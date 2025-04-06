@@ -8,34 +8,78 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="logo">Project Auto</div>
-        <a href="/" class="active">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <div class="sidebar-header">
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
-
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <button id="github-login-btn">Login with GitHub</button>
         </header>
-
         <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <input type="text" id="repo-name" placeholder="GitHub Repository (username/repo)">
-                <textarea id="prompt" placeholder="Enter customization instructions"></textarea>
-                <input type="text" id="github-token" placeholder="GitHub Token">
+            <section id="project-input">
+                <h2>Project Details</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
+                <label for="customization-prompt">Customization Instructions:</label>
+                <textarea id="customization-prompt" name="customization-prompt" rows="4" placeholder="Enter your instructions here"></textarea>
                 <button id="start-button">Start</button>
             </section>
-
-            <section id="output-section">
-                <h2>Output</h2>
-                <div id="output"></div>
+            <section id="status">
+                <h2>Status</h2>
+                <div id="status-message"></div>
             </section>
         </main>
     </div>
 
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('github-login-btn').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customizationPrompt = document.getElementById('customization-prompt').value;
+            const statusMessageDiv = document.getElementById('status-message');
+
+            statusMessageDiv.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        repoUrl: repoUrl,
+                        customizationPrompt: customizationPrompt,
+                    }),
+                });
+
+                const data = await response.json();
+                statusMessageDiv.textContent = data.message;
+            } catch (error) {
+                statusMessageDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
 </body>
 </html>
