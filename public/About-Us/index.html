@@ -127,6 +127,29 @@
         a:hover {
             text-decoration: underline;
         }
+
+        .team-member {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .team-member img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .team-member h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 
@@ -154,10 +177,33 @@
             </section>
             <section class="about-section">
                 <h2>Our Team</h2>
-                <p>We are a diverse team of passionate and experienced developers, engineers, and automation experts.
-                    Our collective expertise spans a wide range of domains, including artificial intelligence, machine
-                    learning, cloud computing, and web development. We are united by a shared vision of creating a
-                    more efficient and accessible future for software development.</p>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/80" alt="Team Member 1">
+                    <div>
+                        <h3>John Doe</h3>
+                        <p>Lead Developer</p>
+                        <p>John is a seasoned developer with over 10 years of experience in software development and
+                            automation.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/80" alt="Team Member 2">
+                    <div>
+                        <h3>Jane Smith</h3>
+                        <p>AI Specialist</p>
+                        <p>Jane is an expert in artificial intelligence and machine learning, focused on enhancing
+                            automation processes.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/80" alt="Team Member 3">
+                    <div>
+                        <h3>Peter Jones</h3>
+                        <p>Cloud Architect</p>
+                        <p>Peter specializes in cloud computing and infrastructure, ensuring seamless integration and
+                            scalability.</p>
+                    </div>
+                </div>
             </section>
             <section class="about-section">
                 <h2>Why Project Auto?</h2>
