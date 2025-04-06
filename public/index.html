@@ -4,42 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/public/style/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/public/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1 class="logo">Project Auto</h1>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/public/Configuration">Configuration</a></li>
-                <li><a href="/public/About-Us">About Us</a></li>
-            </ul>
+        <nav class="sidebar-nav">
+            <a href="/" class="sidebar-link active" data-page="home">Home</a>
+            <a href="/Configuration" class="sidebar-link" data-page="configuration">Configuration</a>
+            <a href="/About-Us" class="sidebar-link" data-page="about">About Us</a>
         </nav>
     </div>
-    <div class="content">
-        <header>
+
+    <main class="main-content">
+        <header class="header">
             <div id="current-time" class="current-time"></div>
         </header>
-        <main>
-            <h1>Project Auto</h1>
-            <div class="form-container">
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions"></textarea>
-                <button id="start-button">Start</button>
-            </div>
-            <div id="status-message"></div>
-        </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
-    </div>
 
-    <script src="/public/script.js"></script>
+        <section id="home" class="content-section active">
+            <h1>Welcome to Project Auto</h1>
+            <p>Automate your GitHub repository tasks.</p>
+
+            <div id="github-auth">
+                <a href="https://github.com/login/oauth/authorize?client_id=Iv1.a05608471ca454f1&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
+                    Authenticate with GitHub
+                </a>
+            </div>
+        </section>
+    </main>
+
     <script>
         function updateTime() {
             const now = new Date();
@@ -49,6 +44,26 @@
 
         setInterval(updateTime, 1000);
         updateTime();
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    sidebarLinks.forEach(link => link.classList.remove('active'));
+                    this.classList.add('active');
+
+                    contentSections.forEach(section => section.classList.remove('active'));
+                    const target = this.getAttribute('data-page');
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+        });
     </script>
 </body>
 </html>
