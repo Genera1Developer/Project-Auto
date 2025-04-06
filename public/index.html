@@ -9,33 +9,72 @@
 <body>
     <div class="sidebar">
         <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
+
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Project Auto</h1>
+            <button id="github-login">Login with GitHub</button>
         </header>
+
         <main>
-            <section id="input-section">
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="repo-url">Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" placeholder="Enter your customization instructions here"></textarea>
+
                 <button id="start-button">Start</button>
             </section>
-            <section id="output-section">
-                <h2>Output:</h2>
-                <div id="output"></div>
-            </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('github-login').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customInstructions = document.getElementById('custom-instructions').value;
+
+            fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    repoUrl: repoUrl,
+                    customInstructions: customInstructions,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            });
+        });
+    </script>
 </body>
 </html>
