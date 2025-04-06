@@ -9,7 +9,7 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>Project Auto</h2>
+            <span id="current-time"></span>
         </div>
         <ul class="sidebar-menu">
             <li><a href="/">Home</a></li>
@@ -17,24 +17,27 @@
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
+
     <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
-        <main>
-            <section id="input-section">
-                <label for="repo-input">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-input" placeholder="e.g., owner/repository">
-                <label for="prompt-input">Customization Instructions:</label>
-                <textarea id="prompt-input" placeholder="Enter your instructions here"></textarea>
-                <button id="start-button">Start</button>
-            </section>
-            <section id="auth-section">
-                <a href="/api/auth/github">Authenticate with GitHub</a>
-            </section>
-        </main>
+        <h1>Welcome to Project Auto</h1>
+        <p>Automate your GitHub repository with ease.</p>
+
+        <div id="auth-section">
+            <button id="github-login">Login with GitHub</button>
+            <span id="user-info"></span>
+        </div>
+
+        <div id="project-form">
+            <label for="repository">GitHub Repository (username/repo):</label>
+            <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository" required>
+
+            <label for="prompt">Customization Instructions:</label>
+            <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
+
+            <button id="start-button">Start</button>
+        </div>
     </div>
+
     <script src="/script.js"></script>
 </body>
 </html>
