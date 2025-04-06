@@ -9,15 +9,108 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
         integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #FFD700; /* Gold color */
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #FFD700; /* Gold color */
+            color: #333;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        header {
+            background-color: #555;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            text-align: left;
+            margin: 0;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .about-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .about-section h2 {
+            color: #555;
+        }
+
+        .current-time {
+            font-size: 0.9em;
+            color: #eee;
+        }
+    </style>
 </head>
 
 <body>
     <div class="sidebar">
         <h1>Project Auto</h1>
         <ul>
-            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="/Configuration/index.html"><i class="fa fa-cog"></i> Configuration</a></li>
-            <li><a href="/About-Us/index.html" class="active"><i class="fa fa-info-circle"></i> About Us</a></li>
+            <li><a href="/public/index.html"><i class="fa fa-home"></i> Home</a></li>
+            <li><a href="/public/Configuration/index.html"><i class="fa fa-cog"></i> Configuration</a></li>
+            <li><a href="/public/About-Us/index.html" class="active"><i class="fa fa-info-circle"></i> About Us</a></li>
         </ul>
         <div class="current-time" id="current-time"></div>
     </div>
