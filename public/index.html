@@ -10,78 +10,44 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html"><i class="fas fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
-        <div class="header">
-            <div class="current-time" id="current-time"></div>
-        </div>
-        <div class="main-content">
+        <header>
+            <div id="current-time"></div>
             <h1>Welcome to Project Auto</h1>
-            <p>Enter your GitHub repository and customization instructions to start Project Auto.</p>
-            <form class="configuration-form" id="project-auto-form">
-                <label for="github-repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., owner/repository" required>
-                <label for="customization-instructions">Customization Instructions:</label>
-                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-                <button type="submit" class="start-button">Start</button>
-            </form>
-            <div id="status-message" class="status-message"></div>
-        </div>
-        <div class="footer">
-            <p>Contact: support@projectauto.com</p>
-        </div>
+        </header>
+        <main>
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <div class="input-group">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo">
+                </div>
+                <div class="input-group">
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                </div>
+                <button id="start-button">Start</button>
+            </section>
+            <section id="auth-section">
+                <h2>GitHub Authentication</h2>
+                <button id="github-auth-button">Authenticate with GitHub</button>
+                <p id="auth-status">Not authenticated</p>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('project-auto-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const repo = document.getElementById('github-repo').value;
-            const instructions = document.getElementById('customization-instructions').value;
-            const statusMessage = document.getElementById('status-message');
-
-            statusMessage.textContent = 'Processing...';
-            statusMessage.className = 'status-message loading';
-
-            fetch('/api/start', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    repo: repo,
-                    instructions: instructions
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                statusMessage.textContent = data.message;
-                statusMessage.className = data.success ? 'status-message success' : 'status-message error';
-            })
-            .catch(error => {
-                statusMessage.textContent = 'An error occurred.';
-                statusMessage.className = 'status-message error';
-                console.error('Error:', error);
-            });
-        });
-    </script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
