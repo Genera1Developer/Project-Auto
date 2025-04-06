@@ -7,59 +7,46 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-                <h3>Project Auto</h3>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="/index.html" class="active">Home</a>
-                <a href="/Configuration.html">Configuration</a>
-                <a href="/About-Us.html">About Us</a>
-            </nav>
-            <footer class="sidebar-footer">
-                <p>&copy; 2024 Project Auto</p>
-            </footer>
-        </aside>
-        <main class="main-content">
-            <header class="main-header">
-                <div id="current-time" class="current-time"></div>
-            </header>
-            <section class="hero">
-                <h1>Automate Your Repository</h1>
-                <p>Enter your repository details and customization instructions to get started.</p>
-            </section>
-            <section class="form-section">
-                <form id="auto-form">
-                    <div class="form-group">
-                        <label for="repo">Repository (username/repo):</label>
-                        <input type="text" id="repo" name="repo" placeholder="username/repo" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="instructions">Customization Instructions:</label>
-                        <textarea id="instructions" name="instructions" placeholder="Enter your instructions here..." rows="5" required></textarea>
-                    </div>
-                    <button id="github-auth-button" class="github-button">Authenticate with GitHub</button>
-                    <button type="submit" class="start-button">Start</button>
-                </form>
+    <div class="sidebar">
+        <h1>Project Auto</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <header>
+            <div id="time"></div>
+            <div>Welcome to Project Auto</div>
+        </header>
+        <main>
+            <section id="github-config">
+                <h2>GitHub Configuration</h2>
+                <label for="repo">Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="username/repo"><br><br>
+
+                <label for="instructions">Customization Instructions:</label><br>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your instructions here"></textarea><br><br>
+
+                <button id="start-button">Start</button>
             </section>
         </main>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            document.getElementById("time").textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('auto-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
+        document.getElementById("start-button").addEventListener("click", async () => {
+            const repo = document.getElementById("repo").value;
+            const instructions = document.getElementById("instructions").value;
 
             try {
                 const response = await fetch('/api/run-auto', {
@@ -70,23 +57,14 @@
                     body: JSON.stringify({ repo, instructions }),
                 });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    alert(data.message);
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error}`);
-                }
+                const data = await response.json();
+                console.log(data);
+                alert(data.message); // Or display the message in a more user-friendly way
+
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while processing your request.');
+                alert('An error occurred while running Project Auto.');
             }
-        });
-
-        document.getElementById('github-auth-button').addEventListener('click', async (event) => {
-            event.preventDefault();
-            // Redirect to GitHub authentication endpoint
-            window.location.href = '/api/auth/github';
         });
     </script>
 </body>
