@@ -1,37 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Auto</title>
+  <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <h1>Project Auto</h1>
-        <a href="/">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
     </div>
-    <div class="content">
-        <header>
-            <div id="time"></div>
-            <a href="/api/auth/github">Login with GitHub</a>
-        </header>
-        <main>
-            <h2>Welcome to Project Auto</h2>
-            <p>Automate your repository tasks with ease.</p>
-            <div id="app">
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository"><br><br>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/Configuration">Configuration</a></li>
+        <li><a href="/About-Us">About Us</a></li>
+      </ul>
+    </nav>
+  </div>
 
-                <label for="instructions">Customization Instructions:</label><br>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your instructions here"></textarea><br><br>
+  <div class="content">
+    <header>
+      <div id="current-time"></div>
+      <h1>Project Auto</h1>
+    </header>
 
-                <button id="startBtn">Start</button>
-            </div>
-        </main>
-    </div>
-    <script src="/script.js"></script>
+    <main>
+      <section id="project-setup">
+        <h2>Project Setup</h2>
+        <label for="github-repo">GitHub Repository (username/repo):</label>
+        <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
+
+        <label for="customization-instructions">Customization Instructions:</label>
+        <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your customization requests here..."></textarea>
+
+        <button id="start-button">Start</button>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('current-time').textContent = `Current Time: ${timeString}`;
+    }
+
+    setInterval(updateTime, 1000);
+    updateTime();
+  </script>
+  <script src="/script.js"></script>
 </body>
 </html>
