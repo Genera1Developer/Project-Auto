@@ -9,60 +9,118 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1>Project Auto</h1>
+            <h2 class="logo">Project Auto</h2>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
+            <li><a href="/index.html">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
+
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <div class="auth-buttons">
-                <button id="login-button">Login with GitHub</button>
-                <button id="logout-button" style="display: none;">Logout</button>
-                <span id="username"></span>
-                <img id="user-avatar" src="" alt="User Avatar" style="display:none; border-radius: 50%; width: 30px; height: 30px; margin-left: 5px;">
-            </div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <section id="project-setup">
+            <section id="github-auth">
+                <h2>GitHub Authentication</h2>
+                <p>Connect to your GitHub account to start using Project Auto.</p>
+                <button id="github-login-button">Login with GitHub</button>
+            </section>
+
+            <section id="project-setup" style="display: none;">
                 <h2>Project Setup</h2>
-                <div id="auth-area">
-                  <p>Please login with GitHub to continue.</p>
-                </div>
-                <div id="project-form" style="display: none;">
-                    <label for="repo-url">Repository (username/repo):</label>
-                    <input type="text" id="repo-url" name="repo-url" placeholder="username/repo"><br><br>
-                    <label for="prompt">Customization Instructions:</label><br>
-                    <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br><br>
-                    <button id="start-button">Start</button>
-                </div>
-                <div id="loading-indicator" style="display: none;">
-                    <img src="/style/loading.gif" alt="Loading..." width="50">
-                    <p>Project Auto is running...</p>
-                </div>
-                <div id="results" style="display: none;">
-                    <h3>Results:</h3>
-                    <pre id="results-content"></pre>
-                </div>
+                <p>Enter your GitHub repository and customization instructions.</p>
+                <form id="project-form">
+                    <label for="repository">Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" required><br><br>
+
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
+
+                    <button type="submit" id="start-button">Start</button>
+                </form>
             </section>
         </main>
+
         <footer>
             <p>&copy; 2024 Project Auto</p>
         </footer>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
             document.getElementById('current-time').textContent = timeString;
         }
+
         setInterval(updateTime, 1000);
         updateTime();
+
+        const githubLoginButton = document.getElementById('github-login-button');
+        const projectSetupSection = document.getElementById('project-setup');
+        const githubAuthSection = document.getElementById('github-auth');
+        const projectForm = document.getElementById('project-form');
+
+        githubLoginButton.addEventListener('click', () => {
+            // Redirect to GitHub OAuth flow
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo`;
+        });
+
+        // Check for token in URL after redirect
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (token) {
+            // Store the token (e.g., in localStorage or a cookie)
+            localStorage.setItem('github_token', token);
+            githubAuthSection.style.display = 'none';
+            projectSetupSection.style.display = 'block';
+        } else {
+            // Check if token exists in local storage from previous session
+            const storedToken = localStorage.getItem('github_token');
+            if (storedToken) {
+                githubAuthSection.style.display = 'none';
+                projectSetupSection.style.display = 'block';
+            } else {
+                githubAuthSection.style.display = 'block';
+                projectSetupSection.style.display = 'none';
+            }
+        }
+
+        projectForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const repository = document.getElementById('repository').value;
+            const instructions = document.getElementById('instructions').value;
+            const token = localStorage.getItem('github_token');
+
+            // Send data to backend for processing
+            try {
+                const response = await fetch('/api/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` // Include token for authentication
+                    },
+                    body: JSON.stringify({ repository, instructions })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            }
+        });
     </script>
-    <script src="/script.js"></script>
 </body>
 </html>
