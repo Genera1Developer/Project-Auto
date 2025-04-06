@@ -5,36 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="/" class="sidebar-tab active">Home</a>
-            <a href="/Configuration" class="sidebar-tab">Configuration</a>
-            <a href="/About-Us" class="sidebar-tab">About Us</a>
+        <div class="sidebar-header">
+            <img src="https://project-auto-v1029.vercel.app/images/logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
         </div>
     </div>
     <div class="content">
-        <header>
-            <div id="current-time" class="time"></div>
-            <h1>Project Auto</h1>
-        </header>
-        <main>
-            <section id="github-auth">
-                <a href="https://github.com/login/oauth/authorize?client_id=Iv1.4f6e8c28f7e5d615&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">Authenticate with GitHub</a>
+        <div class="header">
+            <div>
+                <h1>Project Auto</h1>
+                <div class="current-time" id="current-time"></div>
+            </div>
+        </div>
+        <div class="main-content">
+            <section class="hero-section">
+                <h2>Automate Your Repository</h2>
+                <p>Project Auto simplifies your workflow by automating tasks in your GitHub repository.</p>
+                <a href="/Configuration" class="cta-button">Get Started</a>
             </section>
-            <section id="project-details">
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-                <label for="custom-instructions">Custom Instructions:</label>
-                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter customization instructions here"></textarea>
-                <button id="start-button">Start</button>
+            <section class="features-section">
+                <div class="feature">
+                    <i class="fas fa-code"></i>
+                    <h3>Code Generation</h3>
+                    <p>Automatically generate code snippets based on your specifications.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Automated Testing</h3>
+                    <p>Run tests automatically to ensure code quality.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-deploydog"></i>
+                    <h3>Continuous Deployment</h3>
+                    <p>Deploy your changes automatically to your desired environment.</p>
+                </div>
             </section>
-        </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
+        </div>
+        <div class="footer">
+            <p>Contact us at: <a href="mailto:support@projectauto.com">support@projectauto.com</a></p>
+        </div>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 </body>
 </html>
