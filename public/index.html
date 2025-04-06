@@ -1,103 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Auto</title>
+  <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2 class="logo">Project Auto</h2>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="/style/Project-Auto-Logo.png" alt="Project Auto Logo" class="logo">
+      <h1>Project Auto</h1>
     </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/Configuration">Configuration</a></li>
+        <li><a href="/About-Us">About Us</a></li>
+      </ul>
+    </nav>
+  </div>
 
-    <div class="content">
-        <header>
-            <div id="current-time" class="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
+  <div class="content">
+    <header>
+      <div id="current-time"></div>
+      <button id="github-login">Login with GitHub</button>
+    </header>
 
-        <main>
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login-button" onclick="redirectToGitHubLogin()">Login with GitHub</button>
-            </section>
+    <main>
+      <section id="project-setup">
+        <h2>Project Setup</h2>
+        <label for="repo-url">GitHub Repository (username/repo):</label>
+        <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
 
-            <section id="project-setup" style="display:none;">
-                <h2>Project Setup</h2>
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="owner/repository" required>
+        <label for="customization-instructions">Customization Instructions:</label>
+        <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your customization instructions here..."></textarea>
 
-                <label for="customization-instructions">Customization Instructions:</label>
-                <textarea id="customization-instructions" name="customization-instructions" rows="4" cols="50" placeholder="Enter your instructions here"></textarea>
+        <button id="start-button">Start</button>
+      </section>
+    </main>
 
-                <button id="start-button">Start</button>
-            </section>
-        </main>
-    </div>
+    <footer>
+      <p>&copy; 2024 Project Auto</p>
+    </footer>
+  </div>
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      document.getElementById('current-time').textContent = timeString;
+    }
 
-        setInterval(updateTime, 1000);
-        updateTime();
+    setInterval(updateTime, 1000);
+    updateTime(); // Initial call to display time immediately
 
-        function redirectToGitHubLogin() {
-            window.location.href = 'https://github.com/login/oauth/authorize?client_id=Iv1.7e9b124e6845c015';
-        }
+     document.getElementById('github-login').addEventListener('click', () => {
+        window.location.href = '/api/auth/github';
+     });
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const error = urlParams.get('error');
+      document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const instructions = document.getElementById('customization-instructions').value;
 
-        if (error) {
-            alert("Error: " + error);
-        }
-
-        const token = urlParams.get('token');
-        const username = urlParams.get('username');
-        
-        if (token && username) {
-            document.getElementById('github-auth').style.display = 'none';
-            document.getElementById('project-setup').style.display = 'block';
-
-            document.getElementById('start-button').addEventListener('click', function() {
-                const repoName = document.getElementById('repo-name').value;
-                const instructions = document.getElementById('customization-instructions').value;
-
-                fetch('/api/processRepo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        repoName: repoName,
-                        instructions: instructions,
-                        username: username
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-                .catch(error => {
-                    console.error("Error processing repository:", error);
-                    alert("Failed to process repository. See console for details.");
-                });
+            const response = await fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repoUrl: repoUrl, instructions: instructions })
             });
 
-        }
-    </script>
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message); // Display success message
+            } else {
+                alert(data.error); // Display error message
+            }
+        });
+  </script>
 </body>
 </html>
