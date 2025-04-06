@@ -9,157 +9,64 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2 class="logo">Project Auto</h2>
+            <span id="current-time"></span>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
-
     <div class="content">
-        <header>
-            <div id="time"></div>
-            <h1>Project Auto</h1>
-            <div id="login-status"></div>
-            <button id="login-button">Login with GitHub</button>
-            <button id="logout-button">Logout</button>
+        <h1>Project Auto</h1>
+        <p>Automate your development workflow.</p>
 
-        </header>
+        <div id="github-auth">
+            <button id="github-login">Login with GitHub</button>
+        </div>
 
-        <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <label for="repository">Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" placeholder="username/repo">
-                <label for="prompt">Customization Instructions:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
-                <button id="start-button">Start</button>
-            </section>
-        </main>
+        <div id="app" style="display: none;">
+            <label for="repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="repo" name="repo" placeholder="username/repo"><br><br>
+
+            <label for="prompt">Customization Instructions:</label><br>
+            <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br><br>
+
+            <button id="start-button">Start</button>
+        </div>
     </div>
 
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginButton = document.getElementById('login-button');
-            const logoutButton = document.getElementById('logout-button');
-            const loginStatus = document.getElementById('login-status');
-            const startButton = document.getElementById('start-button');
+        document.addEventListener('DOMContentLoaded', function() {
+            const githubLoginButton = document.getElementById('github-login');
+            const appDiv = document.getElementById('app');
+            let accessToken = localStorage.getItem('github_access_token');
 
-            const githubClientId = 'Iv1.43970b635b8c5314'; // Replace with your actual Client ID
-
-            function getAccessToken() {
-                return localStorage.getItem('accessToken');
+            if (accessToken) {
+                showApp();
+            } else {
+                githubLoginButton.addEventListener('click', function() {
+                    // Redirect to GitHub OAuth flow
+                    window.location.href = '/api/auth/github';
+                });
             }
-
-            function setAccessToken(token) {
-                localStorage.setItem('accessToken', token);
-                updateLoginStatus();
-            }
-
-            function clearAccessToken() {
-                localStorage.removeItem('accessToken');
-                updateLoginStatus();
-            }
-
-            function updateLoginStatus() {
-                const accessToken = getAccessToken();
-                if (accessToken) {
-                    loginStatus.textContent = 'Logged in';
-                    loginButton.style.display = 'none';
-                    logoutButton.style.display = 'inline-block';
-                } else {
-                    loginStatus.textContent = 'Logged out';
-                    loginButton.style.display = 'inline-block';
-                    logoutButton.style.display = 'none';
-                }
-            }
-
-            loginButton.addEventListener('click', () => {
-                const redirectUri = encodeURIComponent(window.location.origin);
-                window.location.href = `https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${redirectUri}&scope=repo`;
-            });
-
-            logoutButton.addEventListener('click', () => {
-                clearAccessToken();
-            });
-
-            // Handle the OAuth callback
-            const urlParams = new URLSearchParams(window.location.search);
-            const code = urlParams.get('code');
-
-            if (code) {
-                // Exchange the code for an access token
-                fetch('/api/auth/github?code=' + code)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.access_token) {
-                            setAccessToken(data.access_token);
-                            // Clear the code from the URL
-                            window.history.replaceState({}, document.title, window.location.pathname);
-                        } else {
-                            console.error('Failed to obtain access token:', data.error);
-                            alert('Failed to log in. See console for details.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error during token exchange:', error);
-                        alert('An error occurred during login. See console for details.');
-                    });
-            }
-
-            startButton.addEventListener('click', async () => {
-                const repository = document.getElementById('repository').value;
-                const prompt = document.getElementById('prompt').value;
-                const accessToken = getAccessToken();
-
-                if (!repository || !prompt) {
-                    alert('Please enter both repository and prompt.');
-                    return;
-                }
-
-                if (!accessToken) {
-                    alert('Please login with GitHub first.');
-                    return;
-                }
-
-                try {
-                    const response = await fetch('/api/run', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${accessToken}`
-                        },
-                        body: JSON.stringify({ repository, prompt })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        alert('Project Auto started successfully!');
-                        console.log(data); // Log the response from the API
-                    } else {
-                        alert(`Project Auto failed: ${data.error || 'Unknown error'}`);
-                        console.error(data);
-                    }
-                } catch (error) {
-                    alert('An error occurred while starting Project Auto.');
-                    console.error(error);
-                }
-            });
-
-            updateLoginStatus();
         });
+
+        function showApp() {
+            document.getElementById('github-auth').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+        }
     </script>
 </body>
 </html>
