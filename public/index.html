@@ -1,120 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="/style/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
 </head>
-
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <span id="current-time"></span>
+    <div class="sidebar">
+        <div class="logo">Project Auto</div>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/Configuration">Configuration</a></li>
-        <li><a href="/About-Us">About Us</a></li>
-      </ul>
-    </nav>
-  </div>
-
-  <div class="content">
-    <header>
-      <h1>Project Auto</h1>
-      <p>Automate your GitHub repository modifications.</p>
-    </header>
-
-    <main>
-      <section id="input-section">
-        <h2>Enter Repository Details</h2>
-        <form id="repo-form">
-          <label for="repo-name">Repository (username/repo):</label>
-          <input type="text" id="repo-name" name="repo-name" placeholder="e.g., owner/repository" required>
-
-          <label for="instructions">Customization Instructions:</label>
-          <textarea id="instructions" name="instructions" rows="4"
-            placeholder="Enter your customization instructions here" required></textarea>
-
-          <button type="button" id="start-button">Start</button>
-        </form>
-      </section>
-
-      <section id="github-auth">
-        <h2>GitHub Authentication</h2>
-        <button id="github-login-button">Login with GitHub</button>
-        <p id="auth-status">Not authenticated.</p>
-      </section>
-
-      <section id="status-section">
-        <h2>Status</h2>
-        <p id="status-message">Waiting for input...</p>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Project Auto</p>
-    </footer>
-  </div>
-
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('current-time').textContent = timeString;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    document.getElementById('start-button').addEventListener('click', async () => {
-      const repoName = document.getElementById('repo-name').value;
-      const instructions = document.getElementById('instructions').value;
-      document.getElementById('status-message').textContent = "Processing...";
-
-      try {
-        const response = await fetch('/api/processRepo', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ repoName: repoName, instructions: instructions }),
-        });
-
-        const data = await response.json();
-        document.getElementById('status-message').textContent = data.message;
-
-      } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('status-message').textContent = "An error occurred.";
-      }
-    });
-
-    document.getElementById('github-login-button').addEventListener('click', () => {
-      window.location.href = '/api/auth/github';
-    });
-
-    async function checkAuthStatus() {
-      try {
-        const response = await fetch('/api/auth/status');
-        const data = await response.json();
-
-        if (data.isAuthenticated) {
-          document.getElementById('auth-status').textContent = "Authenticated as " + data.user;
-        } else {
-          document.getElementById('auth-status').textContent = "Not authenticated.";
+    <div class="content">
+        <header>
+            <div id="time"></div>
+            <h1>Project Auto</h1>
+        </header>
+        <main>
+            <section id="github-auth">
+                <button id="github-login">Login with GitHub</button>
+                <p id="auth-status">Not authenticated</p>
+            </section>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="repository">Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" placeholder="username/repo"><br><br>
+                <label for="prompt">Customization Instructions:</label><br>
+                <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br><br>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
         }
-      } catch (error) {
-        console.error("Error checking auth status:", error);
-        document.getElementById('auth-status').textContent = "Error checking authentication.";
-      }
-    }
 
-    checkAuthStatus();
-  </script>
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const githubLoginButton = document.getElementById('github-login');
+            const authStatus = document.getElementById('auth-status');
+            const startButton = document.getElementById('start-button');
+
+            githubLoginButton.addEventListener('click', () => {
+                window.location.href = '/api/auth/github';
+            });
+
+            async function checkAuthStatus() {
+                const response = await fetch('/api/auth/status');
+                const data = await response.json();
+
+                if (data.isAuthenticated) {
+                    authStatus.textContent = 'Authenticated';
+                    githubLoginButton.style.display = 'none';
+                } else {
+                    authStatus.textContent = 'Not authenticated';
+                    githubLoginButton.style.display = 'block';
+                }
+            }
+
+            checkAuthStatus();
+
+            startButton.addEventListener('click', async () => {
+                const repository = document.getElementById('repository').value;
+                const prompt = document.getElementById('prompt').value;
+
+                const response = await fetch('/api/project/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repository, prompt })
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            });
+        });
+    </script>
 </body>
-
 </html>
