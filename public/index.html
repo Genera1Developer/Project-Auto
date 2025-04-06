@@ -8,64 +8,52 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
+        <div class="sidebar-header">
+            Project Auto
+        </div>
+        <ul class="sidebar-menu">
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
+
     <div class="content">
         <header>
-            <div id="time"></div>
-            <div>Welcome to Project Auto</div>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
+
         <main>
-            <section id="github-config">
-                <h2>GitHub Configuration</h2>
-                <label for="repo">Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="username/repo"><br><br>
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <form id="repo-form">
+                    <label for="repo-url">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository" required>
 
-                <label for="instructions">Customization Instructions:</label><br>
-                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your instructions here"></textarea><br><br>
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
 
-                <button id="start-button">Start</button>
+                    <button type="button" id="start-button">Start</button>
+                </form>
+            </section>
+
+            <section id="github-auth">
+                <h2>GitHub Authentication</h2>
+                <button id="github-login">Login with GitHub</button>
+            </section>
+
+            <section id="results-section">
+                <h2>Results</h2>
+                <div id="results-output"></div>
             </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById("time").textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById("start-button").addEventListener("click", async () => {
-            const repo = document.getElementById("repo").value;
-            const instructions = document.getElementById("instructions").value;
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, instructions }),
-                });
-
-                const data = await response.json();
-                console.log(data);
-                alert(data.message); // Or display the message in a more user-friendly way
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while running Project Auto.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
