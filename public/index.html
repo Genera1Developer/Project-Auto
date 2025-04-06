@@ -17,30 +17,19 @@
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
+            <div id="time"></div>
+            <a href="/api/auth/github" class="github-button">Sign in with GitHub</a>
         </header>
         <main>
-            <section id="project-input">
-                <h2>Run Project Auto</h2>
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo"><br><br>
-
-                <label for="prompt">Customization Prompt:</label><br>
-                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="e.g., Add a new feature to the website."></textarea><br><br>
-
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub Token"><br><br>
-
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
                 <button id="start-button">Start</button>
             </section>
-            <section id="results">
-                <h2>Results</h2>
-                <div id="results-content"></div>
-            </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
     <script src="/script.js"></script>
 </body>
