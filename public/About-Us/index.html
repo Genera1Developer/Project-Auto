@@ -17,7 +17,7 @@
             background-color: #f4f4f4;
             color: #333;
             display: flex;
-            height: 100vh;
+            min-height: 100vh; /* Ensures the content stretches to at least the viewport height */
         }
 
         .sidebar {
@@ -32,7 +32,8 @@
         .sidebar h1 {
             text-align: center;
             margin-bottom: 20px;
-            color: #FFD700; /* Gold color */
+            color: #FFD700;
+            /* Gold color */
         }
 
         .sidebar ul {
@@ -55,7 +56,8 @@
 
         .sidebar a:hover,
         .sidebar a.active {
-            background-color: #FFD700; /* Gold color */
+            background-color: #FFD700;
+            /* Gold color */
             color: #333;
         }
 
@@ -63,6 +65,8 @@
             flex: 1;
             padding: 20px;
             background-color: #fff;
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -83,6 +87,7 @@
 
         main {
             padding: 20px;
+            flex: 1; /* Allow main to grow and take available space */
         }
 
         .about-section {
@@ -100,6 +105,14 @@
         .current-time {
             font-size: 0.9em;
             color: #eee;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            margin-top: auto; /* Push the footer to the bottom */
         }
     </style>
 </head>
