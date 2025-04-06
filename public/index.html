@@ -4,32 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <a href="/" class="active">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
-        <main>
-            <section id="input-section">
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="your_username/your_repo">
-                <label for="prompt">Customization Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Add a new feature to the website."></textarea>
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
-                <button id="start-button">Start</button>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+                <h1>Project Auto</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/" class="active">Home</a>
+                <a href="/Configuration">Configuration</a>
+                <a href="/About-Us">About Us</a>
+            </nav>
+            <footer class="sidebar-footer">
+                <p>&copy; 2024 Project Auto</p>
+            </footer>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <div id="current-time" class="current-time"></div>
+                <div class="auth-buttons">
+                    <button id="login-button">Login with GitHub</button>
+                    <button id="logout-button" style="display: none;">Logout</button>
+                </div>
+            </header>
+            <section class="hero">
+                <h2>Automate Your Repository</h2>
+                <p>Enter your repository details and customization instructions to start Project Auto.</p>
             </section>
-            <section id="output-section">
-                <h2>Output:</h2>
-                <div id="output"></div>
+            <section class="input-section">
+                <label for="repo-input">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-input" placeholder="e.g., owner/repository">
+                <label for="instructions-input">Customization Instructions:</label>
+                <textarea id="instructions-input" placeholder="Enter instructions here"></textarea>
+                <button id="start-button">Start</button>
             </section>
         </main>
     </div>
