@@ -6,14 +6,13 @@ body {
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    min-height: 100vh; /* Ensures the footer stays at the bottom */
-    flex-direction: column; /* Make body a column flex container */
+    height: 100vh;
 }
 
 /* Sidebar Styles */
 .sidebar {
     width: 250px;
-    background-color: #301934; /* Deep purple */
+    background-color: #333;
     color: #fff;
     padding: 20px;
     display: flex;
@@ -22,67 +21,64 @@ body {
 }
 
 .sidebar-header {
-    margin-bottom: 20px;
     text-align: center;
+    margin-bottom: 20px;
 }
 
 .logo {
     width: 80%;
     max-width: 150px;
-    margin-bottom: 10px;
 }
 
 .sidebar-menu {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .sidebar-menu li {
-    padding: 10px;
+    margin-bottom: 10px;
 }
 
-.sidebar-menu li a {
-    color: #ddd;
-    text-decoration: none;
+.sidebar-menu a {
     display: block;
-    transition: background-color 0.3s;
-    padding: 8px;
-    border-radius: 5px;
-}
-
-.sidebar-menu li a:hover {
-    background-color: #4e3a4e;
+    padding: 10px;
     color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
-.sidebar-menu li a i {
-    margin-right: 8px;
+.sidebar-menu a:hover {
+    background-color: #555;
+}
+
+.sidebar-menu i {
+    margin-right: 10px;
 }
 
 .sidebar-footer {
     margin-top: auto;
     text-align: center;
     font-size: 0.8em;
-    color: #aaa;
+    color: #ddd;
 }
 
 /* Content Styles */
 .content {
-    flex: 1; /* Takes up remaining space, pushing footer down */
+    flex: 1;
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
 }
 
 .header {
-    background-color: #502a54; /* Lighter purple */
-    color: #fff;
+    background-color: #fff;
     padding: 20px;
-    text-align: left;
-    border-radius: 5px;
     margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -90,38 +86,41 @@ body {
 
 .header h1 {
     margin: 0;
-    font-size: 2em;
+    color: #333;
 }
 
 .current-time {
-    font-size: 1.2em;
+    font-size: 1.1em;
+    color: #555;
 }
 
 .main-content {
     flex: 1;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .footer {
     text-align: center;
-    padding: 10px;
-    margin-top: auto; /* Push the footer to the bottom */
-    font-size: 0.9em;
-    color: #777;
-    border-top: 1px solid #eee;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
 }
 
 /* Configuration Form Styles */
 .configuration-form {
+    display: flex;
+    flex-direction: column;
     max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    margin: 0 auto;
 }
 
 .configuration-form label {
-    display: block;
+    margin-top: 10px;
     margin-bottom: 5px;
     font-weight: bold;
     color: #555;
@@ -130,70 +129,61 @@ body {
 .configuration-form input[type="text"],
 .configuration-form input[type="password"],
 .configuration-form textarea {
-    width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    border: 1px solid #ddd;
+    border-radius: 5px;
     font-size: 1em;
 }
 
 .configuration-form textarea {
-    resize: vertical; /* Allows vertical resizing only */
-    height: 100px;
+    resize: vertical;
 }
 
 .start-button {
-    background-color: #d4af37; /* Gold */
+    background-color: #673ab7;
     color: white;
-    padding: 12px 20px;
+    padding: 15px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
 }
 
 .start-button:hover {
-    background-color: #b8972b;
+    background-color: #512da8;
 }
 
 .status-message {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 4px;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
     text-align: center;
 }
 
 .status-message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: #f44336;
+    color: white;
 }
 
 .status-message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: #4caf50;
+    color: white;
 }
 
 .status-message.loading {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
+    background-color: #ff9800;
+    color: white;
 }
 
 /* About Us Styles */
 .about-us-content {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
     line-height: 1.6;
 }
 
 .about-us-content h2 {
-    color: #502a54;
+    color: #673ab7;
     margin-bottom: 15px;
 }
 
@@ -201,18 +191,25 @@ body {
     margin-bottom: 10px;
 }
 
-/* Added styles for GitHub Authentication */
-.github-auth-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    margin-bottom: 15px;
-}
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        max-width: none;
+        height: auto;
+        position: static;
+    }
 
-.github-auth-button:hover {
-    background-color: #367c39;
+    .content {
+        flex-direction: column;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header h1 {
+        margin-bottom: 10px;
+    }
 }
