@@ -10,44 +10,31 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="/public/Configuration"><i class="fa fa-cog"></i> Configuration</a></li>
-            <li><a href="/public/About-Us"><i class="fa fa-info-circle"></i> About Us</a></li>
+            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
         </ul>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-            <a href="/api/auth/github" class="github-button">
-                <i class="fab fa-github"></i> Sign in with GitHub
-            </a>
-        </header>
-
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <div class="input-group">
-                    <label for="repo-url">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo-url" placeholder="e.g., yourusername/yourrepo">
-                </div>
-                <div class="input-group">
-                    <label for="custom-instructions">Custom Instructions:</label>
-                    <textarea id="custom-instructions" placeholder="Enter your customization instructions here"></textarea>
-                </div>
-                <button id="start-button">Start</button>
-            </section>
-        </main>
-
-        <footer>
+        <div class="sidebar-footer">
             <p>&copy; 2024 Project Auto</p>
-        </footer>
+        </div>
     </div>
-
+    <div class="content">
+        <div class="header">
+            <h1>Project Auto</h1>
+            <div class="current-time" id="current-time"></div>
+        </div>
+        <div class="main-content">
+            <h2>Welcome to Project Auto!</h2>
+            <p>Project Auto is a tool that allows you to automate tasks on your GitHub repositories.</p>
+            <p>To get started, please configure your settings in the <a href="/Configuration">Configuration</a> page.</p>
+        </div>
+        <div class="footer">
+            <p>Powered by Project Auto</p>
+        </div>
+    </div>
     <script>
         function updateTime() {
             const now = new Date();
@@ -57,39 +44,6 @@
 
         setInterval(updateTime, 1000);
         updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const customInstructions = document.getElementById('custom-instructions').value;
-
-            const accessToken = localStorage.getItem('github_access_token');
-
-            if (!accessToken) {
-                alert('Please sign in with GitHub first.');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`
-                    },
-                    body: JSON.stringify({ repoUrl, customInstructions })
-                });
-
-                if (response.ok) {
-                    alert('Project Auto started successfully!');
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.message || 'Failed to start Project Auto.'}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while starting Project Auto.');
-            }
-        });
     </script>
 </body>
 </html>
