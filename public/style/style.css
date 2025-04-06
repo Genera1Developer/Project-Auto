@@ -20,7 +20,7 @@ body {
     left: 0;
     top: 0;
     overflow-x: hidden;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
 }
 
 .sidebar-header {
@@ -39,18 +39,19 @@ body {
 }
 
 .sidebar-menu li {
-    padding: 10px 20px;
+    padding: 10px;
 }
 
 .sidebar-menu li a {
     color: #fff;
     text-decoration: none;
     display: block;
-    transition: background-color 0.3s;
+    padding: 10px 20px;
+    transition: 0.3s;
 }
 
 .sidebar-menu li a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #555;
 }
 
 .sidebar-menu li a i {
@@ -60,26 +61,25 @@ body {
 .sidebar-footer {
     text-align: center;
     padding: 20px;
+    font-size: 0.8em;
     position: absolute;
     bottom: 0;
     width: 100%;
-    font-size: 0.8em;
-    opacity: 0.8;
 }
 
 /* Content Styles */
 .content {
     flex: 1;
     padding: 20px;
-    margin-left: 250px; /* Same as sidebar width */
-    transition: margin-left 0.3s;
+    margin-left: 250px;
+    transition: 0.3s;
 }
 
 .header {
     background-color: #fff;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -87,19 +87,18 @@ body {
 
 .header h1 {
     margin: 0;
-    font-size: 2em;
-    color: #555;
+    color: #333;
 }
 
 .current-time {
     font-size: 1em;
-    color: #777;
+    color: #666;
 }
 
 .main-content {
     background-color: #fff;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .footer {
@@ -107,24 +106,22 @@ body {
     padding: 20px;
     margin-top: 20px;
     background-color: #fff;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    font-size: 0.9em;
-    color: #777;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Configuration Form Styles */
 .configuration-form {
     display: flex;
     flex-direction: column;
+    width: 100%;
     max-width: 600px;
-    margin: 0 auto;
+    margin: auto;
 }
 
 .configuration-form label {
     margin-top: 10px;
     margin-bottom: 5px;
     font-weight: bold;
-    color: #555;
 }
 
 .configuration-form input[type="text"],
@@ -142,7 +139,7 @@ body {
 }
 
 .start-button {
-    background-color: #673ab7; /* Purple */
+    background-color: #673ab7;
     color: white;
     padding: 12px 20px;
     border: none;
@@ -157,7 +154,7 @@ body {
 }
 
 .status-message {
-    margin-top: 15px;
+    margin-top: 20px;
     padding: 10px;
     border-radius: 4px;
     text-align: center;
@@ -177,67 +174,65 @@ body {
     background-color: #ff9800;
     color: white;
 }
+
+/* About Us Styles */
+.about-us-content {
+    line-height: 1.6;
+}
+
+.about-us-content h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.about-us-content p {
+    margin-bottom: 10px;
+}
+/* New styles for purple and gold theme */
+body {
+    background-color: #ede7f6; /* Light purple background */
+    color: #424242; /* Dark gray text for readability */
+}
+
+.sidebar {
+    background-color: #512da8; /* Deep purple sidebar */
+}
+
+.sidebar-menu li a:hover {
+    background-color: #673ab7; /* Lighter purple on hover */
+}
+
+.header {
+    background-color: #fff8e1; /* Light gold header */
+}
+
+.header h1 {
+    color: #512da8; /* Deep purple header text */
+}
+
+.start-button {
+    background-color: #ffb300; /* Gold button */
+    color: #512da8; /* Deep purple text on button */
+}
+
+.start-button:hover {
+    background-color: #f57f17; /* Darker gold on hover */
+}
+
+.footer {
+    background-color: #fff8e1; /* Light gold footer */
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
-        position: static;
         height: auto;
-        box-shadow: none;
+        position: static;
+        margin-bottom: 20px;
     }
 
     .content {
         margin-left: 0;
     }
-
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .header h1 {
-        margin-bottom: 10px;
-    }
 }
-/* Purple and Gold Color Scheme */
-body {
-    background-color: #f9f8f7; /* Light beige */
-    color: #4a4a4a; /* Dark gray */
-}
-
-.sidebar {
-    background-color: #3f3d56; /* Dark purple */
-    color: #fdd835; /* Gold */
-}
-
-.sidebar a {
-    color: #fdd835;
-}
-
-.sidebar a:hover {
-    background-color: rgba(253, 216, 53, 0.1); /* Light gold */
-}
-
-.header {
-    background-color: #fff;
-}
-
-.header h1 {
-    color: #3f3d56; /* Dark purple */
-}
-
-.start-button {
-    background-color: #3f3d56; /* Dark purple */
-    color: #fdd835; /* Gold */
-}
-
-.start-button:hover {
-    background-color: #302e44; /* Darker purple */
-}
-
-.footer {
-    background-color: #fff;
-    color: #777;
-}
-edit filepath: public/images/logo.png
-content: iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAEKADAAQAAAABAAAAEAAAAAA0hcRAAAAKUlEQVQ4EWMYBQgjAQIMwEQAAzABAAYgBSIkAAQYgNkAAAQxgwgAAQYAAES7Yc4wAAAABJRU5ErkJggg==
