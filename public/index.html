@@ -4,52 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+    <div class="container">
+        <header>
+            <div id="current-time"></div>
             <h1>Project Auto</h1>
-        </div>
-        <nav>
+        </header>
+        <aside id="sidebar">
             <ul>
-                <li><a href="/index.html">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li><a href="/Configuration">Configuration</a></li>
                 <li><a href="/About-Us">About Us</a></li>
             </ul>
-        </nav>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="current-time" class="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
-
-        <main>
-            <section id="github-input">
-                <h2>GitHub Repository</h2>
-                <input type="text" id="repo-input" placeholder="username/repo">
-            </section>
-
-            <section id="prompt-input">
-                <h2>Customization Instructions</h2>
-                <textarea id="prompt-textarea" placeholder="Enter your instructions here"></textarea>
-            </section>
-
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login-button">Login with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </section>
-
-            <section id="start-button">
-                <button id="start-button">Start</button>
-            </section>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
         </main>
     </div>
-
     <script src="/script.js"></script>
 </body>
 </html>
