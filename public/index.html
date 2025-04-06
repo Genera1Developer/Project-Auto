@@ -8,34 +8,67 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>Project Auto</h2>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <div class="sidebar-header">Project Auto</div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <h1>Project Auto</h1>
         </header>
         <main>
-            <section id="github-auth">
-                <button id="github-login">Login with GitHub</button>
-                <p id="auth-status">Not authenticated.</p>
-            </section>
             <section id="project-setup">
+                <h2>Project Setup</h2>
                 <label for="github-repo">GitHub Repository (username/repo):</label>
                 <input type="text" id="github-repo" placeholder="e.g., owner/repository">
-                <label for="custom-instructions">Custom Instructions:</label>
-                <textarea id="custom-instructions" placeholder="Enter your instructions here"></textarea>
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
                 <button id="start-button">Start</button>
             </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo = document.getElementById('github-repo').value;
+            const prompt = document.getElementById('prompt').value;
+
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, prompt }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            }
+        });
+    </script>
 </body>
 </html>
