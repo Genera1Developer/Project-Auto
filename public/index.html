@@ -15,8 +15,8 @@
             <nav>
                 <ul>
                     <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
+                    <li><a href="/configuration">Configuration</a></li>
+                    <li><a href="/about-us">About Us</a></li>
                 </ul>
             </nav>
         </aside>
@@ -26,7 +26,17 @@
                 <h1>Project Auto</h1>
             </header>
             <section id="content">
-                <!-- Content will be loaded here -->
+                <div id="home-content">
+                    <label for="repo-url">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
+                    <label for="customization-instructions">Customization Instructions:</label>
+                    <textarea id="customization-instructions" name="customization-instructions" rows="4" cols="50" placeholder="Enter your instructions here"></textarea>
+                    <button id="start-button">Start</button>
+                    <div id="auth-button-container">
+                        <button id="github-auth-button">Authenticate with GitHub</button>
+                    </div>
+                    <div id="status-message"></div>
+                </div>
             </section>
         </main>
     </div>
