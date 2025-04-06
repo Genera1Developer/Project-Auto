@@ -1,4 +1,3 @@
-/* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -9,19 +8,22 @@ body {
     height: 100vh;
 }
 
-/* Sidebar Styles */
 .sidebar {
     width: 250px;
-    background-color: #301934; /* Dark Purple */
+    background-color: #333;
     color: #fff;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
 }
 
 .sidebar-header {
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .logo {
@@ -52,26 +54,27 @@ body {
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: #555;
 }
 
 .sidebar-menu i {
-    margin-right: 10px;
-    color: #FFD700; /* Gold */
+    margin-right: 8px;
+    width: 20px;
+    text-align: center;
 }
 
 .sidebar-footer {
     text-align: center;
     padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 0.8em;
+    border-top: 1px solid #555;
 }
 
-/* Content Styles */
 .content {
     flex-grow: 1;
     padding: 20px;
-    overflow-y: auto;
+    margin-left: 250px;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -87,30 +90,33 @@ body {
 
 .header h1 {
     margin: 0;
-    color: #301934; /* Dark Purple */
+    color: #333;
 }
 
 .current-time {
     font-size: 1em;
-    color: #777;
+    color: #666;
 }
 
 .main-content {
+    flex-grow: 1;
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Configuration Form Styles */
 .configuration-form {
     display: flex;
     flex-direction: column;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .configuration-form label {
     margin-top: 10px;
     margin-bottom: 5px;
+    font-weight: bold;
     color: #555;
 }
 
@@ -129,8 +135,8 @@ body {
 }
 
 .start-button {
-    background-color: #FFD700; /* Gold */
-    color: #301934; /* Dark Purple */
+    background-color: #673ab7;
+    color: white;
     padding: 12px 20px;
     border: none;
     border-radius: 5px;
@@ -140,202 +146,77 @@ body {
 }
 
 .start-button:hover {
-    background-color: #daa520; /* Darker Gold */
+    background-color: #512da8;
 }
 
-/* Status Message Styles */
 .status-message {
     margin-top: 20px;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 4px;
     text-align: center;
 }
 
 .status-message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: #f44336;
+    color: white;
 }
 
 .status-message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: #4caf50;
+    color: white;
 }
 
 .status-message.loading {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
+    background-color: #ff9800;
+    color: white;
 }
 
-/* Footer Styles */
 .footer {
     text-align: center;
     padding: 20px;
-    background-color: #301934; /* Dark Purple */
-    color: #fff;
+    background-color: #fff;
     border-radius: 8px;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
     margin-top: 20px;
+    color: #777;
+}
+/* Purple and Gold Theme */
+body {
+    background-color: #f0e68c; /* Light Gold */
+    color: #333;
 }
 
-/* Responsive Styles */
+.sidebar {
+    background-color: #5e35b1; /* Deep Purple */
+    color: #fff;
+}
+
+.sidebar-menu a:hover {
+    background-color: #6a1b9a; /* Darker Purple */
+}
+
+.header {
+    background-color: #fff8dc; /* Lighter Gold */
+}
+
+.start-button {
+    background-color: #7b1fa2; /* Another Purple */
+}
+
+.start-button:hover {
+    background-color: #4a148c; /* Even Darker Purple */
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
         height: auto;
         position: static;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        padding: 10px;
-    }
-
-    .sidebar-menu {
-        display: flex;
-        width: 100%;
-        justify-content: space-around;
-    }
-
-    .sidebar-menu li {
-        margin-bottom: 0;
-    }
-
-    .sidebar-header, .sidebar-footer {
-        display: none;
+        margin-bottom: 20px;
     }
 
     .content {
-        padding: 10px;
+        margin-left: 0;
     }
-
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .header h1 {
-        margin-bottom: 10px;
-    }
-}
-/*Home Page Styles*/
-.hero-section {
-    background-color: #301934;
-    color: white;
-    text-align: center;
-    padding: 50px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-.hero-section h2 {
-    font-size: 2.5em;
-    margin-bottom: 15px;
-}
-
-.hero-section p {
-    font-size: 1.2em;
-    margin-bottom: 30px;
-}
-
-.cta-button {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: #FFD700;
-    color: #301934;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    transition: background-color 0.3s ease;
-}
-
-.cta-button:hover {
-    background-color: #daa520;
-}
-
-.features-section {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    padding: 20px;
-}
-
-.feature {
-    flex: 1;
-    min-width: 250px;
-    margin: 20px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
-.feature i {
-    font-size: 3em;
-    color: #FFD700;
-    margin-bottom: 15px;
-}
-
-.feature h3 {
-    color: #301934;
-}
-
-/*About Us Styles*/
-.about-us-content {
-    padding: 20px;
-}
-
-.about-us-content h2 {
-    color: #301934;
-    margin-bottom: 20px;
-}
-
-.about-us-content p {
-    line-height: 1.6;
-    margin-bottom: 15px;
-}
-
-.team-section {
-    margin-top: 30px;
-}
-
-.team-section h3 {
-    color: #301934;
-    margin-bottom: 20px;
-}
-
-.team-members {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.team-member {
-    flex: 1;
-    min-width: 200px;
-    margin: 15px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
-.team-member img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
-.team-member h4 {
-    color: #301934;
-    margin-bottom: 5px;
-}
-
-.team-member p {
-    font-size: 0.9em;
-    color: #777;
 }
