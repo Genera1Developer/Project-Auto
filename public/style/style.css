@@ -5,7 +5,7 @@ body {
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    height: 100vh;
+    min-height: 100vh; /* Ensure full height */
 }
 
 .sidebar {
@@ -15,10 +15,12 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 100vh; /* Full height */
     position: fixed;
     top: 0;
     left: 0;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+    z-index: 100; /* Ensure it's above other content */
 }
 
 .sidebar-header {
@@ -68,6 +70,7 @@ body {
     margin-left: 250px; /* Width of the sidebar */
     display: flex;
     flex-direction: column;
+    transition: margin-left 0.3s; /* Smooth transition when sidebar changes */
 }
 
 .header {
@@ -79,6 +82,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 1; /* Ensure header is above main content */
 }
 
 .current-time {
@@ -183,4 +187,58 @@ body {
 
 .about-us-content p {
     margin-bottom: 15px;
+}
+
+/* Gold color scheme additions */
+.gold-accent {
+    color: #FFD700;
+}
+
+.sidebar {
+    background-color: #333; /* Dark background for sidebar */
+}
+
+.sidebar-menu a {
+    color: #ddd; /* Light text for contrast */
+}
+
+.sidebar-menu a:hover {
+    background-color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: static;
+        height: auto;
+    }
+
+    .content {
+        margin-left: 0;
+    }
+}
+
+/* Styling for input fields */
+input[type="text"],
+input[type="password"],
+textarea {
+    border: 1px solid #ccc;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+    border-color: #7952B3;
+    outline: none;
+    box-shadow: 0 0 5px rgba(121, 82, 179, 0.5);
+}
+
+/* General adjustments */
+h1, h2, h3 {
+    color: #7952B3;
 }
