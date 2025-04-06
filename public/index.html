@@ -8,37 +8,37 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">Project Auto</div>
+        <div class="sidebar-header">
+            <img src="/style/Project-Auto-Logo.svg" width="75" height="75" alt="Project Auto Logo" class="logo">
+            <h2>Project Auto</h2>
+        </div>
         <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
+            <a href="/index.html">Home</a>
+            <a href="/Configuration">Configuration</a>
+            <a href="/About-Us">About Us</a>
         </nav>
     </div>
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <button id="login-button">Login with GitHub</button>
+            <button id="logout-button" style="display: none;">Logout</button>
+            <span id="user-info"></span>
         </header>
         <main>
             <section id="project-setup">
                 <h2>Project Setup</h2>
                 <label for="github-repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github-repo" placeholder="e.g., owner/repository">
-                <label for="customization-prompt">Customization Instructions:</label>
-                <textarea id="customization-prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                <input type="text" id="github-repo" name="github-repo" placeholder="username/repo">
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here..."></textarea>
                 <button id="start-button">Start</button>
             </section>
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login">Login with GitHub</button>
+            <section id="status">
+                <h2>Status</h2>
+                <p id="status-message">Waiting for input...</p>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
     <script src="/script.js"></script>
 </body>
