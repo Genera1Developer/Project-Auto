@@ -10,40 +10,43 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
         </div>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/Configuration">Configuration</a>
-            <a href="/About-Us">About Us</a>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
     <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
-        <main>
-            <section id="github-auth">
-                <a href="https://github.com/login/oauth/authorize?client_id=Iv1.45314dd604a79e2d&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
-                    Authenticate with GitHub
-                </a>
-            </section>
-            <section id="repo-input">
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
-            </section>
-            <section id="prompt-input">
-                <label for="prompt">Customization Instructions:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-            <button id="start-button">Start</button>
-        </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
-    </div>
+        <div class="header">
+            <div>
+                <h1>Project Auto</h1>
+                <div class="current-time" id="current-time"></div>
+            </div>
+            <button id="github-login-button">Login with GitHub</button>
+        </div>
+        <div class="main-content">
+            <h2>Welcome to Project Auto</h2>
+            <p>Enter your GitHub repository and customization instructions to start Project Auto.</p>
+            <form id="auto-form">
+                <label for="repository">GitHub Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" required>
 
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" required></textarea>
+
+                <button type="submit" class="start-button">Start</button>
+            </form>
+            <div id="status-message" class="status-message"></div>
+        </div>
+        <div class="footer">
+            <p>Contact: contact@projectauto.com</p>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
@@ -54,38 +57,42 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const prompt = document.getElementById('prompt').value;
+         document.getElementById('github-login-button').addEventListener('click', function() {
+            window.location.href = '/api/login'; // Redirect to the login route
+        });
 
-            // Fetch token from URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
+        document.getElementById('auto-form').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-            if (!repo || !prompt || !token) {
-                alert('Please fill in all fields and authenticate with GitHub.');
-                return;
-            }
+            const repository = document.getElementById('repository').value;
+            const instructions = document.getElementById('instructions').value;
+            const statusMessage = document.getElementById('status-message');
 
-            try {
-                const response = await fetch('/api/processRepo', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, prompt, token }),
-                });
+            statusMessage.textContent = 'Loading...';
+            statusMessage.className = 'status-message loading';
 
-                if (response.ok) {
-                    alert('Project Auto processing started!');
+            fetch('/api/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repository: repository, instructions: instructions }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    statusMessage.textContent = data.message;
+                    statusMessage.className = 'status-message success';
                 } else {
-                    const data = await response.json();
-                    alert(`Error: ${data.error || 'Failed to start processing.'}`);
+                    statusMessage.textContent = data.message;
+                    statusMessage.className = 'status-message error';
                 }
-            } catch (error) {
+            })
+            .catch(error => {
+                statusMessage.textContent = 'An error occurred.';
+                statusMessage.className = 'status-message error';
                 console.error('Error:', error);
-                alert('An error occurred while starting processing.');
-            }
+            });
         });
     </script>
 </body>
