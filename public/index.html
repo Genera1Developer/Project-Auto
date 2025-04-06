@@ -9,34 +9,61 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-content">
-            <a href="/" class="sidebar-item active">Home</a>
+            <a href="/" class="sidebar-item">Home</a>
             <a href="/Configuration" class="sidebar-item">Configuration</a>
             <a href="/About-Us" class="sidebar-item">About Us</a>
         </div>
     </div>
-    <div class="content">
+
+    <div class="main-content">
         <header>
-            <div id="current-time"></div>
+            <div id="current-time" class="time-display"></div>
+            <h1>Project Auto</h1>
         </header>
-        <main>
-            <h1>Welcome to Project Auto</h1>
-            <p>Automate your development workflow.</p>
 
-            <div id="github-auth">
-                <button id="github-login">Login with GitHub</button>
+        <section id="home">
+            <h2>Welcome to Project Auto</h2>
+            <p>Automate your repository tasks with ease.</p>
+
+            <div class="input-area">
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
             </div>
 
-            <div id="app-content" style="display: none;">
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., facebook/react"><br><br>
-
-                <label for="prompt">Customization Instructions:</label><br>
-                <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br><br>
-
-                <button id="start-button">Start</button>
+            <div class="input-area">
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" placeholder="Enter your instructions here"></textarea>
             </div>
-        </main>
+
+            <button id="start-button">Start</button>
+        </section>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customInstructions = document.getElementById('custom-instructions').value;
+
+            const response = await fetch('/api/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repoUrl, customInstructions }),
+            });
+
+            const data = await response.json();
+            alert(data.message); // Show the message returned from the server
+        });
+    </script>
 </body>
 </html>
