@@ -1,45 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
 </head>
+
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/Project-Auto-Logo.svg" width="75" height="75" alt="Project Auto Logo" class="logo">
-            <h2>Project Auto</h2>
-        </div>
-        <nav>
-            <a href="/index.html">Home</a>
-            <a href="/Configuration">Configuration</a>
-            <a href="/About-Us">About Us</a>
-        </nav>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <button id="login-button">Login with GitHub</button>
-            <button id="logout-button" style="display: none;">Logout</button>
-            <span id="user-info"></span>
-        </header>
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="github-repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github-repo" name="github-repo" placeholder="username/repo">
-                <label for="prompt">Customization Instructions:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here..."></textarea>
-                <button id="start-button">Start</button>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+                <h1>Project Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header>
+                <div id="current-time" class="current-time"></div>
+            </header>
+            <section class="hero">
+                <h1>Automate Your Code Modifications</h1>
+                <p>Let Project Auto handle your GitHub repository changes with ease.</p>
             </section>
-            <section id="status">
-                <h2>Status</h2>
-                <p id="status-message">Waiting for input...</p>
+            <section class="form-section">
+                <form id="project-auto-form">
+                    <div class="form-group">
+                        <label for="repo-name">GitHub Repository (username/repo):</label>
+                        <input type="text" id="repo-name" name="repo-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prompt">Prompt:</label>
+                        <textarea id="prompt" name="prompt" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="github-token">GitHub Token:</label>
+                        <input type="password" id="github-token" name="github-token" required>
+                    </div>
+                    <button type="submit" class="start-button">Start</button>
+                </form>
             </section>
         </main>
     </div>
     <script src="/script.js"></script>
 </body>
+
 </html>
