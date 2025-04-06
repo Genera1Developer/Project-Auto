@@ -7,40 +7,44 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <button id="github-login-btn">Login with GitHub</button>
-        </header>
-        <main>
-            <section id="project-input">
-                <h2>Project Details</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-                <label for="customization-prompt">Customization Instructions:</label>
-                <textarea id="customization-prompt" name="customization-prompt" rows="4" placeholder="Enter your instructions here"></textarea>
-                <button id="start-button">Start</button>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+                <h3>Project Auto</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/index.html" class="active">Home</a>
+                <a href="/Configuration">Configuration</a>
+                <a href="/About-Us">About Us</a>
+            </nav>
+            <footer class="sidebar-footer">
+                <p>&copy; 2024 Project Auto</p>
+            </footer>
+        </aside>
+        <main class="main-content">
+            <header class="main-header">
+                <div id="current-time" class="current-time"></div>
+            </header>
+            <section class="hero">
+                <h1>Automate Your Repository</h1>
+                <p>Enter your repository details and customization instructions to get started.</p>
             </section>
-            <section id="status">
-                <h2>Status</h2>
-                <div id="status-message"></div>
+            <section class="form-section">
+                <form id="auto-form">
+                    <div class="form-group">
+                        <label for="repo">Repository (username/repo):</label>
+                        <input type="text" id="repo" name="repo" placeholder="username/repo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="instructions">Customization Instructions:</label>
+                        <textarea id="instructions" name="instructions" placeholder="Enter your instructions here..." rows="5" required></textarea>
+                    </div>
+                    <button type="submit" class="start-button">Start</button>
+                </form>
             </section>
         </main>
     </div>
-
     <script>
         function updateTime() {
             const now = new Date();
@@ -51,33 +55,30 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('github-login-btn').addEventListener('click', () => {
-            window.location.href = '/api/auth/github';
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const customizationPrompt = document.getElementById('customization-prompt').value;
-            const statusMessageDiv = document.getElementById('status-message');
-
-            statusMessageDiv.textContent = 'Processing...';
+        document.getElementById('auto-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
 
             try {
-                const response = await fetch('/api/run', {
+                const response = await fetch('/api/run-auto', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        repoUrl: repoUrl,
-                        customizationPrompt: customizationPrompt,
-                    }),
+                    body: JSON.stringify({ repo, instructions }),
                 });
 
-                const data = await response.json();
-                statusMessageDiv.textContent = data.message;
+                if (response.ok) {
+                    const data = await response.json();
+                    alert(data.message);
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error}`);
+                }
             } catch (error) {
-                statusMessageDiv.textContent = 'Error: ' + error.message;
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
             }
         });
     </script>
