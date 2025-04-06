@@ -4,41 +4,168 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/" onclick="loadContent('/'); return false;">Home</a></li>
+            <li><a href="/Configuration" onclick="loadContent('/Configuration'); return false;">Configuration</a></li>
+            <li><a href="/About-Us" onclick="loadContent('/About-Us'); return false;">About Us</a></li>
         </ul>
     </div>
+
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <button id="github-login" onclick="authenticateGitHub()">Authenticate with GitHub</button>
+            <span id="github-username"></span>
+            <button id="github-logout" onclick="logoutGitHub()">Logout</button>
         </header>
-        <main>
-            <section id="input-section">
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Describe the desired changes..."></textarea>
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
-                <button id="start-button">Start</button>
-            </section>
-            <section id="output-section">
-                <h2>Output:</h2>
-                <div id="output"></div>
-            </section>
+        <main id="main-content">
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your GitHub repository and customization instructions below.</p>
+            <div id="auth-status"></div>
+
+            <label for="repo">GitHub Repository (username/repo):</label>
+            <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo"><br><br>
+
+            <label for="prompt">Customization Instructions:</label><br>
+            <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Enter your instructions here"></textarea><br><br>
+
+            <button onclick="startProjectAuto()">Start</button>
+
+            <div id="status"></div>
+            <div id="log"></div>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        function loadContent(url) {
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('main-content').innerHTML = data;
+                    if (url === '/') {
+                        loadHomeContent(); // Reload Home content to re-bind events
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading content:', error);
+                    document.getElementById('main-content').innerHTML = '<p>Error loading content.</p>';
+                });
+        }
+
+        function loadHomeContent() {
+            //Rebind events as necessary
+            document.querySelector("button[onclick='startProjectAuto()']").addEventListener('click', startProjectAuto);
+            document.querySelector("button[onclick='authenticateGitHub()']").addEventListener('click', authenticateGitHub);
+            document.querySelector("button[onclick='logoutGitHub()']").addEventListener('click', logoutGitHub);
+        }
+
+        function authenticateGitHub() {
+            // Initiate GitHub OAuth flow by redirecting to the backend
+            window.location.href = '/api/auth/github'; //backend endpoint
+        }
+
+        function logoutGitHub() {
+            fetch('/api/auth/logout', { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        // Clear cookies and update UI
+                        Cookies.remove('github_token');
+                        document.getElementById('github-username').textContent = '';
+                        document.getElementById('github-login').style.display = 'block';
+                        document.getElementById('github-logout').style.display = 'none';
+                        alert('Logged out successfully.');
+                    } else {
+                        console.error('Logout failed:', response.status);
+                        alert('Logout failed.');
+                    }
+                });
+        }
+
+        function startProjectAuto() {
+            const repo = document.getElementById('repo').value;
+            const prompt = document.getElementById('prompt').value;
+            const githubToken = Cookies.get('github_token'); // Retrieve the token from the cookie
+
+            if (!githubToken) {
+                alert('Please authenticate with GitHub first.');
+                return;
+            }
+
+            fetch('/api/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${githubToken}` // Send the token in the Authorization header
+                },
+                body: JSON.stringify({ repo: repo, prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('status').textContent = data.message;
+                document.getElementById('log').textContent = data.log;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status').textContent = 'An error occurred.';
+            });
+        }
+
+        // Check for GitHub authentication status on page load
+        window.onload = function() {
+            const githubToken = Cookies.get('github_token');
+
+            if (githubToken) {
+                // Fetch user info using the token
+                fetch('/api/user', {
+                    headers: {
+                        'Authorization': `Bearer ${githubToken}`
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.username) {
+                        document.getElementById('github-username').textContent = `Logged in as ${data.username}`;
+                        document.getElementById('github-login').style.display = 'none';
+                        document.getElementById('github-logout').style.display = 'block';
+                    } else {
+                        // Token might be invalid, clear it
+                        Cookies.remove('github_token');
+                        document.getElementById('github-username').textContent = '';
+                        document.getElementById('github-login').style.display = 'block';
+                        document.getElementById('github-logout').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                    Cookies.remove('github_token');
+                    document.getElementById('github-username').textContent = '';
+                    document.getElementById('github-login').style.display = 'block';
+                    document.getElementById('github-logout').style.display = 'none';
+                });
+            } else {
+                document.getElementById('github-username').textContent = '';
+                document.getElementById('github-login').style.display = 'block';
+                document.getElementById('github-logout').style.display = 'none';
+            }
+        };
+    </script>
 </body>
 </html>
