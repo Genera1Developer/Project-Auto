@@ -17,7 +17,7 @@
             background-color: #f4f4f4;
             color: #333;
             display: flex;
-            min-height: 100vh; /* Ensures the content stretches to at least the viewport height */
+            min-height: 100vh;
         }
 
         .sidebar {
@@ -33,7 +33,6 @@
             text-align: center;
             margin-bottom: 20px;
             color: #FFD700;
-            /* Gold color */
         }
 
         .sidebar ul {
@@ -57,7 +56,6 @@
         .sidebar a:hover,
         .sidebar a.active {
             background-color: #FFD700;
-            /* Gold color */
             color: #333;
         }
 
@@ -87,7 +85,7 @@
 
         main {
             padding: 20px;
-            flex: 1; /* Allow main to grow and take available space */
+            flex: 1;
         }
 
         .about-section {
@@ -112,7 +110,43 @@
             color: #fff;
             text-align: center;
             padding: 10px;
-            margin-top: auto; /* Push the footer to the bottom */
+            margin-top: auto;
+        }
+
+        /* Purple and Gold Theme */
+        body {
+            background-color: #4B0082;
+            color: #FFD700;
+        }
+
+        .sidebar {
+            background-color: #333;
+        }
+
+        .content {
+            background-color: #fff;
+            color: #333;
+        }
+
+        header {
+            background-color: #222;
+        }
+
+        main {
+            background-color: #f9f9f9;
+        }
+
+        .about-section {
+            border: 1px solid #ddd;
+            background-color: #eee;
+        }
+
+        .about-section h2 {
+            color: #555;
+        }
+
+        footer {
+            background-color: #222;
         }
     </style>
 </head>
@@ -184,6 +218,10 @@
             </section>
         </main>
     </div>
+
+    <footer>
+        <p>&copy; 2024 Project Auto. All rights reserved.</p>
+    </footer>
 
     <script>
         function updateTime() {
