@@ -4,27 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="logo">Project Auto</h2>
+        </div>
+        <ul class="nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+    </div>
+    <div class="content">
         <header>
-            <div id="current-time" class="time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
-        <aside id="sidebar">
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main id="content">
-            <!-- Content will be loaded here -->
+        <main>
+            <section id="auth-section">
+                <button id="github-auth-button">Authenticate with GitHub</button>
+            </section>
+            <section id="project-setup" style="display: none;">
+                <label for="repo-name">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., yourusername/yourrepo">
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                <button id="start-button">Start</button>
+            </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById("current-time").innerText = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById("github-auth-button").addEventListener("click", () => {
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent("https://project-auto-v1029.vercel.app/api/auth/github")}`;
+        });
+
+        // Handle GitHub authentication redirect
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorCode = urlParams.get('error');
+
+        if (errorCode) {
+            alert(`Authentication failed: ${errorCode}`);
+        }
+
+        // Handle the start button action
+        document.getElementById("start-button").addEventListener("click", () => {
+            const repoName = document.getElementById("repo-name").value;
+            const customInstructions = document.getElementById("custom-instructions").value;
+
+            // Make sure the user is authenticated and has a token
+            const token = localStorage.getItem('github_token');
+            if (!token) {
+                alert('Please authenticate with GitHub first.');
+                return;
+            }
+
+            // Send the data to the backend
+            fetch('/api/run-project-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    repoName: repoName,
+                    customInstructions: customInstructions
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while starting Project Auto.');
+            });
+        });
+
+        // Check if the user is already authenticated
+        const token = localStorage.getItem('github_token');
+        if (token) {
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('project-setup').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
