@@ -8,40 +8,41 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <div class="logo">Project Auto</div>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
+
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="time"></div>
+            <div class="auth">
+                <a id="loginLink" href="/api/auth/github">Login with GitHub</a>
+                <button id="logoutButton" style="display:none;">Logout</button>
+            </div>
         </header>
+
         <main>
-            <section id="home">
-                <h2>Automate Your Project</h2>
-                <p>Enter your GitHub repository and customization instructions below:</p>
-                <form id="project-form">
-                    <label for="repository">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository" required>
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here..." required></textarea>
-                    <button type="button" id="start-button">Start</button>
-                </form>
-            </section>
+            <h1>Welcome to Project Auto</h1>
+            <p>Automate your repository tasks with ease.</p>
+
+            <div id="auth-check"></div>
+
+            <div class="input-area" id="repo-input-area">
+                <label for="repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required>
+            </div>
+
+            <div class="input-area">
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+            </div>
+
+            <button id="startButton">Start</button>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
@@ -50,50 +51,44 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
+        updateTime();
 
-        document.getElementById('start-button').addEventListener('click', function() {
-            const repository = document.getElementById('repository').value;
+        async function checkAuth() {
+            const response = await fetch('/api/auth/status');
+            const data = await response.json();
+
+            if (data.authenticated) {
+                document.getElementById('loginLink').style.display = 'none';
+                document.getElementById('logoutButton').style.display = 'block';
+                document.getElementById('logoutButton').onclick = async () => {
+                    await fetch('/api/auth/logout');
+                    window.location.reload();
+                };
+                document.getElementById('auth-check').textContent = 'Authenticated';
+            } else {
+                document.getElementById('loginLink').style.display = 'block';
+                document.getElementById('logoutButton').style.display = 'none';
+                document.getElementById('auth-check').textContent = 'Not authenticated';
+                document.getElementById('repo-input-area').style.display = 'none';
+            }
+        }
+
+        checkAuth();
+
+        document.getElementById('startButton').addEventListener('click', async () => {
+            const repo = document.getElementById('repo').value;
             const instructions = document.getElementById('instructions').value;
 
-            // Redirect to GitHub authentication if not already authenticated
-            const token = localStorage.getItem('github_token');
-            if (!token) {
-                // Store repo and instructions for after auth
-                localStorage.setItem('pending_repo', repository);
-                localStorage.setItem('pending_instructions', instructions);
-
-                // Construct the GitHub OAuth URL
-                const clientId = 'Iv1.48ab4a496e005716'; // Replace with your actual client ID
-                const redirectUri = 'https://project-auto-v1029.vercel.app/Configuration'; // Ensure this matches your registered redirect URI
-                const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
-                window.location.href = githubAuthUrl;
-                return;
-            }
-
-            // Send the data to the backend
-            fetch('/api/run-auto', {
+            const response = await fetch('/api/run', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    repository: repository,
-                    instructions: instructions
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Project Auto started successfully!');
-                } else {
-                    alert('Failed to start Project Auto. Check the console for errors.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Check the console for details.');
+                body: JSON.stringify({ repo, instructions })
             });
+
+            const data = await response.json();
+            alert(data.message);
         });
     </script>
 </body>
