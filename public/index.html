@@ -9,47 +9,84 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/Configuration">Configuration</a>
+            <a href="/About-Us">About Us</a>
+        </nav>
     </div>
-
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
+            <div id="current-time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
-
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <div class="form-group">
-                    <label for="repo-name">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-                </div>
-                <div class="form-group">
-                    <label for="prompt">Customization Prompt:</label>
-                    <textarea id="prompt" name="prompt" rows="4" placeholder="Describe the changes you want to make."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="github-token">GitHub Token:</label>
-                    <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
-                </div>
-                <button id="start-button" class="start-button">Start</button>
+            <section id="github-auth">
+                <a href="https://github.com/login/oauth/authorize?client_id=Iv1.45314dd604a79e2d&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
+                    Authenticate with GitHub
+                </a>
             </section>
-
-            <section id="status">
-                <h2>Status</h2>
-                <div id="status-message">Waiting for input...</div>
+            <section id="repo-input">
+                <label for="repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
             </section>
+            <section id="prompt-input">
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
+            </section>
+            <button id="start-button">Start</button>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
 
-    <script src="/script/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo = document.getElementById('repo').value;
+            const prompt = document.getElementById('prompt').value;
+
+            // Fetch token from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!repo || !prompt || !token) {
+                alert('Please fill in all fields and authenticate with GitHub.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/processRepo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, prompt, token }),
+                });
+
+                if (response.ok) {
+                    alert('Project Auto processing started!');
+                } else {
+                    const data = await response.json();
+                    alert(`Error: ${data.error || 'Failed to start processing.'}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while starting processing.');
+            }
+        });
+    </script>
 </body>
 </html>
