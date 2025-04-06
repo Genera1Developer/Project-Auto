@@ -8,31 +8,68 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <div class="logo">Project Auto</div>
+        <a href="/" class="active">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
+
     <div class="content">
         <header>
-            <div id="time"></div>
-            <button id="loginButton">Login with GitHub</button>
-            <button id="logoutButton" style="display: none;">Logout</button>
-            <span id="user"></span>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
-            <section id="project-input">
-                <h2>Automate Your Project</h2>
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required>
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-                <button id="startButton">Start</button>
+            <section id="hero">
+                <h2>Automate Your Repositories</h2>
+                <p>Enter your GitHub repository and customization instructions to get started.</p>
+            </section>
+
+            <section id="form-section">
+                <form id="auto-form">
+                    <label for="repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required>
+
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+
+                    <button type="button" id="start-button">Start</button>
+                    <button type="button" id="github-login">Login with GitHub</button>
+                </form>
             </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to display time immediately
+
+        document.getElementById('start-button').addEventListener('click', function() {
+            const repo = document.getElementById('repo').value;
+            const instructions = document.getElementById('instructions').value;
+
+            // Placeholder for future implementation.  Needs token.
+            alert(`Starting Project Auto on ${repo} with instructions: ${instructions}`);
+        });
+
+        document.getElementById('github-login').addEventListener('click', function() {
+            // Redirect to GitHub OAuth flow
+            const clientId = "Iv1.4d2a82a80b922f97"; // Replace with your actual client ID
+            const redirectUri = "https://project-auto-v1029.vercel.app/Configuration"; // Replace with your actual redirect URI
+            const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
+            window.location.href = githubAuthUrl;
+        });
+    </script>
 </body>
 </html>
