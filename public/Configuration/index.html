@@ -90,7 +90,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${githubToken}` // Include token
                     },
-                    body: JSON.stringify({ repo, instructions }),
+                    body: JSON.stringify({ repo, instructions, githubToken }),
                 });
 
                 if (!response.ok) {
