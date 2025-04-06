@@ -8,51 +8,63 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <a href="/index.html">Home</a>
-        <a href="/public/Configuration">Configuration</a>
-        <a href="/public/About-Us">About Us</a>
+        <div class="sidebar-header">
+            <h2 id="current-time"></h2>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
 
     <div class="content">
-        <header>
-            <div id="current-time"></div>
-        </header>
+        <h1>Welcome to Project Auto</h1>
+        <p>Enter your GitHub repository and customization instructions below to get started.</p>
 
-        <main>
-            <section id="project-form">
-                <h2>Run Project Auto</h2>
-                <form id="auto-form">
-                    <label for="repo_name">Repository (username/repo):</label>
-                    <input type="text" id="repo_name" name="repo_name" required><br><br>
+        <div class="form-container">
+            <label for="githubRepo">GitHub Repository (username/repo):</label>
+            <input type="text" id="githubRepo" name="githubRepo" placeholder="e.g., yourusername/yourrepo">
 
-                    <label for="prompt">Prompt:</label>
-                    <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
+            <label for="customInstructions">Custom Instructions:</label>
+            <textarea id="customInstructions" name="customInstructions" rows="4" placeholder="Enter your customization instructions here."></textarea>
 
-                    <label for="github_token">GitHub Token:</label>
-                    <input type="password" id="github_token" name="github_token" required><br><br>
-
-                    <button type="button" onclick="runProject()">Start</button>
-                </form>
-            </section>
-
-            <section id="results">
-                <h2>Results</h2>
-                <div id="result-display"></div>
-            </section>
-        </main>
+            <button id="startButton">Start</button>
+        </div>
     </div>
 
-    <script src="/public/script.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            document.getElementById("current-time").textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
+
+        document.getElementById("startButton").addEventListener("click", function() {
+            const repo = document.getElementById("githubRepo").value;
+            const instructions = document.getElementById("customInstructions").value;
+
+            fetch('/api/startAutomation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repo: repo, instructions: instructions })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please check the console.');
+            });
+        });
     </script>
 </body>
 </html>
