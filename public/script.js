@@ -74,6 +74,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tokenDisplay) {
             tokenDisplay.textContent = accessToken ? 'Authenticated' : 'Not Authenticated';
         }
+
+        const saveTokenButton = document.getElementById('save-token-button');
+        if (saveTokenButton) {
+            saveTokenButton.addEventListener('click', () => {
+                const newToken = document.getElementById('github-token-input').value;
+                if (newToken) {
+                    localStorage.setItem('github_access_token', newToken);
+                    tokenDisplay.textContent = 'Authenticated';
+                    alert('Token saved!');
+                } else {
+                    alert('Please enter a token.');
+                }
+            });
+        }
     }
 
     function setupAboutUsPage() {
