@@ -4,69 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <span id="current-time"></span>
-        </div>
-        <nav>
+    <div class="container">
+        <header>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
+        </header>
+        <aside id="sidebar">
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/Configuration">Configuration</a></li>
                 <li><a href="/About-Us">About Us</a></li>
             </ul>
-        </nav>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
+        </main>
     </div>
-    <div class="content">
-        <h1>Project Auto</h1>
-        <p>Automate your development workflow.</p>
-
-        <div id="github-auth">
-            <button id="github-login">Login with GitHub</button>
-        </div>
-
-        <div id="app" style="display: none;">
-            <label for="repo">GitHub Repository (username/repo):</label>
-            <input type="text" id="repo" name="repo" placeholder="username/repo"><br><br>
-
-            <label for="prompt">Customization Instructions:</label><br>
-            <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br><br>
-
-            <button id="start-button">Start</button>
-        </div>
-    </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const githubLoginButton = document.getElementById('github-login');
-            const appDiv = document.getElementById('app');
-            let accessToken = localStorage.getItem('github_access_token');
-
-            if (accessToken) {
-                showApp();
-            } else {
-                githubLoginButton.addEventListener('click', function() {
-                    // Redirect to GitHub OAuth flow
-                    window.location.href = '/api/auth/github';
-                });
-            }
-        });
-
-        function showApp() {
-            document.getElementById('github-auth').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-        }
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
