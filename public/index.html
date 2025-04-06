@@ -5,95 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
+        <div class="sidebar-header">Project Auto</div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
-        <div class="header">
-            <div>
-                <h1>Project Auto</h1>
-                <p id="current-time" class="current-time"></p>
-            </div>
-            <div>
-                <button id="login-button" class="start-button">
-                    <i class="fab fa-github"></i> Sign in with GitHub
-                </button>
-            </div>
-        </div>
-        <div class="main-content">
-            <h2>Welcome to Project Auto</h2>
-            <p>Enter your GitHub repository and customization instructions below to start Project Auto.</p>
-            <form id="auto-form">
-                <label for="repository">GitHub Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository" required>
-
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="5" placeholder="Enter your instructions here"></textarea>
-
-                <button type="submit" class="start-button">Start</button>
-            </form>
-            <div id="status-message" class="status-message"></div>
-        </div>
-        <div class="footer">
-            <p>Empowering Automation</p>
-        </div>
+        <header>
+            <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
+        </header>
+        <main>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" placeholder="e.g., owner/repository">
+                <label for="customization-prompt">Customization Instructions:</label>
+                <textarea id="customization-prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                <button id="start-button">Start</button>
+            </section>
+            <section id="github-auth">
+                <h2>GitHub Authentication</h2>
+                <button id="github-login">Login with GitHub</button>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('auto-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const repo = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-            const statusMessage = document.getElementById('status-message');
-
-            statusMessage.textContent = 'Processing...';
-            statusMessage.className = 'status-message loading';
-
-            fetch('/api/run-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    repository: repo,
-                    instructions: instructions
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                statusMessage.textContent = data.message;
-                statusMessage.className = data.success ? 'status-message success' : 'status-message error';
-            })
-            .catch(error => {
-                statusMessage.textContent = 'An error occurred: ' + error;
-                statusMessage.className = 'status-message error';
-            });
-        });
-        document.getElementById('login-button').addEventListener('click', function() {
-            window.location.href = '/api/login';
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
