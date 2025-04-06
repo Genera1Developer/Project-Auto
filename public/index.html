@@ -9,29 +9,30 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <a href="/" style="text-decoration:none;"><h1>Project Auto</h1></a>
+            <span id="current-time"></span>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <button id="github-login">Login with GitHub</button>
+            <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="hero">
-                <h2>Automate Your Repository</h2>
-                <p>Enter your repository details and customization instructions to get started.</p>
+            <section id="github-auth">
+                <a href="https://github.com/login/oauth/authorize?client_id=<%= process.env.GITHUB_CLIENT_ID %>&redirect_uri=<%= process.env.GITHUB_REDIRECT_URI %>">Authenticate with GitHub</a>
+                <p>Authenticate to access your repositories.</p>
             </section>
-            <section id="input-area">
-                <label for="repository">Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" placeholder="owner/repository">
+            <section id="project-details">
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
                 <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here."></textarea>
                 <button id="start-button">Start</button>
             </section>
         </main>
@@ -39,7 +40,6 @@
             <p>&copy; 2024 Project Auto</p>
         </footer>
     </div>
-
     <script>
         function updateTime() {
             const now = new Date();
@@ -49,53 +49,6 @@
 
         setInterval(updateTime, 1000);
         updateTime();
-
-        document.getElementById('github-login').addEventListener('click', () => {
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}`;
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repository = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-
-            // Retrieve the token from the URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const token = urlParams.get('token');
-
-            if (!repository) {
-                alert('Please enter the repository.');
-                return;
-            }
-
-            if (!token) {
-                alert('Please authenticate with Github.');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/process', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        repository: repository,
-                        instructions: instructions,
-                        token: token,
-                    }),
-                });
-
-                if (response.ok) {
-                    alert('Project Auto started! Check your repository for updates.');
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error || 'Failed to start Project Auto.'}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while starting Project Auto.');
-            }
-        });
     </script>
 </body>
 </html>
