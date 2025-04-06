@@ -4,85 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo">Project Auto</div>
-        <a href="/">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
-    </div>
-    <div class="content">
-        <header>
-            <div id="time"></div>
-            <h1>Project Auto</h1>
-        </header>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <img src="/logo.png" alt="Project Auto Logo" class="logo">
+                <h2>Project Auto</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
         <main>
-            <section id="github-auth">
-                <button id="github-login">Login with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </section>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repository">Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" placeholder="username/repo"><br><br>
-                <label for="prompt">Customization Instructions:</label><br>
-                <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br><br>
-                <button id="start-button">Start</button>
+            <header>
+                <div id="current-time"></div>
+                <h1>Welcome to Project Auto</h1>
+            </header>
+            <section id="content">
+                <!-- Content will be loaded here -->
             </section>
         </main>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const githubLoginButton = document.getElementById('github-login');
-            const authStatus = document.getElementById('auth-status');
-            const startButton = document.getElementById('start-button');
-
-            githubLoginButton.addEventListener('click', () => {
-                window.location.href = '/api/auth/github';
-            });
-
-            async function checkAuthStatus() {
-                const response = await fetch('/api/auth/status');
-                const data = await response.json();
-
-                if (data.isAuthenticated) {
-                    authStatus.textContent = 'Authenticated';
-                    githubLoginButton.style.display = 'none';
-                } else {
-                    authStatus.textContent = 'Not authenticated';
-                    githubLoginButton.style.display = 'block';
-                }
-            }
-
-            checkAuthStatus();
-
-            startButton.addEventListener('click', async () => {
-                const repository = document.getElementById('repository').value;
-                const prompt = document.getElementById('prompt').value;
-
-                const response = await fetch('/api/project/start', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repository, prompt })
-                });
-
-                const result = await response.json();
-                alert(result.message);
-            });
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
