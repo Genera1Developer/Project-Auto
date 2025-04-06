@@ -4,63 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/public/style/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/public/Configuration">Configuration</a></li>
-            <li><a href="/public/About-Us">About Us</a></li>
-        </ul>
+        <div class="sidebar-header">
+            Project Auto
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
+
     <div class="content">
         <header>
-            <div id="time"></div>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
+
         <main>
-            <h1>Welcome to Project Auto</h1>
-            <p>Enter your GitHub repository and customization prompt below.</p>
-            <div class="form-container">
-                <form id="project-form">
-                    <label for="repo_name">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo_name" name="repo_name" required><br><br>
+            <section id="github-repo">
+                <h2>GitHub Repository</h2>
+                <input type="text" id="repo-url" placeholder="username/repo">
+            </section>
 
-                    <label for="prompt">Customization Prompt:</label>
-                    <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
+            <section id="customization-prompt">
+                <h2>Customization Instructions</h2>
+                <textarea id="prompt-input" placeholder="Enter your customization instructions here"></textarea>
+            </section>
 
-                    <button type="button" onclick="runProjectAuto()">Start</button>
-                </form>
-            </div>
-            <div id="result"></div>
+            <section id="authentication">
+                <h2>GitHub Authentication</h2>
+                <button id="github-login">Login with GitHub</button>
+            </section>
+
+            <section id="start-project">
+                <button id="start-button">Start</button>
+            </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
 
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById("time").textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
+
         setInterval(updateTime, 1000);
-        updateTime();
+        updateTime(); // Initial call to display time immediately
 
-        async function runProjectAuto() {
-            const repo_name = document.getElementById("repo_name").value;
-            const prompt = document.getElementById("prompt").value;
+        document.getElementById('github-login').addEventListener('click', async () => {
+            // Implement GitHub authentication here (OAuth flow)
+            //  - Redirect user to GitHub's authorization page
+            //  - Handle the callback URL after user authorization
+            //  - Store the access token securely (e.g., in localStorage or a cookie)
+            //  - For demonstration, display a placeholder message
+            alert('GitHub authentication is not fully implemented yet.  Please implement OAuth Flow.');
 
-            const response = await fetch('/api/run', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repo_name: repo_name, prompt: prompt })
-            });
+            // Placeholder code for handling authentication (replace with actual implementation)
+            const accessToken = 'YOUR_GITHUB_ACCESS_TOKEN'; // Replace with actual token retrieval
+            if (accessToken) {
+                console.log('Authenticated with GitHub!');
+                // You can now use the access token to make API requests on behalf of the user.
+            } else {
+                console.log('Authentication failed.');
+            }
+        });
 
-            const data = await response.json();
-            document.getElementById("result").textContent = data.result;
-        }
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const prompt = document.getElementById('prompt-input').value;
+
+            // Basic validation
+            if (!repoUrl) {
+                alert('Please enter a GitHub repository URL.');
+                return;
+            }
+
+            if (!prompt) {
+                alert('Please enter customization instructions.');
+                return;
+            }
+
+            // Implement Project Auto execution logic here
+            // - Fetch the repository code
+            // - Apply customizations based on the prompt
+            // - Commit and push the changes
+
+            try {
+                const response = await fetch('/api/execute-auto', { // Changed path to /api/execute-auto
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        repoUrl: repoUrl,
+                        prompt: prompt,
+                        accessToken: 'YOUR_GITHUB_ACCESS_TOKEN' // Replace with actual access token
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Project Auto execution result:', result);
+                alert('Project Auto executed successfully!'); // Provide user feedback
+            } catch (error) {
+                console.error('Error executing Project Auto:', error);
+                alert('Error executing Project Auto. See console for details.');
+            }
+        });
     </script>
 </body>
 </html>
