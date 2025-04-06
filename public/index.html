@@ -1,42 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="/style/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <span id="current-time"></span>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="logo">Project Auto</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main>
+            <header>
+                <div id="current-time" class="time"></div>
+                <h1>Project Auto</h1>
+            </header>
+            <section id="content">
+                <!-- Content will be loaded here -->
+            </section>
+        </main>
     </div>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/Configuration">Configuration</a></li>
-        <li><a href="/About-Us">About Us</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div class="content">
-    <header>
-      <h1>Project Auto</h1>
-      <p>Automate Your Repository</p>
-    </header>
-    <main>
-      <section id="github-auth">
-        <button id="github-login">Login with GitHub</button>
-      </section>
-      <section id="project-setup">
-        <label for="repo-url">Repository (username/repo):</label>
-        <input type="text" id="repo-url" placeholder="username/repo">
-        <label for="instructions">Customization Instructions:</label>
-        <textarea id="instructions" placeholder="Enter your instructions here"></textarea>
-        <button id="start-button">Start</button>
-      </section>
-    </main>
-  </div>
-  <script src="/script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
