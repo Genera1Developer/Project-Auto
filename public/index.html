@@ -5,63 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <ul class="nav">
-            <li><a href="/"><i class="fa fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fa fa-cog"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fa fa-info-circle"></i>About Us</a></li>
+        <h1>Project Auto</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
         </ul>
-        <div class="footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
     </div>
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
-            <div class="auth-buttons">
-                <button id="loginBtn" onclick="loginWithGitHub()">Login with GitHub</button>
-                <button id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
-                <span id="usernameDisplay" style="display:none;"></span>
-                <img id="userAvatar" src="" alt="User Avatar" style="display:none; border-radius: 50%; width: 24px; height: 24px; margin-left: 5px;">
-            </div>
+            <div id="current-time"></div>
         </header>
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <div class="input-group">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
-                </div>
-                <div class="input-group">
-                    <label for="prompt">Customization Instructions:</label>
-                    <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
-                </div>
-                <button id="startBtn">Start</button>
+            <section id="project-input">
+                <h2>Run Project Auto</h2>
+                <label for="repo-name">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo"><br><br>
+
+                <label for="prompt">Customization Prompt:</label><br>
+                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="e.g., Add a new feature to the website."></textarea><br><br>
+
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub Token"><br><br>
+
+                <button id="start-button">Start</button>
             </section>
-            <section id="status">
-                <h2>Status</h2>
-                <div id="status-message"></div>
+            <section id="results">
+                <h2>Results</h2>
+                <div id="results-content"></div>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
-    <script src="/script/auth.js"></script>
-    <script src="/script/script.js"></script>
+    <script src="/script.js"></script>
 </body>
 </html>
