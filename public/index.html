@@ -18,23 +18,58 @@
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div>Welcome to Project Auto</div>
         </header>
         <main>
-            <section id="project-input">
-                <h2>Project Details</h2>
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-                <label for="prompt">Customization Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Describe the changes you want to make."></textarea>
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <input type="text" id="repo-url" placeholder="username/repo">
+                <textarea id="custom-instructions" placeholder="Customization Instructions"></textarea>
                 <button id="start-button">Start</button>
             </section>
-            <section id="status">
-                <h2>Status</h2>
-                <p id="status-message">Enter your project details and click Start.</p>
+            <section id="auth-section">
+                <h2>Authenticate with GitHub</h2>
+                <button id="github-auth-button">Authenticate</button>
             </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById("current-time").textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('github-auth-button').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customInstructions = document.getElementById('custom-instructions').value;
+
+            try {
+                const response = await fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repoUrl, customInstructions })
+                });
+
+                const data = await response.json();
+                console.log(data);
+                alert(data.message);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            }
+        });
+    </script>
 </body>
 </html>
