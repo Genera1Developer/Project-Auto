@@ -4,23 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            Project Auto
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+    </div>
+    <div class="content">
         <header>
             <div id="current-time"></div>
             <h1>Project Auto</h1>
         </header>
-        <aside id="sidebar">
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </aside>
-        <main id="content">
-            <!-- Content will be loaded here -->
+        <main>
+            <section id="input-section">
+                <h2>Enter Repository and Prompt</h2>
+                <div class="input-group">
+                    <label for="repo-name">Repository (username/repo):</label>
+                    <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
+                </div>
+                <div class="input-group">
+                    <label for="prompt">Prompt:</label>
+                    <textarea id="prompt" name="prompt" rows="4" placeholder="Describe the desired changes."></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="github-token">GitHub Token:</label>
+                    <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
+                </div>
+                <button id="start-button">Start</button>
+            </section>
+            <section id="output-section">
+                <h2>Output</h2>
+                <div id="output"></div>
+            </section>
         </main>
     </div>
     <script src="/script.js"></script>
