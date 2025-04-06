@@ -7,38 +7,31 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h1>Project Auto</h1>
-            </div>
-            <nav class="sidebar-nav">
-                <a href="/" class="active">Home</a>
-                <a href="/Configuration">Configuration</a>
-                <a href="/About-Us">About Us</a>
-            </nav>
-        </aside>
-        <main class="main-content">
-            <header class="main-header">
-                <div id="current-time"></div>
-            </header>
-            <section class="content">
-                <h2>Automate Your Repository</h2>
-                <div class="form-container">
-                    <form id="auto-form">
-                        <div class="form-group">
-                            <label for="repo">GitHub Repository (username/repo):</label>
-                            <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="instructions">Customization Instructions:</label>
-                            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-                        </div>
-                        <button type="submit" class="start-button">Start</button>
-                    </form>
-                </div>
-            </section>
+    <div class="sidebar">
+        <h1>Project Auto</h1>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
+    </div>
+    <div class="content">
+        <header>
+            <div id="time"></div>
+            <a href="/api/auth/github">Login with GitHub</a>
+        </header>
+        <main>
+            <h2>Welcome to Project Auto</h2>
+            <p>Enter your GitHub repository and customization instructions below:</p>
+            <form id="project-form">
+                <label for="repository">Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" required><br><br>
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
+                <button type="button" id="start-button">Start</button>
+            </form>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
     <script src="/script.js"></script>
 </body>
