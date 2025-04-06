@@ -4,44 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/public/style/style.css">
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h2>Project Auto</h2>
-        </div>
-        <ul class="nav">
-            <li><a href="/index.html">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
+        <h1>Project Auto</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/public/Configuration">Configuration</a></li>
+            <li><a href="/public/About-Us">About Us</a></li>
         </ul>
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="time"></div>
         </header>
         <main>
-            <section id="github-integration">
-                <h2>GitHub Integration</h2>
-                <p>Connect your GitHub repository to automate your development workflow.</p>
-                <button id="github-login-button">Login with GitHub</button>
-                <div id="github-user-info"></div>
-                <div id="github-repo-form" style="display:none;">
-                    <label for="repo-name">Repository (username/repo):</label>
-                    <input type="text" id="repo-name" name="repo-name" placeholder="e.g., yourusername/yourrepo"><br><br>
-                    <label for="custom-instruction">Custom Instructions:</label><br>
-                    <textarea id="custom-instruction" name="custom-instruction" rows="4" cols="50" placeholder="Enter your customization instructions here."></textarea><br><br>
-                    <button id="start-button">Start</button>
-                </div>
-            </section>
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your GitHub repository and customization prompt below.</p>
+            <div class="form-container">
+                <form id="project-form">
+                    <label for="repo_name">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo_name" name="repo_name" required><br><br>
+
+                    <label for="prompt">Customization Prompt:</label>
+                    <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
+
+                    <button type="button" onclick="runProjectAuto()">Start</button>
+                </form>
+            </div>
+            <div id="result"></div>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById("time").textContent = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        async function runProjectAuto() {
+            const repo_name = document.getElementById("repo_name").value;
+            const prompt = document.getElementById("prompt").value;
+
+            const response = await fetch('/api/run', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repo_name: repo_name, prompt: prompt })
+            });
+
+            const data = await response.json();
+            document.getElementById("result").textContent = data.result;
+        }
+    </script>
 </body>
 </html>
