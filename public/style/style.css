@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -5,9 +6,10 @@ body {
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
 }
 
+/* Sidebar Styles */
 .sidebar {
     width: 250px;
     background-color: #333;
@@ -19,6 +21,7 @@ body {
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 100;
 }
 
 .sidebar-header {
@@ -29,8 +32,7 @@ body {
 .logo {
     width: 80%;
     max-width: 150px;
-    margin: 0 auto;
-    display: block;
+    height: auto;
 }
 
 .sidebar-menu {
@@ -41,24 +43,24 @@ body {
 }
 
 .sidebar-menu li {
-    margin-bottom: 10px;
+    padding: 10px 0;
 }
 
 .sidebar-menu a {
-    display: block;
-    padding: 10px 15px;
     color: #fff;
     text-decoration: none;
+    display: block;
+    padding: 10px 15px;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 .sidebar-menu a:hover {
-    background-color: #555;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-menu i {
-    margin-right: 8px;
+    margin-right: 10px;
     width: 20px;
     text-align: center;
 }
@@ -66,15 +68,15 @@ body {
 .sidebar-footer {
     text-align: center;
     padding-top: 20px;
-    border-top: 1px solid #555;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.8em;
 }
 
+/* Content Styles */
 .content {
     flex-grow: 1;
     padding: 20px;
-    margin-left: 250px;
-    display: flex;
-    flex-direction: column;
+    margin-left: 250px; /* Match sidebar width */
 }
 
 .header {
@@ -90,34 +92,32 @@ body {
 
 .header h1 {
     margin: 0;
-    color: #333;
+    font-size: 24px;
 }
 
 .current-time {
-    font-size: 1em;
+    font-size: 1.1em;
     color: #666;
 }
 
+/* Main Content Styles */
 .main-content {
-    flex-grow: 1;
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Configuration Form Styles */
 .configuration-form {
     display: flex;
     flex-direction: column;
-    max-width: 600px;
-    margin: 0 auto;
 }
 
 .configuration-form label {
     margin-top: 10px;
     margin-bottom: 5px;
     font-weight: bold;
-    color: #555;
 }
 
 .configuration-form input[type="text"],
@@ -141,14 +141,15 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.1em;
-    transition: background-color 0.3s ease;
+    font-size: 1em;
+    transition: background-color 0.3s;
 }
 
 .start-button:hover {
     background-color: #512da8;
 }
 
+/* Status Message Styles */
 .status-message {
     margin-top: 20px;
     padding: 10px;
@@ -171,49 +172,63 @@ body {
     color: white;
 }
 
+/* Footer Styles */
 .footer {
     text-align: center;
     padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
     margin-top: 20px;
-    color: #777;
-}
-/* Purple and Gold Theme */
-body {
-    background-color: #f0e68c; /* Light Gold */
-    color: #333;
-}
-
-.sidebar {
-    background-color: #5e35b1; /* Deep Purple */
+    background-color: #333;
     color: #fff;
+    border-radius: 8px;
+    font-size: 0.9em;
 }
 
-.sidebar-menu a:hover {
-    background-color: #6a1b9a; /* Darker Purple */
+/* About Us Styles */
+.about-us-content {
+    line-height: 1.6;
 }
 
-.header {
-    background-color: #fff8dc; /* Lighter Gold */
+.about-us-content h2 {
+    color: #673ab7;
+    margin-top: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #673ab7;
 }
 
-.start-button {
-    background-color: #7b1fa2; /* Another Purple */
+.about-us-content p {
+    margin-bottom: 15px;
 }
 
-.start-button:hover {
-    background-color: #4a148c; /* Even Darker Purple */
-}
-
-/* Responsive Design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
-        height: auto;
         position: static;
-        margin-bottom: 20px;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        padding: 10px;
+    }
+
+    .sidebar-header {
+        margin-bottom: 0;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .sidebar-menu li {
+        padding: 0;
+    }
+
+    .sidebar-menu a {
+        padding: 10px;
+        text-align: center;
     }
 
     .content {
