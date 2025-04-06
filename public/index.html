@@ -10,34 +10,31 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h2>Project Auto</h2>
         </div>
-        <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
         </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
     <div class="content">
-        <header>
-            <div id="current-time"></div>
+        <div class="header">
+            <div class="current-time" id="current-time"></div>
+            <div></div>
+        </div>
+        <div class="main-content">
             <h1>Welcome to Project Auto</h1>
-        </header>
-        <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., yourusername/yourrepo">
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here."></textarea>
-                <button id="start-button">Start</button>
-            </section>
-            <section id="status">
-                <h2>Status</h2>
-                <div id="status-message">Waiting for project setup...</div>
-            </section>
-        </main>
+            <p>Automate your repository tasks with ease.</p>
+            <p>Please configure your repository settings and customization instructions in the Configuration tab.</p>
+        </div>
+        <div class="footer">
+            <p>Contact us: support@projectauto.com</p>
+        </div>
     </div>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
@@ -47,28 +44,6 @@
 
         setInterval(updateTime, 1000);
         updateTime();
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const instructions = document.getElementById('instructions').value;
-            document.getElementById('status-message').textContent = "Processing...";
-
-            try {
-                const response = await fetch('/api/start', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repoUrl: repoUrl, instructions: instructions })
-                });
-
-                const data = await response.json();
-                document.getElementById('status-message').textContent = data.message;
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('status-message').textContent = "An error occurred. Please check the console.";
-            }
-        });
     </script>
 </body>
 </html>
