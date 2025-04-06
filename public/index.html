@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
 </head>
+
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2 class="logo">Project Auto</h2>
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
@@ -20,29 +22,29 @@
 
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="current-time" class="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
 
         <main>
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <p>Connect to your GitHub account to start using Project Auto.</p>
-                <button id="github-login-button">Login with GitHub</button>
+            <section id="input-section">
+                <label for="repo-name">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
+
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" name="prompt" rows="4"
+                    placeholder="Describe the changes you want to make."></textarea>
+
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" name="github-token"
+                    placeholder="Enter your GitHub token">
+
+                <button id="start-button">Start</button>
             </section>
 
-            <section id="project-setup" style="display: none;">
-                <h2>Project Setup</h2>
-                <p>Enter your GitHub repository and customization instructions.</p>
-                <form id="project-form">
-                    <label for="repository">Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" required><br><br>
-
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" cols="50" required></textarea><br><br>
-
-                    <button type="submit" id="start-button">Start</button>
-                </form>
+            <section id="output-section">
+                <h2>Output:</h2>
+                <div id="output"></div>
             </section>
         </main>
 
@@ -51,6 +53,7 @@
         </footer>
     </div>
 
+    <script src="/script.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
@@ -59,68 +62,8 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime();
-
-        const githubLoginButton = document.getElementById('github-login-button');
-        const projectSetupSection = document.getElementById('project-setup');
-        const githubAuthSection = document.getElementById('github-auth');
-        const projectForm = document.getElementById('project-form');
-
-        githubLoginButton.addEventListener('click', () => {
-            // Redirect to GitHub OAuth flow
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo`;
-        });
-
-        // Check for token in URL after redirect
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-
-        if (token) {
-            // Store the token (e.g., in localStorage or a cookie)
-            localStorage.setItem('github_token', token);
-            githubAuthSection.style.display = 'none';
-            projectSetupSection.style.display = 'block';
-        } else {
-            // Check if token exists in local storage from previous session
-            const storedToken = localStorage.getItem('github_token');
-            if (storedToken) {
-                githubAuthSection.style.display = 'none';
-                projectSetupSection.style.display = 'block';
-            } else {
-                githubAuthSection.style.display = 'block';
-                projectSetupSection.style.display = 'none';
-            }
-        }
-
-        projectForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const repository = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-            const token = localStorage.getItem('github_token');
-
-            // Send data to backend for processing
-            try {
-                const response = await fetch('/api/process', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` // Include token for authentication
-                    },
-                    body: JSON.stringify({ repository, instructions })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    alert(data.message);
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while processing your request.');
-            }
-        });
+        updateTime(); // Initial call to display time immediately
     </script>
 </body>
+
 </html>
