@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -5,9 +6,10 @@ body {
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    min-height: 100vh; /* Ensure full height */
+    height: 100vh;
 }
 
+/* Sidebar Styles */
 .sidebar {
     width: 250px;
     background-color: #333;
@@ -15,12 +17,7 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Full height */
-    position: fixed;
-    top: 0;
-    left: 0;
-    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
-    z-index: 100; /* Ensure it's above other content */
+    height: 100%;
 }
 
 .sidebar-header {
@@ -46,15 +43,19 @@ body {
     display: block;
     padding: 10px;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-menu a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
 }
 
 .sidebar-menu a:hover {
     background-color: #555;
-}
-
-.sidebar-menu i {
-    margin-right: 10px;
 }
 
 .sidebar-footer {
@@ -64,40 +65,40 @@ body {
     color: #ddd;
 }
 
+/* Content Styles */
 .content {
     flex: 1;
     padding: 20px;
-    margin-left: 250px; /* Width of the sidebar */
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    transition: margin-left 0.3s; /* Smooth transition when sidebar changes */
 }
 
 .header {
-    background-color: #fff;
+    background-color: #f8f8f8;
     padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #ddd;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 1; /* Ensure header is above main content */
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2em;
 }
 
 .current-time {
-    font-size: 1em;
-    color: #666;
+    font-size: 1.1em;
+    color: #555;
 }
 
 .main-content {
-    flex: 1;
-    background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Configuration Form Styles */
 .configuration-form {
     display: flex;
     flex-direction: column;
@@ -106,7 +107,7 @@ body {
 }
 
 .configuration-form label {
-    margin-bottom: 5px;
+    margin-top: 10px;
     font-weight: bold;
 }
 
@@ -114,6 +115,7 @@ body {
 .configuration-form input[type="password"],
 .configuration-form textarea {
     padding: 10px;
+    margin-top: 5px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -125,120 +127,48 @@ body {
 }
 
 .start-button {
-    background-color: #7952B3;
+    background-color: #673ab7;
     color: white;
     padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 1.1em;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .start-button:hover {
-    background-color: #673AB7;
+    background-color: #512da8;
 }
 
 .status-message {
-    margin-top: 15px;
+    margin-top: 20px;
     padding: 10px;
     border-radius: 4px;
     text-align: center;
 }
 
 .status-message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: #f44336;
+    color: white;
 }
 
 .status-message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: #4caf50;
+    color: white;
 }
 
 .status-message.loading {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
+    background-color: #ff9800;
+    color: white;
 }
 
+/* Footer Styles */
 .footer {
-    background-color: #333;
-    color: #fff;
+    margin-top: auto;
+    padding: 20px;
     text-align: center;
-    padding: 10px;
-    border-radius: 5px;
-    margin-top: 20px;
-}
-
-/* Specific styles for About Us page */
-.about-us-content {
-    line-height: 1.6;
-}
-
-.about-us-content h2 {
-    color: #7952B3;
-    margin-top: 20px;
-    border-bottom: 2px solid #7952B3;
-    padding-bottom: 5px;
-}
-
-.about-us-content p {
-    margin-bottom: 15px;
-}
-
-/* Gold color scheme additions */
-.gold-accent {
-    color: #FFD700;
-}
-
-.sidebar {
-    background-color: #333; /* Dark background for sidebar */
-}
-
-.sidebar-menu a {
-    color: #ddd; /* Light text for contrast */
-}
-
-.sidebar-menu a:hover {
-    background-color: #555;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        position: static;
-        height: auto;
-    }
-
-    .content {
-        margin-left: 0;
-    }
-}
-
-/* Styling for input fields */
-input[type="text"],
-input[type="password"],
-textarea {
-    border: 1px solid #ccc;
-    padding: 8px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    font-size: 1em;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus,
-textarea:focus {
-    border-color: #7952B3;
-    outline: none;
-    box-shadow: 0 0 5px rgba(121, 82, 179, 0.5);
-}
-
-/* General adjustments */
-h1, h2, h3 {
-    color: #7952B3;
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+    font-size: 0.9em;
 }
