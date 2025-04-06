@@ -2,15 +2,15 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #f9f5ff; /* Light purple background */
+    color: #4a306d; /* Dark purple text */
     display: flex;
     height: 100vh;
 }
 
 .sidebar {
     width: 250px;
-    background-color: #333;
+    background-color: #4a306d; /* Dark purple sidebar */
     color: #fff;
     padding: 20px;
     display: flex;
@@ -46,7 +46,7 @@ body {
 }
 
 .sidebar-menu a:hover {
-    background-color: #555;
+    background-color: #6c42a6; /* Lighter purple on hover */
 }
 
 .sidebar-menu i {
@@ -102,6 +102,7 @@ body {
 .configuration-form label {
     margin-bottom: 5px;
     font-weight: bold;
+    color: #4a306d;
 }
 
 .configuration-form input[type="text"],
@@ -119,8 +120,8 @@ body {
 }
 
 .start-button {
-    background-color: #5cb85c;
-    color: white;
+    background-color: #d4af37; /* Gold start button */
+    color: #4a306d; /* Dark purple text */
     padding: 15px 20px;
     border: none;
     border-radius: 5px;
@@ -130,7 +131,7 @@ body {
 }
 
 .start-button:hover {
-    background-color: #449d44;
+    background-color: #b8972c; /* Darker gold on hover */
 }
 
 .status-message {
@@ -166,37 +167,25 @@ body {
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-size: 0.9em;
-    color: #666;
-}
-
-/* Specific color scheme adjustments */
-body {
-    background-color: #f9f5ff; /* Light purple background */
-    color: #4a306d; /* Dark purple text */
-}
-
-.sidebar {
-    background-color: #4a306d; /* Dark purple sidebar */
-}
-
-.header {
-    background-color: #fff;
-}
-
-.main-content {
-    background-color: #fff;
-}
-
-.start-button {
-    background-color: #d4af37; /* Gold start button */
-    color: #4a306d;
-}
-
-.start-button:hover {
-    background-color: #b8972c;
-}
-
-.footer {
-    background-color: #fff;
     color: #777;
+}
+
+/* Additional styles for specific elements */
+.github-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.prompt-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+    resize: vertical;
 }
