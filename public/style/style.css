@@ -11,12 +11,17 @@ body {
 
 /* Sidebar Styles */
 .sidebar {
-    width: 250px;
+    width: 220px;
     background-color: #333;
     color: #fff;
     padding: 20px;
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
 }
 
 .sidebar-header {
@@ -27,73 +32,91 @@ body {
 .logo {
     width: 80%;
     max-width: 150px;
+    height: auto;
 }
 
 .sidebar-menu {
     list-style: none;
     padding: 0;
+    margin: 0;
+    flex-grow: 1;
 }
 
 .sidebar-menu li {
-    margin-bottom: 10px;
+    padding: 10px 0;
 }
 
 .sidebar-menu a {
-    display: block;
-    padding: 10px;
     color: #fff;
     text-decoration: none;
+    display: block;
+    padding: 10px 15px;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .sidebar-menu a:hover {
-    background-color: #555;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu i {
+    margin-right: 10px;
 }
 
 .sidebar-footer {
-    margin-top: auto;
     text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     font-size: 0.8em;
-    color: #aaa;
 }
 
 /* Content Styles */
 .content {
-    flex: 1;
+    flex-grow: 1;
     padding: 20px;
-    overflow-y: auto;
+    margin-left: 220px; /* Adjust based on sidebar width */
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
     background-color: #fff;
     padding: 20px;
     margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+.header h1 {
+    margin: 0;
+    color: #333;
+}
+
 .current-time {
     font-size: 1em;
-    color: #777;
+    color: #666;
 }
 
 .main-content {
+    flex-grow: 1;
     background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .footer {
     text-align: center;
+    padding: 20px;
     margin-top: 20px;
-    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #666;
     font-size: 0.9em;
-    color: #777;
 }
 
 /* Configuration Form Styles */
@@ -108,6 +131,7 @@ body {
     margin-top: 10px;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #555;
 }
 
 .configuration-form input[type="text"],
@@ -125,14 +149,14 @@ body {
 }
 
 .start-button {
-    background-color: #673ab7;
+    background-color: #673ab7; /* Purple */
     color: white;
     padding: 12px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.1em;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
 .start-button:hover {
@@ -167,67 +191,43 @@ body {
 }
 
 .about-us-content h2 {
+    color: #673ab7; /* Purple */
     margin-top: 20px;
-    color: #673ab7;
+    margin-bottom: 10px;
 }
 
 .about-us-content p {
     margin-bottom: 15px;
 }
 
-/* Home Page Styles */
-.home-content {
-    text-align: center;
-}
-
-.home-content h1 {
-    color: #673ab7;
-    margin-bottom: 20px;
-}
-
-.home-content p {
-    font-size: 1.2em;
-    line-height: 1.6;
-    margin-bottom: 30px;
-}
-/* Purple and Gold color scheme */
-body {
-    background-color: #f9f8fd; /* Light purple */
-    color: #333;
-}
-
-.sidebar {
-    background-color: #3f3d56; /* Dark purple */
-}
-
-.sidebar-menu a:hover {
-    background-color: #5e5b79; /* Lighter dark purple */
-}
-
-.header {
-    background-color: #fff;
-}
-
-.start-button {
-    background-color: #d4af37; /* Gold */
-    color: #333;
-}
-
-.start-button:hover {
-    background-color: #b8952b; /* Darker gold */
-}
-
-/* Responsive Design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
-        max-width: none;
         position: static;
         height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+    }
+
+    .sidebar-header, .sidebar-footer {
+        display: none;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .sidebar-menu li {
+        padding: 0;
     }
 
     .content {
-        padding: 10px;
+        margin-left: 0;
     }
 
     .header {
@@ -235,38 +235,47 @@ body {
         align-items: flex-start;
     }
 
-    .current-time {
-        margin-bottom: 10px;
+    .header h1 {
+        margin-top: 10px;
     }
 }
-/* Style adjustments for the file input */
-.file-input-container {
-    position: relative;
-    overflow: hidden;
-    display: inline-block;
+/* Additional styles for purple and gold theme */
+body {
+    background-color: #f9f8f7; /* Light beige */
+    color: #333;
 }
 
-.file-input-button {
-    background-color: #673ab7;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1em;
-    transition: background-color 0.3s;
-    display: inline-block;
+.sidebar {
+    background-color: #301934; /* Dark purple */
+    color: #ffc107; /* Gold */
 }
 
-.file-input-button:hover {
-    background-color: #512da8;
+.sidebar a {
+    color: #ffc107; /* Gold */
 }
 
-.file-input {
-    position: absolute;
-    font-size: 100px;
-    right: 0;
-    top: 0;
-    opacity: 0;
-    cursor: pointer;
+.sidebar a:hover {
+    background-color: rgba(255, 193, 7, 0.1); /* Gold hover */
+}
+
+.header {
+    background-color: #fff;
+}
+
+.header h1 {
+    color: #301934; /* Dark purple */
+}
+
+.start-button {
+    background-color: #301934; /* Dark purple */
+    color: #ffc107; /* Gold */
+}
+
+.start-button:hover {
+    background-color: #5a3d5e; /* Lighter purple */
+}
+
+.footer {
+    background-color: #fff;
+    color: #301934; /* Dark purple */
 }
