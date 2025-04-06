@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="container">
@@ -22,11 +22,17 @@
         </aside>
         <main>
             <header>
-                <div id="current-time" class="current-time"></div>
-                <h1>Welcome to Project Auto</h1>
+                <div id="current-time"></div>
+                <h1>Home</h1>
             </header>
             <section id="content">
-                <!-- Content will be loaded here -->
+                <h2>Welcome to Project Auto</h2>
+                <p>Enter your repository details and prompt to start Project Auto.</p>
+                <label for="repo-name">Repository Name (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="username/repo">
+                <label for="prompt-text">Prompt:</label>
+                <textarea id="prompt-text" name="prompt-text" rows="4" placeholder="Enter your prompt here"></textarea>
+                <button id="start-button">Start</button>
             </section>
         </main>
     </div>
