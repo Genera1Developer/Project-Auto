@@ -1,64 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="/style/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style/style.css">
+    <script src="/script.js" defer></script>
 </head>
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <img src="/images/project-auto-logo.png" alt="Project Auto Logo" class="logo">
-      <h1>Project Auto</h1>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/Configuration">Configuration</a></li>
-        <li><a href="/About-Us">About Us</a></li>
-      </ul>
-    </nav>
-  </div>
-  <div class="content">
-    <header>
-      <div id="current-time"></div>
-      <button id="github-login">Login with GitHub</button>
-    </header>
+    <div class="content">
+        <div class="header">
+            <div class="current-time" id="current-time"></div>
+            <h1>Project Auto</h1>
+        </div>
+        <div class="main-content">
+            <p>Welcome to Project Auto! Please configure your repository and customization instructions below.</p>
+            <form class="configuration-form" id="main-form">
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
 
-    <main>
-      <section id="input-section">
-        <h2>Enter Repository Details</h2>
-        <label for="repository">GitHub Repository (username/repo):</label>
-        <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo">
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="5" placeholder="Enter your customization instructions here"></textarea>
 
-        <label for="prompt">Customization Instructions:</label>
-        <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
-
-        <button id="start-button">Start</button>
-      </section>
-
-      <section id="status-section">
-        <h2>Status</h2>
-        <div id="status-message">Waiting for input...</div>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Project Auto. All rights reserved.</p>
-    </footer>
-  </div>
-
-  <script src="/script.js"></script>
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('current-time').textContent = timeString;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime(); // Initial call
-  </script>
+                <button type="button" class="start-button" onclick="startProjectAuto()">Start</button>
+            </form>
+            <div id="status-message" class="status-message"></div>
+        </div>
+        <div class="footer">
+            <p>Empowering Automated Development</p>
+        </div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </body>
 </html>
