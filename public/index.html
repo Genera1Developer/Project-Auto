@@ -8,61 +8,108 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <a href="/">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <div class="sidebar-header">
+            Project Auto
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
+
     <div class="content">
         <header>
             <div id="current-time"></div>
-            <div>
-                <a href="/api/auth/github">Sign in with GitHub</a>
-            </div>
+            <h1>Welcome to Project Auto</h1>
         </header>
+
         <main>
+            <section id="github-auth">
+                <a href="/api/auth/github">Authenticate with GitHub</a>
+                <p id="auth-status">Not authenticated.</p>
+            </section>
+
             <section id="project-setup">
                 <h2>Project Setup</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-                <label for="customization-instructions">Customization Instructions:</label>
-                <textarea id="customization-instructions" name="customization-instructions" rows="4" cols="50" placeholder="Enter your customization instructions here"></textarea>
-                <button id="start-button">Start</button>
+                <form id="project-form">
+                    <label for="repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required><br><br>
+
+                    <label for="instructions">Customization Instructions:</label><br>
+                    <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="Enter your customization instructions here"></textarea><br><br>
+
+                    <button type="button" id="start-button">Start</button>
+                </form>
+                <div id="status"></div>
             </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById("current-time").textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
         updateTime();
 
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const customizationInstructions = document.getElementById('customization-instructions').value;
+        document.addEventListener('DOMContentLoaded', () => {
+            const startButton = document.getElementById('start-button');
+            const repoInput = document.getElementById('repo');
+            const instructionsInput = document.getElementById('instructions');
+            const statusDiv = document.getElementById('status');
+            const authStatus = document.getElementById('auth-status');
 
-            const response = await fetch('/api/run-project-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    repoUrl: repoUrl,
-                    customizationInstructions: customizationInstructions
+            // Check Authentication Status
+            fetch('/api/auth/status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isAuthenticated) {
+                        authStatus.textContent = 'Authenticated.';
+                    } else {
+                        authStatus.textContent = 'Not authenticated.';
+                    }
                 })
+                .catch(error => {
+                    console.error('Error checking authentication:', error);
+                    authStatus.textContent = 'Error checking authentication.';
+                });
+
+
+            startButton.addEventListener('click', async () => {
+                const repo = repoInput.value;
+                const instructions = instructionsInput.value;
+
+                statusDiv.textContent = 'Processing...';
+
+                try {
+                    const response = await fetch('/api/run-auto', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ repo: repo, instructions: instructions })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        statusDiv.textContent = data.message;
+                    } else {
+                        statusDiv.textContent = `Error: ${data.message}`;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    statusDiv.textContent = 'An error occurred while processing your request.';
+                }
             });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert('Project Auto started successfully!');
-            } else {
-                alert('Error starting Project Auto: ' + data.error);
-            }
         });
     </script>
 </body>
