@@ -5,7 +5,7 @@ body {
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    min-height: 100vh; /* Ensure full height */
+    height: 100vh;
 }
 
 .sidebar {
@@ -15,6 +15,12 @@ body {
     padding: 20px;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    overflow-x: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .sidebar-header {
@@ -29,43 +35,42 @@ body {
 .sidebar-menu {
     list-style: none;
     padding: 0;
+    margin: 0;
+    flex-grow: 1;
 }
 
 .sidebar-menu li {
-    margin-bottom: 10px;
+    padding: 10px 0;
 }
 
 .sidebar-menu a {
     color: #fff;
     text-decoration: none;
     display: block;
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 5px;
     transition: background-color 0.3s ease;
-    display: flex;
-    align-items: center;
-}
-
-.sidebar-menu a i {
-    margin-right: 10px;
-    width: 20px;
-    text-align: center;
 }
 
 .sidebar-menu a:hover {
     background-color: #555;
 }
 
+.sidebar-menu i {
+    margin-right: 10px;
+}
+
 .sidebar-footer {
-    margin-top: auto;
     text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #555;
     font-size: 0.8em;
-    color: #aaa;
 }
 
 .content {
-    flex: 1;
+    flex-grow: 1;
     padding: 20px;
+    margin-left: 250px;
     display: flex;
     flex-direction: column;
 }
@@ -74,7 +79,7 @@ body {
     background-color: #fff;
     padding: 20px;
     margin-bottom: 20px;
-    border-radius: 5px;
+    border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
@@ -94,32 +99,19 @@ body {
 .main-content {
     background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    flex: 1;
+    flex-grow: 1;
 }
 
-.footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 20px;
-    color: #666;
-    background-color: #f4f4f4;
-    border-radius: 5px;
-}
-
-/* Configuration Form Styles */
 .configuration-form {
     display: flex;
     flex-direction: column;
-    max-width: 600px;
-    margin: 0 auto;
 }
 
 .configuration-form label {
-    margin-top: 10px;
     margin-bottom: 5px;
-    font-weight: bold;
+    color: #555;
 }
 
 .configuration-form input[type="text"],
@@ -132,18 +124,14 @@ body {
     font-size: 1em;
 }
 
-.configuration-form textarea {
-    resize: vertical;
-}
-
 .start-button {
     background-color: #5cb85c;
     color: white;
     padding: 12px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 1.1em;
+    font-size: 1em;
     transition: background-color 0.3s ease;
 }
 
@@ -152,10 +140,10 @@ body {
 }
 
 .status-message {
-    margin-top: 20px;
+    margin-top: 15px;
     padding: 10px;
     border-radius: 4px;
-    text-align: center;
+    font-weight: bold;
 }
 
 .status-message.error {
@@ -176,53 +164,13 @@ body {
     border: 1px solid #bce8f1;
 }
 
-/* Custom Styles */
-.purple-theme {
-    background-color: #6a0dad; /* Deep purple */
-    color: #ffc107; /* Gold */
-}
-
-.purple-theme .header {
-    background-color: #7b1fa2; /* Lighter purple */
+.footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #333;
     color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    font-size: 0.9em;
 }
-
-.purple-theme .header h1 {
-    color: #ffc107; /* Gold */
-}
-
-.purple-theme .sidebar {
-    background-color: #512da8; /* Darker purple */
-}
-
-.purple-theme .sidebar-menu a:hover {
-    background-color: #673ab7; /* Even lighter purple */
-}
-
-.purple-theme .footer {
-    background-color: #512da8;
-    color: #ffc107;
-}
-
-.input-field {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1em;
-    width: 100%; /* Full width */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
-}
-
-.input-field:focus {
-    border-color: #673ab7; /* Highlight on focus */
-    outline: none; /* Remove default focus outline */
-    box-shadow: 0 0 5px rgba(103, 58, 183, 0.5); /* Add a subtle shadow */
-}
-
-.full-width {
-    width: 100%;
-}
-
 edit filepath: public/style/style.css
