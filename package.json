@@ -1,24 +1,26 @@
 {
-  "name": "project-auto",
-  "version": "1.0.0",
-  "description": "Project Auto Website",
-  "main": "index.js",
+  "name": "project-auto-web",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
-    "build": "npm install && npm install --prefix public && npm run build --prefix public"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
+    "@octokit/rest": "^20.0.2",
     "axios": "^1.6.7",
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
     "mongoose": "^8.2.0",
-    "node-fetch": "^3.3.2",
-    "nodemon": "^3.0.3"
+    "next": "14.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-github-login": "^1.0.3",
+    "react-time": "^4.3.0"
+  },
+  "devDependencies": {
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.1.0"
   }
 }
