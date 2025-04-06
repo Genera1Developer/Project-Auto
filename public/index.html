@@ -9,59 +9,99 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <span id="current-time"></span>
         </div>
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
-                <li><a href="/configuration">Configuration</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
                 <li><a href="/About-Us">About Us</a></li>
             </ul>
         </nav>
     </div>
+
     <div class="content">
-        <header>
-            <div id="time" class="time"></div>
-            <h1>Welcome to Project Auto</h1>
-        </header>
-        <main>
-            <section class="hero">
-                <h2>Automate Your Development Workflow</h2>
-                <p>Project Auto helps you streamline your development process by automating repetitive tasks.</p>
-            </section>
-
-            <section class="input-section">
-                <h3>Enter GitHub Repository Details</h3>
-                <form id="repo-form">
-                    <label for="repo">Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="e.g., owner/my-repo">
-
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your automation instructions here."></textarea>
-
-                    <button type="button" id="start-button">Start</button>
-                </form>
-            </section>
-        </main>
+        <h1>Project Auto</h1>
+        <div id="app">
+            <div id="auth-section">
+                <button id="github-login">Login with GitHub</button>
+                <span id="auth-status"></span>
+            </div>
+            <div id="repo-section">
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., yourusername/yourrepo">
+            </div>
+            <div id="prompt-section">
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
+            </div>
+            <button id="start-button">Start</button>
+            <div id="output"></div>
+        </div>
     </div>
 
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
-
         setInterval(updateTime, 1000);
-        updateTime();
+        updateTime(); // Initial call to display time immediately
 
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
+        document.addEventListener('DOMContentLoaded', () => {
+            const githubLoginButton = document.getElementById('github-login');
+            const authStatus = document.getElementById('auth-status');
+            const repoUrlInput = document.getElementById('repo-url');
+            const promptTextarea = document.getElementById('prompt');
+            const startButton = document.getElementById('start-button');
+            const outputDiv = document.getElementById('output');
 
-            // Redirect to GitHub OAuth flow
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://project-auto-v1029.vercel.app/configuration')}&scope=repo`;
+            // GitHub Authentication (Placeholder)
+            githubLoginButton.addEventListener('click', async () => {
+                // Redirect to GitHub OAuth flow (This will need to be implemented server-side)
+                window.location.href = '/api/auth/github';
+            });
+
+            // Check if user is already authenticated (e.g., via a cookie or local storage)
+            async function checkAuthStatus() {
+                const response = await fetch('/api/auth/status');
+                const data = await response.json();
+
+                if (data.isAuthenticated) {
+                    authStatus.textContent = 'Authenticated';
+                } else {
+                    authStatus.textContent = 'Not Authenticated';
+                }
+            }
+            checkAuthStatus();
+
+            startButton.addEventListener('click', async () => {
+                const repoUrl = repoUrlInput.value;
+                const prompt = promptTextarea.value;
+
+                outputDiv.textContent = 'Processing...';
+
+                try {
+                    const response = await fetch('/api/run', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ repoUrl, prompt }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        outputDiv.textContent = `Result: ${data.result}`;
+                    } else {
+                        outputDiv.textContent = `Error: ${data.error}`;
+                    }
+                } catch (error) {
+                    outputDiv.textContent = `Network Error: ${error.message}`;
+                }
+            });
         });
     </script>
 </body>
