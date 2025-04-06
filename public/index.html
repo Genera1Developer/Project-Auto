@@ -8,10 +8,12 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="logo">Project Auto</div>
-        <a href="/">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <h1>Project Auto</h1>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
     <div class="content">
         <header>
@@ -19,18 +21,24 @@
             <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="github-repo-input">
-                <h2>Enter GitHub Repository</h2>
-                <input type="text" id="repo-name" placeholder="username/repo">
+            <section id="input-section">
+                <h2>Enter Repository Details</h2>
+                <label for="repo-name">Repository Name (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
+                <label for="prompt">Customization Prompt:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Describe the changes you want to make."></textarea>
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
+                <button id="start-button">Start</button>
             </section>
-            <section id="customization-prompt">
-                <h2>Customization Instructions</h2>
-                <textarea id="prompt" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-            <section id="start-button">
-                <button id="start-project-auto">Start</button>
+            <section id="status-section">
+                <h2>Status</h2>
+                <p id="status-message">Ready to start!</p>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
     <script src="/script.js"></script>
 </body>
