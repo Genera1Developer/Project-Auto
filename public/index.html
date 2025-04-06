@@ -5,44 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <div class="container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-                <h1>Project Auto</h1>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="/Configuration"><i class="fas fa-cog"></i> Configuration</a></li>
+                <li><a href="/About-Us"><i class="fas fa-info-circle"></i> About Us</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <div id="current-time" class="current-time"></div>
+            <div class="auth-buttons">
+                <button id="login-button">Login with GitHub</button>
+                <button id="logout-button" style="display: none;">Logout</button>
+                <span id="user-info"></span>
             </div>
-            <nav class="sidebar-nav">
-                <a href="/" class="active">Home</a>
-                <a href="/Configuration">Configuration</a>
-                <a href="/About-Us">About Us</a>
-            </nav>
-            <footer class="sidebar-footer">
-                <p>&copy; 2024 Project Auto</p>
-            </footer>
-        </aside>
-        <main class="main-content">
-            <header class="header">
-                <div id="current-time" class="current-time"></div>
-                <div class="auth-buttons">
-                    <button id="login-button">Login with GitHub</button>
-                    <button id="logout-button" style="display: none;">Logout</button>
-                </div>
-            </header>
-            <section class="hero">
-                <h2>Automate Your Repository</h2>
-                <p>Enter your repository details and customization instructions to start Project Auto.</p>
-            </section>
-            <section class="input-section">
-                <label for="repo-input">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-input" placeholder="e.g., owner/repository">
-                <label for="instructions-input">Customization Instructions:</label>
-                <textarea id="instructions-input" placeholder="Enter instructions here"></textarea>
+        </header>
+
+        <main>
+            <section id="project-input">
+                <h2>Project Automation</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., facebook/react">
+
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" placeholder="Enter your automation instructions here"></textarea>
+
                 <button id="start-button">Start</button>
+                <div id="status-message"></div>
             </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const userInfoSpan = document.getElementById('user-info');
+            const startButton = document.getElementById('start-button');
+            const repoUrlInput = document.getElementById('repo-url');
+            const customInstructionsTextarea = document.getElementById('custom-instructions');
+            const statusMessageDiv = document.getElementById('status-message');
+
+            // GitHub Authentication (Placeholder - Implement OAuth Flow)
+            loginButton.addEventListener('click', () => {
+                // Redirect to GitHub OAuth flow
+                window.location.href = '/api/auth/github'; // Adjust the path as needed
+            });
+
+            logoutButton.addEventListener('click', () => {
+                // Handle logout logic (e.g., clear session)
+                userInfoSpan.textContent = '';
+                logoutButton.style.display = 'none';
+                loginButton.style.display = 'inline-block';
+                alert('Logged out!');
+            });
+
+            // Start Button Functionality (Placeholder)
+            startButton.addEventListener('click', () => {
+                const repoUrl = repoUrlInput.value;
+                const customInstructions = customInstructionsTextarea.value;
+
+                if (!repoUrl) {
+                    statusMessageDiv.textContent = 'Please enter a GitHub repository URL.';
+                    return;
+                }
+
+                statusMessageDiv.textContent = 'Processing...';
+
+                // Send data to the backend
+                fetch('/api/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        repoUrl: repoUrl,
+                        customInstructions: customInstructions
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    statusMessageDiv.textContent = data.message || 'Automation completed.';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    statusMessageDiv.textContent = 'An error occurred.';
+                });
+            });
+
+            // Check if the user is already logged in (Placeholder)
+            // You would typically check for a session or token here
+            // and update the UI accordingly
+            // Example:
+             const isLoggedIn = false; // Replace with actual check
+             if (isLoggedIn) {
+                 userInfoSpan.textContent = 'Welcome, User!'; // Replace with actual user info
+                 loginButton.style.display = 'none';
+                 logoutButton.style.display = 'inline-block';
+             } else {
+                 loginButton.style.display = 'inline-block';
+                 logoutButton.style.display = 'none';
+             }
+        });
+    </script>
 </body>
 </html>
