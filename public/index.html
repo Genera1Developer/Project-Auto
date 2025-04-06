@@ -5,101 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
             <h2>Project Auto</h2>
         </div>
-        <ul class="sidebar-menu">
+        <ul class="nav">
             <li><a href="/index.html">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
+            <div id="current-time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
-
         <main>
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
+            <section id="github-integration">
+                <h2>GitHub Integration</h2>
+                <p>Connect your GitHub repository to automate your development workflow.</p>
                 <button id="github-login-button">Login with GitHub</button>
-                <p id="auth-status">Not authenticated</p>
-            </section>
-
-            <section id="project-details">
-                <h2>Project Details</h2>
-                <label for="github-repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., owner/repository">
-
-                <label for="custom-prompt">Customization Instructions:</label>
-                <textarea id="custom-prompt" name="custom-prompt" rows="4" placeholder="Enter your instructions here"></textarea>
-
-                <button id="start-button">Start</button>
+                <div id="github-user-info"></div>
+                <div id="github-repo-form" style="display:none;">
+                    <label for="repo-name">Repository (username/repo):</label>
+                    <input type="text" id="repo-name" name="repo-name" placeholder="e.g., yourusername/yourrepo"><br><br>
+                    <label for="custom-instruction">Custom Instructions:</label><br>
+                    <textarea id="custom-instruction" name="custom-instruction" rows="4" cols="50" placeholder="Enter your customization instructions here."></textarea><br><br>
+                    <button id="start-button">Start</button>
+                </div>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const githubLoginButton = document.getElementById('github-login-button');
-            const startButton = document.getElementById('start-button');
-            const authStatus = document.getElementById('auth-status');
-
-            githubLoginButton.addEventListener('click', () => {
-                window.location.href = '/api/auth/github';
-            });
-
-            startButton.addEventListener('click', () => {
-                const repo = document.getElementById('github-repo').value;
-                const prompt = document.getElementById('custom-prompt').value;
-
-                fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repo, prompt }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred.');
-                });
-            });
-
-            // Check authentication status
-            fetch('/api/auth/status')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.isAuthenticated) {
-                        authStatus.textContent = 'Authenticated';
-                    } else {
-                        authStatus.textContent = 'Not authenticated';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    authStatus.textContent = 'Error checking authentication status.';
-                });
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
