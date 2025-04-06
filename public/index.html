@@ -9,76 +9,37 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <h2 class="sidebar-title">Project Auto</h2>
         </div>
         <ul class="sidebar-menu">
             <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
     </div>
     <div class="content">
-        <div class="header">
-            <div class="current-time" id="current-time"></div>
-        </div>
-        <div class="main-content">
-            <h1>Welcome to Project Auto</h1>
-            <p>Enter your GitHub repository and customization instructions below to get started.</p>
-            <form class="configuration-form" id="project-auto-form">
-                <label for="github-repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
-                <label for="customization-instructions">Customization Instructions:</label>
-                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-                <button type="submit" class="start-button">Start</button>
-            </form>
-            <div id="status-message" class="status-message"></div>
-        </div>
+        <header>
+            <div id="time"></div>
+            <h1>Project Auto</h1>
+        </header>
+        <main>
+            <section id="github-repo">
+                <h2>Enter GitHub Repository</h2>
+                <input type="text" id="repo-input" placeholder="username/repo">
+            </section>
+            <section id="customization">
+                <h2>Customization Instructions</h2>
+                <textarea id="prompt-input" placeholder="Enter your instructions"></textarea>
+            </section>
+            <section id="authentication">
+                <button id="github-auth-button">Authenticate with GitHub</button>
+                <p id="auth-status"></p>
+            </section>
+            <section id="start">
+                <button id="start-button">Start</button>
+            </section>
+        </main>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('project-auto-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const repo = document.getElementById('github-repo').value;
-            const instructions = document.getElementById('customization-instructions').value;
-            const statusMessage = document.getElementById('status-message');
-
-            statusMessage.className = 'status-message loading';
-            statusMessage.textContent = 'Processing...';
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ repo, instructions })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    statusMessage.className = 'status-message success';
-                    statusMessage.textContent = data.message;
-                } else {
-                    statusMessage.className = 'status-message error';
-                    statusMessage.textContent = `Error: ${data.message}`;
-                }
-            } catch (error) {
-                statusMessage.className = 'status-message error';
-                statusMessage.textContent = `An unexpected error occurred: ${error.message}`;
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
