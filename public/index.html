@@ -15,8 +15,8 @@
             </div>
             <nav class="sidebar-nav">
                 <a href="/index.html" class="active">Home</a>
-                <a href="/Configuration">Configuration</a>
-                <a href="/About-Us">About Us</a>
+                <a href="/Configuration.html">Configuration</a>
+                <a href="/About-Us.html">About Us</a>
             </nav>
             <footer class="sidebar-footer">
                 <p>&copy; 2024 Project Auto</p>
@@ -40,6 +40,7 @@
                         <label for="instructions">Customization Instructions:</label>
                         <textarea id="instructions" name="instructions" placeholder="Enter your instructions here..." rows="5" required></textarea>
                     </div>
+                    <button id="github-auth-button" class="github-button">Authenticate with GitHub</button>
                     <button type="submit" class="start-button">Start</button>
                 </form>
             </section>
@@ -80,6 +81,12 @@
                 console.error('Error:', error);
                 alert('An error occurred while processing your request.');
             }
+        });
+
+        document.getElementById('github-auth-button').addEventListener('click', async (event) => {
+            event.preventDefault();
+            // Redirect to GitHub authentication endpoint
+            window.location.href = '/api/auth/github';
         });
     </script>
 </body>
