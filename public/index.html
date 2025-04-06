@@ -1,69 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
-    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
-
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
+        <div class="sidebar-header">Project Auto</div>
         <ul class="sidebar-menu">
-            <li><a href="/index.html">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="/Configuration">Configuration</a></li>
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
         </header>
-
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <div class="form-group">
-                    <label for="repo-name">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo-name" placeholder="e.g., your_username/your_repo">
-                </div>
-                <div class="form-group">
-                    <label for="prompt">Prompt:</label>
-                    <textarea id="prompt" rows="4"
-                        placeholder="Describe the changes or features you want to add."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="github-token">GitHub Token:</label>
-                    <input type="password" id="github-token" placeholder="Enter your GitHub token">
-                </div>
-                <button id="start-button">Start</button>
-            </section>
+            <h1>Welcome to Project Auto</h1>
+            <p>Automate your GitHub repository tasks.</p>
 
-            <section id="status">
-                <h2>Status</h2>
-                <div id="status-message"></div>
-            </section>
+            <div id="github-auth">
+                <button id="github-login">Login with GitHub</button>
+                <p id="auth-status">Not authenticated</p>
+            </div>
+
+            <div id="project-form">
+                <label for="repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo"><br><br>
+
+                <label for="prompt">Customization Instructions:</label><br>
+                <textarea id="prompt" name="prompt" rows="4" cols="50" placeholder="Enter your instructions here"></textarea><br><br>
+
+                <button id="start-button">Start</button>
+            </div>
+
+            <div id="status-area">
+                <h3>Status:</h3>
+                <p id="status-message">Waiting for input...</p>
+            </div>
         </main>
     </div>
 
-    <script src="/script/script.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
+            document.getElementById("current-time").textContent = timeString;
         }
-
         setInterval(updateTime, 1000);
         updateTime();
+
+        document.getElementById('github-login').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            const repo = document.getElementById('repo').value;
+            const prompt = document.getElementById('prompt').value;
+
+            fetch('/api/run-auto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repo: repo, prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('status-message').textContent = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status-message').textContent = 'An error occurred.';
+            });
+        });
+
+        fetch('/api/auth/status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.isAuthenticated) {
+                    document.getElementById('auth-status').textContent = 'Authenticated';
+                    document.getElementById('github-login').style.display = 'none';
+                } else {
+                    document.getElementById('auth-status').textContent = 'Not authenticated';
+                    document.getElementById('github-login').style.display = 'block';
+                }
+            });
     </script>
 </body>
-
 </html>
