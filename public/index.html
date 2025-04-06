@@ -7,28 +7,41 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside id="sidebar">
-            <div class="sidebar-header">
-                <span id="current-time"></span>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main id="content">
+    <div class="sidebar">
+        <h1>Project Auto</h1>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
+    </div>
+
+    <div class="content">
+        <header>
+            <div id="time"></div>
             <h1>Welcome to Project Auto</h1>
-            <p>Enter your repository and prompt to begin.</p>
-            <label for="repo-name">Repository (username/repo):</label>
-            <input type="text" id="repo-name" name="repo-name" placeholder="e.g., owner/repository">
-            <label for="prompt-text">Prompt:</label>
-            <textarea id="prompt-text" name="prompt-text" rows="4" cols="50" placeholder="Enter your prompt here"></textarea>
-            <button id="start-button">Start</button>
+        </header>
+
+        <main>
+            <section id="project-form">
+                <h2>Start a New Project</h2>
+                <form id="auto-form">
+                    <label for="repo_name">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo_name" name="repo_name" required><br><br>
+
+                    <label for="prompt">Customization Prompt:</label>
+                    <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
+
+                    <label for="github_token">GitHub Token:</label>
+                    <input type="password" id="github_token" name="github_token" required><br><br>
+
+                    <button type="button" id="start-button">Start</button>
+                </form>
+                <div id="result"></div>
+            </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
     <script src="/script.js"></script>
 </body>
