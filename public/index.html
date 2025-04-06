@@ -1,51 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
 </head>
+
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
 
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <div class="auth-section">
-                <button id="login-button">Login with GitHub</button>
-                <span id="user-info"></span>
-            </div>
+            <div id="current-time" class="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
 
         <main>
             <section id="project-setup">
                 <h2>Project Setup</h2>
-                <div class="input-group">
-                    <label for="repo-url">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+                <div class="form-group">
+                    <label for="repo-name">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo-name" placeholder="e.g., your_username/your_repo">
                 </div>
-                <div class="input-group">
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" rows="4" placeholder="Enter your instructions here..."></textarea>
+                <div class="form-group">
+                    <label for="prompt">Prompt:</label>
+                    <textarea id="prompt" rows="4"
+                        placeholder="Describe the changes or features you want to add."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="github-token">GitHub Token:</label>
+                    <input type="password" id="github-token" placeholder="Enter your GitHub token">
                 </div>
                 <button id="start-button">Start</button>
+            </section>
+
+            <section id="status">
+                <h2>Status</h2>
+                <div id="status-message"></div>
             </section>
         </main>
     </div>
 
+    <script src="/script/script.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
@@ -55,52 +63,7 @@
 
         setInterval(updateTime, 1000);
         updateTime();
-
-        document.getElementById('login-button').addEventListener('click', () => {
-            window.location.href = '/api/auth/github';
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const instructions = document.getElementById('instructions').value;
-
-            try {
-                const response = await fetch('/api/run-auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ repoUrl, instructions }),
-                });
-
-                if (response.ok) {
-                    alert('Project Auto started successfully!');
-                } else {
-                    const data = await response.json();
-                    alert('Error: ' + (data.error || 'Unknown error'));
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while starting Project Auto.');
-            }
-        });
-
-         async function fetchUserInfo() {
-            try {
-                const response = await fetch('/api/user');
-                if (response.ok) {
-                    const user = await response.json();
-                    document.getElementById('login-button').style.display = 'none';
-                    document.getElementById('user-info').textContent = `Logged in as ${user.username}`;
-                } else {
-                    document.getElementById('user-info').textContent = '';
-                }
-            } catch (error) {
-                console.error('Failed to fetch user info:', error);
-            }
-        }
-
-        fetchUserInfo();
     </script>
 </body>
+
 </html>
