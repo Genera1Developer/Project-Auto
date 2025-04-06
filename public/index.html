@@ -8,19 +8,28 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
         <aside id="sidebar">
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
+            <div class="sidebar-header">
+                <img src="/logo.png" alt="Project Auto Logo" class="logo">
+                <h1>Project Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
         </aside>
-        <main id="content">
-            <!-- Content will be loaded here -->
+        <main>
+            <header>
+                <div id="current-time"></div>
+                <!-- GitHub Authentication Button -->
+                <button id="github-auth-button">Authenticate with GitHub</button>
+            </header>
+            <section id="content">
+                <!-- Content will be loaded here -->
+            </section>
         </main>
     </div>
     <script src="/script.js"></script>
