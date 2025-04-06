@@ -4,46 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h2>Project Auto</h2>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <a href="/" class="active">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
     </div>
-
     <div class="content">
         <header>
             <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
-
         <main>
-            <h1>Welcome to Project Auto</h1>
-            <p>Enter your GitHub repository and customization instructions below.</p>
-
-            <div class="form-container">
-                <form id="project-auto-form">
-                    <label for="github-repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo" required>
-
-                    <label for="customization-instructions">Customization Instructions:</label>
-                    <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-
-                    <button type="button" id="start-button">Start</button>
-                </form>
-            </div>
+            <section id="input-section">
+                <label for="repo-name">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="your_username/your_repo">
+                <label for="prompt">Customization Prompt:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Add a new feature to the website."></textarea>
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" name="github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
+                <button id="start-button">Start</button>
+            </section>
+            <section id="output-section">
+                <h2>Output:</h2>
+                <div id="output"></div>
+            </section>
         </main>
     </div>
-
     <script src="/script.js"></script>
 </body>
 </html>
