@@ -5,7 +5,7 @@ body {
     background-color: #f4f4f4;
     color: #333;
     display: flex;
-    height: 100vh;
+    min-height: 100vh; /* Ensure full height */
 }
 
 .sidebar {
@@ -175,3 +175,54 @@ body {
     color: #31708f;
     border: 1px solid #bce8f1;
 }
+
+/* Custom Styles */
+.purple-theme {
+    background-color: #6a0dad; /* Deep purple */
+    color: #ffc107; /* Gold */
+}
+
+.purple-theme .header {
+    background-color: #7b1fa2; /* Lighter purple */
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.purple-theme .header h1 {
+    color: #ffc107; /* Gold */
+}
+
+.purple-theme .sidebar {
+    background-color: #512da8; /* Darker purple */
+}
+
+.purple-theme .sidebar-menu a:hover {
+    background-color: #673ab7; /* Even lighter purple */
+}
+
+.purple-theme .footer {
+    background-color: #512da8;
+    color: #ffc107;
+}
+
+.input-field {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.input-field:focus {
+    border-color: #673ab7; /* Highlight on focus */
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 5px rgba(103, 58, 183, 0.5); /* Add a subtle shadow */
+}
+
+.full-width {
+    width: 100%;
+}
+
+edit filepath: public/style/style.css
