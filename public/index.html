@@ -8,42 +8,33 @@
 </head>
 <body>
     <div class="sidebar">
-        <a href="/" class="active">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <div class="sidebar-content">
+            <a href="/" class="sidebar-tab active">Home</a>
+            <a href="/Configuration" class="sidebar-tab">Configuration</a>
+            <a href="/About-Us" class="sidebar-tab">About Us</a>
+        </div>
     </div>
-
     <div class="content">
         <header>
-            <div id="current-time"></div>
+            <div id="current-time" class="time"></div>
             <h1>Project Auto</h1>
         </header>
-
         <main>
-            <section id="input-section">
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-
-                <label for="prompt">Customization Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions"></textarea>
-
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
-
+            <section id="github-auth">
+                <a href="https://github.com/login/oauth/authorize?client_id=Iv1.4f6e8c28f7e5d615&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">Authenticate with GitHub</a>
+            </section>
+            <section id="project-details">
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter customization instructions here"></textarea>
                 <button id="start-button">Start</button>
             </section>
-
-            <section id="output-section">
-                <h2>Output:</h2>
-                <div id="output"></div>
-            </section>
         </main>
-
         <footer>
             <p>&copy; 2024 Project Auto</p>
         </footer>
     </div>
-
     <script src="/script.js"></script>
 </body>
 </html>
