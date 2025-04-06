@@ -1,84 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Project Auto</title>
-  <link rel="stylesheet" href="/style/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Auto</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <img src="/style/Project-Auto-Logo.png" alt="Project Auto Logo" class="logo">
-      <h1>Project Auto</h1>
+    <div class="container">
+        <header>
+            <div id="current-time" class="time"></div>
+            <h1>Project Auto</h1>
+        </header>
+        <aside id="sidebar">
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
+        </main>
     </div>
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/Configuration">Configuration</a></li>
-        <li><a href="/About-Us">About Us</a></li>
-      </ul>
-    </nav>
-  </div>
-
-  <div class="content">
-    <header>
-      <div id="current-time"></div>
-      <button id="github-login">Login with GitHub</button>
-    </header>
-
-    <main>
-      <section id="project-setup">
-        <h2>Project Setup</h2>
-        <label for="repo-url">GitHub Repository (username/repo):</label>
-        <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-
-        <label for="customization-instructions">Customization Instructions:</label>
-        <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your customization instructions here..."></textarea>
-
-        <button id="start-button">Start</button>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2024 Project Auto</p>
-    </footer>
-  </div>
-
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('current-time').textContent = timeString;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime(); // Initial call to display time immediately
-
-     document.getElementById('github-login').addEventListener('click', () => {
-        window.location.href = '/api/auth/github';
-     });
-
-      document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const instructions = document.getElementById('customization-instructions').value;
-
-            const response = await fetch('/api/run-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repoUrl: repoUrl, instructions: instructions })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert(data.message); // Display success message
-            } else {
-                alert(data.error); // Display error message
-            }
-        });
-  </script>
+    <script src="/script.js"></script>
 </body>
 </html>
