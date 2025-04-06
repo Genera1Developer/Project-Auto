@@ -1,4 +1,3 @@
-/* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -9,19 +8,14 @@ body {
     height: 100vh;
 }
 
-/* Sidebar Styles */
 .sidebar {
-    width: 220px;
+    width: 250px;
     background-color: #333;
     color: #fff;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 100;
+    height: 100%;
 }
 
 .sidebar-header {
@@ -30,61 +24,49 @@ body {
 }
 
 .logo {
-    width: 80%;
-    max-width: 150px;
-    height: auto;
+    width: 150px;
 }
 
 .sidebar-menu {
     list-style: none;
     padding: 0;
-    margin: 0;
-    flex-grow: 1;
 }
 
 .sidebar-menu li {
-    padding: 10px 0;
+    margin-bottom: 10px;
 }
 
 .sidebar-menu a {
     color: #fff;
     text-decoration: none;
     display: block;
-    padding: 10px 15px;
+    padding: 10px;
     border-radius: 5px;
     transition: background-color 0.3s ease;
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-menu i {
-    margin-right: 10px;
+    background-color: #555;
 }
 
 .sidebar-footer {
+    margin-top: auto;
     text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
     font-size: 0.8em;
+    color: #ddd;
 }
 
-/* Content Styles */
 .content {
-    flex-grow: 1;
+    flex: 1;
     padding: 20px;
-    margin-left: 220px; /* Adjust based on sidebar width */
-    display: flex;
-    flex-direction: column;
 }
 
 .header {
     background-color: #fff;
     padding: 20px;
     margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -92,6 +74,7 @@ body {
 
 .header h1 {
     margin: 0;
+    font-size: 2em;
     color: #333;
 }
 
@@ -101,37 +84,20 @@ body {
 }
 
 .main-content {
-    flex-grow: 1;
     background-color: #fff;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.footer {
-    text-align: center;
-    padding: 20px;
-    margin-top: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: #666;
-    font-size: 0.9em;
-}
-
-/* Configuration Form Styles */
 .configuration-form {
     display: flex;
     flex-direction: column;
-    max-width: 600px;
-    margin: 0 auto;
 }
 
 .configuration-form label {
-    margin-top: 10px;
     margin-bottom: 5px;
     font-weight: bold;
-    color: #555;
 }
 
 .configuration-form input[type="text"],
@@ -140,7 +106,7 @@ body {
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 5px;
     font-size: 1em;
 }
 
@@ -149,9 +115,9 @@ body {
 }
 
 .start-button {
-    background-color: #673ab7; /* Purple */
+    background-color: #4CAF50;
     color: white;
-    padding: 12px 20px;
+    padding: 15px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -160,60 +126,81 @@ body {
 }
 
 .start-button:hover {
-    background-color: #512da8;
+    background-color: #367c39;
 }
 
 .status-message {
-    margin-top: 20px;
+    margin-top: 15px;
     padding: 10px;
-    border-radius: 4px;
+    border-radius: 5px;
     text-align: center;
 }
 
 .status-message.error {
-    background-color: #f44336;
-    color: white;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
 .status-message.success {
-    background-color: #4caf50;
-    color: white;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
 .status-message.loading {
-    background-color: #ff9800;
-    color: white;
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
 }
 
-/* About Us Styles */
-.about-us-content {
-    line-height: 1.6;
-}
-
-.about-us-content h2 {
-    color: #673ab7; /* Purple */
+.footer {
+    text-align: center;
     margin-top: 20px;
-    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 0.9em;
+    color: #666;
 }
 
-.about-us-content p {
-    margin-bottom: 15px;
+/* Purple and Gold Theme */
+body {
+    background-color: #f0e68c; /* Light Gold */
+    color: #4a235a; /* Deep Purple */
 }
 
-/* Responsive adjustments */
+.sidebar {
+    background-color: #4a235a; /* Deep Purple */
+}
+
+.header {
+    background-color: #e6da8c; /* Light Gold */
+}
+
+.header h1 {
+    color: #4a235a; /* Deep Purple */
+}
+
+.content {
+    color: #4a235a; /* Deep Purple */
+}
+
+.start-button {
+    background-color: #4a235a; /* Deep Purple */
+}
+
+.start-button:hover {
+    background-color: #341740;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
-        position: static;
         height: auto;
+        position: static;
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
-        padding: 10px;
-    }
-
-    .sidebar-header, .sidebar-footer {
-        display: none;
+        justify-content: space-around;
     }
 
     .sidebar-menu {
@@ -223,59 +210,15 @@ body {
     }
 
     .sidebar-menu li {
-        padding: 0;
+        margin-bottom: 0;
     }
 
     .content {
-        margin-left: 0;
+        padding: 10px;
     }
 
     .header {
         flex-direction: column;
         align-items: flex-start;
     }
-
-    .header h1 {
-        margin-top: 10px;
-    }
-}
-/* Additional styles for purple and gold theme */
-body {
-    background-color: #f9f8f7; /* Light beige */
-    color: #333;
-}
-
-.sidebar {
-    background-color: #301934; /* Dark purple */
-    color: #ffc107; /* Gold */
-}
-
-.sidebar a {
-    color: #ffc107; /* Gold */
-}
-
-.sidebar a:hover {
-    background-color: rgba(255, 193, 7, 0.1); /* Gold hover */
-}
-
-.header {
-    background-color: #fff;
-}
-
-.header h1 {
-    color: #301934; /* Dark purple */
-}
-
-.start-button {
-    background-color: #301934; /* Dark purple */
-    color: #ffc107; /* Gold */
-}
-
-.start-button:hover {
-    background-color: #5a3d5e; /* Lighter purple */
-}
-
-.footer {
-    background-color: #fff;
-    color: #301934; /* Dark purple */
 }
