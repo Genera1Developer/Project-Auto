@@ -9,55 +9,85 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2 class="logo">Project Auto</h2>
+            <h1>Project Auto</h1>
         </div>
-        <ul class="nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
+            <div id="current-time"></div>
+            <button id="login-button">Login with GitHub</button>
+            <span id="user-info"></span>
         </header>
         <main>
-            <section id="home">
-                <h1>Welcome to Project Auto</h1>
-                <p>Automate your GitHub repository tasks with ease.</p>
-                <div class="github-auth">
-                    <a href="https://github.com/login/oauth/authorize?client_id=Iv1.43baf1ff2c617089&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
-                        Authenticate with GitHub
-                    </a>
-                </div>
-                <div class="project-details">
-                    <label for="repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="owner/repository" required>
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your automation instructions here" required></textarea>
-                    <button id="start-button">Start</button>
-                </div>
+            <section id="project-input">
+                <h2>Project Setup</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., yourusername/yourrepo">
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                <button id="start-button">Start</button>
+                <p id="status-message"></p>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
     <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
+            document.getElementById('current-time').textContent = timeString;
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
+        updateTime(); // Initial call
 
-        document.getElementById('start-button').addEventListener('click', function() {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-            // TODO: Implement the logic to send the repository and instructions to the backend for processing.
-            alert(`Starting automation for repository: ${repo} with instructions: ${instructions}`);
+        document.getElementById('login-button').addEventListener('click', () => {
+            window.location.href = '/api/auth/github';
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            fetch('/api/auth/callback?code=' + code)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.user) {
+                        document.getElementById('user-info').textContent = 'Logged in as ' + data.user.login;
+                        document.getElementById('login-button').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during authentication:', error);
+                });
+        }
+
+        document.getElementById('start-button').addEventListener('click', () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customInstructions = document.getElementById('custom-instructions').value;
+            document.getElementById('status-message').textContent = 'Processing...';
+
+            fetch('/api/project/start', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ repoUrl: repoUrl, customInstructions: customInstructions }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('status-message').textContent = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('status-message').textContent = 'An error occurred.';
+            });
         });
     </script>
 </body>
