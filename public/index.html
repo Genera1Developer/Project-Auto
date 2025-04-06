@@ -4,33 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="container">
-        <aside id="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-header">
                 <h1>Project Auto</h1>
             </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
+            <nav class="sidebar-nav">
+                <a href="/" class="active">Home</a>
+                <a href="/Configuration">Configuration</a>
+                <a href="/About-Us">About Us</a>
             </nav>
         </aside>
-        <main>
-            <header>
+        <main class="main-content">
+            <header class="main-header">
                 <div id="current-time"></div>
-                <!-- Authentication Section -->
-                <div id="auth-section">
-                    <button id="login-button">Login with GitHub</button>
-                    <span id="user-info"></span>
-                </div>
             </header>
-            <section id="content">
-                <!-- Content will be loaded here -->
+            <section class="content">
+                <h2>Automate Your Repository</h2>
+                <div class="form-container">
+                    <form id="auto-form">
+                        <div class="form-group">
+                            <label for="repo">GitHub Repository (username/repo):</label>
+                            <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="instructions">Customization Instructions:</label>
+                            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                        </div>
+                        <button type="submit" class="start-button">Start</button>
+                    </form>
+                </div>
             </section>
         </main>
     </div>
