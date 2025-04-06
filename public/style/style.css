@@ -12,7 +12,7 @@ body {
 /* Sidebar Styles */
 .sidebar {
     width: 250px;
-    background-color: #333;
+    background-color: #301934; /* Deep purple */
     color: #fff;
     padding: 20px;
     display: flex;
@@ -25,14 +25,13 @@ body {
 }
 
 .logo {
-    width: 150px;
+    width: 80%;
+    max-width: 150px;
 }
 
 .sidebar-menu {
     list-style: none;
     padding: 0;
-    margin: 0;
-    flex-grow: 1;
 }
 
 .sidebar-menu li {
@@ -40,41 +39,47 @@ body {
 }
 
 .sidebar-menu a {
-    color: #fff;
+    color: #ddd;
     text-decoration: none;
     display: block;
     padding: 10px 15px;
     border-radius: 5px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-menu a i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
 }
 
 .sidebar-menu a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-menu i {
-    margin-right: 10px;
+    background-color: #4e3254; /* Lighter purple on hover */
 }
 
 .sidebar-footer {
+    margin-top: auto;
     text-align: center;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.8em;
+    color: #aaa;
 }
 
 /* Content Styles */
 .content {
-    flex-grow: 1;
+    flex: 1;
     padding: 20px;
     overflow-y: auto;
+    background-color: #fff;
 }
 
 .header {
-    background-color: #fff;
+    background-color: #502a55; /* Purple header */
+    color: #fff;
     padding: 20px;
-    margin-bottom: 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -82,19 +87,16 @@ body {
 
 .header h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 2em;
 }
 
 .current-time {
-    font-size: 16px;
-    color: #666;
+    font-size: 1.2em;
 }
 
+/* Main Content Styles */
 .main-content {
-    background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Configuration Form Styles */
@@ -102,23 +104,24 @@ body {
     display: flex;
     flex-direction: column;
     max-width: 600px;
-    margin: 0 auto;
+    margin: auto;
 }
 
 .configuration-form label {
     margin-top: 10px;
+    margin-bottom: 5px;
     font-weight: bold;
+    color: #555;
 }
 
 .configuration-form input[type="text"],
 .configuration-form input[type="password"],
 .configuration-form textarea {
     padding: 10px;
-    margin-top: 5px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
+    border-radius: 5px;
+    font-size: 1em;
 }
 
 .configuration-form textarea {
@@ -126,198 +129,140 @@ body {
 }
 
 .start-button {
-    background-color: #5cb85c;
+    background-color: #daa520; /* Golden button */
     color: white;
     padding: 12px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s;
-    margin-top: 20px;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
 }
 
 .start-button:hover {
-    background-color: #449d44;
+    background-color: #b8860b; /* Darker gold on hover */
 }
 
-/* Status Message Styles */
 .status-message {
     margin-top: 20px;
     padding: 10px;
-    border-radius: 4px;
+    border-radius: 5px;
     text-align: center;
 }
 
-.status-message.loading {
-    background-color: #f0ad4e;
-    color: white;
+.status-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
 .status-message.success {
-    background-color: #5cb85c;
-    color: white;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
-.status-message.error {
-    background-color: #d9534f;
-    color: white;
+.status-message.loading {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
 }
 
 /* Footer Styles */
 .footer {
     text-align: center;
     padding: 20px;
-    margin-top: 20px;
-    background-color: #fff;
+    background-color: #301934;
+    color: #fff;
     border-radius: 5px;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
 }
-edit filepath: public/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto - Home</title>
-    <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
-</head>
-<body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="/Configuration/"><i class="fa fa-cogs"></i> Configuration</a></li>
-            <li><a href="/About-Us/"><i class="fa fa-info-circle"></i> About Us</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
-    </div>
 
-    <div class="content">
-        <header class="header">
-            <div id="current-time" class="current-time"></div>
-            <h1>Home</h1>
-        </header>
+/* About Us Styles */
+.about-us-content {
+    max-width: 800px;
+    margin: auto;
+    line-height: 1.6;
+}
 
-        <section class="main-content">
-            <h2>Welcome to Project Auto!</h2>
-            <p>Project Auto automates project customization based on your instructions.</p>
-            <p>To get started, navigate to the Configuration page to set up your project.</p>
-        </section>
+.about-us-content h2 {
+    color: #502a55;
+    border-bottom: 2px solid #daa520;
+    padding-bottom: 5px;
+    margin-top: 30px;
+}
 
-        <footer class="footer">
-            <p>Contact: support@projectauto.com</p>
-        </footer>
-    </div>
+.about-us-content p {
+    margin-bottom: 15px;
+}
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-    </script>
-</body>
-</html>
-edit filepath: public/About-Us/index.html
-content: <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Auto - About Us</title>
-    <link rel="stylesheet" href="/style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
-</head>
-<body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/"><i class="fa fa-home"></i> Home</a></li>
-            <li><a href="/Configuration/"><i class="fa fa-cogs"></i> Configuration</a></li>
-            <li><a href="/About-Us/"><i class="fa fa-info-circle"></i> About Us</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
-    </div>
-
-    <div class="content">
-        <header class="header">
-            <div id="current-time" class="current-time"></div>
-            <h1>About Us</h1>
-        </header>
-
-        <section class="main-content">
-            <h2>About Project Auto</h2>
-            <p>Project Auto is designed to simplify and automate project customization. Our mission is to provide a tool that makes project setup and configuration easy and efficient.</p>
-            <p>We believe in the power of automation to reduce complexity and save time, allowing developers to focus on what they do best: building amazing software.</p>
-        </section>
-
-        <footer class="footer">
-            <p>Contact: support@projectauto.com</p>
-        </footer>
-    </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-    </script>
-</body>
-</html>
-edit filepath: api/run-auto.js
-content: // api/run-auto.js
-// This file would contain the actual logic to run Project Auto
-// and interact with the GitHub API.
-// For now, it's a placeholder.
-
-export default async function handler(req, res) {
-    if (req.method === 'POST') {
-        const { repo, instructions } = req.body;
-        const githubToken = req.headers.authorization?.split(' ')[1];
-
-        if (!repo) {
-            return res.status(400).json({ error: 'Repository is required' });
-        }
-
-        if (!githubToken) {
-            return res.status(401).json({ error: 'GitHub token is required' });
-        }
-
-        // Placeholder for actual logic to interact with GitHub API
-        // and run Project Auto based on instructions.
-        console.log('Received request to run Project Auto:');
-        console.log('Repository:', repo);
-        console.log('Instructions:', instructions);
-        console.log('GitHub Token:', githubToken);
-
-        // Simulate a successful operation
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate processing
-
-        res.status(200).json({
-            message: 'Project Auto run initiated successfully!',
-            repo: repo,
-            instructions: instructions
-        });
-    } else {
-        res.status(405).json({ error: 'Method Not Allowed' });
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
     }
+
+    .sidebar-header {
+        margin-bottom: 0;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        margin: 0;
+    }
+
+    .sidebar-menu li {
+        padding: 0;
+        margin: 0 10px;
+    }
+
+    .content {
+        padding: 10px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header h1 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+}
+/* Style adjustments */
+.sidebar-menu a i {
+    width: 25px; /* Increased width for better icon spacing */
+}
+/* New styles for progress bar */
+.progress-container {
+    width: 100%;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 20px;
+    background-color: #daa520; /* Golden color */
+    border-radius: 5px;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    transition: width 0.3s ease;
+}
+
+/* Style adjustments to configuration form */
+.configuration-form input[type="text"],
+.configuration-form input[type="password"],
+.configuration-form textarea {
+    border: 2px solid #ddd; /* Thicker border */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Slight shadow */
 }
