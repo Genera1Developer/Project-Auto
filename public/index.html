@@ -7,53 +7,29 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            Project Auto
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
-
-        <main>
-            <section id="input-section">
-                <h2>Enter Repository Details</h2>
-                <form id="repo-form">
-                    <label for="repo-url">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository" required>
-
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-
-                    <button type="button" id="start-button">Start</button>
-                </form>
-            </section>
-
-            <section id="github-auth">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login">Login with GitHub</button>
-            </section>
-
-            <section id="results-section">
-                <h2>Results</h2>
-                <div id="results-output"></div>
-            </section>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <span id="current-time"></span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main id="content">
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your repository and prompt to begin.</p>
+            <label for="repo-name">Repository (username/repo):</label>
+            <input type="text" id="repo-name" name="repo-name" placeholder="e.g., owner/repository">
+            <label for="prompt-text">Prompt:</label>
+            <textarea id="prompt-text" name="prompt-text" rows="4" cols="50" placeholder="Enter your prompt here"></textarea>
+            <button id="start-button">Start</button>
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-
     <script src="/script.js"></script>
 </body>
 </html>
