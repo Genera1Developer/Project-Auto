@@ -4,33 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside id="sidebar">
-            <div id="current-time" class="time-display"></div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main id="content">
-            <h1>Welcome to Project Auto</h1>
-            <p>Enter your repository details and customization prompt to get started.</p>
-
-            <label for="repo-name">Repository (username/repo):</label>
-            <input type="text" id="repo-name" name="repo-name" placeholder="username/repo"><br><br>
-
-            <label for="prompt-text">Customization Prompt:</label>
-            <textarea id="prompt-text" name="prompt-text" rows="4" cols="50" placeholder="Enter your prompt here"></textarea><br><br>
-
-            <button id="start-button">Start</button>
-        </main>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <ul class="nav">
+            <li><a href="/index.html">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-    <script src="/script.js"></script>
+    <div class="content">
+        <header>
+            <div id="current-time"></div>
+        </header>
+        <main>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
+                <label for="customization-instructions">Customization Instructions:</label>
+                <textarea id="customization-instructions" name="customization-instructions" rows="4" placeholder="Enter your desired customizations here..."></textarea>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const customizationInstructions = document.getElementById('customization-instructions').value;
+
+            try {
+                const response = await fetch('/api/run-auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repoUrl, customizationInstructions })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.message);
+                } else {
+                    alert(data.error || 'An error occurred.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request.');
+            }
+        });
+    </script>
 </body>
 </html>
