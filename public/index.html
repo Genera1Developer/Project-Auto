@@ -9,32 +9,55 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
+
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <button id="github-login">Login with GitHub</button>
+            <div id="clock"></div>
+            <a href="/api/auth/login" id="login-button">Login with GitHub</a>
+            <a href="/api/auth/logout" id="logout-button" style="display:none;">Logout</a>
+            <span id="user-info"></span>
         </header>
+
         <main>
             <section id="project-setup">
                 <h2>Project Setup</h2>
-                <label for="repo-url">Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-                <label for="prompt">Customization Instructions:</label>
-                <textarea id="prompt" rows="4" placeholder="Enter instructions for Project Auto"></textarea>
+                <div class="form-group">
+                    <label for="github-repo">GitHub Repository (username/repo):</label>
+                    <input type="text" id="github-repo" name="github-repo" placeholder="e.g., owner/repository">
+                </div>
+                <div class="form-group">
+                    <label for="custom-instructions">Custom Instructions:</label>
+                    <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                </div>
                 <button id="start-button">Start</button>
+                <div id="status-message"></div>
             </section>
         </main>
+
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
+
     <script src="/script.js"></script>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            document.getElementById('clock').textContent = time;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 </body>
 </html>
