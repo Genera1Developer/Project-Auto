@@ -4,32 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <aside id="sidebar">
-            <div class="sidebar-header">
-                <h1>Project Auto</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <div id="time" class="time"></div>
+        </header>
         <main>
-            <header>
-                <div id="current-time" class="time-display"></div>
-                <h1>Welcome to Project Auto</h1>
-            </header>
-            <section id="content">
-                <!-- Content will be loaded here dynamically -->
+            <section id="home">
+                <h2>Welcome to Project Auto</h2>
+                <p>Automate your repository tasks with ease.</p>
+                <div class="input-container">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository">
+                </div>
+                <div class="input-container">
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" placeholder="Enter your instructions here"></textarea>
+                </div>
+                <button id="startButton" class="start-button">Start</button>
             </section>
         </main>
     </div>
-    <script src="/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+
+        document.getElementById('startButton').addEventListener('click', function() {
+            const repository = document.getElementById('repository').value;
+            const instructions = document.getElementById('instructions').value;
+            if (repository && instructions) {
+                // Redirect to GitHub authentication
+                window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo`;
+            } else {
+                alert('Please enter both repository and instructions.');
+            }
+        });
+
+        updateTime(); // Initial call to set the time immediately
+    </script>
 </body>
 </html>
