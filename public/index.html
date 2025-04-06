@@ -8,88 +8,31 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="logo">Project Auto</div>
-        <a href="/">Home</a>
-        <a href="/Configuration">Configuration</a>
-        <a href="/About-Us">About Us</a>
+        <div class="sidebar-header">
+            <img src="/public/images/logo.png" alt="Project Auto Logo" class="logo">
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/public/Configuration">Configuration</a></li>
+            <li><a href="/public/About-Us">About Us</a></li>
+        </ul>
     </div>
-
     <div class="content">
         <header>
-            <div id="time"></div>
-            <div class="auth">
-                <a id="loginLink" href="/api/auth/github">Login with GitHub</a>
-                <button id="logoutButton" style="display:none;">Logout</button>
-            </div>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
-
         <main>
-            <h1>Welcome to Project Auto</h1>
-            <p>Automate your repository tasks with ease.</p>
-
-            <div id="auth-check"></div>
-
-            <div class="input-area" id="repo-input-area">
-                <label for="repo">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo" name="repo" placeholder="e.g., owner/repository" required>
-            </div>
-
-            <div class="input-area">
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-            </div>
-
-            <button id="startButton">Start</button>
+            <section id="project-input">
+                <h2>Enter Project Details</h2>
+                <input type="text" id="repo-name" placeholder="GitHub Repository (username/repo)">
+                <textarea id="prompt" placeholder="Enter customization instructions"></textarea>
+                <button id="start-button">Start</button>
+                <div id="status-message"></div>
+            </section>
         </main>
     </div>
 
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        async function checkAuth() {
-            const response = await fetch('/api/auth/status');
-            const data = await response.json();
-
-            if (data.authenticated) {
-                document.getElementById('loginLink').style.display = 'none';
-                document.getElementById('logoutButton').style.display = 'block';
-                document.getElementById('logoutButton').onclick = async () => {
-                    await fetch('/api/auth/logout');
-                    window.location.reload();
-                };
-                document.getElementById('auth-check').textContent = 'Authenticated';
-            } else {
-                document.getElementById('loginLink').style.display = 'block';
-                document.getElementById('logoutButton').style.display = 'none';
-                document.getElementById('auth-check').textContent = 'Not authenticated';
-                document.getElementById('repo-input-area').style.display = 'none';
-            }
-        }
-
-        checkAuth();
-
-        document.getElementById('startButton').addEventListener('click', async () => {
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-
-            const response = await fetch('/api/run', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repo, instructions })
-            });
-
-            const data = await response.json();
-            alert(data.message);
-        });
-    </script>
+    <script src="/public/script.js"></script>
 </body>
 </html>
