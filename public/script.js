@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial time update
     updateTime();
 
-    // Sidebar functionality (if sidebar exists)
+    // Sidebar functionality
     const sidebar = document.getElementById('sidebar');
     if (sidebar) {
         const sidebarLinks = sidebar.querySelectorAll('a');
@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(data => {
                 document.getElementById('content').innerHTML = data;
+                // Re-attach event listeners after content is loaded
                 if (url === '/') {
                     setupHomePage();
                 } else if (url === '/Configuration') {
@@ -46,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (url === '/About-Us') {
                     setupAboutUsPage();
                 }
+                updateTime(); // Ensure time is updated after page load
             })
             .catch(error => {
                 console.error("Error fetching page:", error);
@@ -57,22 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
         const startButton = document.getElementById('start-button');
         if (startButton) {
             startButton.addEventListener('click', () => {
-                const repoName = document.getElementById('repo-name').value;
-                const promptText = document.getElementById('prompt-text').value;
-                if (repoName && promptText) {
-                    runProjectAuto(repoName, promptText);
-                } else {
-                    alert("Please enter both repository name and prompt text.");
-                }
+                authenticateAndRun();
             });
         }
     }
 
     function setupConfigurationPage() {
-      // Implement dynamic configuration loading and saving here
-      // Example: Fetch configuration from an API endpoint and populate form fields
-      // Handle form submission to save configuration changes
-      console.log("Configuration page setup");
+        // Implement dynamic configuration loading and saving here
+        console.log("Configuration page setup");
+        // Load configuration from local storage
+        const accessToken = localStorage.getItem('github_access_token');
+        const tokenDisplay = document.getElementById('access-token-display');
+
+        if (tokenDisplay) {
+            tokenDisplay.textContent = accessToken ? 'Authenticated' : 'Not Authenticated';
+        }
     }
 
     function setupAboutUsPage() {
@@ -80,14 +81,35 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("About Us page setup");
     }
 
-    // Function to execute Project Auto (Placeholder - replace with actual implementation)
-    function runProjectAuto(repoName, promptText) {
+    function authenticateAndRun() {
+        // Check if access token exists
+        let accessToken = localStorage.getItem('github_access_token');
+
+        if (!accessToken) {
+            // Redirect to GitHub OAuth flow
+            window.location.href = '/api/auth/github';
+            return;
+        }
+
+        const repoName = document.getElementById('repo-name').value;
+        const promptText = document.getElementById('prompt-text').value;
+
+        if (repoName && promptText) {
+            runProjectAuto(repoName, promptText, accessToken);
+        } else {
+            alert("Please enter both repository name and prompt text.");
+        }
+    }
+
+    // Function to execute Project Auto
+    function runProjectAuto(repoName, promptText, accessToken) {
         console.log("Running Project Auto on:", repoName, "with prompt:", promptText);
         // Make API call to backend to start Project Auto
         fetch('/api/run', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${accessToken}` // Pass access token
             },
             body: JSON.stringify({
                 repo: repoName,
