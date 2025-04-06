@@ -4,36 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h1>Project Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
         <main>
-            <section id="github-repo">
-                <h2>GitHub Repository</h2>
-                <input type="text" id="repo-url" placeholder="username/repo">
-                <button id="github-auth-button">Authenticate with GitHub</button>
-            </section>
-            <section id="customization">
-                <h2>Customization Instructions</h2>
-                <textarea id="custom-instructions" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-            <section id="start">
-                <button id="start-button">Start</button>
+            <header>
+                <div id="current-time"></div>
+                <!-- Authentication Section -->
+                <div id="auth-section">
+                    <button id="login-button">Login with GitHub</button>
+                    <span id="user-info"></span>
+                </div>
+            </header>
+            <section id="content">
+                <!-- Content will be loaded here -->
             </section>
         </main>
     </div>
