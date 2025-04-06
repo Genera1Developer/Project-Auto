@@ -12,7 +12,7 @@ body {
 /* Sidebar Styles */
 .sidebar {
     width: 250px;
-    background-color: #333;
+    background-color: #301934; /* Dark Purple */
     color: #fff;
     padding: 20px;
     display: flex;
@@ -21,7 +21,6 @@ body {
 }
 
 .sidebar-header {
-    text-align: center;
     margin-bottom: 20px;
 }
 
@@ -36,6 +35,7 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
+    flex-grow: 1;
 }
 
 .sidebar-menu li {
@@ -52,23 +52,24 @@ body {
 }
 
 .sidebar-menu a:hover {
-    background-color: #555;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .sidebar-menu i {
     margin-right: 10px;
+    color: #FFD700; /* Gold */
 }
 
 .sidebar-footer {
-    margin-top: auto;
     text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     font-size: 0.8em;
-    color: #aaa;
 }
 
 /* Content Styles */
 .content {
-    flex: 1;
+    flex-grow: 1;
     padding: 20px;
     overflow-y: auto;
 }
@@ -77,11 +78,16 @@ body {
     background-color: #fff;
     padding: 20px;
     margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.header h1 {
+    margin: 0;
+    color: #301934; /* Dark Purple */
 }
 
 .current-time {
@@ -89,38 +95,23 @@ body {
     color: #777;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 2em;
-}
-
 .main-content {
     background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.footer {
-    text-align: center;
-    margin-top: 20px;
-    padding: 10px;
-    font-size: 0.9em;
-    color: #777;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Configuration Form Styles */
 .configuration-form {
     display: flex;
     flex-direction: column;
-    max-width: 600px;
-    margin: auto;
 }
 
 .configuration-form label {
     margin-top: 10px;
     margin-bottom: 5px;
-    font-weight: bold;
+    color: #555;
 }
 
 .configuration-form input[type="text"],
@@ -138,8 +129,8 @@ body {
 }
 
 .start-button {
-    background-color: #673ab7;
-    color: white;
+    background-color: #FFD700; /* Gold */
+    color: #301934; /* Dark Purple */
     padding: 12px 20px;
     border: none;
     border-radius: 5px;
@@ -149,52 +140,69 @@ body {
 }
 
 .start-button:hover {
-    background-color: #512da8;
+    background-color: #daa520; /* Darker Gold */
 }
 
+/* Status Message Styles */
 .status-message {
-    margin-top: 15px;
+    margin-top: 20px;
     padding: 10px;
-    border-radius: 4px;
+    border-radius: 5px;
     text-align: center;
 }
 
 .status-message.error {
-    background-color: #f44336;
-    color: white;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
 .status-message.success {
-    background-color: #4caf50;
-    color: white;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
 .status-message.loading {
-    background-color: #ff9800;
-    color: white;
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
 }
 
-/* About Us Styles */
-.about-us-content {
-    line-height: 1.6;
-}
-
-.about-us-content h2 {
+/* Footer Styles */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #301934; /* Dark Purple */
+    color: #fff;
+    border-radius: 8px;
     margin-top: 20px;
-    color: #333;
 }
 
-.about-us-content p {
-    margin-bottom: 15px;
-}
-
-/* Responsive adjustments */
+/* Responsive Styles */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
         height: auto;
         position: static;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
         padding: 10px;
+    }
+
+    .sidebar-menu {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 0;
+    }
+
+    .sidebar-header, .sidebar-footer {
+        display: none;
     }
 
     .content {
@@ -207,10 +215,127 @@ body {
     }
 
     .header h1 {
-        margin-top: 10px;
+        margin-bottom: 10px;
     }
+}
+/*Home Page Styles*/
+.hero-section {
+    background-color: #301934;
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
 
-    .configuration-form {
-        max-width: 100%;
-    }
+.hero-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+}
+
+.hero-section p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #FFD700;
+    color: #301934;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #daa520;
+}
+
+.features-section {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.feature {
+    flex: 1;
+    min-width: 250px;
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.feature i {
+    font-size: 3em;
+    color: #FFD700;
+    margin-bottom: 15px;
+}
+
+.feature h3 {
+    color: #301934;
+}
+
+/*About Us Styles*/
+.about-us-content {
+    padding: 20px;
+}
+
+.about-us-content h2 {
+    color: #301934;
+    margin-bottom: 20px;
+}
+
+.about-us-content p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.team-section {
+    margin-top: 30px;
+}
+
+.team-section h3 {
+    color: #301934;
+    margin-bottom: 20px;
+}
+
+.team-members {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.team-member {
+    flex: 1;
+    min-width: 200px;
+    margin: 15px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.team-member img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.team-member h4 {
+    color: #301934;
+    margin-bottom: 5px;
+}
+
+.team-member p {
+    font-size: 0.9em;
+    color: #777;
 }
