@@ -8,72 +8,29 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="logo">Project Auto</div>
-        <a href="/" class="active">Home</a>
+        <h1>Project Auto</h1>
+        <a href="/">Home</a>
         <a href="/Configuration">Configuration</a>
         <a href="/About-Us">About Us</a>
     </div>
     <div class="content">
         <header>
-            <div id="time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
         <main>
-            <section id="github-auth">
-                <a href="https://github.com/login/oauth/authorize?client_id=YOUR_GITHUB_CLIENT_ID&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
-                    Authenticate with GitHub
-                </a>
-            </section>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <form id="project-form">
-                    <label for="repo">Repository (username/repo):</label>
-                    <input type="text" id="repo" name="repo" placeholder="username/repo" required>
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-                    <button type="submit">Start</button>
-                </form>
-            </section>
+            <div class="input-area">
+                <label for="repo-name">Repository (username/repo):</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your customization instructions here"></textarea>
+                <label for="github-token">GitHub Token:</label>
+                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
+                <button id="start-button">Start</button>
+                <div id="result"></div>
+            </div>
         </main>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('project-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const repo = document.getElementById('repo').value;
-            const instructions = document.getElementById('instructions').value;
-
-            // Here you would trigger the Project Auto backend with the repo and instructions.
-            // Since this is a standalone website, you'll need to implement the backend logic
-            // within this project, possibly using serverless functions.
-            // Example (replace with your actual backend call):
-
-            try {
-                // Assuming you have an API endpoint /api/run-auto
-                // const response = await fetch('/api/run-auto', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({ repo, instructions })
-                // });
-
-                // const data = await response.json();
-                // console.log(data); // Handle the response from the backend
-                alert('Project Auto started! (Backend call would be here)');
-
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error starting Project Auto.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
