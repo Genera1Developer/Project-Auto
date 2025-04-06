@@ -5,41 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <span id="current-time"></span>
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
     </div>
     <div class="content">
         <header>
-            <h1>Welcome to Project Auto</h1>
+            <div id="current-time" class="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
         <main>
             <section id="github-auth">
-                <a href="https://github.com/login/oauth/authorize?client_id=<%= process.env.GITHUB_CLIENT_ID %>&redirect_uri=<%= process.env.GITHUB_REDIRECT_URI %>">Authenticate with GitHub</a>
-                <p>Authenticate to access your repositories.</p>
+                <button id="github-login-btn">Login with GitHub</button>
+                <p id="github-status">Not logged in.</p>
             </section>
-            <section id="project-details">
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here."></textarea>
+            <section id="project-input">
+                <label for="repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo" name="repo" placeholder="e.g., yourusername/yourrepo">
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="Enter your instructions here"></textarea>
                 <button id="start-button">Start</button>
+                <div id="output"></div>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
+
     <script>
         function updateTime() {
             const now = new Date();
@@ -49,6 +52,80 @@
 
         setInterval(updateTime, 1000);
         updateTime();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const githubLoginBtn = document.getElementById('github-login-btn');
+            const githubStatus = document.getElementById('github-status');
+            const repoInput = document.getElementById('repo');
+            const promptInput = document.getElementById('prompt');
+            const startButton = document.getElementById('start-button');
+            const outputDiv = document.getElementById('output');
+
+            let accessToken = Cookies.get('github_token');
+
+            function updateLoginStatus() {
+                if (accessToken) {
+                    githubStatus.textContent = 'Logged in with GitHub';
+                    githubLoginBtn.style.display = 'none';
+                } else {
+                    githubStatus.textContent = 'Not logged in.';
+                    githubLoginBtn.style.display = 'block';
+                }
+            }
+
+            updateLoginStatus();
+
+            githubLoginBtn.addEventListener('click', () => {
+                window.location.href = '/api/github_auth';
+            });
+
+            startButton.addEventListener('click', async () => {
+                const repo = repoInput.value;
+                const prompt = promptInput.value;
+
+                if (!repo || !prompt) {
+                    outputDiv.textContent = 'Please enter both repository and instructions.';
+                    return;
+                }
+
+                if (!accessToken) {
+                    outputDiv.textContent = 'Please log in with GitHub first.';
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/run_auto', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${accessToken}`
+                        },
+                        body: JSON.stringify({ repo: repo, prompt: prompt })
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        outputDiv.innerHTML = marked.parse(data.message);
+                    } else {
+                        outputDiv.textContent = `Error: ${data.message}`;
+                    }
+                } catch (error) {
+                    outputDiv.textContent = `Error: ${error.message}`;
+                }
+            });
+
+             // Check for GitHub token on page load
+             const urlParams = new URLSearchParams(window.location.search);
+             const token = urlParams.get('token');
+
+             if (token) {
+                 Cookies.set('github_token', token, { expires: 7 });
+                 accessToken = token;
+                 updateLoginStatus();
+                 // Remove the token from the URL
+                 window.history.replaceState({}, document.title, window.location.pathname);
+             }
+        });
     </script>
 </body>
 </html>
