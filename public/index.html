@@ -1,67 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/public/style/style.css">
 </head>
-
 <body>
-    <div class="container">
-        <header>
-            <div id="time"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/public/images/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/public/index.html">Home</a></li>
+            <li><a href="/public/Configuration">Configuration</a></li>
+            <li><a href="/public/About-Us">About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 Project Auto</p>
+        </div>
+    </div>
+    <div class="content">
+        <header>
+            <div id="current-time" class="current-time"></div>
         </header>
-        <aside>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/Configuration">Configuration</a></li>
-                    <li><a href="/About-Us">About Us</a></li>
-                </ul>
-            </nav>
-        </aside>
         <main>
-            <section id="input-section">
-                <h2>Enter Project Details</h2>
-                <form id="project-form">
-                    <label for="repo-name">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo-name" name="repo-name" required><br><br>
-
+            <section id="home">
+                <h1>Welcome to Project Auto</h1>
+                <p>Enter your GitHub repository and customization prompt below to run Project Auto.</p>
+                <div class="input-form">
+                    <label for="repo_name">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repo_name" name="repo_name" placeholder="e.g., your_username/your_repo">
                     <label for="prompt">Customization Prompt:</label>
-                    <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
-
-                    <label for="github-token">GitHub Token:</label>
-                    <input type="password" id="github-token" name="github-token" required><br><br>
-
-                    <button type="submit">Start</button>
-                </form>
-            </section>
-
-            <section id="output-section">
-                <h2>Output</h2>
-                <div id="output">
-                    <p>Please enter your project details and click "Start".</p>
+                    <textarea id="prompt" name="prompt" rows="4" placeholder="e.g., Add a new feature to the website."></textarea>
+                    <label for="github_token">GitHub Token:</label>
+                    <input type="password" id="github_token" name="github_token" placeholder="Enter your GitHub token">
+                    <button id="start-button">Start</button>
+                    <div id="result"></div>
                 </div>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-    <script src="/script.js"></script>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
+    <script src="/public/script/script.js"></script>
 </body>
-
 </html>
