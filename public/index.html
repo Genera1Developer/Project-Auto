@@ -4,44 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/public/style/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/public/images/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
+            <a href="/" style="text-decoration:none;"><h1>Project Auto</h1></a>
         </div>
         <ul class="sidebar-menu">
-            <li><a href="/public/index.html">Home</a></li>
-            <li><a href="/public/Configuration">Configuration</a></li>
-            <li><a href="/public/About-Us">About Us</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
         </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
     </div>
     <div class="content">
         <header>
-            <div id="current-time" class="current-time"></div>
+            <div id="current-time"></div>
+            <button id="github-login">Login with GitHub</button>
         </header>
         <main>
-            <section id="home">
-                <h1>Welcome to Project Auto</h1>
-                <p>Enter your GitHub repository and customization prompt below to run Project Auto.</p>
-                <div class="input-form">
-                    <label for="repo_name">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repo_name" name="repo_name" placeholder="e.g., your_username/your_repo">
-                    <label for="prompt">Customization Prompt:</label>
-                    <textarea id="prompt" name="prompt" rows="4" placeholder="e.g., Add a new feature to the website."></textarea>
-                    <label for="github_token">GitHub Token:</label>
-                    <input type="password" id="github_token" name="github_token" placeholder="Enter your GitHub token">
-                    <button id="start-button">Start</button>
-                    <div id="result"></div>
-                </div>
+            <section id="hero">
+                <h2>Automate Your Repository</h2>
+                <p>Enter your repository details and customization instructions to get started.</p>
+            </section>
+            <section id="input-area">
+                <label for="repository">Repository (username/repo):</label>
+                <input type="text" id="repository" name="repository" placeholder="owner/repository">
+                <label for="instructions">Customization Instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
+                <button id="start-button">Start</button>
             </section>
         </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-    <script src="/public/script/script.js"></script>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('github-login').addEventListener('click', () => {
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_GITHUB_REDIRECT_URI}`;
+        });
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repository = document.getElementById('repository').value;
+            const instructions = document.getElementById('instructions').value;
+
+            // Retrieve the token from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!repository) {
+                alert('Please enter the repository.');
+                return;
+            }
+
+            if (!token) {
+                alert('Please authenticate with Github.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        repository: repository,
+                        instructions: instructions,
+                        token: token,
+                    }),
+                });
+
+                if (response.ok) {
+                    alert('Project Auto started! Check your repository for updates.');
+                } else {
+                    const errorData = await response.json();
+                    alert(`Error: ${errorData.error || 'Failed to start Project Auto.'}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while starting Project Auto.');
+            }
+        });
+    </script>
 </body>
 </html>
