@@ -4,25 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div id="current-time" class="time"></div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
-        </header>
-        <aside id="sidebar">
+        </div>
+        <nav>
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/Configuration">Configuration</a></li>
                 <li><a href="/About-Us">About Us</a></li>
             </ul>
-        </aside>
-        <main id="content">
-            <!-- Content will be loaded here -->
-        </main>
+        </nav>
     </div>
-    <script src="/script.js"></script>
+    <div class="content">
+        <header>
+            <div id="time"></div>
+            <div class="auth-buttons">
+                <button id="loginBtn">Login with GitHub</button>
+                <button id="logoutBtn" style="display: none;">Logout</button>
+            </div>
+        </header>
+        <main>
+            <section id="authSection" style="display: none;">
+                <h2>Welcome to Project Auto!</h2>
+                <p>Please authenticate with GitHub to continue.</p>
+            </section>
+            <section id="mainSection">
+                <h1>Automate Your Repository</h1>
+                <p>Enter your repository details and customization instructions below.</p>
+                <div class="input-form">
+                    <label for="repository">GitHub Repository (username/repo):</label>
+                    <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo">
+                    <label for="instructions">Customization Instructions:</label>
+                    <textarea id="instructions" name="instructions" rows="5" placeholder="Enter your desired customizations here..."></textarea>
+                    <button id="startButton">Start</button>
+                    <p id="statusMessage"></p>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
+    </div>
+
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const authSection = document.getElementById('authSection');
+            const mainSection = document.getElementById('mainSection');
+            const startButton = document.getElementById('startButton');
+            const repositoryInput = document.getElementById('repository');
+            const instructionsInput = document.getElementById('instructions');
+            const statusMessage = document.getElementById('statusMessage');
+
+            // Check authentication status on page load
+            fetch('/api/auth/status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isAuthenticated) {
+                        showMainSection();
+                    } else {
+                        showAuthSection();
+                    }
+                });
+
+            loginBtn.addEventListener('click', () => {
+                window.location.href = '/api/auth/github';
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                fetch('/api/auth/logout')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showAuthSection();
+                        }
+                    });
+            });
+
+            startButton.addEventListener('click', () => {
+                const repository = repositoryInput.value;
+                const instructions = instructionsInput.value;
+
+                if (!repository) {
+                    statusMessage.textContent = 'Please enter a repository.';
+                    return;
+                }
+
+                statusMessage.textContent = 'Processing...';
+
+                fetch('/api/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ repository, instructions })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    statusMessage.textContent = data.message;
+                })
+                .catch(error => {
+                    statusMessage.textContent = 'An error occurred.';
+                    console.error(error);
+                });
+            });
+
+            function showAuthSection() {
+                authSection.style.display = 'block';
+                mainSection.style.display = 'none';
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+            }
+
+            function showMainSection() {
+                authSection.style.display = 'none';
+                mainSection.style.display = 'block';
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
