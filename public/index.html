@@ -9,100 +9,36 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <span id="current-time"></span>
+            Project Auto
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
+        <ul class="sidebar-menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/Configuration">Configuration</a></li>
+            <li><a href="/About-Us">About Us</a></li>
+        </ul>
     </div>
-
     <div class="content">
-        <h1>Project Auto</h1>
-        <div id="app">
-            <div id="auth-section">
-                <button id="github-login">Login with GitHub</button>
-                <span id="auth-status"></span>
-            </div>
-            <div id="repo-section">
+        <header>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
+        </header>
+        <main>
+            <section id="github-auth">
+                <a href="/api/auth/github">Login with GitHub</a>
+            </section>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
                 <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., yourusername/yourrepo">
-            </div>
-            <div id="prompt-section">
-                <label for="prompt">Customization Instructions:</label>
-                <textarea id="prompt" placeholder="Enter your instructions here"></textarea>
-            </div>
-            <button id="start-button">Start</button>
-            <div id="output"></div>
-        </div>
+                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., yourusername/yourrepo">
+                <label for="customization-prompt">Customization Instructions:</label>
+                <textarea id="customization-prompt" name="customization-prompt" rows="4" placeholder="Enter your instructions here"></textarea>
+                <button id="start-button">Start</button>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const githubLoginButton = document.getElementById('github-login');
-            const authStatus = document.getElementById('auth-status');
-            const repoUrlInput = document.getElementById('repo-url');
-            const promptTextarea = document.getElementById('prompt');
-            const startButton = document.getElementById('start-button');
-            const outputDiv = document.getElementById('output');
-
-            // GitHub Authentication (Placeholder)
-            githubLoginButton.addEventListener('click', async () => {
-                // Redirect to GitHub OAuth flow (This will need to be implemented server-side)
-                window.location.href = '/api/auth/github';
-            });
-
-            // Check if user is already authenticated (e.g., via a cookie or local storage)
-            async function checkAuthStatus() {
-                const response = await fetch('/api/auth/status');
-                const data = await response.json();
-
-                if (data.isAuthenticated) {
-                    authStatus.textContent = 'Authenticated';
-                } else {
-                    authStatus.textContent = 'Not Authenticated';
-                }
-            }
-            checkAuthStatus();
-
-            startButton.addEventListener('click', async () => {
-                const repoUrl = repoUrlInput.value;
-                const prompt = promptTextarea.value;
-
-                outputDiv.textContent = 'Processing...';
-
-                try {
-                    const response = await fetch('/api/run', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ repoUrl, prompt }),
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        outputDiv.textContent = `Result: ${data.result}`;
-                    } else {
-                        outputDiv.textContent = `Error: ${data.error}`;
-                    }
-                } catch (error) {
-                    outputDiv.textContent = `Network Error: ${error.message}`;
-                }
-            });
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
