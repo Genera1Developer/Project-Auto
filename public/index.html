@@ -9,7 +9,7 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
+            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
         <nav>
@@ -22,42 +22,35 @@
     </div>
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
+            <div id="current-time"></div>
             <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="home">
-                <p>Project Auto automates tasks in your GitHub repository.</p>
-                <p>Enter your repository and instructions below to get started.</p>
-                <form id="auto-form">
-                    <label for="repository">GitHub Repository (username/repo):</label>
-                    <input type="text" id="repository" name="repository" placeholder="e.g., owner/repository" required>
-                    <label for="instructions">Customization Instructions:</label>
-                    <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here"></textarea>
-                    <button type="submit">Start</button>
-                </form>
+            <section id="github-repo">
+                <h2>GitHub Repository Details</h2>
+                <label for="repo-owner">Repository Owner:</label>
+                <input type="text" id="repo-owner" name="repo-owner" placeholder="e.g., your-username">
+                <br>
+                <label for="repo-name">Repository Name:</label>
+                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your-repo">
+            </section>
+
+            <section id="customization-instructions">
+                <h2>Customization Instructions</h2>
+                <label for="instructions">Enter your instructions:</label>
+                <textarea id="instructions" name="instructions" rows="4" cols="50" placeholder="e.g., Add a new feature, fix a bug, etc."></textarea>
+            </section>
+
+            <section id="start-project">
+                <button id="start-button">Start</button>
+            </section>
+
+            <section id="github-auth">
+                <h2>GitHub Authentication</h2>
+                <button id="github-login">Login with GitHub</button>
             </section>
         </main>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to set the time immediately
-
-        document.getElementById('auto-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const repository = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-
-            // GitHub authentication flow
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo`;
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
