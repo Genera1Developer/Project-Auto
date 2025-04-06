@@ -9,45 +9,34 @@
 <body>
   <div class="sidebar">
     <div class="sidebar-header">
-      <h2 class="sidebar-title">Project Auto</h2>
+      <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
     </div>
-    <ul class="sidebar-menu">
-      <li><a href="/index.html">Home</a></li>
-      <li><a href="/Configuration">Configuration</a></li>
-      <li><a href="/About-Us">About Us</a></li>
-    </ul>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/Configuration">Configuration</a></li>
+        <li><a href="/About-Us">About Us</a></li>
+      </ul>
+    </nav>
   </div>
   <div class="content">
-    <header class="header">
+    <header>
       <div id="current-time" class="current-time"></div>
       <h1>Project Auto</h1>
     </header>
-    <main class="main">
-      <section class="input-section">
-        <h2>Enter Repository Details</h2>
-        <input type="text" id="repo-url" placeholder="username/repo">
-        <textarea id="custom-prompt" placeholder="Enter customization instructions"></textarea>
-        <button id="start-button">Start</button>
+    <main>
+      <section id="github-auth">
+        <button id="github-login-btn">Login with GitHub</button>
       </section>
-      <section class="auth-section">
-        <button id="github-login">Login with GitHub</button>
-        <div id="auth-status"></div>
+      <section id="project-setup" style="display:none;">
+        <label for="repo-url">GitHub Repository (username/repo):</label>
+        <input type="text" id="repo-url" placeholder="e.g., yourusername/yourrepo">
+        <label for="custom-prompt">Customization Instructions:</label>
+        <textarea id="custom-prompt" rows="4" placeholder="Enter your instructions here"></textarea>
+        <button id="start-btn">Start</button>
       </section>
     </main>
-    <footer class="footer">
-      <p>&copy; 2024 Project Auto</p>
-    </footer>
   </div>
-  <script>
-    function updateTime() {
-      const now = new Date();
-      const timeString = now.toLocaleTimeString();
-      document.getElementById('current-time').textContent = timeString;
-    }
-
-    setInterval(updateTime, 1000);
-    updateTime();
-  </script>
   <script src="/script.js"></script>
 </body>
 </html>
