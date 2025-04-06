@@ -4,57 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/images/Project_Auto_Logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="/" class="active">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
-    </div>
-
-    <div class="content">
+    <div class="container">
         <header>
             <div id="current-time"></div>
             <h1>Project Auto</h1>
         </header>
-
-        <main>
-            <section id="project-form">
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-
-                <label for="prompt">Customization Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4" placeholder="Describe the changes you want to make."></textarea>
-
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
-
-                <button id="start-button">Start</button>
-                <div id="result"></div>
-            </section>
+        <aside id="sidebar">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-
     <script src="/script.js"></script>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
 </body>
 </html>
