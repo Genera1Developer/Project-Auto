@@ -8,29 +8,33 @@
 </head>
 <body>
     <div class="sidebar">
-        <h1>Project Auto</h1>
-        <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/Configuration">Configuration</a></li>
-            <li><a href="/About-Us">About Us</a></li>
-        </ul>
+        <div class="sidebar-header">
+            Project Auto
+        </div>
+        <nav>
+            <a href="/index.html" class="active">Home</a>
+            <a href="/Configuration" >Configuration</a>
+            <a href="/About-Us" >About Us</a>
+        </nav>
     </div>
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <a href="/api/auth/github" id="github-login">Login with GitHub</a>
+             <div id="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
         <main>
-            <section id="project-input">
-                <h2>Project Setup</h2>
-                <input type="text" id="repo-name" placeholder="username/repo">
-                <textarea id="custom-instructions" placeholder="Enter customization instructions"></textarea>
+            <section id="github-auth">
+                <button id="github-login-button">Login with GitHub</button>
+            </section>
+            <section id="project-setup">
+                <label for="repo-url">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" rows="4" placeholder="Enter your instructions here..."></textarea>
                 <button id="start-button">Start</button>
+                <p id="status-message"></p>
             </section>
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
 
     <script>
@@ -41,24 +45,63 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
+        updateTime(); // Initial call
 
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoName = document.getElementById('repo-name').value;
-            const customInstructions = document.getElementById('custom-instructions').value;
-
-            const response = await fetch('/api/run-auto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ repoName, customInstructions })
-            });
-
-            const data = await response.json();
-            console.log(data);
-            alert(data.message);
+        document.getElementById('github-login-button').addEventListener('click', async () => {
+            const config = await fetch('/api/config').then(res => res.json());
+            const clientId = config.githubClientId;
+            const redirectUri = encodeURIComponent(config.redirectUri);
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
         });
+      
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repoUrl = document.getElementById('repo-url').value;
+            const prompt = document.getElementById('prompt').value;
+            const statusMessage = document.getElementById('status-message');
+
+            if (!repoUrl || !prompt) {
+                statusMessage.textContent = "Please provide both repository URL and instructions.";
+                return;
+            }
+
+            statusMessage.textContent = "Processing...";
+
+            try {
+                const response = await fetch('/api/execute', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        repoUrl: repoUrl,
+                        prompt: prompt,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusMessage.textContent = data.message;
+                } else {
+                    statusMessage.textContent = `Error: ${data.error}`;
+                }
+            } catch (error) {
+                statusMessage.textContent = `An unexpected error occurred: ${error}`;
+            }
+        });
+
+        async function checkAuthStatus() {
+            const response = await fetch('/api/auth/status');
+            const data = await response.json();
+
+            if (data.isAuthenticated) {
+                document.getElementById('github-login-button').style.display = 'none';
+            } else {
+                document.getElementById('github-login-button').style.display = 'block';
+            }
+        }
+
+        checkAuthStatus();
     </script>
 </body>
 </html>
