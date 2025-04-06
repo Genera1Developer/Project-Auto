@@ -7,22 +7,57 @@
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="sidebar">
+        <h1>Project Auto</h1>
+        <a href="/">Home</a>
+        <a href="/Configuration">Configuration</a>
+        <a href="/About-Us">About Us</a>
+    </div>
+    <div class="content">
         <header>
             <div id="current-time"></div>
-            <h1>Project Auto</h1>
         </header>
-        <aside id="sidebar">
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </aside>
-        <main id="content">
-            <!-- Content will be loaded here -->
+        <main>
+            <h1>Welcome to Project Auto</h1>
+            <p>Enter your GitHub repository and prompt to start Project Auto.</p>
+            <div id="project-auto-form">
+                <label for="repo_name">GitHub Repository (username/repo):</label>
+                <input type="text" id="repo_name" name="repo_name" placeholder="e.g., your_username/your_repo">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" name="prompt" rows="4" placeholder="e.g., Add a new feature to the website."></textarea>
+                <label for="github_token">GitHub Token:</label>
+                <input type="password" id="github_token" name="github_token" placeholder="Enter your GitHub token">
+                <button id="start-button">Start</button>
+                <div id="result"></div>
+            </div>
         </main>
     </div>
-    <script src="/script.js"></script>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo_name = document.getElementById('repo_name').value;
+            const prompt = document.getElementById('prompt').value;
+            const github_token = document.getElementById('github_token').value;
+        
+            const response = await fetch('/api/run_project', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ repo_name, prompt, github_token })
+            });
+        
+            const data = await response.json();
+            document.getElementById('result').textContent = data.result;
+        });
+    </script>
 </body>
 </html>
