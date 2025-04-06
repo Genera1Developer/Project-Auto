@@ -1,4 +1,3 @@
-/* General Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
@@ -9,40 +8,48 @@ body {
     height: 100vh;
 }
 
-/* Sidebar Styles */
 .sidebar {
     width: 250px;
-    background-color: #301934; /* Deep purple */
+    background-color: #333;
     color: #fff;
     padding: 20px;
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    z-index: 100;
 }
 
 .sidebar-header {
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .logo {
     width: 80%;
     max-width: 150px;
+    margin-bottom: 10px;
 }
 
 .sidebar-menu {
     list-style: none;
     padding: 0;
+    margin: 0;
+    flex-grow: 1;
 }
 
 .sidebar-menu li {
-    padding: 10px 0;
+    margin-bottom: 10px;
 }
 
 .sidebar-menu a {
-    color: #ddd;
-    text-decoration: none;
     display: block;
-    padding: 10px 15px;
+    padding: 10px;
+    color: #fff;
+    text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
     display: flex;
@@ -56,30 +63,30 @@ body {
 }
 
 .sidebar-menu a:hover {
-    background-color: #4e3254; /* Lighter purple on hover */
+    background-color: #555;
 }
 
 .sidebar-footer {
-    margin-top: auto;
     text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #555;
     font-size: 0.8em;
-    color: #aaa;
 }
 
-/* Content Styles */
 .content {
-    flex: 1;
+    flex-grow: 1;
     padding: 20px;
-    overflow-y: auto;
-    background-color: #fff;
+    margin-left: 250px; /* Match sidebar width */
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
-    background-color: #502a55; /* Purple header */
-    color: #fff;
+    background-color: #fff;
     padding: 20px;
-    border-radius: 5px;
     margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -87,29 +94,29 @@ body {
 
 .header h1 {
     margin: 0;
-    font-size: 2em;
+    color: #333;
 }
 
 .current-time {
-    font-size: 1.2em;
+    font-size: 1em;
+    color: #666;
 }
 
-/* Main Content Styles */
 .main-content {
+    background-color: #fff;
     padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
 }
 
-/* Configuration Form Styles */
 .configuration-form {
     display: flex;
     flex-direction: column;
-    max-width: 600px;
-    margin: auto;
+    gap: 15px;
 }
 
 .configuration-form label {
-    margin-top: 10px;
-    margin-bottom: 5px;
     font-weight: bold;
     color: #555;
 }
@@ -118,9 +125,8 @@ body {
 .configuration-form input[type="password"],
 .configuration-form textarea {
     padding: 10px;
-    margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 1em;
 }
 
@@ -129,7 +135,7 @@ body {
 }
 
 .start-button {
-    background-color: #daa520; /* Golden button */
+    background-color: #673ab7;
     color: white;
     padding: 12px 20px;
     border: none;
@@ -140,90 +146,53 @@ body {
 }
 
 .start-button:hover {
-    background-color: #b8860b; /* Darker gold on hover */
+    background-color: #512da8;
 }
 
 .status-message {
-    margin-top: 20px;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 4px;
+    margin-top: 10px;
     text-align: center;
 }
 
 .status-message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: #f44336;
+    color: white;
 }
 
 .status-message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: #4caf50;
+    color: white;
 }
 
 .status-message.loading {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
+    background-color: #ff9800;
+    color: white;
 }
 
-/* Footer Styles */
 .footer {
     text-align: center;
     padding: 20px;
-    background-color: #301934;
-    color: #fff;
-    border-radius: 5px;
     margin-top: 20px;
-}
-
-/* About Us Styles */
-.about-us-content {
-    max-width: 800px;
-    margin: auto;
-    line-height: 1.6;
-}
-
-.about-us-content h2 {
-    color: #502a55;
-    border-bottom: 2px solid #daa520;
-    padding-bottom: 5px;
-    margin-top: 30px;
-}
-
-.about-us-content p {
-    margin-bottom: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    color: #777;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
-        height: auto;
         position: static;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-    }
-
-    .sidebar-header {
-        margin-bottom: 0;
-    }
-
-    .sidebar-menu {
-        display: flex;
-        margin: 0;
-    }
-
-    .sidebar-menu li {
-        padding: 0;
-        margin: 0 10px;
+        height: auto;
+        margin-bottom: 20px;
+        box-shadow: none;
     }
 
     .content {
-        padding: 10px;
+        margin-left: 0;
     }
 
     .header {
@@ -232,37 +201,6 @@ body {
     }
 
     .header h1 {
-        font-size: 1.5em;
         margin-bottom: 10px;
     }
-}
-/* Style adjustments */
-.sidebar-menu a i {
-    width: 25px; /* Increased width for better icon spacing */
-}
-/* New styles for progress bar */
-.progress-container {
-    width: 100%;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.progress-bar {
-    width: 0%;
-    height: 20px;
-    background-color: #daa520; /* Golden color */
-    border-radius: 5px;
-    text-align: center;
-    line-height: 20px;
-    color: white;
-    transition: width 0.3s ease;
-}
-
-/* Style adjustments to configuration form */
-.configuration-form input[type="text"],
-.configuration-form input[type="password"],
-.configuration-form textarea {
-    border: 2px solid #ddd; /* Thicker border */
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Slight shadow */
 }
