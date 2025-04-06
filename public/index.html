@@ -4,37 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="/" class="sidebar-item">Home</a>
-            <a href="/Configuration" class="sidebar-item">Configuration</a>
-            <a href="/About-Us" class="sidebar-item">About Us</a>
-        </div>
-    </div>
-    <div class="content">
+    <div class="container">
         <header>
             <div id="current-time"></div>
             <h1>Project Auto</h1>
         </header>
-        <main>
-            <section id="project-input">
-                <h2>Enter Project Details</h2>
-                <input type="text" id="repo-name" placeholder="GitHub Repository (user/repo)">
-                <textarea id="prompt" placeholder="Enter customization instructions"></textarea>
-                <input type="text" id="github-token" placeholder="GitHub Token">
-                <button id="start-button">Start</button>
-            </section>
-            <section id="output">
-                <h2>Output</h2>
-                <pre id="output-log"></pre>
-            </section>
+        <aside id="sidebar">
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </aside>
+        <main id="content">
+            <!-- Content will be loaded here -->
         </main>
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
     <script src="/script.js"></script>
 </body>
