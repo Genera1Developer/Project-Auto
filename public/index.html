@@ -9,44 +9,42 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+            <h1>Project Auto</h1>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="/"><i class="fas fa-home"></i>Home</a></li>
-            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
-            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
-        </ul>
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Project Auto</p>
-        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Configuration">Configuration</a></li>
+                <li><a href="/About-Us">About Us</a></li>
+            </ul>
+        </nav>
     </div>
     <div class="content">
-        <div class="header">
-            <div>
-                <h1>Project Auto</h1>
-                <div class="current-time" id="current-time"></div>
-            </div>
-            <button id="github-login-button">Login with GitHub</button>
-        </div>
-        <div class="main-content">
-            <h2>Welcome to Project Auto</h2>
-            <p>Enter your GitHub repository and customization instructions to start Project Auto.</p>
-            <form id="auto-form">
-                <label for="repository">GitHub Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" required>
-
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" required></textarea>
-
-                <button type="submit" class="start-button">Start</button>
-            </form>
-            <div id="status-message" class="status-message"></div>
-        </div>
-        <div class="footer">
-            <p>Contact: contact@projectauto.com</p>
-        </div>
+        <header>
+            <div id="current-time"></div>
+            <a href="https://project-auto-v1029.vercel.app">Project Auto</a>
+        </header>
+        <main>
+            <section id="home">
+                <h2>Welcome to Project Auto</h2>
+                <p>Automate your repository tasks with ease.</p>
+                <div id="auth-button-container">
+                    <button id="github-auth-button">Authenticate with GitHub</button>
+                </div>
+                <div id="app-content" style="display: none;">
+                    <label for="repo">Repository (username/repo):</label>
+                    <input type="text" id="repo" name="repo" placeholder="username/repo"><br><br>
+                    <label for="prompt">Customization Instructions:</label><br>
+                    <textarea id="prompt" name="prompt" rows="4" cols="50"></textarea><br><br>
+                    <button id="start-button">Start</button>
+                    <div id="results"></div>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Project Auto</p>
+        </footer>
     </div>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
@@ -57,42 +55,54 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-         document.getElementById('github-login-button').addEventListener('click', function() {
-            window.location.href = '/api/login'; // Redirect to the login route
+        const githubAuthButton = document.getElementById('github-auth-button');
+        const appContent = document.getElementById('app-content');
+        const resultsDiv = document.getElementById('results');
+
+        githubAuthButton.addEventListener('click', async () => {
+            window.location.href = '/api/auth/github';
         });
+        
+        async function checkAuthStatus() {
+            const response = await fetch('/api/auth/status');
+            const data = await response.json();
 
-        document.getElementById('auto-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+            if (data.isAuthenticated) {
+                githubAuthButton.style.display = 'none';
+                appContent.style.display = 'block';
+            } else {
+                githubAuthButton.style.display = 'block';
+                appContent.style.display = 'none';
+            }
+        }
 
-            const repository = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-            const statusMessage = document.getElementById('status-message');
+        checkAuthStatus();
 
-            statusMessage.textContent = 'Loading...';
-            statusMessage.className = 'status-message loading';
+        document.getElementById('start-button').addEventListener('click', async () => {
+            const repo = document.getElementById('repo').value;
+            const prompt = document.getElementById('prompt').value;
 
-            fetch('/api/run', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ repository: repository, instructions: instructions }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    statusMessage.textContent = data.message;
-                    statusMessage.className = 'status-message success';
+            resultsDiv.textContent = 'Processing...';
+
+            try {
+                const response = await fetch('/api/auto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ repo, prompt }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultsDiv.textContent = 'Success: ' + data.message;
                 } else {
-                    statusMessage.textContent = data.message;
-                    statusMessage.className = 'status-message error';
+                    resultsDiv.textContent = 'Error: ' + data.error;
                 }
-            })
-            .catch(error => {
-                statusMessage.textContent = 'An error occurred.';
-                statusMessage.className = 'status-message error';
-                console.error('Error:', error);
-            });
+            } catch (error) {
+                resultsDiv.textContent = 'Network error: ' + error;
+            }
         });
     </script>
 </body>
