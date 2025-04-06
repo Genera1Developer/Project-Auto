@@ -1,71 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
-
-        <main>
-            <section id="input-section">
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., your_username/your_repo">
-
-                <label for="prompt">Prompt:</label>
-                <textarea id="prompt" name="prompt" rows="4"
-                    placeholder="Enter your customization instructions here"></textarea>
-
-                <label for="github-token">GitHub Token:</label>
-                <input type="password" id="github-token" name="github-token" placeholder="Enter your GitHub token">
-
-                <button id="start-button">Start</button>
-            </section>
-
-            <section id="output-section">
-                <h2>Output:</h2>
-                <div id="output-display">
-                    <p>Project Auto output will be displayed here.</p>
-                </div>
-            </section>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <img src="/logo.png" alt="Project Auto Logo" class="logo">
+                <h1>Project Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main id="main-content">
+            <header>
+                <div id="current-time" class="time"></div>
+                <!-- GitHub Authentication Button -->
+                <button id="github-auth-button" class="auth-button">Authenticate with GitHub</button>
+            </header>
+            <div id="content">
+                <!-- Content will be loaded here -->
+            </div>
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
     <script src="/script.js"></script>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-    </script>
 </body>
-
 </html>
