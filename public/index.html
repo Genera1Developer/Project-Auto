@@ -4,95 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
-    <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="current-time" class="current-time"></div>
-        </header>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <h1>Project Auto</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
         <main>
-            <section id="home">
-                <h2>Welcome to Project Auto</h2>
-                <p>Automate your GitHub repository tasks with ease.</p>
-
-                <div class="form-container">
-                    <form id="auto-form">
-                        <div class="form-group">
-                            <label for="github-repo">GitHub Repository (username/repo):</label>
-                            <input type="text" id="github-repo" name="github-repo" placeholder="e.g., facebook/react" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="instructions">Customization Instructions:</label>
-                            <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your customization instructions here."></textarea>
-                        </div>
-                        <button type="button" id="github-login-button">Authenticate with GitHub</button>
-                        <button type="submit" id="start-button">Start</button>
-                    </form>
-                </div>
+            <header>
+                <div id="current-time" class="current-time"></div>
+                <h1>Welcome to Project Auto</h1>
+            </header>
+            <section id="content">
+                <!-- Content will be loaded here -->
             </section>
         </main>
     </div>
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('current-time').textContent = timeString;
-        }
-        setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
-
-        document.getElementById('github-login-button').addEventListener('click', () => {
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://project-auto-v1029.vercel.app/Configuration')}`;
-        });
-
-        document.getElementById('auto-form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const repo = document.getElementById('github-repo').value;
-            const instructions = document.getElementById('instructions').value;
-            const token = localStorage.getItem('github_token');
-
-            if (!token) {
-                alert('Please authenticate with GitHub first.');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/auto', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ repo, instructions })
-                });
-
-                if (response.ok) {
-                    alert('Project Auto started successfully!');
-                } else {
-                    const errorData = await response.json();
-                    alert(`Error: ${errorData.error || 'Something went wrong.'}`);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while starting Project Auto.');
-            }
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
