@@ -7,44 +7,74 @@
     <link rel="stylesheet" href="/style/style.css">
 </head>
 <body>
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="/style/project-auto-logo.png" alt="Project Auto Logo" class="logo">
-            <h1>Project Auto</h1>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <div class="auth-buttons">
-                <button id="login-button">Login with GitHub</button>
-                <button id="logout-button" style="display: none;">Logout</button>
-                <span id="user-info"></span>
+    <div class="container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
+                <h1>Project Auto</h1>
             </div>
-        </header>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/Configuration">Configuration</a></li>
+                    <li><a href="/About-Us">About Us</a></li>
+                </ul>
+            </nav>
+        </aside>
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <div class="form-group">
-                    <label for="github-repo">GitHub Repository (username/repo):</label>
-                    <input type="text" id="github-repo" name="github-repo" placeholder="username/repo">
+            <header>
+                <div id="current-time" class="time"></div>
+                <div class="auth-buttons">
+                    <button id="login-button">Login with GitHub</button>
+                    <button id="logout-button" style="display:none;">Logout</button>
+                    <span id="user-info"></span>
                 </div>
-                <div class="form-group">
-                    <label for="customization-prompt">Customization Instructions:</label>
-                    <textarea id="customization-prompt" name="customization-prompt" rows="4" placeholder="Enter your customization instructions here."></textarea>
-                </div>
-                <button id="start-button">Start</button>
-                <div id="status-message"></div>
+            </header>
+            <section id="content">
+                <!-- Content will be loaded here -->
             </section>
         </main>
     </div>
     <script src="/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginButton = document.getElementById('login-button');
+            const logoutButton = document.getElementById('logout-button');
+            const userInfoSpan = document.getElementById('user-info');
+
+            // Check if a token exists in cookies
+            const token = Cookies.get('github_token');
+
+            if (token) {
+                // If a token exists, consider the user logged in
+                loginButton.style.display = 'none';
+                logoutButton.style.display = 'inline-block';
+                userInfoSpan.textContent = 'Logged in';
+            } else {
+                // If no token, user is logged out
+                loginButton.style.display = 'inline-block';
+                logoutButton.style.display = 'none';
+                userInfoSpan.textContent = 'Logged out';
+            }
+
+            loginButton.addEventListener('click', () => {
+                // Redirect to the backend login route
+                window.location.href = '/api/login';
+            });
+
+            logoutButton.addEventListener('click', () => {
+                // Remove the token from cookies
+                Cookies.remove('github_token');
+                // Update UI
+                loginButton.style.display = 'inline-block';
+                logoutButton.style.display = 'none';
+                userInfoSpan.textContent = 'Logged out';
+
+                // Redirect to home page to reload content
+                window.location.href = '/';
+            });
+        });
+    </script>
 </body>
 </html>
