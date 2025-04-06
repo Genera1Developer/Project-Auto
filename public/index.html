@@ -5,51 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Auto</title>
     <link rel="stylesheet" href="/style/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            Project Auto
+            <img src="/images/logo.png" alt="Project Auto Logo" class="logo">
         </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/Configuration">Configuration</a></li>
-                <li><a href="/About-Us">About Us</a></li>
-            </ul>
-        </nav>
-    </div>
-
-    <div class="content">
-        <header>
-            <div id="current-time"></div>
-            <h1>Project Auto</h1>
-        </header>
-
-        <main>
-            <section id="github-repo">
-                <h2>GitHub Repository</h2>
-                <input type="text" id="repo-url" placeholder="username/repo">
-            </section>
-
-            <section id="customization-prompt">
-                <h2>Customization Instructions</h2>
-                <textarea id="prompt-input" placeholder="Enter your customization instructions here"></textarea>
-            </section>
-
-            <section id="authentication">
-                <h2>GitHub Authentication</h2>
-                <button id="github-login">Login with GitHub</button>
-            </section>
-
-            <section id="start-project">
-                <button id="start-button">Start</button>
-            </section>
-        </main>
-
-        <footer>
+        <ul class="sidebar-menu">
+            <li><a href="/index.html"><i class="fas fa-home"></i>Home</a></li>
+            <li><a href="/Configuration"><i class="fas fa-cog"></i>Configuration</a></li>
+            <li><a href="/About-Us"><i class="fas fa-info-circle"></i>About Us</a></li>
+        </ul>
+        <div class="sidebar-footer">
             <p>&copy; 2024 Project Auto</p>
-        </footer>
+        </div>
+    </div>
+    <div class="content">
+        <div class="header">
+            <div class="current-time" id="current-time"></div>
+            <h1>Project Auto</h1>
+        </div>
+        <div class="main-content">
+            <h2>Welcome to Project Auto</h2>
+            <p>Enter your GitHub repository and customization instructions below to start Project Auto.</p>
+            <form class="configuration-form" id="project-auto-form">
+                <label for="github-repo">GitHub Repository (username/repo):</label>
+                <input type="text" id="github-repo" name="github-repo" placeholder="e.g., yourusername/yourrepo">
+
+                <label for="custom-instructions">Custom Instructions:</label>
+                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
+
+                <button type="button" class="start-button" onclick="startProjectAuto()">Start</button>
+            </form>
+            <div id="status-message" class="status-message"></div>
+        </div>
+        <div class="footer">
+            <p>Powered by Project Auto</p>
+        </div>
     </div>
 
     <script>
@@ -60,71 +53,40 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call to display time immediately
+        updateTime();
 
-        document.getElementById('github-login').addEventListener('click', async () => {
-            // Implement GitHub authentication here (OAuth flow)
-            //  - Redirect user to GitHub's authorization page
-            //  - Handle the callback URL after user authorization
-            //  - Store the access token securely (e.g., in localStorage or a cookie)
-            //  - For demonstration, display a placeholder message
-            alert('GitHub authentication is not fully implemented yet.  Please implement OAuth Flow.');
+        async function startProjectAuto() {
+            const repo = document.getElementById('github-repo').value;
+            const instructions = document.getElementById('custom-instructions').value;
+            const statusMessage = document.getElementById('status-message');
 
-            // Placeholder code for handling authentication (replace with actual implementation)
-            const accessToken = 'YOUR_GITHUB_ACCESS_TOKEN'; // Replace with actual token retrieval
-            if (accessToken) {
-                console.log('Authenticated with GitHub!');
-                // You can now use the access token to make API requests on behalf of the user.
-            } else {
-                console.log('Authentication failed.');
-            }
-        });
-
-        document.getElementById('start-button').addEventListener('click', async () => {
-            const repoUrl = document.getElementById('repo-url').value;
-            const prompt = document.getElementById('prompt-input').value;
-
-            // Basic validation
-            if (!repoUrl) {
-                alert('Please enter a GitHub repository URL.');
-                return;
-            }
-
-            if (!prompt) {
-                alert('Please enter customization instructions.');
-                return;
-            }
-
-            // Implement Project Auto execution logic here
-            // - Fetch the repository code
-            // - Apply customizations based on the prompt
-            // - Commit and push the changes
+            statusMessage.textContent = 'Loading...';
+            statusMessage.className = 'status-message loading';
 
             try {
-                const response = await fetch('/api/execute-auto', { // Changed path to /api/execute-auto
+                const response = await fetch('/api/run-project-auto', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        repoUrl: repoUrl,
-                        prompt: prompt,
-                        accessToken: 'YOUR_GITHUB_ACCESS_TOKEN' // Replace with actual access token
-                    }),
+                    body: JSON.stringify({ repo: repo, instructions: instructions }),
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                const data = await response.json();
 
-                const result = await response.json();
-                console.log('Project Auto execution result:', result);
-                alert('Project Auto executed successfully!'); // Provide user feedback
+                if (response.ok) {
+                    statusMessage.textContent = data.message;
+                    statusMessage.className = 'status-message success';
+                } else {
+                    statusMessage.textContent = data.error || 'An error occurred.';
+                    statusMessage.className = 'status-message error';
+                }
             } catch (error) {
-                console.error('Error executing Project Auto:', error);
-                alert('Error executing Project Auto. See console for details.');
+                console.error('Error:', error);
+                statusMessage.textContent = 'An error occurred: ' + error.message;
+                statusMessage.className = 'status-message error';
             }
-        });
+        }
     </script>
 </body>
 </html>
