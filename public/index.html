@@ -9,7 +9,7 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>Project Auto</h2>
+            <a href="/" class="logo">Project Auto</a>
         </div>
         <ul class="sidebar-menu">
             <li><a href="/">Home</a></li>
@@ -17,30 +17,36 @@
             <li><a href="/About-Us">About Us</a></li>
         </ul>
     </div>
-
     <div class="content">
         <header>
-            <div id="time"></div>
-            <h1>Welcome to Project Auto</h1>
+            <div id="current-time"></div>
+            <h1>Project Auto</h1>
         </header>
-
         <main>
             <section id="github-auth">
-                <a href="/api/auth/github">Authenticate with GitHub</a>
+                <h2>GitHub Authentication</h2>
+                <button id="github-login">Login with GitHub</button>
+                <p id="auth-status">Not authenticated.</p>
             </section>
-
-            <section id="project-setup">
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" name="repo-url" placeholder="e.g., owner/repository">
-
-                <label for="custom-instructions">Custom Instructions:</label>
-                <textarea id="custom-instructions" name="custom-instructions" rows="4" placeholder="Enter your customization instructions here"></textarea>
-
-                <button id="start-button">Start Project Auto</button>
+            <section id="repo-input">
+                <h2>Repository Details</h2>
+                <label for="repo-url">Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+            </section>
+            <section id="prompt-input">
+                <h2>Customization Instructions</h2>
+                <label for="custom-prompt">Instructions:</label>
+                <textarea id="custom-prompt" placeholder="Enter your customization instructions here"></textarea>
+            </section>
+            <section id="start-button">
+                <button id="start-auto">Start</button>
+            </section>
+            <section id="output">
+                <h2>Output</h2>
+                <div id="output-area"></div>
             </section>
         </main>
     </div>
-
     <script src="/script.js"></script>
 </body>
 </html>
