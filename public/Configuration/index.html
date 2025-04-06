@@ -79,9 +79,6 @@
                 return;
             }
 
-            // Store GitHub token in a cookie
-            Cookies.set('github_token', githubToken, { expires: 7 }); // Expires in 7 days
-
             statusMessage.textContent = 'Starting Project Auto...';
             statusMessage.classList.remove('error');
             statusMessage.classList.add('loading');
@@ -92,9 +89,9 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${githubToken}` // Include token
+                        'Authorization': `Bearer ${githubToken}`
                     },
-                    body: JSON.stringify({ repo, instructions, githubToken }),
+                    body: JSON.stringify({ repo, instructions }),
                 });
 
                 if (!response.ok) {
