@@ -14,7 +14,7 @@
         </div>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
+                <li><a href="/index.html">Home</a></li>
                 <li><a href="/Configuration">Configuration</a></li>
                 <li><a href="/About-Us">About Us</a></li>
             </ul>
@@ -23,19 +23,28 @@
 
     <div class="content">
         <header>
-            <div id="current-time"></div>
-            <button id="github-login">Login with GitHub</button>
-            <button id="github-logout" style="display: none;">Logout</button>
-            <span id="user-info"></span>
+            <div id="current-time" class="current-time"></div>
+            <h1>Welcome to Project Auto</h1>
         </header>
 
         <main>
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo-url">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
-                <label for="custom-instructions">Custom Instructions:</label>
-                <textarea id="custom-instructions" placeholder="Enter your customization instructions here."></textarea>
+            <section id="github-input">
+                <h2>GitHub Repository</h2>
+                <input type="text" id="repo-input" placeholder="username/repo">
+            </section>
+
+            <section id="prompt-input">
+                <h2>Customization Instructions</h2>
+                <textarea id="prompt-textarea" placeholder="Enter your instructions here"></textarea>
+            </section>
+
+            <section id="github-auth">
+                <h2>GitHub Authentication</h2>
+                <button id="github-login-button">Login with GitHub</button>
+                <p id="auth-status">Not authenticated</p>
+            </section>
+
+            <section id="start-button">
                 <button id="start-button">Start</button>
             </section>
         </main>
