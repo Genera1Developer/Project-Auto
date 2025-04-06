@@ -9,7 +9,6 @@
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="/style/logo.png" alt="Project Auto Logo" class="logo">
             <h1>Project Auto</h1>
         </div>
         <nav>
@@ -20,58 +19,22 @@
             </ul>
         </nav>
     </div>
-
     <div class="content">
         <header>
-            <div id="time" class="time"></div>
+            <div id="current-time"></div>
+            <button id="github-login">Login with GitHub</button>
         </header>
-
         <main>
-            <section class="hero">
-                <h1>Automate Your Repositories</h1>
-                <p>Unleash the power of automation on your GitHub projects.</p>
-            </section>
-
-            <section class="input-area">
-                <label for="repository">GitHub Repository (username/repo):</label>
-                <input type="text" id="repository" name="repository" placeholder="e.g., yourusername/yourrepo">
-
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" placeholder="Enter your instructions here"></textarea>
-
-                <button id="startButton" class="start-button">Start</button>
+            <section id="project-setup">
+                <h2>Project Setup</h2>
+                <label for="repo-url">Repository (username/repo):</label>
+                <input type="text" id="repo-url" placeholder="e.g., owner/repository">
+                <label for="prompt">Customization Instructions:</label>
+                <textarea id="prompt" rows="4" placeholder="Enter instructions for Project Auto"></textarea>
+                <button id="start-button">Start</button>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time').textContent = timeString;
-        }
-
-        setInterval(updateTime, 1000);
-        updateTime();
-
-        document.getElementById('startButton').addEventListener('click', async () => {
-            const repository = document.getElementById('repository').value;
-            const instructions = document.getElementById('instructions').value;
-
-            // Basic validation (add more robust validation as needed)
-            if (!repository) {
-                alert('Please enter a repository.');
-                return;
-            }
-
-            // Redirect to GitHub OAuth flow
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent('https://project-auto-v1029.vercel.app/api/auth/github')}&scope=repo`;
-
-        });
-    </script>
+    <script src="/script.js"></script>
 </body>
 </html>
