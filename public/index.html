@@ -8,43 +8,42 @@
 </head>
 <body>
     <div class="sidebar">
-        <div class="sidebar-content">
-            <a href="/" class="sidebar-item active">Home</a>
-            <a href="/Configuration" class="sidebar-item">Configuration</a>
-            <a href="/About-Us" class="sidebar-item">About Us</a>
-        </div>
+        <h1>Project Auto</h1>
+        <a href="/index.html">Home</a>
+        <a href="/public/Configuration">Configuration</a>
+        <a href="/public/About-Us">About Us</a>
     </div>
 
     <div class="content">
         <header>
-            <div id="current-time" class="time"></div>
-            <h1>Project Auto</h1>
+            <div id="current-time"></div>
         </header>
 
         <main>
-            <section id="github-auth">
-                <a href="https://github.com/login/oauth/authorize?client_id=Iv1.7425c289d9223257&redirect_uri=https://project-auto-v1029.vercel.app/api/auth/github&scope=repo">
-                    Authenticate with GitHub
-                </a>
+            <section id="project-form">
+                <h2>Run Project Auto</h2>
+                <form id="auto-form">
+                    <label for="repo_name">Repository (username/repo):</label>
+                    <input type="text" id="repo_name" name="repo_name" required><br><br>
+
+                    <label for="prompt">Prompt:</label>
+                    <textarea id="prompt" name="prompt" rows="4" required></textarea><br><br>
+
+                    <label for="github_token">GitHub Token:</label>
+                    <input type="password" id="github_token" name="github_token" required><br><br>
+
+                    <button type="button" onclick="runProject()">Start</button>
+                </form>
             </section>
 
-            <section id="project-setup">
-                <h2>Project Setup</h2>
-                <label for="repo-name">GitHub Repository (username/repo):</label>
-                <input type="text" id="repo-name" name="repo-name" placeholder="e.g., yourusername/yourrepo">
-
-                <label for="instructions">Customization Instructions:</label>
-                <textarea id="instructions" name="instructions" rows="4" placeholder="Enter your instructions here..."></textarea>
-
-                <button id="start-button">Start</button>
+            <section id="results">
+                <h2>Results</h2>
+                <div id="result-display"></div>
             </section>
         </main>
-
-        <footer>
-            <p>&copy; 2024 Project Auto</p>
-        </footer>
     </div>
 
+    <script src="/public/script.js"></script>
     <script>
         function updateTime() {
             const now = new Date();
@@ -53,18 +52,7 @@
         }
 
         setInterval(updateTime, 1000);
-        updateTime(); // Initial call to set the time immediately
-
-        document.getElementById('start-button').addEventListener('click', function() {
-            const repoName = document.getElementById('repo-name').value;
-            const instructions = document.getElementById('instructions').value;
-
-            // TODO: Send this information to the backend for processing
-            console.log('Repo Name:', repoName);
-            console.log('Instructions:', instructions);
-
-            alert('Project Auto started. Check the console for details.');
-        });
+        updateTime();
     </script>
 </body>
 </html>
