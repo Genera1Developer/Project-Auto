@@ -10,7 +10,7 @@
     <div class="sidebar">
         <div class="logo">Project Auto</div>
         <a href="/" class="active">Home</a>
-        <a href="/Configuration">Configuration</a>
+        <a href="/Configuration" >Configuration</a>
         <a href="/About-Us">About Us</a>
     </div>
 
@@ -53,7 +53,7 @@
         updateTime();
 
         document.getElementById("github-login").addEventListener("click", () => {
-            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent("https://project-auto-v1029.vercel.app/Configuration")}`;
+            window.location.href = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent("https://project-auto-v1029.vercel.app/Configuration")}&scope=repo`;
         });
 
         document.getElementById("start-button").addEventListener("click", async () => {
@@ -70,18 +70,19 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
                     repo: repoName,
                     instructions: instructions,
-                    token: token,
                 }),
             });
 
             if (response.ok) {
                 alert('Project Auto started successfully!');
             } else {
-                alert('Project Auto failed to start. Check the console for errors.');
+                const errorData = await response.json();
+                alert(`Project Auto failed to start. Error: ${errorData.message || 'Unknown error'}`);
             }
         });
     </script>
