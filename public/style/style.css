@@ -1,5 +1,5 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
@@ -9,216 +9,113 @@ body {
 }
 
 .sidebar {
-    width: 250px;
+    width: 200px;
     background-color: #333;
-    color: #fff;
+    color: white;
     padding: 20px;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
-.sidebar-header {
+.sidebar h1 {
     margin-bottom: 20px;
-    text-align: center;
+    color: #FFD700;
 }
 
-.logo {
-    width: 80%;
-    max-width: 150px;
-    height: auto;
-}
-
-.sidebar-menu {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar-menu li {
-    margin-bottom: 10px;
-}
-
-.sidebar-menu a {
-    display: block;
-    color: #fff;
+.sidebar a {
     text-decoration: none;
+    color: white;
     padding: 10px;
+    margin-bottom: 5px;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar-menu a:hover {
     background-color: #555;
-}
-
-.sidebar-menu i {
-    margin-right: 10px;
-}
-
-.sidebar-footer {
-    margin-top: auto;
+    width: 100%;
     text-align: center;
-    font-size: 0.8em;
-    color: #ccc;
+}
+
+.sidebar a:hover {
+    background-color: #777;
 }
 
 .content {
     flex: 1;
     padding: 20px;
+    background-color: #fff;
 }
 
-.header {
-    background-color: #fff;
-    padding: 20px;
+header {
+    background-color: #555;
+    color: white;
+    padding: 10px;
     margin-bottom: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.current-time {
-    font-size: 1em;
-    color: #666;
+header #current-time {
+    font-size: 1.2em;
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 2em;
-}
-
-.main-content {
-    background-color: #fff;
-    padding: 20px;
+header button {
+    background-color: #FFD700;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
 }
 
-.configuration-form {
-    display: flex;
-    flex-direction: column;
+header button:hover {
+    background-color: #e6c000;
 }
 
-.configuration-form label {
+main {
+    padding: 20px;
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-.configuration-form input[type="text"],
-.configuration-form input[type="password"],
-.configuration-form textarea {
-    padding: 10px;
-    margin-bottom: 15px;
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 1em;
+    box-sizing: border-box;
 }
 
-.configuration-form textarea {
-    resize: vertical;
+textarea {
+    height: 100px;
 }
 
-.start-button {
-    background-color: #5cb85c;
+button {
+    background-color: #4CAF50;
     color: white;
     padding: 12px 20px;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1.1em;
-    transition: background-color 0.3s ease;
-}
-
-.start-button:hover {
-    background-color: #449d44;
-}
-
-.status-message {
-    margin-top: 15px;
-    padding: 10px;
     border-radius: 4px;
+    cursor: pointer;
 }
 
-.status-message.error {
-    background-color: #f2dede;
-    color: #a94442;
-    border: 1px solid #ebccd1;
+button:hover {
+    background-color: #3e8e41;
 }
 
-.status-message.loading {
-    background-color: #deebf7;
-    color: #31708f;
-    border: 1px solid #bce8f1;
-}
-
-.status-message.success {
-    background-color: #dff0d8;
-    color: #3c763d;
-    border: 1px solid #d6e9c6;
-}
-
-.footer {
+footer {
     text-align: center;
-    padding: 20px;
-    margin-top: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: #777;
-}
-/* Purple and Gold Theme */
-body {
-    background-color: #f9f5f1; /* Off-white background */
-    color: #333;
-}
-
-.sidebar {
-    background-color: #553982; /* Deep purple */
-    color: #fff;
-}
-
-.sidebar-menu a:hover {
-    background-color: #7952b3; /* Lighter purple */
-}
-
-.header {
-    background-color: #fff;
-}
-
-.start-button {
-    background-color: #b3a369; /* Gold */
-    color: #fff;
-}
-
-.start-button:hover {
-    background-color: #d4c17a; /* Lighter gold */
-}
-
-.footer {
-    background-color: #fff;
-    color: #777;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        max-width: none;
-        height: auto;
-        position: static;
-    }
-
-    .content {
-        padding: 10px;
-    }
-
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .header h1 {
-        margin-top: 10px;
-        font-size: 1.5em;
-    }
+    padding: 10px;
+    background-color: #ddd;
+    color: #555;
+    border-top: 1px solid #ccc;
 }
